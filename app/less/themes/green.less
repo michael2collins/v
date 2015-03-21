@@ -1,0 +1,181 @@
+@import "../style";
+@import "../bootstrap-custom";
+@brand-primary: #42bd41;
+@color-theme: #42bd41;
+@color-sidebar: #263238;
+@color-sidebar-border: #37474f;
+body{
+  background-color: @color-sidebar;
+}
+
+/************************/
+/******* Wrapper *******/
+#wrapper{
+  background: @color-sidebar;
+}
+/******* Wrapper *******/
+/**********************/
+
+/**************************/
+/******* Top Bar *********/
+#topbar{
+  background: @color-theme;
+  .navbar-header{
+    background: lighten(@color-sidebar, 5%);
+    span.logo-text {
+      color: @color-theme;
+    }
+  }
+  .topbar-main {
+    background: @color-theme;
+  }
+  .topbar-main .navbar-top-links > li > a {
+    color: #fff;
+    &:hover, &:focus {
+      background: darken(@color-theme, 5%);
+    }
+    > i{
+      color: #fff;
+    }
+    span.badge-blue {
+      background-color: darken(@color-theme, 7%) !important;
+    }
+  }
+  .topbar-main .navbar-top-links li.open > a {
+    background: darken(@color-theme, 5%);
+    &:hover, &:focus {
+      background: darken(@color-theme, 5%);
+    }
+  }
+}
+/******* Top Bar *********/
+/************************/
+
+/************************/
+/***** Sidebar Menu ****/
+#sidebar{
+  background: @color-sidebar;
+}
+.navbar-static-side{
+  ul{
+    li{
+      &.sidebar-heading {
+        h4 {
+          color: @color-theme;
+        }
+      }
+      border-bottom: 1px solid lighten(@color-sidebar, 3%);
+      &.active{
+        a{
+          background: lighten(@color-sidebar, 3%);
+        }
+      }
+      a{
+        &:hover,
+        &:focus{
+          background: lighten(@color-theme, 3%);
+        }
+      }
+      .nav-second-level{
+        li{
+          &:after{
+            background: lighten(@color-sidebar, 2%);
+          }
+          &:first-child{
+            border-top: 0;
+          }
+          &:hover,
+          &:focus{
+            &:after{
+              background: @color-sidebar;
+            }
+          }
+          a{
+            background: darken(@color-sidebar, 5%);
+            &:hover {
+              background: lighten(@color-theme, 3%);
+            }
+          }
+          .nav-third-level{
+            li{
+              &:after{
+                background: lighten(@color-sidebar, 5%);
+              }
+              &:first-child{
+                border-top: 0;
+              }
+              &:hover,
+              &:focus{
+                &:after{
+                  background: @color-sidebar;
+                }
+              }
+              a{
+                background: darken(@color-sidebar, 8%);
+                &:hover {
+                  background: lighten(@color-theme, 3%);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+/******* Sidebar Menu ******/
+/**************************/
+
+/**********************************/
+/***** Left Sidebar Collapsed ****/
+.left-side-collapsed {
+  .navbar-static-side {
+    ul#side-menu{
+      li{
+        a{
+          span.menu-title{
+            background: darken(@color-sidebar, 10%);
+            border-bottom: 1px solid darken(@color-sidebar, 10%);
+            &:after{
+              border-right-color: darken(@color-sidebar, 10%);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+/***** Left Sidebar Collapsed ****/
+/********************************/
+
+/***********************************/
+/***** Right Sidebar Collapsed ****/
+.right-side-collapsed {
+  .navbar-static-side {
+    ul#side-menu{
+      li{
+        a{
+          span.menu-title{
+            background: darken(@color-sidebar, 10%);
+            border-bottom: 1px solid darken(@color-sidebar, 10%);
+            &:after{
+              border-left-color: darken(@color-sidebar, 10%);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+/***** Right Sidebar Collapsed ****/
+/*********************************/
+
+/************************/
+/***** Jquery Pace *****/
+.pace{
+  .pace-progress{
+    background: @brand-primary;
+  }
+}
+/***** Jquery Pace *****/
+/***********************/

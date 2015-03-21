@@ -1,0 +1,265 @@
+@import "global/_variables";
+@import "global/_mixins";
+
+/* BEGIN FLIP SCROLL RESPONSIVE TABLE */
+@media only screen and (max-width: 800px) {
+
+  /* Flip Scroll */
+  #flip-scroll .cf:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+  #flip-scroll * html .cf { zoom: 1; }
+  #flip-scroll *:first-child+html .cf { zoom: 1; }
+  #flip-scroll table { width: 100%; border-collapse: collapse; border-spacing: 0; }
+  #flip-scroll th,
+  #flip-scroll td { margin: 0; vertical-align: top; }
+  #flip-scroll th { text-align: left; }
+  #flip-scroll table { display: block; position: relative; width: 100%; }
+  #flip-scroll thead { display: block; float: left; }
+  #flip-scroll tbody { display: block; width: auto; position: relative; overflow-x: auto; white-space: nowrap; }
+  #flip-scroll thead tr { display: block; }
+  #flip-scroll th { display: block; text-align: right; }
+  #flip-scroll tbody tr { display: inline-block; vertical-align: top; }
+  #flip-scroll td { display: block; min-height: 1.25em; text-align: left; }
+  #flip-scroll th { border-bottom: 0; border-left: 0; }
+  #flip-scroll td { border-left: 0; border-right: 0; border-bottom: 0; }
+  #flip-scroll tbody tr { border-left: 1px solid #babcbf; }
+  #flip-scroll th:last-child,
+  #flip-scroll td:last-child { border-bottom: 1px solid #babcbf; }
+  /* Flip Scroll */
+
+  /* No More Table */
+  #no-more-tables table,
+  #no-more-tables thead,
+  #no-more-tables tbody,
+  #no-more-tables th,
+  #no-more-tables td,
+  #no-more-tables tr {
+    display: block;
+  }
+  #no-more-tables thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+  #no-more-tables tr { border: 1px solid #ccc; }
+  #no-more-tables td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+    white-space: normal;
+    text-align:left;
+  }
+  #no-more-tables td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    text-align:left;
+    font-weight: bold;
+  }
+  #no-more-tables td:before { content: attr(data-title); }
+  /* No More Table */
+
+}
+/* END FLIP SCROLL RESPONSIVE TABLE */
+
+/****************************/
+/********* TopBar **********/
+@media only screen and (max-width : 767px) {
+  #topbar{
+    height: auto;
+    .navbar-header {
+      width: 100% !important;
+      text-align: left !important;
+      #setting-toggle {
+        display: inline-block;
+      }
+      #logo{
+        line-height: auto;
+        width: auto !important;
+        height: auto !important;
+      }
+      .navbar-toggle{
+        margin: 5px;
+        border: 0;
+        &:hover,
+        &:focus{
+          background: transparent;
+          color: @brand-primary;
+        }
+        .icon-bar{
+          background: #ffffff;
+          width: 30px;
+          height: 5px;
+          border-radius: 0;
+        }
+      }
+    }
+    .topbar-main {
+      display: none;
+      ul.navbar-top-links li {
+        display: block;
+        width: 100%;
+        a {
+          -webkit-box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+          -moz-box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+          box-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+          span.badge {
+            top: 15px;
+            right: 15px;
+          }
+          span.visible-xs-inline {
+            vertical-align: 3px;
+            display: inline-block;
+          }
+        }
+        ul.dropdown-menu {
+          width: 100%;
+          position: relative;
+        }
+      }
+      ul.navbar-right li{
+        &:last-child {
+          margin-right: 0px;
+          > a {
+            padding-left: 15px;
+          }
+        }
+      }
+    }
+  }
+  #sidebar-wrapper {
+    z-index: 9999;
+  }
+  #page-wrapper{
+    padding-top: 1px !important;
+  }
+  #wrapper.right-sidebar {
+    #page-wrapper {
+      margin-right: 0px;
+    }
+  }
+  /* badges only on small screens */
+  .bwizard-steps li,
+  .bwizard-steps li.active,
+  .bwizard-steps li:first-child,
+  .bwizard-steps li:last-child {
+    margin-right: 2px;
+    padding: 5px;
+    background-color: transparent ;
+    border-radius: 4px;
+  }
+  #rootwizard-custom-circle {
+    li {
+      margin-left: 0px;
+      margin-right: 7%;
+      &:first-child {
+        margin-left: -10px;
+      }
+      p.description {display: none}
+      p.anchor {display: none}
+
+    }
+  }
+  #rootwizard-custom-oval {
+    &:before {
+      height: 0;
+    }
+  }
+  #rootwizard-tabdetail {
+    ul li {
+      width: 100%;
+    }
+  }
+  #rootwizard-tabdetail2 {
+    ul li {
+      margin: 0px;
+      width: 100%;
+      padding-right: 2px;
+      a {
+        p {display: none}
+      }
+    }
+  }
+}
+@media only screen and (min-width : 480px) and (max-width : 767px) {
+  #sidebar-wrapper {
+    z-index: 9999;
+  }
+  #page-wrapper{
+    padding-top: 1px !important;
+  }
+
+  #rootwizard-custom-circle {
+    li {
+      margin-left: 0px;
+      margin-right: 13%;
+      &:first-child {
+        margin-left: 7%;
+      }
+    }
+  }
+  #rootwizard-custom-oval {
+    &:before {
+      height: 0px;
+    }
+  }
+  .navbar {
+    border-radius: 4px;
+  }
+  //Pricing Table 
+  .pricing-table.pricing-static {
+    width: auto;
+    .plan {
+      width: 100%;
+    }
+  } 
+}
+@media only screen and (min-width : 767px) and (max-width : 992px) {
+  .sidebar-collapse{
+    display: block;
+  }
+  #rootwizard-custom-circle {
+    li {
+      margin-left: 0;
+      margin-right: 13%;
+    }
+  }
+  #rootwizard-custom-oval {
+    &:before {
+      height: 0px;
+    }
+    ul li {
+      width: 150px;
+      p.anchor {
+        width: 95px;
+      }
+    }
+  }
+}
+@media only screen and (min-width : 992px) and (max-width : 1024px) {
+  #rootwizard-custom-oval {
+    &:before {
+      height: 0px;
+    }
+    ul li {
+      width: 150px;
+      p.anchor {
+        width: 95px;
+      }
+    }
+  }
+}
+@media only screen and (min-width : 1024px) and (max-width : 1400px) {
+  #rootwizard-custom-oval {
+    ul li {
+      width: 150px;
+      p.anchor {
+        width: 95px;
+      }
+    }
+  }
+}

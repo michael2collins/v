@@ -1,0 +1,28 @@
+.page-heading
+    h1.page-title
+        | {{data.title}}
+    h4.page-subtitle
+        | Lorem ipsum dolor sit amet
+.page-actions.hidden-xs
+    span.value.income Income
+        strong.mls 12.964$
+    span.page-actions-chart1.mrl
+    span.value.visitor Visitor
+        strong.mls 1.870
+    span.page-actions-chart2
+    script.
+        var chart1 = [25,16,17,22,13,26,12,34,16,19,8,23,20,21,14];
+        var chart2 = [15,20,15,17,15,16,14,22,17,22,18,13,16,18,16];
+        $(".page-actions-chart1").sparkline(chart1, {
+            type: 'bar',
+            height: '40px ',
+            barWidth: 5,
+            barColor: '#b33f93'
+        });
+        $(".page-actions-chart2").sparkline(chart2, {
+            type: 'bar',
+            height: '40px ',
+            barWidth: 5,
+            barColor: '#ffffff'
+        });
+.clearfix

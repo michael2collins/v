@@ -1,0 +1,643 @@
+/* This file created to custom some plugins */
+@import "global/_variables";
+@import "global/_mixins";
+
+/************************/
+/***** Jquery Pace *****/
+.pace{
+  .pace-progress{
+    background: @brand-primary;
+    height: 5px;
+  }
+}
+/***** Jquery Pace *****/
+/***********************/
+
+/**************************************/
+/********* Jquery Flot Chart *********/
+.legendColorBox{
+  padding: 3px 0;
+  div{
+    border-radius: 50%;
+    margin-right: 5px;
+    div{
+      margin-right: 0;
+    }
+  }
+}
+/********* Jquery Flot Chart *********/
+/************************************/
+
+/***********************************/
+/*********** Jquery UI ************/
+.ui-state-default{
+  border: 0;
+  background: #FFFFFF;
+  color: #ffffff;
+}
+.ui-widget-content{
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  .ui-state-default{
+    border: 0;
+    background: @brand-primary;
+    color: #ffffff;
+  }
+}
+.ui-widget-header{
+  background: @brand-primary;
+  .ui-state-default{
+    border: 0;
+    background: @brand-primary;
+    color: #ffffff;
+  }
+}
+.ui-slider{
+  .ui-slider-handle{
+    position: absolute;
+    z-index: 2;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+  }
+  &.ui-slider-horizontal{
+    .ui-slider-handle {
+      top: -0.7em;
+    }
+  }
+  &.ui-slider-vertical{
+    .ui-slider-handle {
+      left: -0.7em;
+    }
+  }
+}
+#slider-multi{
+  span {
+    height: 120px;
+    float: left;
+    margin: 20px;
+  }
+}
+.ui-slider-horizontal{
+  height: .5em;
+}
+.ui-slider-vertical{
+  width: .5em;
+}
+
+/*********************************/
+/****** Jquery FullCalendar *****/
+#external-events {
+  text-align: left;
+}
+
+#external-events h4 {
+  font-family: 'Oswald';
+  font-size: 18px;
+}
+
+.external-event { /* try to mimick the look of a real event */
+  margin: 5px 3px;
+  padding: 4px;
+  cursor: move;
+  display: inline-block;
+}
+
+#external-events p {
+  margin: 1.5em 0;
+}
+
+#external-events p input {
+  margin: 0;
+  vertical-align: middle;
+}
+/****** Jquery FullCalendar *****/
+/*******************************/
+//BEGIN JQUERY ZABUTO CALENDAR ON DASHBOARD
+.table{
+  tbody{
+    tr{
+      &.calendar-month-header{
+        &:first-child{
+          th{
+            border-top: 0;
+            background: @brand-primary;
+            color: #ffffff;
+            padding: 12px 0;
+            .calendar-month-navigation{
+              padding-top: 0;
+            }
+            span{
+              padding-bottom: 0;
+            }
+          }
+        }
+      }
+      td{
+        border-top: 1px solid #efefef;
+      }
+    }
+  }
+}
+//END JQUERY CALENDAR
+
+/**************************************/
+/********** Jquery News Ticker *********/
+.ticker-wrapper.has-js {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 42px;
+  display: block;
+  background: transparent;
+}
+.ticker {
+  width: 100%;
+  height: 42px;
+  display: block;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+}
+.ticker-title {
+  background-color: transparent;
+}
+.ticker-content {
+  color: @text-color;
+  font-size: 18px;
+  background: transparent;
+  a {
+    color: @brand-primary;
+    &:hover,
+    &:focus{
+      color: @text-color;
+      text-decoration: none;
+    }
+  }
+}
+.ticker-swipe{
+  width: 100%;
+  height: 42px;
+  background-color: #ffffff;
+  span {
+    margin-left: 1px;
+    background-color: #ffffff;
+    border-bottom: 3px solid @text-color;
+    height: 21px;
+    width: 7px;
+    display: block;
+  }
+}
+/********** Jquery News Ticker *********/
+/**************************************/
+
+/**************************************/
+/********** Jquery Jvectormap *********/
+.jvectormap-zoomin, .jvectormap-zoomout {
+  background: #ffffff;
+  color: @brand-primary;
+  width: 20px;
+  height: 20px;
+  border-radius: 0;
+  padding: 4px 0;
+}
+.jvectormap-zoomout {
+  top: 40px;
+}
+/********** Jquery Jvectormap *********/
+/**************************************/
+
+/***********************************************/
+/************ Jquery Bootstrap Switch *********/
+.has-switch {
+  border-color: #e5e5e5;
+  span.switch-left{
+    text-shadow: none;
+    background-color: @brand-primary;
+    background-image: none;
+    border: 1px solid #e5e5e5;
+  }
+  label {
+    border-left: 1px solid #e5e5e5;
+    border-right: 1px solid #e5e5e5;
+    text-shadow: none;
+    background-image: none;
+    border-color: #e5e5e5;
+  }
+  span.switch-right{
+    text-shadow: none;
+    background-color: #f0f0f0;
+    background-image: none;
+    border-color: #e5e5e5;
+    color: @text-color;
+  }
+  span.switch-primary:hover,
+  span.switch-left:hover,
+  span.switch-primary:focus,
+  span.switch-left:focus,
+  span.switch-primary:active,
+  span.switch-left:active,
+  span.switch-primary.active,
+  span.switch-left.active,
+  span.switch-primary.disabled,
+  span.switch-left.disabled,
+  span.switch-primary[disabled],
+  span.switch-left[disabled]{
+    background-color: @brand-primary;
+  }
+  span.switch-info:hover,
+  span.switch-info:focus,
+  span.switch-info:active,
+  span.switch-info.active,
+  span.switch-info.disabled,
+  span.switch-info[disabled]{
+    background: @brand-info;
+  }
+}
+/************ Jquery Bootstrap Switch *********/
+/*********************************************/
+
+/******************************************/
+/*********** Jquery DatePicker *************/
+.datepicker table tr td span.active:hover, .datepicker table tr td span.active:hover:hover, .datepicker table tr td span.active.disabled:hover, .datepicker table tr td span.active.disabled:hover:hover, .datepicker table tr td span.active:active, .datepicker table tr td span.active:hover:active, .datepicker table tr td span.active.disabled:active, .datepicker table tr td span.active.disabled:hover:active, .datepicker table tr td span.active.active, .datepicker table tr td span.active:hover.active, .datepicker table tr td span.active.disabled.active, .datepicker table tr td span.active.disabled:hover.active, .datepicker table tr td span.active.disabled, .datepicker table tr td span.active:hover.disabled, .datepicker table tr td span.active.disabled.disabled, .datepicker table tr td span.active.disabled:hover.disabled, .datepicker table tr td span.active[disabled], .datepicker table tr td span.active:hover[disabled], .datepicker table tr td span.active.disabled[disabled], .datepicker table tr td span.active.disabled:hover[disabled]{
+  background: @brand-primary;
+}
+.datepicker table tr td.active:hover, .datepicker table tr td.active:hover:hover, .datepicker table tr td.active.disabled:hover, .datepicker table tr td.active.disabled:hover:hover, .datepicker table tr td.active:active, .datepicker table tr td.active:hover:active, .datepicker table tr td.active.disabled:active, .datepicker table tr td.active.disabled:hover:active, .datepicker table tr td.active.active, .datepicker table tr td.active:hover.active, .datepicker table tr td.active.disabled.active, .datepicker table tr td.active.disabled:hover.active, .datepicker table tr td.active.disabled, .datepicker table tr td.active:hover.disabled, .datepicker table tr td.active.disabled.disabled, .datepicker table tr td.active.disabled:hover.disabled, .datepicker table tr td.active[disabled], .datepicker table tr td.active:hover[disabled], .datepicker table tr td.active.disabled[disabled], .datepicker table tr td.active.disabled:hover[disabled]{
+  background: @brand-primary;
+}
+.datepicker table tr td.selected:hover, .datepicker table tr td.selected:hover:hover, .datepicker table tr td.selected.disabled:hover, .datepicker table tr td.selected.disabled:hover:hover, .datepicker table tr td.selected:active, .datepicker table tr td.selected:hover:active, .datepicker table tr td.selected.disabled:active, .datepicker table tr td.selected.disabled:hover:active, .datepicker table tr td.selected.active, .datepicker table tr td.selected:hover.active, .datepicker table tr td.selected.disabled.active, .datepicker table tr td.selected.disabled:hover.active, .datepicker table tr td.selected.disabled, .datepicker table tr td.selected:hover.disabled, .datepicker table tr td.selected.disabled.disabled, .datepicker table tr td.selected.disabled:hover.disabled, .datepicker table tr td.selected[disabled], .datepicker table tr td.selected:hover[disabled], .datepicker table tr td.selected.disabled[disabled], .datepicker table tr td.selected.disabled:hover[disabled]{
+  background: #777777;
+}
+.datepicker table tr td.selected, .datepicker table tr td.selected:hover, .datepicker table tr td.selected.disabled, .datepicker table tr td.selected.disabled:hover{
+  background-image: none;
+}
+/*********** Jquery DatePicker *************/
+/******************************************/
+
+/**********************************************/
+/*********** Jquery DateRangePicker **********/
+.daterangepicker .ranges li {
+  background: #f5f5f5;
+  border: 1px solid #f5f5f5;
+  color: @text-color;
+  &.active,
+  &:hover {
+    background: @brand-primary;
+    border: 1px solid @brand-primary;
+  }
+}
+/********** Jquery DateRangePicker *********/
+/******************************************/
+
+/*************************************************/
+/********** Jquery Clockface TimePicker *********/
+.clockface .outer.active, .clockface .outer.active:hover{
+  background-image: none;
+}
+.clockface .inner.active, .clockface .inner.active:hover{
+  background-image: none;
+}
+.clockface .inner.active:hover, .clockface .inner.active:hover:hover, .clockface .inner.active:active, .clockface .inner.active:hover:active, .clockface .inner.active.active, .clockface .inner.active:hover.active, .clockface .inner.active.disabled, .clockface .inner.active:hover.disabled, .clockface .inner.active[disabled], .clockface .inner.active:hover[disabled]{
+  background: @brand-primary;
+}
+/********** Jquery Clockface TimePicker *********/
+/***********************************************/
+
+/*******************************************/
+/********** Bootstrap form wizard *********/
+//********* Wizard with tab arrow *********
+.bwizard-steps {
+  li a {
+    font-family: 'oswald';
+    line-height: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: @text-color;
+  }
+  // Keep style of li.active on top
+  .active {
+    color: #fff !important;
+    background: #007ACC !important;
+    &:after {
+      border-left-color: #007ACC !important}
+    a {
+      color: #fff !important;
+      cursor: default  !important}
+  }
+  li.visited {
+    color: #fff;
+    background-color: lighten(#007ACC, 50%);
+    &:after {
+      border-left-color: lighten(#007ACC, 50%)
+    }
+  }
+}
+// ******* Basic wizard **************
+#rootwizard, #rootwizard-tab-left, #rootwizard-tab-right {
+  ul li a {
+    font-family: 'oswald';
+  }
+}
+#rootwizard-tab-left, #rootwizard-tab-right {
+  ul li.active {
+    a {
+      font-weight: bold;
+
+    }
+  }
+}
+// ******* Wizard with tab step circle ********
+#rootwizard-custom-circle {
+  margin-top: 20px;
+  position: relative;
+  &:before {
+    content: "";
+    height: 3px;
+    width: 100%;
+    background-color: #5CB85C;
+    position: absolute;
+    top: 30px;
+    left: 0;
+  }
+  li {
+    background-color: lighten(#5CB85C, 5%);
+    height: 40px;
+    width: 40px;
+    border-radius: 20px;
+    -webkit-border-radius: 20px;
+    margin-bottom: 20px;
+    padding-top: 0px;
+    padding-left: 0px;
+    display: inline-block;
+    float: left;
+    list-style: none;
+    margin-left: 20%;
+    text-align: center;
+    position: relative;
+    &:first-child {
+      margin-left: 13%;
+    }
+    a {
+      font-size: 17px;
+      line-height: 200%;
+      i {
+        color: #FFFFFF;
+        top: 5px;
+        &.glyphicon-send {
+          left: -3px;
+        }
+      }
+      p.anchor {
+        position: absolute;
+        top: -30px;
+        left: -130px;
+        width: 300px;
+        font-family: 'oswald';
+      }
+      p.description {
+        font-size: 13px;
+        position: absolute;
+        left: -130px;
+        width: 300px;
+      }
+    }
+    &.active {
+      background-color: orange;
+      a p {
+        color: orange;
+      }
+    }
+  }
+}
+// ******* Wizard with tab step oval ********
+#rootwizard-custom-oval {
+  margin-top: 20px;
+  position: relative;
+  &:before {
+    content: "";
+    height: 3px;
+    width: 100%;
+    background-color: #5CB85C;
+    position: absolute;
+    top: 40px;
+    left: 0;
+  }
+  li {
+    background-color: lighten(#5CB85C, 5%);
+    height: 60px;
+    width: 200px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    padding-top: 0px;
+    padding-left: 0px;
+    display: inline-block;
+    float: left;
+    list-style: none;
+    margin-left: 7%;
+    text-align: left;
+    position: relative;
+    &:first-child {
+      margin-left: 5%;
+    }
+    a {
+      font-size: 17px;
+      line-height: 200%;
+      i {
+        color: #FFFFFF;
+        top: 13px;
+        left: 10px;
+      }
+      p.anchor {
+        position: absolute;
+        border-bottom: 1px solid #FFFFFF;
+        color: #FFFFFF;
+        top: -3px;
+        left: 35px;
+        width: 150px;
+        font-family: 'oswald';
+      }
+      p.description {
+        font-size: 13px;
+        position: absolute;
+        left: 35px;
+        bottom: -15px;
+        width: 300px;
+        color: #FFFFFF;
+      }
+    }
+    &.active {
+      background-color: violet;
+      a p {
+        color:#FFFFFF;
+      }
+    }
+  }
+}
+//******* Style Wizard-tab-detail *******
+#rootwizard-tabdetail {
+  li {
+    background-color: #EFEFEF;
+    border-radius: 4px;
+    margin-bottom: 3px;
+    &.visited {
+      background-color: lighten(@brand-primary, 30%);
+      a {
+        opacity: 1;
+      }
+    }
+    a {
+      padding-left: 15px;
+      padding-right: 35px;
+      span {
+        font-family: 'oswald';
+        font-size: 17px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+#rootwizard-tabdetail2 {
+  ul li {
+    margin: 0px;
+    width: 20%;
+    padding-right: 5px;
+  }
+  li {
+    border-radius: 4px;
+    &.visited {
+      a {
+        background-color: lighten(@color-blue,30%);
+        opacity: 1;
+      }
+    }
+    a {
+      background-color: #EFEFEF;
+      padding-left: 15px;
+      padding-right: 35px;
+      span {
+        font-family: 'oswald';
+        font-size: 17px;
+        font-weight: bold;
+      }
+    }
+    &.active {
+      a {
+        background-color: @color-blue;
+      }
+    }
+  }
+}
+//******* Style Wizard inverse *******
+.navbar-inverse {
+  border: none;
+  background: @color-blue; /* Old browsers */
+  min-height: 0;
+  .navbar-inner {
+    li {
+      margin-right: 15px;
+      a {
+        font-size: 16px;
+        color: lighten(@text-color, 30%);
+        &:hover {
+          color: #FFFFFF;
+        }
+      }
+    }
+    li a:hover {
+      background-color: inherit;
+      color: #FFFFFF;
+    }
+    li.active {
+      background-color: inherit ;
+      color: #FFFFFF;
+      a {
+        background-color: darken(@color-blue,5%);
+      }
+    }
+  }
+}
+/********** Bootstrap form wizard *********/
+/*******************************************/
+
+/*******************************************/
+/********** Form Editor *********/
+.jHtmlArea {
+  .h1,.h2,.h3,.h4,.h5,.h6 {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+.cke_editable_inline:hover {
+  cursor: pointer;
+}
+.cke_focus {
+  border-radius: 4px;
+  padding: 10px;
+  background: none repeat scroll 0 0 #EEEEEE ;
+  box-shadow: 0 0 20px 3px #DDDDDD inset, 0 0 1px #000000 inset;
+  outline: medium none;
+  cursor: text !important;
+  &:hover {
+    cursor: text;
+  }
+}
+/********** Form Editor *********/
+/*******************************************/
+.view {
+  margin: 0px !important;
+  border: 5px solid #FFFFFF;
+  border-radius: 4px;
+  /*border-radius: 4px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;*/
+  a.info {
+    background: transparent;
+    i {
+      font-size: 20px;
+    }
+  }
+}
+//BEGIN JQUERY NOTIFIC8
+.jquery-notific8-message {
+  font-size: 14px;
+}
+
+[class*="jquery-notific8"],
+[class*="jquery-notific8"]:after,
+[class*="jquery-notific8"]:before {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+
+.right .jquery-notific8-close-sticky span,
+.left .jquery-notific8-close-sticky span {
+  font-size: 10px;
+}
+
+.jquery-notific8-heading {
+  font-weight: 300;
+  font-size: 16px;
+}
+.jquery-notific8-notification.teal {
+  border-radius: 4px;
+  background-color: #03a9f4;
+  border-color: #03a9f4;
+}
+//END JQUERY NOTIFIC8
+
+//BEGIN JQUERY SPARKLINE CHART
+.jqstooltip {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+//END JQUERY SPARKLINE CHART
+//BEGIN FULLCALENDAR
+.fc-state-default {
+  background: #03a9f4;
+  background-image: none;
+  color: #fff;
+}
+//START FULLCALENDAR

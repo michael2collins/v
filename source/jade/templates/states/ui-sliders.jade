@@ -1,0 +1,53 @@
+.row
+    .col-lg-12
+        .panel
+            .panel-body
+                .row
+                    .col-lg-3
+                        h4.block-heading Default
+                        #slider-default.slider
+                        .clearfix.mbxxl
+                        h4.block-heading Maximum
+                        p
+                            label(for='amount') Maximum Value:
+                            | &nbsp;
+                            input#amount-max.text-primary(type='text', style='border: 0; font-weight: bold;')
+                        #slider-range-max.slider
+                        .clearfix.mbxxl
+                        h4.block-heading Minimum
+                        p
+                            label(for='amount') Minimum Value:
+                            | &nbsp;
+                            input#amount-min.text-primary(type='text', style='border: 0; font-weight: bold;')
+                        #slider-range-min.slider
+                    .col-lg-4
+                        h4.block-heading Snap to increments
+                        p
+                            label(for='amount-snap') Donation amount ($50 increments):
+                            | &nbsp;
+                            input#amount-snap.text-primary(type='text', style='border: 0; font-weight: bold;')
+                        #slider-snap.slider
+                        .clearfix.mbxxl
+                        h4.block-heading Multiple sliders
+                        #slider-multi
+                            span 88
+                            span 77
+                            span 55
+                            span 33
+                            span 40
+                            span 45
+                            span 70
+                    .col-lg-2
+                        h4.block-heading Vertical Slider
+                        p
+                            label(for='amount-vertical') Volume:
+                            | &nbsp;
+                            input#amount-vertical.text-primary(type='text', style='border: 0; font-weight: bold; width: 50px;')
+                        #slider-vertical.slider(style="height: 200px;")
+                    .col-lg-3
+                        h4.block-heading Vertical Range Slider
+                        p
+                            label(for='amount-vertical-range') Target sales goal (Millions):
+                            | &nbsp;
+                            input#amount-vertical-range.text-primary(type='text', style='border: 0; font-weight: bold; width: 100px;')
+                        #slider-vertical-range.slider(style="height: 200px;")

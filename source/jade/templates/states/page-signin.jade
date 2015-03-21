@@ -1,0 +1,31 @@
+.animated.bounceInDown
+    #signin-page-content
+        form.form(action='/#/')
+            h1.block-heading Sign In
+            p Dear user, log in to access the admin area!
+            .form-group
+                .input-icon
+                    i.fa.fa-user
+                    input.form-control(type='text', placeholder='Username', name='username')
+            .form-group
+                .input-icon
+                    i.fa.fa-key
+                    input.form-control(type='password', placeholder='Password', name='password')
+            .form-group
+                .checkbox
+                    label
+                        input(type='checkbox')
+                        | &nbsp;
+                        | Remember me
+            .form-group
+                button.btn.btn-primary(type='submit')
+                    | Login
+                    | &nbsp;
+                    i.fa.fa-chevron-circle-right
+                a#btn-forgot-pwd.mlm(href='javascript:void(0);') Forgot your password?
+            hr
+            .create-account
+                p
+                    | Don't have an account yet?
+                    | &nbsp;
+                    a#btn-register(href='/#/page-signup') Create an account

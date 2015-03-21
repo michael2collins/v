@@ -1,0 +1,440 @@
+.row#table-advanced
+    
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption DATATABLE FILTERING USING "INPUT" ELEMENTS ON TOP
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                .table-tools
+                    .row
+                        .col-lg-3
+                            .form-inline
+                                .form-group
+                                    select.form-control
+                                        option 10
+                                        option 15
+                                        option 20
+                                        option 30
+                                    | &nbsp;
+                                    label.control-label Records per page
+                        .col-lg-3.pull-right
+                            .form-inline.pull-right
+                                .form-group
+                                    label.control-label Search:
+                                    | &nbsp;
+                                    input.form-control
+                .table-responsive.mtl
+                    table.table.table-striped.table-bordered.table-hover
+                        thead
+                            tr
+                                th Rendering engine
+                                th Browser
+                                th Platform(s)
+                                th Engine version
+                                th CSS grade
+                                th(width='3%') Edit
+                                th(width='4%') Delete
+                            tr
+                                th
+                                    input.form-control(placeholder='Search Rendering')
+                                th
+                                    input.form-control(placeholder='Search Browser')
+                                th
+                                    input.form-control(placeholder='Search Platform')
+                                th
+                                    input.form-control(placeholder='Search Engine')
+                                th
+                                    input.form-control(placeholder='Search CSS grade')
+                                th
+
+                                th
+
+                        tbody
+
+                            tr.odd.gradeA
+                                td Trident
+                                td
+                                    | Internet
+                                    | Explorer 5.5
+                                td Win 95+
+                                td.center 5.5
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.even.gradeA
+                                td Trident
+                                td
+                                    | Internet
+                                    | Explorer 6
+                                td Win 98+
+                                td.center 6
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.odd.gradeA
+                                td Trident
+                                td Internet Explorer 7
+                                td Win XP SP2+
+                                td.center 7
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.even.gradeA
+                                td Trident
+                                td AOL browser (AOL desktop)
+                                td Win XP
+                                td.center 6
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.gradeA
+                                td Gecko
+                                td Firefox 1.0
+                                td Win 98+ / OSX.2+
+                                td.center 1.7
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+
+                            tr.gradeA
+                                td Gecko
+                                td Firefox 3.0
+                                td Win 2k+ / OSX.3+
+                                td.center 1.9
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+
+                .tool-footer.text-right
+                    p.pull-left Showing 1 to 10 of 57 entries
+                    ul.pagination
+                        li
+                            a(href="#") &laquo;
+                        li
+                            a(href="#") 1
+                        li
+                            a(href="#") 2
+                        li
+                            a(href="#") 3
+                        li
+                            a(href="#") 4
+                        li
+                            a(href="#") &raquo;
+    
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption DATATABLE FILTERING USING "SELECT" ELEMENTS ON TOP
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                .table-tools
+                    .row
+                        .col-lg-3
+                            .form-inline
+                                .form-group
+                                    select.form-control
+                                        option 10
+                                        option 15
+                                        option 20
+                                        option 30
+                                    | &nbsp;
+                                    label.control-label Records per page
+                        .col-lg-3.pull-right
+                            .form-inline.pull-right
+                                .form-group
+                                    label.control-label Search:
+                                    | &nbsp;
+                                    input.form-control(type='text')
+                .table-responsive.mtl
+                    table.table.table-striped.table-bordered.table-hover
+                        thead
+                            tr
+                                th Rendering engine
+                                th Browser
+                                th Platform(s)
+                                th Engine version
+                                th CSS grade
+                                th(width='3%') Edit
+                                th(width='4%') Delete
+                            tr
+                                th
+                                    select.form-control
+                                        option All
+                                        option Trident
+                                        option Gecko
+
+                                th
+                                    select.form-control
+                                        option All
+                                        option Internet Explorer 4.0
+                                        option AOL browser
+                                        option Firefox 1.0
+                                        option Firefox 1.5
+                                        option Firefox 2.0
+                                        option Firefox 3.0
+                                th
+                                    select.form-control
+                                        option All
+                                        option Win 95+
+                                        option Win 98+
+                                        option Win XP
+                                        option Win XP SP2+
+                                        option Win 98+ / OSX.2+
+                                        option Win 2k+ / OSX.3+
+                                th
+                                    select.form-control
+                                        option All
+                                        option 4
+                                        option 5
+                                        option 6
+                                        option 1.8
+                                        option 1.9
+                                        option 3.0
+                                th
+                                    select.form-control
+                                        option All
+                                        option X
+                                        option C
+                                        option A
+                                th
+                                th
+                        tbody
+                            tr.odd.gradeA
+                                td Trident
+                                td
+                                    | Internet
+                                    | Explorer 5.5
+                                td Win 95+
+                                td.center 5.5
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.even.gradeA
+                                td Trident
+                                td
+                                    | Internet
+                                    | Explorer 6
+                                td Win 98+
+                                td.center 6
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.odd.gradeA
+                                td Trident
+                                td Internet Explorer 7
+                                td Win XP SP2+
+                                td.center 7
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.even.gradeA
+                                td Trident
+                                td AOL browser (AOL desktop)
+                                td Win XP
+                                td.center 6
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.gradeA
+                                td Gecko
+                                td Firefox 1.0
+                                td Win 98+ / OSX.2+
+                                td.center 1.7
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+
+                            tr.gradeA
+                                td Gecko
+                                td Firefox 3.0
+                                td Win 2k+ / OSX.3+
+                                td.center 1.9
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                .tool-footer.text-right
+                    p.pull-left Showing 1 to 10 of 57 entries
+                    ul.pagination
+                        li
+                            a(href="#") &laquo;
+                        li
+                            a(href="#") 1
+                        li
+                            a(href="#") 2
+                        li
+                            a(href="#") 3
+                        li
+                            a(href="#") 4
+                        li
+                            a(href="#") &raquo;
+    
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Datatable with checkbox
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                .table-tools
+                    .row
+                        .col-lg-3
+                            .form-inline
+                                .form-group
+                                    select.form-control
+                                        option 10
+                                        option 15
+                                        option 20
+                                        option 30
+                                    | &nbsp;
+                                    label.control-label Records per page
+                        .col-lg-3.pull-right
+                            .form-inline.pull-right
+                                .form-group
+                                    label.control-label Search:
+                                    | &nbsp;
+                                    input.form-control(type='text')
+
+                .table-responsive.mtl
+                    table.table.table-striped.table-bordered.table-hover
+                        thead
+                            tr
+                                th(width='1%')
+                                    input(type='checkbox')
+                                th Rendering engine
+                                th Browser
+                                th Platform(s)
+                                th Engine version
+                                th CSS grade
+                                th(width='3%') Edit
+                                th(width='4%') Delete
+                        tbody
+
+                            tr.odd.gradeA
+                                td
+                                    input(type='checkbox')
+                                td Trident
+                                td
+                                    | Internet
+                                    | Explorer 5.5
+                                td Win 95+
+                                td.center 5.5
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.even.gradeA
+                                td
+                                    input(type='checkbox')
+                                td Trident
+                                td
+                                    | Internet
+                                    | Explorer 6
+                                td Win 98+
+                                td.center 6
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.odd.gradeA
+                                td
+                                    input(type='checkbox')
+                                td Trident
+                                td Internet Explorer 7
+                                td Win XP SP2+
+                                td.center 7
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.even.gradeA
+                                td
+                                    input(type='checkbox')
+                                td Trident
+                                td AOL browser (AOL desktop)
+                                td Win XP
+                                td.center 6
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                            tr.gradeA
+                                td
+                                    input(type='checkbox')
+                                td Gecko
+                                td Firefox 1.0
+                                td Win 98+ / OSX.2+
+                                td.center 1.7
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+
+                            tr.gradeA
+                                td
+                                    input(type='checkbox')
+                                td Gecko
+                                td Firefox 3.0
+                                td Win 2k+ / OSX.3+
+                                td.center 1.9
+                                td.center A
+                                td
+                                    a.edit(href='javascript:;') Edit
+                                td
+                                    a.delete(href='javascript:;') Delete
+                .tool-footer.text-right
+                    p.pull-left Showing 1 to 10 of 57 entries
+                    ul.pagination
+                        li
+                            a(href="#") &laquo;
+                        li
+                            a(href="#") 1
+                        li
+                            a(href="#") 2
+                        li
+                            a(href="#") 3
+                        li
+                            a(href="#") 4
+                        li
+                            a(href="#") &raquo;
+    

@@ -1,0 +1,965 @@
+.row
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Option 1
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-tabdetail2
+                    .navbar
+                        .navbar-inner
+                            ul
+                                li
+                                    a(href='#tab1-rootwizard-tabdetail2', data-toggle='tab')
+                                        span 1. Login
+                                        p Set up account
+                                li
+                                    a(href='#tab2-rootwizard-tabdetail2', data-toggle='tab')
+                                        span 2. Address
+                                        p Provide information
+                                li
+                                    a(href='#tab3-rootwizard-tabdetail2', data-toggle='tab')
+                                        span 3. Cart detail
+                                        p Checking shopping cart
+                                li
+                                    a(href='#tab4-rootwizard-tabdetail2', data-toggle='tab')
+                                        span 4. Method checkout
+                                        p Choose best way to checkout
+                                li
+                                    a(href='#tab3-rootwizard-tabdetail2', data-toggle='tab')
+                                        span 5. Finish
+                                        p Confirm all
+                    #bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-info
+                    .tab-content
+                        #tab1-rootwizard-tabdetail2.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password confirm")
+                                    i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-rootwizard-tabdetail2.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-rootwizard-tabdetail2.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-rootwizard-tabdetail2.tab-pane
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-orange.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-orange.button-previous(type='button', name='previous', value='Previous')
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Option 2
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-tabdetail
+                    .navbar
+                        .navbar-inner
+                            ul
+                                li
+                                    a(href='#tab1-rootwizard-tabdetail', data-toggle='tab')
+                                        span 1. Login
+                                        p Set up account
+                                li
+                                    a(href='#tab2-rootwizard-tabdetail', data-toggle='tab')
+                                        span 2. Address
+                                        p Provide information for best service
+                                li
+                                    a(href='#tab3-rootwizard-tabdetail', data-toggle='tab')
+                                        span 3. Cart detail
+                                        p Checking shopping cart
+                                li
+                                    a(href='#tab3-rootwizard-tabdetail', data-toggle='tab')
+                                        span 4. Method checkout
+                                        p Choose best way to checkout
+                                li
+                                    a(href='#tab4-rootwizard-tabdetail', data-toggle='tab')
+                                        span 5. Finish
+                                        p Confirm all
+                    #bar.progress.progress-striped.active
+                        .bar.progress-bar
+                    .tab-content
+                        #tab1-rootwizard-tabdetail.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password confirm")
+                                    i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-rootwizard-tabdetail.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-rootwizard-tabdetail.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-rootwizard-tabdetail.tab-pane
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-success.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-success.button-previous(type='button', name='previous', value='Previous')
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Option 3
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard
+                    .navbar.navbar-inverse
+                        .navbar-inner
+                            ul
+                                li
+                                    a(href='#tab1', data-toggle='tab') 1. Log in
+                                li
+                                    a(href='#tab2', data-toggle='tab') 2. Info
+                                li
+                                    a(href='#tab2', data-toggle='tab') 3. Address
+                                li
+                                    a(href='#tab2', data-toggle='tab') 4. Cart detail
+                                li
+                                    a(href='#tab2', data-toggle='tab') 5. Method checkout
+                                li
+                                    a(href='#tab2', data-toggle='tab') 5. Finish
+
+                    #bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-yellow
+                    .tab-content
+                        #tab1.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password confirm")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4.tab-pane
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        ul.pager.wizard
+                            li.previous.first(style='display: none;')
+                                a(href='javascript: void(0)') First
+                            li.previous
+                                a(href='javascript: void(0)') Previous
+                            li.next.last(style='display: none;')
+                                a(href='javascript: void(0)') Last
+                            li.next
+                                a(href='javascript: void(0)') Next
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Option 4
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-custom-arrow
+                    .navbar
+                        .navbar-inner
+                            ul
+                                li
+                                    a(href='#tab1-wizard-custom-arrow', data-toggle='tab') 1. Login
+                                li
+                                    a(href='#tab2-wizard-custom-arrow', data-toggle='tab') 2. Address
+                                li
+                                    a(href='#tab3-wizard-custom-arrow', data-toggle='tab') 3. Detail
+                                li
+                                    a(href='#tab4-wizard-custom-arrow', data-toggle='tab') 4. Finish
+                    #bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-info
+                    .tab-content
+                        #tab1-wizard-custom-arrow.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-lg-5.col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password confirm")
+                                    i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-wizard-custom-arrow.tab-pane
+                            .row
+                                .col-lg-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-lg-6.col-md-12
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-lg-6.col-md-12
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-lg-6.col-md-12
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-lg-6.col-md-12
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-wizard-custom-arrow.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-wizard-custom-arrow.tab-pane
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-primary.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-primary.button-previous(type='button', name='previous', value='Previous')
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Option 5
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-custom-circle
+                    .navbar
+                        .navbar-inner
+                            ul
+                                li
+                                    a(href='#tab1-wizard-custom-circle', data-toggle='tab')
+                                        i.glyphicon.glyphicon-user
+                                        p.anchor 1. Log in
+                                        p.description Set up account
+                                li
+                                    a(href='#tab2-wizard-custom-circle', data-toggle='tab')
+                                        i.glyphicon.glyphicon-send.mln
+                                        p.anchor 2. Address
+                                        p.description Provide information
+                                li
+                                    a(href='#tab3-wizard-custom-circle', data-toggle='tab')
+                                        i.glyphicon.glyphicon-shopping-cart
+                                        p.anchor 3. Cart detail
+                                        p.description Check products
+                                li
+                                    a(href='#tab4-wizard-custom-circle', data-toggle='tab')
+                                        i.glyphicon.glyphicon-check
+                                        p.anchor 4. Finish
+                                        p.description Confirm all
+                    //#bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-violet
+                    .tab-content
+                        #tab1-wizard-custom-circle.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-sm-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-sm-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-sm-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-sm-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.inputPwd.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-sm-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-sm-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.inputPwdC.form-control(type="text", placeholder="Password confirm")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-wizard-custom-circle.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-wizard-custom-circle.tab-pane.fadeIn
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-wizard-custom-circle.tab-pane.fadeIn
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-info.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-info.button-previous(type='button', name='previous', value='Previous')
+
+    .col-lg-12
+        .portlet
+            .portlet-header
+                .caption Option 6
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-custom-oval
+                    .navbar
+                        .navbar-inner
+                            ul
+                                li
+                                    a(href='#tab1-wizard-custom-oval', data-toggle='tab')
+                                        i.glyphicon.glyphicon-user
+                                        p.anchor 1. Log in
+                                        p.description Set up account
+                                li
+                                    a(href='#tab2-wizard-custom-oval', data-toggle='tab')
+                                        i.glyphicon.glyphicon-send.mln
+                                        p.anchor 2. Address
+                                        p.description Provide information
+                                li
+                                    a(href='#tab3-wizard-custom-oval', data-toggle='tab')
+                                        i.glyphicon.glyphicon-shopping-cart
+                                        p.anchor 3. Cart detail
+                                        p.description Check products
+                                li
+                                    a(href='#tab4-wizard-custom-oval', data-toggle='tab')
+                                        i.glyphicon.glyphicon-check
+                                        p.anchor 4. Finish
+                                        p.description Confirm all
+                    //#bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-violet
+                    .tab-content
+                        #tab1-wizard-custom-oval.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.inputPwd.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.inputPwdC.form-control(type="text", placeholder="Password confirm")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-wizard-custom-oval.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-wizard-custom-oval.tab-pane.fadeIn
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-wizard-custom-oval.tab-pane.fadeIn
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-info.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-info.button-previous(type='button', name='previous', value='Previous')
+    .col-lg-6
+        .portlet
+            .portlet-header
+                .caption Wizards with tab left
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-tab-left.tabbable.tabs-left
+                    #bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-orange
+                    ul
+                        li
+                            a(href='#tab1-wizard-tab-left', data-toggle='tab') Login
+                        li
+                            a(href='#tab2-wizard-tab-left', data-toggle='tab') Address
+                        li
+                            a(href='#tab3-wizard-tab-left', data-toggle='tab') Detail
+                        li
+                            a(href='#tab3-wizard-tab-left', data-toggle='tab') Mothod
+                        li
+                            a(href='#tab4-wizard-tab-left', data-toggle='tab') Finish
+                    .tab-content
+                        #tab1-wizard-tab-left.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password confirm")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-wizard-tab-left.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-wizard-tab-left.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-wizard-tab-left.tab-pane
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-primary.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-primary.button-previous(type='button', name='previous', value='Previous')
+
+    .col-lg-6
+        .portlet
+            .portlet-header
+                .caption Wizards with tab right & <b> Alert </b>
+                .tools
+                    i.fa.fa-chevron-up
+                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                    i.fa.fa-refresh
+                    i.fa.fa-times
+            .portlet-body
+                #rootwizard-tab-right.tabbable.tabs-right
+                    #bar.progress.progress-striped.active
+                        .bar.progress-bar.progress-bar-green
+                    ul
+                        li
+                            a(href='#tab1-wizard-tab-right', data-toggle='tab') Login
+                        li
+                            a(href='#tab2-wizard-tab-right', data-toggle='tab') Address
+                        li
+                            a(href='#tab3-wizard-tab-right', data-toggle='tab') Detail
+                        li
+                            a(href='#tab4-wizard-tab-right', data-toggle='tab') Finish
+                    .tab-content
+                        #tab1-wizard-tab-right.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-3.control-label(for='inputUsername') Username <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-icon
+                                            i.fa.fa-user
+                                            input.inputUsername.form-control(type='text', placeholder='Username')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputEmail') Password <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-3.control-label(for='inputAddress') Password confirm <span class='require'>*</span>
+                                    .col-md-9
+                                        .input-group
+                                            span.input-group-addon
+                                                i.fa.fa-key
+                                            input.form-control(type="text", placeholder="Password confirm")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                        #tab2-wizard-tab-right.tab-pane
+                            .row
+                                .col-md-12
+                                    .form-group
+                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                        input#inputStreet.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputFirstName') District
+                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                        input#inputCity.form-control(type="text", placeholder="")
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                            .row
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='inputPostCode') Post Code
+                                        input#inputPostCode.form-control(type='text', placeholder='')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .col-md-6
+                                    .form-group
+                                        label.control-label(for='selCountry') Country
+                                        select#selCountry.form-control
+                                            option(value='') Select a Country
+                                            option(value='') United States
+                                            option(value='') England
+                                            option(value='') France
+                                            option(value='') Spain
+                        #tab3-wizard-tab-right.tab-pane
+                            form.form-horizontal(action='#')
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 1:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 2:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='inputUsername') Product 3:
+                                    .col-md-10
+                                        input.inputUsername.form-control(type='text', placeholder='Detail')
+                                        i.alert.alert-hide Oops! Forgot something? Let try again.
+                                .form-group
+                                    label.col-md-2.control-label(for='selCountry') Check out method
+                                    .col-lg-3.col-md-5
+                                        select#selCountry.form-control
+                                            option(value='') Cash
+                                            option(value='') Visa Card
+                                            option(value='') Credit Card
+                        #tab4-wizard-tab-right.tab-pane
+                            p Congragulation! You have completed checkout steps.
+                            p Thank you for use our products.
+                        div(style='float: right;')
+                            input.btn.btn-primary.button-next(type='button', name='next', value='Next')
+                        div(style='float: left;')
+                            input.btn.btn-primary.button-previous(type='button', name='previous', value='Previous')
