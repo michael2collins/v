@@ -1,60 +1,60 @@
 #tab-general
-    .row
+    .row 
         .col-lg-4
             .panel
                 .panel-body
                     h4.block-heading 
                         i.icon-cursor.mrs
-                        | Popular Browser
+                        | Student Makeup
                     #line-chart-spline(style="width: 100%; height:120px")
             .panel
                 .panel-body
                     h4.block-heading 
                         i.icon-graph.mrs
-                        | Internet Status
+                        | Active Students
                     #internet-speed-chart(style="width: 100%; height:120px")
         .col-sm-12.col-lg-8
             .panel
                 .panel-body
                     .row
                         .col-md-8
-                            h4.mbs.text-uppercase Network Performance
-                            p.help-block Sed ut perspiciatis unde omnis iste natus error sit voluptatem...
+                            h4.mbs.text-uppercase Attendance
+                            p.help-block Class Attendance
                             #area-chart-spline-db(style="width: 100%; height:300px")
                         .col-md-4
-                            h4.mbm.text-uppercase Server Status
+                            h4.mbm.text-uppercase Attendance by Class as % of Total Capacity
                             span.task-item
-                                | CPU Usage (25 - 32 cpus)
+                                | Dragons 
                                 small.pull-right.text-muted 40%
                                 .progress.progress-sm
                                     .progress-bar.progress-bar-orange(role='progressbar', aria-valuenow='40', aria-valuemin='0', aria-valuemax='100', style='width: 40%;')
                                         span.sr-only 40% Complete (success)
                             span
-                                | Memory Usage (2.5GB)
+                                | Leopards
                                 small.pull-right.text-muted 60%
                                 .progress.progress-sm
                                     .progress-bar.progress-bar-blue(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
                                         span.sr-only 60% Complete (success)
                             span
-                                | Disk Usage (C:\ 120GB , D:\ 430GB)
+                                | BBT1
                                 small.pull-right.text-muted 55%
                                 .progress.progress-sm
                                     .progress-bar.progress-bar-green(role='progressbar', aria-valuenow='55', aria-valuemin='0', aria-valuemax='100', style='width: 55%;')
                                         span.sr-only 55% Complete (success)
                             span
-                                | Domain (2/5)
+                                | BBT2
                                 small.pull-right.text-muted 66%
                                 .progress.progress-sm
                                     .progress-bar.progress-bar-yellow(role='progressbar', aria-valuenow='66', aria-valuemin='0', aria-valuemax='100', style='width: 66%;')
                                         span.sr-only 66% Complete (success)
                             span
-                                | Database (90/100)
+                                | BBT3
                                 small.pull-right.text-muted 90%
                                 .progress.progress-sm
                                     .progress-bar.progress-bar-pink(role='progressbar', aria-valuenow='90', aria-valuemin='0', aria-valuemax='100', style='width: 90%;')
                                         span.sr-only 90% Complete (success)
                             span
-                                | Email Account (25/50)
+                                | Adult
                                 small.pull-right.text-muted 50%
                                 .progress.progress-sm
                                     .progress-bar.progress-bar-violet(role='progressbar', aria-valuenow='50', aria-valuemin='0', aria-valuemax='100', style='width: 50%;')
@@ -65,7 +65,7 @@
                 .panel-body
                     h4.block-heading
                         i.icon-users.mrs
-                        | New Visitors
+                        | New Students
                         span.pull-right <span id='new-customer-number'></span>
                     #new-customer-chart(style="width: 100%; height:120px")
             .panel
@@ -78,53 +78,53 @@
             .panel
                 .panel-body
                     h4.block-heading
-                        | Online
+                        | Teaching
                         span.pull-right <span id='users-number'>21</span>
                     ul.users-online.list-unstyled
                         li
                             .name
                                 a(href='')
-                                    | Eugene Lawson
+                                    | Beef Mazzola
                             .status.is-idle
                         li
                             .name
                                 a(href='')
-                                    | Gerald Stone
+                                    | Pat Wyatt
                             .status.is-online
                         li
                             .name
                                 a(href='')
-                                    | Pamela Curtis
+                                    | Karen Humphries
                             .status.is-busy
                         li
                             .name
                                 a(href='')
-                                    | Jonathan Evi
+                                    | Mark Lehman
                             .status.is-online
                         li
                             .name
                                 a(href='')
-                                    | Gregory Delgado
+                                    | Michael Collins
                             .status.is-online
                         li
                             .name
                                 a(href='')
-                                    | Vincent Knight
+                                    | Roy Kennedy
                             .status.is-offline
                         li
                             .name
                                 a(href='')
-                                    | Kenneth Bishop
+                                    | Rob Whitney
                             .status.is-offline
                         li
                             .name
                                 a(href='')
-                                    | Jonathan Evi
+                                    | Mike Clune
                             .status.is-online
                         li
                             .name
                                 a(href='')
-                                    | Jonathan Evi
+                                    | Matt Higgins
                             .status.is-online
         .col-md-12.col-lg-6
             #world-map
@@ -223,27 +223,27 @@
                                         button#todos-list-add.btn.btn-primary(type='button') Add
                             li
                                 input(type='checkbox', id='task-item-1')
-                                label(for='task-item-1') Provide a better product for user
+                                label(for='task-item-1') Setup birthday party for Jack
                                 a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
                                     span.fa.fa-trash-o
                             li
                                 input(type='checkbox', id='task-item-2')
-                                label(for='task-item-2') Upgrade support services
+                                label(for='task-item-2') Generate Attendance sheets
                                 a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
                                     span.fa.fa-trash-o
                             li
                                 input(type='checkbox', id='task-item-3')
-                                label(for='task-item-3') Optimize source code - document
+                                label(for='task-item-3') Print the brochures
                                 a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
                                     span.fa.fa-trash-o
                             li
                                 input(type='checkbox', id='task-item-4')
-                                label(for='task-item-4') Built new plan to develop the item
+                                label(for='task-item-4') Prepare/Send Belt Rank Congratulations Cards
                                 a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
                                     span.fa.fa-trash-o
                             li
                                 input(type='checkbox', id='task-item-5')
-                                label(for='task-item-5') Contribute development of public and social
+                                label(for='task-item-5') Capture leads from Movie Night
                                 a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
                                     span.fa.fa-trash-o
         .col-lg-3
@@ -303,42 +303,42 @@
                                     th Complete
                             tbody
                                 tr
-                                    td Admin Template
+                                    td Belt Order
                                     td 3.164
                                     td
                                         .progress.progress-xs.mbs(data-hover='tooltip', title='20%')
                                             .progress-bar.progress-bar-green(role='progressbar', aria-valuenow='80', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
                                                 span.sr-only 20% Complete
                                 tr
-                                    td AngularJS App
+                                    td Leadership Package
                                     td 4.164
                                     td
                                         .progress.progress-xs.mbs(data-hover='tooltip', title='60%')
                                             .progress-bar.progress-bar-blue(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
                                                 span.sr-only 60% Complete
                                 tr
-                                    td Parallax One page
+                                    td Summer T-Shirts
                                     td 12.546
                                     td
                                         .progress.progress-xs.mbs(data-hover='tooltip', title='75%')
                                             .progress-bar.progress-bar-green(role='progressbar', aria-valuenow='75', aria-valuemin='0', aria-valuemax='100', style='width: 75%;')
                                                 span.sr-only 75% Complete
                                 tr
-                                    td Multi-purpose Front end 
+                                    td Sparring Equipment 
                                     td 12.154
                                     td
                                         .progress.progress-xs.mbs(data-hover='tooltip', title='80%')
                                             .progress-bar.progress-bar-blue(role='progressbar', aria-valuenow='80', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
                                                 span.sr-only 80% Complete
                                 tr
-                                    td Multi-purpose WP Theme 
+                                    td Animal Patches 
                                     td 4.513
                                     td
                                         .progress.progress-xs.mbs(data-hover='tooltip', title='90%')
                                             .progress-bar.progress-bar-orange(role='progressbar', aria-valuenow='90', aria-valuemin='0', aria-valuemax='100', style='width: 90%;')
                                                 span.sr-only 90% Complete
                                 tr
-                                    td Wordpress Plugin 
+                                    td Karate Shoes 
                                     td 7.133
                                     td
                                         .progress.progress-xs.mbs(data-hover='tooltip', title='100%')
