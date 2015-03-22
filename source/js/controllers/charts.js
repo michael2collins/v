@@ -5,15 +5,15 @@ App.controller('ChartsController', function($scope, $routeParams){
     var d1_3 = [["Jan", 81],["Feb", 92],["Mar", 98],["Apr", 102],["May", 80],["Jun", 97],["Jul", 86],["Aug", 105],["Sep", 85]];
     $.plot("#line-chart", [{
         data: d1_1,
-        label: "Chrome",
+        label: "Children",
         color: "#ffce54"
     },{
         data: d1_2,
-        label: "Firefox",
+        label: "Adults",
         color: "#3DB9D3"
     },{
         data: d1_3,
-        label: "Safari",
+        label: "Blackbelts",
         color: "#df4782"
     }], {
         series: {

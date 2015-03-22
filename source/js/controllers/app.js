@@ -533,15 +533,15 @@ App.controller('MainController', function($scope, $routeParams){
         var d2_3 = [["Jan", 128],["Feb", 131],["Mar", 140],["Apr", 150],["May", 140],["Jun", 144],["Jul", 146],["Aug", 155],["Sep", 158]];
         $.plot("#line-chart-spline", [{
             data: d2_1,
-            label: "Chrome",
+            label: "Children",
             color: "#2ecc71"
         },{
             data: d2_2,
-            label: "Firefox",
+            label: "Adults",
             color: "#e74c3c"
         },{
             data: d2_3,
-            label: "Safari",
+            label: "Blackbelts",
             color: "#2980b9"
         }], {
             series: {
