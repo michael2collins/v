@@ -1,5 +1,5 @@
 App.controller('AppController', function($scope, $routeParams){
-
+ 
     $scope.data = {};
     $scope.header = {
         layout_menu:'',
