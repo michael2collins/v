@@ -2,17 +2,17 @@
   "name": "NG-ADMIN",
   "version": "1.0.0",
   "devDependencies": {
-    "grunt": "~0.4.1",
-    "grunt-contrib-concat": "*",
-    "grunt-contrib-jshint": "*",
-    "grunt-contrib-cssmin": "*",
-    "grunt-contrib-watch": "*",
-    "grunt-contrib-less": "*",
-    "grunt-concurrent": "*",
-    "load-grunt-tasks": "*",
     "connect-livereload": "*",
-    "time-grunt": "*",
-    "grunt-contrib-jade": "~0.12.0"
+    "grunt": "^0.4.5",
+    "grunt-concurrent": "*",
+    "grunt-contrib-concat": "*",
+    "grunt-contrib-cssmin": "*",
+    "grunt-contrib-jade": "~0.12.0",
+    "grunt-contrib-jshint": "*",
+    "grunt-contrib-less": "*",
+    "grunt-contrib-watch": "*",
+    "load-grunt-tasks": "*",
+    "time-grunt": "*"
   },
   "engines": {
     "node": ">=0.8.0"
