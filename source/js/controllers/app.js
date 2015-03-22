@@ -586,17 +586,17 @@ App.controller('MainController', function($scope, $routeParams){
         var d6_3 = [20];
         $.plot('#traffice-sources-chart', [{
             data: d6_1,
-            label: "Firefox",
+            label: "Ages 4-7",
             color: "#e74c3c"
         },
             {
                 data: d6_2,
-                label: "Chrome",
+                label: "Ages 8-12",
                 color: "#2ecc71"
             },
             {
                 data: d6_3,
-                label: "IE",
+                label: "Ages 13-17",
                 color: "#3498db"
             }], {
             series: {
@@ -652,11 +652,11 @@ App.controller('MainController', function($scope, $routeParams){
         var d8_2 = [["Jan", 70],["Feb", 49],["Mar", 70],["Apr", 60],["May", 86],["Jun", 100],["Jul", 150]];
         $.plot("#internet-speed-chart", [{
             data: d8_1,
-            label: "Download",
+            label: "Adults",
             color: "#c0392b"
         },{
             data: d8_2,
-            label: "Upload",
+            label: "Children",
             color: "#2ecc71"
         }], {
             series: {
@@ -702,11 +702,11 @@ App.controller('MainController', function($scope, $routeParams){
         var d9_2 = [["Jan", 59],["Feb", 49],["Mar", 45],["Apr", 94],["May", 76],["Jun", 22],["Jul", 31]];
         $.plot("#area-chart-spline-db", [{
             data: d9_1,
-            label: "Upload",
+            label: "Adults",
             color: "#ffce54"
         },{
             data: d9_2,
-            label: "Download",
+            label: "Children",
             color: "#B33F93"
         }], {
             series: {
