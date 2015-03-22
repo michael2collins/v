@@ -1,2 +1,3 @@
 cd app
-static
+call static
+cd ..
