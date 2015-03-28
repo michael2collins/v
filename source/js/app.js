@@ -14,7 +14,7 @@ App.config(function ($routeProvider) {
         .when('/form-layouts-newweek', {templateUrl: 'templates/states/form-layouts-newweek.html', controller: 'FromLayoutsController'})
         .when('/table-basic-attendance', {templateUrl: 'templates/states/table-basic-attendance.html', controller: 'TableBasicController'})
         .when('/table-basic-leads', {templateUrl: 'templates/states/table-basic-leads.html', controller: 'TableBasicController'})
-        .when('/table-basic-students', {templateUrl: 'templates/states/table-basic-students.html', controller: 'TableBasicController'})
+        .when('/table-basic-students', {templateUrl: 'templates/states/table-basic-students.html', controller: 'StudentsTableBasicController'})
         .when('/table-basic-managetest', {templateUrl: 'templates/states/table-basic-managetest.html', controller: 'TableBasicController'})
         .when('/table-basic-paymenttracking', {templateUrl: 'templates/states/table-basic-paymenttracking.html', controller: 'TableBasicController'})
         .when('/form-multiple-file-upload', {templateUrl: 'templates/states/form-multiple-file-upload.html', controller: 'FormMultipleUploadFileController'})

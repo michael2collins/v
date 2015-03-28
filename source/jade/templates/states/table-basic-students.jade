@@ -1,6 +1,6 @@
 .row
     .col-lg-12
-        .portlet.portlet-green
+        .portlet.box.portlet-green
             .portlet-header
                 .caption Student List
                 .tools
@@ -11,7 +11,7 @@
             .portlet-body
                 .table-tools
                     .row
-                        .col-lg-5.mbs
+                        .col-lg-12.mbs
                             button.btn.btn-red(type='button').mrs
                                 i.fa.fa-plus
                                 | &nbsp; Add New
@@ -24,33 +24,16 @@
                             button.btn.btn-primary(type='button').mrs
                                 i.fa.fa-copy
                                 | &nbsp; Excel
-                        .col-lg-3
-                            .form-inline
-                                .form-group
-                                    select.form-control
-                                        option 10
-                                        option 15
-                                        option 20
-                                        option 30
-                                    | &nbsp;
-                                    label.control-label Records per page
-                        .col-lg-4
-                            .form-inline.text-right
-                                .form-group
-                                    | &nbsp;
-                                    input.form-control(type='text')
-                                    label.control-label Search
                 .table-responsive.mtl
-                    table.table.table-striped.table-bordered.table-hover
+                    table#table_id.table.table-hover.table-striped.table-bordered.table-advanced.tablesorter.display
                         thead
                             tr
-                                th Name
-                                th Rank
-                                th Class
-                                th Parent
-                                th Phone
-                                th(width='3%') Edit
-                                th(width='4%') Delete
+                                th(width='25%') Name
+                                th(width='15%') Rank
+                                th(width='15%') Class
+                                th(width='25%') Parent
+                                th(width='10%') Phone
+                                th(width='10%') Edit/Delete
                         tbody
 
                             tr.odd.gradeA
@@ -62,9 +45,14 @@
                                 td.center Mama Jonwa
                                 td.center 508-666-1111
                                 td
-                                    a.edit(href='javascript:;') Edit
-                                td
-                                    a.delete(href='javascript:;') Delete
+                                    .action-group.btn-group.pull-right.mtm.mbm
+                                        button.btn.btn-primary
+                                            i.fa.fa-edit.mrs
+                                            | Edit
+                                        button.btn.btn-primary
+                                            i.fa.fa-trash-o.mrs
+                                            | Delete
+                                    .clearfix
                             tr.even.gradeA
                                 td jimmy jones
                                 td Brown 3rd
@@ -72,9 +60,14 @@
                                 td.center Daddy jones
                                 td.center 655-454-6655
                                 td
-                                    a.edit(href='javascript:;') Edit
-                                td
-                                    a.delete(href='javascript:;') Delete
+                                    .action-group.btn-group.pull-right.mtm.mbm
+                                        button.btn.btn-primary
+                                            i.fa.fa-edit.mrs
+                                            | Edit
+                                        button.btn.btn-primary
+                                            i.fa.fa-trash-o.mrs
+                                            | Delete
+                                    .clearfix
                             tr.odd.gradeA
                                 td Some Sonny
                                 td White Belt
@@ -82,9 +75,14 @@
                                 td.center Sr. Sonny
                                 td.center 555-345-3456
                                 td
-                                    a.edit(href='javascript:;') Edit
-                                td
-                                    a.delete(href='javascript:;') Delete
+                                    .action-group.btn-group.pull-right.mtm.mbm
+                                        button.btn.btn-primary
+                                            i.fa.fa-edit.mrs
+                                            | Edit
+                                        button.btn.btn-primary
+                                            i.fa.fa-trash-o.mrs
+                                            | Delete
+                                    .clearfix
                             tr.odd.gradeA
                                 td Some Sonny
                                 td White Belt
@@ -92,21 +90,11 @@
                                 td.center Sr. Sonny
                                 td.center 555-345-3456
                                 td
-                                    a.edit(href='javascript:;') Edit
-                                td
-                                    a.delete(href='javascript:;') Delete
-            .tool-footer.text-right
-                    p.pull-left Showing 1 to 10 of 57 entries
-                    ul.pagination
-                        li
-                            a(href="#") &laquo;
-                        li
-                            a(href="#") 1
-                        li
-                            a(href="#") 2
-                        li
-                            a(href="#") 3
-                        li
-                            a(href="#") 4
-                        li
-                            a(href="#") &raquo;      
+                                    .action-group.btn-group.pull-right.mtm.mbm
+                                        button.btn.btn-primary
+                                            i.fa.fa-edit.mrs
+                                            | Edit
+                                        button.btn.btn-primary
+                                            i.fa.fa-trash-o.mrs
+                                            | Delete
+                                    .clearfix
