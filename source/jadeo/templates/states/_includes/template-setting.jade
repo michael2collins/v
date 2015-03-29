@@ -1,0 +1,29 @@
+#template-setting
+    a.btn-template-setting(href='javascript:void(0);', data-toggle='dropdown')
+        i.icon-settings.icon-spin
+    .content-template-setting
+        span Layout
+        select#layout-setting.form-control
+            option(value="0") Fluid
+            option(value="1") Boxed
+        .line
+        span Header
+        select#header-setting.form-control
+            option(value="0") Default
+            option(value="1", selected="selected") Fixed
+        .line
+        span Sidebar
+        select#sidebar-setting.form-control
+            option(value="0") Default
+            option(value="1", selected="selected") Fixed
+        .line
+        span Theme Colors
+        ul.color-theme.list-unstyled.list-inline
+            li.dark-primary(data-style='default', data-hover='tooltip', title="Dark")
+            li.white-primary(data-style='white', data-hover='tooltip', title="White")
+            li.red-green(data-style='red', data-hover='tooltip', title="Red - Green")
+            li.orange-yellow(data-style='orange', data-hover='tooltip', title="Orange - Yellow")
+            li.green-pink(data-style='green', data-hover='tooltip', title="Green - Pink")
+            li.blue-yellow(data-style='blue', data-hover='tooltip', title="Blue - Yellow")
+            li.violet-green(data-style='violet', data-hover='tooltip', title="Violet - Green")
+            li.grey-red(data-style='grey', data-hover='tooltip', title="Grey - Red")

@@ -1,0 +1,349 @@
+#tab-general 
+    .row 
+        .col-lg-4
+            .panel
+                .panel-body
+                    h4.block-heading 
+                        i.icon-cursor.mrs
+                        | Student Makeup
+                    #line-chart-spline(style="width: 100%; height:120px")
+            .panel
+                .panel-body
+                    h4.block-heading 
+                        i.icon-graph.mrs
+                        | Active Students
+                    #internet-speed-chart(style="width: 100%; height:120px")
+        .col-sm-12.col-lg-8
+            .panel
+                .panel-body
+                    .row
+                        .col-md-8
+                            h4.mbs.text-uppercase Attendance
+                            p.help-block Class Attendance
+                            #area-chart-spline-db(style="width: 100%; height:300px")
+                        .col-md-4
+                            h4.mbm.text-uppercase Attendance by Class as % of Total Capacity
+                            span.task-item
+                                | Dragons 
+                                small.pull-right.text-muted 40%
+                                .progress.progress-sm
+                                    .progress-bar.progress-bar-orange(role='progressbar', aria-valuenow='40', aria-valuemin='0', aria-valuemax='100', style='width: 40%;')
+                                        span.sr-only 40% Complete (success)
+                            span
+                                | Leopards
+                                small.pull-right.text-muted 60%
+                                .progress.progress-sm
+                                    .progress-bar.progress-bar-blue(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+                                        span.sr-only 60% Complete (success)
+                            span
+                                | BBT1
+                                small.pull-right.text-muted 55%
+                                .progress.progress-sm
+                                    .progress-bar.progress-bar-green(role='progressbar', aria-valuenow='55', aria-valuemin='0', aria-valuemax='100', style='width: 55%;')
+                                        span.sr-only 55% Complete (success)
+                            span
+                                | BBT2
+                                small.pull-right.text-muted 66%
+                                .progress.progress-sm
+                                    .progress-bar.progress-bar-yellow(role='progressbar', aria-valuenow='66', aria-valuemin='0', aria-valuemax='100', style='width: 66%;')
+                                        span.sr-only 66% Complete (success)
+                            span
+                                | BBT3
+                                small.pull-right.text-muted 90%
+                                .progress.progress-sm
+                                    .progress-bar.progress-bar-pink(role='progressbar', aria-valuenow='90', aria-valuemin='0', aria-valuemax='100', style='width: 90%;')
+                                        span.sr-only 90% Complete (success)
+                            span
+                                | Adult
+                                small.pull-right.text-muted 50%
+                                .progress.progress-sm
+                                    .progress-bar.progress-bar-violet(role='progressbar', aria-valuenow='50', aria-valuemin='0', aria-valuemax='100', style='width: 50%;')
+                                        span.sr-only 50% Complete (success)
+    .row
+        .col-sm-6.col-md-6.col-lg-4
+            .panel
+                .panel-body
+                    h4.block-heading
+                        i.icon-users.mrs
+                        | New Students
+                        span.pull-right <span id='new-customer-number'></span>
+                    #new-customer-chart(style="width: 100%; height:120px")
+            .panel
+                .panel-body
+                    h4.block-heading 
+                        i.icon-globe.mrs
+                        | Under 18 Demographic view
+                    #traffice-sources-chart(style="width: 100%; height:120px")
+        .col-sm-6.col-md-6.col-lg-2
+            .panel
+                .panel-body
+                    h4.block-heading
+                        | Teaching
+                        span.pull-right <span id='users-number'>21</span>
+                    ul.users-online.list-unstyled
+                        li
+                            .name
+                                a(href='')
+                                    | Beef Mazzola
+                            .status.is-idle
+                        li
+                            .name
+                                a(href='')
+                                    | Pat Wyatt
+                            .status.is-online
+                        li
+                            .name
+                                a(href='')
+                                    | Karen Humphries
+                            .status.is-busy
+                        li
+                            .name
+                                a(href='')
+                                    | Mark Lehman
+                            .status.is-online
+                        li
+                            .name
+                                a(href='')
+                                    | Michael Collins
+                            .status.is-online
+                        li
+                            .name
+                                a(href='')
+                                    | Roy Kennedy
+                            .status.is-offline
+                        li
+                            .name
+                                a(href='')
+                                    | Rob Whitney
+                            .status.is-offline
+                        li
+                            .name
+                                a(href='')
+                                    | Mike Clune
+                            .status.is-online
+                        li
+                            .name
+                                a(href='')
+                                    | Matt Higgins
+                            .status.is-online
+        .col-md-12.col-lg-6
+            #world-map
+    .row
+        .col-sm-6.col-md-6.col-lg-4
+            .panel
+                .panel-body.pan
+                    .profile
+                        .user-info
+                            .row(style='margin-bottom: 15px')
+                                .col-xs-12.col-sm-8
+                                    h2 John Doe
+                                    p
+                                        strong About:
+                                        = ' '
+                                        | Web Designer / UI.
+                                    p
+                                        strong Hobbies:
+                                        = ' '
+                                        | Read, go out with friends, draw and learn new things.
+                                    p
+                                        strong.mrs Skills:
+                                        span.label.label-green.mrs html5
+                                        span.label.label-green.mrs css3
+                                        span.label.label-green.mrs jquery
+                                .col-xs-12.col-sm-4.text-center
+                                    figure
+                                        img.img-responsive.img-circle(src='images/avatar/128.jpg', alt='', style='display: inline-block')
+                                        figcaption.ratings
+                                            p
+                                                a(href='')
+                                                    span.fa.fa-star
+                                                a(href='')
+                                                    span.fa.fa-star
+                                                a(href='')
+                                                    span.fa.fa-star
+                                                a(href='')
+                                                    span.fa.fa-star
+                                                a(href='')
+                                                    span.fa.fa-star-o
+                        .user-action
+                            .row.text-center.divider
+                                .col-xs-4.col-sm-4.emphasis
+                                    h2
+                                        strong  20,7K
+                                    p
+                                        small Followers
+                                    button.btn.btn-yellow.btn-block
+                                        | Follow
+                                .col-xs-4.col-sm-4.emphasis.pln.prn
+                                    h2
+                                        strong 43
+                                    p
+                                        small Snippets
+                                    .btn-group(style="width: 100%")
+                                        button.btn.btn-orange.dropdown-toggle.form-control(type='button', data-toggle='dropdown')
+                                            | Options&nbsp;
+                                            i.fa.fa-angle-down
+                                        ul.dropdown-menu.text-left(role='menu')
+                                            li
+                                                a(href='')
+                                                    span.fa.fa-envelope
+                                                    | &nbsp;
+                                                    | Send an email
+                                            li
+                                                a(href='')
+                                                    span.fa.fa-list
+                                                    | &nbsp;
+                                                    | Add or remove from a list
+                                            li.divider
+                                            li
+                                                a(href='')
+                                                    span.fa.fa-warning
+                                                    | &nbsp;
+                                                    | Report this user for spam
+                                           
+                                .col-xs-4.col-sm-4.emphasis
+                                    h2
+                                        strong 245
+                                    p
+                                        small Following
+                                    button.btn.btn-blue.btn-block
+                                        | Profile
+        .col-sm-6.col-md-6.col-lg-5
+            .panel
+                .panel-body
+                    h4.block-heading
+                        i.icon-directions.mrs
+                        | Todo List
+                    #todos-list
+                        ul.list-unstyled#todos-list-sort
+                            li
+                                .input-group
+                                    input#todos-list-input.form-control(type='text', placeholder='New task content', value='')
+                                    span.input-group-btn
+                                        button#todos-list-add.btn.btn-primary(type='button') Add
+                            li
+                                input(type='checkbox', id='task-item-1')
+                                label(for='task-item-1') Setup birthday party for Jack
+                                a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
+                                    span.fa.fa-trash-o
+                            li
+                                input(type='checkbox', id='task-item-2')
+                                label(for='task-item-2') Generate Attendance sheets
+                                a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
+                                    span.fa.fa-trash-o
+                            li
+                                input(type='checkbox', id='task-item-3')
+                                label(for='task-item-3') Print the brochures
+                                a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
+                                    span.fa.fa-trash-o
+                            li
+                                input(type='checkbox', id='task-item-4')
+                                label(for='task-item-4') Prepare/Send Belt Rank Congratulations Cards
+                                a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
+                                    span.fa.fa-trash-o
+                            li
+                                input(type='checkbox', id='task-item-5')
+                                label(for='task-item-5') Capture leads from Movie Night
+                                a.delete(href='javascript:;', data-hover='tooltip', data-original-title="remove")
+                                    span.fa.fa-trash-o
+        .col-lg-3
+            #my-calendar
+    .row
+        .col-lg-4
+            .panel
+                .panel-body.pan(style='overflow:hidden')
+                    .widget-weather
+                        .wt-head
+                            p 121 King Street, Melbourne, Australia
+                            span Monday, 08-18-2014
+                        .wt-body
+                            canvas#rain(width='90px', height='90px')
+                            span 24&deg;
+                            .sub-weather
+                                p.mrm
+                                    canvas#partly-cloudy-night(width='48px', height='48px')
+                                    span Cloud
+                                p.mlm
+                                    canvas#wind(width='48px', height='48px')
+                                    span Wind
+        .col-md-6.col-lg-4
+            .panel
+                .panel-heading.pan.pbxxl
+                    #ex-slider.carousel.slide.pbl(data-ride='carousel')
+                        ol.carousel-indicators.list-indicators
+                            li.active(data-target='#ex-slider', data-slide-to='0')
+                            li(data-target='#ex-slider', data-slide-to='1')
+                            li(data-target='#ex-slider', data-slide-to='2')
+                            li(data-target='#ex-slider', data-slide-to='3')
+                            li(data-target='#ex-slider', data-slide-to='4')
+                        .carousel-inner
+                            .item.active
+                                img.img-responsive(src='images/gallery/15.jpg', alt='')
+                            .item
+                                img.img-responsive(src='images/gallery/11.jpg', alt='')
+                            .item
+                                img.img-responsive(src='images/gallery/12.jpg', alt='')
+                            .item
+                                img.img-responsive(src='images/gallery/14.jpg', alt='')
+                            .item
+                                img.img-responsive(src='images/gallery/16.jpg', alt='')
+        .col-md-6.col-lg-4
+            .panel
+                .panel-body
+                    h4.block-heading
+                        i.icon-basket-loaded.mrs
+                        | Market place
+                        span.pull-right Total: <span id='app-number'></span>
+                    .table-responsive
+                        table.table.table-border-dashed.table-hover.mbn
+                            thead
+                                tr
+                                    th Item
+                                    th Download
+                                    th Complete
+                            tbody
+                                tr
+                                    td Belt Order
+                                    td 3.164
+                                    td
+                                        .progress.progress-xs.mbs(data-hover='tooltip', title='20%')
+                                            .progress-bar.progress-bar-green(role='progressbar', aria-valuenow='80', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
+                                                span.sr-only 20% Complete
+                                tr
+                                    td Leadership Package
+                                    td 4.164
+                                    td
+                                        .progress.progress-xs.mbs(data-hover='tooltip', title='60%')
+                                            .progress-bar.progress-bar-blue(role='progressbar', aria-valuenow='60', aria-valuemin='0', aria-valuemax='100', style='width: 60%;')
+                                                span.sr-only 60% Complete
+                                tr
+                                    td Summer T-Shirts
+                                    td 12.546
+                                    td
+                                        .progress.progress-xs.mbs(data-hover='tooltip', title='75%')
+                                            .progress-bar.progress-bar-green(role='progressbar', aria-valuenow='75', aria-valuemin='0', aria-valuemax='100', style='width: 75%;')
+                                                span.sr-only 75% Complete
+                                tr
+                                    td Sparring Equipment 
+                                    td 12.154
+                                    td
+                                        .progress.progress-xs.mbs(data-hover='tooltip', title='80%')
+                                            .progress-bar.progress-bar-blue(role='progressbar', aria-valuenow='80', aria-valuemin='0', aria-valuemax='100', style='width: 80%;')
+                                                span.sr-only 80% Complete
+                                tr
+                                    td Animal Patches 
+                                    td 4.513
+                                    td
+                                        .progress.progress-xs.mbs(data-hover='tooltip', title='90%')
+                                            .progress-bar.progress-bar-orange(role='progressbar', aria-valuenow='90', aria-valuemin='0', aria-valuemax='100', style='width: 90%;')
+                                                span.sr-only 90% Complete
+                                tr
+                                    td Karate Shoes 
+                                    td 7.133
+                                    td
+                                        .progress.progress-xs.mbs(data-hover='tooltip', title='100%')
+                                            .progress-bar.progress-bar-yellow(role='progressbar', aria-valuenow='100', aria-valuemin='0', aria-valuemax='100', style='width: 100%;')
+                                                span.sr-only 100% Complete
+        
+        
+        
