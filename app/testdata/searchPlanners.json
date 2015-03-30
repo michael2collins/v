@@ -1,0 +1,1186 @@
+{
+  "class" : [ "siren4J.collectionResource", "collection" ],
+  "entities" : [
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3044c"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3052c&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3052c",
+          "firstName" : "Tom",
+          "jobTitle" : "Manager of Sales Services",
+          "lastName" : "Johansson",
+          "managerFirstName" : "Tom",
+          "managerId" : "X3044c",
+          "managerLastName" : "Carlsson"
+        },
+        "budgetOwnerEmployeeId" : "X3052c",
+        "budgetOwnerName" : "Tom Johansson",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3008"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3016&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "X3016@qamailtest.net",
+          "employeeId" : "X3016",
+          "firstName" : "John",
+          "jobTitle" : "IT Manager",
+          "lastName" : "Grahn",
+          "managerFirstName" : "Max",
+          "managerId" : "X3008",
+          "managerLastName" : "Klause"
+        },
+        "budgetOwnerEmployeeId" : "X3016",
+        "budgetOwnerName" : "John Grahn",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3005"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3024&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3024",
+          "firstName" : "John",
+          "jobTitle" : "Manager of Manufacturing",
+          "lastName" : "Gebermariam",
+          "managerFirstName" : "Iñaky",
+          "managerId" : "X3005",
+          "managerLastName" : "Pérez"
+        },
+        "budgetOwnerEmployeeId" : "X3024",
+        "budgetOwnerName" : "John Gebermariam",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3003"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3048&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3048",
+          "firstName" : "John",
+          "jobTitle" : "Manager of HR",
+          "lastName" : "Franas Jr",
+          "managerFirstName" : "Fred",
+          "managerId" : "X3003",
+          "managerLastName" : "Disílva"
+        },
+        "budgetOwnerEmployeeId" : "X3048",
+        "budgetOwnerName" : "John Franas Jr",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3037"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3040&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3040",
+          "firstName" : "John",
+          "jobTitle" : "Director of International Sales",
+          "lastName" : "Foy",
+          "managerFirstName" : "Jim",
+          "managerId" : "X3037",
+          "managerLastName" : "Fowler"
+        },
+        "budgetOwnerEmployeeId" : "X3040",
+        "budgetOwnerName" : "John Foy",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3037c"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3040c&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3040c",
+          "firstName" : "John",
+          "jobTitle" : "Director of International Sales",
+          "lastName" : "Quinn",
+          "managerFirstName" : "Jim",
+          "managerId" : "X3037c",
+          "managerLastName" : "Carter"
+        },
+        "budgetOwnerEmployeeId" : "X3040c",
+        "budgetOwnerName" : "John Quinn",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3037c"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3039c&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3039c",
+          "firstName" : "James",
+          "jobTitle" : "Manager of Sales Services",
+          "lastName" : "Johnson",
+          "managerFirstName" : "Jim",
+          "managerId" : "X3037c",
+          "managerLastName" : "Carter"
+        },
+        "budgetOwnerEmployeeId" : "X3039c",
+        "budgetOwnerName" : "James Johnson",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3037b"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3040b&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3040b",
+          "firstName" : "John",
+          "jobTitle" : "Director of International Sales",
+          "lastName" : "Jackson",
+          "managerFirstName" : "Jim",
+          "managerId" : "X3037b",
+          "managerLastName" : "Taylor"
+        },
+        "budgetOwnerEmployeeId" : "X3040b",
+        "budgetOwnerName" : "John Jackson",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3003&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 2843.84,
+          "formattedValue" : "2,844",
+          "originalValue" : 2843.84,
+          "precision" : 0,
+          "shortFormattedValue" : "2.8K"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3003",
+          "firstName" : "Fred",
+          "jobTitle" : "EVP HR",
+          "lastName" : "Disílva",
+          "managerFirstName" : "Pedro",
+          "managerId" : "X3000",
+          "managerLastName" : "Muñiz"
+        },
+        "budgetOwnerEmployeeId" : "X3003",
+        "budgetOwnerName" : "Fred Disílva",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 50000,
+          "formattedValue" : "50,000",
+          "originalValue" : 50000,
+          "precision" : 0,
+          "shortFormattedValue" : "50K"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 50000,
+          "formattedValue" : "50,000",
+          "originalValue" : 50000,
+          "precision" : 0,
+          "shortFormattedValue" : "50K"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3001&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 6479.83169016,
+          "formattedValue" : "6,480",
+          "originalValue" : 6479.83169016,
+          "precision" : 0,
+          "shortFormattedValue" : "6.5K"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "X3001@qamailtest.net",
+          "employeeId" : "X3001",
+          "firstName" : "John",
+          "jobTitle" : "EVP Engineering",
+          "lastName" : "Disílva",
+          "managerFirstName" : "Pedro",
+          "managerId" : "X3000",
+          "managerLastName" : "Muñiz"
+        },
+        "budgetOwnerEmployeeId" : "X3001",
+        "budgetOwnerName" : "John Disílva",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 10000,
+          "formattedValue" : "10,000",
+          "originalValue" : 10000,
+          "precision" : 0,
+          "shortFormattedValue" : "10K"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 15000,
+          "formattedValue" : "15,000",
+          "originalValue" : 15000,
+          "precision" : 0,
+          "shortFormattedValue" : "15K"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 25000,
+          "formattedValue" : "25,000",
+          "originalValue" : 25000,
+          "precision" : 0,
+          "shortFormattedValue" : "25K"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 50000,
+          "formattedValue" : "50,000",
+          "originalValue" : 50000,
+          "precision" : 0,
+          "shortFormattedValue" : "50K"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetOwnerEmployeeId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "X3031"
+            }
+          ],
+          "href" : "/v1/budget-planner/budget",
+          "method" : "GET",
+          "name" : "getManagerBudgetPackage",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [
+        "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"
+      ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        },
+        {
+          "href" : "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCycleMerit1&budgetOwnerEmployeeId=X3032&displayCurrencyCode=",
+          "rel" : [ "self" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "allocatedBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "availableBudgetAmount" : null,
+        "averageCompaRatio" : null,
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwner" : {
+          "displayCurrencyCode" : "",
+          "emailAddress" : "tester1@qamailtest.net",
+          "employeeId" : "X3032",
+          "firstName" : "John",
+          "jobTitle" : "Manufacturing Supervisor",
+          "lastName" : "Gelinas",
+          "managerFirstName" : "Jim",
+          "managerId" : "X3031",
+          "managerLastName" : "Gelfuso"
+        },
+        "budgetOwnerEmployeeId" : "X3032",
+        "budgetOwnerName" : "John Gelinas",
+        "directReportBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "displayCurrencyCode" : "USD",
+        "holdbackValue" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "numberOfManagers" : 0,
+        "ownedByPayElementName" : null,
+        "pendingBudgetAmount" : null,
+        "planIdentifier" : "OFFCYCLE",
+        "sharedPayElements" : null,
+        "subOrdinatesBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalBudgetAmount" : {
+          "convertedValue" : 0,
+          "formattedValue" : "0",
+          "originalValue" : 0,
+          "precision" : 0,
+          "shortFormattedValue" : "0"
+        },
+        "totalDirectsEligibleCount" : null,
+        "totalEligibleCount" : null,
+        "totalEligibleEmployeeSalaries" : null,
+        "totalRewardedEmployeeCount" : null,
+        "version" : null
+      },
+      "rel" : [ "item" ]
+    }
+  ],
+  "links" : [
+    {
+      "href" : "http://localhost:8080/comp/rest/",
+      "rel" : [ "baseUri" ]
+    },
+    {
+      "href" : "/v1/budget-planner/searchPlanner?budgetId=OffCycleMerit1&planId=OFFCYCLE&searchCriteria=john+disilva",
+      "rel" : [ "self" ]
+    }
+  ],
+  "properties" : {
+    "$siren4j.class" : "com.google.code.siren4j.resource.CollectionResource",
+    "limit" : 0,
+    "offset" : 0,
+    "size" : 11
+  }
+}

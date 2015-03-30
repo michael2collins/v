@@ -1,9 +1,31 @@
 "use strict";
 
+//var path = require('path');
+
 module.exports = function(grunt) {
+  /** 
+   * Load required Grunt tasks. These are installed based on the versions listed
+   * in `package.json` when you do `npm install` in this directory.
+   */
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
+
   // Project configuration.
   grunt.initConfig({
-    
+	  express: {
+		options: {
+		  // Override defaults here
+		  // Override node env's PORT
+		  port: 8080
+		  },
+		dev: {
+		  options: {
+//			script: path.resolve('devserver.js')
+			script: 'devserver.js'
+		  }
+		},
+		defaults: {},
+		stoppable: {}
+	  },
     // Config stuff
     project: {
       javascript: {
@@ -238,14 +260,23 @@ module.exports = function(grunt) {
     }
   });
 
+  // Actually load this plugin's task(s).
+  //grunt.loadTasks('tasks');
+  
   // Load the plugin that provides the "uglify" task.
-  grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.loadNpmTasks('grunt-contrib-less');
-  grunt.loadNpmTasks('grunt-contrib-jade');
-  grunt.loadNpmTasks('grunt-contrib-watch');
-  grunt.loadNpmTasks('grunt-concurrent');
+//  grunt.loadNpmTasks('grunt-contrib-jshint');
+//  grunt.loadNpmTasks('grunt-contrib-concat');
+//  grunt.loadNpmTasks('grunt-contrib-less');
+//  grunt.loadNpmTasks('grunt-contrib-jade');
+//  grunt.loadNpmTasks('grunt-contrib-watch');
+//  grunt.loadNpmTasks('grunt-concurrent');
   
   // Default task(s).
   grunt.registerTask('default', ['less', 'jshint', 'concat', 'jade', 'concurrent']);
+  grunt.registerTask('dev', ['express:dev','watch'
+//    'express:defaults',                 
+//    'express:defaults:stop',
+//	'express:stoppable',        
+//    'express:stoppable:stop'   
+	]);
 };

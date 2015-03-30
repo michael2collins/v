@@ -1,0 +1,483 @@
+{
+  "class" : [ "siren4J.collectionResource", "collection" ],
+  "entities" : [
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "CORP"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "AchievementBonus"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "CORP"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "AchievementBonus"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the Achievement Bonus Budget",
+        "budgetIdentifier" : "AchievementBonus",
+        "budgetName" : "AchievementBonus",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "CORP"
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleSpot"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleSpot"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the Topdown budget for OffCycle Spot Awards",
+        "budgetIdentifier" : "OffCycleSpot",
+        "budgetName" : "BronzeSpot",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "OFFCYCLE"
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleEquity"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleEquity"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the share budget for Equity in OffCycle plan",
+        "budgetIdentifier" : "OffCycleEquity",
+        "budgetName" : "Equity Adjustment",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "OFFCYCLE"
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleMerit1"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the Topdown budget for merit and bonus Awards",
+        "budgetIdentifier" : "OffCycleMerit1",
+        "budgetName" : "Merit1",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "OFFCYCLE"
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleAdj"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCycleAdj"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the topdown budget for Adjustment to Minimum in OffCycle plan",
+        "budgetIdentifier" : "OffCycleAdj",
+        "budgetName" : "OffCycleAdj",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "OFFCYCLE"
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "EXEC"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "PerformanceStock"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "EXEC"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "PerformanceStock"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the Performance Stock Budget",
+        "budgetIdentifier" : "PerformanceStock",
+        "budgetName" : "PerformanceStock",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "EXEC"
+      },
+      "rel" : [ "item" ]
+    },
+    {
+      "actions" : [
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCyclePromotion"
+            }
+          ],
+          "href" : "/v1/budget-planner/hierarchy-heads",
+          "method" : "GET",
+          "name" : "getBudgetHierarchyHeads",
+          "type" : "application/x-www-form-urlencoded"
+        },
+        {
+          "fields" : [
+            {
+              "name" : "planId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OFFCYCLE"
+            },
+            {
+              "name" : "budgetId",
+              "required" : true,
+              "type" : "TEXT",
+              "value" : "OffCyclePromotion"
+            },
+            {
+              "name" : "searchCriteria",
+              "required" : true,
+              "type" : "TEXT"
+            }
+          ],
+          "href" : "/v1/budget-planner/searchPlanner",
+          "method" : "GET",
+          "name" : "searchPlanner",
+          "type" : "application/x-www-form-urlencoded"
+        }
+      ],
+      "class" : [ "com.adp.talent.comp.rest.resources.BudgetResource" ],
+      "links" : [
+        {
+          "href" : "http://localhost:8080/comp/rest/",
+          "rel" : [ "baseUri" ]
+        }
+      ],
+      "properties" : {
+        "$siren4j.class" : "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetDescription" : "This is the Topdown budget for OffCycle Promotion Awards",
+        "budgetIdentifier" : "OffCyclePromotion",
+        "budgetName" : "Promotion",
+        "budgetOwnerEmployeeId" : null,
+        "displayCurrencyCode" : "",
+        "planIdentifier" : "OFFCYCLE"
+      },
+      "rel" : [ "item" ]
+    }
+  ],
+  "links" : [
+    {
+      "href" : "http://localhost:8080/comp/rest/",
+      "rel" : [ "baseUri" ]
+    },
+    {
+      "href" : "/v1/budget-planner/budgets?plannerEmployeeId=X2001",
+      "rel" : [ "self" ]
+    }
+  ],
+  "properties" : {
+    "$siren4j.class" : "com.google.code.siren4j.resource.CollectionResource",
+    "limit" : 0,
+    "offset" : 0,
+    "size" : 7
+  }
+}

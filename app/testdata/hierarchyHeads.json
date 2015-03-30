@@ -1,0 +1,102 @@
+{
+  "class": [
+    "siren4J.collectionResource",
+    "collection"
+  ],
+  "properties": {
+    "$siren4j.class": "com.google.code.siren4j.resource.CollectionResource",
+    "offset": 0,
+    "limit": 0,
+    "size": 1
+  },
+  "entities": [
+    {
+      "class": ["com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource"],
+      "rel": ["item"],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.budgetplanner.rest.resources.BudgetPlannerPackageResource",
+        "version": null,
+        "totalDirectsEligibleCount": null,
+        "totalEligibleCount": null,
+        "averageCompaRatio": null,
+        "directReportBudgetAmount": {
+          "originalValue": 100000,
+          "convertedValue": 100000,
+          "formattedValue": "100,000",
+          "shortFormattedValue": "100K",
+          "precision": 0
+        },
+        "totalEligibleEmployeeSalaries": null,
+        "budgetOwner": {
+          "displayCurrencyCode": "",
+          "firstName": "Pedro",
+          "lastName": "Muñiz",
+          "employeeId": "X3000",
+          "jobTitle": "SQA",
+          "emailAddress": "tester1@qamailtest.net"
+        },
+        "totalRewardedEmployeeCount": null,
+        "sharedPayElements": null,
+        "numberOfManagers": 0,
+        "subOrdinatesBudgetAmount": {
+          "originalValue": 100000,
+          "convertedValue": 100000,
+          "formattedValue": "100,000",
+          "shortFormattedValue": "100K",
+          "precision": 0
+        },
+        "totalBudgetAmount": {
+          "originalValue": 200000,
+          "convertedValue": 200000,
+          "formattedValue": "200,000",
+          "shortFormattedValue": "200K",
+          "precision": 0
+        },
+        "budgetIdentifier": "OffCyclePromotion",
+        "budgetOwnerEmployeeId": "X3000",
+        "holdbackValue": {
+          "originalValue": 0,
+          "convertedValue": 0,
+          "formattedValue": "0",
+          "shortFormattedValue": "0",
+          "precision": 0
+        },
+        "budgetName": "Promotion",
+        "planIdentifier": "OFFCYCLE",
+        "budgetOwnerName": "Pedro Muñiz",
+        "budgetDescription": "This is the Topdown budget for OffCycle Promotion Awards",
+        "ownedByPayElementName": null,
+        "availableBudgetAmount": null,
+        "pendingBudgetAmount": null,
+        "allocatedBudgetAmount": {
+          "originalValue": 0,
+          "convertedValue": 0,
+          "formattedValue": "0",
+          "shortFormattedValue": "0",
+          "precision": 0
+        },
+        "displayCurrencyCode": "USD"
+      },
+      "links": [
+        {
+          "rel": ["baseUri"],
+          "href": "https://wstms-dit.nj.adp.com/comp/rest/"
+        },
+        {
+          "rel": ["self"],
+          "href": "/v1/budget-planner/budget?planId=OFFCYCLE&budgetId=OffCyclePromotion&budgetOwnerEmployeeId=X3000&displayCurrencyCode="
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": ["baseUri"],
+      "href": "https://wstms-dit.nj.adp.com/comp/rest/"
+    },
+    {
+      "rel": ["self"],
+      "href": "/v1/budget-planner/hierarchy-heads?budgetId=OffCyclePromotion&planId=OFFCYCLE"
+    }
+  ]
+}

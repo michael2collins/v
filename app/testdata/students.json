@@ -1,0 +1,441 @@
+{
+  "class": [
+    "siren4J.collectionResource",
+    "collection"
+  ],
+  "properties": {
+    "$siren4j.class": "com.google.code.siren4j.resource.CollectionResource",
+    "offset": 0,
+    "limit": 0,
+    "size": 7
+  },
+  "entities": [
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "AchievementBonus",
+        "planIdentifier": "CORP",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "AchievementBonus",
+        "budgetDescription": "This is the Achievement Bonus Budget",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "AchievementBonus",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "CORP",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    },
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "OffCycleSpot",
+        "planIdentifier": "OFFCYCLE",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "BronzeSpot",
+        "budgetDescription": "This is the Topdown budget for OffCycle Spot Awards",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "OffCycleSpot",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "OFFCYCLE",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    },
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "OffCycleEquity",
+        "planIdentifier": "OFFCYCLE",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "Equity Adjustment",
+        "budgetDescription": "This is the share budget for Equity in OffCycle plan",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "OffCycleEquity",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "OFFCYCLE",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    },
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "OffCycleMerit1",
+        "planIdentifier": "OFFCYCLE",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "Merit1",
+        "budgetDescription": "This is the Topdown budget for merit and bonus Awards",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "OffCycleMerit1",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "OFFCYCLE",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    },
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "OffCycleAdj",
+        "planIdentifier": "OFFCYCLE",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "OffCycleAdj",
+        "budgetDescription": "This is the topdown budget for Adjustment to Minimum in OffCycle plan",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "OffCycleAdj",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "OFFCYCLE",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    },
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "PerformanceStock",
+        "planIdentifier": "EXEC",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "PerformanceStock",
+        "budgetDescription": "This is the Performance Stock Budget",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "PerformanceStock",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "EXEC",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    },
+    {
+      "class": [
+        "com.adp.talent.comp.rest.resources.BudgetResource"
+      ],
+      "rel": [
+        "item"
+      ],
+      "properties": {
+        "$siren4j.class": "com.adp.talent.comp.rest.resources.BudgetResource",
+        "budgetIdentifier": "OffCyclePromotion",
+        "planIdentifier": "OFFCYCLE",
+        "budgetOwnerEmployeeId": "X3000",
+        "budgetName": "Promotion",
+        "budgetDescription": "This is the Topdown budget for OffCycle Promotion Awards",
+        "displayCurrencyCode": ""
+      },
+      "actions": [
+        {
+          "name": "getBudgetPackage",
+          "method": "GET",
+          "href": "/v1/budget-planner/budget",
+          "type": "application/x-www-form-urlencoded",
+          "fields": [
+            {
+              "name": "budgetId",
+              "type": "TEXT",
+              "value": "OffCyclePromotion",
+              "required": true
+            },
+            {
+              "name": "planId",
+              "type": "TEXT",
+              "value": "OFFCYCLE",
+              "required": true
+            },
+            {
+              "name": "budgetOwnerEmployeeId",
+              "type": "TEXT",
+              "value": "X3000",
+              "required": true
+            },
+            {
+              "name": "displayCurrencyCode",
+              "type": "TEXT",
+              "value": "",
+              "required": false
+            }
+          ]
+        }
+      ],
+      "links": [
+        {
+          "rel": [
+            "baseUri"
+          ],
+          "href": "http://localhost:8080/comp/rest/"
+        }
+      ]
+    }
+  ],
+  "links": [
+    {
+      "rel": [
+        "baseUri"
+      ],
+      "href": "http://localhost:8080/comp/rest/"
+    },
+    {
+      "rel": [
+        "self"
+      ],
+      "href": "/v1/budget-planner/budgets?plannerEmployeeId=X3000"
+    }
+  ]
+}

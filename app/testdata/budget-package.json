@@ -1,0 +1,204 @@
+{
+    "class": [
+        "siren4J.collectionResource",
+        "collection"
+    ],
+    "properties": {
+        "$siren4j.class": "com.google.code.siren4j.resource.CollectionResource",
+        "offset": 0,
+        "limit": 0,
+        "size": 7
+    },
+    "entities": [
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/CORP/AchievementBonus/X3000?displayCurrencyCode="
+                }
+            ]
+        },
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/OFFCYCLE/OffCycleSpot/X3000?displayCurrencyCode="
+                }
+            ]
+        },
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/OFFCYCLE/OffCycleEquity/X3000?displayCurrencyCode="
+                }
+            ]
+        },
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/OFFCYCLE/OffCycleMerit1/X3000?displayCurrencyCode="
+                }
+            ]
+        },
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/OFFCYCLE/OffCycleAdj/X3000?displayCurrencyCode="
+                }
+            ]
+        },
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/EXEC/PerformanceStock/X3000?displayCurrencyCode="
+                }
+            ]
+        },
+        {
+            "class": [
+                "com.adp.talent.comp.rest.resources.BudgetPackageResource"
+            ],
+            "rel": [
+                "item"
+            ],
+            "properties": {
+            },
+            "links": [
+                {
+                    "rel": [
+                        "baseUri"
+                    ],
+                    "href": "http://localhost:8080/comp/rest/"
+                },
+                {
+                    "rel": [
+                        "self"
+                    ],
+                    "href": "/v1/offcycle/budgets/OFFCYCLE/OffCyclePromotion/X3000?displayCurrencyCode="
+                }
+            ]
+        }
+    ],
+    "links": [
+        {
+            "rel": [
+                "baseUri"
+            ],
+            "href": "http://localhost:8080/comp/rest/"
+        },
+        {
+            "rel": [
+                "self"
+            ],
+            "href": "/v1/budget-planner/budget?plannerEmployeeId=X3000"
+        },
+        {
+            "rel": [
+                "budgetPackage"
+            ],
+            "href": "/v1/budget-planner/budgetPackage/X3000"
+        }
+
+
+    ]
+}
