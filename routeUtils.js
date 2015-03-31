@@ -58,7 +58,8 @@ exports.readFileAndSend = function (fileName, req, res, postParse, code) {
                     //update all the "baseUri" references
                     var requestURL = req.protocol + '://' + req.get('Host');
                     updateBaseURI(json, requestURL);
-                    res.send(json, code);
+                    //res.send(json, code);
+					res.status(code).send(json);
                 }
             });
         } else {
