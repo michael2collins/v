@@ -1,5 +1,4 @@
-console.log("devdata server starting...");
-console.log("stop dev server with dev:stop");
+
 
 var express = require('express');
 
@@ -12,3 +11,7 @@ var routes = require("./dataroutes");
 routes.config(app, "app");
 
 module.exports = app;
+
+app.listen(8080, function() {
+	console.log("devdata server starting...");
+});

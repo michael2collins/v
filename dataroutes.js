@@ -15,7 +15,8 @@ var util = require('./routeUtils');
 
 var rootUri = "/";
 var rootRESTUri = rootUri + "v1/";
-var baseRESTUri = rootRESTUri + "students/";
+//var baseRESTUri = rootRESTUri + "students/";
+var baseRESTUri = rootRESTUri;
 
 
 util.setRootUri(rootUri);
@@ -34,6 +35,11 @@ exports.config = function(app, staticDir) {
 
     console.log("static data loading from: " + __dirname + "/" + staticDir);
 
+	console.log("the base url is");
+	console.log(baseRESTUri);
+	
+	console.log("use browser localhost:8080/v1/students as an example");
+	
     app.use("/", express.static(__dirname + "/" + staticDir));
 
 
