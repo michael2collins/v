@@ -1,6 +1,10 @@
-var App = angular.module('ng-admin', ['ngRoute', 'ui.bootstrap']);
+var App = angular.module('ng-admin', [
+    'ngRoute',
+    'ui.bootstrap'//,
+  //  'studentServices'
+]);
 
-App.config(function ($routeProvider) {
+App.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
         .when('/', {templateUrl: 'templates/states/main.html', controller: 'MainController'})
 //        .when('/charts', {templateUrl: 'templates/states/charts.html', controller: 'ChartsController'})
@@ -56,4 +60,4 @@ App.config(function ($routeProvider) {
         .otherwise({
             redirectTo: '/'
           });
-  });
+}]);

@@ -2,61 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0d051dbd-53cd-4a6d-9c5b-54ae2cda9700" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\charts.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\form-components.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\form-dropzone-file-upload.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\form-layouts.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\form-multiple-file-upload.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\form-validation.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\form-wizard.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\page-fullcalendar.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\page-invoice.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\page-portfolio.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\page-pricing-table.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\table-advanced.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\table-basic.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\table-bootgrid.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\table-datatables.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\table-editable.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\table-responsive.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\transitions.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-buttons.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-general.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-icons.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-modals.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-nestable-list.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-notific8.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-portlets.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-select-dropdown.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-sliders.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-tabs-accordions-navs.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-toastr-notifications.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\jade\templates\states\ui-typography.jade" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\charts.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\form-multiple-file-upload.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\form-validation.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\form-wizard.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\page-portfolio.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\table-advanced.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\table-basic.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\table-bootgrid.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\table-datatables.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\table-editable.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\table-responsive.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\transitions.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-buttons.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-general.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-nestable-list.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-notific.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-portlets.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-select-dropdown.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-sliders.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-toastr-notifications.js" afterPath="" />
-      <change type="DELETED" beforePath="C:\v\v\source\js\controllers\ui-typography.js" afterPath="" />
+      <change type="DELETED" beforePath="C:\v\v\source\js\services\touch.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Gruntfile.js" afterPath="$PROJECT_DIR$/Gruntfile.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/js/app.js" afterPath="$PROJECT_DIR$/source/js/app.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/js/controllers/data.js" afterPath="$PROJECT_DIR$/source/js/controllers/data.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade" afterPath="$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/bower.json" afterPath="$PROJECT_DIR$/bower.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/source/jade/index.jade" afterPath="$PROJECT_DIR$/source/jade/index.jade" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/testdata/students.json" afterPath="$PROJECT_DIR$/app/testdata/students.json" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="v.iws" />
@@ -84,16 +35,90 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
-              <folding />
+              <folding>
+                <marker date="1427513595691" expanded="true" signature="488:613" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="648:776" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="811:943" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="978:1105" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="1169:4962" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="1290:1650" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="1321:1650" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="1680:4962" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="1712:2565" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="1807:1899" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="2085:2565" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="2211:2339" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="2386:2519" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="2596:3364" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="2884:3364" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="3010:3138" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="3185:3318" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="3395:4163" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="3683:4163" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="3809:3937" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="3984:4117" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="4194:4962" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="4482:4962" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="4608:4736" placeholder="..." />
+                <marker date="1427513595691" expanded="true" signature="4783:4916" placeholder="..." />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="sidebar.jade" pinned="false" current-in-tab="true">
+      <file leaf-file-name="sidebar.jade" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.94188035">
+            <state vertical-scroll-proportion="0.0">
               <caret line="205" column="78" selection-start-line="205" selection-start-column="78" selection-end-line="205" selection-end-column="78" />
+              <folding>
+                <marker date="1427589296727" expanded="true" signature="3:8530" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="109:8530" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="150:447" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="168:247" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="462:502" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="517:640" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="535:640" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="655:1294" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="673:868" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="887:1294" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="931:1002" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1025:1098" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1121:1197" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1220:1294" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1309:1746" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1327:1521" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1540:1746" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1584:1656" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1679:1746" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1761:2396" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1779:1979" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="1998:2396" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2042:2103" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2126:2193" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2216:2298" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2321:2396" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2411:3238" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2429:2623" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2642:3238" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2686:2756" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2779:2899" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2805:2899" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="2922:2994" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="3017:3139" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="3043:3139" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="3162:3238" placeholder="..." />
+                <marker date="1427589296727" expanded="true" signature="3188:3238" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="students.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/testdata/students.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-6.769231">
+              <caret line="233" column="16" selection-start-line="233" selection-start-column="16" selection-end-line="233" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -109,6 +134,36 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/source/js/app.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.08732877">
+              <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="studentServices.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/js/services/studentServices.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.jade" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/source/jade/index.jade">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
     </leaf>
   </component>
   <component name="Git.Settings">
@@ -119,10 +174,15 @@
       <list>
         <option value="$PROJECT_DIR$/source/jade/templates/states/form-layouts-newstudent.jade" />
         <option value="$PROJECT_DIR$/source/jade/templates/states/table-datatables.jade" />
-        <option value="$PROJECT_DIR$/source/js/app.js" />
         <option value="$PROJECT_DIR$/source/js/controllers/table-basic-students.js" />
         <option value="$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade" />
         <option value="$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade" />
+        <option value="$PROJECT_DIR$/app/testdata/students.json" />
+        <option value="$PROJECT_DIR$/Gruntfile.js" />
+        <option value="$PROJECT_DIR$/bower.json" />
+        <option value="$PROJECT_DIR$/source/jade/index.jade" />
+        <option value="$PROJECT_DIR$/source/js/services/studentServices.js" />
+        <option value="$PROJECT_DIR$/source/js/app.js" />
       </list>
     </option>
   </component>
@@ -183,6 +243,9 @@
           <State>
             <id>File Watchers</id>
           </State>
+          <State>
+            <id>JSON</id>
+          </State>
         </expanded-state>
         <selected-state>
           <State>
@@ -215,6 +278,8 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -261,7 +326,29 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="jade" />
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="v" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="v" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="source" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="js" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="services" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -282,14 +369,6 @@
               <option name="myItemId" value="jade" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="states" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -305,48 +384,12 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="jade" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="states" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="_includes" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="v" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="v" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="source" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="jade" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="templates" />
+              <option name="myItemId" value="bower_components" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -418,20 +461,20 @@
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25718608" sideWeight="0.7979592" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2685325" sideWeight="0.7979592" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="CSS Styles" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32952693" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -453,8 +496,314 @@
     <entry file="file://$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
+          <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
+          <folding>
+            <marker date="1427513595691" expanded="true" signature="488:613" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="648:776" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="811:943" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="978:1105" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1169:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1290:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1321:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1680:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1712:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1807:1899" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2085:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2211:2339" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2386:2519" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2596:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2884:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3010:3138" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3185:3318" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3395:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3683:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3809:3937" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3984:4117" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4194:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4482:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4608:4736" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4783:4916" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="205" column="78" selection-start-line="205" selection-start-column="78" selection-end-line="205" selection-end-column="78" />
+          <folding>
+            <marker date="1427589296727" expanded="true" signature="3:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="109:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="150:447" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="168:247" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="462:502" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="517:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="535:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="655:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="673:868" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="887:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="931:1002" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1025:1098" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1121:1197" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1220:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1309:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1327:1521" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1540:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1584:1656" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1679:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1761:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1779:1979" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1998:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2042:2103" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2126:2193" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2216:2298" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2321:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2411:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2429:2623" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2642:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2686:2756" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2779:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2805:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2922:2994" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3017:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3043:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3162:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3188:3238" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/testdata/students.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/js/controllers/table-basic-students.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
+          <folding>
+            <marker date="1427513595691" expanded="true" signature="488:613" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="648:776" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="811:943" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="978:1105" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1169:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1290:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1321:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1680:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1712:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1807:1899" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2085:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2211:2339" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2386:2519" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2596:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2884:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3010:3138" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3185:3318" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3395:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3683:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3809:3937" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3984:4117" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4194:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4482:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4608:4736" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4783:4916" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="205" column="78" selection-start-line="205" selection-start-column="78" selection-end-line="205" selection-end-column="78" />
+          <folding>
+            <marker date="1427589296727" expanded="true" signature="3:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="109:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="150:447" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="168:247" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="462:502" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="517:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="535:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="655:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="673:868" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="887:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="931:1002" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1025:1098" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1121:1197" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1220:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1309:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1327:1521" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1540:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1584:1656" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1679:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1761:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1779:1979" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1998:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2042:2103" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2126:2193" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2216:2298" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2321:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2411:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2429:2623" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2642:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2686:2756" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2779:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2805:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2922:2994" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3017:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3043:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3162:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3188:3238" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/testdata/students.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/js/controllers/table-basic-students.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
+          <folding>
+            <marker date="1427513595691" expanded="true" signature="488:613" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="648:776" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="811:943" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="978:1105" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1169:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1290:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1321:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1680:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1712:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1807:1899" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2085:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2211:2339" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2386:2519" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2596:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2884:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3010:3138" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3185:3318" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3395:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3683:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3809:3937" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3984:4117" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4194:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4482:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4608:4736" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4783:4916" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1427589296727" expanded="true" signature="3:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="109:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="150:447" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="168:247" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="462:502" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="517:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="535:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="655:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="673:868" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="887:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="931:1002" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1025:1098" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1121:1197" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1220:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1309:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1327:1521" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1540:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1584:1656" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1679:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1761:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1779:1979" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1998:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2042:2103" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2126:2193" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2216:2298" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2321:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2411:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2429:2623" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2642:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2686:2756" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2779:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2805:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2922:2994" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3017:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3043:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3162:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3188:3238" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/js/controllers/table-basic-students.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="1" column="4" selection-start-line="1" selection-start-column="4" selection-end-line="1" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <marker date="1427513595691" expanded="true" signature="488:613" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="648:776" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="811:943" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="978:1105" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1169:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1290:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1321:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1680:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1712:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1807:1899" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2085:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2211:2339" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2386:2519" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2596:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2884:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3010:3138" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3185:3318" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3395:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3683:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3809:3937" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3984:4117" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4194:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4482:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4608:4736" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4783:4916" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -481,16 +830,9 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
       <provider editor-type-id="MarkdownPreviewEditor">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Gruntfile.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -516,16 +858,6 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/source/jade/index.jade">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="2.4856513">
-          <caret line="70" column="26" selection-start-line="70" selection-start-column="26" selection-end-line="70" selection-end-column="26" />
-        </state>
-      </provider>
-      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/source/js/controllers/data.js">
@@ -591,10 +923,107 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/js/app.js">
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="16" column="120" selection-start-line="16" selection-start-column="120" selection-end-line="16" selection-end-column="120" />
+          <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
+          <folding>
+            <marker date="1427513595691" expanded="true" signature="488:613" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="648:776" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="811:943" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="978:1105" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1169:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1290:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1321:1650" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1680:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1712:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="1807:1899" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2085:2565" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2211:2339" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2386:2519" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2596:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="2884:3364" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3010:3138" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3185:3318" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3395:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3683:4163" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3809:3937" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="3984:4117" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4194:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4482:4962" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4608:4736" placeholder="..." />
+            <marker date="1427513595691" expanded="true" signature="4783:4916" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="205" column="78" selection-start-line="205" selection-start-column="78" selection-end-line="205" selection-end-column="78" />
+          <folding>
+            <marker date="1427589296727" expanded="true" signature="3:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="109:8530" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="150:447" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="168:247" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="462:502" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="517:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="535:640" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="655:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="673:868" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="887:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="931:1002" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1025:1098" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1121:1197" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1220:1294" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1309:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1327:1521" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1540:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1584:1656" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1679:1746" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1761:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1779:1979" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="1998:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2042:2103" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2126:2193" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2216:2298" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2321:2396" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2411:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2429:2623" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2642:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2686:2756" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2779:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2805:2899" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="2922:2994" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3017:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3043:3139" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3162:3238" placeholder="..." />
+            <marker date="1427589296727" expanded="true" signature="3188:3238" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.bowerrc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/package.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/COMPILE.bat">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -606,18 +1035,53 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/table-basic-students.jade">
+    <entry file="file://$PROJECT_DIR$/app/testdata/students.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="60" column="54" selection-start-line="60" selection-start-column="54" selection-end-line="60" selection-end-column="54" />
+        <state vertical-scroll-proportion="-6.769231">
+          <caret line="233" column="16" selection-start-line="233" selection-start-column="16" selection-end-line="233" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/source/jade/templates/states/_includes/sidebar.jade">
+    <entry file="file://$PROJECT_DIR$/bower.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.94188035">
-          <caret line="205" column="78" selection-start-line="205" selection-start-column="78" selection-end-line="205" selection-end-column="78" />
+        <state vertical-scroll-proportion="0.2437276">
+          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Gruntfile.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.70719177">
+          <caret line="50" column="0" selection-start-line="50" selection-start-column="0" selection-end-line="50" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/jade/index.jade">
+      <provider editor-type-id="com.intellij.database.editor.CsvTableFileEditorProvider">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="51" column="0" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/js/services/studentServices.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/source/js/app.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.08732877">
+          <caret line="3" column="20" selection-start-line="3" selection-start-column="20" selection-end-line="3" selection-end-column="20" />
           <folding />
         </state>
       </provider>

@@ -170,7 +170,7 @@ module.exports = function(grunt) {
           "app/templates/states/page-lock-screen.html": ["source/jade/templates/states/page-lock-screen.jade"],
 //          "app/templates/states/page-pricing-table.html": ["source/jade/templates/states/page-pricing-table.jade"],
           "app/templates/states/page-signin.html": ["source/jade/templates/states/page-signin.jade"],
-          "app/templates/states/page-signup.html": ["source/jade/templates/states/page-signup.jade"],
+          "app/templates/states/page-signup.html": ["source/jade/templates/states/page-signup.jade"]
 //          "app/templates/states/table-advanced.html": ["source/jade/templates/states/table-advanced.jade"],
 //          "app/templates/states/table-basic.html": ["source/jade/templates/states/table-basic.jade"],
  //         "app/templates/states/table-editable.html": ["source/jade/templates/states/table-editable.jade"],
