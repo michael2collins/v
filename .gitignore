@@ -1,11 +1,14 @@
 node_modules
 .idea/*
+.idea
 bower_components
 app/js
 app/css
 app/index.html
 app/templates/*
 doc/*
+doc
+dist
 
 .DS_Store
 build/*
