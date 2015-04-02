@@ -1,23 +1,42 @@
 {
   "name": "NG-ADMIN",
+  "namelower": "ng-admin",
   "version": "1.0.0",
+  "description": "V Dojo",
+  "readme": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michael2collins/v.git"
+  }, 
   "devDependencies": {
-    "body-parser": "^1.12.2",
     "connect-livereload": "*",
     "express": "^4.12.3",
     "grunt": "^0.4.5",
     "grunt-concurrent": "*",
     "grunt-contrib-concat": "*",
+    "grunt-contrib-copy":       "0.5.0",
     "grunt-contrib-cssmin": "*",
     "grunt-contrib-jade": "~0.12.0",
     "grunt-contrib-jshint": "*",
+    "grunt-contrib-nodeunit":   "0.3.0",
+    "grunt-contrib-uglify":     "0.2.2",	
     "grunt-contrib-less": "*",
+    "grunt-jsdoc":              "0.5.4",
+    "grunt-exec":               "0.4.5",	
     "grunt-contrib-watch": "*",
     "grunt-express-server": "^0.4.19",
+    "grunt-karma":              "0.8.3",
+    "karma":                    "0.12.16",
+    "karma-jasmine":            "0.1.5",
+    "karma-phantomjs-launcher": "0.1.4"
     "load-grunt-tasks": "*",
     "matchdep": "^0.3.0",
     "time-grunt": "*"
   },
+    "scripts": {
+    "postinstall": "bower install",
+    "test": "grunt build"
+	},
   "engines": {
     "node": ">=0.8.0"
   }
