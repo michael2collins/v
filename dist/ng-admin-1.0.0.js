@@ -1,8 +1,9 @@
 "use strict";
 var App = angular.module('ng-admin', [
+    'restangular',
     'ngRoute',
-    'ui.bootstrap'//,
-  //  'studentServices'
+    'ui.bootstrap',
+    'studentServices'
 ]);
 
 App.config(['$routeProvider', function ($routeProvider) {
@@ -1361,8 +1362,13 @@ App.controller('TableBasicController', function($scope, $routeParams){
 App.controller('TableBasicController', function($scope, $routeParams){
     $.fn.Data.Portlet();
 });
-App.controller('StudentsTableBasicController', function($scope, $routeParams){
+App.controller('StudentsTableBasicController', function($scope, StudentServices, $routeParams){
     $.fn.Data.Portlet();
+
+    StudentServices.getStudents().then(function(firstStudentName) {
+        $scope.firstStudentName = firstStudentName;
+    });
+
     setTimeout(function(){
         // Init
         var spinner = $( ".spinner" ).spinner();
@@ -1547,12 +1553,19 @@ App.directive('spy', function ($location, $anchorScroll){
 
 /* Services */
 
-var studentServices = angular.module('studentServices', ['ngResource']);
-
-studentServices.factory('Student', ['$resource',
-  function($resource){
-    'use strict';
-    return $resource('students/:studentId.json', {}, {
-      query: {method:'GET', params:{studentId:'students'}, isArray:true}
-    });
-  }]);
+var studentServices = angular.module('vStudentServices', [])
+    .factory('StudentServices', ['Restangular', '$q', function StudentServices(Restangular, $q) {
+      return {
+        /**
+         * @function getStudents
+         * @returns a Promise that eventually resolves to the list of students
+         */
+        getStudents: function() {
+          var firstStudentNameDeferred = $q.defer();
+          var response = Restangular.one('students').getList().then(function(response) {
+            firstStudentNameDeferred.resolve(response[0].name);
+          });
+          return firstStudentNameDeferred.promise;
+        }
+      };
+    }]);

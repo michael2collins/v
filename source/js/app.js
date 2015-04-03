@@ -1,7 +1,8 @@
 var App = angular.module('ng-admin', [
+    'restangular',
     'ngRoute',
-    'ui.bootstrap'//,
-  //  'studentServices'
+    'ui.bootstrap',
+    'studentServices'
 ]);
 
 App.config(['$routeProvider', function ($routeProvider) {

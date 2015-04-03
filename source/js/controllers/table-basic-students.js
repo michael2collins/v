@@ -1,5 +1,10 @@
-App.controller('StudentsTableBasicController', function($scope, $routeParams){
+App.controller('StudentsTableBasicController', function($scope, StudentServices, $routeParams){
     $.fn.Data.Portlet();
+
+    StudentServices.getStudents().then(function(firstStudentName) {
+        $scope.firstStudentName = firstStudentName;
+    });
+
     setTimeout(function(){
         // Init
         var spinner = $( ".spinner" ).spinner();
