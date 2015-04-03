@@ -10,7 +10,7 @@ var studentServices = angular.module('vStudentServices', [])
          */
         getStudents: function() {
           var firstStudentNameDeferred = $q.defer();
-          var response = Restangular.one('students').getList().then(function(response) {
+          var response = Restangular.all('students').getList().then(function(response) {
             firstStudentNameDeferred.resolve(response[0].name);
           });
           return firstStudentNameDeferred.promise;
