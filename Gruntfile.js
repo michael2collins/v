@@ -15,7 +15,7 @@ module.exports = function (grunt) {
   grunt.initConfig({
     'pkg': grunt.file.readJSON('package.json'),
 
-	 project: {
+    project: {
       javascript: {
         ours: ['source/js/app.js', 'source/js/**/*.js'],
         lib:  [
@@ -24,7 +24,7 @@ module.exports = function (grunt) {
         'bower_components/angular-mocks/angular-mocks.js',
         'bower_components/restangular/dist/restangular.js',
         'bower_components/underscore/underscore.js',
-		'bower_components/jquery/jquery.min.js',
+        'bower_components/jquery/jquery.min.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular/angular-route.min.js',
             'bower_components/angular-bootstrap/ui-bootstrap.min.js',
@@ -190,46 +190,46 @@ module.exports = function (grunt) {
           "app/templates/states/_includes/topbar.html": ["source/jade/templates/states/_includes/topbar.jade"],
           "app/templates/states/_includes/sidebar.html": ["source/jade/templates/states/_includes/sidebar.jade"],
           "app/templates/states/main.html": ["source/jade/templates/states/main.jade"],
-          "app/templates/states/form-layouts-newlead.html": ["source/jade/templates/states/form-layouts-newlead.jade"],
-          "app/templates/states/form-layouts-newstudent.html": ["source/jade/templates/states/form-layouts-newstudent.jade"],
-          "app/templates/states/form-layouts-newtest.html": ["source/jade/templates/states/form-layouts-newtest.jade"],
-          "app/templates/states/form-layouts-newweek.html": ["source/jade/templates/states/form-layouts-newweek.jade"],
-          "app/templates/states/form-layouts-newpayment.html": ["source/jade/templates/states/form-layouts-newpayment.jade"],
+//          "app/templates/states/form-layouts-newlead.html": ["source/jade/templates/states/form-layouts-newlead.jade"],
+//          "app/templates/states/form-layouts-newstudent.html": ["source/jade/templates/states/form-layouts-newstudent.jade"],
+//          "app/templates/states/form-layouts-newtest.html": ["source/jade/templates/states/form-layouts-newtest.jade"],
+//          "app/templates/states/form-layouts-newweek.html": ["source/jade/templates/states/form-layouts-newweek.jade"],
+//          "app/templates/states/form-layouts-newpayment.html": ["source/jade/templates/states/form-layouts-newpayment.jade"],
           "app/templates/states/table-basic-attendance.html": ["source/jade/templates/states/table-basic-attendance.jade"],
-          "app/templates/states/table-basic-leads.html": ["source/jade/templates/states/table-basic-leads.jade"],
-          "app/templates/states/table-basic-managetest.html": ["source/jade/templates/states/table-basic-managetest.jade"],
-          "app/templates/states/table-basic-paymenttracking.html": ["source/jade/templates/states/table-basic-paymenttracking.jade"],
+//          "app/templates/states/table-basic-leads.html": ["source/jade/templates/states/table-basic-leads.jade"],
+//          "app/templates/states/table-basic-managetest.html": ["source/jade/templates/states/table-basic-managetest.jade"],
+//          "app/templates/states/table-basic-paymenttracking.html": ["source/jade/templates/states/table-basic-paymenttracking.jade"],
           "app/templates/states/table-basic-students.html": ["source/jade/templates/states/table-basic-students.jade"],
           "app/templates/states/layout-boxed.html": ["source/jade/templates/states/layout-boxed.jade"],
           "app/templates/states/layout-left-sidebar-collapsed.html": ["source/jade/templates/states/layout-left-sidebar-collapsed.jade"],
           "app/templates/states/layout-left-sidebar.html": ["source/jade/templates/states/layout-left-sidebar.jade"],
           "app/templates/states/layout-right-sidebar-collapsed.html": ["source/jade/templates/states/layout-right-sidebar-collapsed.jade"],
           "app/templates/states/layout-right-sidebar.html": ["source/jade/templates/states/layout-right-sidebar.jade"],
-          "app/templates/states/page-404.html": ["source/jade/templates/states/page-404.jade"],
-          "app/templates/states/page-500.html": ["source/jade/templates/states/page-500.jade"],
-          "app/templates/states/page-blank.html": ["source/jade/templates/states/page-blank.jade"],
-          "app/templates/states/page-lock-screen.html": ["source/jade/templates/states/page-lock-screen.jade"],
-          "app/templates/states/page-signin.html": ["source/jade/templates/states/page-signin.jade"],
-          "app/templates/states/page-signup.html": ["source/jade/templates/states/page-signup.jade"]
+//          "app/templates/states/page-404.html": ["source/jade/templates/states/page-404.jade"],
+//          "app/templates/states/page-500.html": ["source/jade/templates/states/page-500.jade"],
+//          "app/templates/states/page-blank.html": ["source/jade/templates/states/page-blank.jade"],
+//          "app/templates/states/page-lock-screen.html": ["source/jade/templates/states/page-lock-screen.jade"],
+//          "app/templates/states/page-signin.html": ["source/jade/templates/states/page-signin.jade"],
+//          "app/templates/states/page-signup.html": ["source/jade/templates/states/page-signup.jade"]
         }
       }
     },
-	express: {
-		options: {
-		  // Override defaults here
-		  // Override node env's PORT
-		  port: 8080
-		  },
-		dev: {
-		  options: {
-		//			script: path.resolve('devserver.js')
-			script: 'devserver.js'
-		  }
-		},
-		defaults: {},
-		stoppable: {}
-	},
-	  
+    express: {
+        options: {
+          // Override defaults here
+          // Override node env's PORT
+          port: 8080
+          },
+        dev: {
+          options: {
+        //			script: path.resolve('devserver.js')
+            script: 'devserver.js'
+          }
+        },
+        defaults: {},
+        stoppable: {}
+    },
+      
    watch: {
       options: {
         livereload: true
@@ -262,13 +262,27 @@ module.exports = function (grunt) {
       }
     },	
 	
-    'concat': {
-      'dist': {
+//    'concat': {
+//      'dist': {
+//        options: {
+//          banner: '"use strict";\n' 
+//        },
+//        src: '<%= project.javascript.ours %>',
+//       'dest': 'dist/<%= pkg.namelower %>-<%= pkg.version %>.js'
+//      }
+      // ,
+      // javascript_lib: {
+      //   src: '<%= project.javascript.lib %>',
+      //   dest: 'app/js/lib.js'
+      // }
+ //   },
+    concat: {
+      javascript_ours: {
         options: {
           banner: '"use strict";\n' 
         },
         src: '<%= project.javascript.ours %>',
-       'dest': 'dist/<%= pkg.namelower %>-<%= pkg.version %>.js'
+        dest: 'app/js/main.js'
       }
       // ,
       // javascript_lib: {
@@ -294,7 +308,7 @@ module.exports = function (grunt) {
         'destination': 'doc'
       }
     },
-	
+
     concurrent: {
       target: {
         tasks: ['watch'],
@@ -303,7 +317,7 @@ module.exports = function (grunt) {
         }
       }
     }
-	
+
   });
 
   grunt.registerTask('default', ['less', 'jshint', 'concat', 'jade', 'concurrent']);
@@ -311,11 +325,11 @@ module.exports = function (grunt) {
   grunt.registerTask('test', ['karma:development']);
   grunt.registerTask('build',
     [
-	'less',
+      'less',
       'jshint',
 //      'karma:development',
       'concat',
-	  'jade',
+      'jade',
 //      'karma:dist',
       'uglify',
 //      'karma:minified',

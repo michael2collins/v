@@ -1,100 +1,53 @@
-.row
-    .col-lg-12
-        .portlet.box.portlet-green
-            .portlet-header
-                .caption Student List
-                .tools
-                    i.fa.fa-chevron-up
-                    i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
-                    i.fa.fa-refresh
-                    i.fa.fa-times
-            .portlet-body
-                .table-tools
-                    .row
-                        .col-lg-12.mbs
-                            button.btn.btn-red(type='button').mrs
-                                i.fa.fa-plus
-                                | &nbsp; Add New
-                            button.btn.btn-primary(type='button').mrs
-                                i.fa.fa-print
-                                | &nbsp; Print
-                            button.btn.btn-primary(type='button').mrs
-                                i.fa.fa-file-text-o
-                                | &nbsp; PDF
-                            button.btn.btn-primary(type='button').mrs
-                                i.fa.fa-copy
-                                | &nbsp; Excel
-                .table-responsive.mtl
-                    table#table_id.table.table-hover.table-striped.table-bordered.table-advanced.tablesorter.display
-                        thead
-                            tr
-                                th(width='25%') Name
-                                th(width='15%') Rank
-                                th(width='15%') Class
-                                th(width='25%') Parent
-                                th(width='10%') Phone
-                                th(width='10%') Edit/Delete
-                        tbody
-
-                            tr.odd.gradeA
-                                td Trident Jonwa
-                                td
-                                    | Green
-                                    | w/ Stripe
-                                td Leopard
-                                td.center Mama Jonwa
-                                td.center 508-666-1111
-                                td
-                                    .action-group.btn-group.pull-right.mtm.mbm
-                                        button.btn.btn-primary
-                                            i.fa.fa-edit.mrs
-                                            | Edit
-                                        button.btn.btn-primary
-                                            i.fa.fa-trash-o.mrs
-                                            | Delete
-                                    .clearfix
-                            tr.even.gradeA
-                                td jimmy jones
-                                td Brown 3rd
-                                td BBT3
-                                td.center Daddy jones
-                                td.center 655-454-6655
-                                td
-                                    .action-group.btn-group.pull-right.mtm.mbm
-                                        button.btn.btn-primary
-                                            i.fa.fa-edit.mrs
-                                            | Edit
-                                        button.btn.btn-primary
-                                            i.fa.fa-trash-o.mrs
-                                            | Delete
-                                    .clearfix
-                            tr.odd.gradeA
-                                td Some Sonny
-                                td White Belt
-                                td Leopard
-                                td.center Sr. Sonny
-                                td.center 555-345-3456
-                                td
-                                    .action-group.btn-group.pull-right.mtm.mbm
-                                        button.btn.btn-primary
-                                            i.fa.fa-edit.mrs
-                                            | Edit
-                                        button.btn.btn-primary
-                                            i.fa.fa-trash-o.mrs
-                                            | Delete
-                                    .clearfix
-                            tr.odd.gradeA
-                                td Some Sonny
-                                td White Belt
-                                td Leopard
-                                td.center Sr. Sonny
-                                td.center 555-345-3456
-                                td
-                                    .action-group.btn-group.pull-right.mtm.mbm
-                                        button.btn.btn-primary
-                                            i.fa.fa-edit.mrs
-                                            | Edit
-                                        button.btn.btn-primary
-                                            i.fa.fa-trash-o.mrs
-                                            | Delete
-                                    .clearfix
+div(ng-controller="StudentsTableBasicController")
+    .row
+        .col-lg-12
+            .portlet.box.portlet-green
+                .portlet-header
+                    .caption Student List
+                    .tools
+                        i.fa.fa-chevron-up
+                        i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                        i.fa.fa-refresh
+                        i.fa.fa-times
+                .portlet-body
+                    .table-tools
+                        .row
+                            .col-lg-12.mbs
+                                button.btn.btn-red(type='button').mrs
+                                    i.fa.fa-plus
+                                    | &nbsp; Add New
+                                button.btn.btn-primary(type='button').mrs
+                                    i.fa.fa-print
+                                    | &nbsp; Print
+                                button.btn.btn-primary(type='button').mrs
+                                    i.fa.fa-file-text-o
+                                    | &nbsp; PDF
+                                button.btn.btn-primary(type='button').mrs
+                                    i.fa.fa-copy
+                                    | &nbsp; Excel
+                    .table-responsive.mtl
+                        table#table_id.table.table-hover.table-striped.table-bordered.table-advanced.tablesorter.display
+                            thead
+                                tr
+                                    th(width='20%') Name
+                                    th(width='15%') Rank
+                                    th(width='15%') Status
+                                    th(width='20%') Parent
+                                    th(width='10%') Phone
+                                    th(width='20%') Edit/Delete
+                            tbody
+                                tr(ng-repeat="student in students") 
+                                    td {{student.FirstName}} {{student.LastName}}
+                                    td {{student.CurrentRank}}
+                                    td {{student.ContactType}}
+                                    td.center {{student.Parent}}
+                                    td.center {{student.Phone}}
+                                    td
+                                        .action-group.btn-group.pull-right.mtm.mbm
+                                            button.btn.btn-primary
+                                                i.fa.fa-edit.mrs
+                                                | Edit
+                                            button.btn.btn-primary
+                                                i.fa.fa-trash-o.mrs
+                                                | Delete
+                                        .clearfix
