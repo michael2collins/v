@@ -1,6 +1,6 @@
 App.controller('StudentsTableBasicController', ['$scope','$http','$routeParams', function($scope, $http, $routeParams){
    $.fn.Data.Portlet();
-//   $scope.studentList = {};
+
 var x = [
   {
     "id": "5340",
@@ -258,7 +258,7 @@ var x = [
  //   setTimeout(function(){
 
        $http.get('/testdata/students.json').
-         success(function(data, staatus, headers, config) {
+         success(function(data, status, headers, config) {
              console.log('got students');
              $scope.status = status;
              $scope.students = data;
@@ -294,3 +294,14 @@ var x = [
     },50);
 */
 }]);
+
+App.controller('StudentsTableBasicnotyetController',['$http', '$scope', 'StudentServices',  function($http, $scope, StudentServices){
+
+	var students = StudentServices.getStudents();
+	students.then(function (val) {
+		$scope.students = val;
+	});
+
+    
+}]);
+ 

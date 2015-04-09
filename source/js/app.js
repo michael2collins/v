@@ -39,6 +39,6 @@ App.config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $lo
         .otherwise({
             redirectTo: '/'
           });
-		$locationProvider.html5Mode(true);  
+		$locationProvider.html5Mode(false);  
 }]);
 
