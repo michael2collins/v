@@ -52,6 +52,13 @@ module.exports = function (grunt) {
       html: [ 'src/index.html' ],
       //less: ['src/less/main.less', 'src/common/**/*.less']
 	},
+	/**
+     * The directories to delete when `grunt clean` is executed.
+     */
+    clean: { 
+		js: ['app/js/controllers/*', 'app/js/directives/*','app/js/services/*',
+		'!app/js/lib.js' ]
+    },
 	project: {
       javascript: {
         ours: ['source/js/app.js', 'source/js/**/*.js'],
@@ -160,10 +167,15 @@ module.exports = function (grunt) {
       build_appjs: {
         files: [
           {
+            expand: true,
+			nonull: true,
             src: [ '<%= project.javascript.ours %>' ],
-            dest: 'app/',
-            cwd: 'app',
-            expand: true
+            cwd: '.',
+            dest: 'app/js/',
+			rename: function(dest,src) {
+				grunt.log.writeln("src mod:" + src.substring(10));
+				return dest + src.substring(10);
+			}
           }
         ]
       }
@@ -469,6 +481,7 @@ module.exports = function (grunt) {
 
   });
   
+  
   grunt.registerTask('default', ['less', 'jshint', 'concat', 'jade', 'concurrent']);
 
   grunt.registerTask('test', ['karma:development']);
@@ -480,6 +493,7 @@ module.exports = function (grunt) {
       'concat',
       'jade',
 //      'karma:dist',
+	  'clean:js',
 	  'copy:build_appjs',
 	  'index:build'
 //      'uglify',
