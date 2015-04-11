@@ -6,6 +6,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-jsdoc');
   */
+  /*these may not make sense for a while, but the index function needs them defined*/
+    build_dir: 'app';
+    bin_dir: 'bin';
+    compile_dir: 'bin/v';
+  grunt.template.addDelimiters('square-brackets', '[%', '%]');	
   /** 
    * Load required Grunt tasks. These are installed based on the versions listed
    * in `package.json` when you do `npm install` in this directory.
@@ -14,8 +19,40 @@ module.exports = function (grunt) {
   
   grunt.initConfig({
     'pkg': grunt.file.readJSON('package.json'),
+    /**
+     * We read in our `package.json` file so we can access the package name and
+     * version. It's already there, so we don't repeat ourselves here.
+     */
+    pkg: grunt.file.readJSON("package.json"),
 
-    project: {
+    /**
+     * The banner is the comment that is placed at the top of our compiled 
+     * source files. It is first processed as a Grunt template, where the `<%=`
+     * pairs are evaluated based on this very configuration object.
+     */
+    meta: {
+      banner: 
+        '/**\n' +
+        ' * <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+        ' * <%= pkg.homepage %>\n' +
+        ' *\n' +
+        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
+        ' */\n'
+    },
+	app_files: {
+	js: [ 'source/**/*.js','!source/jso/**/*.js'],
+		//'!src/**/*.spec.js','!src/**/*.testdata.js', '!src/assets/**/*.js' ],
+      //jsunit: [ 'src/**/*.spec.js' ],
+
+
+      //atpl: [ 'src/app/**/*.tpl.html', 'src/app/**/**/*.tpl.html' ],
+      //ctpl: [ 'src/common/**/*.tpl.html' ],
+      //translations: ['src/assets/languages/*.json'],
+
+      html: [ 'src/index.html' ],
+      //less: ['src/less/main.less', 'src/common/**/*.less']
+	},
+	project: {
       javascript: {
         ours: ['source/js/app.js', 'source/js/**/*.js'],
         lib:  [
@@ -114,7 +151,62 @@ module.exports = function (grunt) {
         'test/**/*Spec.js'
       ]
     },
+   /**
+     * The `copy` task just copies files from A to B. We use it here to copy
+     * our project assets (images, fonts, etc.) and javascripts into
+     * `build_dir`, and then to copy the assets to `compile_dir`.
+     */
+    copy: {
+      build_appjs: {
+        files: [
+          {
+            src: [ '<%= project.javascript.ours %>' ],
+            dest: 'app/',
+            cwd: 'app',
+            expand: true
+          }
+        ]
+      }
+	},
+    /**
+     * The `index` task compiles the `index.html` file as a Grunt template. CSS
+     * and JS files co-exist here but they get split apart later.
+     */
+    index: {
 
+      /**
+       * During development, we don't want to have wait for compilation,
+       * concatenation, minification, etc. So to avoid these steps, we simply
+       * add all script files directly to the `<head>` of `index.html`. The
+       * `src` property contains the list of included files.
+       */
+      build: {
+        dir: '<%= build_dir %>',
+        src: [
+   //       '<%= vendor_files.js %>',
+          '/source/**/*.js',
+  //        '<%= html2js.common.dest %>',
+   //       '<%= html2js.app.dest %>',
+   //       '<%= vendor_files.css %>',
+    //      '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+        ]
+      },
+
+      /**
+       * When it is time to have a completely compiled application, we can
+       * alter the above to include only a single JavaScript and a single CSS
+       * file. Now we're back!
+       */
+      compile: {
+        dir: '<%= compile_dir %>',
+        src: [
+    //      '<%= concat.compile_js.dest %>',
+    //      '<%= vendor_files.css %>',
+    //      '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
+        ],
+        dest: '<%=compile_dir%>/index.foo'
+      }
+    },
     'karma': {
       'development': {
         'configFile': 'karma.conf.js',
@@ -320,6 +412,63 @@ module.exports = function (grunt) {
 
   });
 
+   /**
+   * A utility function to get all app JavaScript sources.
+   */
+  function filterForJS ( files ) {
+    return files.filter( function ( file ) {
+	//	grunt.log.writeln(file);
+      return file.match( /\.js$/ );
+    });
+  }
+
+  /**
+   * A utility function to get all app CSS sources.
+   */
+  function filterForCSS ( files ) {
+    return files.filter( function ( file ) {
+      return file.match( /\.css$/ );
+    });
+  }
+
+  /** 
+   * The index.html template includes the stylesheet and javascript sources
+   * based on dynamic names calculated in this Gruntfile. This task assembles
+   * the list into variables for the template to use and then runs the
+   * compilation.
+   */
+  grunt.registerMultiTask( 'index', 'Process index.html template', function () {
+//    var dirRE = new RegExp( '^('+grunt.config('build_dir')+'|'+grunt.config('compile_dir')+'|C:/source/js/'+')\/', 'g' );
+	var mystr = "C:[\/]source[\/]js[\/]";
+//	var mystr = "[\/]";
+	var myxstr = new RegExp(mystr);
+	grunt.log.writeln("looking for:" + myxstr);
+    var jsFiles = filterForJS( this.filesSrc ).map( function ( file ) {
+		var res = file.replace( myxstr, "" );
+		grunt.log.writeln(res);
+      return res;
+    });
+ //   var cssFiles = filterForCSS( this.filesSrc ).map( function ( file ) {
+ //     return file.replace( dirRE, '' );
+ //   });
+
+//    grunt.file.copy('source/index.html', this.data.dir + '/index.html', {
+    grunt.file.copy('source/index.html',  'app/index.html', {
+      process: function ( contents, path ) {
+        return grunt.template.process( contents, {
+//			grunt.log.writeln(this.data.dir);
+          data: {
+            scripts: jsFiles,
+   //         styles: cssFiles,
+            version: grunt.config( 'pkg.version' )
+          },
+          delimiters: 'square-brackets'
+        });
+      }
+    });
+
+  });
+  
   grunt.registerTask('default', ['less', 'jshint', 'concat', 'jade', 'concurrent']);
 
   grunt.registerTask('test', ['karma:development']);
@@ -331,9 +480,11 @@ module.exports = function (grunt) {
       'concat',
       'jade',
 //      'karma:dist',
-      'uglify',
+	  'copy:build_appjs',
+	  'index:build'
+//      'uglify',
 //      'karma:minified',
-      'jsdoc'
+//      'jsdoc'
     ]);
   grunt.registerTask('dev', ['express:dev','watch'
 //    'express:defaults',                 

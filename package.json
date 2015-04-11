@@ -1,9 +1,13 @@
 {
+    "author": "Michael Collins",
   "name": "NG-ADMIN",
   "namelower": "ng-admin",
   "version": "1.0.0",
+  "homepage": "http://www.vdojo.com",  
   "description": "V Dojo",
-  "readme": "README.md",
+    "licenses": {},
+    "bugs": "",
+	"readme": "README.md",
   "repository": {
     "type": "git",
     "url": "https://github.com/michael2collins/v.git"

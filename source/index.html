@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>V Dojo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,300,700"/>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,700,300"/>
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet" type="text/css"/>
+    <!--CSS FOR PLUGIN-->
+    <link rel="stylesheet" href="vendors/jquery-ui-1.10.3.custom/css/ui-lightness/jquery-ui-1.10.3.custom.min.css"/>
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="vendors/simple-line-icons/simple-line-icons.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="vendors/jquery-nestable/nestable.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-colorpicker/css/colorpicker.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-datepicker/css/datepicker.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-timepicker/css/bootstrap-timepicker.min.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-clockface/css/clockface.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-switch/css/bootstrap-switch.css"/>
+    <link rel="stylesheet" href="vendors/jquery-file-upload/css/jquery.fileupload.css"/>
+    <link rel="stylesheet" href="vendors/jquery-file-upload/css/jquery.fileupload-ui.css"/>
+    <link rel="stylesheet" href="vendors/jquery-file-upload/css/blueimp-gallery.min.css"/>
+    <link rel="stylesheet" href="vendors/fullcalendar/fullcalendar.css"/>
+    <link rel="stylesheet" href="vendors/fullcalendar/fullcalendar.print.css"/>
+    <link rel="stylesheet" href="vendors/dropzone/css/dropzone.css"/>
+    <link rel="stylesheet" href="vendors/datatables/css/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="vendors/jquery-bootstrap-wizard/custom.css"/>
+    <link rel="stylesheet" href="vendors/jquery-news-ticker/jquery.news-ticker.css"/>
+    <link rel="stylesheet" href="vendors/jquery-jvectormap/jquery-jvectormap-1.2.2.css"/>
+    <link rel="stylesheet" href="vendors/animate.css/animate.css"/>
+    <link rel="stylesheet" href="vendors/jquery-pace/pace.css"/>
+    <link rel="stylesheet" href="vendors/select2/select2-madmin.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-select/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="vendors/multi-select/css/multi-select-madmin.css"/>
+    <link rel="stylesheet" href="vendors/jquery-notific8/jquery.notific8.min.css"/>
+    <link rel="stylesheet" href="vendors/jquery-toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css"/>
+    <!--CORE CSS -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-custom.css"/>
+    <link type="text/css" rel="stylesheet" href="css/themes/default.css"/>
+    <link type="text/css" rel="stylesheet" href="css/themes/blue.css" id="color-style"/>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <!--CORE JS -->
+    <script src="vendors/jquery.sparkline.js"></script>
+
+	<script src="js/lib.js"></script>
+<!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
+<!--    <script src="js/main.js"></script>	-->
+	
+  <!-- compiled JavaScript -->[% scripts.forEach( function ( file ) { %]
+  <script type="text/javascript" src="/js/[%= file %]"></script>[% }); %]
+
+    <!--V JS-->
+    <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"></body>
+    <div ng-controller="AppController" class="default-page">
+      <!--BEGIN TEMPLATE SETTING-->
+      <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
+      <!--END TEMPLATE SETTING-->
+      <!--BEGIN TO TOP--><a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
+      <!--END BACK TO TOP-->
+      <div id="wrapper" ng-class="header.layout_menu">
+        <!--BEGIN TOPBAR-->
+        <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+        <!--END TOPBAR-->
+        <!--BEGIN SIDEBAR MENU-->
+        <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="loadSidebar()"></div>
+        <!--END SIDEBAR MENU-->
+        <!--BEGIN PAGE WRAPPER-->
+        <div id="page-wrapper" ng-class="header.animation" class="animated">
+          <!--BEGIN PAGE HEADER & BREADCRUMB-->
+          <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="loadPageHeader()" class="page-header-breadcrumb"></div>
+          <!--END PAGE HEADER & BREADCRUMB-->
+          <!--BEGIN CONTENT-->
+          <div ng-view="" class="page-content"></div>
+          <!--END CONTENT-->
+          <!--BEGIN FOOTER-->
+          <div class="page-footer">
+            <div class="copyright">2015 © V - Dojo Dashboard.</div>
+          </div>
+          <!--END FOOTER-->
+        </div>
+        <!--END PAGE WRAPPER-->
+      </div>
+    </div>
+    <div hide="hide" class="extra-page"></div>
+  </head>
+</html>
+<!--BEGIN MODAL CONFIG PORTLET-->
+<div id="modal-config" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eleifend et nisl eget porta. Curabitur elementum sem molestie nisl varius, eget tempus odio molestie. Nunc vehicula sem arcu, eu pulvinar neque cursus ac. Aliquam ultricies lobortis magna et aliquam. Vestibulum egestas eu urna sed ultricies. Nullam pulvinar dolor vitae quam dictum condimentum. Integer a sodales elit, eu pulvinar leo. Nunc nec aliquam nisi, a mollis neque. Ut vel felis quis tellus hendrerit placerat. Vivamus vel nisl non magna feugiat dignissim sed ut nibh. Nulla elementum, est a pretium hendrerit, arcu risus luctus augue, mattis aliquet orci ligula eget massa. Sed ut ultricies felis.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--END MODAL CONFIG PORTLET-->
