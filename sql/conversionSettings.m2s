@@ -1,0 +1,54 @@
+[Available Queries]
+
+[Generic settings]
+dest=C:\v\v\sql\vbafull.sql
+logfile=
+mode=0
+only definitions=0
+skip indexes=0
+src=vdb
+view owned=1
+
+[MS SQL Server settings]
+connect as DBO=1
+dump create database=0
+dump create table=1
+dump insert comments=1
+server=INTERNMACHINE\SQLEXPRESS
+windows authentication=1
+
+[MySQL settings]
+direct mode=0
+dump add lock to insert=0
+dump create database=0
+dump create table=1
+dump insert comments=0
+dump line break=0
+dump new version=1
+host=
+password=password
+port=3306
+user=root
+
+[Selected Tables]
+EventRegistration
+Settings
+attendancesincelasttesttmp
+nAttendance
+nContacts
+nOtherClass
+nclass
+nclassList
+nclasspays
+ncontactmgmt
+nleadmgmt
+npayments
+payments
+ranklist
+testCandidateList
+testTimes
+zipcity
+
+[Type Mappings]
+database:
+tables:

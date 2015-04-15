@@ -2,7 +2,7 @@
 $username = "vdbadmin";
 $password = "password";
 $host = "127.0.0.1";
-$database="vdb";
+$database="vdbfull";
 $port= 3306;
 
 // display all error except deprecated and notice
@@ -27,24 +27,24 @@ catch (PDOException $e) {
     echo 'Connection failed: ' . $e->getMessage();
 }
 try {
-    $page = $connection->prepare('SHOW TABLES FROM `vdb` ');
+    $page = $connection->prepare("SHOW TABLES FROM `vdbfull`  ");
     $page->execute();
 
     $rows = $page->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($rows as $row) {
-        $table = $row["Tables_in_vdb"];
-//        echo $table;
+        $table = $row["Tables_in_vdbfull"];
+//        echo $table . "\n";
         $stmt = $connection->prepare("SELECT * FROM " . $table);
         $stmt->execute();
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-//        echo json_encode($data);
+//        echo json_encode($data) . "\n";;
         $fp = fopen($table . '.json', 'w+');
         fwrite($fp, json_encode(utf8ize($data)));
         fclose($fp);
     }
 } catch (Exception $ex) {
-    printErrorMessage($ex->getMessage());
+    echo $ex->getMessage();
 }
 
 function utf8ize($d) {
