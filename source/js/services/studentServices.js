@@ -18,29 +18,12 @@ var studentServices = angular.module('vStudentServices', [])
 */
 //var module = angular.module('app', []);
 //module.service('StudentServices', function()  {
-App.factory('StudentServices', [ '$http', '$scope',  function( $http, $scope ) {
-  return {
+App.factory('StudentServices', function( $http ) {
+	var service = {
+        getAllStudents: function(path, callback) {
+			$http.get(path).success(callback);
+		}
+	};
+	return service;
+});
 
-          /**
-         * @function getStudents
-         * @returns a Promise that eventually resolves to the list of students
-         */
-        getStudents: function() {
-			
-			 $http.get('/testdata/students.json').
-			 success(function(data, status, headers, config) {
-				 console.log('got students');
-				 $scope.status = status;
-				 $scope.students = data;
-				 console.log(data);
-			 }).
-			 error(function (data, status, headers, config) {
-					 //  Do some error handling here
-				$scope.data = data || "Request Failed";
-				$scope.status = status;
-			 });   	
-			 return $scope.students;
-
-        }
-  };
-}]);

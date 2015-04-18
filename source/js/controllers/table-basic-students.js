@@ -1,4 +1,4 @@
-App.controller('StudentsTableBasicController', ['$scope','$http','$routeParams', function($scope, $http, $routeParams){
+App.controller('StudentsTablegoodBasicController', ['$scope','$http','$routeParams', function($scope, $http, $routeParams){
    $.fn.Data.Portlet();
 
       $scope.students = []; 
@@ -43,13 +43,10 @@ App.controller('StudentsTableBasicController', ['$scope','$http','$routeParams',
 */
 }]);
 
-App.controller('StudentsTableBasicnotyetController',['$http', '$scope', 'StudentServices',  function($http, $scope, StudentServices){
-
-	var students = StudentServices.getStudents();
-	students.then(function (val) {
-		$scope.students = val;
-	});
-
-    
-}]);
+App.controller('StudentsTableBasicController', function( StudentServices, $scope){
+	var path = '/testdata/students.json';
+	StudentServices.getAllStudents(path, function(data) {
+		$scope.students = data;
+    });
+});
  
