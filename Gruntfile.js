@@ -18,7 +18,7 @@ module.exports = function (grunt) {
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
   
   grunt.initConfig({
-    'pkg': grunt.file.readJSON('package.json'),
+//    'pkg': grunt.file.readJSON('package.json'),
     /**
      * We read in our `package.json` file so we can access the package name and
      * version. It's already there, so we don't repeat ourselves here.
@@ -196,7 +196,8 @@ module.exports = function (grunt) {
         dir: '<%= build_dir %>',
         src: [
    //       '<%= vendor_files.js %>',
-          '/source/**/*.js',
+          '<%= app_files.js %>'
+//          '/source/**/*.js'
   //        '<%= html2js.common.dest %>',
    //       '<%= html2js.app.dest %>',
    //       '<%= vendor_files.css %>',
@@ -451,7 +452,7 @@ module.exports = function (grunt) {
    */
   grunt.registerMultiTask( 'index', 'Process index.html template', function () {
 //    var dirRE = new RegExp( '^('+grunt.config('build_dir')+'|'+grunt.config('compile_dir')+'|C:/source/js/'+')\/', 'g' );
-	var mystr = "C:[\/]source[\/]js[\/]";
+	var mystr = "source[\/]js[\/]";
 //	var mystr = "[\/]";
 	var myxstr = new RegExp(mystr);
 	grunt.log.writeln("looking for:" + myxstr);
