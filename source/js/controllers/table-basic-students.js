@@ -44,7 +44,7 @@ App.controller('StudentsTablegoodBasicController', ['$scope','$http','$routePara
 }]);
 
 App.controller('StudentsTableBasicController', function( StudentServices, $scope){
-	var path = '/testdata/students.json';
+	var path = './testdata/students.json';
 	StudentServices.getAllStudents(path, function(data) {
 		$scope.students = data;
     });

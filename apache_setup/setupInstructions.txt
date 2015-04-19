@@ -1,0 +1,4 @@
+copy v to root of xammp
+change httpd.conf to include vdojo conf
+add vdojo conf to extras folder
+put .htaccess at root of site
