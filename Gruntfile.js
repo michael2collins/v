@@ -40,24 +40,23 @@ module.exports = function (grunt) {
         ' */\n'
     },
 	app_files: {
-	js: [ 'source/**/*.js','!source/jso/**/*.js'],
-		//'!src/**/*.spec.js','!src/**/*.testdata.js', '!src/assets/**/*.js' ],
-      //jsunit: [ 'src/**/*.spec.js' ],
-
-
-      //atpl: [ 'src/app/**/*.tpl.html', 'src/app/**/**/*.tpl.html' ],
-      //ctpl: [ 'src/common/**/*.tpl.html' ],
-      //translations: ['src/assets/languages/*.json'],
-
-      html: [ 'src/index.html' ],
-      //less: ['src/less/main.less', 'src/common/**/*.less']
+		js: [ 'source/**/*.js','!source/jso/**/*.js'],
+			//'!src/**/*.spec.js','!src/**/*.testdata.js', '!src/assets/**/*.js' ],
+			//jsunit: [ 'src/**/*.spec.js' ],
+		    //atpl: [ 'src/app/**/*.tpl.html', 'src/app/**/**/*.tpl.html' ],
+		    //ctpl: [ 'src/common/**/*.tpl.html' ],
+		    //translations: ['src/assets/languages/*.json'],
+	  apache: [ 'apache_setup/.htaccess' ],
+      html: [ 'src/index.html' ]
+			//less: ['src/less/main.less', 'src/common/**/*.less']
 	},
 	/**
      * The directories to delete when `grunt clean` is executed.
      */
     clean: { 
 		js: ['app/js/controllers/*', 'app/js/directives/*','app/js/services/*',
-		'!app/js/lib.js' ]
+		'!app/js/lib.js' ],
+		apache: ['app/.htaccess']
     },
 	project: {
       javascript: {
@@ -178,7 +177,22 @@ module.exports = function (grunt) {
 			}
           }
         ]
-      }
+      },
+	  build_apache: {
+		  files: [
+		  {
+				expand: true,
+				nonull: true,
+				src: [ '<%= app_files.apache %>' ],
+				cwd: '.',
+				dest: 'app/',
+				rename: function(dest,src) {
+					grunt.log.writeln("apache mod:" + src.substring(12)); /* apache_setup = 12*/
+					return dest + src.substring(12);
+			}
+		  }
+		  ]
+	  }
 	},
     /**
      * The `index` task compiles the `index.html` file as a Grunt template. CSS
@@ -495,7 +509,9 @@ module.exports = function (grunt) {
       'jade',
 //      'karma:dist',
 	  'clean:js',
+	  'clean:apache',
 	  'copy:build_appjs',
+	  'copy:build_apache',
 	  'index:build'
 //      'uglify',
 //      'karma:minified',
