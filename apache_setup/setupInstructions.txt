@@ -11,3 +11,16 @@ Include c:/v/v/apache_setup/httpd-vdojo.conf
 
 install taskmanager db and add to vdbadmin user
 set password 
+
+import full db.  change db size
+php.ini
+upload_max_filesize=20M
+post_max_size=25M
+
+Search for entry post_max_size = 2M where you need to enter a larger number than the size of your database (15M in this case) i.e. 25M, next edit memory_limit and give a larger number than the one given to post_max_size. At last, edit the entry upload_max_filesize with a value smaller than post_max_size.
+
+Starting from bigger values the order should go like this
+
+    memory_limit
+    post_max_size
+    upload_max_filesize

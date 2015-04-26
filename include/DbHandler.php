@@ -270,6 +270,7 @@ class DbHandler {
         return $tasks;
     }
 
+	
     /**
      * Updating task
      * @param String $task_id id of the task
@@ -317,6 +318,17 @@ class DbHandler {
         return $result;
     }
 
+    /**
+     * Fetching all students
+     */
+    public function getAllStudents() {
+        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t");
+        $stmt->execute();
+        $students = $stmt->get_result();
+        $stmt->close();
+        return $students;
+    }	
+	
 }
 
 ?>

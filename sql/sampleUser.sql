@@ -1,6 +1,5 @@
-CREATE DATABASE task_manager;
  
-USE task_manager;
+USE vdb;
  
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

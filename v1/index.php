@@ -163,6 +163,35 @@ $app->get('/tasks', 'authenticate', function() {
         });
 
 /**
+ * Listing all tasks of particual user
+ * method GET
+ * url /tasks          
+ */
+$app->get('/students',  function() {
+            $response = array();
+            $db = new DbHandler();
+
+            // fetching all students
+            $result = $db->getAllStudents();
+
+            $response["error"] = false;
+            $response["students"] = array();
+
+            // looping through result and preparing tasks array
+            while ($student = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["ID"] = $student["ID"];
+                $tmp["FirstName"] = $student["FirstName"];
+                $tmp["LastName"] = $student["LastName"];
+                $tmp["CurrentRank"] = $student["CurrentRank"];
+                $tmp["Parent"] = $student["Parent"];
+                $tmp["Phone"] = $student["Phone"];
+                array_push($response["students"], $tmp);
+            }
+            echoRespnse(200, $response);
+});
+		
+/**
  * Listing single task of particual user
  * method GET
  * url /tasks/:id
