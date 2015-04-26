@@ -1,7 +1,6 @@
-copy v to root of xammp (changed to keep in c:/v/v)
-change httpd.conf to include vdojo conf
-add vdojo conf to extras folder  (last extra and had to comment out httpd-xampp.conf
-put .htaccess at root of site (if works will move this to /v/v/
+
+change httpd.conf to include vdojo conf from v/v
+ (last extra and had to comment out httpd-xampp.conf
 
 change php/php.ini 
 date.timezone=America/New_York
@@ -9,3 +8,6 @@ date.timezone=America/New_York
 httpd.conf
 #V dojo
 Include c:/v/v/apache_setup/httpd-vdojo.conf
+
+install taskmanager db and add to vdbadmin user
+set password 

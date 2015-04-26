@@ -1,3 +1,3 @@
 RewriteEngine On 
 RewriteCond %{REQUEST_FILENAME} !-f 
-RewriteRule ^(.*)$ %{ENV:BASE}index.php [QSA,L]
+RewriteRule ^(.*)$ /v1/index.php [QSA,L]
