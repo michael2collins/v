@@ -36,7 +36,7 @@ div(ng-controller="StudentsTableBasicController")
                                     th(width='10%') Phone
                                     th(width='20%') Edit/Delete
                             tbody
-                                tr(ng-repeat="student in students") 
+                                tr(ng-repeat="student in students.students") 
                                     td {{student.FirstName}} {{student.LastName}}
                                     td {{student.CurrentRank}}
                                     td {{student.ContactType}}

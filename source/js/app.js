@@ -4,6 +4,10 @@ var App = angular.module('ng-admin', [
     'ui.bootstrap'
 ]);
 
+App.config(['$logProvider', function($logProvider){
+    $logProvider.debugEnabled(true);
+}]);
+
 App.config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $locationProvider) {
     $routeProvider
         .when('/', {templateUrl: 'templates/states/main.html', controller: 'MainController'})
