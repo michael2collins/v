@@ -104,7 +104,18 @@ $(document).ready(function() {
                 query.callback(data);
             }
         });
-*/        
+*/
+        $scope.loadtemp2setting = function(){
+            /*************************/
+            /*** Template Setting ***/
+            $('#template2-setting > a.btn-template2-setting').click(function(){
+                if($('#template2-setting').css('right') < '0'){
+                    $('#template2-setting').css('right', '0');
+                } else {
+                    $('#template2-setting').css('right', '-251px');
+                }
+            });
+        };    
         StudentServices.getAllStudents(path, function(data) {
             $scope.students = data;
         });

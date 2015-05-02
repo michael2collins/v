@@ -1900,6 +1900,121 @@ a.list-group-item.active>.badge, .nav-pills>.active>a>.badge {
 /******* Template Setting ********/
 /********************************/
 
+/**********************************/
+/******* Template Setting ********/
+#template2-setting{
+  position: fixed;
+  right: -251px;
+  top: 115px;
+  padding: 10px 13px;
+  border-bottom-left-radius: 4px;
+  background-color: #f5f5f5;
+  border: 0px solid #e5e5e5;
+  border-right: 0;
+  width: 250px;
+  z-index: 9999;
+  .transition(0.4s all ease-in-out);
+  .box-shadow(0 1px 3px rgba(0,0,0,0.2));
+  .btn-template2-setting{
+    padding: 10px 15px;
+    background-color: @brand-primary;
+    opacity: 0.8;
+    position: absolute;
+    z-index: 9999;
+    left: -50px;
+    top: 0px;
+    .border-left-radius(5px);
+    i{
+      font-size: 20px;
+      color: #ffffff;
+    }
+    &:hover,
+    &:focus{
+      color: @text-color;
+      outline: none;
+    }
+  }
+  .content-template2-setting{
+    > span {
+      text-transform: uppercase;
+      display: inline-block;
+      width: 120px;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    > select.form-control {
+      display: inline;
+      width: 100px !important;
+    }
+    .line{
+      display: block;
+      border-bottom: 1px solid #e5e5e5;
+      margin: 10px 0;
+    }
+    ul.color-theme{
+      li{
+        cursor: pointer;
+        width: 35px;
+        height: 35px;
+        border: 5px solid transparent;
+        border-radius: 50% !important;
+        margin: 5px;
+        &.red-green{
+          background: @color-red;
+          border-color: @color-green;
+        }
+        &.orange-yellow{
+          background: @color-orange;
+          border-color: @color-yellow;
+        }
+        &.green-pink{
+          background: @color-green;
+          border-color: @color-pink;
+        }
+        &.yellow-grey{
+          background: @color-yellow;
+          border-color: @color-grey;
+        }
+        &.blue-yellow{
+          background: @color-blue;
+          border-color: @color-yellow;
+        }
+        &.pink-dark{
+          background: @color-pink;
+          border-color: @color-dark;
+        }
+        &.violet-green{
+          background: @color-violet;
+          border-color: @color-green;
+        }
+        &.grey-red{
+          background: @color-grey;
+          border-color: @color-red;
+        }
+        &.dark-primary{
+          background: @color-dark;
+          border-color: #ED5565;
+        }
+        &.white-primary{
+          background: @color-white;
+          border-color: #ED5565;
+        }
+        &.pink-white{
+          background: @color-pink;
+          border-color: #f1f1f1;
+        }
+        &.white-pink{
+          background: @color-white;
+          border-color: @color-pink;
+        }
+      }
+    }
+  }
+}
+/******* Template2 Setting ********/
+/********************************/
+
+
 /******************************************/
 /******* Page Dashboard Categories *******/
 .page-dashboard-category{

@@ -306,6 +306,7 @@ module.exports = function (grunt) {
           "app/index.html": ["source/jade/index.jade"],
           "app/templates/states/_includes/header-breadcrumb.html": ["source/jade/templates/states/_includes/header-breadcrumb.jade"],
           "app/templates/states/_includes/template-setting.html": ["source/jade/templates/states/_includes/template-setting.jade"],
+          "app/templates/states/_includes/template2-setting.html": ["source/jade/templates/states/_includes/template2-setting.jade"],
           "app/templates/states/_includes/topbar.html": ["source/jade/templates/states/_includes/topbar.jade"],
           "app/templates/states/_includes/sidebar.html": ["source/jade/templates/states/_includes/sidebar.jade"],
           "app/templates/states/main.html": ["source/jade/templates/states/main.jade"],
