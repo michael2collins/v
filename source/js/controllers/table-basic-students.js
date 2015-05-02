@@ -19,7 +19,7 @@ App.controller('StudentsTablegoodBasicController', ['$scope','$http','$routePara
          });   
   //  },50);
 
-	/*
+    /*
     setTimeout(function(){
         // Init
         var spinner = $( ".spinner" ).spinner();
@@ -46,12 +46,12 @@ App.controller('StudentsTablegoodBasicController', ['$scope','$http','$routePara
 App.controller('StudentsTableBasicController', ['StudentServices', '$scope', '$routeParams', '$log', function( StudentServices, $scope, $routeParams, $log){
    $.fn.Data.Portlet();
    $scope.students = []; 
-	   
-//	var path = './testdata/students.json';
-	var path = '../v1/students';
-	$log.debug('Hello Debug!');
+       
+//    var path = './testdata/students.json';
+    var path = '../v1/students';
+    $log.debug('Hello Debug!');
 
-	
+    
     setTimeout(function(){
         // Init
         var spinner = $( ".spinner" ).spinner();
@@ -69,7 +69,7 @@ App.controller('StudentsTableBasicController', ['StudentServices', '$scope', '$r
                 { "type": "print", "buttonText": "Print me!" }
             ]
         } );
-		
+        
         $(".DTTT_container").css("float","right");
 */
 /* don't get error msg with below, but also see that angular may not work with datatables
@@ -83,12 +83,33 @@ $(document).ready(function() {
         $(".DTTT_container").css("float","right");
 
 } );
-*/		
-		StudentServices.getAllStudents(path, function(data) {
-			$scope.students = data;
-		});
-		
+*/        
+/*        $('.select2-category').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+        $('.select2-size').select2({
+            placeholder: "Select an option",
+            allowClear: true
+        });
+        $(".select2-loading-data").select2({
+            minimumInputLength: 1,
+            query: function (query) {
+                var data = {results: []}, i, j, s;
+                for (i = 1; i < 5; i++) {
+                    s = "";
+                    for (j = 0; j < i; j++) {s = s + query.term;}
+                    data.results.push({id: query.term + i, text: s});
+                }
+                query.callback(data);
+            }
+        });
+*/        
+        StudentServices.getAllStudents(path, function(data) {
+            $scope.students = data;
+        });
+        
     },50);
-	
+    
 }]);
  
