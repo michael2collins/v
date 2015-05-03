@@ -55,67 +55,12 @@ App.controller('StudentsTableBasicController', ['StudentServices', '$scope', '$r
     setTimeout(function(){
         // Init
         var spinner = $( ".spinner" ).spinner();
-/*        var table = $('#table_id').dataTable( {
-            "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
-        } );
-
-        var tableTools = new $.fn.dataTable.TableTools( table, {
-            "sSwfPath": "../vendors/DataTables/extensions/TableTools/swf/copy_csv_xls_pdf.swf",
-            "buttons": [
-                "copy",
-                "csv",
-                "xls",
-                "pdf",
-                { "type": "print", "buttonText": "Print me!" }
-            ]
-        } );
-        
-        $(".DTTT_container").css("float","right");
-*/
-/* don't get error msg with below, but also see that angular may not work with datatables
-$(document).ready(function() {
-    var table = $('#table_id').DataTable();
-    var tt = new $.fn.dataTable.TableTools( table, {
-        sRowSelect: 'single'
-    } );
- 
-//    $( tt.fnContainer() ).insertAfter('div.info');
-        $(".DTTT_container").css("float","right");
-
-} );
-*/        
-/*        $('.select2-category').select2({
-            placeholder: "Select an option",
-            allowClear: true
-        });
-        $('.select2-size').select2({
-            placeholder: "Select an option",
-            allowClear: true
-        });
-        $(".select2-loading-data").select2({
-            minimumInputLength: 1,
-            query: function (query) {
-                var data = {results: []}, i, j, s;
-                for (i = 1; i < 5; i++) {
-                    s = "";
-                    for (j = 0; j < i; j++) {s = s + query.term;}
-                    data.results.push({id: query.term + i, text: s});
-                }
-                query.callback(data);
-            }
-        });
-*/
-        $scope.loadtemp2setting = function(){
-            /*************************/
-            /*** Template Setting ***/
-            $('#template2-setting > a.btn-template2-setting').click(function(){
-                if($('#template2-setting').css('right') < '0'){
-                    $('#template2-setting').css('right', '0');
-                } else {
-                    $('#template2-setting').css('right', '-251px');
-                }
-            });
-        };    
+              
+        $('#pre-selected-options').multiSelect();
+        $('.selectpicker').selectpicker({
+            iconBase: 'fa',
+            tickIcon: 'fa-check'
+        });        
         StudentServices.getAllStudents(path, function(data) {
             $scope.students = data;
         });

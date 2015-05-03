@@ -7,13 +7,9 @@ div(ng-controller="StudentsTableBasicController")
                         .caption Student List
                         .tools
                             i.fa.fa-chevron-up
-                            i.fa.fa-cog(data-toggle="modal", data-target="#modal-config")
+                            i.fa.fa-cog(data-toggle="modal", data-target="#modal-config-student-fields")
                             i.fa.fa-refresh
                             i.fa.fa-times
-                    .row   
-                        //BEGIN TEMPLATE SETTING
-                        #temp2-setting(ng-include="'templates/states/_includes/template2-setting.html'", onload="loadtemp2setting()")
-                        //END TEMPLATE SETTING      
                 .portlet-body
                     .table-tools
                         .row
@@ -39,11 +35,17 @@ div(ng-controller="StudentsTableBasicController")
                                 form.form-horizontal.form-bordered(role="form")
                                     .form-body
                                         .form-group
-                                            label.control-label.col-md-3 Loading Data
-                                            .col-md-6
+                                            label.control-label.col-md-2 Student Filter
+                                            .col-md-2
                                                 input(ng-model="studentquery")
+                                            label.control-label.col-md-2 No. Rows
+                                            .col-md-1
+                                                select.selectpicker.form-control(data-style='btn-yellow')
+                                                    option 10
+                                                    option 100
+                                                    option All                                                
                     .table-responsive.mtl
-                        table#table_id.table.table-hover.table-striped.table-bordered.table-advanced.tablesorter.display
+                        table#table_id.table.table-hover.table-striped.table-bordered
                             thead
                                 tr
                                     th(width='20%') Name
@@ -68,3 +70,41 @@ div(ng-controller="StudentsTableBasicController")
                                                 i.fa.fa-trash-o.mrs
                                                 | Delete
                                         .clearfix
+#modal-config-student-fields.modal.fade(tabindex='-1', role='dialog', aria-labelledby='modal-default-label', aria-hidden='true')
+    .modal-dialog
+        .modal-content
+            .modal-header
+                button.close(type='button', data-dismiss='modal', aria-hidden='true') &times;
+                h4#modal-default-label.modal-title Modal Default
+            .modal-body
+                | Modal body goes here
+                .panel-body.pan
+                    form.form-horizontal.form-bordered(role="form")
+                        .form-body
+                            .form-group
+                                label.control-label.col-md-3 Pre-selected Options
+                                .col-md-6
+                                    select#pre-selected-options(multiple='multiple')
+                                        option(value='elem_1', selected='selected') elem 1
+                                        option(value='elem_2') elem 2
+                                        option(value='elem_3') elem 3
+                                        option(value='elem_4', selected='selected') elem 4
+                                        option(value='elem_5') elem 5
+                                        option(value='elem_6') elem 6
+                                        option(value='elem_7') elem 7
+                                        option(value='elem_8') elem 8
+                                        option(value='elem_9') elem 9
+                                        option(value='elem_10') elem 10
+                                        option(value='elem_11') elem 11
+                                        option(value='elem_12') elem 12
+                                        option(value='elem_13') elem 13
+                                        option(value='elem_14') elem 14
+                                        option(value='elem_15') elem 15
+                                        option(value='elem_16') elem 16
+                                        option(value='elem_17') elem 17
+                                        option(value='elem_18') elem 18
+                                        option(value='elem_19') elem 19
+                                        option(value='elem_20') elem 20                
+            .modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') Close
+                button.btn.btn-primary(type='button') Save changes
