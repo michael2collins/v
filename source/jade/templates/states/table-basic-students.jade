@@ -39,11 +39,13 @@ div(ng-controller="StudentsTableBasicController")
                                             .col-md-2
                                                 input(ng-model="studentquery")
                                             label.control-label.col-md-2 No. Rows
-                                            .col-md-1
-                                                select.selectpicker.form-control(data-style='btn-yellow')
+                                            //.col-md-2
+                                                select.selectpicker.form-control(data-style='btn-yellow' ng-model='quantity' ng-change='updateQuantity(quantity)' ng-options='quantity as limit.quantity for limit in limitlist')
+                                            .col-md-2
+                                                select.select2picker.form-control(data-style='btn-yellow'  ng-model='quantity' ng-change='updateQuantity(quantity)' )
                                                     option 10
                                                     option 100
-                                                    option All                                                
+                                                    option 1000
                     .table-responsive.mtl
                         table#table_id.table.table-hover.table-striped.table-bordered
                             thead
@@ -55,7 +57,7 @@ div(ng-controller="StudentsTableBasicController")
                                     th(width='10%') Phone
                                     th(width='20%') Edit/Delete
                             tbody
-                                tr(ng-repeat="student in students.students | filter : studentquery")
+                                tr(ng-repeat="student in students.students | filter : studentquery | limitTo : quantity" )
                                     td {{student.FirstName}} {{student.LastName}}
                                     td {{student.CurrentRank}}
                                     td {{student.ContactType}}

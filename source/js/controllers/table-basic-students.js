@@ -60,9 +60,23 @@ App.controller('StudentsTableBasicController', ['StudentServices', '$scope', '$r
         $('.selectpicker').selectpicker({
             iconBase: 'fa',
             tickIcon: 'fa-check'
-        });        
+        });
+        $('.selectpicker2').selectpicker({
+            iconBase: 'fa',
+            tickIcon: 'fa-check'
+        });
+
+        $scope.limitlist = [{quantity:'10'}, {quantity:'100'}, {quantity:'all'}];
+        $scope.quantity = 7;
+        $scope.updateQuantity = function(quantity) {
+            $scope.quantity = quantity;
+            $log.debug('thenew' + quantity);
+        };
+        
         StudentServices.getAllStudents(path, function(data) {
+//            $scope.students = data.splice(0, 5);
             $scope.students = data;
+    //        $scope.students = $scope.allStudents.splice(0,5);
         });
         
     },50);
