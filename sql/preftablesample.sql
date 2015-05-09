@@ -1,10 +1,10 @@
 --
 -- Sample data for table `userpreferences`
 --
-delete from `users` where user_id = 1;
+delete from `users` where id = 1;
 
 INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `api_key`, `status`) VALUES
-(1, 'default', 'mark@natickmartialarts.com', '', '', 1);
+(1, 'default', 'default@natickmartialarts.com', '', '', 1);
 
 delete from `userpreferences`;
 

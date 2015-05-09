@@ -56,6 +56,8 @@ div(ng-controller="StudentsTableBasicController")
                                     th(width='20%') Parent
                                     th(width='10%') Phone
                                     th(width='20%') Edit/Delete
+                                tr
+                                    th(ng-repeat="field in students.fields") {{field.prefcolumn}}  
                             tbody
                                 tr(ng-repeat="student in students.students | filter : studentquery | limitTo : quantity" )
                                     td {{student.FirstName}} {{student.LastName}}

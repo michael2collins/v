@@ -174,22 +174,23 @@ $app->get('/students',  function() {
             $db = new DbHandler();
 
             $userid = 1; //have to convert name to id
-            $prefkey = 'allstudents';
+            $prefkey = "allstudents";
+            $response["fields"] = array();
+            
             error_log("in index");
-        error_log( print_R($userid ));
-        error_log( print_R(  $prefkey));      
+//        error_log( print_R($userid,TRUE ));
+//        error_log( print_R(  $prefkey,TRUE));      
         
             //get a list of fields from a preferences table
             $fields = $db->getUserPreferences($userid, $prefkey);
-//            error_log( print_R($fields,TRUE));
 
             while ($field = $fields->fetch_assoc()) {
                 $fieldlist["prefcolumn"] = $field["prefcolumn"];
+//                error_log( print_R($fieldlist["prefcolumn"],TRUE));
+                array_push($response["fields"], $fieldlist);
             }
-//            error_log( print_R($fieldlist,TRUE));
-            
-            $response["fields"] = $fieldlist;
-            
+//            error_log( print_R($response["fields"],TRUE));
+                        
             //going to get all fields and filter them on the array push
             $result = $db->getAllStudents();
 
@@ -209,10 +210,15 @@ $app->get('/students',  function() {
                 array_push($response["students"], $tmp);
             }
 */
+            $fldcount=count($response["fields"]);
+//            error_log( print_R($fldcount,TRUE));
             while ($student = $result->fetch_assoc()) {
                 $tmp = array();
-                foreach ($fieldlist as $fld) {
-                    $tmp[$fld] = $student[$fld];
+                for($i = 0; $i < $fldcount; $i++ ) {
+                    error_log(" in loop " . $i);
+                    $ff = $response["fields"][$i]["prefcolumn"]; 
+//                    error_log(print_R( $ff,TRUE));
+                    $tmp[$ff] = $student[$ff];
                 }
                 array_push($response["students"], $tmp);
             }    
