@@ -327,8 +327,23 @@ class DbHandler {
         $students = $stmt->get_result();
         $stmt->close();
         return $students;
-    }	
-	
+    }	    
+    
+    /**
+     * Fetching fields for user from userpreferences
+     */
+    public function getUserPreferences($user_id, $prefkey) {
+        error_log("in getUserPreferences");
+        error_log( print_R($user_id ));
+        error_log( print_R(  $prefkey));
+        $stmt = $this->conn->prepare("SELECT u.id, u.prefcolumn from userpreferences u WHERE u.user_id = ? AND u.prefkey = ? order by preforder");
+        $stmt->bind_param("is", $user_id, $prefkey);
+        $stmt->execute();
+        $userpreferences = $stmt->get_result();
+        $stmt->close();
+        error_log( print_R($userpreferences,TRUE));
+        return $userpreferences;
+    }
 }
 
 ?>

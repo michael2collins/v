@@ -169,14 +169,34 @@ $app->get('/tasks', 'authenticate', function() {
  */
 $app->get('/students',  function() {
             $response = array();
+            $fieldlist = array();
+
             $db = new DbHandler();
 
-            // fetching all students
+            $userid = 1; //have to convert name to id
+            $prefkey = 'allstudents';
+            error_log("in index");
+        error_log( print_R($userid ));
+        error_log( print_R(  $prefkey));      
+        
+            //get a list of fields from a preferences table
+            $fields = $db->getUserPreferences($userid, $prefkey);
+//            error_log( print_R($fields,TRUE));
+
+            while ($field = $fields->fetch_assoc()) {
+                $fieldlist["prefcolumn"] = $field["prefcolumn"];
+            }
+//            error_log( print_R($fieldlist,TRUE));
+            
+            $response["fields"] = $fieldlist;
+            
+            //going to get all fields and filter them on the array push
             $result = $db->getAllStudents();
 
             $response["error"] = false;
             $response["students"] = array();
-
+            
+/*
             // looping through result and preparing tasks array
             while ($student = $result->fetch_assoc()) {
                 $tmp = array();
@@ -188,6 +208,16 @@ $app->get('/students',  function() {
                 $tmp["Phone"] = $student["Phone"];
                 array_push($response["students"], $tmp);
             }
+*/
+            while ($student = $result->fetch_assoc()) {
+                $tmp = array();
+                foreach ($fieldlist as $fld) {
+                    $tmp[$fld] = $student[$fld];
+                }
+                array_push($response["students"], $tmp);
+            }    
+//            error_log( print_R($response,TRUE));
+            
             echoRespnse(200, $response);
 });
 
