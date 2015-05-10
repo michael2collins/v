@@ -1,4 +1,4 @@
-App.controller('StudentsTablegoodBasicController', ['$scope','$http','$routeParams', function($scope, $http, $routeParams){
+App.controller('StudentsTableBasicController3', ['$scope','$http','$routeParams', function($scope, $http, $routeParams){
    $.fn.Data.Portlet();
 
       $scope.students = []; 

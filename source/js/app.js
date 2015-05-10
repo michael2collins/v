@@ -1,8 +1,4 @@
-var App = angular.module('ng-admin', [
-//    'restangular',
-    'ngRoute',
-    'ui.bootstrap'
-]);
+var App = angular.module('ng-admin', ['ui.grid',    'ngRoute',    'ui.bootstrap',    'ngTouch']);
 
 App.config(['$logProvider', function($logProvider){
     $logProvider.debugEnabled(true);

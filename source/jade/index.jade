@@ -39,6 +39,7 @@ html(lang="en")
     link(rel='stylesheet', href='vendors/jquery-notific8/jquery.notific8.min.css')
     link(rel='stylesheet', href='vendors/jquery-toastr/toastr.min.css')
     link(rel='stylesheet', href='vendors/calendar/zabuto_calendar.min.css')
+
     //CORE CSS 
     link(type="text/css", rel="stylesheet", href="css/bootstrap-custom.css")
     link(type="text/css", rel="stylesheet", href="css/themes/default.css")
@@ -47,10 +48,17 @@ html(lang="en")
     //CORE JS 
     script(src='vendors/jquery.sparkline.js')
     script(src='js/lib.js')
+    script(src='http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-touch.js')
+    script (src='http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-animate.js')
+    script (src='http://ui-grid.info/docs/grunt-scripts/csv.js')
+    script (src='http://ui-grid.info/docs/grunt-scripts/pdfmake.js')
+    script (src='http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js')
+    script (src="vendors/angular-ui-grid/ui-grid-unstable.js')
+    link(rel='stylesheet' href='vendors/angular-ui-grid/ui-grid-unstable.css')    
     script(src='js/main.js')
     //V JS
 
-    body.topbar-fixed.sidebar-fixed(ng-app='ng-admin', ng-class="[header.header_topbar, header.boxed]")
+  body.topbar-fixed.sidebar-fixed(ng-app='ng-admin', ng-class="[header.header_topbar, header.boxed]")
     .default-page(ng-controller="AppController")
 
       //BEGIN TEMPLATE SETTING
