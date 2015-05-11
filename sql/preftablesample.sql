@@ -14,4 +14,11 @@ INSERT INTO `userpreferences` ( `prefkey`, `prefcolumn`, `preforder`, `user_id`)
 ('allstudents', 'LastName', 3, 1),
 ('allstudents', 'CurrentRank', 4, 1),
 ('allstudents', 'Parent', 5, 1),
-('allstudents', 'Phone', 6, 1);
+('allstudents', 'Email', 6, 1),
+('allstudents', 'Email2', 7, 1),
+('allstudents', 'Phone', 8, 1),
+('allstudents', 'AltPhone', 9, 1),
+('allstudents', 'Address', 10, 1),
+('allstudents', 'City', 11, 1),
+('allstudents', 'State', 12, 1),
+('allstudents', 'ZIP', 13, 1);

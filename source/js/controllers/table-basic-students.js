@@ -1,4 +1,4 @@
-App.controller('StudentsTableBasicController', ['$scope','$http','$routeParams','uiGridConstants', function($scope, $http, $routeParams, uiGridConstants){
+App.controller('StudentsTableBasicController3', ['$scope','$http','$routeParams','uiGridConstants', function($scope, $http, $routeParams, uiGridConstants){
    $.fn.Data.Portlet();
 
       $scope.students = []; 
@@ -71,7 +71,7 @@ $scope.gridOptions = {
 */
 }]);
 
-App.controller('StudentsTableBasicController2', ['StudentServices', 
+App.controller('StudentsTableBasicController', ['StudentServices', 
     '$scope', 
     '$routeParams', 
     '$log', 'uiGridConstants',
@@ -107,7 +107,7 @@ App.controller('StudentsTableBasicController2', ['StudentServices',
             $log.debug('thenew' + quantity);
         };
         */
-        /*
+        
           $scope.highlightFilteredHeader = function( row, rowRenderIndex, col, colRenderIndex ) {
             if( col.filters[0].term ){
               return 'header-filtered';
@@ -115,10 +115,10 @@ App.controller('StudentsTableBasicController2', ['StudentServices',
               return '';
             }
           };
-*/
+
 $scope.gridOptions = {
-    enableFiltering: true
-    /*
+    enableFiltering: true,
+    
      columnDefs: [
       // default
       { field: 'name', headerCellClass: $scope.highlightFilteredHeader },
@@ -135,12 +135,16 @@ $scope.gridOptions = {
         { field: 'State',headerCellClass: $scope.highlightFilteredHeader },
         { field: 'ZIP',headerCellClass: $scope.highlightFilteredHeader }
     ]
-    */
+    
 };
     
           StudentServices.getAllStudents(path, function(data) {
-            $scope.gridOptions.data = data;
-//            $scope.students = data;
+          //  $scope.gridOptions.data = data;
+            $scope.gridOptions.data = data.students;
+          //  $log.debug('here too');
+          //  $log.debug(data.students);
+          
+            //            $scope.students = data;
         });
         
 //    },50);
