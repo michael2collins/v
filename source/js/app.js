@@ -1,4 +1,4 @@
-var App = angular.module('ng-admin', ['ui.grid',    'ngRoute',    'ui.bootstrap',    'ngTouch']);
+var App = angular.module('ng-admin', ['ui.grid',    'ngRoute',    'ui.bootstrap',    'ngTouch',  'ui.grid.pagination']);
 
 App.config(['$logProvider', function($logProvider){
     $logProvider.debugEnabled(true);

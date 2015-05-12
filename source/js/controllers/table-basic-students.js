@@ -79,8 +79,8 @@ App.controller('StudentsTableBasicController', ['StudentServices',
    $.fn.Data.Portlet();
 //   $scope.students = []; 
        
-    var path = 'testdata/students_vsmall.json';
-//    var path = '../v1/students';
+//    var path = 'testdata/students_vsmall.json';
+    var path = '../v1/students';
     $log.debug('Hello Debug!');
 
     
@@ -118,7 +118,8 @@ App.controller('StudentsTableBasicController', ['StudentServices',
 
 $scope.gridOptions = {
     enableFiltering: true,
-    
+    paginationPageSizes: [25, 50, 75],
+    paginationPageSize: 25,    
      columnDefs: [
       // default
       { field: 'name', headerCellClass: $scope.highlightFilteredHeader },
