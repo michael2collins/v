@@ -1,4 +1,4 @@
-App.controller('FromLayoutsController', function($scope, $routeParams){
+App.controller('FormLayoutsControllerNewStudent', function($scope, $routeParams){
     var menu_h = $('#sidebar').height();
     $('#form-layouts-newstudent ul.nav-pills li a').live('click', function() {
         var tab_id = $(this).attr('href');
