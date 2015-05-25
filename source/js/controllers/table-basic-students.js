@@ -139,7 +139,11 @@ $scope.gridOptions = {
         { field: 'Address',headerCellClass: $scope.highlightFilteredHeader },
         { field: 'City',headerCellClass: $scope.highlightFilteredHeader },
         { field: 'State',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'ZIP',headerCellClass: $scope.highlightFilteredHeader }
+        { field: 'ZIP',headerCellClass: $scope.highlightFilteredHeader },
+            { name: 'modallink', displayName: 'Modal', enableFiltering: false, enableSorting: false, enableHiding: false,
+      cellTemplate:'<button type="button" class="btn btn-blue mrs"  data-toggle="modal" data-target="#modal-config-student-fields" >Modal</button>'},
+            { name: 'editlink', displayName: 'Edit', enableFiltering: false, enableSorting: false, enableHiding: false,
+      cellTemplate:'<a role="button" class="btn btn-blue mrs" href="#/form-layouts-newstudent" >Edit</button>'}
     ]
     
 };
