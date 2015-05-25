@@ -127,23 +127,24 @@ $scope.gridOptions = {
     paginationPageSize: 25,    
      columnDefs: [
       // default
-      { field: 'name', headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'ID',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'LastName' ,headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'FirstName',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'Email' ,headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'Email2',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'Parent',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'Phone' ,headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'AltPhone',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'Address',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'City',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'State',headerCellClass: $scope.highlightFilteredHeader },
-        { field: 'ZIP',headerCellClass: $scope.highlightFilteredHeader },
+      { field: 'name', headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'ID2',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'LastName' ,headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'FirstName',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'Email' ,headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'Email2',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'Parent',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'Phone' ,headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'AltPhone',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'Address',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'City',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'State',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
+        { field: 'ZIP',headerCellClass: $scope.highlightFilteredHeader ,enableCellEdit: false},
             { name: 'modallink', displayName: 'Modal', enableFiltering: false, enableSorting: false, enableHiding: false,
       cellTemplate:'<button type="button" class="btn btn-blue mrs"  data-toggle="modal" data-target="#modal-config-student-fields" >Modal</button>'},
-            { name: 'editlink', displayName: 'Edit', enableFiltering: false, enableSorting: false, enableHiding: false,
-      cellTemplate:'<a role="button" class="btn btn-blue mrs" href="#/form-layouts-newstudent" >Edit</button>'}
+        { name: 'ID', displayName: 'Edit', enableFiltering: false, enableSorting: false, enableHiding: false,enableCellEdit: false,
+            cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="#/form-layouts-newstudent?id={{COL_FIELD}}" >Edit</button></span></div>'
+        }    
     ]
     
 };
