@@ -328,6 +328,125 @@ class DbHandler {
         $stmt->close();
         return $students;
     }	    
+
+    /**
+     * Fetching single student
+     * @param String $student_id id of the student
+     */
+    public function getStudent($student_id) {
+        $stmt = $this->conn->prepare("SELECT t.* from ncontacts t WHERE t.ID = ? ");
+        $stmt->bind_param("i", $student_id);
+        if ($stmt->execute()) {
+            $res = array();
+            $stmt->bind_result(
+ //           $id, $student, $status, $created_at
+                   $ID,
+                   $LastName,
+                   $FirstName,
+                   $Email,
+                   $Email2,
+                   $Parent,
+                   $Phone,
+                   $AltPhone,
+                   $Address,
+                   $City,
+                   $State,
+                   $ZIP,
+                   $Notes,
+                   $Birthday,
+                   $StartDate,
+                   $NewRank,
+                   $BeltSize,
+                   $CurrentRank,
+                   $LastPromoted,
+                   $ReferredBy,
+                   $ConsentToPublicPictures,
+                   $InstructorPaymentFree,
+                   $ContactType,
+                   $include,
+                   $InstructorFlag,
+                   $quickbooklink,
+                   $instructorTitle,
+                   $testDate,
+                   $testTime,
+                   $bdayinclude,
+                   $signupDate,
+                   $sex,
+                   $medicalConcerns,
+                   $GuiSize,
+                   $ShirtSize,
+                   $phoneExt,
+                   $altPhoneExt,
+                   $CurrentReikiRank,
+                   $StudentSchool,
+                   $EmergencyContact,
+                   $sendWelcomeCard,
+                   $dateEntered,
+                   $dateInactive,
+                   $CurrentIARank,
+                   $ReadyForNextRank,
+                   $nextScheduledTest             
+            );
+            // TODO
+            // $student = $stmt->get_result()->fetch_assoc();
+            $stmt->fetch();
+  //          $res["id"] = $id;
+  //          $res["student"] = $student;
+  //          $res["status"] = $status;
+  //          $res["created_at"] = $created_at;
+                    $res["ID"] = $ID;
+                    $res["LastName"] = $LastName;
+                    $res["FirstName"] = $FirstName;
+                    $res["Email"] = $Email;
+                    $res["Email2"] = $Email2;
+                    $res["Parent"] = $Parent;
+                    $res["Phone"] = $Phone;
+                    $res["AltPhone"] = $AltPhone;
+                    $res["Address"] = $Address;
+                    $res["City"] = $City;
+                    $res["State"] = $State;
+                    $res["ZIP"] = $ZIP;
+                    $res["Notes"] = $Notes;
+                    $res["Birthday"] = $Birthday;
+                    $res["StartDate"] = $StartDate;
+                    $res["NewRank"] = $NewRank;
+                    $res["BeltSize"] = $BeltSize;
+                    $res["CurrentRank"]= $CurrentRank;
+                    $res["LastPromoted"] = $LastPromoted;
+                    $res["ReferredBy"] = $ReferredBy;
+                    $res["ConsentToPublicPictures"] = $ConsentToPublicPictures;
+                    $res["InstructorPaymentFree"] = $InstructorPaymentFree;
+                    $res["ContactType"] = $ContactType;
+                    $res["include"] = $include;
+                    $res["InstructorFlag"] = $InstructorFlag;
+                    $res["quickbooklink"] = $quickbooklink;
+                    $res["instructorTitle"] = $instructorTitle;
+                    $res["testDate"]= $testDate;
+                    $res["testTime"] = $testTime;
+                    $res["bdayinclude"] = $bdayinclude;
+                    $res["signupDate"] = $signupDate;
+                    $res["sex"] = $sex;
+                    $res["medicalConcerns"] = $medicalConcerns;
+                    $res["GuiSize"]= $GuiSize;
+                    $res["ShirtSize"] = $ShirtSize;
+                    $res["phoneExt"] = $phoneExt;
+                    $res["altPhoneExt"] = $altPhoneExt;
+                    $res["CurrentReikiRank"] = $CurrentReikiRank;
+                    $res["StudentSchool"] = $StudentSchool;
+                    $res["EmergencyContact"] = $EmergencyContact;
+                    $res["sendWelcomeCard"] = $sendWelcomeCard;
+                    $res["dateEntered"] = $dateEntered;
+                    $res["dateInactive"] = $dateInactive;
+                    $res["CurrentIARank"] = $CurrentIARank;
+                    $res["ReadyForNextRank"] = $ReadyForNextRank;
+                    $res["nextScheduledTest"] = $nextScheduledTest;                
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
+    
     
     /**
      * Fetching fields for user from userpreferences

@@ -22,7 +22,10 @@ App.factory('StudentServices', function( $http ) {
      var service = {
         getAllStudents: function(path, callback) {
                $http.get(path).success(callback);
-          }
+        },
+        getStudent: function(path, callback) {
+               $http.get(path).success(callback);
+        }
      };
      return service;
 });

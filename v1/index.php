@@ -227,6 +227,73 @@ $app->get('/students',  function() {
             echoRespnse(200, $response);
 });
 
+$app->get('/students/:id',  function($student_id) {
+          //  global $user_id;
+            $response = array();
+            $db = new DbHandler();
+
+            // fetch task
+            $result = $db->getStudent($student_id);
+
+            if ($result != NULL) {
+                $response["error"] = false;
+//                $response["id"] = $result["id"];
+//                $response["task"] = $result["task"];
+//                $response["status"] = $result["status"];
+//                $response["createdAt"] = $result["created_at"];
+                    $response["ID"] = $result["ID"];
+                    $response["LastName"] = $result["LastName"];
+                    $response["FirstName"] = $result["FirstName"];
+                    $response["Email"] = $result["Email"];
+                    $response["Email2"] = $result["Email2"];
+                    $response["Parent"] = $result["Parent"];
+                    $response["Phone"] = $result["Phone"];
+                    $response["AltPhone"] = $result["AltPhone"];
+                    $response["Address"] = $result["Address"];
+                    $response["City"] = $result["City"];
+                    $response["State"] = $result["State"];
+                    $response["ZIP"] = $result["ZIP"];
+                    $response["Notes"] = $result["Notes"];
+                    $response["Birthday"] = $result["Birthday"];
+                    $response["StartDate"] = $result["StartDate"];
+                    $response["NewRank"] = $result["NewRank"];
+                    $response["BeltSize"] = $result["BeltSize"];
+                    $response["CurrentRank"]= $result["CurrentRank"];
+                    $response["LastPromoted"] = $result["LastPromoted"];
+                    $response["ReferredBy"] = $result["ReferredBy"];
+                    $response["ConsentToPublicPictures"] = $result["ConsentToPublicPictures"];
+                    $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
+                    $response["ContactType"] = $result["ContactType"];
+                    $response["include"] = $result["include"];
+                    $response["InstructorFlag"] = $result["InstructorFlag"];
+                    $response["quickbooklink"] = $result["quickbooklink"];
+                    $response["instructorTitle"] = $result["instructorTitle"];
+                    $response["testDate"]= $result["testDate"];
+                    $response["testTime"] = $result["testTime"];
+                    $response["bdayinclude"] = $result["bdayinclude"];
+                    $response["signupDate"] = $result["signupDate"];
+                    $response["sex"] = $result["sex"];
+                    $response["medicalConcerns"] = $result["medicalConcerns"];
+                    $response["GuiSize"]= $result["GuiSize"];
+                    $response["ShirtSize"] = $result["ShirtSize"];
+                    $response["phoneExt"] = $result["phoneExt"];
+                    $response["altPhoneExt"] = $result["altPhoneExt"];
+                    $response["CurrentReikiRank"] = $result["CurrentReikiRank"];
+                    $response["StudentSchool"] = $result["StudentSchool"];
+                    $response["EmergencyContact"] = $result["EmergencyContact"];
+                    $response["sendWelcomeCard"] = $result["sendWelcomeCard"];
+                    $response["dateEntered"] = $result["dateEntered"];
+                    $response["dateInactive"] = $result["dateInactive"];
+                    $response["CurrentIARank"] = $result["CurrentIARank"];
+                    $response["ReadyForNextRank"] = $result["ReadyForNextRank"];
+                    $response["nextScheduledTest"] = $result["nextScheduledTest"];            
+                echoRespnse(200, $response);
+            } else {
+                $response["error"] = true;
+                $response["message"] = "The requested resource doesn't exists";
+                echoRespnse(404, $response);
+            }
+        });
 		
 /**
  * Listing single task of particual user
