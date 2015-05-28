@@ -36,6 +36,10 @@ App.config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $lo
 			templateUrl: 'templates/states/form-layouts-newstudent.html', 
 			controller: 'FormLayoutsControllerNewStudent'
 			})
+        .when('/form-layouts-editstudent', {
+			templateUrl: 'templates/states/form-layouts-editstudent.html', 
+			controller: 'FormLayoutsControllerEditStudent'
+			})
         .when('/table-basic-attendance', {
 			templateUrl: 'templates/states/table-basic-attendance.html', 
 			controller: 'AttendanceTableBasicController'

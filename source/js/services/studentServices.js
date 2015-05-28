@@ -18,13 +18,15 @@ var studentServices = angular.module('vStudentServices', [])
 */
 //var module = angular.module('app', []);
 //module.service('StudentServices', function()  {
-App.factory('StudentServices', function( $http ) {
+App.factory('StudentServices', function( $http, $log ) {
      var service = {
         getAllStudents: function(path, callback) {
                $http.get(path).success(callback);
         },
         getStudent: function(path, callback) {
-               $http.get(path).success(callback);
+            $log.debug(path);
+               $http.get(path).success( callback
+               );
         }
      };
      return service;

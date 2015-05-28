@@ -143,7 +143,7 @@ $scope.gridOptions = {
             { name: 'modallink', displayName: 'Modal', enableFiltering: false, enableSorting: false, enableHiding: false,
       cellTemplate:'<button type="button" class="btn btn-blue mrs"  data-toggle="modal" data-target="#modal-config-student-fields" >Modal</button>'},
         { name: 'ID', displayName: 'Edit', enableFiltering: false, enableSorting: false, enableHiding: false,enableCellEdit: false,
-            cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="#/form-layouts-newstudent?id={{COL_FIELD}}" >Edit</button></span></div>'
+            cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="#/form-layouts-editstudent?id={{COL_FIELD}}" >Edit</button></span></div>'
         }    
     ]
     

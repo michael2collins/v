@@ -334,7 +334,54 @@ class DbHandler {
      * @param String $student_id id of the student
      */
     public function getStudent($student_id) {
-        $stmt = $this->conn->prepare("SELECT t.* from ncontacts t WHERE t.ID = ? ");
+        $stmt = $this->conn->prepare("SELECT 
+                   t.ID,
+                   t.LastName,
+                   t.FirstName,
+                   t.Email,
+                   t.Email2,
+                   t.Parent,
+                   t.Phone,
+                   t.AltPhone,
+                   t.Address,
+                   t.City,
+                   t.State,
+                   t.ZIP,
+                   t.Notes,
+                   t.Birthday,
+                   t.StartDate,
+                   t.NewRank,
+                   t.BeltSize,
+                   t.CurrentRank,
+                   t.LastPromoted,
+                   t.ReferredBy,
+                   t.ConsentToPublicPictures,
+                   t.InstructorPaymentFree,
+                   t.ContactType,
+                   t.include,
+                   t.InstructorFlag,
+                   t.quickbooklink,
+                   t.instructorTitle,
+                   t.testDate,
+                   t.testTime,
+                   t.bdayinclude,
+                   t.signupDate,
+                   t.sex,
+                   t.medicalConcerns,
+                   t.GuiSize,
+                   t.ShirtSize,
+                   t.phoneExt,
+                   t.altPhoneExt,
+                   t.CurrentReikiRank,
+                   t.StudentSchool,
+                   t.EmergencyContact,
+                   t.sendWelcomeCard,
+                   t.dateEntered,
+                   t.dateInactive,
+                   t.CurrentIARank,
+                   t.ReadyForNextRank,
+                   t.nextScheduledTest             
+        from ncontacts t WHERE t.ID = ? ");
         $stmt->bind_param("i", $student_id);
         if ($stmt->execute()) {
             $res = array();
