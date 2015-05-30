@@ -1,4 +1,9 @@
-App.controller('DashboardBlogController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+    .controller('DashboardBlogController', function($scope, $routeParams){
     var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
     /*****************************/
@@ -42,4 +47,5 @@ App.controller('DashboardBlogController', function($scope, $routeParams){
 
     /********* TAB BLOG ***********/
     /*****************************/
-});
+    });
+})(); 

@@ -1,4 +1,9 @@
-App.controller('AttendanceTableBasicController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('AttendanceTableBasicController', function($scope, $routeParams){
     $.fn.Data.Portlet();
     setTimeout(function(){
         var oTable = $('#example1').dataTable();
@@ -76,3 +81,4 @@ App.controller('AttendanceTableBasicController', function($scope, $routeParams){
 
     },50);
 });
+})();    

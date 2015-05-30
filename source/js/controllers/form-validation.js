@@ -1,4 +1,9 @@
-App.controller('FormValidationController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('FormValidationController', function($scope, $routeParams){
     //BEGIN SUBMIT FORM VALIDATION
     $('#btn-valdation-text').live('click', function() {
         var form = $('#form-validation-text');
@@ -165,3 +170,4 @@ App.controller('FormValidationController', function($scope, $routeParams){
         }
     });
 });
+})();    

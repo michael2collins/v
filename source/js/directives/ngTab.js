@@ -1,4 +1,9 @@
-App.directive("ngTab", function($parse, $compile){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+    .directive("ngTab", function($parse, $compile){
     return {
         link: function (scope, element, attrs) {
             element.click(function(e) {
@@ -7,3 +12,4 @@ App.directive("ngTab", function($parse, $compile){
         }
     };
 });
+ })();  

@@ -1,4 +1,9 @@
-App.controller('AppController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+    .controller('AppController', function($scope, $routeParams){
  
     $scope.data = {};
     $scope.header = {
@@ -335,12 +340,12 @@ App.controller('AppController', function($scope, $routeParams){
             //END SIDEBAR SEARCH FORM
         };
 
-});
-App.controller('NoneController', function($scope, $routeParams){
+    })
+    .controller('NoneController', function($scope, $routeParams){
 
-});
+    })
 
-App.controller('MainController', function($scope, $routeParams){
+    .controller('MainController', function($scope, $routeParams){
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -770,4 +775,5 @@ App.controller('MainController', function($scope, $routeParams){
         });
         //END CALENDAR
     },50);
-});
+    });
+})();    

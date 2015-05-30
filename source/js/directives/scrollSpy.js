@@ -1,4 +1,9 @@
-App.directive("scrollSpy", function($window){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.directive("scrollSpy", function($window){
     return {
         restrict: 'A',
         controller: function ($scope) {
@@ -27,9 +32,9 @@ App.directive("scrollSpy", function($window){
             //END JQUERY SLIMSCROLL
         }
     };
-});
+})
 
-App.directive('spy', function ($location, $anchorScroll){
+.directive('spy', function ($location, $anchorScroll){
     return {
         restrict: "A",
         require: "^scrollSpy",
@@ -51,3 +56,4 @@ App.directive('spy', function ($location, $anchorScroll){
         }
     };
 });
+ })();  

@@ -1,4 +1,9 @@
-App.controller('FormComponentsController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('FormComponentsController', function($scope, $routeParams){
     $.fn.Data.Portlet();
     setTimeout(function(){
         //BEGIN PLUGINS DATE RANGE PICKER
@@ -98,3 +103,4 @@ App.controller('FormComponentsController', function($scope, $routeParams){
         }, 50);
     }, 100);
 });
+})();    

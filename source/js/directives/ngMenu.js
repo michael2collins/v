@@ -1,4 +1,9 @@
-App.directive("ngMenu", function($parse, $compile){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.directive("ngMenu", function($parse, $compile){
     return {
         link: function($scope, element, attributes){
             $scope._menu = {status:[], collapse:{}, hover:[]};
@@ -64,3 +69,4 @@ App.directive("ngMenu", function($parse, $compile){
         }
     };
 });
+ })();  

@@ -1,4 +1,9 @@
-App.controller('DashboardShoppingController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+    .controller('DashboardShoppingController', function($scope, $routeParams){
     var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
     /***********************************/
@@ -106,3 +111,4 @@ App.controller('DashboardShoppingController', function($scope, $routeParams){
     $(".dial").css("top", 0);
     //$(".dial").css("left", 90);
 });
+})();    

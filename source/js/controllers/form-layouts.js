@@ -1,4 +1,9 @@
-App.controller('FromLayoutsController', function($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('FromLayoutsController', function($scope, $routeParams){
     var menu_h = $('#sidebar').height();
     $('#form-layouts ul.nav-pills li a').live('click', function() {
         var tab_id = $(this).attr('href');
@@ -8,3 +13,4 @@ App.controller('FromLayoutsController', function($scope, $routeParams){
         }
     });
 });
+})();    

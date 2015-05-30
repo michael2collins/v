@@ -1,4 +1,9 @@
-App.controller('StudentsTableBasicController3', ['$scope','$http','$routeParams','uiGridConstants', function($scope, $http, $routeParams, uiGridConstants){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('StudentsTableBasicController3', ['$scope','$http','$routeParams','uiGridConstants', function($scope, $http, $routeParams, uiGridConstants){
    $.fn.Data.Portlet();
 
       $scope.students = []; 
@@ -74,9 +79,9 @@ $scope.gridOptions = {
 
     },50);
 */
-}]);
+}])
 
-App.controller('StudentsTableBasicController', ['StudentServices', 
+  .controller('StudentsTableBasicController', ['StudentServices', 
     '$scope', 
     '$routeParams', 
     '$log', 'uiGridConstants',
@@ -161,4 +166,4 @@ $scope.gridOptions = {
 //    },50);
     
 }]);
- 
+ })();    

@@ -1,11 +1,24 @@
-var App = angular.module('ng-admin', ['ui.grid',    'ngRoute',    'ui.bootstrap',    'ngTouch',  'ui.grid.pagination','ui.grid.cellNav', 'ui.grid.edit', 'ui.grid.selection']);
+(function() {
+    'use strict';
+angular
+    .module('ng-admin', [
+        'ui.grid',    
+        'ngRoute',    
+        'ui.bootstrap',    
+        'ngTouch',  
+        'ui.grid.pagination',
+        'ui.grid.cellNav', 
+        'ui.grid.edit', 
+        'ui.grid.selection'
+    ])
 
-App.config(['$logProvider', function($logProvider){
-    $logProvider.debugEnabled(true);
-}]);
+    .config(['$logProvider', function($logProvider){
+        $logProvider.debugEnabled(true);
+    }])
 
-App.config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $locationProvider) {
-    $routeProvider
+
+    .config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $locationProvider) {
+        $routeProvider
         .when('/', {templateUrl: 'templates/states/main.html', controller: 'MainController'})
         .when('/form-components', {templateUrl: 'templates/states/form-components.html', controller: 'FormComponentsController'})
         .when('/form-layouts', {templateUrl: 'templates/states/form-layouts.html', controller: 'FromLayoutsController'})
@@ -29,24 +42,24 @@ App.config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $lo
         .when('/ui-toastr-notifications', { templateUrl: 'templates/states/ui-toastr-notifications.html', controller: 'UiToastrNotificationsController'})
         .when('/ui-select-dropdown', { templateUrl: 'templates/states/ui-select-dropdown.html', controller: 'UiSelectDropdownController'})
         .when('/table-basic-students', {
-			templateUrl: 'templates/states/table-basic-students.html', 
-			controller: 'StudentsTableBasicController'
-			})
+            templateUrl: 'templates/states/table-basic-students.html', 
+            controller: 'StudentsTableBasicController'
+            })
         .when('/form-layouts-newstudent', {
-			templateUrl: 'templates/states/form-layouts-newstudent.html', 
-			controller: 'FormLayoutsControllerNewStudent'
-			})
+            templateUrl: 'templates/states/form-layouts-newstudent.html', 
+            controller: 'FormLayoutsControllerNewStudent'
+            })
         .when('/form-layouts-editstudent', {
-			templateUrl: 'templates/states/form-layouts-editstudent.html', 
-			controller: 'FormLayoutsControllerEditStudent'
-			})
+            templateUrl: 'templates/states/form-layouts-editstudent.html', 
+            controller: 'FormLayoutsControllerEditStudent'
+            })
         .when('/table-basic-attendance', {
-			templateUrl: 'templates/states/table-basic-attendance.html', 
-			controller: 'AttendanceTableBasicController'
-			})
+            templateUrl: 'templates/states/table-basic-attendance.html', 
+            controller: 'AttendanceTableBasicController'
+            })
         .otherwise({
             redirectTo: '/'
           });
-		$locationProvider.html5Mode(false);  
-}]);
-
+        $locationProvider.html5Mode(false);  
+    }]);
+})();

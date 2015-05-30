@@ -1,4 +1,9 @@
-App.directive("ngDropzone", function($parse, $compile){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.directive("ngDropzone", function($parse, $compile){
     return {
         link: function($scope, element, attributes){
             $(attributes.$$element).dropzone({
@@ -28,3 +33,4 @@ App.directive("ngDropzone", function($parse, $compile){
         }
     };
 });
+ })();  

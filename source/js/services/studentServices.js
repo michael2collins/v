@@ -18,7 +18,12 @@ var studentServices = angular.module('vStudentServices', [])
 */
 //var module = angular.module('app', []);
 //module.service('StudentServices', function()  {
-App.factory('StudentServices', function( $http, $log ) {
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')    
+    .factory('StudentServices', function( $http, $log ) {
      var service = {
         getAllStudents: function(path, callback) {
                $http.get(path).success(callback);
@@ -31,4 +36,4 @@ App.factory('StudentServices', function( $http, $log ) {
      };
      return service;
 });
-
+ })();  

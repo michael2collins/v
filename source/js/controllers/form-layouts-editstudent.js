@@ -1,4 +1,9 @@
-App.controller('FormLayoutsControllerEditStudent', ['StudentServices', 
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('FormLayoutsControllerEditStudent', ['StudentServices', 
     '$scope', 
     '$routeParams', 
     '$log',
@@ -25,3 +30,4 @@ App.controller('FormLayoutsControllerEditStudent', ['StudentServices',
             $scope.students = data;
         });
 }]);
+})();    

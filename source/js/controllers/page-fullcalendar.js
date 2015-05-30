@@ -1,4 +1,9 @@
-App.controller('PageFullcalendarController', function ($scope, $routeParams){
+(function () {
+    'use strict';
+
+    angular
+        .module('ng-admin')
+.controller('PageFullcalendarController', function ($scope, $routeParams){
     /* initialize the external events
      -----------------------------------------------------------------*/
 
@@ -73,3 +78,4 @@ App.controller('PageFullcalendarController', function ($scope, $routeParams){
         addEvent(name);
     });
 });
+})();    
