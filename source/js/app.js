@@ -10,14 +10,19 @@ angular
         'ui.grid.cellNav', 
         'ui.grid.edit', 
         'ui.grid.selection'
-    ])
-
-    .config(['$logProvider', function($logProvider){
+        ])
+    .config(logConfig)
+    .config(routeConfig);
+    
+    logConfig.$inject = ['$logProvider'];
+    routeConfig.$inject = ['$routeProvider','$locationProvider'];
+    
+    function logConfig($logProvider){
         $logProvider.debugEnabled(true);
-    }])
+    }
 
 
-    .config(['$routeProvider', '$locationProvider' ,function ($routeProvider, $locationProvider) {
+    function routeConfig($routeProvider, $locationProvider) {
         $routeProvider
         .when('/', {templateUrl: 'templates/states/main.html', controller: 'MainController'})
         .when('/form-components', {templateUrl: 'templates/states/form-components.html', controller: 'FormComponentsController'})
@@ -61,5 +66,5 @@ angular
             redirectTo: '/'
           });
         $locationProvider.html5Mode(false);  
-    }]);
+    }
 })();
