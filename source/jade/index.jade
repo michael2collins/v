@@ -59,7 +59,7 @@ html(lang="en")
     //V JS
 
   body.topbar-fixed.sidebar-fixed(ng-app='ng-admin', ng-class="[header.header_topbar, header.boxed]")
-    .default-page(ng-controller="AppController")
+    .default-page(ng-controller="AppController as vm")
 
       //BEGIN TEMPLATE SETTING
       #temp-setting(ng-include="'templates/states/_includes/template-setting.html'", onload="loadtempsetting()")

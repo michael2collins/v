@@ -64,7 +64,7 @@
   
     <!--V JS-->
     <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"></body>
-    <div ng-controller="AppController" class="default-page">
+    <div ng-controller="AppController as vm" class="default-page">
       <!--BEGIN TEMPLATE SETTING-->
       <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
       <!--END TEMPLATE SETTING-->

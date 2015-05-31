@@ -1,5 +1,5 @@
 doctype html
-div(ng-controller="StudentsTableBasicController")
+div(ng-controller="StudentsTableBasicController as vm")
     .row
         .col-lg-12     
             .portlet.box.portlet-green
@@ -27,7 +27,7 @@ div(ng-controller="StudentsTableBasicController")
                                 button.btn.btn-primary(type='button').mrs
                                     i.fa.fa-copy
                                     | &nbsp; Excel
-                    .mygrid(ui-grid="gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit)
+                    .mygrid(ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit)
                     //.row
                         .col-lg-12
                         .panel.panel-orange

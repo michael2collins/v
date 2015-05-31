@@ -14,27 +14,42 @@
     ];
 
     function StudentsTableBasicController(StudentServices, $scope, $routeParams, $log, uiGridConstants) {
+        /* jshint validthis: true */
+        var vm = this;
+
+        //vm.path = 'testdata/students_vsmall.json';
+        vm.path = '../v1/students';
+        vm.getAllStudents = getAllStudents;
+        vm.highlightFilteredHeader = highlightFilteredHeader;
+        //vm.gridOptions = {};
+
         $.fn.Data.Portlet();
-        //   $scope.students = []; 
-
-        //    var path = 'testdata/students_vsmall.json';
-        var path = '../v1/students';
-        $log.debug('Hello Debug!');
-
-
+        setGridOptions();
+        activate();
+        
+        function activate() {
+        return getAllStudents().then(function() {
+            $log.debug('activated StudentsTableBasic view');
+            });
+        }
+        
         //   setTimeout(function(){
         // Init
         //      var spinner = $( ".spinner" ).spinner();
+        //    },50);
 
-        $scope.highlightFilteredHeader = function(row, rowRenderIndex, col, colRenderIndex) {
-            if (col.filters[0].term) {
-                return 'header-filtered';
-            } else {
-                return '';
-            }
-        };
+        function getAllStudents() {
+            return StudentServices.getAllStudents(vm.path).then(function(data){
+               //     $log.debug('getAllStudents returned data');
+                    vm.gridOptions.data = data.data.students;
+               //     $log.debug($scope.gridOptions.data);
+                    return vm.gridOptions.data;
+                });
+        }
 
-        $scope.gridOptions = {
+
+        function setGridOptions() {
+            vm.gridOptions = {
             enableFiltering: true,
             paginationPageSizes: [25, 50, 75],
             paginationPageSize: 25,
@@ -42,55 +57,55 @@
                 // default
                 {
                     field: 'name',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'ID2',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'LastName',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'FirstName',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'Email',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'Email2',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'Parent',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'Phone',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'AltPhone',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'Address',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'City',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'State',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'ZIP',
-                    headerCellClass: $scope.highlightFilteredHeader,
+                    headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     name: 'modallink',
@@ -108,16 +123,19 @@
                     enableCellEdit: false,
                     cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="#/form-layouts-editstudent?id={{COL_FIELD}}" >Edit</button></span></div>'
                 }
-            ]
+            ]};
 
-        };
+        }
 
-        StudentServices.getAllStudents(path, function(data) {
-            $scope.gridOptions.data = data.students;
 
-        });
+        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
+            if (col.filters[0].term) {
+                return 'header-filtered';
+            } else {
+                return '';
+            }
+        }
 
-        //    },50);
 
     }
 })();
