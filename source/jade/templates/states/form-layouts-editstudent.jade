@@ -12,81 +12,82 @@
         .tab-content.pan.mtl.mbn(style='background: transparent; border: 0;')
             #tab-two-columns.tab-pane.fade.in.active
                 .row
-                    .col-lg-12
-                        .panel.panel-blue
-                            .panel-heading Student
-                            .panel-body.pan
-                                form.horizontal-form(action='')
-                                    .form-body.pal
-                                        h3.block-heading Personal
-                                        .row
-                                            .col-md-6
-                                                .form-group.has-success
-                                                    label.control-label(for='inputFirstName') First Name <span class='require'>*</span>
-                                                    .input-icon.right
-                                                        i.glyphicon.glyphicon-ok.tooltips(data-hover='tooltip', data-original-title='Correct')
-                                                        input#inputFirstName.form-control(type='text', placeholder='First Name' ng-model='students.FirstName')
-                                            .col-md-6
-                                                .form-group.has-error
-                                                    label.control-label(for='inputLastName') Last Name <span class='require'>*</span>
-                                                    .input-icon.right
-                                                        i.glyphicon.glyphicon-remove.tooltips(data-hover='tooltip', data-original-title='Last Name is empty')
-                                                        input#inputLastName.form-control(type="text", placeholder="Last Name" ng-model='students.LastName')
-                                        .row
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='inputEmail') Email <span class='require'>*</span>
-                                                    .input-icon
-                                                        i.fa.fa-envelope
-                                                        input.form-control(type="text", placeholder="Email Address" ng-model='students.Email')
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='selGender') Gender <span class='require'>*</span>
-                                                    select#selGender.form-control
-                                                        option(value='') Male
-                                                        option(value='') Female
-                                        .row
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='inputBirthday') Birthday
-                                                    input#inputBirthday.form-control(type="text", placeholder="dd/mm/yyyy")
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='inputPhone') Phone
-                                                    input#inputPhone.form-control(type="text", placeholder="" ng-model='students.Phone')
-                                        h3.block-heading Address
-                                        .row
-                                            .col-md-12
-                                                .form-group
-                                                    label.control-label(for='inputStreet') Street <span class='require'>*</span>
-                                                    input#inputStreet.form-control(type='text', placeholder='' ng-model='students.Street')
-                                        .row
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='inputFirstName') District
-                                                    input#inputDistrict.form-control(type='text', placeholder='')
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='inputCity') City <span class='require'>*</span>
-                                                    input#inputCity.form-control(type="text", placeholder="" ng-model='students.City')
-                                        .row
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='inputPostCode') Post Code
-                                                    input#inputPostCode.form-control(type='text', placeholder='' ng-model='students.Zip')
-                                            .col-md-6
-                                                .form-group
-                                                    label.control-label(for='selCountry') Country
-                                                    select#selCountry.form-control
-                                                        option(value='') Select a Country
-                                                        option(value='') United States
-                                                        option(value='') England
-                                                        option(value='') France
-                                                        option(value='') Spain
-                                    .form-actions.text-right.pal
-                                        button.btn.btn-primary.btn-outlined(type='submit') Submit
-                                        | &nbsp;
-                                        button.btn.btn-green.btn-outlined(type='button') Cancel
+                    div(ng-controller="FormLayoutsControllerEditStudent as vm")
+                        .col-lg-12
+                            .panel.panel-blue
+                                .panel-heading Student
+                                .panel-body.pan
+                                    form.horizontal-form(action='')
+                                        .form-body.pal
+                                            h3.block-heading Personal
+                                            .row
+                                                .col-md-6
+                                                    .form-group.has-success
+                                                        label.control-label(for='inputFirstName') First Name <span class='require'>*</span>
+                                                        .input-icon.right
+                                                            i.glyphicon.glyphicon-ok.tooltips(data-hover='tooltip', data-original-title='Correct')
+                                                            input#inputFirstName.form-control(type='text', placeholder='First Name' ng-model='vm.students.FirstName')
+                                                .col-md-6
+                                                    .form-group.has-error
+                                                        label.control-label(for='inputLastName') Last Name <span class='require'>*</span>
+                                                        .input-icon.right
+                                                            i.glyphicon.glyphicon-remove.tooltips(data-hover='tooltip', data-original-title='Last Name is empty')
+                                                            input#inputLastName.form-control(type="text", placeholder="Last Name" ng-model='vm.students.LastName')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputEmail') Email <span class='require'>*</span>
+                                                        .input-icon
+                                                            i.fa.fa-envelope
+                                                            input.form-control(type="text", placeholder="Email Address" ng-model='vm.students.Email')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='selGender') Gender <span class='require'>*</span>
+                                                        select#selGender.form-control
+                                                            option(value='') Male
+                                                            option(value='') Female
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputBirthday') Birthday
+                                                        input#inputBirthday.form-control(type="text", placeholder="dd/mm/yyyy")
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputPhone') Phone
+                                                        input#inputPhone.form-control(type="text", placeholder="" ng-model='vm.students.Phone')
+                                            h3.block-heading Address
+                                            .row
+                                                .col-md-12
+                                                    .form-group
+                                                        label.control-label(for='inputStreet') Street <span class='require'>*</span>
+                                                        input#inputStreet.form-control(type='text', placeholder='' ng-model='vm.students.Street')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputFirstName') District
+                                                        input#inputDistrict.form-control(type='text', placeholder='')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputCity') City <span class='require'>*</span>
+                                                        input#inputCity.form-control(type="text", placeholder="" ng-model='vm.students.City')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputPostCode') Post Code
+                                                        input#inputPostCode.form-control(type='text', placeholder='' ng-model='vm.students.Zip')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='selCountry') Country
+                                                        select#selCountry.form-control
+                                                            option(value='') Select a Country
+                                                            option(value='') United States
+                                                            option(value='') England
+                                                            option(value='') France
+                                                            option(value='') Spain
+                                        .form-actions.text-right.pal
+                                            button.btn.btn-primary.btn-outlined(type='submit') Submit
+                                            | &nbsp;
+                                            button.btn.btn-green.btn-outlined(type='button') Cancel
                     .col-lg-12
                         .panel.panel-orange
                             .panel-heading Class
