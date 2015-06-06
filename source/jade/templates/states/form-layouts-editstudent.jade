@@ -42,10 +42,9 @@
                                                             input.form-control(type="text", placeholder="Email Address" ng-model='vm.students.Email')
                                                 .col-md-6
                                                     .form-group
-                                                        label.control-label(for='selGender') Gender <span class='require'>*</span>
-                                                        select#selGender.form-control
-                                                            option(value='') Male
-                                                            option(value='') Female
+                                                        label.control-label(for='selGender' ) Gender <span class='require'>*</span>
+                                                        select#selGender.form-control(ng-init='gender.id=vm.student.sex' ng-options='gender.name for gender in vm.genders track by gender.id' ng-model='vm.students.sex')
+                                                            //option(value='' ng-if='vm.students.sex') Select gender
                                             .row
                                                 .col-md-6
                                                     .form-group

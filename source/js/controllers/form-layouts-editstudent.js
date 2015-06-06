@@ -17,6 +17,7 @@
 
         vm.getStudent = getStudent;
         vm.students =[];
+        vm.genders =[];
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
         vm.path = '../v1/students/' + $routeParams.id;
@@ -27,6 +28,7 @@
 
         $.fn.Data.Portlet();
         setHeight();
+        setGenderList();
         activate();
         
         function activate() {
@@ -41,6 +43,7 @@
                     $log.debug('getStudent returned data');
                     $log.debug(data.data);
                     vm.students = data.data;
+                    
                     return vm.students;
                 });
         }
@@ -54,6 +57,13 @@
                     $(tab_id).css('height', '960px');
                 }
             });
+        }
+        function setGenderList() {
+            vm.genders = [
+                {id: 'Female', name: 'Female'},
+                {id: 'Male', name: 'Male'},
+                {id: 'Unknown', name: 'Unknown'}
+            ];
         }
     }
 })();    
