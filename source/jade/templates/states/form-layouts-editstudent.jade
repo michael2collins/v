@@ -43,7 +43,12 @@
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='selGender' ) Gender <span class='require'>*</span>
-                                                        select#selGender.form-control(ng-init='gender.id=vm.student.sex' ng-options='gender.name for gender in vm.genders track by gender.id' ng-model='vm.students.sex')
+                                                           //<select ng-model="vm.students.sex">
+                                                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" value="{{g}}">{{g}}</option>
+                                                                </select>
+                                                        pre {{vm.students.sex}}
+                                                        select#selGender.form-control(ng-model='vm.students.sex')
+                                                            option(ng-repeat='g in vm.genders', ng-selected='{{g==vm.students.sex}}' value='{{g}}') {{g}}
                                                             //option(value='' ng-if='vm.students.sex') Select gender
                                             .row
                                                 .col-md-6

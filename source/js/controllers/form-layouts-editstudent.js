@@ -59,11 +59,12 @@
             });
         }
         function setGenderList() {
-            vm.genders = [
-                {id: 'Female', name: 'Female'},
-                {id: 'Male', name: 'Male'},
-                {id: 'Unknown', name: 'Unknown'}
-            ];
+       //     vm.genders = [
+       //         {id: 'Female', name: 'Female'},
+       //         {id: 'Male', name: 'Male'},
+       //         {id: 'Unknown', name: 'Unknown'}
+       //     ];
+            vm.genders=['Female','Male','Unknown'];
         }
     }
 })();    
