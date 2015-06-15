@@ -318,6 +318,18 @@ class DbHandler {
         return $result;
     }
 
+     /**
+     * Fetching all zips
+     */
+    public function getAllZips() {
+        $stmt = $this->conn->prepare("SELECT t.* FROM zipcity t");
+        $stmt->execute();
+        $zips = $stmt->get_result();
+        $stmt->close();
+        return $zips;
+    }
+
+    
     /**
      * Fetching all students
      */
@@ -327,7 +339,7 @@ class DbHandler {
         $students = $stmt->get_result();
         $stmt->close();
         return $students;
-    }	    
+    }
 
     /**
      * Fetching single student
@@ -348,7 +360,7 @@ class DbHandler {
                    t.State,
                    t.ZIP,
                    t.Notes,
-                   t.Birthday,
+                   DATE_FORMAT(t.Birthday, '%Y-%m-%d'),
                    t.StartDate,
                    t.NewRank,
                    t.BeltSize,

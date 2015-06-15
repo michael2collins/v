@@ -163,6 +163,33 @@ $app->get('/tasks', 'authenticate', function() {
         });
 
 /**
+ * Listing of zips
+ * method GET
+ * url /zips          
+ */
+$app->get('/zips',  function() {
+            $response = array();
+           $db = new DbHandler();
+
+            // fetching all user tasks
+            $result = $db->getAllZips();
+
+            $response["error"] = false;
+            $response["zips"] = array();
+
+            // looping through result and preparing zips array
+            while ($zip = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["zip"] = $zip["zip"];
+                $tmp["city"] = $zip["city"];
+                array_push($response["zips"], $tmp);
+            }
+
+            echoRespnse(200, $response);
+        });
+        
+        
+/**
  * Listing all tasks of particual user
  * method GET
  * url /tasks          

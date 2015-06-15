@@ -16,21 +16,67 @@
         var vm = this;
 
         vm.getStudent = getStudent;
+        vm.getAllZips = getAllZips;
         vm.students =[];
         vm.genders =[];
+        vm.zipList=[];
+        vm.stateList=[];
+        vm.rankList=[];
+        vm.studentTypeList=[];
+        vm.contactedTypeList=[];
+        vm.schoolList=[];
+        vm.reikiLevelList=[];
+        vm.instructorLevelList=[];
+        
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
         vm.path = '../v1/students/' + $routeParams.id;
 //      vm.path = '../v1/students/5340';
-
+        vm.zippath = '../v1/zips';
+        
         $log.debug('Hello Debug!');
         $log.debug($routeParams.id);          
 
         $.fn.Data.Portlet();
         setHeight();
-        setGenderList();
+        setLists();
+        getAllZips();
         activate();
-        
+
+  $scope.today = function() {
+    $scope.dt = new Date();
+  };
+  $scope.today();
+
+  $scope.clear = function () {
+    $scope.dt = null;
+  };
+
+  // Disable weekend selection
+  $scope.disabled = function(date, mode) {
+    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
+  };
+
+  $scope.toggleMin = function() {
+    $scope.minDate = $scope.minDate ? null : new Date();
+  };
+  $scope.toggleMin();
+
+  $scope.open = function($event) {
+    $event.preventDefault();
+    $event.stopPropagation();
+
+    $scope.opened = true;
+  };
+
+  $scope.dateOptions = {
+ //   formatYear: 'yy',
+ //   startingDay: 1
+  };
+
+  $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
+  $scope.format = $scope.formats[4];
+  
         function activate() {
         return getStudent().then(function() {
             $log.debug('activated EditStudent view');
@@ -48,6 +94,15 @@
                 });
         }
 
+        function getAllZips() {
+            return StudentServices.getAllZips(vm.zippath).then(function(data){
+                    $log.debug('getAllZips returned data');
+                    $log.debug(data.data);
+                    vm.zipList = data.data;
+                    
+                    return vm.zipList;
+                });
+        }
                  
         function setHeight() {
             $('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
@@ -58,12 +113,7 @@
                 }
             });
         }
-        function setGenderList() {
-       //     vm.genders = [
-       //         {id: 'Female', name: 'Female'},
-       //         {id: 'Male', name: 'Male'},
-       //         {id: 'Unknown', name: 'Unknown'}
-       //     ];
+        function setLists() {
             vm.genders=['Female','Male','Unknown'];
         }
     }

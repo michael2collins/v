@@ -65,12 +65,11 @@ module.exports = function (grunt) {
         'bower_components/angular/angular.js',
         'bower_components/angular-sanitize/angular-sanitize.js',
         'bower_components/angular-mocks/angular-mocks.js',
-        'bower_components/restangular/dist/restangular.js',
         'bower_components/underscore/underscore.js',
         'bower_components/jquery/jquery.min.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular/angular-route.min.js',
-            'bower_components/angular-bootstrap/ui-bootstrap.min.js',
+            'bower_components/angular-bootstrap/*.min.js',
             'bower_components/angular-ui-grid/*.min.js',
             'bower_components/**/*.min.js',
             'app/vendors/jquery-1.9.1.js',
@@ -153,7 +152,6 @@ module.exports = function (grunt) {
         'bower_components/angular-route/angular-route.js',
         'bower_components/angular-sanitize/angular-sanitize.js',
         'bower_components/angular-mocks/angular-mocks.js',
-        'bower_components/restangular/dist/restangular.js',
         'bower_components/underscore/underscore.js',
         'test/**/*Spec.js'
       ]

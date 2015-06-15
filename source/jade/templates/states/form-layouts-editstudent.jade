@@ -1,4 +1,69 @@
+doctype html
 .row#form-layouts-editstudent
+        //LastName
+            FirstName
+            Email
+            Email2
+            Phone
+            AltPhone
+            phoneExt
+            altPhoneExt
+            Birthday
+            sex
+            Parent
+            EmergencyContact
+            Notes
+            medicalConcerns
+            Address Info
+            Address
+            City
+            State
+            ZIP
+            karate related
+            ContactType
+            quickbooklink
+            StudentSchool
+            GuiSize
+            ShirtSize
+            BeltSize
+            ReferredBy
+            InstructorPaymentFree
+            InstructorFlag
+            instructorTitle
+            Test related
+            CurrentRank
+            CurrentReikiRank
+            CurrentIARank
+            not editted
+            LastPromoted
+            include
+            testDate
+            testTime
+            bdayinclude
+            dateEntered
+            dateInactive
+            nextScheduledTest
+            upgrade
+            ReadyForNextRank
+            NewRank
+            move to contactmgmt
+            dateEntered
+            dateInactive
+            sendWelcomeCard
+            signupDate
+            ConsentToPublicPictures
+            signupDate
+            StartDate
+            sendWelcomeCard
+            referralTo
+            zipList
+            stateList
+            rankList
+            studentTypeList
+            contactedTypeList
+            schoolList
+            reikiLevelList
+            instructorLevelList
     .col-lg-12(ng-tab="")
         ul.nav.nav-pills
             li.active
@@ -20,6 +85,20 @@
                                     form.horizontal-form(action='')
                                         .form-body.pal
                                             h3.block-heading Personal
+                                                //LastName
+                                                    FirstName
+                                                    Email
+                                                    Email2
+                                                    Phone
+                                                    AltPhone
+                                                    phoneExt
+                                                    altPhoneExt
+                                                    Birthday
+                                                    sex
+                                                    Parent
+                                                    EmergencyContact
+                                                    Notes
+                                                    medicalConcerns                                            
                                             .row
                                                 .col-md-6
                                                     .form-group.has-success
@@ -39,32 +118,57 @@
                                                         label.control-label(for='inputEmail') Email <span class='require'>*</span>
                                                         .input-icon
                                                             i.fa.fa-envelope
-                                                            input.form-control(type="text", placeholder="Email Address" ng-model='vm.students.Email')
+                                                            input.inputEmail.form-control(type="text", placeholder="Email Address" ng-model='vm.students.Email')
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='selGender' ) Gender <span class='require'>*</span>
                                                            //<select ng-model="vm.students.sex">
                                                                 <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" value="{{g}}">{{g}}</option>
                                                                 </select>
-                                                        pre {{vm.students.sex}}
+                                                            //pre {{vm.students.sex}}
                                                         select#selGender.form-control(ng-model='vm.students.sex')
                                                             option(ng-repeat='g in vm.genders', ng-selected='{{g==vm.students.sex}}' value='{{g}}') {{g}}
                                                             //option(value='' ng-if='vm.students.sex') Select gender
                                             .row
                                                 .col-md-6
                                                     .form-group
-                                                        label.control-label(for='inputBirthday') Birthday
-                                                        input#inputBirthday.form-control(type="text", placeholder="dd/mm/yyyy")
+                                                        label.control-label(for='inputEmail2') Alt. Email 
+                                                        .input-icon
+                                                            i.fa.fa-envelope
+                                                            input#inputEmail2.form-control(type="text", placeholder="Alt. Email Address" ng-model='vm.students.Email2')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputBirthday') Birthday                                                    
+                                                        p.input-group
+                                                            input#inputBirthday.form-control(type="date" is-open="opened"  placeholder="mm/dd/yyyy" ng-model='vm.students.Birthday' datepicker-popup)
+                                                            span.input-group-btn
+                                                                button.btn.btn-default(type='button' ng-click='open($event)') 
+                                                                    i.glyphicon.glyphicon-calendar
+                                            .row
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputPhone') Phone
                                                         input#inputPhone.form-control(type="text", placeholder="" ng-model='vm.students.Phone')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputPhoneExt') Phone Ext
+                                                        input#inputPhoneExt.form-control(type="text", placeholder="" ng-model='vm.students.phoneExt')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputAltPhone') Alt. Phone
+                                                        input#inputAltPhone.form-control(type="text", placeholder="" ng-model='vm.students.altPhone')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputAltPhoneExt') Alt. Phone Ext
+                                                        input#inputAltPhoneExt.form-control(type="text", placeholder="" ng-model='vm.students.altPhoneExt')
+
                                             h3.block-heading Address
                                             .row
                                                 .col-md-12
                                                     .form-group
                                                         label.control-label(for='inputStreet') Street <span class='require'>*</span>
-                                                        input#inputStreet.form-control(type='text', placeholder='' ng-model='vm.students.Street')
+                                                        input#inputStreet.form-control(type='text', placeholder='' ng-model='vm.students.Address')
                                             .row
                                                 .col-md-6
                                                     .form-group
@@ -77,8 +181,12 @@
                                             .row
                                                 .col-md-6
                                                     .form-group
-                                                        label.control-label(for='inputPostCode') Post Code
-                                                        input#inputPostCode.form-control(type='text', placeholder='' ng-model='vm.students.Zip')
+                                                        label.control-label(for='selPostCode') Zip/Postal Code <span class='require'>*</span>
+                                                        select#selPostCode.form-control(ng-model='vm.students.ZIP')
+                                                            option(ng-repeat='z in vm.zipList.zips', ng-selected='{{z==vm.students.ZIP}}' value='{{z.zip}}') {{z.zip}} - {{z.city}}
+                                                            //option(value='' ng-if='vm.students.ZIP') Select zip
+                                                            //pre {{vm.students.ZIP}}
+
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='selCountry') Country
