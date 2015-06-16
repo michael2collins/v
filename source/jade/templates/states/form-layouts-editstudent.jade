@@ -101,16 +101,18 @@ doctype html
                                                     medicalConcerns                                            
                                             .row
                                                 .col-md-6
-                                                    .form-group.has-success
+                                                    //.form-group.has-success
+                                                    .form-group
                                                         label.control-label(for='inputFirstName') First Name <span class='require'>*</span>
                                                         .input-icon.right
-                                                            i.glyphicon.glyphicon-ok.tooltips(data-hover='tooltip', data-original-title='Correct')
+                                                            //i.glyphicon.glyphicon-ok.tooltips(data-hover='tooltip', data-original-title='Correct')
                                                             input#inputFirstName.form-control(type='text', placeholder='First Name' ng-model='vm.students.FirstName')
                                                 .col-md-6
-                                                    .form-group.has-error
+                                                    //.form-group.has-error
+                                                    .form-group
                                                         label.control-label(for='inputLastName') Last Name <span class='require'>*</span>
                                                         .input-icon.right
-                                                            i.glyphicon.glyphicon-remove.tooltips(data-hover='tooltip', data-original-title='Last Name is empty')
+                                                            //i.glyphicon.glyphicon-remove.tooltips(data-hover='tooltip', data-original-title='Last Name is empty')
                                                             input#inputLastName.form-control(type="text", placeholder="Last Name" ng-model='vm.students.LastName')
                                             .row
                                                 .col-md-6
@@ -123,11 +125,11 @@ doctype html
                                                     .form-group
                                                         label.control-label(for='selGender' ) Gender <span class='require'>*</span>
                                                            //<select ng-model="vm.students.sex">
-                                                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" value="{{g}}">{{g}}</option>
+                                                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" placeholder="gender" value="{{g}}">{{g}}</option>
                                                                 </select>
                                                             //pre {{vm.students.sex}}
                                                         select#selGender.form-control(ng-model='vm.students.sex')
-                                                            option(ng-repeat='g in vm.genders', ng-selected='{{g==vm.students.sex}}' value='{{g}}') {{g}}
+                                                            option(ng-repeat='g in vm.genders', ng-selected='{{g==vm.students.sex}}' placeholder="Gender" value='{{g}}') {{g}}
                                                             //option(value='' ng-if='vm.students.sex') Select gender
                                             .row
                                                 .col-md-6
@@ -148,42 +150,42 @@ doctype html
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputPhone') Phone
-                                                        input#inputPhone.form-control(type="text", placeholder="" ng-model='vm.students.Phone')
+                                                        input#inputPhone.form-control(type="text" ui-mask="(999) 999-9999" ng-model='vm.students.Phone')
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputPhoneExt') Phone Ext
-                                                        input#inputPhoneExt.form-control(type="text", placeholder="" ng-model='vm.students.phoneExt')
+                                                        input#inputPhoneExt.form-control(type="text" placeholder="Phone Ext" ng-model='vm.students.phoneExt')
                                             .row
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputAltPhone') Alt. Phone
-                                                        input#inputAltPhone.form-control(type="text", placeholder="" ng-model='vm.students.altPhone')
+                                                        input#inputAltPhone.form-control(type="text", placeholder="Alt Phone" ng-model='vm.students.altPhone')
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputAltPhoneExt') Alt. Phone Ext
-                                                        input#inputAltPhoneExt.form-control(type="text", placeholder="" ng-model='vm.students.altPhoneExt')
+                                                        input#inputAltPhoneExt.form-control(type="text", placeholder="Alt Phone Ext" ng-model='vm.students.altPhoneExt')
 
                                             h3.block-heading Address
                                             .row
                                                 .col-md-12
                                                     .form-group
                                                         label.control-label(for='inputStreet') Street <span class='require'>*</span>
-                                                        input#inputStreet.form-control(type='text', placeholder='' ng-model='vm.students.Address')
+                                                        input#inputStreet.form-control(type='text', placeholder='Address' ng-model='vm.students.Address')
                                             .row
                                                 .col-md-6
                                                     .form-group
-                                                        label.control-label(for='inputFirstName') District
+                                                        label.control-label(for='inputDistrict') District
                                                         input#inputDistrict.form-control(type='text', placeholder='')
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputCity') City <span class='require'>*</span>
-                                                        input#inputCity.form-control(type="text", placeholder="" ng-model='vm.students.City')
+                                                        input#inputCity.form-control(type="text", placeholder="City" ng-model='vm.students.City')
                                             .row
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='selPostCode') Zip/Postal Code <span class='require'>*</span>
                                                         select#selPostCode.form-control(ng-model='vm.students.ZIP')
-                                                            option(ng-repeat='z in vm.zipList.zips', ng-selected='{{z==vm.students.ZIP}}' value='{{z.zip}}') {{z.zip}} - {{z.city}}
+                                                            option(ng-repeat='z in vm.zipList.zips', ng-selected='{{z==vm.students.ZIP}}' placeholder='Zip' value='{{z.zip}}') {{z.zip}} - {{z.city}}
                                                             //option(value='' ng-if='vm.students.ZIP') Select zip
                                                             //pre {{vm.students.ZIP}}
 

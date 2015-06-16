@@ -71,6 +71,7 @@ module.exports = function (grunt) {
             'bower_components/angular/angular-route.min.js',
             'bower_components/angular-bootstrap/*.min.js',
             'bower_components/angular-ui-grid/*.min.js',
+            'bower_components/angular-ui/*.min.js',
             'bower_components/**/*.min.js',
             'app/vendors/jquery-1.9.1.js',
             'app/vendors/jquery-migrate-1.2.1.min.js',

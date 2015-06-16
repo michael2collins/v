@@ -11,7 +11,7 @@
     '$log'
     ];
         
-    function FormLayoutsControllerEditStudent( StudentServices, $scope, $routeParams, $log){
+    function FormLayoutsControllerEditStudent( StudentServices, $scope, $routeParams,  $log){
         /* jshint validthis: true */
         var vm = this;
 

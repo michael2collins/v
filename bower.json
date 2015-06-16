@@ -9,7 +9,8 @@
     "angular-resource": "1.3.x",
     "angular-mocks": "1.2.16",
     "underscore": "1.6.0",
-    "angular-bootstrap": "~0.13.0"
+    "angular-bootstrap": "~0.13.0",
+    "angular-ui-utils": "~0.2.3"
   },
   "analytics": false,
   "resolutions": {

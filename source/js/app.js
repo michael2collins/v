@@ -2,7 +2,7 @@
     'use strict';
 angular
     .module('ng-admin', [
-        'ui.grid',    
+        'ui.grid',    'ui.utils',
         'ngRoute',    
         'ui.bootstrap',    
         'ngTouch',  
