@@ -1,69 +1,5 @@
 doctype html
 .row#form-layouts-editstudent
-        //LastName
-            FirstName
-            Email
-            Email2
-            Phone
-            AltPhone
-            phoneExt
-            altPhoneExt
-            Birthday
-            sex
-            Parent
-            EmergencyContact
-            Notes
-            medicalConcerns
-            Address Info
-            Address
-            City
-            State
-            ZIP
-            karate related
-            ContactType
-            quickbooklink
-            StudentSchool
-            GuiSize
-            ShirtSize
-            BeltSize
-            ReferredBy
-            InstructorPaymentFree
-            InstructorFlag
-            instructorTitle
-            Test related
-            CurrentRank
-            CurrentReikiRank
-            CurrentIARank
-            not editted
-            LastPromoted
-            include
-            testDate
-            testTime
-            bdayinclude
-            dateEntered
-            dateInactive
-            nextScheduledTest
-            upgrade
-            ReadyForNextRank
-            NewRank
-            move to contactmgmt
-            dateEntered
-            dateInactive
-            sendWelcomeCard
-            signupDate
-            ConsentToPublicPictures
-            signupDate
-            StartDate
-            sendWelcomeCard
-            referralTo
-            zipList
-            stateList
-            rankList
-            studentTypeList
-            contactedTypeList
-            schoolList
-            reikiLevelList
-            instructorLevelList
     .col-lg-12(ng-tab="")
         ul.nav.nav-pills
             li.active
@@ -85,20 +21,6 @@ doctype html
                                     form.horizontal-form(action='')
                                         .form-body.pal
                                             h3.block-heading Personal
-                                                //LastName
-                                                    FirstName
-                                                    Email
-                                                    Email2
-                                                    Phone
-                                                    AltPhone
-                                                    phoneExt
-                                                    altPhoneExt
-                                                    Birthday
-                                                    sex
-                                                    Parent
-                                                    EmergencyContact
-                                                    Notes
-                                                    medicalConcerns                                            
                                             .row
                                                 .col-md-6
                                                     //.form-group.has-success
@@ -114,6 +36,17 @@ doctype html
                                                         .input-icon.right
                                                             //i.glyphicon.glyphicon-remove.tooltips(data-hover='tooltip', data-original-title='Last Name is empty')
                                                             input#inputLastName.form-control(type="text", placeholder="Last Name" ng-model='vm.students.LastName')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputParent') Parent Name <span class='require'>*</span>
+                                                        .input-icon.right
+                                                            input#inputParent.form-control(type='text', placeholder='Parent Name' ng-model='vm.students.Parent')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputEmergencyContact') Emergency Contact Name <span class='require'>*</span>
+                                                        .input-icon.right
+                                                            input#inputEmergencyContact.form-control(type="text", placeholder="Emergency Contact" ng-model='vm.students.EmergencyContact')                                                            
                                             .row
                                                 .col-md-6
                                                     .form-group
@@ -149,22 +82,37 @@ doctype html
                                             .row
                                                 .col-md-6
                                                     .form-group
-                                                        label.control-label(for='inputPhone') Phone
-                                                        input#inputPhone.form-control(type="text" ui-mask="(999) 999-9999" ng-model='vm.students.Phone')
+                                                        label.control-label(for='inputPhone') Phone <span class='require'>*</span>
+                                                        .input-icon.right
+                                                            input#inputPhone.form-control(type="text" ui-mask="(999) 999-9999" ng-model='vm.students.Phone')
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputPhoneExt') Phone Ext
-                                                        input#inputPhoneExt.form-control(type="text" placeholder="Phone Ext" ng-model='vm.students.phoneExt')
+                                                        .input-icon.right
+                                                            input#inputPhoneExt.form-control(type="text" placeholder="Phone Ext" ng-model='vm.students.phoneExt')
                                             .row
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputAltPhone') Alt. Phone
-                                                        input#inputAltPhone.form-control(type="text", placeholder="Alt Phone" ng-model='vm.students.altPhone')
+                                                        .input-icon.right
+                                                            input#inputAltPhone.form-control(type="text", ui-mask="(999) 999-9999" ng-model='vm.students.altPhone')
                                                 .col-md-6
                                                     .form-group
                                                         label.control-label(for='inputAltPhoneExt') Alt. Phone Ext
-                                                        input#inputAltPhoneExt.form-control(type="text", placeholder="Alt Phone Ext" ng-model='vm.students.altPhoneExt')
-
+                                                        .input-icon.right
+                                                            input#inputAltPhoneExt.form-control(type="text", placeholder="Alt Phone Ext" ng-model='vm.students.altPhoneExt')
+                                            .row
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputNotes') Notes 
+                                                        .input-icon.right
+                                                            textarea#inputNotes.form-control(rows="3" placeholder='Notes' ng-model='vm.students.Notes')
+                                                .col-md-6
+                                                    .form-group
+                                                        label.control-label(for='inputMedicalConcerns') Medical Concerns
+                                                        .input-icon.right
+                                                            textarea#inputMedicalConcerns.form-control(rows="3" placeholder='Medical Concerns' ng-model='vm.students.medicalConcerns')
+ 
                                             h3.block-heading Address
                                             .row
                                                 .col-md-12
