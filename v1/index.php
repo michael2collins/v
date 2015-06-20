@@ -321,7 +321,67 @@ $app->get('/students/:id',  function($student_id) {
                 echoRespnse(404, $response);
             }
         });
-		
+/**
+ * Updating existing student
+ * method PUT
+ * params task, status
+ * url - /tasks/:id
+ */
+$app->put('/students/:id',  function($student_id) use($app) {
+        // check for required params
+        //verifyRequiredParams(array('task', 'status'));
+
+        //global $user_id;            
+        $LastName = $app->request->put('LastName');
+        $FirstName = $app->request->put('FirstName');
+        $Email = $app->request->put('Email');
+        $Email2 = $app->request->put('Email2');
+        $Phone = $app->request->put('Phone');
+        $AltPhone = $app->request->put('AltPhone');
+        $phoneExt = $app->request->put('phoneExt');
+        $altPhoneExt = $app->request->put('altPhoneExt');
+        $Birthday = $app->request->put('Birthday');
+        $sex = $app->request->put('sex');
+        $Parent = $app->request->put('Parent');
+        $EmergencyContact = $app->request->put('EmergencyContact');
+        $Notes = $app->request->put('Notes');
+        $medicalConcerns = $app->request->put('medicalConcerns');
+        $Address = $app->request->put('Address');
+        $City = $app->request->put('City');
+        $State = $app->request->put('State');
+        $ZIP = $app->request->put('ZIP');
+        $ContactType = $app->request->put('ContactType');
+        $quickbooklink = $app->request->put('quickbooklink');
+        $StudentSchool = $app->request->put('StudentSchool');
+        $GuiSize = $app->request->put('GuiSize');
+        $ShirtSize = $app->request->put('ShirtSize');
+        $BeltSize = $app->request->put('BeltSize');
+        $ReferredBy = $app->request->put('ReferredBy');
+        $InstructorPaymentFree = $app->request->put('InstructorPaymentFree');
+        $InstructorFlag = $app->request->put('InstructorFlag');
+        $instructorTitle = $app->request->put('instructorTitle');
+        $CurrentRank = $app->request->put('CurrentRank');
+        $CurrentReikiRank = $app->request->put('CurrentReikiRank');
+        $CurrentIARank = $app->request->put('CurrentIARank');
+
+        $db = new DbHandler();
+        $response = array();
+
+        // updating task
+        $result = $db->updateStudent($student_id);
+        if ($result) {
+            // task updated successfully
+            $response["error"] = false;
+            $response["message"] = "Student updated successfully";
+        } else {
+            // task failed to update
+            $response["error"] = true;
+            $response["message"] = "Student failed to update. Please try again!";
+        }
+        echoRespnse(200, $response);
+});
+
+
 /**
  * Listing single task of particual user
  * method GET

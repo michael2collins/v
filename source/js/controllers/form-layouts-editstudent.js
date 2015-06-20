@@ -8,10 +8,11 @@
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
     '$scope', 
     '$routeParams', 
-    '$log'
+    '$log',
+    '$location'
     ];
         
-    function FormLayoutsControllerEditStudent( StudentServices, $scope, $routeParams,  $log){
+    function FormLayoutsControllerEditStudent( StudentServices, $scope, $routeParams,  $log, $location){
         /* jshint validthis: true */
         var vm = this;
 
@@ -94,6 +95,17 @@
                 });
         }
 
+        function updateStudent() {
+            return StudentServices.updateStudent(vm.path).then(function(data){
+                    $log.debug('updateStudent returned data');
+                    $log.debug(data.data);
+                    vm.students = data.data;
+                    
+                    return vm.students;
+                });
+        }
+        
+        
         function getAllZips() {
             return StudentServices.getAllZips(vm.zippath).then(function(data){
                     $log.debug('getAllZips returned data');
