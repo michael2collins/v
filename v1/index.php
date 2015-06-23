@@ -368,7 +368,40 @@ $app->put('/students/:id',  function($student_id) use($app) {
         $response = array();
 
         // updating task
-        $result = $db->updateStudent($student_id);
+        $result = $db->updateStudent($student_id, 
+$LastName,
+$FirstName,
+$Email,
+$Email2,
+$Phone,
+$AltPhone,
+$phoneExt,
+$altPhoneExt,
+$Birthday,
+$sex,
+$Parent,
+$EmergencyContact,
+$Notes,
+$medicalConcerns,
+$Address,
+$City,
+$State,
+$ZIP,
+$ContactType,
+$quickbooklink,
+$StudentSchool,
+$GuiSize,
+$ShirtSize,
+$BeltSize,
+$ReferredBy,
+$InstructorPaymentFree,
+$InstructorFlag,
+$instructorTitle,
+$CurrentRank,
+$CurrentReikiRank,
+$CurrentIARank
+
+        );
         if ($result) {
             // task updated successfully
             $response["error"] = false;

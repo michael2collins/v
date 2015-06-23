@@ -11,6 +11,7 @@
         var service = {
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
+            updateStudent: updateStudent,
             getStudent: getStudent
         };
         return service;

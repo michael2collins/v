@@ -18,6 +18,7 @@
 
         vm.getStudent = getStudent;
         vm.getAllZips = getAllZips;
+        vm.updateStudent = updateStudent;        
         vm.students =[];
         vm.genders =[];
         vm.zipList=[];

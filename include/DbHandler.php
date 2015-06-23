@@ -510,88 +510,122 @@ class DbHandler {
      * Updating student
 
      */
-    public function updateStudent($student_id) {
+    public function updateStudent($student_id,
+$LastName,
+$FirstName,
+$Email,
+$Email2,
+$Phone,
+$AltPhone,
+$phoneExt,
+$altPhoneExt,
+$Birthday,
+$sex,
+$Parent,
+$EmergencyContact,
+$Notes,
+$medicalConcerns,
+$Address,
+$City,
+$State,
+$ZIP,
+$ContactType,
+$quickbooklink,
+$StudentSchool,
+$GuiSize,
+$ShirtSize,
+$BeltSize,
+$ReferredBy,
+$InstructorPaymentFree,
+$InstructorFlag,
+$instructorTitle,
+$CurrentRank,
+$CurrentReikiRank,
+$CurrentIARank    ) {
         $num_affected_rows = 0;
-        $request = Slim::getInstance()->request();
-        $body = $request->getBody();
-        $student = json_decode($body);
-            $sql = "UPDATE student t set ";
-            $sql .= " t.LastName = :LastName, ";
-            $sql .= " t.FirstName = :FirstName, ";
-            $sql .= " t.Email = :Email, ";
-            $sql .= " t.Email2 = :Email2, ";
-            $sql .= " t.Phone = :Phone, ";
-            $sql .= " t.AltPhone = :AltPhone, ";
-            $sql .= " t.phoneExt = :phoneExt, ";
-            $sql .= " t.altPhoneExt = :altPhoneExt, ";
-            $sql .= " t.Birthday = :Birthday, ";
-            $sql .= " t.sex = :sex, ";
-            $sql .= " t.Parent = :Parent, ";
-            $sql .= " t.EmergencyContact = :EmergencyContact, ";
-            $sql .= " t.Notes = :Notes, ";
-            $sql .= " t.medicalConcerns = :medicalConcerns, ";
-            $sql .= " t.Address = :Address, ";
-            $sql .= " t.City = :City, ";
-            $sql .= " t.State = :State, ";
-            $sql .= " t.ZIP = :ZIP, ";
-            $sql .= " t.ContactType = :ContactType, ";
-            $sql .= " t.quickbooklink = :quickbooklink, ";
-            $sql .= " t.StudentSchool = :StudentSchool, ";
-            $sql .= " t.GuiSize = :GuiSize, ";
-            $sql .= " t.ShirtSize = :ShirtSize, ";
-            $sql .= " t.BeltSize = :BeltSize, ";
-            $sql .= " t.ReferredBy = :ReferredBy, ";
-            $sql .= " t.InstructorPaymentFree = :InstructorPaymentFree, ";
-            $sql .= " t.InstructorFlag = :InstructorFlag, ";
-            $sql .= " t.instructorTitle = :instructorTitle, ";
-            $sql .= " t.CurrentRank = :CurrentRank, ";
-            $sql .= " t.CurrentReikiRank = :CurrentReikiRank, ";
-            $sql .= " t.CurrentIARank = :CurrentIARank, ";
+
+            $sql = "UPDATE ncontacts t set ";
+$sql .= " t.LastName = ?,";
+$sql .= " t.FirstName = ?,";
+$sql .= " t.Email = ?,";
+$sql .= " t.Email2 = ?,";
+$sql .= " t.Phone = ?,";
+$sql .= " t.AltPhone = ?,";
+$sql .= " t.phoneExt = ?,";
+$sql .= " t.altPhoneExt = ?,";
+$sql .= " t.Birthday = ?,";
+$sql .= " t.sex = ?,";
+$sql .= " t.Parent = ?,";
+$sql .= " t.EmergencyContact = ?,";
+$sql .= " t.Notes = ?,";
+$sql .= " t.medicalConcerns = ?,";
+$sql .= " t.Address = ?,";
+$sql .= " t.City = ?,";
+$sql .= " t.State = ?,";
+$sql .= " t.ZIP = ?,";
+$sql .= " t.ContactType = ?,";
+$sql .= " t.quickbooklink = ?,";
+$sql .= " t.StudentSchool = ?,";
+$sql .= " t.GuiSize = ?,";
+$sql .= " t.ShirtSize = ?,";
+$sql .= " t.BeltSize = ?,";
+$sql .= " t.ReferredBy = ?,";
+$sql .= " t.InstructorPaymentFree = ?,";
+$sql .= " t.InstructorFlag = ?,";
+$sql .= " t.instructorTitle = ?,";
+$sql .= " t.CurrentRank = ?,";
+$sql .= " t.CurrentReikiRank = ?,";
+$sql .= " t.CurrentIARank = ?,";
 
 
-            try {
-                $stmt = $this->conn->prepare($sql);
-                $stmt->bindParam("LastName", $student->LastName);
-                $stmt->bindParam("FirstName", $student->FirstName);
-                $stmt->bindParam("Email", $student->Email);
-                $stmt->bindParam("Email2", $student->Email2);
-                $stmt->bindParam("Phone", $student->Phone);
-                $stmt->bindParam("AltPhone", $student->AltPhone);
-                $stmt->bindParam("phoneExt", $student->phoneExt);
-                $stmt->bindParam("altPhoneExt", $student->altPhoneExt);
-                $stmt->bindParam("Birthday", $student->Birthday);
-                $stmt->bindParam("sex", $student->sex);
-                $stmt->bindParam("Parent", $student->Parent);
-                $stmt->bindParam("EmergencyContact", $student->EmergencyContact);
-                $stmt->bindParam("Notes", $student->Notes);
-                $stmt->bindParam("medicalConcerns", $student->medicalConcerns);
-                $stmt->bindParam("Address", $student->Address);
-                $stmt->bindParam("City", $student->City);
-                $stmt->bindParam("State", $student->State);
-                $stmt->bindParam("ZIP", $student->ZIP);
-                $stmt->bindParam("ContactType", $student->ContactType);
-                $stmt->bindParam("quickbooklink", $student->quickbooklink);
-                $stmt->bindParam("StudentSchool", $student->StudentSchool);
-                $stmt->bindParam("GuiSize", $student->GuiSize);
-                $stmt->bindParam("ShirtSize", $student->ShirtSize);
-                $stmt->bindParam("BeltSize", $student->BeltSize);
-                $stmt->bindParam("ReferredBy", $student->ReferredBy);
-                $stmt->bindParam("InstructorPaymentFree", $student->InstructorPaymentFree);
-                $stmt->bindParam("InstructorFlag", $student->InstructorFlag);
-                $stmt->bindParam("instructorTitle", $student->instructorTitle);
-                $stmt->bindParam("CurrentRank", $student->CurrentRank);
-                $stmt->bindParam("CurrentReikiRank", $student->CurrentReikiRank);
-                $stmt->bindParam("CurrentIARank", $student->CurrentIARank);
-               
+            $sql .= " where ID= :ID "; 
+
+error_log( print_R($sql, TRUE ));
+     //       try {
+                $stmt = $this->conn->prepare($sql); 
+error_log( print_R($stmt, TRUE ));
+                $stmt->bind_param("issssiisdsssssssssssssssssssssss",
+                    $LastName,
+                    $FirstName    ,
+                    $Email    ,
+                    $Email2    ,
+                    $Phone    ,
+                    $AltPhone    ,
+                    $phoneExt    ,
+                    $altPhoneExt    ,
+                    $Birthday    ,
+                    $sex    ,
+                    $Parent    ,
+                    $EmergencyContact    ,
+                    $Notes    ,
+                    $medicalConcerns    ,
+                    $Address    ,
+                    $City    ,
+                    $State    ,
+                    $ZIP    ,
+                    $ContactType    ,
+                    $quickbooklink    ,
+                    $StudentSchool    ,
+                    $GuiSize    ,
+                    $ShirtSize    ,
+                    $BeltSize    ,
+                    $ReferredBy    ,
+                    $InstructorPaymentFree    ,
+                    $InstructorFlag    ,
+                    $instructorTitle    ,
+                    $CurrentRank    ,
+                    $CurrentReikiRank    ,
+                    $CurrentIARank    ,
+                    $student_id    );             
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
                 //handled in common function
                 //echo json_encode($student);
-            }
-            catch(PDOException $e) {
-                echo '{"error":{"text":'. $e->getMessage() .'}}';
-            }
+    //        }
+    //        catch(PDOException $e) {
+    //            echo '{"error":{"text":'. $e->getMessage() .'}}';
+     //       }
         return $num_affected_rows > 0;
     }
     
