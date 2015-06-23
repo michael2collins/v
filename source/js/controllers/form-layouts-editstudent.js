@@ -97,11 +97,13 @@
         }
 
         function updateStudent() {
-            return StudentServices.updateStudent(vm.path).then(function(data){
-                    $log.debug('updateStudent returned data');
+                    $log.debug('about updateStudent ', vm.students);
+            return StudentServices.updateStudent(vm.path, vm.students).then(function(data){
+                    $log.debug('updateStudent returned data: goto', vm.path);
                     $log.debug(data.data);
                     vm.students = data.data;
-                    
+                    $log.debug('route', $routeParams);
+                      $location.url('/form-layouts-editstudent?id=' + $routeParams.id );
                     return vm.students;
                 });
         }

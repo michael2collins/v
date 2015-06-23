@@ -46,12 +46,13 @@
                     // or server returns response with an error status.
                 });
         }
-        function updateStudent(path) {
-            return $http({method: 'PUT', url: path}).
+        function updateStudent(path, students) {
+                    $log.debug('vm.data before put :' + students);
+            return $http({method: 'PUT', url: path, data: students}).
                 success(function(data, status, headers, config) {
                     $log.debug('updateStudent success:' + path);
                     $log.debug(data);
-                    $location.url('/getStudent/' + $routeParams.id);
+                  
                     return data;
                 }).
                 error(function(data, status, headers, config) {

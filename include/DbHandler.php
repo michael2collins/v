@@ -570,21 +570,53 @@ $sql .= " t.GuiSize = ?,";
 $sql .= " t.ShirtSize = ?,";
 $sql .= " t.BeltSize = ?,";
 $sql .= " t.ReferredBy = ?,";
-$sql .= " t.InstructorPaymentFree = ?,";
-$sql .= " t.InstructorFlag = ?,";
+//$sql .= " t.InstructorPaymentFree = ?,";
+//$sql .= " t.InstructorFlag = ?,";
 $sql .= " t.instructorTitle = ?,";
 $sql .= " t.CurrentRank = ?,";
 $sql .= " t.CurrentReikiRank = ?,";
-$sql .= " t.CurrentIARank = ?,";
+$sql .= " t.CurrentIARank = ? ";
 
 
-            $sql .= " where ID= :ID "; 
+            $sql .= " where ID = ? "; 
 
 error_log( print_R($sql, TRUE ));
+error_log( print_R($LastName, TRUE ));
+error_log( print_R($FirstName, TRUE ));
+error_log( print_R($Email, TRUE ));
+error_log( print_R($Email2, TRUE ));
+error_log( print_R($Phone, TRUE ));
+error_log( print_R($AltPhone, TRUE ));
+error_log( print_R($phoneExt, TRUE ));
+error_log( print_R($altPhoneExt, TRUE ));
+error_log( print_R($Birthday, TRUE ));
+error_log( print_R($sex, TRUE ));
+error_log( print_R($Parent, TRUE ));
+error_log( print_R($EmergencyContact, TRUE ));
+error_log( print_R($Notes, TRUE ));
+error_log( print_R($medicalConcerns, TRUE ));
+error_log( print_R($Address, TRUE ));
+error_log( print_R($City, TRUE ));
+error_log( print_R($State, TRUE ));
+error_log( print_R($ZIP, TRUE ));
+error_log( print_R($ContactType, TRUE ));
+error_log( print_R($quickbooklink, TRUE ));
+error_log( print_R($StudentSchool, TRUE ));
+error_log( print_R($GuiSize, TRUE ));
+error_log( print_R($ShirtSize, TRUE ));
+error_log( print_R($BeltSize, TRUE ));
+error_log( print_R($ReferredBy, TRUE ));
+error_log( print_R($InstructorPaymentFree, TRUE ));
+error_log( print_R($InstructorFlag, TRUE ));
+error_log( print_R($instructorTitle, TRUE ));
+error_log( print_R($CurrentRank, TRUE ));
+error_log( print_R($CurrentReikiRank, TRUE ));
+error_log( print_R($CurrentIARank, TRUE ));
+error_log( print_R($student_id, TRUE ));
+
      //       try {
-                $stmt = $this->conn->prepare($sql); 
-error_log( print_R($stmt, TRUE ));
-                $stmt->bind_param("issssiisdsssssssssssssssssssssss",
+                if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sssssssssssssssssssssssdsssssi",
                     $LastName,
                     $FirstName    ,
                     $Email    ,
@@ -610,16 +642,20 @@ error_log( print_R($stmt, TRUE ));
                     $ShirtSize    ,
                     $BeltSize    ,
                     $ReferredBy    ,
-                    $InstructorPaymentFree    ,
-                    $InstructorFlag    ,
+        //            $InstructorPaymentFree    ,
+        //            $InstructorFlag    ,
                     $instructorTitle    ,
                     $CurrentRank    ,
                     $CurrentReikiRank    ,
                     $CurrentIARank    ,
-                    $student_id    );             
+                    $student_id    );          
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
+
+              } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                }                    
                 //handled in common function
                 //echo json_encode($student);
     //        }
