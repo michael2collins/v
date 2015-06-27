@@ -12,7 +12,11 @@ angular
         'ui.grid.selection'
         ])
     .config(logConfig)
-    .config(routeConfig);
+    .config(routeConfig)
+// Initialize the application
+.run(['$location', function AppRun($location) {
+    debugger; // -->> here i debug the $location object to see what angular see's as URL
+}]);
     
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider','$locationProvider'];
@@ -66,5 +70,6 @@ angular
             redirectTo: '/'
           });
         $locationProvider.html5Mode(false);  
+    //    $locationProvider.hashPrefix('!'); 
     }
 })();
