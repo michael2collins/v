@@ -15,7 +15,7 @@ angular
     .config(routeConfig)
 // Initialize the application
 .run(['$location', function AppRun($location) {
-    debugger; // -->> here i debug the $location object to see what angular see's as URL
+  //  debugger; // -->> here i debug the $location object to see what angular see's as URL
 }]);
     
     logConfig.$inject = ['$logProvider'];
@@ -51,25 +51,26 @@ angular
         .when('/ui-toastr-notifications', { templateUrl: 'templates/states/ui-toastr-notifications.html', controller: 'UiToastrNotificationsController'})
         .when('/ui-select-dropdown', { templateUrl: 'templates/states/ui-select-dropdown.html', controller: 'UiSelectDropdownController'})
         .when('/table-basic-students', {
-            templateUrl: 'templates/states/table-basic-students.html', 
-            controller: 'StudentsTableBasicController'
+            templateUrl: 'templates/states/table-basic-students.html'
+            //controller is in template jade
+        //    controller: 'StudentsTableBasicController'
             })
         .when('/form-layouts-newstudent', {
-            templateUrl: 'templates/states/form-layouts-newstudent.html', 
-            controller: 'FormLayoutsControllerNewStudent'
+            templateUrl: 'templates/states/form-layouts-newstudent.html'
+         //   controller: 'FormLayoutsControllerNewStudent'
             })
         .when('/form-layouts-editstudent', {
-            templateUrl: 'templates/states/form-layouts-editstudent.html', 
-            controller: 'FormLayoutsControllerEditStudent'
+            templateUrl: 'templates/states/form-layouts-editstudent.html' 
+         //   controller: 'FormLayoutsControllerEditStudent'
             })
         .when('/table-basic-attendance', {
-            templateUrl: 'templates/states/table-basic-attendance.html', 
-            controller: 'AttendanceTableBasicController'
+            templateUrl: 'templates/states/table-basic-attendance.html'
+        //    controller: 'AttendanceTableBasicController'
             })
         .otherwise({
             redirectTo: '/'
           });
-        $locationProvider.html5Mode(false);  
+        $locationProvider.html5Mode(true);  
     //    $locationProvider.hashPrefix('!'); 
     }
 })();
