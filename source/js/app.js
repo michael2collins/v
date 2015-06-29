@@ -5,7 +5,7 @@ angular
         'ui.grid',    'ui.utils',
         'ngRoute',    
         'ui.bootstrap',    
-        'ngTouch',  
+        'ngTouch',  'ngMessages',
         'ui.grid.pagination',
         'ui.grid.cellNav', 
         'ui.grid.edit', 

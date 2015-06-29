@@ -3,7 +3,17 @@
 
     angular
         .module('ng-admin')
-.directive("ngMenu", function($parse, $compile){
+        .directive('datepickerPopup', function (){
+  return {
+    restrict: 'EAC',
+    require: 'ngModel',
+    link: function(scope, element, attr, controller) {
+      //remove the default formatter from the input directive to prevent conflict
+      controller.$formatters.shift();
+    }
+  }
+})
+        .directive("ngMenu", function($parse, $compile){
     return {
         link: function($scope, element, attributes){
             $scope._menu = {status:[], collapse:{}, hover:[]};
