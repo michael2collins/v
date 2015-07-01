@@ -11,7 +11,7 @@
       //remove the default formatter from the input directive to prevent conflict
       controller.$formatters.shift();
     }
-  }
+  };
 })
         .directive("ngMenu", function($parse, $compile){
     return {
