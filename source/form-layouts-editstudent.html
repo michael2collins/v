@@ -27,11 +27,13 @@
                               <!--i.glyphicon.glyphicon-ok.tooltips(data-hover='tooltip', data-original-title='Correct')-->
                                  <!--   ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 5000, 'blur': 0 } }" -->
 <!--                                    ng-class="{'has-error': editstudent.fname.$invalid && editstudent.fname.$touched}" -->
+<!--                                    ng-model-options="{updateOn: 'blur'}" -->
                               <input id="inputFirstName" type="text" placeholder="First Name" name="fname"
                                     ng-model="vm.students.FirstName" 
-                                    ng-change="vm.updateStudent()"
+                                    ng-change="vm.updateStudent()" 
                                     required
                                     minlength="2"
+                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                     class="form-control">
                             </div>
                           <pre>editstudent.fname.$error = {{ editstudent.fname.$error | json }}</pre>
