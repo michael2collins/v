@@ -2,9 +2,13 @@ Options +SymLinksIfOwnerMatch
 IndexIgnore */*
 
 RewriteEngine on
+
+# if a directory or a file exists, use it directly
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_URI} !/api
 RewriteRule ^.*$ - [NC,L]
 
-RewriteRule ^(.*) /index.html [NC,L]
+# otherwise forward it to index.html 
+RewriteRule ^v/(.*) /v/#/$1 [NC,L]
