@@ -20,14 +20,17 @@
                       <h3 class="block-heading">Personal</h3>
                       <div class="row">
                         <div class="col-md-6">
-                          <!--.form-group.has-success-->
-                          <div class="form-group.has-error" >
+                          <div class="form-group" ng-class="{'has-error': editstudent.fname.$invalid, 'has-success': !form.editstudent.fname.$invalid}" >
                             <label for="inputFirstName" class="control-label">First Name <span class='require'>*</span></label>
-                            <div class="input-icon right">
-                              <!--i.glyphicon.glyphicon-ok.tooltips(data-hover='tooltip', data-original-title='Correct')-->
-                                 <!--   ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 5000, 'blur': 0 } }" -->
-<!--                                    ng-class="{'has-error': editstudent.fname.$invalid && editstudent.fname.$touched}" -->
-<!--                                    ng-model-options="{updateOn: 'blur'}" -->
+                          <div class="input-icon right">
+                          <i data-hover="tooltip" data-original-title="Correct" class="glyphicon glyphicon-ok tooltips"
+                                ng-show="!editstudent.fname.$invalid && editstudent.fname.$touched">
+                          </i>
+                          <i data-hover="tooltip" data-original-title="Fix" class="glyphicon glyphicon-remove tooltips"
+                                ng-show="editstudent.fname.$invalid">
+                          </i>
+<!--                                    ng-class="{'has-error': form.email.$invalid && editstudent.fname.$touched, 'has-success': !form.email.$invalid}"> -->
+                            
                               <input id="inputFirstName" type="text" placeholder="First Name" name="fname"
                                     ng-model="vm.students.FirstName" 
                                     ng-change="vm.updateStudent()" 
@@ -36,7 +39,7 @@
                                     ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                     class="form-control">
                             </div>
-                          <pre>editstudent.fname.$error = {{ editstudent.fname.$error | json }}</pre>
+<!--                          <pre>editstudent.fname.$error = {{ editstudent.fname.$error | json }}</pre> -->
 <div class="has-error" style="color:maroon" role="alert"  ng-messages="editstudent.fname.$error">
     <div ng-message="required">You did not enter a field</div>
     <div ng-message="minlength">Your field is too short</div>

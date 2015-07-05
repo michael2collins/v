@@ -13,7 +13,7 @@
     "angular-animate": "~1.4.1",
     "angular-messages": "~1.4.1",
     "angular-bootstrap": "~0.13.0",
-    "sparkline": "~2.1.2"
+    "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js"
   },
   "analytics": false,
   "resolutions": {
