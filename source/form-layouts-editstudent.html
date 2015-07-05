@@ -23,11 +23,15 @@
                           <div class="form-group" ng-class="{'has-error': editstudent.fname.$invalid, 'has-success': !form.editstudent.fname.$invalid}" >
                             <label for="inputFirstName" class="control-label">First Name <span class='require'>*</span></label>
                           <div class="input-icon right">
-                          <i data-hover="tooltip" data-original-title="Correct" class="glyphicon glyphicon-ok tooltips"
+<!--                          <i data-hover="tooltip" data-original-title="Correct" class="glyphicon glyphicon-ok tooltips"
                                 ng-show="!editstudent.fname.$invalid && editstudent.fname.$touched">
                           </i>
                           <i data-hover="tooltip" data-original-title="Fix" class="glyphicon glyphicon-remove tooltips"
                                 ng-show="editstudent.fname.$invalid">
+                          </i>
+                          --->
+                          <i data-hover="tooltip" class="glyphicon  tooltips"
+                                ng-class="editstudent.fname.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ">
                           </i>
 <!--                                    ng-class="{'has-error': form.email.$invalid && editstudent.fname.$touched, 'has-success': !form.email.$invalid}"> -->
                             
