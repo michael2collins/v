@@ -1,0 +1,25 @@
+doctype html
+- var stu_str = '{"fields":[{"type":"input","id":"FirstName","desc":"First Name","ngmodel":"vm.students.FirstName","ngchange":"vm.updateStudent","validation":"required minLength:2 maxLength:30"},{"type":"input","id":"LastName","desc":"LastName","ngmodel":"vm.students.LastName"},{"type":"input","id":"Email","desc":"Email","ngmodel":"vm.students.Email"},{"type":"input","id":"Email2","desc":"Email2","ngmodel":"vm.students.Email2"},{"type":"input","id":"Phone","desc":"Phone","ngmodel":"vm.students.Phone"},{"type":"input","id":"AltPhone","desc":"AltPhone","ngmodel":"vm.students.AltPhone"},{"type":"input","id":"phoneExt","desc":"PhoneExt","ngmodel":"vm.students.phoneExt"},{"type":"input","id":"altPhoneExt","desc":"AltPhoneExt","ngmodel":"vm.students.altPhoneExt"},{"type":"inputdate","id":"Birthday","desc":"Birthday","ngmodel":"vm.students.Birthday"},{"type":"select","id":"sex","desc":"Gender","ngmodel":"vm.students.sex"},{"type":"input","id":"Parent","desc":"Parent","ngmodel":"vm.students.Parent"},{"type":"input","id":"EmergencyContact","desc":"EmergencyContact","ngmodel":"vm.students.EmergencyContact"},{"type":"textarea","id":"Notes","desc":"Notes","ngmodel":"vm.students.Notes"},{"type":"textarea","id":"medicalConcerns","desc":"MedicalConcerns","ngmodel":"vm.students.medicalConcerns"}]}'
+- var stu_formObj = JSON.parse(stu_str) 
+- for(field in stu_formObj.fields)
+   - var ftype= stu_formObj.fields[field].type
+   - var validations= stu_formObj.fields[field].validation 
+   - var ngchang = stu_formObj.fields[field].ngchange
+        
+    if (typeof ngchang != 'undefined')
+        -var ngchang=ngchang + '()'
+    else   
+      - var ngchang=false
+        
+    if ftype === "input"
+        input(
+            class       ='form-control'
+            id          ='input#{stu_formObj.fields[field].id}'
+            type        ='text'
+            placeholder ='#{stu_formObj.fields[field].desc}'
+            name        ='#{stu_formObj.fields[field].id}'
+            ng-model    ='#{stu_formObj.fields[field].ngmodel}'
+            ng-change   =ngchang
+            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+        )
+ 

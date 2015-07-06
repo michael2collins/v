@@ -320,6 +320,7 @@ module.exports = function (grunt) {
 //          "app/templates/states/table-basic-managetest.html": ["source/jade/templates/states/table-basic-managetest.jade"],
 //          "app/templates/states/table-basic-paymenttracking.html": ["source/jade/templates/states/table-basic-paymenttracking.jade"],
           "app/templates/states/table-basic-students.html": ["source/jade/templates/states/table-basic-students.jade"],
+          "app/templates/states/test.html": ["source/jade/templates/states/test.jade"],
           "app/templates/states/layout-boxed.html": ["source/jade/templates/states/layout-boxed.jade"],
           "app/templates/states/layout-left-sidebar-collapsed.html": ["source/jade/templates/states/layout-left-sidebar-collapsed.jade"],
           "app/templates/states/layout-left-sidebar.html": ["source/jade/templates/states/layout-left-sidebar.jade"],
