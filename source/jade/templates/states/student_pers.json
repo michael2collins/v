@@ -1,0 +1,145 @@
+{
+  "fields": [
+    {
+      "type": "input",
+      "id": "FirstName",
+      "desc": "First Name",
+      "ngmodel": "vm.students.FirstName",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "minLength": 2, 
+      "maxLength": 30,
+      "format": "string"       
+    },
+    {
+      "type": "input",
+      "id": "LastName",
+      "desc": "LastName",
+      "ngmodel": "vm.students.LastName",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "minLength": 2, 
+      "maxLength": 30,
+      "format": "string"       
+    },
+    {
+      "type": "input",
+      "id": "Email",
+      "desc": "Email",
+      "ngmodel": "vm.students.Email",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "format": "email", 
+      "maxLength": 80
+    },
+    {
+      "type": "input",
+      "id": "Email2",
+      "desc": "Email2",
+      "ngmodel": "vm.students.Email2",
+      "ngchange": "vm.updateStudent",
+      "required": "false",
+      "format": "email", 
+      "maxLength": 80
+    },
+    {
+      "type": "input",
+      "id": "Phone",
+      "desc": "Phone",
+      "ngmodel": "vm.students.Phone",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "format": "phone"
+    },
+    {
+      "type": "input",
+      "id": "AltPhone",
+      "desc": "AltPhone",
+      "ngmodel": "vm.students.AltPhone",
+      "ngchange": "vm.updateStudent",
+      "required": "false",
+      "format": "phone" 
+    },
+    {
+      "type": "input",
+      "id": "phoneExt",
+      "desc": "PhoneExt",
+      "ngmodel": "vm.students.phoneExt",
+      "ngchange": "vm.updateStudent",
+      "required": "false",
+      "format": "number", 
+      "maxLength": 5
+    },
+    {
+      "type": "input",
+      "id": "altPhoneExt",
+      "desc": "AltPhoneExt",
+      "ngmodel": "vm.students.altPhoneExt",
+      "ngchange": "vm.updateStudent",
+      "required": "false",
+      "format": "number", 
+      "maxLength": 5
+    },
+    {
+      "type": "input",
+      "id": "Birthday",
+      "desc": "Birthday",
+      "ngmodel": "vm.students.Birthday",
+      "ngchange": "vm.updateStudent",
+      "required": "false",
+      "format": "date" 
+    },
+    {
+      "type": "select",
+      "id": "sex",
+      "desc": "Gender",
+      "ngmodel": "vm.students.sex",
+      "ngchange": "vm.updateStudent",
+      "ngrepeat": "g in vm.genders", 
+      "ngselected": "g==vm.students.sex",  
+      "selvalue": "g"
+    },
+    {
+      "type": "input",
+      "id": "Parent",
+      "desc": "Parent",
+      "ngmodel": "vm.students.Parent",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "minLength": 2, 
+      "maxLength": 30,
+      "format": "string"       
+    },
+    {
+      "type": "input",
+      "id": "EmergencyContact",
+      "desc": "EmergencyContact",
+      "ngmodel": "vm.students.EmergencyContact",
+      "ngchange": "vm.updateStudent",
+      "required": "false",
+      "minLength": 2, 
+      "maxLength": 80,
+      "format": "string"       
+    },
+    {
+      "type": "textarea",
+      "id": "Notes",
+      "desc": "Notes",
+      "ngmodel": "vm.students.Notes",
+      "ngchange": "vm.updateStudent",
+      "rows": 3,
+      "required": "false",
+      "format": "string"       
+    },
+    {
+      "type": "textarea",
+      "id": "medicalConcerns",
+      "desc": "MedicalConcerns",
+      "ngmodel": "vm.students.medicalConcerns",
+      "ngchange": "vm.updateStudent",
+      "rows": 3,
+      "required": "false",
+      "format": "string"       
+    }
+  ]
+}

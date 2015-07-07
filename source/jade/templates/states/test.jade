@@ -1,18 +1,97 @@
 doctype html
-- var stu_str = '{"fields":[{"type":"input","id":"FirstName","desc":"First Name","ngmodel":"vm.students.FirstName","ngchange":"vm.updateStudent","validation":"required minLength:2 maxLength:30"},{"type":"input","id":"LastName","desc":"LastName","ngmodel":"vm.students.LastName"},{"type":"input","id":"Email","desc":"Email","ngmodel":"vm.students.Email"},{"type":"input","id":"Email2","desc":"Email2","ngmodel":"vm.students.Email2"},{"type":"input","id":"Phone","desc":"Phone","ngmodel":"vm.students.Phone"},{"type":"input","id":"AltPhone","desc":"AltPhone","ngmodel":"vm.students.AltPhone"},{"type":"input","id":"phoneExt","desc":"PhoneExt","ngmodel":"vm.students.phoneExt"},{"type":"input","id":"altPhoneExt","desc":"AltPhoneExt","ngmodel":"vm.students.altPhoneExt"},{"type":"inputdate","id":"Birthday","desc":"Birthday","ngmodel":"vm.students.Birthday"},{"type":"select","id":"sex","desc":"Gender","ngmodel":"vm.students.sex"},{"type":"input","id":"Parent","desc":"Parent","ngmodel":"vm.students.Parent"},{"type":"input","id":"EmergencyContact","desc":"EmergencyContact","ngmodel":"vm.students.EmergencyContact"},{"type":"textarea","id":"Notes","desc":"Notes","ngmodel":"vm.students.Notes"},{"type":"textarea","id":"medicalConcerns","desc":"MedicalConcerns","ngmodel":"vm.students.medicalConcerns"}]}'
+- var stu_str = '{"fields":[{"type":"input","id":"FirstName","desc":"First Name","ngmodel":"vm.students.FirstName","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"input","id":"LastName","desc":"LastName","ngmodel":"vm.students.LastName","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"input","id":"Email","desc":"Email","ngmodel":"vm.students.Email","ngchange":"vm.updateStudent","required":"true","format":"email","maxLength":80},{"type":"input","id":"Email2","desc":"Email2","ngmodel":"vm.students.Email2","ngchange":"vm.updateStudent","required":"false","format":"email","maxLength":80},{"type":"input","id":"Phone","desc":"Phone","ngmodel":"vm.students.Phone","ngchange":"vm.updateStudent","required":"true","format":"phone"},{"type":"input","id":"AltPhone","desc":"AltPhone","ngmodel":"vm.students.AltPhone","ngchange":"vm.updateStudent","required":"false","format":"phone"},{"type":"input","id":"phoneExt","desc":"PhoneExt","ngmodel":"vm.students.phoneExt","ngchange":"vm.updateStudent","required":"false","format":"number","maxLength":5},{"type":"input","id":"altPhoneExt","desc":"AltPhoneExt","ngmodel":"vm.students.altPhoneExt","ngchange":"vm.updateStudent","required":"false","format":"number","maxLength":5},{"type":"input","id":"Birthday","desc":"Birthday","ngmodel":"vm.students.Birthday","ngchange":"vm.updateStudent","required":"false","format":"date"},{"type":"select","id":"sex","desc":"Gender","ngmodel":"vm.students.sex","ngchange":"vm.updateStudent","ngrepeat":"g in vm.genders","ngselected":"g==vm.students.sex","selvalue":"g"},{"type":"input","id":"Parent","desc":"Parent","ngmodel":"vm.students.Parent","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"input","id":"EmergencyContact","desc":"EmergencyContact","ngmodel":"vm.students.EmergencyContact","ngchange":"vm.updateStudent","required":"false","minLength":2,"maxLength":80,"format":"string"},{"type":"textarea","id":"Notes","desc":"Notes","ngmodel":"vm.students.Notes","ngchange":"vm.updateStudent","rows":3,"required":"false","format":"string"},{"type":"textarea","id":"medicalConcerns","desc":"MedicalConcerns","ngmodel":"vm.students.medicalConcerns","ngchange":"vm.updateStudent","rows":3,"required":"false","format":"string"}]}'
 - var stu_formObj = JSON.parse(stu_str) 
 - for(field in stu_formObj.fields)
    - var ftype= stu_formObj.fields[field].type
-   - var validations= stu_formObj.fields[field].validation 
+   - var required= stu_formObj.fields[field].required 
    - var ngchang = stu_formObj.fields[field].ngchange
+   - var ngrpt = stu_formObj.fields[field].ngrepeat
+   - var ngsel = stu_formObj.fields[field].ngselected
+   - var selvlu = stu_formObj.fields[field].selvalue
+   - var minL = stu_formObj.fields[field].minLength
+   - var maxL = stu_formObj.fields[field].maxLength
+   - var txtR = stu_formObj.fields[field].rows
+   - var fmt = stu_formObj.fields[field].format
         
     if (typeof ngchang != 'undefined')
         -var ngchang=ngchang + '()'
     else   
       - var ngchang=false
-        
+      
+
+      
+    case fmt 
+        when "phone"
+            -var uimask='(999) 999-9999'
+            - var typ="text"
+            - var datepickerpopup=false
+            - var isopen=false
+        when "email"
+            -var typ="email"
+            - var uimask=false
+            - var datepickerpopup=false
+            - var isopen=false
+        when "string"
+            - var typ="text"
+            - var uimask=false
+            - var datepickerpopup=false
+            - var isopen=false
+        when "date"
+            -var typ="date"
+            -var isopen="opened"
+            -var datepickerpopup=true
+        default
+            - var fmt=false
+            - var typ="text"
+            - var uimask=false
+            - var datepickerpopup=false
+            - var isopen=false
+      
+    if (typeof ngrpt != 'undefined')
+    else   
+      - var ngrpt=false
+
+    if (typeof ngsel != 'undefined')
+        -var ngsel='{{' + ngsel  + '}}'
+    else   
+      - var ngsel=false
+
+    if (typeof selvlu != 'undefined')
+        -var selvlu=selvlu + '()'
+    else   
+      - var selvlu=false
+
+    if (typeof minL != 'undefined')
+    else   
+      - var minL=false
+
+    if (typeof maxL != 'undefined')
+    else   
+      - var maxL=false
+
+    if (typeof txtR != 'undefined')
+    else   
+      - var txtR=false
+      
     if ftype === "input"
         input(
+            class       ='form-control'
+            id          ='input#{stu_formObj.fields[field].id}'
+            type        =typ
+            placeholder ='#{stu_formObj.fields[field].desc}'
+            name        ='#{stu_formObj.fields[field].id}'
+            ng-model    ='#{stu_formObj.fields[field].ngmodel}'
+            ng-change   =ngchang
+            required    =required
+            minLength   =minL
+            maxLength   =maxL
+            is-open     =isopen
+            ui-mask     =uimask
+            datepicker-popup=datepickerpopup
+            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+        )
+     if ftype === "textarea"
+        textarea(
             class       ='form-control'
             id          ='input#{stu_formObj.fields[field].id}'
             type        ='text'
@@ -20,6 +99,9 @@ doctype html
             name        ='#{stu_formObj.fields[field].id}'
             ng-model    ='#{stu_formObj.fields[field].ngmodel}'
             ng-change   =ngchang
+            rows        =txtR
+            required    =required
+            minLength   =minL
+            maxLength   =maxL
             ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
         )
- 

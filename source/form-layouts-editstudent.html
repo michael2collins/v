@@ -23,17 +23,9 @@
                           <div class="form-group" ng-class="{'has-error': editstudent.fname.$invalid, 'has-success': !form.editstudent.fname.$invalid}" >
                             <label for="inputFirstName" class="control-label">First Name <span class='require'>*</span></label>
                           <div class="input-icon right">
-<!--                          <i data-hover="tooltip" data-original-title="Correct" class="glyphicon glyphicon-ok tooltips"
-                                ng-show="!editstudent.fname.$invalid && editstudent.fname.$touched">
-                          </i>
-                          <i data-hover="tooltip" data-original-title="Fix" class="glyphicon glyphicon-remove tooltips"
-                                ng-show="editstudent.fname.$invalid">
-                          </i>
-                          --->
                           <i data-hover="tooltip" class="glyphicon  tooltips"
                                 ng-class="editstudent.fname.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ">
                           </i>
-<!--                                    ng-class="{'has-error': form.email.$invalid && editstudent.fname.$touched, 'has-success': !form.email.$invalid}"> -->
                             
                               <input id="inputFirstName" type="text" placeholder="First Name" name="fname"
                                     ng-model="vm.students.FirstName" 
@@ -44,11 +36,11 @@
                                     class="form-control">
                             </div>
 <!--                          <pre>editstudent.fname.$error = {{ editstudent.fname.$error | json }}</pre> -->
-<div class="has-error" style="color:maroon" role="alert"  ng-messages="editstudent.fname.$error">
-    <div ng-message="required">You did not enter a field</div>
-    <div ng-message="minlength">Your field is too short</div>
-    <div ng-message="maxlength">Your field is too long</div>
-</div>
+                            <div class="has-error" style="color:maroon" role="alert"  ng-messages="editstudent.fname.$error">
+                                <div ng-message="required">You did not enter a field</div>
+                                <div ng-message="minlength">Your field is too short</div>
+                                <div ng-message="maxlength">Your field is too long</div>
+                            </div>
                           </div>
                         </div>
                         <div class="col-md-6">
@@ -82,10 +74,24 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                          <div class="form-group">
+                          <div class="form-group" ng-class="{'has-error': editstudent.email.$invalid, 'has-success': !form.editstudent.email.$invalid}" >
                             <label for="inputEmail" class="control-label">Email <span class='require'>*</span></label>
-                            <div class="input-icon"><i class="fa fa-envelope"></i>
-                              <input type="text" placeholder="Email Address" ng-model="vm.students.Email" class="inputEmail form-control">
+                            <div class="input-icon right">
+                            <i data-hover="tooltip" class="glyphicon  tooltips"
+                                ng-class="editstudent.email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ">
+                            </i>
+                            <input id="inputEmail" type="email" placeholder="Email Address" name="email"
+                                    ng-model="vm.students.Email" 
+                                    ng-change="vm.updateStudent()" 
+                                    required
+                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                    class="form-control">
+                            </div>
+                            <div class="has-error" style="color:maroon" role="alert"  ng-messages="editstudent.email.$error">
+                                <div ng-message="required">You did not enter a field</div>
+                                <div ng-message="email">Email format wrong.  Needs @ and period</div>
+                                <div ng-message="minlength">Your field is too short</div>
+                                <div ng-message="maxlength">Your field is too long</div>
                             </div>
                           </div>
                         </div>
