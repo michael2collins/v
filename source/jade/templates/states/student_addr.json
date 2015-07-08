@@ -1,0 +1,36 @@
+{
+  "fields": [
+    {
+      "type": "input",
+      "id": "Address",
+      "desc": "Address",
+      "ngmodel": "vm.students.Address",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "minLength": 5, 
+      "maxLength": 120,
+      "format": "string"       
+    },
+    {
+      "type": "input",
+      "id": "City",
+      "desc": "City",
+      "ngmodel": "vm.students.City",
+      "ngchange": "vm.updateStudent",
+      "required": "true",
+      "minLength": 2, 
+      "maxLength": 30,
+      "format": "string"       
+    },
+    {
+      "type": "select",
+      "id": "ZIP",
+      "desc": "Zip/Postal Code",
+      "ngmodel": "vm.students.ZIP",
+      "ngchange": "vm.updateStudent",
+      "ngrepeat": "z in vm.zipList.zips", 
+      "ngselected": "z==vm.students.ZIP",  
+      "selvalue": "z.zip"
+    }
+  ]
+}

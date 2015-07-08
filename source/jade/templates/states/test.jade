@@ -1,107 +1,320 @@
 doctype html
 - var stu_str = '{"fields":[{"type":"input","id":"FirstName","desc":"First Name","ngmodel":"vm.students.FirstName","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"input","id":"LastName","desc":"LastName","ngmodel":"vm.students.LastName","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"input","id":"Email","desc":"Email","ngmodel":"vm.students.Email","ngchange":"vm.updateStudent","required":"true","format":"email","maxLength":80},{"type":"input","id":"Email2","desc":"Email2","ngmodel":"vm.students.Email2","ngchange":"vm.updateStudent","required":"false","format":"email","maxLength":80},{"type":"input","id":"Phone","desc":"Phone","ngmodel":"vm.students.Phone","ngchange":"vm.updateStudent","required":"true","format":"phone"},{"type":"input","id":"AltPhone","desc":"AltPhone","ngmodel":"vm.students.AltPhone","ngchange":"vm.updateStudent","required":"false","format":"phone"},{"type":"input","id":"phoneExt","desc":"PhoneExt","ngmodel":"vm.students.phoneExt","ngchange":"vm.updateStudent","required":"false","format":"number","maxLength":5},{"type":"input","id":"altPhoneExt","desc":"AltPhoneExt","ngmodel":"vm.students.altPhoneExt","ngchange":"vm.updateStudent","required":"false","format":"number","maxLength":5},{"type":"input","id":"Birthday","desc":"Birthday","ngmodel":"vm.students.Birthday","ngchange":"vm.updateStudent","required":"false","format":"date"},{"type":"select","id":"sex","desc":"Gender","ngmodel":"vm.students.sex","ngchange":"vm.updateStudent","ngrepeat":"g in vm.genders","ngselected":"g==vm.students.sex","selvalue":"g"},{"type":"input","id":"Parent","desc":"Parent","ngmodel":"vm.students.Parent","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"input","id":"EmergencyContact","desc":"EmergencyContact","ngmodel":"vm.students.EmergencyContact","ngchange":"vm.updateStudent","required":"false","minLength":2,"maxLength":80,"format":"string"},{"type":"textarea","id":"Notes","desc":"Notes","ngmodel":"vm.students.Notes","ngchange":"vm.updateStudent","rows":3,"required":"false","format":"string"},{"type":"textarea","id":"medicalConcerns","desc":"MedicalConcerns","ngmodel":"vm.students.medicalConcerns","ngchange":"vm.updateStudent","rows":3,"required":"false","format":"string"}]}'
 - var stu_formObj = JSON.parse(stu_str) 
-- for(field in stu_formObj.fields)
-   - var ftype= stu_formObj.fields[field].type
-   - var required= stu_formObj.fields[field].required 
-   - var ngchang = stu_formObj.fields[field].ngchange
-   - var ngrpt = stu_formObj.fields[field].ngrepeat
-   - var ngsel = stu_formObj.fields[field].ngselected
-   - var selvlu = stu_formObj.fields[field].selvalue
-   - var minL = stu_formObj.fields[field].minLength
-   - var maxL = stu_formObj.fields[field].maxLength
-   - var txtR = stu_formObj.fields[field].rows
-   - var fmt = stu_formObj.fields[field].format
-        
-    if (typeof ngchang != 'undefined')
-        -var ngchang=ngchang + '()'
-    else   
-      - var ngchang=false
-      
+- var addr_str = '{"fields":[{"type":"input","id":"Address","desc":"Address","ngmodel":"vm.students.Address","ngchange":"vm.updateStudent","required":"true","minLength":5,"maxLength":120,"format":"string"},{"type":"input","id":"City","desc":"City","ngmodel":"vm.students.City","ngchange":"vm.updateStudent","required":"true","minLength":2,"maxLength":30,"format":"string"},{"type":"select","id":"ZIP","desc":"Zip/Postal Code","ngmodel":"vm.students.ZIP","ngchange":"vm.updateStudent","ngrepeat":"z in vm.zipList.zips","ngselected":"z==vm.students.ZIP","selvalue":"z.zip"}]}'
+- var addr_formObj = JSON.parse(addr_str) 
+mixin formerr(fielderr)
+    .has-error(style='color:maroon', role='alert', ng-messages= fielderr)
+        div(ng-message="required") You did not enter a field
+        div(ng-message="minlength") Your field is too short
+        div(ng-message="maxlength") Your field is too long
+        div(ng-message="email") Your email is missing @ and/or a period
 
-      
-    case fmt 
-        when "phone"
-            -var uimask='(999) 999-9999'
-            - var typ="text"
-            - var datepickerpopup=false
-            - var isopen=false
-        when "email"
-            -var typ="email"
-            - var uimask=false
-            - var datepickerpopup=false
-            - var isopen=false
-        when "string"
-            - var typ="text"
-            - var uimask=false
-            - var datepickerpopup=false
-            - var isopen=false
-        when "date"
-            -var typ="date"
-            -var isopen="opened"
-            -var datepickerpopup=true
-        default
-            - var fmt=false
-            - var typ="text"
-            - var uimask=false
-            - var datepickerpopup=false
-            - var isopen=false
-      
-    if (typeof ngrpt != 'undefined')
-    else   
-      - var ngrpt=false
+.row#form-layouts-editstudent
+    .col-lg-12(ng-tab="")
+        ul.nav.nav-pills
+            li.active
+                a(href='#tab-two-columns', data-toggle='tab') Student Information
+            li
+                a(href='#tab-form-actions', data-toggle='tab') Class
+            li
+                a(href='#tab-form-seperated', data-toggle='tab') Payment
+            li
+                a(href='#tab-form-bordered', data-toggle='tab') Student History
+        .tab-content.pan.mtl.mbn(style='background: transparent; border: 0;')
+            #tab-two-columns.tab-pane.fade.in.active
+                .row
+                    div(ng-controller="FormLayoutsControllerEditStudent as vm")
+                        .col-lg-12
+                            .panel.panel-blue
+                                .panel-heading Student
+                                .panel-body.pan
+                                  -var formnm="editstudent"
+                                   form.horizontal-form(action='', novalidate, name='#{formnm}')
+                                    .form-body.pal
+                                      | <h3 class="block-heading">Personal</h3>
+                                      - var columns=2
+            
+                                      - for (var i = 0; i < stu_formObj.fields.length; i=i+columns)
+                                           .row
+                                             - for (var j = 0; j < columns && i+j < stu_formObj.fields.length; j++)
+                                               .col-md-6
+                                                   .form-group(ng-class="{'has-error': #{formnm}.#{stu_formObj.fields[i+j].id}.$invalid, 'has-success': \!#{formnm}.#{stu_formObj.fields[i+j].id}.$invalid}")
+                                                       - var ftype= stu_formObj.fields[i+j].type
+                                                       - var invald= formnm + '.' + stu_formObj.fields[i+j].id + '.$invalid'
+                                                       - var required= stu_formObj.fields[i+j].required 
+                                                       - var ngchang = stu_formObj.fields[i+j].ngchange
+                                                       - var ngrpt = stu_formObj.fields[i+j].ngrepeat
+                                                       - var ngsel = stu_formObj.fields[i+j].ngselected
+                                                       - var selvlu = stu_formObj.fields[i+j].selvalue
+                                                       - var minL = stu_formObj.fields[i+j].minLength
+                                                       - var maxL = stu_formObj.fields[i+j].maxLength
+                                                       - var txtR = stu_formObj.fields[i+j].rows
+                                                       - var fmt = stu_formObj.fields[i+j].format
+                                                            
+                                                        if (typeof ngchang != 'undefined')
+                                                            -var ngchang=ngchang + '()'
+                                                        else   
+                                                          - var ngchang=false
+                                                        
+                                                        if (typeof required != 'undefined') && (required === "true")
+                                                            -var requirespan="<span class='require'>*</span>"
+                                                        else
+                                                            -var requirespan=""
+                                                          
+                                                        case fmt 
+                                                            when "phone"
+                                                                -var uimask='(999) 999-9999'
+                                                                - var typ="text"
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "email"
+                                                                -var typ="email"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "string"
+                                                                - var typ="text"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "date"
+                                                                -var typ="date"
+                                                                -var isopen="opened"
+                                                                -var datepickerpopup=true
+                                                            default
+                                                                - var fmt=false
+                                                                - var typ="text"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                          
+                                                        if (typeof ngrpt != 'undefined')
+                                                        else   
+                                                          - var ngrpt=false
 
-    if (typeof ngsel != 'undefined')
-        -var ngsel='{{' + ngsel  + '}}'
-    else   
-      - var ngsel=false
+                                                        if (typeof ngsel != 'undefined')
+                                                            -var ngsel='{{' + ngsel  + '}}'
+                                                        else   
+                                                          - var ngsel=false
 
-    if (typeof selvlu != 'undefined')
-        -var selvlu=selvlu + '()'
-    else   
-      - var selvlu=false
+                                                        if (typeof selvlu != 'undefined')
+                                                            -var selvlu= '{{' + selvlu + '}}'
+                                                        else   
+                                                          - var selvlu=false
 
-    if (typeof minL != 'undefined')
-    else   
-      - var minL=false
+                                                        if (typeof minL != 'undefined')
+                                                        else   
+                                                          - var minL=false
 
-    if (typeof maxL != 'undefined')
-    else   
-      - var maxL=false
+                                                        if (typeof maxL != 'undefined')
+                                                        else   
+                                                          - var maxL=false
 
-    if (typeof txtR != 'undefined')
-    else   
-      - var txtR=false
-      
-    if ftype === "input"
-        input(
-            class       ='form-control'
-            id          ='input#{stu_formObj.fields[field].id}'
-            type        =typ
-            placeholder ='#{stu_formObj.fields[field].desc}'
-            name        ='#{stu_formObj.fields[field].id}'
-            ng-model    ='#{stu_formObj.fields[field].ngmodel}'
-            ng-change   =ngchang
-            required    =required
-            minLength   =minL
-            maxLength   =maxL
-            is-open     =isopen
-            ui-mask     =uimask
-            datepicker-popup=datepickerpopup
-            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-        )
-     if ftype === "textarea"
-        textarea(
-            class       ='form-control'
-            id          ='input#{stu_formObj.fields[field].id}'
-            type        ='text'
-            placeholder ='#{stu_formObj.fields[field].desc}'
-            name        ='#{stu_formObj.fields[field].id}'
-            ng-model    ='#{stu_formObj.fields[field].ngmodel}'
-            ng-change   =ngchang
-            rows        =txtR
-            required    =required
-            minLength   =minL
-            maxLength   =maxL
-            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-        )
+                                                        if (typeof txtR != 'undefined')
+                                                        else   
+                                                          - var txtR=false
+
+                                                        label.control-label(for='input#{stu_formObj.fields[i+j].id}') #{stu_formObj.fields[i+j].desc} !{requirespan}
+                                                        .input-icon.right
+                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct', ng-class="#{formnm}.#{stu_formObj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
+
+                                                            if ftype === "input"
+                                                                input(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{stu_formObj.fields[i+j].id}'
+                                                                    type        =typ
+                                                                    placeholder ='#{stu_formObj.fields[i+j].desc}'
+                                                                    name        ='#{stu_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{stu_formObj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    is-open     =isopen
+                                                                    ui-mask     =uimask
+                                                                    datepicker-popup=datepickerpopup
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                             if ftype === "textarea"
+                                                                textarea(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{stu_formObj.fields[i+j].id}'
+                                                                    type        ='text'
+                                                                    placeholder ='#{stu_formObj.fields[i+j].desc}'
+                                                                    name        ='#{stu_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{stu_formObj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    rows        =txtR
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                             if ftype === "select"
+                                                                select(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{stu_formObj.fields[i+j].id}'
+                                                                    type        ='text'
+                                                                    name        ='#{stu_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{stu_formObj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                                  option(
+                                                                    ng-repeat   ='#{ngrpt}' 
+                                                                    ng-selected ='#{ngsel}'
+                                                                    placeholder ='#{stu_formObj.fields[i+j].desc}'
+                                                                    value       ='#{selvlu}'
+                                                                  ) #{selvlu}
+
+                                                        +formerr(invald)
+                                                        
+                                      | <h3 class="block-heading">Address</h3>
+                                      - var acolumns=2
+            
+                                      - for (var i = 0; i < addr_formObj.fields.length; i=i+acolumns)
+                                           .row
+                                             - for (var j = 0; j < acolumns && i+j < addr_formObj.fields.length; j++)
+                                               .col-md-6
+                                                   .form-group(ng-class="{'has-error': #{formnm}.#{addr_formObj.fields[i+j].id}.$invalid, 'has-success': \!#{formnm}.#{addr_formObj.fields[i+j].id}.$invalid}")
+                                                       - var ftype= addr_formObj.fields[i+j].type
+                                                       - var required= addr_formObj.fields[i+j].required 
+                                                       - var ngchang = addr_formObj.fields[i+j].ngchange
+                                                       - var ngrpt = addr_formObj.fields[i+j].ngrepeat
+                                                       - var ngsel = addr_formObj.fields[i+j].ngselected
+                                                       - var selvlu = addr_formObj.fields[i+j].selvalue
+                                                       - var minL = addr_formObj.fields[i+j].minLength
+                                                       - var maxL = addr_formObj.fields[i+j].maxLength
+                                                       - var txtR = addr_formObj.fields[i+j].rows
+                                                       - var fmt = addr_formObj.fields[i+j].format
+                                                            
+                                                        if (typeof ngchang != 'undefined')
+                                                            -var ngchang=ngchang + '()'
+                                                        else   
+                                                          - var ngchang=false
+                                                        
+                                                        if (typeof required != 'undefined') && (required === "true")
+                                                            -var requirespan="<span class='require'>*</span>"
+                                                        else
+                                                            -var requirespan=""
+                                                          
+                                                        case fmt 
+                                                            when "phone"
+                                                                -var uimask='(999) 999-9999'
+                                                                - var typ="text"
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "email"
+                                                                -var typ="email"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "string"
+                                                                - var typ="text"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "date"
+                                                                -var typ="date"
+                                                                -var isopen="opened"
+                                                                -var datepickerpopup=true
+                                                            default
+                                                                - var fmt=false
+                                                                - var typ="text"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                          
+                                                        if (typeof ngrpt != 'undefined')
+                                                        else   
+                                                          - var ngrpt=false
+
+                                                        if (typeof ngsel != 'undefined')
+                                                            -var ngsel='{{' + ngsel  + '}}'
+                                                        else   
+                                                          - var ngsel=false
+
+                                                        if (typeof selvlu != 'undefined')
+                                                            -var selvlu='{{' + selvlu + '}}'
+                                                        else   
+                                                          - var selvlu=false
+
+                                                        if (typeof minL != 'undefined')
+                                                        else   
+                                                          - var minL=false
+
+                                                        if (typeof maxL != 'undefined')
+                                                        else   
+                                                          - var maxL=false
+
+                                                        if (typeof txtR != 'undefined')
+                                                        else   
+                                                          - var txtR=false
+
+                                                        label.control-label(for='input#{addr_formObj.fields[i+j].id}') #{addr_formObj.fields[i+j].desc} !{requirespan}
+                                                        .input-icon.right
+                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct', ng-class="#{formnm}.#{addr_formObj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
+
+                                                            if ftype === "input"
+                                                                input(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{addr_formObj.fields[i+j].id}'
+                                                                    type        =typ
+                                                                    placeholder ='#{addr_formObj.fields[i+j].desc}'
+                                                                    name        ='#{addr_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{addr_formObj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    is-open     =isopen
+                                                                    ui-mask     =uimask
+                                                                    datepicker-popup=datepickerpopup
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                             if ftype === "textarea"
+                                                                textarea(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{addr_formObj.fields[i+j].id}'
+                                                                    type        ='text'
+                                                                    placeholder ='#{addr_formObj.fields[i+j].desc}'
+                                                                    name        ='#{addr_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{addr_formObj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    rows        =txtR
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                             if ftype === "select"
+                                                                select(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{stu_formObj.fields[i+j].id}'
+                                                                    type        ='text'
+                                                                    name        ='#{stu_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{stu_formObj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                                  option(
+                                                                    ng-repeat   ='#{ngrpt}' 
+                                                                    ng-selected ='#{ngsel}'
+                                                                    placeholder ='#{stu_formObj.fields[i+j].desc}'
+                                                                    value       ='#{selvlu}'
+                                                                  ) #{selvlu}
+
+
+                                                       
+                                                                
+                                    .form-actions.text-right.pal
+                                        button.btn.btn-primary.btn-outlined(type='submit' ng-click='vm.updateStudent()') Submit
+                                        | &nbsp;
+                                        button.btn.btn-green.btn-outlined(type='button') Cancel
