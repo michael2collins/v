@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <div id="form-layouts-editstudent" class="row">
-  <div ng-tab="" class="col-lg-12">
-    <ul class="nav nav-pills">
-      <li class="active"><a href="#tab-two-columns" data-toggle="tab">Student Information</a></li>
-      <li><a href="#tab-form-actions" data-toggle="tab">Class</a></li>
-      <li><a href="#tab-form-seperated" data-toggle="tab">Payment</a></li>
-      <li><a href="#tab-form-bordered" data-toggle="tab">Student History</a></li>
-    </ul>
-    <div style="background: transparent; border: 0;" class="tab-content pan mtl mbn">
-      <div id="tab-two-columns" class="tab-pane fade in active">
+  <div class="col-lg-12">
+    <tabset type="pills">
+      <tab id="tab-student" heading="Student Information">
         <div class="row">
           <div ng-controller="FormLayoutsControllerEditStudent as vm">
             <div class="col-lg-12">
@@ -36,7 +30,7 @@
                           <div ng-class="{'has-error': editstudent.LastName.$invalid, 'has-success': !editstudent.LastName.$invalid}" class="form-group">
                             <label for="inputLastName" class="control-label">LastName <span class='require'>*</span></label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.LastName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputLastName" type="text" placeholder="LastName" name="LastName" ng-model="vm.students.LastName" ng-change="vm.updateStudent()" required="true" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" ng-model="vm.students.LastName" ng-change="vm.updateStudent()" required="true" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.LastName.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -52,7 +46,7 @@
                           <div ng-class="{'has-error': editstudent.Email.$invalid, 'has-success': !editstudent.Email.$invalid}" class="form-group">
                             <label for="inputEmail" class="control-label">Email <span class='require'>*</span></label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputEmail" type="email" placeholder="Email" name="Email" ng-model="vm.students.Email" ng-change="vm.updateStudent()" required="true" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputEmail" type="email" placeholder="Email Address" name="Email" ng-model="vm.students.Email" ng-change="vm.updateStudent()" required="true" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Email.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -66,7 +60,7 @@
                           <div ng-class="{'has-error': editstudent.Email2.$invalid, 'has-success': !editstudent.Email2.$invalid}" class="form-group">
                             <label for="inputEmail2" class="control-label">Email2 </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Email2.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputEmail2" type="email" placeholder="Email2" name="Email2" ng-model="vm.students.Email2" ng-change="vm.updateStudent()" required="false" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputEmail2" type="email" placeholder="Alternate Email" name="Email2" ng-model="vm.students.Email2" ng-change="vm.updateStudent()" required="false" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Email2.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -82,7 +76,7 @@
                           <div ng-class="{'has-error': editstudent.Phone.$invalid, 'has-success': !editstudent.Phone.$invalid}" class="form-group">
                             <label for="inputPhone" class="control-label">Phone <span class='require'>*</span></label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Phone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputPhone" type="text" placeholder="Phone" name="Phone" ng-model="vm.students.Phone" ng-change="vm.updateStudent()" required="true" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputPhone" type="text" name="Phone" ng-model="vm.students.Phone" ng-change="vm.updateStudent()" required="true" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Phone.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -96,7 +90,7 @@
                           <div ng-class="{'has-error': editstudent.AltPhone.$invalid, 'has-success': !editstudent.AltPhone.$invalid}" class="form-group">
                             <label for="inputAltPhone" class="control-label">AltPhone </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.AltPhone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputAltPhone" type="text" placeholder="AltPhone" name="AltPhone" ng-model="vm.students.AltPhone" ng-change="vm.updateStudent()" required="false" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputAltPhone" type="text" name="AltPhone" ng-model="vm.students.AltPhone" ng-change="vm.updateStudent()" required="false" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.AltPhone.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -112,7 +106,7 @@
                           <div ng-class="{'has-error': editstudent.phoneExt.$invalid, 'has-success': !editstudent.phoneExt.$invalid}" class="form-group">
                             <label for="inputphoneExt" class="control-label">PhoneExt </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.phoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputphoneExt" type="text" placeholder="PhoneExt" name="phoneExt" ng-model="vm.students.phoneExt" ng-change="vm.updateStudent()" required="false" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputphoneExt" type="text" placeholder="9999" name="phoneExt" ng-model="vm.students.phoneExt" ng-change="vm.updateStudent()" required="false" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.phoneExt.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -126,7 +120,7 @@
                           <div ng-class="{'has-error': editstudent.altPhoneExt.$invalid, 'has-success': !editstudent.altPhoneExt.$invalid}" class="form-group">
                             <label for="inputaltPhoneExt" class="control-label">AltPhoneExt </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.altPhoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputaltPhoneExt" type="text" placeholder="AltPhoneExt" name="altPhoneExt" ng-model="vm.students.altPhoneExt" ng-change="vm.updateStudent()" required="false" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputaltPhoneExt" type="text" placeholder="9999" name="altPhoneExt" ng-model="vm.students.altPhoneExt" ng-change="vm.updateStudent()" required="false" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.altPhoneExt.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -142,7 +136,7 @@
                           <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
                             <label for="inputBirthday" class="control-label">Birthday </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputBirthday" type="date" placeholder="Birthday" name="Birthday" ng-model="vm.students.Birthday" ng-change="vm.updateStudent()" required="false" is-open="opened" datepicker-popup ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputBirthday" type="date" placeholder="mm/dd/yyyy" name="Birthday" ng-model="vm.students.Birthday" ng-change="vm.updateStudent()" required="false" is-open="opened" datepicker-popup ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -157,7 +151,7 @@
                             <label for="inputsex" class="control-label">Gender </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.sex.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                               <select id="inputsex" type="text" name="sex" ng-model="vm.students.sex" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" placeholder="Gender" value="{{g}}">{{g}}</option>
+                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" placeholder="Select" value="{{g}}">{{g}}</option>
                               </select>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.sex.$invalid" class="has-error">
@@ -174,7 +168,7 @@
                           <div ng-class="{'has-error': editstudent.Parent.$invalid, 'has-success': !editstudent.Parent.$invalid}" class="form-group">
                             <label for="inputParent" class="control-label">Parent <span class='require'>*</span></label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Parent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputParent" type="text" placeholder="Parent" name="Parent" ng-model="vm.students.Parent" ng-change="vm.updateStudent()" required="true" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputParent" type="text" placeholder="Parent Name" name="Parent" ng-model="vm.students.Parent" ng-change="vm.updateStudent()" required="true" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Parent.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -186,9 +180,9 @@
                         </div>
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.EmergencyContact.$invalid, 'has-success': !editstudent.EmergencyContact.$invalid}" class="form-group">
-                            <label for="inputEmergencyContact" class="control-label">EmergencyContact </label>
+                            <label for="inputEmergencyContact" class="control-label">Emergency Contact </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.EmergencyContact.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputEmergencyContact" type="text" placeholder="EmergencyContact" name="EmergencyContact" ng-model="vm.students.EmergencyContact" ng-change="vm.updateStudent()" required="false" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputEmergencyContact" type="text" placeholder="Emergency Contact Name" name="EmergencyContact" ng-model="vm.students.EmergencyContact" ng-change="vm.updateStudent()" required="false" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.EmergencyContact.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -204,7 +198,7 @@
                           <div ng-class="{'has-error': editstudent.Notes.$invalid, 'has-success': !editstudent.Notes.$invalid}" class="form-group">
                             <label for="inputNotes" class="control-label">Notes </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Notes.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <textarea id="inputNotes" type="text" placeholder="Notes" name="Notes" ng-model="vm.students.Notes" ng-change="vm.updateStudent()" rows="3" required="false" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
+                              <textarea id="inputNotes" type="text" placeholder="Enter notes" name="Notes" ng-model="vm.students.Notes" ng-change="vm.updateStudent()" rows="3" required="false" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Notes.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -216,9 +210,9 @@
                         </div>
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.medicalConcerns.$invalid, 'has-success': !editstudent.medicalConcerns.$invalid}" class="form-group">
-                            <label for="inputmedicalConcerns" class="control-label">MedicalConcerns </label>
+                            <label for="inputmedicalConcerns" class="control-label">Medical Concerns </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.medicalConcerns.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <textarea id="inputmedicalConcerns" type="text" placeholder="MedicalConcerns" name="medicalConcerns" ng-model="vm.students.medicalConcerns" ng-change="vm.updateStudent()" rows="3" required="false" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
+                              <textarea id="inputmedicalConcerns" type="text" placeholder="Enter Medical concerns" name="medicalConcerns" ng-model="vm.students.medicalConcerns" ng-change="vm.updateStudent()" rows="3" required="false" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.medicalConcerns.$invalid" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -270,7 +264,10 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </tab>
+      <tab id="tab-student" heading="Class"></tab>
+      <tab id="tab-student" heading="Payment"></tab>
+      <tab id="tab-student" heading="Student History"></tab>
+    </tabset>
   </div>
 </div>
