@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <div id="form-layouts-editstudent" class="row">
-  <div ng-tab="" class="col-lg-12">
-    <ul class="nav nav-pills">
+  <div  class="col-lg-12" >
+<!--    <ul class="nav nav-pills">
       <li class="active"><a href="#tab-two-columns" data-toggle="tab">Student Information</a></li>
       <li><a href="#tab-form-actions" data-toggle="tab">Class</a></li>
       <li><a href="#tab-form-seperated" data-toggle="tab">Payment</a></li>
       <li><a href="#tab-form-bordered" data-toggle="tab">Student History</a></li>
     </ul>
-    <div style="background: transparent; border: 0;" class="tab-content pan mtl mbn">
-      <div id="tab-two-columns" class="tab-pane fade in active">
+   --> 
+   <tabset type="pills">
+ <!--   <div style="background: transparent; border: 0;" class="tab-content pan mtl mbn"> -->
+      <tab id="tab-two-columns"  heading="Student Information">
         <div class="row">
           <div ng-controller="FormLayoutsControllerEditStudent as vm">
             <div class="col-lg-12"> 
@@ -383,8 +385,8 @@
             </div>
           </div>
         </div>
-      </div>
-      <div id="tab-form-actions" class="tab-pane fade">
+      </tab>
+      <tab id="tab-form-actions"  heading="Class">
         <div class="row">
           <div class="col-lg-6">
             <div class="panel panel-violet">
@@ -442,8 +444,8 @@
             </div>
           </div>
         </div>
-      </div>
-      <div id="tab-form-seperated" class="tab-pane fade">
+      </tab>
+      <tab id="tab-form-seperated" heading="Payment">
         <div class="row">
           <div class="col-lg-12">
             <div class="panel panel-yellow">
@@ -573,8 +575,8 @@
             </div>
           </div>
         </div>
-      </div>
-      <div id="tab-form-bordered" class="tab-pane fade">
+      </tab>
+      <tab id="tab-form-bordered"  heading="Student History">
         <div class="row">
           <div class="col-lg-12">
             <div class="panel panel-blue">
@@ -704,7 +706,8 @@
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      </tab>
+  <!--  </div> -->
+    </tabset>
   </div>
 </div>
