@@ -246,8 +246,8 @@
                           <div ng-class="{'has-error': editstudent.ZIP.$invalid, 'has-success': !editstudent.ZIP.$invalid}" class="form-group">
                             <label for="inputZIP" class="control-label">Zip/Postal Code </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.ZIP.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputEmail" type="text" name="Email" ng-model="vm.students.Email" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="z in vm.zipList.zips" ng-selected="{{z==vm.students.ZIP}}" placeholder="Email" value="{{z.zip}}">{{z.zip}}</option>
+                              <select id="inputZIP" type="text" name="ZIP" ng-model="vm.students.ZIP" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="z in vm.zipList.zips" ng-selected="{{z==vm.students.ZIP}}" placeholder="Zip/Postal Code" value="{{z.zip}}">{{z.zip}}</option>
                               </select>
                             </div>
                           </div>

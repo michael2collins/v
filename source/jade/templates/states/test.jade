@@ -290,10 +290,10 @@ mixin formerr(fielderr)
                                                              if ftype === "select"
                                                                 select(
                                                                     class       ='form-control'
-                                                                    id          ='input#{stu_formObj.fields[i+j].id}'
+                                                                    id          ='input#{addr_formObj.fields[i+j].id}'
                                                                     type        ='text'
-                                                                    name        ='#{stu_formObj.fields[i+j].id}'
-                                                                    ng-model    ='#{stu_formObj.fields[i+j].ngmodel}'
+                                                                    name        ='#{addr_formObj.fields[i+j].id}'
+                                                                    ng-model    ='#{addr_formObj.fields[i+j].ngmodel}'
                                                                     ng-change   =ngchang
                                                                     required    =required
                                                                     minLength   =minL
@@ -303,7 +303,7 @@ mixin formerr(fielderr)
                                                                   option(
                                                                     ng-repeat   ='#{ngrpt}' 
                                                                     ng-selected ='#{ngsel}'
-                                                                    placeholder ='#{stu_formObj.fields[i+j].desc}'
+                                                                    placeholder ='#{addr_formObj.fields[i+j].desc}'
                                                                     value       ='#{selvlu}'
                                                                   ) #{selvlu}
 
