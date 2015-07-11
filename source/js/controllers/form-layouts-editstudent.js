@@ -98,6 +98,7 @@
 
         function updateStudent() {
                     $log.debug('about updateStudent ', vm.students);
+                    if ($scope.editstudent.$invalid) { return; }                    
             return StudentServices.updateStudent(vm.path, vm.students).then(function(data){
                     $log.debug('updateStudent returned data: goto', vm.path);
                     $log.debug(data.data);

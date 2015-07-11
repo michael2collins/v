@@ -33,6 +33,7 @@ mixin formerr(fielderr)
                                                    .form-group(ng-class="{'has-error': #{formnm}.#{stu_formObj.fields[i+j].id}.$invalid, 'has-success': \!#{formnm}.#{stu_formObj.fields[i+j].id}.$invalid}")
                                                        - var ftype= stu_formObj.fields[i+j].type
                                                        - var invald= formnm + '.' + stu_formObj.fields[i+j].id + '.$invalid'
+                                                       - var flderrvlu= formnm + '.' + stu_formObj.fields[i+j].id + '.$error'
                                                        - var required= stu_formObj.fields[i+j].required 
                                                        - var placeh= stu_formObj.fields[i+j].placeholder 
                                                        - var ngchang = stu_formObj.fields[i+j].ngchange
@@ -55,8 +56,10 @@ mixin formerr(fielderr)
                                                           
                                                         if (typeof required != 'undefined') && (required === "true")
                                                             -var requirespan="<span class='require'>*</span>"
+                                                            -var required=true
                                                         else
                                                             -var requirespan=""
+                                                            -var required=false
                                                           
                                                         case fmt 
                                                             when "phone"
@@ -113,7 +116,7 @@ mixin formerr(fielderr)
 
                                                         label.control-label(for='input#{stu_formObj.fields[i+j].id}') #{stu_formObj.fields[i+j].desc} !{requirespan}
                                                         .input-icon.right
-                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct', ng-class="#{formnm}.#{stu_formObj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
+                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct', ng-show='#{formnm}.#{stu_formObj.fields[i+j].id}.$dirty' ng-class="#{formnm}.#{stu_formObj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
 
                                                             if ftype === "input"
                                                                 input(
@@ -167,7 +170,7 @@ mixin formerr(fielderr)
                                                                     value       ='#{selvlu}'
                                                                   ) #{selvlu}
 
-                                                        +formerr(invald)
+                                                        +formerr(flderrvlu)
                                                         
                                       | <h3 class="block-heading">Address</h3>
                                       - var acolumns=2
@@ -179,6 +182,7 @@ mixin formerr(fielderr)
                                                    .form-group(ng-class="{'has-error': #{formnm}.#{addr_formObj.fields[i+j].id}.$invalid, 'has-success': \!#{formnm}.#{addr_formObj.fields[i+j].id}.$invalid}")
                                                        - var ftype= addr_formObj.fields[i+j].type
                                                        - var required= addr_formObj.fields[i+j].required 
+                                                       - var flderrvlu= formnm + '.' + addr_formObj.fields[i+j].id + '.$error'
                                                        - var ngchang = addr_formObj.fields[i+j].ngchange
                                                        - var ngrpt = addr_formObj.fields[i+j].ngrepeat
                                                        - var ngsel = addr_formObj.fields[i+j].ngselected
@@ -195,8 +199,10 @@ mixin formerr(fielderr)
                                                         
                                                         if (typeof required != 'undefined') && (required === "true")
                                                             -var requirespan="<span class='require'>*</span>"
+                                                            -var required=true
                                                         else
                                                             -var requirespan=""
+                                                            -var required=false
                                                           
                                                         case fmt 
                                                             when "phone"
@@ -253,7 +259,7 @@ mixin formerr(fielderr)
 
                                                         label.control-label(for='input#{addr_formObj.fields[i+j].id}') #{addr_formObj.fields[i+j].desc} !{requirespan}
                                                         .input-icon.right
-                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct', ng-class="#{formnm}.#{addr_formObj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
+                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct' ng-show='#{formnm}.#{addr_formObj.fields[i+j].id}.$dirty' ng-class="#{formnm}.#{addr_formObj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
 
                                                             if ftype === "input"
                                                                 input(
@@ -308,7 +314,8 @@ mixin formerr(fielderr)
                                                                   ) #{selvlu}
 
 
-                                                       
+                                                        +formerr(flderrvlu)
+
                                                                 
                                     .form-actions.text-right.pal
                                         button.btn.btn-primary.btn-outlined(type='submit' ng-click='vm.updateStudent()') Submit
