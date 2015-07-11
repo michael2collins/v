@@ -1,0 +1,145 @@
+mixin formgen(formobj,formcols)
+                                      - for (var i = 0; i < formobj.fields.length; i=i+formcols)
+                                           .row
+                                             - for (var j = 0; j < formcols && i+j < formobj.fields.length; j++)
+                                               .col-md-6
+                                                   .form-group(ng-class="{'has-error': #{formnm}.#{formobj.fields[i+j].id}.$invalid, 'has-success': \!#{formnm}.#{formobj.fields[i+j].id}.$invalid}")
+                                                       - var ftype= formobj.fields[i+j].type
+                                                       - var invald= formnm + '.' + formobj.fields[i+j].id + '.$invalid'
+                                                       - var flderrvlu= formnm + '.' + formobj.fields[i+j].id + '.$error'
+                                                       - var required= formobj.fields[i+j].required 
+                                                       - var placeh= formobj.fields[i+j].placeholder 
+                                                       - var ngchang = formobj.fields[i+j].ngchange
+                                                       - var ngrpt = formobj.fields[i+j].ngrepeat
+                                                       - var ngsel = formobj.fields[i+j].ngselected
+                                                       - var selvlu = formobj.fields[i+j].selvalue
+                                                       - var minL = formobj.fields[i+j].minLength
+                                                       - var maxL = formobj.fields[i+j].maxLength
+                                                       - var txtR = formobj.fields[i+j].rows
+                                                       - var fmt = formobj.fields[i+j].format
+                                                            
+                                                        if (typeof ngchang != 'undefined')
+                                                            -var ngchang=ngchang + '()'
+                                                        else   
+                                                          - var ngchang=false
+
+                                                        if (typeof placeh != 'undefined')
+                                                        else   
+                                                          - var placeh=false
+                                                          
+                                                        if (typeof required != 'undefined') && (required === "true")
+                                                            -var requirespan="<span class='require'>*</span>"
+                                                            -var required=true
+                                                        else
+                                                            -var requirespan=""
+                                                            -var required=false
+                                                          
+                                                        case fmt 
+                                                            when "phone"
+                                                                -var uimask='(999) 999-9999'
+                                                                - var typ="text"
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "email"
+                                                                -var typ="email"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "string"
+                                                                - var typ="text"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                            when "date"
+                                                                -var typ="date"
+                                                                -var isopen="opened"
+                                                                -var datepickerpopup=true
+                                                            default
+                                                                - var fmt=false
+                                                                - var typ="text"
+                                                                - var uimask=false
+                                                                - var datepickerpopup=false
+                                                                - var isopen=false
+                                                          
+                                                        if (typeof ngrpt != 'undefined')
+                                                        else   
+                                                          - var ngrpt=false
+
+                                                        if (typeof ngsel != 'undefined')
+                                                            -var ngsel='{{' + ngsel  + '}}'
+                                                        else   
+                                                          - var ngsel=false
+
+                                                        if (typeof selvlu != 'undefined')
+                                                            -var selvlu= '{{' + selvlu + '}}'
+                                                        else   
+                                                          - var selvlu=false
+
+                                                        if (typeof minL != 'undefined')
+                                                        else   
+                                                          - var minL=false
+
+                                                        if (typeof maxL != 'undefined')
+                                                        else   
+                                                          - var maxL=false
+
+                                                        if (typeof txtR != 'undefined')
+                                                        else   
+                                                          - var txtR=false
+
+                                                        label.control-label(for='input#{formobj.fields[i+j].id}') #{formobj.fields[i+j].desc} !{requirespan}
+                                                        .input-icon.right
+                                                            i.glyphicon.tooltips(data-hover='tooltip', data-original-title='Correct', ng-show='#{formnm}.#{formobj.fields[i+j].id}.$dirty' ng-class="#{formnm}.#{formobj.fields[i+j].id}.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' ")
+
+                                                            if ftype === "input"
+                                                                input(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{formobj.fields[i+j].id}'
+                                                                    type        =typ
+                                                                    placeholder =placeh
+                                                                    name        ='#{formobj.fields[i+j].id}'
+                                                                    ng-model    ='#{formobj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    is-open     =isopen
+                                                                    ui-mask     =uimask
+                                                                    datepicker-popup=datepickerpopup
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                             if ftype === "textarea"
+                                                                textarea(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{formobj.fields[i+j].id}'
+                                                                    type        ='text'
+                                                                    placeholder =placeh
+                                                                    name        ='#{formobj.fields[i+j].id}'
+                                                                    ng-model    ='#{formobj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    rows        =txtR
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                             if ftype === "select"
+                                                                select(
+                                                                    class       ='form-control'
+                                                                    id          ='input#{formobj.fields[i+j].id}'
+                                                                    type        ='text'
+                                                                    name        ='#{formobj.fields[i+j].id}'
+                                                                    ng-model    ='#{formobj.fields[i+j].ngmodel}'
+                                                                    ng-change   =ngchang
+                                                                    required    =required
+                                                                    minLength   =minL
+                                                                    maxLength   =maxL
+                                                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                )
+                                                                  option(
+                                                                    ng-repeat   ='#{ngrpt}' 
+                                                                    ng-selected ='#{ngsel}'
+                                                                    placeholder =placeh
+                                                                    value       ='#{selvlu}'
+                                                                  ) #{selvlu}
+                                                        +formerr(flderrvlu)

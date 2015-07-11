@@ -204,7 +204,7 @@
                                     <div class="col-md-6">
                                        <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
                                           <label for="inputAddress" class="control-label">Address <span class='require'>*</span></label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputAddress" type="text" placeholder="Address" name="Address" ng-model="vm.students.Address" ng-change="vm.updateStudent()" required minLength="5" maxLength="120" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
+                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputAddress" type="text" placeholder="999 Street Address" name="Address" ng-model="vm.students.Address" ng-change="vm.updateStudent()" required minLength="5" maxLength="120" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
                                           <div style="color:maroon" role="alert" ng-messages="editstudent.Address.$error" class="has-error">
                                              <div ng-message="required">You did not enter a field</div>
                                              <div ng-message="minlength">Your field is too short</div>
@@ -233,7 +233,7 @@
                                           <div class="input-icon right">
                                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ZIP.$dirty" ng-class="editstudent.ZIP.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                              <select id="inputZIP" type="text" name="ZIP" ng-model="vm.students.ZIP" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="z in vm.zipList.zips" ng-selected="{{z==vm.students.ZIP}}" placeholder="Zip/Postal Code" value="{{z.zip}}">{{z.zip}}</option>
+                                                <option ng-repeat="z in vm.zipList.zips" ng-selected="{{z==vm.students.ZIP}}" placeholder="Select" value="{{z.zip}}">{{z.zip}}</option>
                                              </select>
                                           </div>
                                           <div style="color:maroon" role="alert" ng-messages="editstudent.ZIP.$error" class="has-error">
@@ -246,7 +246,6 @@
                                     </div>
                                  </div>
                               </div>
-                              <div class="form-actions text-right pal"><button type="submit" ng-click="vm.updateStudent()" class="btn btn-primary btn-outlined">Submit</button>&nbsp;<button type="button" class="btn btn-green btn-outlined">Cancel</button></div>
                            </form>
                         </div>
                      </div>
