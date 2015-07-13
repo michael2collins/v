@@ -188,6 +188,69 @@ $app->get('/zips',  function() {
             echoRespnse(200, $response);
         });
         
+$app->get('/studentlists',  function() {
+            $response = array();
+           $db = new DbHandler();
+
+            // fetching all user tasks
+            $result = $db->getStudentLists();
+
+            $response["error"] = false;
+            $response["ContactTypeList"] = array();
+            $response["StudentSchoolList"] = array();
+            $response["GuiSizeList"] = array();
+            $response["ShirtSizeList"] = array();
+            $response["BeltSizeList"] = array();
+            $response["instructorTitleList"] = array();
+        
+            // looping through result and preparing  arrays
+            while ($slist = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["listtype"] = $slist["listtype"];
+                $tmp["listkey"] = $slist["listkey"];
+                $tmp["listvalue"] = $slist["listvalue"];
+                if ($tmp["listtype"] == "ContactType") {
+                    array_push($response["ContactTypeList"], $tmp);
+                }
+                if ($tmp["listtype"] == "beltsize") {
+                    array_push($response["BeltSizeList"], $tmp);
+                }
+                if ($tmp["listtype"] == "gisize") {
+                    array_push($response["GuiSizeList"], $tmp);
+                }
+                if ($tmp["listtype"] == "Instructor Title") {
+                    array_push($response["instructorTitleList"], $tmp);
+                }
+                if ($tmp["listtype"] == "shirtsize") {
+                    array_push($response["ShirtSizeList"], $tmp);
+                }
+                if ($tmp["listtype"] == "school") {
+                    array_push($response["StudentSchoolList"], $tmp);
+                }
+            }
+
+            echoRespnse(200, $response);
+        });
+
+$app->get('/ranklist',  function() {
+            $response = array();
+           $db = new DbHandler();
+
+            // fetching all user tasks
+            $result = $db->getRankList();
+
+            $response["error"] = false;
+            $response["rankList"] = array();
+
+            // looping through result and preparing zips array
+            while ($rlist = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["ranklist"] = $rlist["ranklist"];
+                array_push($response["rankList"], $tmp);
+            }
+
+            echoRespnse(200, $response);
+        });
         
 /**
  * Listing all tasks of particual user
@@ -282,13 +345,10 @@ $app->get('/students/:id',  function($student_id) {
                     $response["ZIP"] = $result["ZIP"];
                     $response["Notes"] = $result["Notes"];
                     $response["Birthday"] = $result["Birthday"];
-                    $response["StartDate"] = $result["StartDate"];
                     $response["NewRank"] = $result["NewRank"];
                     $response["BeltSize"] = $result["BeltSize"];
                     $response["CurrentRank"]= $result["CurrentRank"];
                     $response["LastPromoted"] = $result["LastPromoted"];
-                    $response["ReferredBy"] = $result["ReferredBy"];
-                    $response["ConsentToPublicPictures"] = $result["ConsentToPublicPictures"];
                     $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
                     $response["ContactType"] = $result["ContactType"];
                     $response["include"] = $result["include"];
@@ -298,7 +358,6 @@ $app->get('/students/:id',  function($student_id) {
                     $response["testDate"]= $result["testDate"];
                     $response["testTime"] = $result["testTime"];
                     $response["bdayinclude"] = $result["bdayinclude"];
-                    $response["signupDate"] = $result["signupDate"];
                     $response["sex"] = $result["sex"];
                     $response["medicalConcerns"] = $result["medicalConcerns"];
                     $response["GuiSize"]= $result["GuiSize"];
@@ -308,9 +367,6 @@ $app->get('/students/:id',  function($student_id) {
                     $response["CurrentReikiRank"] = $result["CurrentReikiRank"];
                     $response["StudentSchool"] = $result["StudentSchool"];
                     $response["EmergencyContact"] = $result["EmergencyContact"];
-                    $response["sendWelcomeCard"] = $result["sendWelcomeCard"];
-                    $response["dateEntered"] = $result["dateEntered"];
-                    $response["dateInactive"] = $result["dateInactive"];
                     $response["CurrentIARank"] = $result["CurrentIARank"];
                     $response["ReadyForNextRank"] = $result["ReadyForNextRank"];
                     $response["nextScheduledTest"] = $result["nextScheduledTest"];            
@@ -363,7 +419,6 @@ error_log( print_R($student, TRUE ));
         $GuiSize = $student->GuiSize;
         $ShirtSize = $student->ShirtSize;
         $BeltSize = $student->BeltSize;
-        $ReferredBy = $student->ReferredBy;
         $InstructorPaymentFree = $student->InstructorPaymentFree;
         $InstructorFlag = $student->InstructorFlag;
         $instructorTitle = $student->instructorTitle;
@@ -397,7 +452,6 @@ error_log( print_R($StudentSchool, TRUE ));
 error_log( print_R($GuiSize, TRUE ));
 error_log( print_R($ShirtSize, TRUE ));
 error_log( print_R($BeltSize, TRUE ));
-error_log( print_R($ReferredBy, TRUE ));
 error_log( print_R($InstructorPaymentFree, TRUE ));
 error_log( print_R($InstructorFlag, TRUE ));
 error_log( print_R($instructorTitle, TRUE ));
@@ -435,7 +489,6 @@ $StudentSchool,
 $GuiSize,
 $ShirtSize,
 $BeltSize,
-$ReferredBy,
 $InstructorPaymentFree,
 $InstructorFlag,
 $instructorTitle,

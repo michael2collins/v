@@ -38,8 +38,6 @@
             testDate
             testTime
             bdayinclude
-            dateEntered
-            dateInactive
             nextScheduledTest
             upgrade
             ReadyForNextRank
@@ -47,13 +45,14 @@
         move to contactmgmt
             dateEntered
             dateInactive
-            sendWelcomeCard
             signupDate
             ConsentToPublicPictures
-            signupDate
             StartDate
             sendWelcomeCard
-            referralTo
+
+referal system
+            ReferredBy
+lists
             zipList
             stateList
             rankList

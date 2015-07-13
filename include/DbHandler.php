@@ -329,6 +329,28 @@ class DbHandler {
         return $zips;
     }
 
+     /**
+     * Fetching lookup lists for students
+     */
+    public function getStudentLists() {
+        $stmt = $this->conn->prepare("SELECT t.* FROM studentlist t order by t.listtype, t.listorder");
+        $stmt->execute();
+        $slists = $stmt->get_result();
+        $stmt->close();
+        return $slists;
+    }
+
+         /**
+     * Fetching rank lists for students
+     */
+    public function getRankList() {
+        $stmt = $this->conn->prepare("SELECT t.* FROM ranklist t order by t.sortkey");
+        $stmt->execute();
+        $ranklst = $stmt->get_result();
+        $stmt->close();
+        return $ranklst;
+    }
+
     
     /**
      * Fetching all students
@@ -361,13 +383,10 @@ class DbHandler {
                    t.ZIP,
                    t.Notes,
                    DATE_FORMAT(t.Birthday, '%Y-%m-%d'),
-                   t.StartDate,
                    t.NewRank,
                    t.BeltSize,
                    t.CurrentRank,
                    t.LastPromoted,
-                   t.ReferredBy,
-                   t.ConsentToPublicPictures,
                    t.InstructorPaymentFree,
                    t.ContactType,
                    t.include,
@@ -377,7 +396,6 @@ class DbHandler {
                    t.testDate,
                    t.testTime,
                    t.bdayinclude,
-                   t.signupDate,
                    t.sex,
                    t.medicalConcerns,
                    t.GuiSize,
@@ -387,9 +405,6 @@ class DbHandler {
                    t.CurrentReikiRank,
                    t.StudentSchool,
                    t.EmergencyContact,
-                   t.sendWelcomeCard,
-                   t.dateEntered,
-                   t.dateInactive,
                    t.CurrentIARank,
                    t.ReadyForNextRank,
                    t.nextScheduledTest             
@@ -413,13 +428,10 @@ class DbHandler {
                    $ZIP,
                    $Notes,
                    $Birthday,
-                   $StartDate,
                    $NewRank,
                    $BeltSize,
                    $CurrentRank,
                    $LastPromoted,
-                   $ReferredBy,
-                   $ConsentToPublicPictures,
                    $InstructorPaymentFree,
                    $ContactType,
                    $include,
@@ -429,7 +441,6 @@ class DbHandler {
                    $testDate,
                    $testTime,
                    $bdayinclude,
-                   $signupDate,
                    $sex,
                    $medicalConcerns,
                    $GuiSize,
@@ -439,9 +450,6 @@ class DbHandler {
                    $CurrentReikiRank,
                    $StudentSchool,
                    $EmergencyContact,
-                   $sendWelcomeCard,
-                   $dateEntered,
-                   $dateInactive,
                    $CurrentIARank,
                    $ReadyForNextRank,
                    $nextScheduledTest             
@@ -467,13 +475,10 @@ class DbHandler {
                     $res["ZIP"] = $ZIP;
                     $res["Notes"] = $Notes;
                     $res["Birthday"] = $Birthday;
-                    $res["StartDate"] = $StartDate;
                     $res["NewRank"] = $NewRank;
                     $res["BeltSize"] = $BeltSize;
                     $res["CurrentRank"]= $CurrentRank;
                     $res["LastPromoted"] = $LastPromoted;
-                    $res["ReferredBy"] = $ReferredBy;
-                    $res["ConsentToPublicPictures"] = $ConsentToPublicPictures;
                     $res["InstructorPaymentFree"] = $InstructorPaymentFree;
                     $res["ContactType"] = $ContactType;
                     $res["include"] = $include;
@@ -483,7 +488,6 @@ class DbHandler {
                     $res["testDate"]= $testDate;
                     $res["testTime"] = $testTime;
                     $res["bdayinclude"] = $bdayinclude;
-                    $res["signupDate"] = $signupDate;
                     $res["sex"] = $sex;
                     $res["medicalConcerns"] = $medicalConcerns;
                     $res["GuiSize"]= $GuiSize;
@@ -493,9 +497,6 @@ class DbHandler {
                     $res["CurrentReikiRank"] = $CurrentReikiRank;
                     $res["StudentSchool"] = $StudentSchool;
                     $res["EmergencyContact"] = $EmergencyContact;
-                    $res["sendWelcomeCard"] = $sendWelcomeCard;
-                    $res["dateEntered"] = $dateEntered;
-                    $res["dateInactive"] = $dateInactive;
                     $res["CurrentIARank"] = $CurrentIARank;
                     $res["ReadyForNextRank"] = $ReadyForNextRank;
                     $res["nextScheduledTest"] = $nextScheduledTest;                
@@ -535,7 +536,6 @@ $StudentSchool,
 $GuiSize,
 $ShirtSize,
 $BeltSize,
-$ReferredBy,
 $InstructorPaymentFree,
 $InstructorFlag,
 $instructorTitle,
@@ -569,7 +569,6 @@ $sql .= " t.StudentSchool = ?,";
 $sql .= " t.GuiSize = ?,";
 $sql .= " t.ShirtSize = ?,";
 $sql .= " t.BeltSize = ?,";
-$sql .= " t.ReferredBy = ?,";
 //$sql .= " t.InstructorPaymentFree = ?,";
 //$sql .= " t.InstructorFlag = ?,";
 $sql .= " t.instructorTitle = ?,";
@@ -605,7 +604,6 @@ error_log( print_R($StudentSchool, TRUE ));
 error_log( print_R($GuiSize, TRUE ));
 error_log( print_R($ShirtSize, TRUE ));
 error_log( print_R($BeltSize, TRUE ));
-error_log( print_R($ReferredBy, TRUE ));
 error_log( print_R($InstructorPaymentFree, TRUE ));
 error_log( print_R($InstructorFlag, TRUE ));
 error_log( print_R($instructorTitle, TRUE ));
@@ -616,7 +614,7 @@ error_log( print_R($student_id, TRUE ));
 
      //       try {
                 if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssssssssssssssssssssssdsssssi",
+                $stmt->bind_param("sssssssssssssssssssssssdssssi",
                     $LastName,
                     $FirstName    ,
                     $Email    ,
@@ -641,7 +639,6 @@ error_log( print_R($student_id, TRUE ));
                     $GuiSize    ,
                     $ShirtSize    ,
                     $BeltSize    ,
-                    $ReferredBy    ,
         //            $InstructorPaymentFree    ,
         //            $InstructorFlag    ,
                     $instructorTitle    ,

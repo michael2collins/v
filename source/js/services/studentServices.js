@@ -11,6 +11,8 @@
         var service = {
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
+            getStudentLists: getStudentLists,
+            getRankList: getRankList,
             updateStudent: updateStudent,
             getStudent: getStudent
         };
@@ -72,6 +74,36 @@
                 }).
                 error(function(data, status, headers, config) {
                     $log.debug('getAllStudents failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+        function getStudentLists(path) {
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentLists success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentLists failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+        function getRankList(path) {
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getRankList success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getRankList failure:' + path);
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });

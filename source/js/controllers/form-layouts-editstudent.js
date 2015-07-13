@@ -18,23 +18,28 @@
 
         vm.getStudent = getStudent;
         vm.getAllZips = getAllZips;
+        vm.getStudentLists = getStudentLists;
+        vm.getRankList = getRankList;
         vm.updateStudent = updateStudent;        
         vm.students =[];
         vm.genders =[];
         vm.zipList=[];
-        vm.stateList=[];
-        vm.rankList=[];
-        vm.studentTypeList=[];
-        vm.contactedTypeList=[];
-        vm.schoolList=[];
-        vm.reikiLevelList=[];
-        vm.instructorLevelList=[];
+        vm.ContactTypeList=[];
+        vm.CurrentRankList=[];
+        vm.CurrentReikiRankList=[];
+        vm.StudentSchoolList=[];
+        vm.GuiSizeList=[];
+        vm.ShirtSizeList=[];
+        vm.BeltSizeList=[];
+        vm.instructorTitleList=[];
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
         vm.path = '../v1/students/' + $routeParams.id;
 //      vm.path = '../v1/students/5340';
         vm.zippath = '../v1/zips';
+        vm.sListPath = '../v1/studentlists';
+        vm.rankListPath = '../v1/ranklist';
         
         $log.debug('Hello Debug!');
         $log.debug($routeParams.id);          
@@ -43,6 +48,8 @@
         setHeight();
         setLists();
         getAllZips();
+        getStudentLists();
+        getRankList();
         activate();
 
   $scope.today = function() {
@@ -98,7 +105,6 @@
 
         function updateStudent() {
                     $log.debug('about updateStudent ', vm.students);
-                    if ($scope.editstudent.$invalid) { return; }                    
             return StudentServices.updateStudent(vm.path, vm.students).then(function(data){
                     $log.debug('updateStudent returned data: goto', vm.path);
                     $log.debug(data.data);
@@ -118,6 +124,26 @@
                     vm.zipList = data.data;
                     
                     return vm.zipList;
+                });
+        }
+
+        function getStudentLists() {
+            return StudentServices.getStudentLists(vm.sListPath).then(function(data){
+                    $log.debug('getStudentLists returned data');
+                    $log.debug(data.data);
+                    vm.StudentList= data.data;
+                    
+                    return vm.StudentList;
+                });
+        }
+
+        function getRankList() {
+            return StudentServices.getRankList(vm.rankListPath).then(function(data){
+                    $log.debug('getRankList returned data');
+                    $log.debug(data.data);
+                    vm.RankList= data.data;
+                    
+                    return vm.RankList;
                 });
         }
                  
