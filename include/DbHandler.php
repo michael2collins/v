@@ -569,7 +569,7 @@ $sql .= " t.StudentSchool = ?,";
 $sql .= " t.GuiSize = ?,";
 $sql .= " t.ShirtSize = ?,";
 $sql .= " t.BeltSize = ?,";
-//$sql .= " t.InstructorPaymentFree = ?,";
+$sql .= " t.InstructorPaymentFree = ?,";
 //$sql .= " t.InstructorFlag = ?,";
 $sql .= " t.instructorTitle = ?,";
 $sql .= " t.CurrentRank = ?,";
@@ -614,7 +614,7 @@ error_log( print_R($student_id, TRUE ));
 
      //       try {
                 if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssssssssssssssssssssssdssssi",
+                $stmt->bind_param("sssssssssssssssssssssssdissssi",
                     $LastName,
                     $FirstName    ,
                     $Email    ,
@@ -639,7 +639,7 @@ error_log( print_R($student_id, TRUE ));
                     $GuiSize    ,
                     $ShirtSize    ,
                     $BeltSize    ,
-        //            $InstructorPaymentFree    ,
+                    $InstructorPaymentFree    ,
         //            $InstructorFlag    ,
                     $instructorTitle    ,
                     $CurrentRank    ,

@@ -389,7 +389,11 @@
                                     <div class="col-md-6">
                                        <div ng-class="{'has-error': editstudent.InstructorPaymentFree.$invalid, 'has-success': !editstudent.InstructorPaymentFree.$invalid}" class="form-group">
                                           <label for="inputInstructorPaymentFree" class="control-label">Instr. Payment Free </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.InstructorPaymentFree.$dirty" ng-class="editstudent.InstructorPaymentFree.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputInstructorPaymentFree" type="checkbox" placeholder="" name="InstructorPaymentFree" ng-model="vm.students.InstructorPaymentFree" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
+                                          <div class="input-icon right">
+                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.InstructorPaymentFree.$dirty" ng-class="editstudent.InstructorPaymentFree.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                             <toggle-switch on-label="free" off-label="charge"  class="switch-primary"   
+                                             id="inputInstructorPaymentFree" type="checkbox" name="InstructorPaymentFree" ng-model="vm.students.InstructorPaymentFree" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" ></toggle-switch>
+                                          </div>
                                           <div style="color:maroon" role="alert" ng-messages="editstudent.InstructorPaymentFree.$error" class="has-error">
                                              <div ng-message="required">You did not enter a field</div>
                                              <div ng-message="minlength">Your field is too short</div>

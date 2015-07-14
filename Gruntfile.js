@@ -66,6 +66,7 @@ module.exports = function (grunt) {
 //        'bower_components/angular-sanitize/angular-sanitize.js',
 //        'bower_components/angular-mocks/angular-mocks.js',
         'bower_components/underscore/underscore.js',
+        'bower_components/angular-bootstrap-toggle-switch/angular-toggle-switch.js',
         'bower_components/jquery/jquery.min.js',
             'bower_components/angular/angular.min.js',
             'bower_components/angular/angular-route.min.js',

@@ -153,4 +153,18 @@ mixin formgen(formobj,formcols)
                                 placeholder =placeh
                                 value       ='#{selvlu}'
                               ) #{seldisplay}
+                        if ftype === "checkbox"
+                            toggle-switch(
+                                on-label    ='free'
+                                off-label   ='charge'
+                                class       ='switch-primary'
+                                id          ='input#{formobj.fields[i+j].id}'
+                                type        =typ
+                                name        ='#{formobj.fields[i+j].id}'
+                                ng-model    ='#{formobj.fields[i+j].ngmodel}'
+                                ng-change   =ngchang
+                                required    =required
+                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                            )
+                              
                     +formerr(flderrvlu)

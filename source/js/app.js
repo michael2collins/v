@@ -4,7 +4,7 @@ angular
     .module('ng-admin', [
         'ui.grid',    'ui.utils',
         'ngRoute',    
-        'ui.bootstrap',    
+        'ui.bootstrap',    'toggle-switch',
         'ngTouch',  'ngMessages',
         'ui.grid.pagination',
         'ui.grid.cellNav', 
