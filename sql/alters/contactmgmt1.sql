@@ -10,12 +10,12 @@ ALTER TABLE `ncontactmgmt` DROP `contactdateyyyy`;
 ALTER TABLE `ncontactmgmt` DROP `contactdatem`;
 ALTER TABLE `ncontactmgmt` DROP `contactdated`;
  
-INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'dateEntered', dateEntered from ncontacts where dateEntered is not null
-INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'dateInactive', dateInactive from ncontacts where dateInactive is not null
-INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'sendWelcomeCard', dateEntered from ncontacts where sendWelcomeCard >0
-INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'signupDate', signupDate from ncontacts where signupDate is not null
-INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'ConsentToPublicPictures', dateEntered from ncontacts where ConsentToPublicPictures >0
-INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'StartDate', StartDate from ncontacts where StartDate is not null
+INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'dateEntered', dateEntered from ncontacts where dateEntered is not null;
+INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'dateInactive', dateInactive from ncontacts where dateInactive is not null;
+INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'sendWelcomeCard', dateEntered from ncontacts where sendWelcomeCard >0;
+INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'signupDate', signupDate from ncontacts where signupDate is not null;
+INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'ConsentToPublicPictures', dateEntered from ncontacts where ConsentToPublicPictures >0;
+INSERT INTO `ncontactmgmt`(`contactid`, `contactmgmttype`, `contactDate`) select id, 'StartDate', StartDate from ncontacts where StartDate is not null;
  
 
 ALTER TABLE `ncontacts` DROP dateEntered;

@@ -224,11 +224,19 @@ $app->get('/studentlists',  function() {
                 if ($tmp["listtype"] == "shirtsize") {
                     array_push($response["ShirtSizeList"], $tmp);
                 }
-                if ($tmp["listtype"] == "school") {
+                if ($tmp["listtype"] == "School") {
                     array_push($response["StudentSchoolList"], $tmp);
                 }
             }
-
+            
+            error_log( print_R($response["ContactTypeList"], TRUE ));
+            error_log( print_R($response["StudentSchoolList"], TRUE ));
+            error_log( print_R($response["GuiSizeList"], TRUE ));
+            error_log( print_R($response["ShirtSizeList"], TRUE ));
+            error_log( print_R($response["BeltSizeList"], TRUE ));
+            error_log( print_R($response["instructorTitleList"], TRUE ));
+            
+            
             echoRespnse(200, $response);
         });
 

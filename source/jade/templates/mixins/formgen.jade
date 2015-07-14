@@ -51,6 +51,11 @@ mixin formgen(formobj,formcols)
                             - var uimask=false
                             - var datepickerpopup=false
                             - var isopen=false
+                        when "checkbox"
+                            - var typ="checkbox"
+                            - var uimask=false
+                            - var datepickerpopup=false
+                            - var isopen=false
                         when "date"
                             -var typ="date"
                             -var isopen="opened"
