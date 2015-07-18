@@ -1,436 +1,656 @@
 <!DOCTYPE html>
 <div id="form-layouts-editstudent" class="row">
-   <div class="col-lg-12">
-      <tabset type="pills">
-         <tab id="tab-student" heading="Student Information">
-            <div class="row">
-               <div ng-controller="FormLayoutsControllerEditStudent as vm">
-                  <div class="col-lg-12">
-                     <div class="panel panel-blue">
-                        <div class="panel-heading">Student</div>
-                        <div class="panel-body pan">
-                           <form action="" novalidate name="editstudent" class="horizontal-form">
-                              <div class="form-body pal">
-                                 <h3 class="block-heading">Student Information</h3>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.FirstName.$invalid, 'has-success': !editstudent.FirstName.$invalid}" class="form-group">
-                                          <label for="inputFirstName" class="control-label">First Name </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.FirstName.$dirty" ng-class="editstudent.FirstName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" ng-model="vm.students.FirstName" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.FirstName.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.LastName.$invalid, 'has-success': !editstudent.LastName.$invalid}" class="form-group">
-                                          <label for="inputLastName" class="control-label">LastName </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.LastName.$dirty" ng-class="editstudent.LastName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputLastName" type="text" placeholder="Last Name" name="LastName" ng-model="vm.students.LastName" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.LastName.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Email.$invalid, 'has-success': !editstudent.Email.$invalid}" class="form-group">
-                                          <label for="inputEmail" class="control-label">Email </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Email.$dirty" ng-class="editstudent.Email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputEmail" type="email" placeholder="Email Address" name="Email" ng-model="vm.students.Email" ng-change="vm.updateStudent()" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Email.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Email2.$invalid, 'has-success': !editstudent.Email2.$invalid}" class="form-group">
-                                          <label for="inputEmail2" class="control-label">Email2 </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Email2.$dirty" ng-class="editstudent.Email2.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputEmail2" type="email" placeholder="Alternate Email" name="Email2" ng-model="vm.students.Email2" ng-change="vm.updateStudent()" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Email2.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Phone.$invalid, 'has-success': !editstudent.Phone.$invalid}" class="form-group">
-                                          <label for="inputPhone" class="control-label">Phone </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Phone.$dirty" ng-class="editstudent.Phone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputPhone" type="text" placeholder="" name="Phone" ng-model="vm.students.Phone" ng-change="vm.updateStudent()" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Phone.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.AltPhone.$invalid, 'has-success': !editstudent.AltPhone.$invalid}" class="form-group">
-                                          <label for="inputAltPhone" class="control-label">AltPhone </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.AltPhone.$dirty" ng-class="editstudent.AltPhone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputAltPhone" type="text" placeholder="" name="AltPhone" ng-model="vm.students.AltPhone" ng-change="vm.updateStudent()" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.AltPhone.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.phoneExt.$invalid, 'has-success': !editstudent.phoneExt.$invalid}" class="form-group">
-                                          <label for="inputphoneExt" class="control-label">PhoneExt </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.phoneExt.$dirty" ng-class="editstudent.phoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputphoneExt" type="text" placeholder="9999" name="phoneExt" ng-model="vm.students.phoneExt" ng-change="vm.updateStudent()" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.phoneExt.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.altPhoneExt.$invalid, 'has-success': !editstudent.altPhoneExt.$invalid}" class="form-group">
-                                          <label for="inputaltPhoneExt" class="control-label">AltPhoneExt </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.altPhoneExt.$dirty" ng-class="editstudent.altPhoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputaltPhoneExt" type="text" placeholder="9999" name="altPhoneExt" ng-model="vm.students.altPhoneExt" ng-change="vm.updateStudent()" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.altPhoneExt.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
-                                          <label for="inputBirthday" class="control-label">Birthday </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputBirthday" type="date" placeholder="mm/dd/yyyy" name="Birthday" ng-model="vm.students.Birthday" ng-change="vm.updateStudent()" is-open="opened" datepicker-popup ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.sex.$invalid, 'has-success': !editstudent.sex.$invalid}" class="form-group">
-                                          <label for="inputsex" class="control-label">Gender </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.sex.$dirty" ng-class="editstudent.sex.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputsex" type="text" name="sex" ng-model="vm.students.sex" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" placeholder="Select" value="{{g}}">{{g}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.sex.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Parent.$invalid, 'has-success': !editstudent.Parent.$invalid}" class="form-group">
-                                          <label for="inputParent" class="control-label">Parent </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Parent.$dirty" ng-class="editstudent.Parent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputParent" type="text" placeholder="Parent Name" name="Parent" ng-model="vm.students.Parent" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Parent.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.EmergencyContact.$invalid, 'has-success': !editstudent.EmergencyContact.$invalid}" class="form-group">
-                                          <label for="inputEmergencyContact" class="control-label">Emergency Contact </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.EmergencyContact.$dirty" ng-class="editstudent.EmergencyContact.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputEmergencyContact" type="text" placeholder="Emergency Contact Name" name="EmergencyContact" ng-model="vm.students.EmergencyContact" ng-change="vm.updateStudent()" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.EmergencyContact.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Notes.$invalid, 'has-success': !editstudent.Notes.$invalid}" class="form-group">
-                                          <label for="inputNotes" class="control-label">Notes </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Notes.$dirty" ng-class="editstudent.Notes.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><textarea id="inputNotes" type="text" placeholder="Enter notes" name="Notes" ng-model="vm.students.Notes" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Notes.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.medicalConcerns.$invalid, 'has-success': !editstudent.medicalConcerns.$invalid}" class="form-group">
-                                          <label for="inputmedicalConcerns" class="control-label">Medical Concerns </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.medicalConcerns.$dirty" ng-class="editstudent.medicalConcerns.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><textarea id="inputmedicalConcerns" type="text" placeholder="Enter Medical concerns" name="medicalConcerns" ng-model="vm.students.medicalConcerns" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.medicalConcerns.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <h3 class="block-heading">Address Information</h3>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
-                                          <label for="inputAddress" class="control-label">Address </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputAddress" type="text" placeholder="999 Street Address" name="Address" ng-model="vm.students.Address" ng-change="vm.updateStudent()" minLength="5" maxLength="120" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.Address.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.City.$invalid, 'has-success': !editstudent.City.$invalid}" class="form-group">
-                                          <label for="inputCity" class="control-label">City </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.City.$dirty" ng-class="editstudent.City.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputCity" type="text" placeholder="City" name="City" ng-model="vm.students.City" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.City.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.ZIP.$invalid, 'has-success': !editstudent.ZIP.$invalid}" class="form-group">
-                                          <label for="inputZIP" class="control-label">Zip/Postal Code </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ZIP.$dirty" ng-class="editstudent.ZIP.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputZIP" type="text" name="ZIP" ng-model="vm.students.ZIP" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="z in vm.zipList.zips" ng-selected="{{z==vm.students.ZIP}}" placeholder="Select" value="{{z.zip}}">{{z.zip}} - {{z.city}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.ZIP.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <h3 class="block-heading">Dojo Information</h3>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.ContactType.$invalid, 'has-success': !editstudent.ContactType.$invalid}" class="form-group">
-                                          <label for="inputContactType" class="control-label">Contact Type </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ContactType.$dirty" ng-class="editstudent.ContactType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputContactType" type="text" name="ContactType" ng-model="vm.students.ContactType" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.StudentList.ContactTypeList" ng-selected="{{iter.listkey==vm.students.ContactType}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.ContactType.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.CurrentRank.$invalid, 'has-success': !editstudent.CurrentRank.$invalid}" class="form-group">
-                                          <label for="inputCurrentRank" class="control-label">Rank </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.CurrentRank.$dirty" ng-class="editstudent.CurrentRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputCurrentRank" type="text" name="CurrentRank" ng-model="vm.students.CurrentRank" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.RankList.rankList" ng-selected="{{iter.ranklist==vm.students.CurrentRank}}" placeholder="Select" value="{{iter.ranklist}}">{{iter.ranklist}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.CurrentRank.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.CurrentReikiRank.$invalid, 'has-success': !editstudent.CurrentReikiRank.$invalid}" class="form-group">
-                                          <label for="inputCurrentReikiRank" class="control-label">Reiki Rank </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.CurrentReikiRank.$dirty" ng-class="editstudent.CurrentReikiRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputCurrentReikiRank" type="text" name="CurrentReikiRank" ng-model="vm.students.CurrentReikiRank" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.CurrentReikiRankList" ng-selected="{{iter==vm.students.CurrentReikiRank}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.CurrentReikiRank.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.quickbooklink.$invalid, 'has-success': !editstudent.quickbooklink.$invalid}" class="form-group">
-                                          <label for="inputquickbooklink" class="control-label">Quickbook Link </label>
-                                          <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.quickbooklink.$dirty" ng-class="editstudent.quickbooklink.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i><input id="inputquickbooklink" type="text" placeholder="Quickbook" name="quickbooklink" ng-model="vm.students.quickbooklink" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.quickbooklink.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.StudentSchool.$invalid, 'has-success': !editstudent.StudentSchool.$invalid}" class="form-group">
-                                          <label for="inputStudentSchool" class="control-label">School </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.StudentSchool.$dirty" ng-class="editstudent.StudentSchool.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputStudentSchool" type="text" name="StudentSchool" ng-model="vm.students.StudentSchool" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.StudentList.StudentSchoolList" ng-selected="{{iter.listkey==vm.students.StudentSchool}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.StudentSchool.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.GuiSize.$invalid, 'has-success': !editstudent.GuiSize.$invalid}" class="form-group">
-                                          <label for="inputGuiSize" class="control-label">Gi Size </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.GuiSize.$dirty" ng-class="editstudent.GuiSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputGuiSize" type="text" name="GuiSize" ng-model="vm.students.GuiSize" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.StudentList.GuiSizeList" ng-selected="{{iter.listkey==vm.students.GuiSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.GuiSize.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.ShirtSize.$invalid, 'has-success': !editstudent.ShirtSize.$invalid}" class="form-group">
-                                          <label for="inputShirtSize" class="control-label">Shirt Size </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ShirtSize.$dirty" ng-class="editstudent.ShirtSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="vm.students.ShirtSize" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.StudentList.ShirtSizeList" ng-selected="{{iter.listkey==vm.students.ShirtSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.ShirtSize.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.BeltSize.$invalid, 'has-success': !editstudent.BeltSize.$invalid}" class="form-group">
-                                          <label for="inputBeltSize" class="control-label">Belt Size </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.BeltSize.$dirty" ng-class="editstudent.BeltSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputBeltSize" type="text" name="BeltSize" ng-model="vm.students.BeltSize" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.StudentList.BeltSizeList" ng-selected="{{iter.listkey==vm.students.BeltSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.BeltSize.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                                 <div class="row">
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.InstructorPaymentFree.$invalid, 'has-success': !editstudent.InstructorPaymentFree.$invalid}" class="form-group">
-                                          <label for="inputInstructorPaymentFree" class="control-label">Instr. Payment Free </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.InstructorPaymentFree.$dirty" ng-class="editstudent.InstructorPaymentFree.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <toggle-switch on-label="free" off-label="charge"  class="switch-primary"   
-                                             id="inputInstructorPaymentFree" type="checkbox" name="InstructorPaymentFree" ng-model="vm.students.InstructorPaymentFree" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" ></toggle-switch>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.InstructorPaymentFree.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                       <div ng-class="{'has-error': editstudent.instructorTitle.$invalid, 'has-success': !editstudent.instructorTitle.$invalid}" class="form-group">
-                                          <label for="inputinstructorTitle" class="control-label">Title </label>
-                                          <div class="input-icon right">
-                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.instructorTitle.$dirty" ng-class="editstudent.instructorTitle.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                             <select id="inputinstructorTitle" type="text" name="instructorTitle" ng-model="vm.students.instructorTitle" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                                <option ng-repeat="iter in vm.StudentList.instructorTitleList" ng-selected="{{iter.listkey==vm.students.instructorTitle}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                                             </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudent.instructorTitle.$error" class="has-error">
-                                             <div ng-message="required">You did not enter a field</div>
-                                             <div ng-message="minlength">Your field is too short</div>
-                                             <div ng-message="maxlength">Your field is too long</div>
-                                             <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </form>
+  <div class="col-lg-12">
+    <tabset type="pills">
+      <tab id="tab-student" heading="Student Information">
+        <div class="row">
+          <div ng-controller="FormLayoutsControllerEditStudent as vm">
+            <div class="col-lg-12">
+              <div class="panel panel-blue">
+                <div class="panel-heading">Student</div>
+                <div class="panel-body pan">
+                  <form action="" novalidate name="editstudent" class="horizontal-form">
+                    <div class="form-body pal"><h3 class="block-heading">Student Information</h3>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.FirstName.$invalid, 'has-success': !editstudent.FirstName.$invalid}" class="form-group">
+                            <label for="inputFirstName" class="control-label">First Name </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.FirstName.$dirty" ng-class="editstudent.FirstName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" ng-model="vm.students.FirstName" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.FirstName.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
                         </div>
-                     </div>
-                  </div>
-               </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.LastName.$invalid, 'has-success': !editstudent.LastName.$invalid}" class="form-group">
+                            <label for="inputLastName" class="control-label">LastName </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.LastName.$dirty" ng-class="editstudent.LastName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" ng-model="vm.students.LastName" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.LastName.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Email.$invalid, 'has-success': !editstudent.Email.$invalid}" class="form-group">
+                            <label for="inputEmail" class="control-label">Email </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Email.$dirty" ng-class="editstudent.Email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputEmail" type="email" placeholder="Email Address" name="Email" ng-model="vm.students.Email" ng-change="vm.updateStudent()" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Email.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Email2.$invalid, 'has-success': !editstudent.Email2.$invalid}" class="form-group">
+                            <label for="inputEmail2" class="control-label">Email2 </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Email2.$dirty" ng-class="editstudent.Email2.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputEmail2" type="email" placeholder="Alternate Email" name="Email2" ng-model="vm.students.Email2" ng-change="vm.updateStudent()" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Email2.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Phone.$invalid, 'has-success': !editstudent.Phone.$invalid}" class="form-group">
+                            <label for="inputPhone" class="control-label">Phone </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Phone.$dirty" ng-class="editstudent.Phone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputPhone" type="text" placeholder="" name="Phone" ng-model="vm.students.Phone" ng-change="vm.updateStudent()" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Phone.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.AltPhone.$invalid, 'has-success': !editstudent.AltPhone.$invalid}" class="form-group">
+                            <label for="inputAltPhone" class="control-label">AltPhone </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.AltPhone.$dirty" ng-class="editstudent.AltPhone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputAltPhone" type="text" placeholder="" name="AltPhone" ng-model="vm.students.AltPhone" ng-change="vm.updateStudent()" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.AltPhone.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.phoneExt.$invalid, 'has-success': !editstudent.phoneExt.$invalid}" class="form-group">
+                            <label for="inputphoneExt" class="control-label">PhoneExt </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.phoneExt.$dirty" ng-class="editstudent.phoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputphoneExt" type="text" placeholder="9999" name="phoneExt" ng-model="vm.students.phoneExt" ng-change="vm.updateStudent()" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.phoneExt.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.altPhoneExt.$invalid, 'has-success': !editstudent.altPhoneExt.$invalid}" class="form-group">
+                            <label for="inputaltPhoneExt" class="control-label">AltPhoneExt </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.altPhoneExt.$dirty" ng-class="editstudent.altPhoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputaltPhoneExt" type="text" placeholder="9999" name="altPhoneExt" ng-model="vm.students.altPhoneExt" ng-change="vm.updateStudent()" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.altPhoneExt.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
+                            <label for="inputBirthday" class="control-label">Birthday </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputBirthday" type="date" placeholder="mm/dd/yyyy" name="Birthday" ng-model="vm.students.Birthday" ng-change="vm.updateStudent()" is-open="opened" datepicker-popup ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.sex.$invalid, 'has-success': !editstudent.sex.$invalid}" class="form-group">
+                            <label for="inputsex" class="control-label">Gender </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.sex.$dirty" ng-class="editstudent.sex.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputsex" type="text" name="sex" ng-model="vm.students.sex" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="g in vm.genders" ng-selected="{{g==vm.students.sex}}" placeholder="Select" value="{{g}}">{{g}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.sex.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Parent.$invalid, 'has-success': !editstudent.Parent.$invalid}" class="form-group">
+                            <label for="inputParent" class="control-label">Parent </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Parent.$dirty" ng-class="editstudent.Parent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputParent" type="text" placeholder="Parent Name" name="Parent" ng-model="vm.students.Parent" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Parent.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.EmergencyContact.$invalid, 'has-success': !editstudent.EmergencyContact.$invalid}" class="form-group">
+                            <label for="inputEmergencyContact" class="control-label">Emergency Contact </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.EmergencyContact.$dirty" ng-class="editstudent.EmergencyContact.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputEmergencyContact" type="text" placeholder="Emergency Contact Name" name="EmergencyContact" ng-model="vm.students.EmergencyContact" ng-change="vm.updateStudent()" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.EmergencyContact.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Notes.$invalid, 'has-success': !editstudent.Notes.$invalid}" class="form-group">
+                            <label for="inputNotes" class="control-label">Notes </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Notes.$dirty" ng-class="editstudent.Notes.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <textarea id="inputNotes" type="text" placeholder="Enter notes" name="Notes" ng-model="vm.students.Notes" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Notes.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.medicalConcerns.$invalid, 'has-success': !editstudent.medicalConcerns.$invalid}" class="form-group">
+                            <label for="inputmedicalConcerns" class="control-label">Medical Concerns </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.medicalConcerns.$dirty" ng-class="editstudent.medicalConcerns.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <textarea id="inputmedicalConcerns" type="text" placeholder="Enter Medical concerns" name="medicalConcerns" ng-model="vm.students.medicalConcerns" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.medicalConcerns.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div><h3 class="block-heading">Address Information</h3>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
+                            <label for="inputAddress" class="control-label">Address </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputAddress" type="text" placeholder="999 Street Address" name="Address" ng-model="vm.students.Address" ng-change="vm.updateStudent()" minLength="5" maxLength="120" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.Address.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.City.$invalid, 'has-success': !editstudent.City.$invalid}" class="form-group">
+                            <label for="inputCity" class="control-label">City </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.City.$dirty" ng-class="editstudent.City.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputCity" type="text" placeholder="City" name="City" ng-model="vm.students.City" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.City.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.ZIP.$invalid, 'has-success': !editstudent.ZIP.$invalid}" class="form-group">
+                            <label for="inputZIP" class="control-label">Zip/Postal Code </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ZIP.$dirty" ng-class="editstudent.ZIP.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputZIP" type="text" name="ZIP" ng-model="vm.students.ZIP" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="z in vm.zipList.zips" ng-selected="{{z==vm.students.ZIP}}" placeholder="Select" value="{{z.zip}}">{{z.zip}} - {{z.city}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.ZIP.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div><h3 class="block-heading">Dojo Information</h3>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.ContactType.$invalid, 'has-success': !editstudent.ContactType.$invalid}" class="form-group">
+                            <label for="inputContactType" class="control-label">Contact Type </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ContactType.$dirty" ng-class="editstudent.ContactType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputContactType" type="text" name="ContactType" ng-model="vm.students.ContactType" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.StudentList.ContactTypeList" ng-selected="{{iter.listkey==vm.students.ContactType}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.ContactType.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.CurrentRank.$invalid, 'has-success': !editstudent.CurrentRank.$invalid}" class="form-group">
+                            <label for="inputCurrentRank" class="control-label">Rank </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.CurrentRank.$dirty" ng-class="editstudent.CurrentRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputCurrentRank" type="text" name="CurrentRank" ng-model="vm.students.CurrentRank" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.RankList.rankList" ng-selected="{{iter.ranklist==vm.students.CurrentRank}}" placeholder="Select" value="{{iter.ranklist}}">{{iter.ranklist}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.CurrentRank.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.CurrentReikiRank.$invalid, 'has-success': !editstudent.CurrentReikiRank.$invalid}" class="form-group">
+                            <label for="inputCurrentReikiRank" class="control-label">Reiki Rank </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.CurrentReikiRank.$dirty" ng-class="editstudent.CurrentReikiRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputCurrentReikiRank" type="text" name="CurrentReikiRank" ng-model="vm.students.CurrentReikiRank" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.CurrentReikiRankList" ng-selected="{{iter==vm.students.CurrentReikiRank}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.CurrentReikiRank.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.quickbooklink.$invalid, 'has-success': !editstudent.quickbooklink.$invalid}" class="form-group">
+                            <label for="inputquickbooklink" class="control-label">Quickbook Link </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.quickbooklink.$dirty" ng-class="editstudent.quickbooklink.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputquickbooklink" type="text" placeholder="Quickbook" name="quickbooklink" ng-model="vm.students.quickbooklink" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.quickbooklink.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.StudentSchool.$invalid, 'has-success': !editstudent.StudentSchool.$invalid}" class="form-group">
+                            <label for="inputStudentSchool" class="control-label">School </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.StudentSchool.$dirty" ng-class="editstudent.StudentSchool.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputStudentSchool" type="text" name="StudentSchool" ng-model="vm.students.StudentSchool" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.StudentList.StudentSchoolList" ng-selected="{{iter.listkey==vm.students.StudentSchool}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.StudentSchool.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.GuiSize.$invalid, 'has-success': !editstudent.GuiSize.$invalid}" class="form-group">
+                            <label for="inputGuiSize" class="control-label">Gi Size </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.GuiSize.$dirty" ng-class="editstudent.GuiSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputGuiSize" type="text" name="GuiSize" ng-model="vm.students.GuiSize" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.StudentList.GuiSizeList" ng-selected="{{iter.listkey==vm.students.GuiSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.GuiSize.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.ShirtSize.$invalid, 'has-success': !editstudent.ShirtSize.$invalid}" class="form-group">
+                            <label for="inputShirtSize" class="control-label">Shirt Size </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ShirtSize.$dirty" ng-class="editstudent.ShirtSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="vm.students.ShirtSize" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.StudentList.ShirtSizeList" ng-selected="{{iter.listkey==vm.students.ShirtSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.ShirtSize.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.BeltSize.$invalid, 'has-success': !editstudent.BeltSize.$invalid}" class="form-group">
+                            <label for="inputBeltSize" class="control-label">Belt Size </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.BeltSize.$dirty" ng-class="editstudent.BeltSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputBeltSize" type="text" name="BeltSize" ng-model="vm.students.BeltSize" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.StudentList.BeltSizeList" ng-selected="{{iter.listkey==vm.students.BeltSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.BeltSize.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.InstructorPaymentFree.$invalid, 'has-success': !editstudent.InstructorPaymentFree.$invalid}" class="form-group">
+                            <label for="inputInstructorPaymentFree" class="control-label">Instr. Payment Free </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.InstructorPaymentFree.$dirty" ng-class="editstudent.InstructorPaymentFree.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <toggle-switch on-label="free" off-label="charge" id="inputInstructorPaymentFree" type="checkbox" name="InstructorPaymentFree" ng-model="vm.students.InstructorPaymentFree" ng-change="vm.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="switch-primary"></toggle-switch>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.InstructorPaymentFree.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.instructorTitle.$invalid, 'has-success': !editstudent.instructorTitle.$invalid}" class="form-group">
+                            <label for="inputinstructorTitle" class="control-label">Title </label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.instructorTitle.$dirty" ng-class="editstudent.instructorTitle.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <select id="inputinstructorTitle" type="text" name="instructorTitle" ng-model="vm.students.instructorTitle" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <option ng-repeat="iter in vm.StudentList.instructorTitleList" ng-selected="{{iter.listkey==vm.students.instructorTitle}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.instructorTitle.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-         </tab>
-         <tab id="tab-student" heading="Class"></tab>
-         <tab id="tab-student" heading="Payment"></tab>
-         <tab id="tab-student" heading="Student History"></tab>
-      </tabset>
-   </div>
+          </div>
+        </div>
+      </tab>
+      <tab id="tab-student" heading="Class">
+        <div class="row">
+          <div class="col-lg-12">
+            <div class="portlet box portlet-orange">
+              <div class="portlet-header">
+                <div class="caption">Media Gallery</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
+              </div>
+              <div class="portlet-body">
+                <div class="gallery-pages" >
+                  <ul style="float: left;" class="list-filter list-unstyled">
+                    <li data-filter="all" class="filter active">All</li>
+                    <li data-filter=".adult" class="filter">Adult</li>
+                    <li data-filter=".children" class="filter">Children</li>
+                    <li data-filter=".special" class="filter">Special</li>
+                    <li data-filter=".blackbelt" class="filter">Blackbelt</li>
+                  </ul>
+                  <div class="action-group btn-group pull-right mtm mbm">
+                    <button class="btn btn-primary"><i class="fa fa-upload mrs"></i>Add new</button>
+                    <button class="btn btn-primary"><i class="fa fa-edit mrs"></i>Edit </button>
+                    <button class="btn btn-primary"><i class="fa fa-trash-o mrs"></i>Delete</button>
+                  </div>
+                  <div class="clearfix"></div>
+                  <div class="row " mixitup='mixitup'>
+                    <div class="col-md-3 mix adult">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/adult.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Adult</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/adult.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix adult blackbelt">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/adultblackbelt.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Blackbelt Adult</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/adultblackbelt.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/afterschool.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>After School</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/afterschool.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/basicdragon.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Basic Dragon</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/basicdragon.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/bbt1purple.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>BBT1 - Purple - B/G</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt1purple.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/bbt1leopard.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>BBT1 Leopard</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt1leopard.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/bbt2.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>BBT2 - Green</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt2.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/bbt3.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>BBT3 - Brown</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt3.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-3 mix special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/inactive.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Inactive</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/inactive.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/injured.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Injured</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/injured.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix blackbelt children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/jrblackbelt.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Blackbelt Jr</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/jrblackbelt.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix adult special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/kickbox.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Kickboxing</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/kickbox.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search">           </i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/leopards.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Basic Leopard</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/leopards.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/multiclass.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>BBT - Multiclasses</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/multiclass.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix adult special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/private.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Privates Adult</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/private.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix children special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/privatechild.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Privates Children</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/privatechild.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search">           </i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-3 mix special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/saturday.png" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Saturday Only</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/saturday.png" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix special adult">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/selfdefence.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Self Defense</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/selfdefence.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/specialneeds.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Special Needs</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/specialneeds.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix adult special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/taichi.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>TaiChi</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/taichi.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search">           </i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12"></div>
+                    <div class="col-md-3 mix special">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/zumba.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Zoomba</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/zumba.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+      <tab id="tab-student" heading="Payment"></tab>
+      <tab id="tab-student" heading="Student History"></tab>
+    </tabset>
+  </div>
 </div>

@@ -358,6 +358,7 @@ $app->get('/students/:id',  function($student_id) {
                     $response["CurrentRank"]= $result["CurrentRank"];
                     $response["LastPromoted"] = $result["LastPromoted"];
                     $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
+error_log( print_R("get student instructor payment free:" + $response["InstructorPaymentFree"], TRUE ));                    
                     $response["ContactType"] = $result["ContactType"];
                     $response["include"] = $result["include"];
                     $response["InstructorFlag"] = $result["InstructorFlag"];

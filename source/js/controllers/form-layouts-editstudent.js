@@ -3,6 +3,44 @@
 
     angular
         .module('ng-admin')
+.directive('mixitup',function($timeout){
+    var linker = function(scope,element,attrs) {
+
+            scope.$on("cat_done", function(){ 
+                $timeout(function(){
+                console.log('reload');
+                console.log("!================ ");
+                element.mixItUp({
+                	callbacks: {
+                		onMixFail: function(state){	console.log('No elements found matching ',state); },
+                		onMixStart: function(state, futureState){ console.log('Animation starting',state); }
+                	}
+                });
+                //do the things
+                });
+            });
+
+            
+        console.log('starting');
+        
+        
+    };
+    
+    return {
+        restrict:'A',
+        link: linker
+    };
+})
+
+.directive("onRepeatDone", function(){
+  return {
+	        restriction: 'A',
+	        link: function($scope, element, attributes ) {
+	            //console.log("[onRepeatDone] element",element);
+	            $scope.$emit(attributes["onRepeatDone"] || "repeat_done", element);
+	        }
+	    }
+})                
 .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent);
 
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
@@ -35,6 +73,7 @@
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
+        vm.enableMediaFilter = enableMediaFilter;
         vm.path = '../v1/students/' + $routeParams.id;
 //      vm.path = '../v1/students/5340';
         vm.zippath = '../v1/zips';
@@ -44,8 +83,8 @@
         $log.debug('Hello Debug!');
         $log.debug($routeParams.id);          
 
-        $.fn.Data.Portlet();
-        setHeight();
+//        $.fn.Data.Portlet();
+//        setHeight();
         setLists();
         getAllZips();
         getStudentLists();
@@ -82,13 +121,21 @@
  //   formatYear: 'yy',
  //   startingDay: 1
   };
-
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
   $scope.format = $scope.formats[4];
+ 
+    
+        function enableMediaFilter() {
+            $log.debug('enable media filter');
+            $('.mix-grid').mixItUp();
+        }
+
   
         function activate() {
         return getStudent().then(function() {
             $log.debug('activated EditStudent view');
+       //     enableMediaFilter();
+           $scope.$broadcast("cat_done");
             });
         }
 
@@ -149,6 +196,7 @@
                  
         function setHeight() {
             $('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
+                $log.debug('set height');
                 var tab_id = $(this).attr('href');
                 var tab_h = $(tab_id).height();
                 if(tab_h < vm.menu_h){
