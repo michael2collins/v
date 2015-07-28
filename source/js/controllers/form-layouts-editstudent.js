@@ -40,17 +40,18 @@
 	            $scope.$emit(attributes["onRepeatDone"] || "repeat_done", element);
 	        }
 	    }
-})                
+})                     
 .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent);
 
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
     '$scope', 
+    '$rootScope',
     '$routeParams', 
     '$log',
     '$location'
     ];
         
-    function FormLayoutsControllerEditStudent( StudentServices, $scope, $routeParams,  $log, $location){
+    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location){
         /* jshint validthis: true */
         var vm = this;
 
@@ -70,6 +71,29 @@
         vm.ShirtSizeList=[];
         vm.BeltSizeList=[];
         vm.instructorTitleList=[];
+        $rootScope.classcategories=['adult','children','special','blackbelt'];
+        
+    $rootScope.drawings = [{
+        name: 'Water',
+        category: 'adult',
+        value: '2'
+    }, {
+        name: 'Fire',
+        category: 'adult',
+        value: '1'
+    }, {
+        name: 'Air',
+        category: 'children',
+        value: '4'
+    }, {
+        name: 'Coton',
+        category: 'blackbelt',
+        value: '3'
+    }, {
+        name: 'Whool',
+        category: 'special',
+        value: '5'
+    }];        
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
@@ -135,7 +159,8 @@
         return getStudent().then(function() {
             $log.debug('activated EditStudent view');
        //     enableMediaFilter();
-           $scope.$broadcast("cat_done");
+       $log.debug('classcategories:' + $rootScope.classcategories);
+           $rootScope.$broadcast("cat_done");
             });
         }
 

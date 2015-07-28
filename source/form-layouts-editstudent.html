@@ -454,30 +454,44 @@
                 <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
               </div>
               <div class="portlet-body">
-                <div class="gallery-pages" >
-                  <ul style="float: left;" class="list-filter list-unstyled">
-                    <li data-filter="all" class="filter active">All</li>
-                    <li data-filter=".adult" class="filter">Adult</li>
-                    <li data-filter=".children" class="filter">Children</li>
-                    <li data-filter=".special" class="filter">Special</li>
-                    <li data-filter=".blackbelt" class="filter">Blackbelt</li>
-                  </ul>
+                <div class="gallery-pages" mixitup='mixitup'>
+                <!--  <ul style="float: left;" class="list-filter list-unstyled"> -->
+                    <button data-filter="all" class="filter">All</button>
+                    <button data-filter=".category-{{category}}" ng-repeat="category in classcategories" class="filter">{{category}}</button>
+
+                <!--  </ul> -->
+                  <pre>{{classcategories}} </pre>
                   <div class="action-group btn-group pull-right mtm mbm">
                     <button class="btn btn-primary"><i class="fa fa-upload mrs"></i>Add new</button>
                     <button class="btn btn-primary"><i class="fa fa-edit mrs"></i>Edit </button>
                     <button class="btn btn-primary"><i class="fa fa-trash-o mrs"></i>Delete</button>
                   </div>
                   <div class="clearfix"></div>
-                  <div class="row " mixitup='mixitup'>
-                    <div class="col-md-3 mix adult">
+                  <div class="row mix-grid">
+                  <div class="col-md-3 mix category-{{drawing.category}}" ng-repeat="drawing in drawings">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/adult.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
-                          <h3>Adult</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/adult.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                          <h3>{{drawing.category}}</h3><a href="#" class="mix-link">
+                          <i class="glyphicon glyphicon-link"></i></a>
+                          <a href="images/classes/adult.jpg" class="mix-zoom">
+                          <i class="glyphicon glyphicon-search"></i></a>
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix adult blackbelt">
+                   
+                    <div class="col-md-3 mix category-adult">
+                      <div class="hover-effect">
+                        <div class="img"><img src="images/classes/adult.jpg" alt="" class="img-responsive"></div>
+                        <div class="info">
+                          <h3>Adult</h3><a href="#" class="mix-link">
+                          <i class="glyphicon glyphicon-link"></i></a>
+                          <a href="images/classes/adult.jpg" class="mix-zoom">
+                          <i class="glyphicon glyphicon-search"></i></a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-3 mix category-adult category-blackbelt">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/adultblackbelt.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -485,7 +499,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children special">
+                    <div class="col-md-3 mix category-children category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/afterschool.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -493,7 +507,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/basicdragon.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -502,7 +516,7 @@
                       </div>
                     </div>
                     <div class="col-md-12"></div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/bbt1purple.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -510,7 +524,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/bbt1leopard.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -518,7 +532,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/bbt2.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -526,7 +540,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/bbt3.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -535,7 +549,7 @@
                       </div>
                     </div>
                     <div class="col-md-12"></div>
-                    <div class="col-md-3 mix special">
+                    <div class="col-md-3 mix category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/inactive.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -543,7 +557,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix special">
+                    <div class="col-md-3 mix category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/injured.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -551,7 +565,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix blackbelt children">
+                    <div class="col-md-3 mix category-blackbelt category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/jrblackbelt.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -559,7 +573,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix adult special">
+                    <div class="col-md-3 mix category-adult cateogry-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/kickbox.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -568,7 +582,7 @@
                       </div>
                     </div>
                     <div class="col-md-12"></div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/leopards.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -576,7 +590,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children">
+                    <div class="col-md-3 mix category-children">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/multiclass.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -584,7 +598,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix adult special">
+                    <div class="col-md-3 mix category-adult category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/private.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -592,7 +606,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix children special">
+                    <div class="col-md-3 mix category-children category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/privatechild.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -601,7 +615,7 @@
                       </div>
                     </div>
                     <div class="col-md-12"></div>
-                    <div class="col-md-3 mix special">
+                    <div class="col-md-3 mix category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/saturday.png" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -609,7 +623,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix special adult">
+                    <div class="col-md-3 mix category-special category-adult">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/selfdefence.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -617,7 +631,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix special">
+                    <div class="col-md-3 mix category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/specialneeds.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -625,7 +639,7 @@
                         </div>
                       </div>
                     </div>
-                    <div class="col-md-3 mix adult special">
+                    <div class="col-md-3 mix category-adult category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/taichi.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
@@ -634,7 +648,7 @@
                       </div>
                     </div>
                     <div class="col-md-12"></div>
-                    <div class="col-md-3 mix special">
+                    <div class="col-md-3 mix category-special">
                       <div class="hover-effect">
                         <div class="img"><img src="images/classes/zumba.jpg" alt="" class="img-responsive"></div>
                         <div class="info">
