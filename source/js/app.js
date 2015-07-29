@@ -9,7 +9,8 @@ angular
         'ui.grid.pagination',
         'ui.grid.cellNav', 
         'ui.grid.edit', 
-        'ui.grid.selection'
+        'ui.grid.selection',
+                'iso.directives'
         ])
     .config(logConfig)
     .config(routeConfig)

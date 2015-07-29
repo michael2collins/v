@@ -14,7 +14,8 @@
     "angular-messages": "~1.4.1",
     "angular-bootstrap": "~0.13.0",
     "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js",
-    "angular-bootstrap-toggle-switch": "~0.5.4"
+    "angular-bootstrap-toggle-switch": "~0.5.4",
+    "angular-isotope": "~0.1.14"
   },
   "analytics": false,
   "resolutions": {
