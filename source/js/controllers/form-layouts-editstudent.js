@@ -3,44 +3,38 @@
 
     angular
         .module('ng-admin')
-.directive('mixitup',function($timeout){
-    var linker = function(scope,element,attrs) {
 
-            scope.$on("cat_done", function(){ 
-                $timeout(function(){
-                console.log('reload');
-                console.log("!================ ");
-                element.mixItUp({
-                	callbacks: {
-                		onMixFail: function(state){	console.log('No elements found matching ',state); },
-                		onMixStart: function(state, futureState){ console.log('Animation starting',state); }
-                	}
-                });
-                //do the things
-                });
-            });
 
-            
-        console.log('starting');
-        
-        
-    };
-    
+  .factory('ListService', function() {
     return {
-        restrict:'A',
-        link: linker
-    };
-})
+        xList: [
+         {category:'adult , classurl: 'adult.jpg'}
+         ,{category:'adult blackbelt , classurl: 'adultblackbelt.jpg'}
+         ,{category:'children special , classurl: 'afterschool.jpg'}
+         ,{category:'children , classurl: 'basicdragon.jpg'}
+         ,{category:'children , classurl: 'bbt1purple.jpg'}
+         ,{category:'children , classurl: 'bbt1leopard.jpg'}
+         ,{category:'children , classurl: 'bbt2.jpg'}
+         ,{category:'children , classurl: 'bbt3.jpg'}
+         ,{category:'special , classurl: 'inactive.jpg'}
+         ,{category:'special , classurl: 'injured.jpg'}
+         ,{category:'blackbelt children , classurl: 'jrblackbelt.jpg'}
+         ,{category:'adult cateogry-special , classurl: 'kickbox.jpg'}
+         ,{category:'children , classurl: 'leopards.jpg'}
+         ,{category:'children , classurl: 'multiclass.jpg'}
+         ,{category:'adult special , classurl: 'private.jpg'}
+         ,{category:'children special , classurl: 'privatechild.jpg'}
+         ,{category:'special , classurl: 'saturday.png'}
+         ,{category:'special adult , classurl: 'selfdefence.jpg'}
+         ,{category:'special , classurl: 'specialneeds.jpg'}
+         ,{category:'adult special , classurl: 'taichi.jpg'}
+         ,{category:'special , classurl: 'zumba.jpg'}
 
-.directive("onRepeatDone", function(){
-  return {
-	        restriction: 'A',
-	        link: function($scope, element, attributes ) {
-	            //console.log("[onRepeatDone] element",element);
-	            $scope.$emit(attributes["onRepeatDone"] || "repeat_done", element);
-	        }
-	    }
-})                     
+         ]
+
+    };
+  })
+                     
 .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent);
 
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
@@ -48,10 +42,11 @@
     '$rootScope',
     '$routeParams', 
     '$log',
-    '$location'
+    '$location',
+    'ListService'
     ];
         
-    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location){
+    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location, ListService){
         /* jshint validthis: true */
         var vm = this;
 
@@ -73,27 +68,8 @@
         vm.instructorTitleList=[];
         $rootScope.classcategories=['adult','children','special','blackbelt'];
         
-    $rootScope.drawings = [{
-        name: 'Water',
-        category: 'adult',
-        value: '2'
-    }, {
-        name: 'Fire',
-        category: 'adult',
-        value: '1'
-    }, {
-        name: 'Air',
-        category: 'children',
-        value: '4'
-    }, {
-        name: 'Coton',
-        category: 'blackbelt',
-        value: '3'
-    }, {
-        name: 'Whool',
-        category: 'special',
-        value: '5'
-    }];        
+         $rootScope.xList = ListService.xList;
+
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
@@ -233,4 +209,5 @@
             vm.genders=['Female','Male','Unknown'];
         }
     }
+    
 })();    
