@@ -7,29 +7,35 @@
 
   .factory('ListService', function() {
     return {
+/*        xList: [
+          {name:'a', number:'1', date:'1360413309421', class:'purple'}
+         ,{name:'b', number:'5', date:'1360213309421', class:'orange'}
+         ,{name:'c', number:'10', date:'1360113309421', class:'blue'}
+         ,{name:'d', number:'2', date:'1360113309421', class:'green'}
+        ]
+  */      
         xList: [
-         {category:'adult , classurl: 'adult.jpg'}
-         ,{category:'adult blackbelt , classurl: 'adultblackbelt.jpg'}
-         ,{category:'children special , classurl: 'afterschool.jpg'}
-         ,{category:'children , classurl: 'basicdragon.jpg'}
-         ,{category:'children , classurl: 'bbt1purple.jpg'}
-         ,{category:'children , classurl: 'bbt1leopard.jpg'}
-         ,{category:'children , classurl: 'bbt2.jpg'}
-         ,{category:'children , classurl: 'bbt3.jpg'}
-         ,{category:'special , classurl: 'inactive.jpg'}
-         ,{category:'special , classurl: 'injured.jpg'}
-         ,{category:'blackbelt children , classurl: 'jrblackbelt.jpg'}
-         ,{category:'adult cateogry-special , classurl: 'kickbox.jpg'}
-         ,{category:'children , classurl: 'leopards.jpg'}
-         ,{category:'children , classurl: 'multiclass.jpg'}
-         ,{category:'adult special , classurl: 'private.jpg'}
-         ,{category:'children special , classurl: 'privatechild.jpg'}
-         ,{category:'special , classurl: 'saturday.png'}
-         ,{category:'special adult , classurl: 'selfdefence.jpg'}
-         ,{category:'special , classurl: 'specialneeds.jpg'}
-         ,{category:'adult special , classurl: 'taichi.jpg'}
-         ,{category:'special , classurl: 'zumba.jpg'}
-
+         {classcat:'cat-adult' , classurl: 'adult.jpg',class: 'Adult'}
+         ,{classcat:'cat-adult cat-blackbelt' , classurl: 'adultblackbelt.jpg',class: 'Blackbelt Adult'}
+         ,{classcat:'cat-children special' , classurl: 'afterschool.jpg',class: 'After School'}
+         ,{classcat:'cat-children' , classurl: 'basicdragon.jpg',class: 'Basic Dragon'}
+         ,{classcat:'cat-children' , classurl: 'bbt1purple.jpg',class: 'BBT1 - Purple - B/G'}
+         ,{classcat:'cat-children' , classurl: 'bbt1leopard.jpg',class: 'BBT1 Leopard'}
+         ,{classcat:'cat-children' , classurl: 'bbt2.jpg',class: 'BBT2 - Green'}
+         ,{classcat:'cat-children' , classurl: 'bbt3.jpg',class: 'BBT3 - Brown'}
+         ,{classcat:'cat-special' , classurl: 'inactive.jpg',class: 'Inactive'}
+         ,{classcat:'cat-special' , classurl: 'injured.jpg',class: 'Injured'}
+         ,{classcat:'cat-blackbelt cat-children' , classurl: 'jrblackbelt.jpg',class: 'Blackbelt Jr'}
+         ,{classcat:'cat-adult cateogry-special' , classurl: 'kickbox.jpg',class: 'Kickboxing'}
+         ,{classcat:'cat-children' , classurl: 'leopards.jpg',class: 'Basic Leopard'}
+         ,{classcat:'cat-children' , classurl: 'multiclass.jpg',class: 'BBT - Multiclasses'}
+         ,{classcat:'cat-adult special' , classurl: 'private.jpg',class: 'Privates Adult'}
+         ,{classcat:'cat-children special' , classurl: 'privatechild.jpg',class: 'Privates Children'}
+         ,{classcat:'cat-special' , classurl: 'saturday.png',class: 'Saturday Only'}
+         ,{classcat:'special cat-adult' , classurl: 'selfdefence.jpg',class: 'Self Defense'}
+         ,{classcat:'cat-special' , classurl: 'specialneeds.jpg',class: 'Special Needs'}
+         ,{classcat:'cat-adult special' , classurl: 'taichi.jpg',class: 'TaiChi'}
+         ,{classcat:'cat-special' , classurl: 'zumba.jpg',class: 'Zoomba'}
          ]
 
     };

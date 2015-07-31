@@ -454,213 +454,63 @@
                 <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
               </div>
               <div class="portlet-body">
-                <div class="gallery-pages" mixitup='mixitup'>
-                <!--  <ul style="float: left;" class="list-filter list-unstyled"> -->
-                    <button data-filter="all" class="filter">All</button>
-                    <button data-filter=".category-{{category}}" ng-repeat="category in classcategories" class="filter">{{category}}</button>
+              <!--
+<div class="container" >
+    <h1>Multiple Angular-isotope containers</h1>
+    <div class="row">
 
-                <!--  </ul> -->
-                  <pre>{{classcategories}} </pre>
-                  <div class="action-group btn-group pull-right mtm mbm">
-                    <button class="btn btn-primary"><i class="fa fa-upload mrs"></i>Add new</button>
-                    <button class="btn btn-primary"><i class="fa fa-edit mrs"></i>Edit </button>
-                    <button class="btn btn-primary"><i class="fa fa-trash-o mrs"></i>Delete</button>
-                  </div>
-                  <div class="clearfix"></div>
-                  <div class="row mix-grid">
-                  <div class="col-md-3 mix category-{{drawing.category}}" ng-repeat="drawing in drawings">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/adult.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>{{drawing.category}}</h3><a href="#" class="mix-link">
-                          <i class="glyphicon glyphicon-link"></i></a>
-                          <a href="images/classes/adult.jpg" class="mix-zoom">
-                          <i class="glyphicon glyphicon-search"></i></a>
+      <div class="col-md-12">
+        <div class="btn-group" opt-kind ok-key="filter" >
+          <button type='button' class='btn btn-default active' ok-sel="*">Show All</button>
+          <button type='button' class='btn btn-default' ok-sel=".purple">Purple</button>
+          <button type='button' class='btn btn-default' ok-sel=".orange">Orange</button>
+          <button type='button' class='btn btn-default' ok-sel=".blue">Blue</button>
+          <button type='button' class='btn btn-default' ok-sel=".green">Green</button>
+          <button type='button' class='btn btn-default' ok-sel=":not(.blue)">Not Blue</button>
+        </div>
+      </div>
+    </div>
+  
+    <div class="row">
+      <h4>Container #1</h4>
+
+      <ul isotope-container ng-cloak class="ng-cloak">
+        <li ng-repeat="x in xList" isotope-item class="kindling {{x.class}}">
+           <div class="symbol">{{x.name}}</div>
+           <div class="weight" date="{{x.date}}">{{x.date | date}}</div>
+           <div class="number" number="{{x.number}}">{{x.number}}</div>
+        </li>
+      </ul>
+            <h4>Container #1 end</h4>
+    </div>
+</div>              
+-->              
+                 <div class="gallery-pages" >
+                    <div class="row">
+                        <div class="btn-group" opt-kind ok-key="filter" >
+                          <button type='button' class='btn btn-default active' ok-sel="*">Show All</button>
+                          <button type='button' class='btn btn-default' ok-sel=".cat-{{category}}" ng-model="classcategories" ng-repeat="category in classcategories" >{{category}}</button>
                         </div>
-                      </div>
                     </div>
-                   
-                    <div class="col-md-3 mix category-adult">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/adult.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Adult</h3><a href="#" class="mix-link">
-                          <i class="glyphicon glyphicon-link"></i></a>
-                          <a href="images/classes/adult.jpg" class="mix-zoom">
-                          <i class="glyphicon glyphicon-search"></i></a>
+                    <div isotope-container ng-cloak class="ng-cloak mix-grid">
+                        <div class="{{x.classcat}} col-md-3 mix" ng-repeat="x in xList" isotope-item  >
+                        <div class="hover-effect">
+
+                            <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
+                            <div class="info">
+                              <h3>{{x.class}}</h3><a href="javascript:void(0);" class="mix-link">
+                              <i class="glyphicon glyphicon-link"></i></a>
+                              <a href="images/classes/{{x.classurl}}" class="mix-zoom">
+                              <i class="glyphicon glyphicon-search"></i></a>
+                            </div>
                         </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-adult category-blackbelt">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/adultblackbelt.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Blackbelt Adult</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/adultblackbelt.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
                         </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/afterschool.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>After School</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/afterschool.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/basicdragon.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Basic Dragon</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/basicdragon.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12"></div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/bbt1purple.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>BBT1 - Purple - B/G</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt1purple.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/bbt1leopard.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>BBT1 Leopard</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt1leopard.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/bbt2.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>BBT2 - Green</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt2.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/bbt3.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>BBT3 - Brown</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/bbt3.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12"></div>
-                    <div class="col-md-3 mix category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/inactive.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Inactive</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/inactive.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/injured.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Injured</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/injured.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-blackbelt category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/jrblackbelt.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Blackbelt Jr</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/jrblackbelt.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-adult cateogry-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/kickbox.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Kickboxing</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/kickbox.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search">           </i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12"></div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/leopards.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Basic Leopard</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/leopards.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/multiclass.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>BBT - Multiclasses</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/multiclass.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-adult category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/private.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Privates Adult</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/private.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-children category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/privatechild.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Privates Children</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/privatechild.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search">           </i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12"></div>
-                    <div class="col-md-3 mix category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/saturday.png" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Saturday Only</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/saturday.png" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-special category-adult">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/selfdefence.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Self Defense</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/selfdefence.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/specialneeds.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Special Needs</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/specialneeds.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-3 mix category-adult category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/taichi.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>TaiChi</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/taichi.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search">           </i></a>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-12"></div>
-                    <div class="col-md-3 mix category-special">
-                      <div class="hover-effect">
-                        <div class="img"><img src="images/classes/zumba.jpg" alt="" class="img-responsive"></div>
-                        <div class="info">
-                          <h3>Zoomba</h3><a href="javascript:void(0);" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/zumba.jpg" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                    </div>      
               </div>
+             
             </div>
           </div>
+        </div>
         </div>
       </tab>
       <tab id="tab-student" heading="Payment"></tab>
