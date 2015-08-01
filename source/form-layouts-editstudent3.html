@@ -454,66 +454,33 @@
                 <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
               </div>
               <div class="portlet-body">
-              <!--
-<div class="container" >
-    <h1>Multiple Angular-isotope containers</h1>
-    <div class="row">
-
-      <div class="col-md-12">
-        <div class="btn-group" opt-kind ok-key="filter" >
-          <button type='button' class='btn btn-default active' ok-sel="*">Show All</button>
-          <button type='button' class='btn btn-default' ok-sel=".purple">Purple</button>
-          <button type='button' class='btn btn-default' ok-sel=".orange">Orange</button>
-          <button type='button' class='btn btn-default' ok-sel=".blue">Blue</button>
-          <button type='button' class='btn btn-default' ok-sel=".green">Green</button>
-          <button type='button' class='btn btn-default' ok-sel=":not(.blue)">Not Blue</button>
-        </div>
-      </div>
-    </div>
-  
-    <div class="row">
-      <h4>Container #1</h4>
-
-      <ul isotope-container ng-cloak class="ng-cloak">
-        <li ng-repeat="x in xList" isotope-item class="kindling {{x.class}}">
-           <div class="symbol">{{x.name}}</div>
-           <div class="weight" date="{{x.date}}">{{x.date | date}}</div>
-           <div class="number" number="{{x.number}}">{{x.number}}</div>
-        </li>
-      </ul>
-            <h4>Container #1 end</h4>
-    </div>
-</div>              
--->              
-                 <div class="gallery-pages" >
-                    <div class="row">
-                        <div class="btn-group" opt-kind ok-key="filter" >
-                          <button type='button' class='btn btn-default active' ok-sel="*">Show All</button>
-                          <button type='button' class='btn btn-default' ok-sel=".cat-{{category}}" 
-                          ng-model="classcategories" ng-repeat="category in classcategories" >{{category}}</button>
-                        </div>
+                <div class="gallery-pages">
+                  <div class="row">
+                    <div opt-kind="" ok-key="filter" class="btn-group">
+                      <button ok-sel="*" class="btn btn-default active">Show All</button>
+                      <button ok-sel=".cat-{{category}}" ng-model="classcategories" ng-repeat="category in classcategories" class="btn btn-default">{{category}}</button>
                     </div>
-                    <div isotope-container ng-cloak class="ng-cloak mix-grid">
-                        <div class="{{x.classcat}} col-md-3 mix" ng-repeat="x in xList" isotope-item  >
+                    <div opt-kind="" ok-key="filter" class="btn-group">
+                      <button ok-sel=".age-{{age}}" ng-model="agecategories" ng-repeat="age in agecategories" class="btn btn-default">{{age}}</button>
+                    </div>
+                    <div opt-kind="" ok-key="filter" class="btn-group">
+                      <button ok-sel=".pgm-{{pgm}}" ng-model="pgmcategories" ng-repeat="pgm in pgmcategories" class="btn btn-default">{{pgm}}</button>
+                    </div>
+                    <div isotope-container ng-cloak images-loaded class="mix-grid ng-cloak">
+                      <div ng-repeat="x in xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
                         <div class="hover-effect">
-
-                            <div class="img"><img src="images/classes/{{x.classurl}}" 
-                               alt="" class="img-responsive"></div>
-                            <div class="info">
-                              <h3>{{x.class}}</h3>
-                              <a href="javascript:void(0);" class="mix-link">
-                              <i class="glyphicon glyphicon-link"></i></a>
-                              <a href="images/classes/{{x.classurl}}" class="mix-zoom">
-                              <i class="glyphicon glyphicon-search"></i></a>
-                            </div>
+                          <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
+                          <div class="info">
+                            <h3>{{x.class}}</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/{{x.classurl}}" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                          </div>
                         </div>
-                        </div>
-                    </div>      
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-             
             </div>
           </div>
-        </div>
         </div>
       </tab>
       <tab id="tab-student" heading="Payment"></tab>

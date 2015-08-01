@@ -15,7 +15,8 @@
     "angular-bootstrap": "~0.13.0",
     "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js",
     "angular-bootstrap-toggle-switch": "~0.5.4",
-    "angular-isotope": "~0.1.14"
+    "angular-isotope": "~0.1.14",
+    "imagesloaded": "~3.1.8"
   },
   "analytics": false,
   "resolutions": {
