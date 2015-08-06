@@ -16,12 +16,16 @@
     "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js",
     "angular-bootstrap-toggle-switch": "~0.5.4",
     "angular-isotope": "~0.1.14",
-    "imagesloaded": "~3.1.8"
+    "imagesloaded": "~3.1.8",
+    "angular-dynamic-layout": "~0.1.7",
+    "bootcards": "~1.1.2",
+    "fastclick": "~1.0.6"
   },
   "analytics": false,
   "resolutions": {
-    "angular": "~1.2.0",
-    "jquery": "~2.1.4"
+    "angular": "1.4.1",
+    "jquery": "~2.1.4",
+    "angular-animate": "~1.4.1"
   },
   "devDependencies": {
     "angular-ui-grid": "~3.0.0-rc.21"

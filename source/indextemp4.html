@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>V Dojo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/v/">
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,300,700"/>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,700,300"/>
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet" type="text/css"/>
+    <!--CSS FOR PLUGIN-->
+    <link rel="stylesheet" href="vendors/jquery-ui-1.10.3.custom/css/ui-lightness/jquery-ui-1.10.3.custom.min.css"/>
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="vendors/simple-line-icons/simple-line-icons.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="vendors/jquery-nestable/nestable.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-colorpicker/css/colorpicker.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-datepicker/css/datepicker.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-daterangepicker/daterangepicker-bs3.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-timepicker/css/bootstrap-timepicker.min.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-clockface/css/clockface.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-switch/css/bootstrap-switch.css"/>
+    <link rel="stylesheet" href="vendors/jquery-file-upload/css/jquery.fileupload.css"/>
+    <link rel="stylesheet" href="vendors/jquery-file-upload/css/jquery.fileupload-ui.css"/>
+    <link rel="stylesheet" href="vendors/jquery-file-upload/css/blueimp-gallery.min.css"/>
+    <link rel="stylesheet" href="vendors/fullcalendar/fullcalendar.css"/>
+    <link rel="stylesheet" href="vendors/fullcalendar/fullcalendar.print.css"/>
+    <link rel="stylesheet" href="vendors/dropzone/css/dropzone.css"/>
+    <link rel="stylesheet" href="vendors/datatables/css/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="vendors/jquery-bootstrap-wizard/custom.css"/>
+    <link rel="stylesheet" href="vendors/jquery-news-ticker/jquery.news-ticker.css"/>
+    <link rel="stylesheet" href="vendors/jquery-jvectormap/jquery-jvectormap-1.2.2.css"/>
+    <link rel="stylesheet" href="vendors/animate.css/animate.css"/>
+    <link rel="stylesheet" href="vendors/jquery-pace/pace.css"/>
+    <link rel="stylesheet" href="vendors/select2/select2-madmin.css"/>
+    <link rel="stylesheet" href="vendors/bootstrap-select/bootstrap-select.min.css"/>
+    <link rel="stylesheet" href="vendors/multi-select/css/multi-select-madmin.css"/>
+    <link rel="stylesheet" href="vendors/jquery-notific8/jquery.notific8.min.css"/>
+    <link rel="stylesheet" href="vendors/jquery-toastr/toastr.min.css"/>
+    <link rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css"/>
+    <link rel="stylesheet" href="vendors/angular-bootstrap-toggle-switch/style/bootstrap3/angular-toggle-switch-bootstrap-3.css"/>
+    <!--CORE CSS -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-custom.css"/>
+    <link type="text/css" rel="stylesheet" href="css/themes/default.css"/>
+    <link type="text/css" rel="stylesheet" href="css/themes/blue.css" id="color-style"/>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <!--CORE JS -->
+ 
+    <link rel="stylesheet" href="vendors/angular-ui-grid/ui-grid.css"/>
+    
+    
+<!--
+    <script src="js/lib.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-touch.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-animate.js"></script>
+    -->
+<!--       <script src="vendors/jquery/jquery.min.js"></script> -->
+
+            <script src="vendors/jquery/dist/jquery.js"></script>
+            <script src="vendors/jquery-migrate-1.2.1.min.js"></script>
+            <script src="vendors/jquery-ui.js"></script>
+            <script src="vendors/html5shiv.js"></script>
+            <script src="vendors/respond.min.js"></script>
+            <script src="vendors/lightbox/js/lightbox.min.js"></script>
+            <script src="vendors/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
+            <script src="vendors/metisMenu/jquery.metisMenu.js"></script>
+            <script src="vendors/slimScroll/jquery.slimscroll.js"></script>
+            <script src="vendors/jquery-cookie/jquery.cookie.js"></script>
+    <!--        <script src="vendors/jquery.sparkline.js"></script> -->
+            <script src="vendors/jquery-jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+            <script src="vendors/jquery-jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+            <script src="vendors/jquery-jvectormap/gdp-data.js"></script>
+            <script src="vendors/jquery-knob/jquery.knob.js"></script>
+            <script src="vendors/jquery-animateNumber/jquery.animateNumber.min.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.categories.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.pie.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.tooltip.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.resize.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.fillbetween.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.stack.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.spline.js"></script>
+            <script src="vendors/skycons/skycons.js"></script>
+            <script src="vendors/jquery-news-ticker/jquery.news-ticker.js"></script>
+            <script src="vendors/jquery-nestable/jquery.nestable.js"></script>
+            <script src="vendors/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+            <script src="vendors/bootstrap-daterangepicker/daterangepicker.js"></script>
+            <script src="vendors/moment/moment.js"></script>
+            <script src="vendors/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
+            <script src="vendors/bootstrap-timepicker/js/bootstrap-timepicker.js"></script>
+            <script src="vendors/bootstrap-clockface/js/clockface.js"></script>
+            <script src="vendors/bootstrap-colorpicker/js/bootstrap-colorpicker.js"></script>
+            <script src="vendors/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+            <script src="vendors/jquery-maskedinput/jquery-maskedinput.js"></script>
+            <script src="vendors/jquery-validation/dist/jquery.validate.js"></script>
+<!--            <script src="vendors/jquery-file-upload/js/vendor/jquery.ui.widget.js"></script>
+            <script src="vendors/jquery-file-upload/js/vendor/tmpl.min.js"></script>
+            <script src="vendors/jquery-file-upload/js/vendor/load-image.min.js"></script>
+            <script src="vendors/jquery-file-upload/js/vendor/canvas-to-blob.min.js"></script>
+            <script src="vendors/jquery-file-upload/js/vendor/jquery.blueimp-gallery.min.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.iframe-transport.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload-process.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload-image.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload-audio.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload-video.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload-validate.js"></script>
+            <script src="vendors/jquery-file-upload/js/jquery.fileupload-ui.js"></script>
+            <script src="vendors/jquery-file-upload/js/cors/jquery.xdr-transport.js"></script>
+-->
+            <script src="vendors/dropzone/js/dropzone.js"></script>
+            <script src="vendors/datatables/js/jquery.dataTables.js"></script>
+            <script src="vendors/datatables/js/dataTables.bootstrap.js"></script>
+            <script src="vendors/DataTables/extensions/TableTools/js/dataTables.tableTools.min.js"></script>
+            <script src="vendors/datatables/js/jquery.jeditable.js"></script>
+            <script src="vendors/jquery-bootgrid/jquery.bootgrid.min.js"></script>
+            <script src="vendors/fullcalendar/fullcalendar.min.js"></script>
+            <script src="vendors/jquery-notific8/jquery.notific8.min.js"></script>
+            <script src="vendors/sco.message/sco.message.js"></script>
+            <script src="vendors/jquery-notific8/notific8.js"></script>
+            <script src="vendors/jquery-toastr/toastr.min.js"></script>
+            <script src="vendors/mixitup/src/jquery.mixitup.js"></script>
+            <script src="vendors/select2/select2.min.js"></script>
+            <script src="vendors/bootstrap-select/bootstrap-select.min.js"></script>
+            <script src="vendors/multi-select/js/jquery.multi-select.js"></script>
+            <script src="vendors/jquery.sparkline/index.js"></script>
+            <script src="vendors/calendar/zabuto_calendar.min.js"></script>    
+        <script src="vendors/underscore/underscore.js"></script>
+        <script src="vendors/angular/angular.js"></script>
+        <script src="vendors/lodash/dist/lodash.js"></script> 
+            <script src="vendors/angular-route/angular-route.js"></script>
+            <script src="vendors/angular-touch/angular-touch.js"></script>
+            <script src="vendors/angular-animate/angular-animate.js"></script>
+            <script src="vendors/angular-messages/angular-messages.js"></script>
+            <script src="vendors/angular-resource/angular-resource.js"></script>
+            <script src="vendors/angular-bootstrap/ui-bootstrap.js"></script>
+            <script src="vendors/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+            <script src="vendors/angular-ui-grid/ui-grid.js"></script>
+            <script src="vendors/angular-ui/build/angular-ui.js"></script>
+            <script src="vendors/angular-ui/build/angular-ui-ieshiv.js"></script>
+            <script src="vendors/angular-ui-utils/ui-utils.js"></script>
+            <script src="vendors/angular-ui-utils/ui-utils-ieshiv.js"></script>
+            <script src="vendors/angular-bootstrap-toggle-switch/angular-toggle-switch.js"></script>
+
+            
+    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+<!--        <script src="vendors/isotope/dist/isotope.pkgd.js"></script>
+    <script src="vendors/angular-isotope/dist/angular-isotope.js"></script>
+    <script src="vendors/imagesloaded/imagesloaded.pkgd.js"></script>
+	
+	    <script src="vendors/angular-dynamic-layout/src/dynamic-layout.js"></script>
+    <link rel="stylesheet" href="vendors/bootcards/dist/css/bootcards-desktop.min.css"></script>
+		<script src="vendors/angular-dynamic-layout/src/services/ranker.js"></script>
+    <script src="vendors/angular-dynamic-layout/src/services/position.js"></script>
+    <script src="vendors/angular-dynamic-layout/src/services/filter.js"></script>
+	-->
+	
+   <link data-require="chosen@1.0.0" data-semver="1.0.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.min.css" />
+    <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.jquery.min.js"></script>
+    <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.proto.min.js"></script>
+	
+	
+<!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
+<!--    <script src="js/main.js"></script>	-->
+	
+  <!-- compiled JavaScript -->
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/controllers/app.js"></script>
+  <script type="text/javascript" src="js/controllers/dashboard-blog.js"></script>
+  <script type="text/javascript" src="js/controllers/dashboard-shopping.js"></script>
+  <script type="text/javascript" src="js/controllers/data.js"></script>
+  <script type="text/javascript" src="js/controllers/form-components.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts-editstudent.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts-newlead.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts-newpayment.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts-newstudent.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts-newtest.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts-newweek.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts.js"></script>
+  <script type="text/javascript" src="js/controllers/form-validation.js"></script>
+  <script type="text/javascript" src="js/controllers/page-404.js"></script>
+  <script type="text/javascript" src="js/controllers/page-500.js"></script>
+  <script type="text/javascript" src="js/controllers/page-fullcalendar.js"></script>
+  <script type="text/javascript" src="js/controllers/page-lock-screen.js"></script>
+  <script type="text/javascript" src="js/controllers/page-signin.js"></script>
+  <script type="text/javascript" src="js/controllers/page-signup.js"></script>
+  <script type="text/javascript" src="js/controllers/table-basic-attendance.js"></script>
+  <script type="text/javascript" src="js/controllers/table-basic-leads.js"></script>
+  <script type="text/javascript" src="js/controllers/table-basic-managetest.js"></script>
+  <script type="text/javascript" src="js/controllers/table-basic-paymenttracking.js"></script>
+  <script type="text/javascript" src="js/controllers/table-basic-students-old.js"></script>
+  <script type="text/javascript" src="js/controllers/table-basic-students.js"></script>
+  <script type="text/javascript" src="js/directives/ngDropzone.js"></script>
+  <script type="text/javascript" src="js/directives/ngMenu.js"></script>
+  <script type="text/javascript" src="js/directives/ngTab.js"></script>
+  <script type="text/javascript" src="js/directives/scrollSpy.js"></script>
+  <script type="text/javascript" src="js/services/studentServices.js"></script>
+  
+  <style>
+  .chosen-choices, .chosen-container {
+	width: 500px !important;
+}
+</style>
+  
+  <!--
+<style>
+    @media (min-width: 900px) {
+      [dynamic-layout]{
+        width: 900px;
+        margin-top: 20px;
+      }
+      .dynamic-layout-col-4{
+        width : 300px;
+      }
+      .dynamic-layout-col-8{
+        width : 600px;
+      }
+    }
+    @media (min-width: 600px) and (max-width: 900px){
+      [dynamic-layout]{
+        width: 600px;
+      }
+      .dynamic-layout-col-4{
+        width : 300px;
+      }
+      .dynamic-layout-col-8{
+        width : 600px;
+      }
+    }
+    @media (max-width: 600px){
+      [dynamic-layout]{
+        width: 300px;
+      }
+      .dynamic-layout-col-4{
+        width : 300px;
+      }
+      .dynamic-layout-col-8{
+        width : 300px;
+      }
+    }
+    .dynamic-layout-item {
+      padding: 10px;
+    }
+    .move-items-animation{
+      transition-property: left, top;
+      transition-duration: .5s;
+      transition-timing-function: ease-in-out;
+    }
+    .dynamic-layout-item-parent.ng-enter{
+      transition: .5s ease-in-out;
+      opacity:0;
+    }
+    .dynamic-layout-item-parent.ng-enter.ng-enter-active{
+      opacity:1;
+    }
+    .dynamic-layout-item-parent.ng-leave{
+      transition: .5s ease-in-out;
+      opacity:1;
+    }
+    .dynamic-layout-item-parent.ng-leave.ng-leave-active{
+      opacity:0;
+    }
+    [dynamic-layout]{
+      float: left;
+      position: relative;
+    }
+    .container-fluid{
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%);
+    }
+    .title{
+      margin-bottom: 50px;
+    }
+    </style>   -->
+  </head>
+  
+    <!--V JS-->
+    <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"></body>
+    <div ng-controller="AppController as vm" class="default-page">
+      <!--BEGIN TEMPLATE SETTING-->
+      <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
+      <!--END TEMPLATE SETTING-->
+      <!--BEGIN TO TOP--><a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
+      <!--END BACK TO TOP-->
+      <div id="wrapper" ng-class="header.layout_menu">
+        <!--BEGIN TOPBAR-->
+        <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+        <!--END TOPBAR-->
+        <!--BEGIN SIDEBAR MENU-->
+        <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="loadSidebar()"></div>
+        <!--END SIDEBAR MENU-->
+        <!--BEGIN PAGE WRAPPER-->
+        <div id="page-wrapper" ng-class="header.animation" class="animated">
+          <!--BEGIN PAGE HEADER & BREADCRUMB-->
+          <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="loadPageHeader()" class="page-header-breadcrumb"></div>
+          <!--END PAGE HEADER & BREADCRUMB-->
+          <!--BEGIN CONTENT-->
+          <div ng-view="" class="page-content"></div>
+          <!--END CONTENT-->
+          <!--BEGIN FOOTER-->
+          <div class="page-footer">
+            <div class="copyright">2015 © V - Dojo Dashboard.</div>
+          </div>
+          <!--END FOOTER-->
+        </div>
+        <!--END PAGE WRAPPER-->
+      </div>
+    </div>
+    <div hide="hide" class="extra-page"></div>
+
+</html>
+<!--BEGIN MODAL CONFIG PORTLET-->
+<div id="modal-config" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+        <h4 class="modal-title">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eleifend et nisl eget porta. Curabitur elementum sem molestie nisl varius, eget tempus odio molestie. Nunc vehicula sem arcu, eu pulvinar neque cursus ac. Aliquam ultricies lobortis magna et aliquam. Vestibulum egestas eu urna sed ultricies. Nullam pulvinar dolor vitae quam dictum condimentum. Integer a sodales elit, eu pulvinar leo. Nunc nec aliquam nisi, a mollis neque. Ut vel felis quis tellus hendrerit placerat. Vivamus vel nisl non magna feugiat dignissim sed ut nibh. Nulla elementum, est a pretium hendrerit, arcu risus luctus augue, mattis aliquet orci ligula eget massa. Sed ut ultricies felis.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--END MODAL CONFIG PORTLET-->
