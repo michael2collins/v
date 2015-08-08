@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<div id="form-layouts-editstudent" class="row">
+<div id="form-layouts-editstudent" class="row" ng-controller="FormLayoutsControllerEditStudent as vm"">
   <div class="col-lg-12">
     <tabset type="pills">
       <tab id="tab-student" heading="Student Information">
         <div class="row">
-          <div ng-controller="FormLayoutsControllerEditStudent as vm">
+          <div>
             <div class="col-lg-12">
               <div class="panel panel-blue">
                 <div class="panel-heading">Student</div>
@@ -446,75 +446,74 @@
         </div>
       </tab>
       <tab id="tab-student" heading="Class">
-        <div class="row">
+       <div class="row">
           <div class="col-lg-12">
             <div class="portlet box portlet-orange">
               <div class="portlet-header">
                 <div class="caption">Media Gallery</div>
                 <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
               </div>
+<!--		  <div ng-controller="MainCtrl as main">
+    <div>
+      <select data-placeholder="Select Categories" class="form-control" chosen="main.allStates" ng-model="main.states" multiple="" ng-options="state.name + ' (' + state.abbreviation + ')' for state in main.allStates"></select>  
+      <button ng-click="main.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
+      <div ng-repeat="state in main.states">- {{state.name}}, {{state.abbreviation}} </div>
+    </div>
+  </div>
+  -->
+		<!--	  		  <div ng-controller="CatCtrl as cat">
+    <div>
+      <input data-placeholder="Select Categories" class="form-control" chosen="cat.allCategorys" ng-model="cat.categorys" multiple="" ></input>  
+      <button ng-click="cat.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
+      <div ng-repeat="category in cat.categorys">{{category.name}}</div>
+    </div>
+  </div>-->
               <div class="portlet-body">
-              <!--
-<div class="container" >
-    <h1>Multiple Angular-isotope containers</h1>
-    <div class="row">
-
-      <div class="col-md-12">
-        <div class="btn-group" opt-kind ok-key="filter" >
-          <button type='button' class='btn btn-default active' ok-sel="*">Show All</button>
-          <button type='button' class='btn btn-default' ok-sel=".purple">Purple</button>
-          <button type='button' class='btn btn-default' ok-sel=".orange">Orange</button>
-          <button type='button' class='btn btn-default' ok-sel=".blue">Blue</button>
-          <button type='button' class='btn btn-default' ok-sel=".green">Green</button>
-          <button type='button' class='btn btn-default' ok-sel=":not(.blue)">Not Blue</button>
-        </div>
-      </div>
+                <div class="gallery-pages">
+    <div style="display: none">
+      <select data-placeholder="" class="form-control" chosen="vm.allCategorys" ng-model="vm.categorys" multiple=""  ></select>  
+	 </div>
+		<div>
+      <button ng-click="vm.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
+     <div>{{vm.concat}}</div>
     </div>
-  
-    <div class="row">
-      <h4>Container #1</h4>
-
-      <ul isotope-container ng-cloak class="ng-cloak">
-        <li ng-repeat="x in xList" isotope-item class="kindling {{x.class}}">
-           <div class="symbol">{{x.name}}</div>
-           <div class="weight" date="{{x.date}}">{{x.date | date}}</div>
-           <div class="number" number="{{x.number}}">{{x.number}}</div>
-        </li>
-      </ul>
-            <h4>Container #1 end</h4>
-    </div>
-</div>              
--->              
-                 <div class="gallery-pages" >
-                    <div class="row">
-                        <div class="btn-group" opt-kind ok-key="filter" >
-                          <button type='button' class='btn btn-default active' ok-sel="*">Show All</button>
-                          <button type='button' class='btn btn-default' ok-sel=".cat-{{category}}" 
-                          ng-model="classcategories" ng-repeat="category in classcategories" >{{category}}</button>
-                        </div>
+				
+                  <div class="row">
+                    <div opt-kind="" ok-key="filter" class="btn-group">
+                      <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('cat-{{category}}','cat')" ng-model="classcategories" ng-repeat="category in classcategories" class="btn btn-default">{{category}}</button>
                     </div>
-                    <div isotope-container ng-cloak class="ng-cloak mix-grid">
-                        <div class="{{x.classcat}} col-md-3 mix" ng-repeat="x in xList" isotope-item  >
+					</div>
+                  <div class="row">
+                    <div opt-kind="" ok-key="filter" class="btn-group">
+                      <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('age-{{age}}','age')" ng-model="agecategories" ng-repeat="age in agecategories" class="btn btn-default">{{age}}</button>
+                    </div>
+					</div>
+                  <div class="row">
+                    <div opt-kind="" ok-key="filter" class="btn-group">
+                      <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('pgm-{{pgm}}','pgm')" ng-model="pgmcategories" ng-repeat="pgm in pgmcategories" class="btn btn-default">{{pgm}}</button>
+                    </div>
+					</div>
+                  <div class="row">
+                    <div isotope-container ng-cloak images-loaded class="mix-grid ng-cloak">
+                      <div ng-repeat="x in xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
                         <div class="hover-effect">
-
-                            <div class="img"><img src="images/classes/{{x.classurl}}" 
-                               alt="" class="img-responsive"></div>
-                            <div class="info">
-                              <h3>{{x.class}}</h3>
-                              <a href="javascript:void(0);" class="mix-link">
-                              <i class="glyphicon glyphicon-link"></i></a>
-                              <a href="images/classes/{{x.classurl}}" class="mix-zoom">
-                              <i class="glyphicon glyphicon-search"></i></a>
-                            </div>
+                          <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
+                          <div class="info">
+                            <h3>{{x.class}}</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/{{x.classurl}}" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                          </div>
                         </div>
-                        </div>
-                    </div>      
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-             
             </div>
           </div>
         </div>
-        </div>
+
       </tab>
       <tab id="tab-student" heading="Payment"></tab>
       <tab id="tab-student" heading="Student History"></tab>

@@ -1,30 +1,77 @@
-// // ====================================================================================================
-// // Isotope ImagesLoaded
-// // ====================================================================================================
-
 (function () {
     'use strict';
 
     angular
         .module('ng-admin')
+.controller('MainCtrl', function(STATES) {
+  var main = this;
+  
+  main.clearSelect = function() {
+    main.states = [];
+  }
+  
+  main.allStates = STATES;
+  main.states = [];
+  main.states.push(STATES[0]);
+  main.states.push(STATES[1]);
+})
+.controller('CatCtrl', function(CATEGORYS) {
+  var cat = this;
+  
+  cat.clearSelect = function() {
+    cat.categorys = [];
+  }
+  cat.add = function(addition) {
+	  cat.categorys.push(addition);
+  }
+  cat.allCategorys = CATEGORYS;
+  cat.categorys = [];
+  cat.categorys.push(CATEGORYS[0]);
 
-    .directive('imagesLoaded', function($timeout) {
-        return {
-            restrict: 'A',
-            link: function($scope, $elem, $attr) {
-                $timeout(function() {
-                    $elem.isotope();
+})
+.directive('chosen', function() {
+  var linker = function(scope, element, attr) {
+        // update the select when data is loaded
+        scope.$watch(attr.chosen, function(oldVal, newVal) {
+            element.trigger('chosen:updated');
+        });
 
-                    $elem.isotope('once', 'layoutComplete', function(isoInstance, laidOutItems) {
-                        $elem.imagesLoaded(function() {
-                            $elem.isotope('layout');
-                             console.log(isoInstance);
-                        });
-                    });
-                }, 0);
-            }
-        };
-    })
+        // update the select when the model changes
+        scope.$watch(attr.ngModel, function() {
+            element.trigger('chosen:updated');
+        });
+        
+        element.chosen();
+    };
+
+    return {
+        restrict: 'A',
+        link: linker
+    };
+})
+.constant('CATEGORYS', 
+[
+    {
+        "name": "XXX",
+        "abbreviation": "AL"
+    }
+])
+.constant('STATES', 
+[
+    {
+        "name": "Alabama",
+        "abbreviation": "AL"
+    },
+    {
+        "name": "Alaska",
+        "abbreviation": "AK"
+    },
+
+    {
+        "name": "Wyoming",
+        "abbreviation": "WY"
+    }
+])
   .factory('ListService', function() {
     return {     
         xList: [
@@ -74,9 +121,12 @@
         vm.getStudentLists = getStudentLists;
         vm.getRankList = getRankList;
         vm.updateStudent = updateStudent;        
+		vm.catadd = catadd;
+		vm.clearSelect = clearSelect;
         vm.students =[];
         vm.genders =[];
         vm.zipList=[];
+		vm.concat="";
         vm.ContactTypeList=[];
         vm.CurrentRankList=[];
         vm.CurrentReikiRankList=[];
@@ -90,7 +140,51 @@
         $rootScope.pgmcategories=['basic','leopard','dragon','bbt1','bbt2','bbt3','adult','black','privates','other'];
         
          $rootScope.xList = ListService.xList;
+  vm.allCategorys = [{"name": "karate"},{"name": "children"}];
+  vm.categorys = [];
+  vm.ages=[];
+  vm.pgms=[];
+  
+  function clearSelect() {
+    vm.categorys = [];
+	vm.ages = [];
+	vm.pgms = [];
+	vm.concat=[];
+  }
+ function catadd(addition,type) {
+	  console.log('addition');
+	  console.log(addition);
+	  console.log('type');
+	  console.log(type);
+	  if (type === "cat") {
+		vm.categorys=[];
+	    vm.categorys.push('.' + addition);
+		console.log(vm.categorys);
+	  }
+	  if (type === "age") {
+		  vm.ages=[];
+		vm.ages.push('.' + addition);
+	  }
+	  if (type === "pgm") {
+		  vm.pgms=[];
+		vm.pgms.push( '.' + addition);
+	  }
 
+	if (vm.categorys.length > 0 && typeof(vm.categorys) != "undefined") {
+		  vm.concat=vm.categorys[0];
+	}
+	if (vm.ages.length > 0 && typeof(vm.ages) != "undefined") {
+		  vm.concat=vm.concat + vm.ages[0];
+	}
+	if (vm.pgms.length > 0 && typeof(vm.pgms) != "undefined") {
+		  vm.concat=vm.concat + vm.pgms[0];
+	}
+	  console.log('search concat');
+	  console.log(vm.concat);
+  }
+
+	 
+		 
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
