@@ -1,56 +1,36 @@
-// // ====================================================================================================
-// // Isotope ImagesLoaded
-// // ====================================================================================================
-
 (function () {
     'use strict';
 
     angular
         .module('ng-admin')
 
-    .directive('imagesLoaded', function($timeout) {
-        return {
-            restrict: 'A',
-            link: function($scope, $elem, $attr) {
-                $timeout(function() {
-                    $elem.isotope();
 
-                    $elem.isotope('once', 'layoutComplete', function(isoInstance, laidOutItems) {
-                        $elem.imagesLoaded(function() {
-                            $elem.isotope('layout');
-                             console.log(isoInstance);
-                        });
-                    });
-                }, 0);
-            }
-        };
-    })
   .factory('ListService', function() {
     return {     
         xList: [
-         {classcat:'cat-karate' , agecat: 'age-adult' , programcat: 'pgm-adult' , classurl: 'adult.jpg',class: 'Adult'},
-         {classcat:'cat-special' , agecat: 'age-children' , programcat: 'pgm-other' , classurl: 'afterschool.jpg',class: 'After School'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-basic pgm-dragon' , classurl: 'basicdragon.jpg',class: 'Basic Dragon'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-bbt1' , classurl: 'bbt1purple.jpg',class: 'BBT1 - Purple - B/G'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-basic pgm-leopard' , classurl: 'leopards.jpg',class: 'Basic Leopard'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-leopard pgm-bbt1' , classurl: 'bbt1leopard.jpg',class: 'BBT1 Leopard'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-bbt2' , classurl: 'bbt2.jpg',class: 'BBT2 - Green'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-bbt3' , classurl: 'bbt3.jpg',class: 'BBT3 - Brown'},
-         {classcat:'cat-special' , agecat: 'age-children age-adult' , programcat: 'pgm-other' , classurl: 'inactive.jpg',class: 'Inactive'},
-         {classcat:'cat-special' , agecat: 'age-children age-adult' , programcat: 'pgm-other' , classurl: 'injured.jpg',class: 'Injured'},
-         {classcat:'cat-karate' , agecat: 'age-adult' , programcat: 'pgm-black' , classurl: 'adultblackbelt.jpg',class: 'Blackbelt Adult'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-black' , classurl: 'jrblackbelt.jpg',class: 'Blackbelt Jr'},
-         {classcat:'cat-fitness' , agecat: 'age-children age-adult' , programcat: 'pgm-other' , classurl: 'kickbox.jpg',class: 'Kickboxing'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-bbt' , classurl: 'multiclass.jpg',class: 'BBT - Multiclasses'},
-         {classcat:'cat-karate' , agecat: 'age-adult' , programcat: 'pgm-privates' , classurl: 'private.jpg',class: 'Privates Adult'},
-         {classcat:'cat-karate' , agecat: 'age-children' , programcat: 'pgm-privates' , classurl: 'privatechild.jpg',class: 'Privates Children'},
-         {classcat:'cat-karate' , agecat: 'age-children age-adult' , programcat: 'pgm-other' , classurl: 'saturday.png',class: 'Saturday Only'},
-         {classcat:'cat-special' , agecat: 'age-adult' , programcat: 'pgm-other' , classurl: 'selfdefence.jpg',class: 'Self Defense'},
-         {classcat:'cat-special' , agecat: 'age-children' , programcat: 'pgm-other' , classurl: 'specialneeds.jpg',class: 'Special Needs'},
-         {classcat:'cat-wellness' , agecat: 'age-adult' , programcat: 'pgm-other' , classurl: 'taichi.jpg',class: 'TaiChi'},
-         {classcat:'cat-fitness' , agecat: 'age-children age-adult' , programcat: 'pgm-other' , classurl: 'zumba.jpg',class: 'Zoomba'}
-
+         {classcat:'cat-adult' , classurl: 'adult.jpg',class: 'Adult'},
+         {classcat:'cat-adult cat-blackbelt' , classurl:'adultblackbelt.jpg' , class:'Blackbelt Adult'},
+         {classcat:'cat-children special' , classurl:'afterschool.jpg' , class:'After School'},
+         {classcat:'cat-children' , classurl: 'basicdragon.jpg',class: 'Basic Dragon'},
+         {classcat:'cat-children' , classurl: 'bbt1purple.jpg',class: 'BBT1 - Purple - B/G'},
+         {classcat:'cat-children' , classurl: 'bbt1leopard.jpg',class: 'BBT1 Leopard'},
+         {classcat:'cat-children' , classurl: 'bbt2.jpg',class: 'BBT2 - Green'},
+         {classcat:'cat-children' , classurl: 'bbt3.jpg',class: 'BBT3 - Brown'},
+         {classcat:'cat-special' , classurl: 'inactive.jpg',class: 'Inactive'},
+         {classcat:'cat-special' , classurl: 'injured.jpg',class: 'Injured'},
+         {classcat:'cat-blackbelt cat-children' , classurl: 'jrblackbelt.jpg',class: 'Blackbelt Jr'},
+         {classcat:'cat-adult cateogry-special' , classurl: 'kickbox.jpg',class: 'Kickboxing'},
+         {classcat:'cat-children' , classurl: 'leopards.jpg',class: 'Basic Leopard'},
+         {classcat:'cat-children' , classurl: 'multiclass.jpg',class: 'BBT - Multiclasses'},
+         {classcat:'cat-adult special' , classurl: 'private.jpg',class: 'Privates Adult'},
+         {classcat:'cat-children special' , classurl: 'privatechild.jpg',class: 'Privates Children'},
+         {classcat:'cat-special' , classurl: 'saturday.png',class: 'Saturday Only'},
+         {classcat:'special cat-adult' , classurl: 'selfdefence.jpg',class: 'Self Defense'},
+         {classcat:'cat-special' , classurl: 'specialneeds.jpg',class: 'Special Needs'},
+         {classcat:'cat-adult special' , classurl: 'taichi.jpg',class: 'TaiChi'},
+         {classcat:'cat-special' , classurl: 'zumba.jpg',class: 'Zoomba'}
          ]
+
     };
   })
                      
@@ -85,15 +65,14 @@
         vm.ShirtSizeList=[];
         vm.BeltSizeList=[];
         vm.instructorTitleList=[];
-        $rootScope.classcategories=['karate','fitness','wellness','special'];
-        $rootScope.agecategories=['adult','children'];
-        $rootScope.pgmcategories=['basic','leopard','dragon','bbt1','bbt2','bbt3','adult','black','privates','other'];
+        $rootScope.classcategories=['adult','children','special','blackbelt'];
         
          $rootScope.xList = ListService.xList;
 
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
+        vm.enableMediaFilter = enableMediaFilter;
         vm.path = '../v1/students/' + $routeParams.id;
 //      vm.path = '../v1/students/5340';
         vm.zippath = '../v1/zips';
@@ -145,6 +124,10 @@
   $scope.format = $scope.formats[4];
  
     
+        function enableMediaFilter() {
+            $log.debug('enable media filter');
+            $('.mix-grid').mixItUp();
+        }
 
   
         function activate() {
@@ -152,8 +135,7 @@
             $log.debug('activated EditStudent view');
        //     enableMediaFilter();
        $log.debug('classcategories:' + $rootScope.classcategories);
-       $log.debug('agecategories:' + $rootScope.agecategories);
-       $log.debug('cpgmcategories:' + $rootScope.pgmcategories);
+           $rootScope.$broadcast("cat_done");
             });
         }
 
