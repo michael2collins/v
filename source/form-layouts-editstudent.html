@@ -453,7 +453,7 @@
                 <div class="caption">Media Gallery</div>
                 <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
               </div>
-<!--		  <div ng-controller="MainCtrl as main">
+<!--            <div ng-controller="MainCtrl as main">
     <div>
       <select data-placeholder="Select Categories" class="form-control" chosen="main.allStates" ng-model="main.states" multiple="" ng-options="state.name + ' (' + state.abbreviation + ')' for state in main.allStates"></select>  
       <button ng-click="main.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
@@ -461,7 +461,7 @@
     </div>
   </div>
   -->
-		<!--	  		  <div ng-controller="CatCtrl as cat">
+          <!--                   <div ng-controller="CatCtrl as cat">
     <div>
       <input data-placeholder="Select Categories" class="form-control" chosen="cat.allCategorys" ng-model="cat.categorys" multiple="" ></input>  
       <button ng-click="cat.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
@@ -470,35 +470,36 @@
   </div>-->
               <div class="portlet-body">
                 <div class="gallery-pages">
-    <div style="display: none">
+<!--    <div style="display: none">
       <select data-placeholder="" class="form-control" chosen="vm.allCategorys" ng-model="vm.categorys" multiple=""  ></select>  
-	 </div>
-		<div>
+      </div>
+          <div>
       <button ng-click="vm.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
-     <div>{{vm.concat}}</div>
     </div>
-				
+   -->  <div>{{vm.concat}}</div>
+                    
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('cat-{{category}}','cat')" ng-model="classcategories" ng-repeat="category in classcategories" class="btn btn-default">{{category}}</button>
                     </div>
-					</div>
+                         </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('age-{{age}}','age')" ng-model="agecategories" ng-repeat="age in agecategories" class="btn btn-default">{{age}}</button>
                     </div>
-					</div>
+                         </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('pgm-{{pgm}}','pgm')" ng-model="pgmcategories" ng-repeat="pgm in pgmcategories" class="btn btn-default">{{pgm}}</button>
                     </div>
-					</div>
+                         </div>
+
                   <div class="row">
                     <div isotope-container ng-cloak images-loaded class="mix-grid ng-cloak">
-                      <div ng-repeat="x in xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
+                      <div ng-repeat="x in xList.xlist.xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
                         <div class="hover-effect">
                           <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
                           <div class="info">
