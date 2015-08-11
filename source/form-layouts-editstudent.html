@@ -477,7 +477,7 @@
       <button ng-click="vm.clearSelect()" type="button" class="btn btn-primary">Clear Select</button>
     </div>
    -->  <div>{{vm.concat}}</div>
-                    
+       <div>{{xListcat}}</div>             
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
@@ -499,7 +499,7 @@
 
                   <div class="row">
                     <div isotope-container ng-cloak images-loaded class="mix-grid ng-cloak">
-                      <div ng-repeat="x in xList.xlist.xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
+                      <div ng-repeat="x in xList.xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
                         <div class="hover-effect">
                           <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
                           <div class="info">

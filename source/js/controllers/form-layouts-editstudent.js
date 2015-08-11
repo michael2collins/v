@@ -100,10 +100,25 @@
 
       ]};
       
+      
+      factry.getcat = function(catquery) {
+          console.log("querying for");
+          console.log(catquery);
+          var results=[];
+          console.log(xlist.xList.length);
+           for (var i=0; i < xlist.xList.length; i++) {
+               console.log(xlist.xList[i].classcat);
+               if (xlist.xList[i].classcat === catquery) {
+                   results.push(xlist.xList[i]);
+               }
+           }
+          console.log("the getcat query result");
+          console.log(results);
+          return results;
+      }
+      
       factry.getAll = function() {
-          return{
-              xlist: xlist
-          };
+          return xlist;
       }
       return factry;
   })
@@ -149,7 +164,8 @@
         $rootScope.xList = ListService.getAll();
         console.log("xList is");
         console.log($rootScope.xList);
-  vm.allCategorys = [{"name": "karate"},{"name": "children"}];
+        $rootScope.xListcat = ListService.getcat('cat-wellness');
+        vm.allCategorys = [{"name": "karate"},{"name": "children"}];
   vm.categorys = [];
   vm.ages=[];
   vm.pgms=[];
