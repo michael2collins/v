@@ -481,25 +481,27 @@
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
-                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('cat-{{category}}','cat')" ng-model="classcategories" ng-repeat="category in classcategories" class="btn btn-default">{{category}}</button>
+                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('{{category}}','cat')" ng-model="classcategories" ng-repeat="category in classcategories" class="btn btn-default">{{category}}</button>
                     </div>
                          </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
-                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('age-{{age}}','age')" ng-model="agecategories" ng-repeat="age in agecategories" class="btn btn-default">{{age}}</button>
+                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('{{age}}','age')" ng-model="agecategories" ng-repeat="age in agecategories" class="btn btn-default">{{age}}</button>
                     </div>
                          </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
                       <button ok-sel="*" ng-click="vm.clearSelect()" class="btn btn-default active">Show All</button>
-                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('pgm-{{pgm}}','pgm')" ng-model="pgmcategories" ng-repeat="pgm in pgmcategories" class="btn btn-default">{{pgm}}</button>
+                      <button ok-sel="{{vm.concat}}" ng-click="vm.catadd('{{pgm}}','pgm')" ng-model="pgmcategories" ng-repeat="pgm in pgmcategories" class="btn btn-default">{{pgm}}</button>
                     </div>
                          </div>
 
                   <div class="row">
+
                     <div isotope-container ng-cloak images-loaded class="mix-grid ng-cloak">
-                      <div ng-repeat="x in xList.xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat}} {{x.agecat}} {{x.programcat}}">
+                      <div ng-repeat="x in xList.xList track by x.class" isotope-item class="col-md-3 mix {{x.classcat[0]}} {{x.agecat[0]}} {{x.programcat[0]}}">
+					  <div>{{x.classcat}} {{x.agecat}} {{x.programcat}}</div>
                         <div class="hover-effect">
                           <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
                           <div class="info">

@@ -175,13 +175,22 @@
 //        $rootScope.agecategories=['adult','children'];
 //        $rootScope.pgmcategories=['basic','leopard','dragon','bbt1','bbt2','bbt3','adult','black','privates','other'];
         $rootScope.classcategories= ClassServices.distinctCat();
+		console.log("after distinct cat");
+		console.log($rootScope.classcategories);
+
+		
         $rootScope.agecategories= ClassServices.distinctAge();
+		console.log("after distinct age");
+		console.log($rootScope.distinctAge);
         $rootScope.pgmcategories= ClassServices.distinctPgm();
+		console.log("after distinct pgm");
+		console.log($rootScope.distinctPgm);
         
         $rootScope.xList = ClassServices.getAll();
         console.log("xList is");
         console.log($rootScope.xList);
-        $rootScope.xListcat = ClassServices.getcat('cat-wellness');
+        $rootScope.xListcat = ClassServices.getcat('wellness');
+		console.log($rootScope.xListcat);
         vm.allCategorys = [{"name": "karate"},{"name": "children"}];
   vm.categorys = [];
   vm.ages=[];
