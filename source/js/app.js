@@ -13,6 +13,12 @@ angular
                 'iso.directives',
 		//		'dynamicLayout'
         ])
+  // allow DI for use in controllers, unit tests for lodash
+  .constant('_', window._)
+  // use in views, ng-repeat="x in _.range(3)"
+  .run(function ($rootScope) {
+     $rootScope._ = window._;
+  })
     .config(logConfig)
     .config(routeConfig)
 // Initialize the application

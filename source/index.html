@@ -42,7 +42,10 @@
     <link rel="stylesheet" href="vendors/jquery-toastr/toastr.min.css"/>
     <link rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css"/>
     <link rel="stylesheet" href="vendors/angular-bootstrap-toggle-switch/style/bootstrap3/angular-toggle-switch-bootstrap-3.css"/>
-    <!--CORE CSS -->
+ 
+   <link type="text/css" rel="stylesheet" href="css/isotope.css"/>
+ 
+ <!--CORE CSS -->
     <link type="text/css" rel="stylesheet" href="css/bootstrap-custom.css"/>
     <link type="text/css" rel="stylesheet" href="css/themes/default.css"/>
     <link type="text/css" rel="stylesheet" href="css/themes/blue.css" id="color-style"/>
@@ -150,21 +153,9 @@
     <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
     <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
         <script src="vendors/isotope/dist/isotope.pkgd.js"></script>
-    <script src="vendors/angular-isotope/dist/angular-isotope.js"></script>
-    <script src="vendors/imagesloaded/imagesloaded.pkgd.js"></script>
-	<!--
-	    <script src="vendors/angular-dynamic-layout/src/dynamic-layout.js"></script>
-    <link rel="stylesheet" href="vendors/bootcards/dist/css/bootcards-desktop.min.css"></script>
-		<script src="vendors/angular-dynamic-layout/src/services/ranker.js"></script>
-    <script src="vendors/angular-dynamic-layout/src/services/position.js"></script>
-    <script src="vendors/angular-dynamic-layout/src/services/filter.js"></script>
-	-->
-	
-   <link data-require="chosen@1.0.0" data-semver="1.0.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.min.css" />
-    <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.jquery.min.js"></script>
-    <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.proto.min.js"></script>
-	
-	
+        <script src="vendors/classie/classie.js"></script>
+        
+    <script src="vendors/angular-isotope/dist/angular-isotope.js"></script> 
 <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
 <!--    <script src="js/main.js"></script>	-->
 	
@@ -193,91 +184,13 @@
   <script type="text/javascript" src="js/controllers/table-basic-leads.js"></script>
   <script type="text/javascript" src="js/controllers/table-basic-managetest.js"></script>
   <script type="text/javascript" src="js/controllers/table-basic-paymenttracking.js"></script>
-  <script type="text/javascript" src="js/controllers/table-basic-students-old.js"></script>
   <script type="text/javascript" src="js/controllers/table-basic-students.js"></script>
   <script type="text/javascript" src="js/directives/ngDropzone.js"></script>
   <script type="text/javascript" src="js/directives/ngMenu.js"></script>
   <script type="text/javascript" src="js/directives/ngTab.js"></script>
   <script type="text/javascript" src="js/directives/scrollSpy.js"></script>
   <script type="text/javascript" src="js/services/studentServices.js"></script>
-  
-  <style>
-  .chosen-choices, .chosen-container {
-	width: 500px !important;
-}
-</style>
-  
-  <!--
-<style>
-    @media (min-width: 900px) {
-      [dynamic-layout]{
-        width: 900px;
-        margin-top: 20px;
-      }
-      .dynamic-layout-col-4{
-        width : 300px;
-      }
-      .dynamic-layout-col-8{
-        width : 600px;
-      }
-    }
-    @media (min-width: 600px) and (max-width: 900px){
-      [dynamic-layout]{
-        width: 600px;
-      }
-      .dynamic-layout-col-4{
-        width : 300px;
-      }
-      .dynamic-layout-col-8{
-        width : 600px;
-      }
-    }
-    @media (max-width: 600px){
-      [dynamic-layout]{
-        width: 300px;
-      }
-      .dynamic-layout-col-4{
-        width : 300px;
-      }
-      .dynamic-layout-col-8{
-        width : 300px;
-      }
-    }
-    .dynamic-layout-item {
-      padding: 10px;
-    }
-    .move-items-animation{
-      transition-property: left, top;
-      transition-duration: .5s;
-      transition-timing-function: ease-in-out;
-    }
-    .dynamic-layout-item-parent.ng-enter{
-      transition: .5s ease-in-out;
-      opacity:0;
-    }
-    .dynamic-layout-item-parent.ng-enter.ng-enter-active{
-      opacity:1;
-    }
-    .dynamic-layout-item-parent.ng-leave{
-      transition: .5s ease-in-out;
-      opacity:1;
-    }
-    .dynamic-layout-item-parent.ng-leave.ng-leave-active{
-      opacity:0;
-    }
-    [dynamic-layout]{
-      float: left;
-      position: relative;
-    }
-    .container-fluid{
-      position: absolute;
-      left: 50%;
-      transform: translate(-50%);
-    }
-    .title{
-      margin-bottom: 50px;
-    }
-    </style>   -->
+  <script type="text/javascript" src="js/services/classServices.js"></script>
   </head>
   
     <!--V JS-->

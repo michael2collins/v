@@ -3,6 +3,7 @@
 
     angular
         .module('ng-admin')
+        /*
 .controller('MainCtrl', function(STATES) {
   var main = this;
   
@@ -15,6 +16,8 @@
   main.states.push(STATES[0]);
   main.states.push(STATES[1]);
 })
+*/
+/*
 .controller('CatCtrl', function(CATEGORYS) {
   var cat = this;
   
@@ -72,6 +75,8 @@
         "abbreviation": "WY"
     }
 ])
+*/
+/*
   .factory('ListService', function() {
       var factry = {};
       var xlist = {
@@ -100,8 +105,17 @@
 
       ]};
       
-      
       factry.getcat = function(catquery) {
+          console.log("querying for");
+          console.log(catquery);
+          console.log(xlist.xList.length);
+          var results = _.where( xlist.xList, {classcat: catquery});
+          console.log("the getcat query result");
+          console.log(results);
+          return results;
+      }
+      
+      factry.getcat2 = function(catquery) {
           console.log("querying for");
           console.log(catquery);
           var results=[];
@@ -122,7 +136,7 @@
       }
       return factry;
   })
-                     
+  */                   
 .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent);
 
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
@@ -131,10 +145,10 @@
     '$routeParams', 
     '$log',
     '$location',
-    'ListService'
+    'ClassServices'
     ];
         
-    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location, ListService){
+    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location, ClassServices){
         /* jshint validthis: true */
         var vm = this;
 
@@ -157,14 +171,17 @@
         vm.ShirtSizeList=[];
         vm.BeltSizeList=[];
         vm.instructorTitleList=[];
-        $rootScope.classcategories=['karate','fitness','wellness','special'];
-        $rootScope.agecategories=['adult','children'];
-        $rootScope.pgmcategories=['basic','leopard','dragon','bbt1','bbt2','bbt3','adult','black','privates','other'];
+ //       $rootScope.classcategories=['karate','fitness','wellness','special'];
+//        $rootScope.agecategories=['adult','children'];
+//        $rootScope.pgmcategories=['basic','leopard','dragon','bbt1','bbt2','bbt3','adult','black','privates','other'];
+        $rootScope.classcategories= ClassServices.distinctCat();
+        $rootScope.agecategories= ClassServices.distinctAge();
+        $rootScope.pgmcategories= ClassServices.distinctPgm();
         
-        $rootScope.xList = ListService.getAll();
+        $rootScope.xList = ClassServices.getAll();
         console.log("xList is");
         console.log($rootScope.xList);
-        $rootScope.xListcat = ListService.getcat('cat-wellness');
+        $rootScope.xListcat = ClassServices.getcat('cat-wellness');
         vm.allCategorys = [{"name": "karate"},{"name": "children"}];
   vm.categorys = [];
   vm.ages=[];
@@ -229,7 +246,7 @@
         getStudentLists();
         getRankList();
         activate();
-
+/*
   $scope.today = function() {
     $scope.dt = new Date();
   };
@@ -262,7 +279,7 @@
   };
   $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
   $scope.format = $scope.formats[4];
- 
+ */
     
 
   
