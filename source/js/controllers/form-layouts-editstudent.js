@@ -3,140 +3,7 @@
 
     angular
         .module('ng-admin')
-        /*
-.controller('MainCtrl', function(STATES) {
-  var main = this;
-  
-  main.clearSelect = function() {
-    main.states = [];
-  }
-  
-  main.allStates = STATES;
-  main.states = [];
-  main.states.push(STATES[0]);
-  main.states.push(STATES[1]);
-})
-*/
-/*
-.controller('CatCtrl', function(CATEGORYS) {
-  var cat = this;
-  
-  cat.clearSelect = function() {
-    cat.categorys = [];
-  }
-  cat.add = function(addition) {
-      cat.categorys.push(addition);
-  }
-  cat.allCategorys = CATEGORYS;
-  cat.categorys = [];
-  cat.categorys.push(CATEGORYS[0]);
 
-})
-.directive('chosen', function() {
-  var linker = function(scope, element, attr) {
-        // update the select when data is loaded
-        scope.$watch(attr.chosen, function(oldVal, newVal) {
-            element.trigger('chosen:updated');
-        });
-
-        // update the select when the model changes
-        scope.$watch(attr.ngModel, function() {
-            element.trigger('chosen:updated');
-        });
-        
-        element.chosen();
-    };
-
-    return {
-        restrict: 'A',
-        link: linker
-    };
-})
-.constant('CATEGORYS', 
-[
-    {
-        "name": "XXX",
-        "abbreviation": "AL"
-    }
-])
-.constant('STATES', 
-[
-    {
-        "name": "Alabama",
-        "abbreviation": "AL"
-    },
-    {
-        "name": "Alaska",
-        "abbreviation": "AK"
-    },
-
-    {
-        "name": "Wyoming",
-        "abbreviation": "WY"
-    }
-])
-*/
-/*
-  .factory('ListService', function() {
-      var factry = {};
-      var xlist = {
-        "xList": [
-         {"classcat": 'cat-karate' , "agecat": 'age-adult' , "programcat": 'pgm-adult' , "classurl": 'adult.jpg',"class": 'Adult'},
-         {"classcat": 'cat-special' , "agecat": 'age-children' , "programcat": 'pgm-other' , "classurl": 'afterschool.jpg',"class": 'After School'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-basic pgm-dragon' , "classurl": 'basicdragon.jpg',"class": 'Basic Dragon'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-bbt1' , "classurl": 'bbt1purple.jpg',"class": 'BBT1 - Purple - B/G'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-basic pgm-leopard' , "classurl": 'leopards.jpg',"class": 'Basic Leopard'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-leopard pgm-bbt1' , "classurl": 'bbt1leopard.jpg',"class": 'BBT1 Leopard'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-bbt2' , "classurl": 'bbt2.jpg',"class": 'BBT2 - Green'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-bbt3' , "classurl": 'bbt3.jpg',"class": 'BBT3 - Brown'},
-         {"classcat": 'cat-special' , "agecat": 'age-children age-adult' , "programcat": 'pgm-other' , "classurl": 'inactive.jpg',"class": 'Inactive'},
-         {"classcat": 'cat-special' , "agecat": 'age-children age-adult' , "programcat": 'pgm-other' , "classurl": 'injured.jpg',"class": 'Injured'},
-         {"classcat": 'cat-karate' , "agecat": 'age-adult' , "programcat": 'pgm-black' , "classurl": 'adultblackbelt.jpg',"class": 'Blackbelt Adult'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-black' , "classurl": 'jrblackbelt.jpg',"class": 'Blackbelt Jr'},
-         {"classcat": 'cat-fitness' , "agecat": 'age-children age-adult' , "programcat": 'pgm-other' , "classurl": 'kickbox.jpg',"class": 'Kickboxing'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-bbt' , "classurl": 'multiclass.jpg',"class": 'BBT - Multiclasses'},
-         {"classcat": 'cat-karate' , "agecat": 'age-adult' , "programcat": 'pgm-privates' , "classurl": 'private.jpg',"class": 'Privates Adult'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children' , "programcat": 'pgm-privates' , "classurl": 'privatechild.jpg',"class": 'Privates Children'},
-         {"classcat": 'cat-karate' , "agecat": 'age-children age-adult' , "programcat": 'pgm-other' , "classurl": 'saturday.png',"class": 'Saturday Only'},
-         {"classcat": 'cat-special' , "agecat": 'age-adult' , "programcat": 'pgm-other' , "classurl": 'selfdefence.jpg',"class": 'Self Defense'},
-         {"classcat": 'cat-special' , "agecat": 'age-children' , "programcat": 'pgm-other' , "classurl": 'specialneeds.jpg',"class": 'Special Needs'},
-         {"classcat": 'cat-wellness' , "agecat": 'age-adult' , "programcat": 'pgm-other' , "classurl": 'taichi.jpg',"class": 'TaiChi'},
-         {"classcat": 'cat-fitness' , "agecat": 'age-children age-adult' , "programcat": 'pgm-other' , "classurl": 'zumba.jpg',"class": 'Zoomba'}
-
-      ]};
-      
-      factry.getcat = function(catquery) {
-          console.log("querying for");
-          console.log(catquery);
-          console.log(xlist.xList.length);
-          var results = _.where( xlist.xList, {classcat: catquery});
-          console.log("the getcat query result");
-          console.log(results);
-          return results;
-      }
-      
-      factry.getcat2 = function(catquery) {
-          console.log("querying for");
-          console.log(catquery);
-          var results=[];
-          console.log(xlist.xList.length);
-           for (var i=0; i < xlist.xList.length; i++) {
-               console.log(xlist.xList[i].classcat);
-               if (xlist.xList[i].classcat === catquery) {
-                   results.push(xlist.xList[i]);
-               }
-           }
-          console.log("the getcat query result");
-          console.log(results);
-          return results;
-      }
-      
-      factry.getAll = function() {
-          return xlist;
-      }
-      return factry;
-  })
-  */                   
 .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent);
 
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
@@ -144,11 +11,10 @@
     '$rootScope',
     '$routeParams', 
     '$log',
-    '$location',
-    'ClassServices'
+    '$location'
     ];
         
-    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location, ClassServices){
+    function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location){
         /* jshint validthis: true */
         var vm = this;
 
@@ -157,8 +23,6 @@
         vm.getStudentLists = getStudentLists;
         vm.getRankList = getRankList;
         vm.updateStudent = updateStudent;        
-        vm.catadd = catadd;
-        vm.clearSelect = clearSelect;
         vm.students =[];
         vm.genders =[];
         vm.zipList=[];
@@ -171,71 +35,7 @@
         vm.ShirtSizeList=[];
         vm.BeltSizeList=[];
         vm.instructorTitleList=[];
- //       $rootScope.classcategories=['karate','fitness','wellness','special'];
-//        $rootScope.agecategories=['adult','children'];
-//        $rootScope.pgmcategories=['basic','leopard','dragon','bbt1','bbt2','bbt3','adult','black','privates','other'];
-        $rootScope.classcategories= ClassServices.distinctCat();
-		console.log("after distinct cat");
-		console.log($rootScope.classcategories);
-
-		
-        $rootScope.agecategories= ClassServices.distinctAge();
-		console.log("after distinct age");
-		console.log($rootScope.distinctAge);
-        $rootScope.pgmcategories= ClassServices.distinctPgm();
-		console.log("after distinct pgm");
-		console.log($rootScope.distinctPgm);
-        
-        $rootScope.xList = ClassServices.getAll();
-        console.log("xList is");
-        console.log($rootScope.xList);
-        $rootScope.xListcat = ClassServices.getcat('wellness');
-		console.log($rootScope.xListcat);
-        vm.allCategorys = [{"name": "karate"},{"name": "children"}];
-  vm.categorys = [];
-  vm.ages=[];
-  vm.pgms=[];
-  
-  function clearSelect() {
-    vm.categorys = [];
-    vm.ages = [];
-    vm.pgms = [];
-    vm.concat=[];
-  }
- function catadd(addition,type) {
-      console.log('addition');
-      console.log(addition);
-      console.log('type');
-      console.log(type);
-      if (type === "cat") {
-        vm.categorys=[];
-        vm.categorys.push('.' + addition);
-        console.log(vm.categorys);
-      }
-      if (type === "age") {
-          vm.ages=[];
-        vm.ages.push('.' + addition);
-      }
-      if (type === "pgm") {
-          vm.pgms=[];
-        vm.pgms.push( '.' + addition);
-      }
-
-    if (vm.categorys.length > 0 && typeof(vm.categorys) != "undefined") {
-          vm.concat=vm.categorys[0];
-    }
-    if (vm.ages.length > 0 && typeof(vm.ages) != "undefined") {
-          vm.concat=vm.concat + vm.ages[0];
-    }
-    if (vm.pgms.length > 0 && typeof(vm.pgms) != "undefined") {
-          vm.concat=vm.concat + vm.pgms[0];
-    }
-      console.log('search concat');
-      console.log(vm.concat);
-  }
-
-     
-         
+   
         
         vm.menu_h = $('#sidebar').height();
         vm.setHeight = setHeight;
@@ -295,10 +95,7 @@
         function activate() {
         return getStudent().then(function() {
             $log.debug('activated EditStudent view');
-       //     enableMediaFilter();
-       $log.debug('classcategories:' + $rootScope.classcategories);
-       $log.debug('agecategories:' + $rootScope.agecategories);
-       $log.debug('cpgmcategories:' + $rootScope.pgmcategories);
+
             });
         }
 
