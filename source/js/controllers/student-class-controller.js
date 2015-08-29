@@ -10,9 +10,10 @@
     '$routeParams', 
     '$log',
     '$location',
+	'$timeout',
     'ClassServices'
     ];
-    function StudentClassController( $scope, $rootScope, $routeParams,  $log, $location, ClassServices){
+    function StudentClassController( $scope, $rootScope, $routeParams,  $log, $location, $timeout, ClassServices){
         /* jshint validthis: true */
         var vmclass = this;
 		vmclass.catadd=catadd;
@@ -22,7 +23,17 @@
 		vmclass.ages=[];
 		vmclass.pgms=[];
   
-		activate();
+  		initclasslist();
+
+		function initclasslist() {
+			//if you hit the class tab quickly, the delay below will properly set the pix.  need to figure out the relationship of clicking the tab to calling an init.
+			$timeout(function() {
+			console.log('isotope init');
+					activate();
+			$scope.$broadcast('iso-init', {name:null, params:null})
+
+		  }, 2000);
+		}
   
   function activate() {
 	  console.log('class activate');
@@ -32,19 +43,24 @@
 		console.log(vmclass.classcategories);
 
 		
-        $rootScope.agecategories= ClassServices.distinctAge();
+//        $rootScope.agecategories= ClassServices.distinctAge();
+        vmclass.agecategories= ClassServices.distinctAge();
 		console.log("after distinct age");
-		console.log($rootScope.distinctAge);
-        $rootScope.pgmcategories= ClassServices.distinctPgm();
+		console.log(vmclass.agecategories);
+//        $rootScope.pgmcategories= ClassServices.distinctPgm();
+        vmclass.pgmcategories= ClassServices.distinctPgm();
 		console.log("after distinct pgm");
-		console.log($rootScope.distinctPgm);
+		console.log(vmclass.pgmcategories);
         
-        $rootScope.xList = ClassServices.getAll();
+//        $rootScope.xList = ClassServices.getAll();
+        vmclass.xList = ClassServices.getAll();
         console.log("xList is");
-        console.log($rootScope.xList);
-        $rootScope.xListcat = ClassServices.getcat('wellness');
-		console.log($rootScope.xListcat);
+        console.log(vmclass.xList);
+//        $rootScope.xListcat = ClassServices.getcat('wellness');
+        vmclass.xListcat = ClassServices.getcat('wellness');
+		console.log(vmclass.xListcat);
         vmclass.allCategorys = [{"name": "karate"},{"name": "children"}];
+
   }
   
   function clearSelect() {
