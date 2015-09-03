@@ -1,0 +1,1 @@
+ALTER TABLE `nclasspays` CHANGE `isTestFeeWaived` `isTestFeeWaived` INT(1) NULL DEFAULT '0';

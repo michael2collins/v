@@ -456,6 +456,28 @@
 
               <div class="portlet-body">
                 <div class="gallery-pages">
+				<div class="row">
+                  <form action="" novalidate name="editstudentclass" class="horizontal-form">
+                    <div class="form-body pal"><h3 class="block-heading">Class Information</h3>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudentclass.sc_Class.$invalid, 'has-success': !editstudentclass.sc_Class.$invalid}" class="form-group">
+                            <label for="inputsc_Class" class="control-label">Student Class</label>
+                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.sc_Class.$dirty" ng-class="editstudentclass.sc_Class.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputsc_Class" type="text" placeholder="First Name" name="sc_Class" ng-model="vmclass.studentclass.sc_Class" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudentclass.sc_Class.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+						</div>
+						</div>
+						</form>
+				</div>
  <div>{{vmclass.classcategories}}</div>
  <div>{{vmclass.concat}}</div>
        <div>{{vmclass.xListcat}}</div>             
@@ -480,13 +502,13 @@
 
                   <div class="row">
 
-                    <div id="isotopeContainer" isotope-container ng-cloak images-loaded   class="mix-grid ng-cloak">
+                    <div id="isotopeContainer" isotope-container ng-cloak    class="mix-grid ng-cloak">
                       <div ng-repeat="x in vmclass.xList.xList track by x.class" isotope-item=""  class="col-md-3 mix {{x.classcat[0]}} {{x.agecat[0]}} {{x.programcat[0]}}">
 					  <div>{{x.classcat}} {{x.agecat}} {{x.programcat}}</div>
                         <div class="hover-effect">
                           <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
                           <div class="info">
-                            <h3>{{x.class}}</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a><a href="images/classes/{{x.classurl}}" class="mix-zoom"><i class="glyphicon glyphicon-search"></i></a>
+                            <h3>{{x.class}}</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a>
                           </div>
                         </div>
                       </div>

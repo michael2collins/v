@@ -363,6 +363,42 @@ class DbHandler {
         return $students;
     }
 
+	 /**
+     * Fetching class for student
+     * @param String $student_id id of the student
+     */
+	public function getClassStudent($student_id) {
+        $stmt = $this->conn->prepare("SELECT 
+                   t.ID,
+					t.contactid, 
+					t.classid, 
+					t.classPayName, 
+					t.class, 
+					t.isTestFeeWaived
+				   from nclasspays t WHERE t.ID = ? ");
+        $stmt->bind_param("i", $student_id);
+        if ($stmt->execute()) {
+            $res = array();
+            $stmt->bind_result(
+                   $sc_ID,
+				   $sc_ContactId,
+				   $sc_ClassId,
+				   $sc_Class,
+				   $sc_isTestFeeWaved
+            );
+            $stmt->fetch();
+                    $res["sc_ID"] = $sc_ID;
+                    $res["sc_ContactId"] = $sc_ContactId;
+                    $res["sc_ClassId"] = $sc_ClassId;
+                    $res["sc_Class"] = $sc_Class;                
+                    $res["sc_isTestFeeWaved"] = $sc_isTestFeeWaved;                
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }		
+	}
+	
     /**
      * Fetching single student
      * @param String $student_id id of the student
@@ -506,7 +542,53 @@ class DbHandler {
             return NULL;
         }
     }
+
+    /**
+     * Updating student class
+
+     */
+    public function updateStudentClass($sc_ID,
+				   $sc_ContactId,
+				   $sc_ClassId,
+				   $sc_classPayName,
+				   $sc_Class,
+				   $sc_isTestFeeWaved
+			) {
+        $num_affected_rows = 0;
+
+            $sql = "UPDATE nclasspays t set ";
+$sql .= " t.contactID = :sc_ContactId, ";
+$sql .= " t.classid = :sc_ClassId, ";
+$sql .= " t.classPayName = :sc_classPayName, ";
+$sql .= " t.class = :sc_Class, ";
+$sql .= " t.isTestFeeWaived = :sc_isTestFeeWaved, ";
+
+            $sql .= " where ID = ? "; 
+
+error_log( print_R($sql, TRUE ));
+error_log( print_R($sc_ContactId, TRUE ));
+error_log( print_R($sc_ClassId, TRUE ));
+error_log( print_R($sc_classPayName, TRUE ));
+error_log( print_R($sc_Class, TRUE ));
+error_log( print_R($sc_isTestFeeWaved, TRUE ));
     
+                if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("isssi",
+                    $sc_ContactId ,
+                    $sc_ClassId    ,
+                    $sc_classPayName    ,
+                    $sc_Class ,
+					$sc_isTestFeeWaved );          
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+
+              } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                }                    
+
+        return $num_affected_rows > 0;
+}
     /**
      * Updating student
 
