@@ -5,9 +5,9 @@
         .module('ng-admin')    
     .factory('ClassServices', ClassServices);
     
-    ClassServices.$inject = ['_', '$log'];
+    ClassServices.$inject = ['_', '$http', '$log'];
 
-    function ClassServices( _ , $log ) {
+    function ClassServices( _ , $http, $log ) {
       var xlist = {
         "xList": [
          {"classcat": [ 'karate' ], "agecat": ['adult'] , "programcat": ['adult' ], "classurl": 'adult.jpg',"class": 'Adult'},
@@ -40,7 +40,10 @@
             distinctPgm: distinctPgm,
             distinctAge: distinctAge,
             getcat2: getcat2,
-            getAll: getAll
+            getAll: getAll,
+			getStudentClassList: getStudentClassList,
+            updateStudentClass: updateStudentClass,
+            getStudentClass: getStudentClass			
         };
         return service;
         
@@ -119,6 +122,51 @@
           return xlist;
       }
 
+        function getStudentClass(path) {
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentClass success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentClass failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+        function updateStudentClass(path, studentclass) {
+                    $log.debug('vm.data before put :' + studentclass);
+            return $http({method: 'PUT', url: path, data: studentclass}).
+                success(function(data, status, headers, config) {
+                    $log.debug('updateStudentClass success:' + path);
+                    $log.debug(data);
+                  
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('updateStudentClass failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }	  
+        function getStudentClassList(classlistpath) {
+            return $http({method: 'GET', url: classlistpath}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentClassList success:' + classlistpath);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentClassList failure:' + classlistpath);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
         
         }
  })();  

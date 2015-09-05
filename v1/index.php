@@ -187,6 +187,44 @@ $app->get('/zips',  function() {
 
             echoRespnse(200, $response);
         });
+
+$app->get('/studentclasslist',  function() {
+            $response = array();
+           $db = new DbHandler();
+
+            // fetching all user tasks
+            $result = $db->getStudentClassList();
+
+            $response["error"] = false;
+
+            $response["classcat"] = array();
+            $response["pgmcat"] = array();
+            $response["agecat"] = array();
+            $response["studentclasslist"] = array();
+        
+            // looping through result and preparing  arrays
+            while ($slist = $result->fetch_assoc()) {
+				//error_log( print_R("student class list results", TRUE ));
+				error_log( print_R($slist, TRUE ));
+                $tmp = array();
+                $tmpcat = array();
+                $tmppgm = array();
+                $tmpage = array();
+                $tmp["class"] = $slist["class"];
+                $tmp["pictureurl"] = $slist["pictureurl"];
+                array_push($tmp,explode("or", $slist["classcat"]));
+                array_push($tmp,explode("or", $slist["pgmcat"]));
+                array_push($tmp,explode("or", $slist["agecat"]));
+                array_push($response["studentclasslist"], $tmp);
+				
+            }
+            
+            error_log( print_R($response["studentclasslist"], TRUE ));
+            error_log( print_R("student class list results end", TRUE ));
+            
+            
+            echoRespnse(200, $response);
+        });
         
 $app->get('/studentlists',  function() {
             $response = array();
@@ -325,6 +363,82 @@ $app->get('/students',  function() {
             echoRespnse(200, $response);
 });
 
+$app->get('/studentclass/:id',  function($student_id) {
+          //  global $user_id;
+	error_log( print_R("before get student class request", TRUE ));
+		  
+            $response = array();
+            $db = new DbHandler();
+
+            // fetch task
+            $result = $db->getClassStudent($student_id);
+
+            if ($result != NULL) {
+                $response["error"] = false;
+				$response["contactID"] = $result["contactID"];
+				$response["classid"] = $result["classid"];
+				$response["classPayName"] = $result["classPayName"];
+				$response["class"] = $result["class"];
+				$response["isTestFeeWaived"] = $result["isTestFeeWaived"];
+                echoRespnse(200, $response);
+            } else {
+                $response["error"] = true;
+                $response["message"] = "The requested resource doesn't exists";
+                echoRespnse(404, $response);
+            }
+        });
+
+$app->put('/studentclass/:id',  function($student_id) use($app) {
+        // check for required params
+        //verifyRequiredParams(array('task', 'status'));
+	error_log( print_R("before put student class request", TRUE ));
+
+
+    $request = $app->request();
+    $body = $request->getBody();
+    $studentclass = json_decode($body);
+	
+	error_log( print_R($student, TRUE ));
+
+	//global $user_id;            
+	$contactID = $studentclass->contactID;
+	$classid = $studentclass->classid;
+	$classPayName = $studentclass->classPayName;
+	$class = $studentclass->class;
+	$isTestFeeWaived = $studentclass->isTestFeeWaived;
+	
+	error_log( print_R("before update", TRUE ));
+
+	error_log( print_R($contactID, TRUE ));
+	error_log( print_R($classid, TRUE ));
+	error_log( print_R($classPayName, TRUE ));
+	error_log( print_R($class, TRUE ));
+	error_log( print_R($isTestFeeWaived, TRUE ));
+
+	$db = new DbHandler();
+	$response = array();
+
+	// updating task
+	$result = $db->updateStudent($student_id, 
+					$contactID,
+					$classid,
+					$classPayName,
+					$class,
+					$isTestFeeWaived
+	);
+	if ($result) {
+		// task updated successfully
+		$response["error"] = false;
+		$response["message"] = "Student Class updated successfully";
+	} else {
+		// task failed to update
+		$response["error"] = true;
+		$response["message"] = "Student failed to update. Please try again!";
+	}
+	echoRespnse(200, $response);
+});
+		
+		
 $app->get('/students/:id',  function($student_id) {
           //  global $user_id;
             $response = array();
