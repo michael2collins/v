@@ -478,12 +478,12 @@
 						</div>
 						</form>
 				</div>
-	       <div>xlistnew is: 
+<!--	      <div>xlistnew is: 
 		   {{vmclass.xlistnew}}</div>             
-
- <!--<div>{{vmclass.classcategories}}</div>
- <div>{{vmclass.concat}}</div>
-       <div>{{vmclass.xListcat}}</div>             
+-->
+ <!--<div>{{vmclass.classcategories}}</div> -->
+ <!-- <div>{{vmclass.concat}}</div>-->
+  <!--     <div>{{vmclass.xListcat}}</div>             
   -->                <div class="row">
                     <div opt-kind="" ok-key="filter"  class="btn-group">
                       <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default active">Show All</button>
@@ -506,12 +506,13 @@
                   <div class="row">
 
                     <div id="isotopeContainer" isotope-container ng-cloak    class="mix-grid ng-cloak">
-	       <div>xlist is: 
-		   {{vmclass.xList.xList}}</div>             
-                      <div ng-repeat="x in vmclass.xList.xList track by x.class" isotope-item=""  class="col-md-3 mix {{x.classcat[0]}} {{x.agecat[0]}} {{x.programcat[0]}}">
-					  <div> <!--{{x.classcat}} {{x.agecat}} {{x.programcat}} --></div>
+<!--	       <div>xlist is: 
+		   {{vmclass.xList.xList}}</div>             -->
+<!--                      <div ng-repeat="x in vmclass.xList.xList track by x.class" isotope-item=""  class="col-md-3 mix {{x.classcat[0]}} {{x.agecat[0]}} {{x.programcat[0]}}">
+  -->                 <div ng-repeat="x in vmclass.xlistnew.studentclasslist track by x.class" isotope-item=""  class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
+					  <div> <!--{{x.classcat[0]}} {{x.agecat[0]}} {{x.pgmcat[0]}} --> </div>
                         <div class="hover-effect">
-                          <div class="img"><img src="images/classes/{{x.classurl}}" alt="" class="img-responsive"></div>
+                          <div class="img"><img src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive"></div>
                           <div class="info">
                             <h3>{{x.class}}</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a>
                           </div>
