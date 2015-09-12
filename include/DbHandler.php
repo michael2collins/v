@@ -340,6 +340,17 @@ class DbHandler {
         return $slists;
     }
 
+     /**
+     * Fetching lookup lists for students class
+     */
+    public function getStudentClassStatus() {
+        $stmt = $this->conn->prepare("SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' order by t.listtype, t.listorder");
+        $stmt->execute();
+        $slists = $stmt->get_result();
+        $stmt->close();
+        return $slists;
+    }	
+	
     public function getStudentClassList() {
         $sql = "SELECT t.* FROM nclass t order by t.class ";
 
@@ -399,7 +410,8 @@ class DbHandler {
 					t.classid, 
 					t.classPayName, 
 					t.class, 
-					t.isTestFeeWaived
+					t.isTestFeeWaived.
+					t.studentclassstatus
 				   from nclasspays t WHERE t.contactid = ? ");
         $stmt->bind_param("i", $student_id);
 		error_log( print_R("get class student", TRUE ));
@@ -411,7 +423,8 @@ class DbHandler {
 				$sc_classid,
 				$sc_classPayName,
 				$sc_class,
-				$sc_isTestFeeWaived
+				$sc_isTestFeeWaived,
+				$sc_studentclassstatus
 
             );
             $stmt->fetch();
@@ -421,6 +434,7 @@ class DbHandler {
 				$res["classPayName"] = $sc_classPayName;
 				$res["class"] = $sc_class;
 				$res["isTestFeeWaived"] = $sc_isTestFeeWaived;
+				$res["studentclassstatus"] = $sc_studentclassstatus;
             $stmt->close();
 			error_log( print_R($res, TRUE ));		
             return $res;
@@ -435,23 +449,23 @@ class DbHandler {
      * Updating student class
 
      */
-    public function updateStudentClass($sc_ID,
-				   $sc_ContactId,
+    public function updateStudentClass($sc_ContactId,
 				   $sc_ClassId,
 				   $sc_classPayName,
 				   $sc_Class,
-				   $sc_isTestFeeWaved
+				   $sc_isTestFeeWaved,
+				   $sc_studentclassstatus
 			) {
 			$num_affected_rows = 0;
 
 				$sql = "UPDATE nclasspays t set ";
-				$sql .= " t.contactID = :sc_ContactId, ";
 				$sql .= " t.classid = :sc_ClassId, ";
 				$sql .= " t.classPayName = :sc_classPayName, ";
 				$sql .= " t.class = :sc_Class, ";
 				$sql .= " t.isTestFeeWaived = :sc_isTestFeeWaved, ";
+				$sql .= " t.studentclassstatus = :sc_studentclassstatus ";
 
-				$sql .= " where ID = ? "; 
+				$sql .= " where contactID = ? "; 
 
 				error_log( print_R($sql, TRUE ));
 				error_log( print_R($sc_ContactId, TRUE ));
@@ -459,14 +473,17 @@ class DbHandler {
 				error_log( print_R($sc_classPayName, TRUE ));
 				error_log( print_R($sc_Class, TRUE ));
 				error_log( print_R($sc_isTestFeeWaved, TRUE ));
+				error_log( print_R($sc_studentclassstatus, TRUE ));
     
                 if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("isssi",
-                    $sc_ContactId ,
+                $stmt->bind_param("sssisi",
                     $sc_ClassId    ,
                     $sc_classPayName    ,
                     $sc_Class ,
-					$sc_isTestFeeWaved );          
+					$sc_isTestFeeWaved,
+					$sc_studentclassstatus,
+					$sc_ContactId
+					);          
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();

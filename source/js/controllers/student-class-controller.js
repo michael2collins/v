@@ -26,6 +26,7 @@
 		vmclass.classcategories="";	
 		vmclass.categorys=[];
 		vmclass.studentclass=[];
+		vmclass.classstatuses=[];
 		vmclass.ages=[];
 		vmclass.pgms=[];
 		vmclass.xlistnew=[];
@@ -33,6 +34,7 @@
         vmclass.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug($routeParams.id);          
         vmclass.classlistpath = '../v1/studentclasslist';
+        vmclass.classstatuspath = '../v1/studentclassstatuses';
 
   		initclasslist();
 
@@ -50,6 +52,7 @@
 	  console.log('class activate');
 	  
 	  getStudentClassList();
+	  getStudentClassStatuses();
 	  
 //        $rootScope.classcategories= ClassServices.distinctCat();
         vmclass.classcategories= ClassServices.distinctCat();
@@ -136,7 +139,15 @@
                     return vmclass.xlistnew;
                 });
         }
-		
+        function getStudentClassStatuses() {
+            return ClassServices.getStudentClassStatuses(vmclass.classstatuspath).then(function(data){
+                    $log.debug('getStudentClassStatuses returned data');
+                    $log.debug(data.data);
+                    vmclass.classstatuses = data.data;
+                    
+                    return vmclass.classstatuses;
+                });
+        }		
         function updateStudentClass() {
                     $log.debug('about updateStudentClass ', vmclass.studentclass);
             return ClassServices.updateStudentClass(vmclass.path, vmclass.studentclass).then(function(data){

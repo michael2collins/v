@@ -228,6 +228,30 @@ $app->get('/studentclasslist',  function() {
             
             echoRespnse(200, $response);
         });
+
+$app->get('/studentclassstatuses',  function() {
+            $response = array();
+           $db = new DbHandler();
+
+            // fetching all user tasks
+            $result = $db->getStudentClassStatus();
+
+            $response["error"] = false;
+            $response["studentclassstatuses"] = array();
+        
+            // looping through result and preparing  arrays
+            // looping through result and preparing zips array
+            while ($statuses = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["status"] = $statuses["listvalue"];
+                array_push($response["studentclassstatuses"], $tmp);
+            }
+            
+            error_log( print_R($response["studentclassstatuses"], TRUE ));
+            error_log( print_R("student class statuses results end", TRUE ));
+            
+            echoRespnse(200, $response);
+        });
         
 $app->get('/studentlists',  function() {
             $response = array();
@@ -383,6 +407,7 @@ $app->get('/studentclass/:id',  function($student_id) {
 				$response["classPayName"] = $result["classPayName"];
 				$response["class"] = $result["class"];
 				$response["isTestFeeWaived"] = $result["isTestFeeWaived"];
+				$response["studentclassstatus"] = $result["studentclassstatus"];
                 echoRespnse(200, $response);
             } else {
                 $response["error"] = true;
@@ -404,11 +429,12 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	error_log( print_R($student, TRUE ));
 
 	//global $user_id;            
-	$contactID = $studentclass->contactID;
+	$contactID = $student_id;
 	$classid = $studentclass->classid;
 	$classPayName = $studentclass->classPayName;
 	$class = $studentclass->class;
 	$isTestFeeWaived = $studentclass->isTestFeeWaived;
+	$studentclassstatus = $studentclass->studentclassstatus;
 	
 	error_log( print_R("before update", TRUE ));
 
@@ -417,17 +443,18 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	error_log( print_R($classPayName, TRUE ));
 	error_log( print_R($class, TRUE ));
 	error_log( print_R($isTestFeeWaived, TRUE ));
+	error_log( print_R($studentclassstatus, TRUE ));
 
 	$db = new DbHandler();
 	$response = array();
 
 	// updating task
-	$result = $db->updateStudent($student_id, 
-					$contactID,
+	$result = $db->updateStudent( $contactID,
 					$classid,
 					$classPayName,
 					$class,
-					$isTestFeeWaived
+					$isTestFeeWaived,
+					$studentclassstatus
 	);
 	if ($result) {
 		// task updated successfully
