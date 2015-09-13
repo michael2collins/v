@@ -426,7 +426,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
     $body = $request->getBody();
     $studentclass = json_decode($body);
 	
-	error_log( print_R($student, TRUE ));
+	error_log( print_R($studentclass, TRUE ));
 
 	//global $user_id;            
 	$contactID = $student_id;
@@ -449,7 +449,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	$response = array();
 
 	// updating task
-	$result = $db->updateStudent( $contactID,
+	$result = $db->updateStudentClass( $contactID,
 					$classid,
 					$classPayName,
 					$class,

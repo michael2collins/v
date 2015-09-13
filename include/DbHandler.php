@@ -404,13 +404,15 @@ class DbHandler {
      * @param String $student_id id of the student
      */
 	public function getClassStudent($student_id) {
+		error_log( print_R("get class student for id", TRUE ));
+		error_log( print_R($student_id, TRUE ));
         $stmt = $this->conn->prepare("SELECT 
                    t.ID,
 					t.contactid, 
 					t.classid, 
 					t.classPayName, 
 					t.class, 
-					t.isTestFeeWaived.
+					t.isTestFeeWaived,
 					t.studentclassstatus
 				   from nclasspays t WHERE t.contactid = ? ");
         $stmt->bind_param("i", $student_id);
@@ -459,11 +461,11 @@ class DbHandler {
 			$num_affected_rows = 0;
 
 				$sql = "UPDATE nclasspays t set ";
-				$sql .= " t.classid = :sc_ClassId, ";
-				$sql .= " t.classPayName = :sc_classPayName, ";
-				$sql .= " t.class = :sc_Class, ";
-				$sql .= " t.isTestFeeWaived = :sc_isTestFeeWaved, ";
-				$sql .= " t.studentclassstatus = :sc_studentclassstatus ";
+				$sql .= " t.classid = ?, ";
+				$sql .= " t.classPayName = ?, ";
+				$sql .= " t.class = ?, ";
+				$sql .= " t.isTestFeeWaived = ?, ";
+				$sql .= " t.studentclassstatus = ? ";
 
 				$sql .= " where contactID = ? "; 
 
@@ -476,6 +478,7 @@ class DbHandler {
 				error_log( print_R($sc_studentclassstatus, TRUE ));
     
                 if ($stmt = $this->conn->prepare($sql)) {
+				error_log( print_R("student class status update prepared", TRUE ));
                 $stmt->bind_param("sssisi",
                     $sc_ClassId    ,
                     $sc_classPayName    ,
@@ -484,11 +487,16 @@ class DbHandler {
 					$sc_studentclassstatus,
 					$sc_ContactId
 					);          
+				error_log( print_R("student class status update bind", TRUE ));
                 $stmt->execute();
+				error_log( print_R("student class status update execute", TRUE ));
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
+				error_log( print_R("student class status update done", TRUE ));
 
               } else {
+                    error_log( print_R("student class status update failed", TRUE ));
+                    error_log( print_R($this->conn->error, TRUE ));
                     printf("Errormessage: %s\n", $this->conn->error);
                 }                    
 

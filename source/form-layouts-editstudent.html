@@ -495,12 +495,9 @@
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudentclass.studentclassstatus.$invalid, 'has-success': !editstudentclass.studentclassstatus.$invalid}" class="form-group">
                             <label for="inputsc_Classstatus" class="control-label">Student Status</label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.studentclassstatus.$dirty" ng-class="editstudentclass.studentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputsc_Classstatus" type="text" placeholder="Student Status" name="sc_Classstatus" ng-model="vmclass.studentclass.studentclassstatus" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.studentclassstatus.$dirty" ng-class="editstudentclass.studentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                               <select id="inputsc_Classstatus" type="text" name="sc_Classstatus" ng-model="vmclass.studentclass.studentclassstatus" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="iter in vmclass.classstatuses.status" ng-selected="{{iter.listkey==vmclass.studentclass.studentclassstatus}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                                <option ng-repeat="iter in vmclass.classstatuses.studentclassstatuses" ng-selected="{{iter.status==vmclass.studentclass.studentclassstatus}}" placeholder="Select" value="{{iter.status}}">{{iter.status}}</option>
                               </select>
                             </div>							  
                               <div style="color:maroon" role="alert" ng-messages="editstudentclass.studentclassstatus.$error" class="has-error">
@@ -516,20 +513,6 @@
 					</form>
 				</div>
 
-                          <div ng-class="{'has-error': editstudent.ContactType.$invalid, 'has-success': !editstudent.ContactType.$invalid}" class="form-group">
-                            <label for="inputContactType" class="control-label">Contact Type </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ContactType.$dirty" ng-class="editstudent.ContactType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputContactType" type="text" name="ContactType" ng-model="vm.students.ContactType" ng-change="vm.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="iter in vm.StudentList.ContactTypeList" ng-selected="{{iter.listkey==vm.students.ContactType}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                            <div style="color:maroon" role="alert" ng-messages="editstudent.ContactType.$error" class="has-error">
-                              <div ng-message="required">You did not enter a field</div>
-                              <div ng-message="minlength">Your field is too short</div>
-                              <div ng-message="maxlength">Your field is too long</div>
-                              <div ng-message="email">Your email is missing @ and/or a period</div>
-                            </div>
-                          </div>				
 				
 <!--	      <div>xlistnew is: 
 		   {{vmclass.xlistnew}}</div>             
