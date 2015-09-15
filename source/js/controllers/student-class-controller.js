@@ -25,14 +25,18 @@
 		vmclass.clearSelect=clearSelect;
 		vmclass.classcategories="";	
 		vmclass.categorys=[];
+		vmclass.picID="";
 		vmclass.studentclass=[];
+		vmclass.classpictureurl=[];
 		vmclass.classstatuses=[];
 		vmclass.ages=[];
 		vmclass.pgms=[];
 		vmclass.xlistnew=[];
 
         vmclass.path = '../v1/studentclass/' + $routeParams.id;
-        $log.debug($routeParams.id);          
+        $log.debug('studentid: ' + $routeParams.id);          
+        vmclass.classpicpath = '../v1/studentclasspicture' 
+
         vmclass.classlistpath = '../v1/studentclasslist';
         vmclass.classstatuspath = '../v1/studentclassstatuses';
 
@@ -125,8 +129,18 @@
                     $log.debug('getStudentClass returned data');
                     $log.debug(data.data);
                     vmclass.studentclass = data.data;
+					vmclass.picID = vmclass.studentclass.classseq;
                     
                     return vmclass.studentclass;
+                });
+        }
+        function getStudentClassPicture() {
+            return ClassServices.getStudentClassPicture(vmclass.classpicpath + '/' + vmclass.picID).then(function(data){
+                    $log.debug('getStudentClassPicture returned data');
+                    $log.debug(data.data);
+                    vmclass.classpictureurl = data.data;
+                    
+                    return vmclass.classpictureurl;
                 });
         }
 

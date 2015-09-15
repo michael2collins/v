@@ -44,6 +44,31 @@ UPDATE nclass SET pictureurl = 'specialneeds.jpg' WHERE nclass.class = 'Special 
 UPDATE nclass SET pictureurl = 'taichi.jpg' WHERE nclass.class = 'TaiChi';
 UPDATE nclass SET pictureurl = 'zumba.jpg' WHERE nclass.class = 'Zoomba';
 
+ALTER TABLE `nclass` ADD `id` SERIAL NOT NULL FIRST, ADD UNIQUE (`id`) ;
+
+ALTER TABLE `nclasspays` ADD `classseq` BIGINT NOT NULL ;
+
+update nclasspays set classseq = 1 where class = 'Adult';
+update nclasspays set classseq = 2 where class = 'After School';
+update nclasspays set classseq = 3 where class = 'Basic Dragon';
+update nclasspays set classseq = 4 where class = 'Basic Leopard';
+update nclasspays set classseq = 5 where class = 'BBT - Multiclasses';
+update nclasspays set classseq = 6 where class = 'BBT1 - Purple - B/G';
+update nclasspays set classseq = 7 where class = 'BBT1 Leopard';
+update nclasspays set classseq = 8 where class = 'BBT2 - Green';
+update nclasspays set classseq = 9 where class = 'BBT3 - Brown';
+update nclasspays set classseq = 10 where class = 'Blackbelt Adult';
+update nclasspays set classseq = 11 where class = 'Blackbelt Jr';
+update nclasspays set classseq = 12 where class = 'Inactive';
+update nclasspays set classseq = 13 where class = 'Injured';
+update nclasspays set classseq = 14 where class = 'Kickboxing';
+update nclasspays set classseq = 15 where class = 'Privates Adult';
+update nclasspays set classseq = 16 where class = 'Privates Children';
+update nclasspays set classseq = 17 where class = 'Saturday Only';
+update nclasspays set classseq = 18 where class = 'Self Defense';
+update nclasspays set classseq = 19 where class = 'Special Needs';
+update nclasspays set classseq = 20 where class = 'TaiChi';
+update nclasspays set classseq = 21 where class = 'Zoomba';
 
 
 

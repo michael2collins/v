@@ -473,9 +473,12 @@
                                 <div ng-message="email">Your email is missing @ and/or a period</div>
                               </div>
                             </div>
-                           </div>
-						</div>
-                      <div class="row">
+                        </div>
+                        <div class="col-md-6">
+                          <div class="img"><img src="images/classes/{{vmclass.classpictureurl[0]}}" alt="" class="img-responsive"></div>
+
+                        </div>
+
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudentclass.classid.$invalid, 'has-success': !editstudentclass.classid.$invalid}" class="form-group">
                             <label for="inputsc_Classid" class="control-label">Student Program</label>
@@ -489,8 +492,8 @@
                                 <div ng-message="email">Your email is missing @ and/or a period</div>
                               </div>
                             </div>
-                           </div>
-						</div>
+                        </div>
+					  </div>
                       <div class="row">
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudentclass.studentclassstatus.$invalid, 'has-success': !editstudentclass.studentclassstatus.$invalid}" class="form-group">

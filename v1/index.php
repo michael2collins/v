@@ -207,6 +207,7 @@ $app->get('/studentclasslist',  function() {
 				error_log( print_R("student class list results", TRUE ));
 //				error_log( print_R($slist["class"], TRUE ));
                 $tmp = array();
+                $tmp["id"] = $slist["id"];
                 $tmp["class"] = $slist["class"];
                 $tmp["pictureurl"] = $slist["pictureurl"];
 //                array_push($response["studentclasslist"], $tmp);
@@ -305,6 +306,27 @@ $app->get('/studentlists',  function() {
             echoRespnse(200, $response);
         });
 
+$app->get('/studentclasspicture/:picID',  function($picID) {
+            $response = array();
+           $db = new DbHandler();
+
+            // fetching all user tasks
+            $result = $db->getStudentClassPicture($picID);
+
+            $response["error"] = false;
+            $response["pictureurl"] = array();
+
+            // looping through result and preparing zips array
+            while ($piclist = $result->fetch_assoc()) {
+                $tmp = array();
+                $tmp["pictureurl"] = $piclist["pictureurl"];
+                array_push($response["pictureurl"], $tmp);
+            }
+
+            echoRespnse(200, $response);
+        });
+		
+		
 $app->get('/ranklist',  function() {
             $response = array();
            $db = new DbHandler();
@@ -407,6 +429,7 @@ $app->get('/studentclass/:id',  function($student_id) {
 				$response["classPayName"] = $result["classPayName"];
 				$response["class"] = $result["class"];
 				$response["isTestFeeWaived"] = $result["isTestFeeWaived"];
+				$response["classseq"] = $result["classseq"];
 				$response["studentclassstatus"] = $result["studentclassstatus"];
                 echoRespnse(200, $response);
             } else {
@@ -434,6 +457,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	$classPayName = $studentclass->classPayName;
 	$class = $studentclass->class;
 	$isTestFeeWaived = $studentclass->isTestFeeWaived;
+	$classseq = $studentclass->classseq;
 	$studentclassstatus = $studentclass->studentclassstatus;
 	
 	error_log( print_R("before update", TRUE ));
@@ -443,6 +467,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	error_log( print_R($classPayName, TRUE ));
 	error_log( print_R($class, TRUE ));
 	error_log( print_R($isTestFeeWaived, TRUE ));
+	error_log( print_R($classseq, TRUE ));
 	error_log( print_R($studentclassstatus, TRUE ));
 
 	$db = new DbHandler();
@@ -454,6 +479,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 					$classPayName,
 					$class,
 					$isTestFeeWaived,
+					$classseq,
 					$studentclassstatus
 	);
 	if ($result) {

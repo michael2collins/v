@@ -42,7 +42,8 @@
             getcat2: getcat2,
             getAll: getAll,
 			getStudentClassList: getStudentClassList,
-			getStudentClassLists: getStudentClassLists,
+			getStudentClassPicture: getStudentClassPicture,
+			getStudentClassStatuses: getStudentClassStatuses,
             updateStudentClass: updateStudentClass,
             getStudentClass: getStudentClass			
         };
@@ -128,6 +129,7 @@
                 success(function(data, status, headers, config) {
                     $log.debug('getStudentClass success:' + path);
                     $log.debug(data);
+					getStudentClassPicture(path);
                     // this callback will be called asynchronously
                     // when the response is available
                     return data;
@@ -153,6 +155,21 @@
                     // or server returns response with an error status.
                 });
         }	  
+        function getStudentClassPicture(classpicturepath) {
+            return $http({method: 'GET', url: classpicturepath}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentClassPicture success:' + classpicturepath);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentClassPicture failure:' + classpicturepath);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }		
         function getStudentClassList(classlistpath) {
             return $http({method: 'GET', url: classlistpath}).
                 success(function(data, status, headers, config) {

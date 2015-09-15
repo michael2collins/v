@@ -350,6 +350,7 @@ class DbHandler {
         $stmt->close();
         return $slists;
     }	
+
 	
     public function getStudentClassList() {
         $sql = "SELECT t.* FROM nclass t order by t.class ";
@@ -375,6 +376,32 @@ class DbHandler {
         } 
     }
 	
+    public function getStudentClassPicture($picID) {
+        $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? ";
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("i", $picID);
+			
+			if ($stmt->execute()) {
+				error_log( print_R("getStudentClassPicture  stmt", TRUE ));		
+				error_log( print_R($stmt, TRUE ));		
+				$piclist = $stmt->get_result();
+				error_log( print_R("getStudentClassPicture  returns data", TRUE ));		
+				error_log( print_R($piclist, TRUE ));		
+				$stmt->close();
+				return $piclist;
+			} else {
+				error_log( print_R("getStudentClassPicture  execute failed", TRUE ));					
+				printf("Errormessage: %s\n", $this->conn->error);
+			}
+
+        } else {
+				error_log( print_R("getStudentClassPicture  sql failed", TRUE ));					
+				printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+        } 
+    }
+
 	
          /**
      * Fetching rank lists for students
@@ -413,6 +440,7 @@ class DbHandler {
 					t.classPayName, 
 					t.class, 
 					t.isTestFeeWaived,
+					t.classseq,
 					t.studentclassstatus
 				   from nclasspays t WHERE t.contactid = ? ");
         $stmt->bind_param("i", $student_id);
@@ -426,6 +454,7 @@ class DbHandler {
 				$sc_classPayName,
 				$sc_class,
 				$sc_isTestFeeWaived,
+				$sc_classseq,
 				$sc_studentclassstatus
 
             );
@@ -436,6 +465,7 @@ class DbHandler {
 				$res["classPayName"] = $sc_classPayName;
 				$res["class"] = $sc_class;
 				$res["isTestFeeWaived"] = $sc_isTestFeeWaived;
+				$res["classseq"] = $sc_classseq;
 				$res["studentclassstatus"] = $sc_studentclassstatus;
             $stmt->close();
 			error_log( print_R($res, TRUE ));		
