@@ -486,6 +486,7 @@ class DbHandler {
 				   $sc_classPayName,
 				   $sc_Class,
 				   $sc_isTestFeeWaved,
+				   $sc_classseq,
 				   $sc_studentclassstatus
 			) {
 			$num_affected_rows = 0;
@@ -495,6 +496,7 @@ class DbHandler {
 				$sql .= " t.classPayName = ?, ";
 				$sql .= " t.class = ?, ";
 				$sql .= " t.isTestFeeWaived = ?, ";
+				$sql .= " t.classseq = ?, ";
 				$sql .= " t.studentclassstatus = ? ";
 
 				$sql .= " where contactID = ? "; 
@@ -505,15 +507,17 @@ class DbHandler {
 				error_log( print_R($sc_classPayName, TRUE ));
 				error_log( print_R($sc_Class, TRUE ));
 				error_log( print_R($sc_isTestFeeWaved, TRUE ));
+				error_log( print_R($sc_classseq, TRUE ));
 				error_log( print_R($sc_studentclassstatus, TRUE ));
     
                 if ($stmt = $this->conn->prepare($sql)) {
 				error_log( print_R("student class status update prepared", TRUE ));
-                $stmt->bind_param("sssisi",
+                $stmt->bind_param("sssiisi",
                     $sc_ClassId    ,
                     $sc_classPayName    ,
                     $sc_Class ,
 					$sc_isTestFeeWaved,
+					$sc_classseq,
 					$sc_studentclassstatus,
 					$sc_ContactId
 					);          
