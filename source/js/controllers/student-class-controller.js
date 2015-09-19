@@ -79,9 +79,9 @@
         console.log("xList is");
         console.log(vmclass.xList);
 //        $rootScope.xListcat = ClassServices.getcat('wellness');
-        vmclass.xListcat = ClassServices.getcat('wellness');
-		console.log(vmclass.xListcat);
-        vmclass.allCategorys = [{"name": "karate"},{"name": "children"}];
+//        vmclass.xListcat = ClassServices.getcat('wellness');
+//		console.log(vmclass.xListcat);
+//        vmclass.allCategorys = [{"name": "karate"},{"name": "children"}];
 
 		getStudentClass();
   }
@@ -131,7 +131,26 @@
                     $log.debug(data.data);
                     vmclass.studentclass = data.data;
 					vmclass.picID = vmclass.studentclass.classseq;
+                    getStudentClassPicture();
+                    console.log("getting concat using student class");
+                    console.log("studentclass is:" + vmclass.studentclass.class);
+                    var class2;
+                    var class2age="";
+                    var class2cls="";
+                    var class2pgm="";
+                    class2=ClassServices.getclass2(vmclass.studentclass.class);
+                    class2cls=class2[0].classcat[0];
+                    class2age=class2[0].agecat[0];
+                    class2pgm=class2[0].programcat[0];
+//                    vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
+                    vmclass.catadd(class2cls, 'cat');
+                    vmclass.catadd(class2age, 'age');
+                    vmclass.catadd(class2pgm, 'pgm');
+                    //$scope.$emit('iso-method', {name:null, params:null});
+                    $scope.$broadcast('iso-init', {name:null, params:null})
                     
+                    console.log("student concat result is:" + vmclass.concat);
+
                     return vmclass.studentclass;
                 });
         }

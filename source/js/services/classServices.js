@@ -36,6 +36,8 @@
 
     var service = {
             getcat: getcat,
+            getclass: getclass,
+            getclass2: getclass2,
             distinctCat: distinctCat,
             distinctPgm: distinctPgm,
             distinctAge: distinctAge,
@@ -103,6 +105,15 @@
           console.log(results);
           return results;
       }
+      function getclass(catquery) {
+          console.log("querying for");
+          console.log(catquery);
+          console.log(xlist.xList.length);
+          var results = _.where( xlist.xList, {class: [catquery]});
+          console.log("the getclass query result");
+          console.log(results);
+          return results;
+      }
       
       function getcat2(catquery) {
           console.log("querying for");
@@ -116,6 +127,21 @@
                }
            }
           console.log("the getcat query result");
+          console.log(results);
+          return results;
+      }
+      function getclass2(catquery) {
+          console.log("querying for");
+          console.log(catquery);
+          var results=[];
+          console.log(xlist.xList.length);
+           for (var i=0; i < xlist.xList.length; i++) {
+               console.log(xlist.xList[i].class);
+               if (xlist.xList[i].class === catquery) {
+                   results.push(xlist.xList[i]);
+               }
+           }
+          console.log("the getclass2 query result");
           console.log(results);
           return results;
       }
