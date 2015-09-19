@@ -121,7 +121,7 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="./#/form-layouts-editstudent?id={{COL_FIELD}}" >Edit</button></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="./#/form-layouts-editstudent/id/{{COL_FIELD}}" >Edit</button></span></div>'
                 }
             ]};
 

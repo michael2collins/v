@@ -18,7 +18,7 @@ angular
   // use in views, ng-repeat="x in _.range(3)"
   .run(function ($rootScope) {
      $rootScope._ = window._;
-  })
+  })		
     .config(logConfig)
     .config(routeConfig)
 // Initialize the application
@@ -67,9 +67,11 @@ angular
             templateUrl: 'templates/states/form-layouts-newstudent.html'
          //   controller: 'FormLayoutsControllerNewStudent'
             })
-        .when('/form-layouts-editstudent', {
+        .when('/form-layouts-editstudent/id/:id', {
             templateUrl: 'templates/states/form-layouts-editstudent.html' 
-         //   controller: 'FormLayoutsControllerEditStudent'
+            })
+        .when('/form-layouts-editstudent/id/:id/class/:class', {
+            templateUrl: 'templates/states/form-layouts-editstudent.html' 
             })
         .when('/table-basic-attendance', {
             templateUrl: 'templates/states/table-basic-attendance.html'

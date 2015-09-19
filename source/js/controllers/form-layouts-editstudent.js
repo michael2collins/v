@@ -45,7 +45,7 @@
         vm.sListPath = '../v1/studentlists';
         vm.rankListPath = '../v1/ranklist';
         
-        $log.debug('Hello Debug!');
+        $log.debug('Routeparam is:');
         $log.debug($routeParams.id);          
 
 //        $.fn.Data.Portlet();

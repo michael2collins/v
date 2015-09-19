@@ -466,12 +466,12 @@
                       <div class="row">
                           <div class="col-md-6">
                             <div class="col-md-12">
-                              <div ng-class="{'has-error': editstudentclass.class.$invalid, 'has-success': !editstudentclass.class.$invalid}" class="form-group">
+                              <div ng-class="{'has-error': editstudentclass.sc_Class.$invalid, 'has-success': !editstudentclass.sc_Class.$invalid}" class="form-group">
                                 <label for="inputsc_Class" class="control-label">Student Class</label>
-                                  <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.class.$dirty" ng-class="editstudentclass.class.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                  <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.sc_Class.$dirty" ng-class="editstudentclass.sc_Class.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                     <input id="inputsc_Class" type="text" placeholder="Student Class" name="sc_Class" ng-model="vmclass.studentclass.class" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                   </div>
-                                  <div style="color:maroon" role="alert" ng-messages="editstudentclass.class.$error" class="has-error">
+                                  <div style="color:maroon" role="alert" ng-messages="editstudentclass.sc_Class.$error" class="has-error">
                                     <div ng-message="required">You did not enter a field</div>
                                     <div ng-message="minlength">Your field is too short</div>
                                     <div ng-message="maxlength">Your field is too long</div>
@@ -550,7 +550,7 @@
                     </div>
                     </div>
 
-                  <div class="row">
+                  <div class="row"> 
 
                     <div id="isotopeContainer" isotope-container ng-cloak    class="mix-grid ng-cloak">
 <!--	       <div>xlist is: 
@@ -562,7 +562,7 @@
                         <div class="hover-effect">
                           <div class="img"><img src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive"/></div>
                           <div class="info">
-                            <h3>{{x.class}}</h3><a href="#" class="mix-link"><i class="glyphicon glyphicon-link"></i></a>
+                            <h3>{{x.class}}</h3><a href="./#/form-layouts-editstudent/id/{{vmclass.studentclass.contactID}}/class/{{x.id}}" class="mix-link" "><i ng-click="vmclass.setStudentClass()" class="glyphicon glyphicon-link"></i>Set class as<br/>{{x.class}}</a>
                           </div>
                         </div>
                       
