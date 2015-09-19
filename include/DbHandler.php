@@ -536,6 +536,46 @@ class DbHandler {
 
         return $num_affected_rows > 0;
 }
+
+    /**
+     * set student class
+
+     */
+    public function setStudentClass($sc_ContactId,
+				   $sc_classseq
+			) {
+			$num_affected_rows = 0;
+
+				$sql = "UPDATE nclasspays t set ";
+				$sql .= " t.classseq = ?, ";
+
+				$sql .= " where contactID = ? "; 
+
+				error_log( print_R($sql, TRUE ));
+				error_log( print_R($sc_ContactId, TRUE ));
+				error_log( print_R($sc_classseq, TRUE ));
+    
+                if ($stmt = $this->conn->prepare($sql)) {
+				error_log( print_R("student class status set prepared", TRUE ));
+                $stmt->bind_param("ii",
+					$sc_classseq,
+					$sc_ContactId
+					);          
+				error_log( print_R("student class status set bind", TRUE ));
+                $stmt->execute();
+				error_log( print_R("student class status set execute", TRUE ));
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+				error_log( print_R("student class status set done", TRUE ));
+
+              } else {
+                    error_log( print_R("student class status update failed", TRUE ));
+                    error_log( print_R($this->conn->error, TRUE ));
+                    printf("Errormessage: %s\n", $this->conn->error);
+                }                    
+
+        return $num_affected_rows > 0;
+}
 	
     /**
      * Fetching single student

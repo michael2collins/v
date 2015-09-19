@@ -196,11 +196,11 @@
                     getStudentClass();
                 });
         }  
-        function setStudentClass() {
-                    $log.debug('about setStudentClass ', vmclass.studentclass);
-                    $log.debug('for class path', vmclass.setclasspath);
-            return ClassServices.setStudentClass(vmclass.setclasspath, vmclass.studentclass).then(function(data){
-                    $log.debug('setStudentClass returned data: goto', vmclass.path);
+        function setStudentClass(mystudent, myclassid) {
+                    $log.debug('about setStudentClass ', mystudent);
+                    $log.debug('for class ', myclassid);
+            return ClassServices.setStudentClass(vmclass.setclasspath, mystudent, myclassid).then(function(data){
+                    $log.debug('setStudentClass returned data: ');
                     $log.debug(data.data);
                     vmclass.studentclass = data.data;
                     getStudentClass();

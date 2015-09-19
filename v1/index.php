@@ -493,6 +493,46 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	}
 	echoRespnse(200, $response);
 });
+
+$app->put('/studentclass/id/:id/class/:class',  function($student_id, $classseq) use($app) {
+        // check for required params
+        //verifyRequiredParams(array('task', 'status'));
+	error_log( print_R("before put student class set request", TRUE ));
+
+
+    $request = $app->request();
+    $body = $request->getBody();
+    $studentclass = json_decode($body);
+	
+	error_log( print_R($studentclass, TRUE ));
+
+	//global $user_id;            
+	$contactID = $student_id;
+	$classseq = $classseq;
+	
+	error_log( print_R("before update", TRUE ));
+
+	error_log( print_R($contactID, TRUE ));
+	error_log( print_R($classseq, TRUE ));
+
+	$db = new DbHandler();
+	$response = array();
+
+	// updating task
+	$result = $db->setStudentClass( $contactID,
+					$classseq
+	);
+	if ($result) {
+		// task updated successfully
+		$response["error"] = false;
+		$response["message"] = "Student Class set successfully";
+	} else {
+		// task failed to update
+		$response["error"] = true;
+		$response["message"] = "Student failed to update. Please try again!";
+	}
+	echoRespnse(200, $response);
+});
 		
 		
 $app->get('/students/:id',  function($student_id) {

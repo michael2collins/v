@@ -47,7 +47,8 @@
 			getStudentClassPicture: getStudentClassPicture,
 			getStudentClassStatuses: getStudentClassStatuses,
             updateStudentClass: updateStudentClass,
-            getStudentClass: getStudentClass			
+            getStudentClass: getStudentClass,			
+            setStudentClass: setStudentClass			
         };
         return service;
         
@@ -181,6 +182,26 @@
                     // or server returns response with an error status.
                 });
         }	  
+        function setStudentClass(path, mystudent, myclassid) {
+                    $log.debug('service set student class :' + myclassid);
+					var mydata = {
+						mystudent: mystudent,
+						myclassid: myclassid
+					};
+                    $log.debug('service set student class mydata:' + mydata);
+            return $http({method: 'PUT', url: path, data: mydata  }).
+                success(function(data, status, headers, config) {
+                    $log.debug('setStudentClass success:' + mydata);
+                    $log.debug(data);
+                  
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('setStudentClass failure:' + mydata);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }		
         function getStudentClassPicture(classpicturepath) {
             return $http({method: 'GET', url: classpicturepath}).
                 success(function(data, status, headers, config) {
