@@ -70,7 +70,7 @@ angular
         .when('/form-layouts-editstudent/id/:id', {
             templateUrl: 'templates/states/form-layouts-editstudent.html' 
             })
-        .when('/form-layouts-editstudent/id/:id/class/:class', {
+        .when('/form-layouts-editstudent/id/:id/myclass/:myclass', {
             templateUrl: 'templates/states/form-layouts-editstudent.html' 
             })
         .when('/table-basic-attendance', {

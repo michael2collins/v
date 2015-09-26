@@ -185,19 +185,19 @@
         function setStudentClass(path, mystudent, myclassid) {
                     $log.debug('service set student class :' + myclassid);
 					var mydata = {
-						mystudent: mystudent,
-						myclassid: myclassid
+						"mystudent": mystudent,
+						"myclassid": myclassid
 					};
-                    $log.debug('service set student class mydata:' + mydata);
+                    $log.debug('service set studentx class mydata:' + JSON.stringify({data: mydata}) + ' sent to:' + path);
             return $http({method: 'PUT', url: path, data: mydata  }).
                 success(function(data, status, headers, config) {
-                    $log.debug('setStudentClass success:' + mydata);
+                    $log.debug('setStudentClass success:' + data);
                     $log.debug(data);
                   
                     return data;
                 }).
                 error(function(data, status, headers, config) {
-                    $log.debug('setStudentClass failure:' + mydata);
+                    $log.debug('setStudentClass failure:' + JSON.stringify({data: data}));
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });

@@ -42,9 +42,9 @@
         vmclass.classlistpath = '../v1/studentclasslist';
         vmclass.classstatuspath = '../v1/studentclassstatuses';
 
-        vmclass.setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/class/' + $routeParams.class;
-        $log.debug('studentid: ' + $routeParams.id);          
-        $log.debug('studentclass: ' + $routeParams.class);          
+		vmclass.setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + $routeParams.myclass;
+		$log.debug('studentid: ' + $routeParams.id);          
+		$log.debug('studentclass: ' + $routeParams.myclass);     		
 		
   		//initclasslist();
 
@@ -197,9 +197,13 @@
                 });
         }  
         function setStudentClass(mystudent, myclassid) {
+					var setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + myclassid;
+					$log.debug('studentid: ' + $routeParams.id);          
+					$log.debug('studentclass: ' + myclassid);          
+			
                     $log.debug('about setStudentClass ', mystudent);
                     $log.debug('for class ', myclassid);
-            return ClassServices.setStudentClass(vmclass.setclasspath, mystudent, myclassid).then(function(data){
+            return ClassServices.setStudentClass(setclasspath, mystudent, myclassid).then(function(data){
                     $log.debug('setStudentClass returned data: ');
                     $log.debug(data.data);
                     vmclass.studentclass = data.data;

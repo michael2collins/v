@@ -547,7 +547,7 @@ class DbHandler {
 			$num_affected_rows = 0;
 
 				$sql = "UPDATE nclasspays t set ";
-				$sql .= " t.classseq = ?, ";
+				$sql .= " t.classseq = ? ";
 
 				$sql .= " where contactID = ? "; 
 

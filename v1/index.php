@@ -494,7 +494,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	echoRespnse(200, $response);
 });
 
-$app->put('/studentclass/id/:id/class/:class',  function($student_id, $classseq) use($app) {
+$app->put('/studentclass/id/:id/myclass/:class',  function($student_id, $classseq) use($app) {
         // check for required params
         //verifyRequiredParams(array('task', 'status'));
 	error_log( print_R("before put student class set request", TRUE ));
