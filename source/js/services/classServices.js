@@ -182,11 +182,13 @@
                     // or server returns response with an error status.
                 });
         }	  
-        function setStudentClass(path, mystudent, myclassid) {
+        function setStudentClass(path, mystudent, myclassid, mypgmid) {
                     $log.debug('service set student class :' + myclassid);
+                    $log.debug('service set student pgm :' + mypgmid);
 					var mydata = {
 						"mystudent": mystudent,
-						"myclassid": myclassid
+						"myclassid": myclassid,
+						"mypgmid": mypgmid,
 					};
                     $log.debug('service set studentx class mydata:' + JSON.stringify({data: mydata}) + ' sent to:' + path);
             return $http({method: 'PUT', url: path, data: mydata  }).

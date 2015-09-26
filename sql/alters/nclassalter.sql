@@ -70,6 +70,28 @@ update nclasspays set classseq = 19 where class = 'Special Needs';
 update nclasspays set classseq = 20 where class = 'TaiChi';
 update nclasspays set classseq = 21 where class = 'Zoomba';
 
+ALTER TABLE `nclasslist` ADD `id` SERIAL NOT NULL FIRST, ADD UNIQUE (`id`) ;
 
-
+update nclasspays set pgmseq = 1 where classid = 'Adult ATP';
+update nclasspays set pgmseq = 2 where classid = 'Adult Basic';
+update nclasspays set pgmseq = 3 where classid = 'Adult Single Class';
+update nclasspays set pgmseq = 4 where classid = 'Adult Unlimited';
+update nclasspays set pgmseq = 5 where classid = 'After School';
+update nclasspays set pgmseq = 6 where classid = 'BBT';
+update nclasspays set pgmseq = 7 where classid = 'Blackbelt Adult';
+update nclasspays set pgmseq = 8 where classid = 'Blackbelt Jr';
+update nclasspays set pgmseq = 9 where classid = 'Children Basic';
+update nclasspays set pgmseq = 10 where classid = 'Children Single BBT';
+update nclasspays set pgmseq = 11 where classid = 'Children Single Class';
+update nclasspays set pgmseq = 12 where classid = 'Children Single Ldr';
+update nclasspays set pgmseq = 13 where classid = 'Intro Karate';
+update nclasspays set pgmseq = 14 where classid = 'Kickboxing';
+update nclasspays set pgmseq = 15 where classid = 'Leadership';
+update nclasspays set pgmseq = 16 where classid = 'Privates Adult';
+update nclasspays set pgmseq = 17 where classid = 'Privates Children';
+update nclasspays set pgmseq = 18 where classid = 'Self Defense';
+update nclasspays set pgmseq = 19 where classid = 'Special Needs';
+update nclasspays set pgmseq = 20 where classid = 'Tai Chi Drop In';
+update nclasspays set pgmseq = 21 where classid = 'TaiChi';
+update nclasspays set pgmseq = 22 where classid = 'Zoomba';
 

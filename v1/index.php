@@ -425,11 +425,12 @@ $app->get('/studentclass/:id',  function($student_id) {
             if ($result != NULL) {
                 $response["error"] = false;
 				$response["contactID"] = $result["contactID"];
-				$response["classid"] = $result["classid"];
+//				$response["classid"] = $result["classid"];
 				$response["classPayName"] = $result["classPayName"];
-				$response["class"] = $result["class"];
+//				$response["class"] = $result["class"];
 				$response["isTestFeeWaived"] = $result["isTestFeeWaived"];
 				$response["classseq"] = $result["classseq"];
+				$response["pgmseq"] = $result["pgmseq"];
 				$response["studentclassstatus"] = $result["studentclassstatus"];
                 echoRespnse(200, $response);
             } else {
@@ -453,21 +454,23 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 
 	//global $user_id;            
 	$contactID = $student_id;
-	$classid = $studentclass->classid;
+//	$classid = $studentclass->classid;
 	$classPayName = $studentclass->classPayName;
-	$class = $studentclass->class;
+//	$class = $studentclass->class;
 	$isTestFeeWaived = $studentclass->isTestFeeWaived;
 	$classseq = $studentclass->classseq;
+	$pgmseq = $studentclass->pgmseq;
 	$studentclassstatus = $studentclass->studentclassstatus;
 	
 	error_log( print_R("before update", TRUE ));
 
 	error_log( print_R($contactID, TRUE ));
-	error_log( print_R($classid, TRUE ));
+//	error_log( print_R($classid, TRUE ));
 	error_log( print_R($classPayName, TRUE ));
-	error_log( print_R($class, TRUE ));
+//	error_log( print_R($class, TRUE ));
 	error_log( print_R($isTestFeeWaived, TRUE ));
 	error_log( print_R($classseq, TRUE ));
+	error_log( print_R($pgmseq, TRUE ));
 	error_log( print_R($studentclassstatus, TRUE ));
 
 	$db = new DbHandler();
@@ -475,11 +478,12 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 
 	// updating task
 	$result = $db->updateStudentClass( $contactID,
-					$classid,
+//					$classid,
 					$classPayName,
-					$class,
+//					$class,
 					$isTestFeeWaived,
 					$classseq,
+					$pgmseq,
 					$studentclassstatus
 	);
 	if ($result) {
@@ -494,7 +498,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	echoRespnse(200, $response);
 });
 
-$app->put('/studentclass/id/:id/myclass/:class',  function($student_id, $classseq) use($app) {
+$app->put('/studentclass/id/:id/myclass/:class',  function($student_id, $classseq, $pgmseq) use($app) {
         // check for required params
         //verifyRequiredParams(array('task', 'status'));
 	error_log( print_R("before put student class set request", TRUE ));
@@ -508,19 +512,20 @@ $app->put('/studentclass/id/:id/myclass/:class',  function($student_id, $classse
 
 	//global $user_id;            
 	$contactID = $student_id;
-	$classseq = $classseq;
 	
 	error_log( print_R("before update", TRUE ));
 
 	error_log( print_R($contactID, TRUE ));
 	error_log( print_R($classseq, TRUE ));
+	error_log( print_R($pgmseq, TRUE ));
 
 	$db = new DbHandler();
 	$response = array();
 
 	// updating task
 	$result = $db->setStudentClass( $contactID,
-					$classseq
+					$classseq,
+					$pgmseq
 	);
 	if ($result) {
 		// task updated successfully

@@ -436,13 +436,14 @@ class DbHandler {
         $stmt = $this->conn->prepare("SELECT 
                    t.ID,
 					t.contactid, 
-					t.classid, 
+					p.class as pgmclass, 
 					t.classPayName, 
-					t.class, 
+					c.class, 
 					t.isTestFeeWaived,
 					t.classseq,
+					t.pgmseq,
 					t.studentclassstatus
-				   from nclasspays t WHERE t.contactid = ? ");
+				   from nclasspays t, nclass c, nclasslist p WHERE t.classseq = c.id and t.pgmseq = p.id and t.contactid = ? ");
         $stmt->bind_param("i", $student_id);
 		error_log( print_R("get class student", TRUE ));
         if ($stmt->execute()) {
@@ -450,22 +451,24 @@ class DbHandler {
             $stmt->bind_result(
                 $sc_ID,
 				$sc_contactID,
-				$sc_classid,
+				$sc_pgmclass,
 				$sc_classPayName,
 				$sc_class,
 				$sc_isTestFeeWaived,
 				$sc_classseq,
+				$sc_pgmseq,
 				$sc_studentclassstatus
 
             );
             $stmt->fetch();
                 $res["ID"] = $sc_ID;
 				$res["contactID"] = $sc_contactID;
-				$res["classid"] = $sc_classid;
+				$res["pgmclass"] = $sc_pgmclass;
 				$res["classPayName"] = $sc_classPayName;
 				$res["class"] = $sc_class;
 				$res["isTestFeeWaived"] = $sc_isTestFeeWaived;
 				$res["classseq"] = $sc_classseq;
+				$res["pgmseq"] = $sc_pgmseq;
 				$res["studentclassstatus"] = $sc_studentclassstatus;
             $stmt->close();
 			error_log( print_R($res, TRUE ));		
@@ -482,42 +485,46 @@ class DbHandler {
 
      */
     public function updateStudentClass($sc_ContactId,
-				   $sc_ClassId,
+				//   $sc_ClassId,
 				   $sc_classPayName,
-				   $sc_Class,
+				//   $sc_Class,
 				   $sc_isTestFeeWaved,
 				   $sc_classseq,
+				   $sc_pgmseq,
 				   $sc_studentclassstatus
 			) {
 			$num_affected_rows = 0;
 
 				$sql = "UPDATE nclasspays t set ";
-				$sql .= " t.classid = ?, ";
+		//		$sql .= " t.classid = ?, ";
 				$sql .= " t.classPayName = ?, ";
-				$sql .= " t.class = ?, ";
+			//	$sql .= " t.class = ?, ";
 				$sql .= " t.isTestFeeWaived = ?, ";
 				$sql .= " t.classseq = ?, ";
+				$sql .= " t.pgmseq = ?, ";
 				$sql .= " t.studentclassstatus = ? ";
 
 				$sql .= " where contactID = ? "; 
 
 				error_log( print_R($sql, TRUE ));
 				error_log( print_R($sc_ContactId, TRUE ));
-				error_log( print_R($sc_ClassId, TRUE ));
+			//	error_log( print_R($sc_ClassId, TRUE ));
 				error_log( print_R($sc_classPayName, TRUE ));
-				error_log( print_R($sc_Class, TRUE ));
+			//	error_log( print_R($sc_Class, TRUE ));
 				error_log( print_R($sc_isTestFeeWaved, TRUE ));
 				error_log( print_R($sc_classseq, TRUE ));
+				error_log( print_R($sc_pgmseq, TRUE ));
 				error_log( print_R($sc_studentclassstatus, TRUE ));
     
                 if ($stmt = $this->conn->prepare($sql)) {
 				error_log( print_R("student class status update prepared", TRUE ));
-                $stmt->bind_param("sssiisi",
-                    $sc_ClassId    ,
+                $stmt->bind_param("siiisi",
+              //      $sc_ClassId    ,
                     $sc_classPayName    ,
-                    $sc_Class ,
+               //     $sc_Class ,
 					$sc_isTestFeeWaved,
 					$sc_classseq,
+					$sc_pgmseq,
 					$sc_studentclassstatus,
 					$sc_ContactId
 					);          
@@ -542,23 +549,28 @@ class DbHandler {
 
      */
     public function setStudentClass($sc_ContactId,
-				   $sc_classseq
+				   $sc_classseq,
+				   $sc_pgmseq
+				   
 			) {
 			$num_affected_rows = 0;
 
 				$sql = "UPDATE nclasspays t set ";
 				$sql .= " t.classseq = ? ";
+				$sql .= " t.pgmseq = ? ";
 
 				$sql .= " where contactID = ? "; 
 
 				error_log( print_R($sql, TRUE ));
 				error_log( print_R($sc_ContactId, TRUE ));
 				error_log( print_R($sc_classseq, TRUE ));
+				error_log( print_R($sc_pgmseq, TRUE ));
     
                 if ($stmt = $this->conn->prepare($sql)) {
 				error_log( print_R("student class status set prepared", TRUE ));
-                $stmt->bind_param("ii",
+                $stmt->bind_param("iii",
 					$sc_classseq,
+					$sc_pgmseq,
 					$sc_ContactId
 					);          
 				error_log( print_R("student class status set bind", TRUE ));

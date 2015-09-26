@@ -93,6 +93,7 @@
 
   
         function activate() {
+               $log.debug('about activate editstudent ');
         return getStudent().then(function() {
             $log.debug('activated EditStudent view');
 

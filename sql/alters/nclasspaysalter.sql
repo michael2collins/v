@@ -9,3 +9,5 @@ UPDATE `nclasspays` set `studentclassstatus`= 'Active' WHERE class not in ( 'Inj
 INSERT INTO studentlist (listtype,listkey,listvalue,listorder) VALUES("ClassStatus","Active","Active",1);
 INSERT INTO studentlist (listtype,listkey,listvalue,listorder) VALUES("ClassStatus","Inactive","Inactive",2);
 INSERT INTO studentlist (listtype,listkey,listvalue,listorder) VALUES("ClassStatus","Injured","Injured",3);
+
+ALTER TABLE `nclasspays` ADD `pgmseq` BIGINT NOT NULL ;

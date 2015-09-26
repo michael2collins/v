@@ -196,14 +196,15 @@
                     getStudentClass();
                 });
         }  
-        function setStudentClass(mystudent, myclassid) {
+        function setStudentClass(mystudent, myclassid, mypgmid) {
 					var setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + myclassid;
 					$log.debug('studentid: ' + $routeParams.id);          
 					$log.debug('studentclass: ' + myclassid);          
+					$log.debug('studentpgm: ' + mypgmid);          
 			
                     $log.debug('about setStudentClass ', mystudent);
                     $log.debug('for class ', myclassid);
-            return ClassServices.setStudentClass(setclasspath, mystudent, myclassid).then(function(data){
+            return ClassServices.setStudentClass(setclasspath, mystudent, myclassid, mypgmid).then(function(data){
                     $log.debug('setStudentClass returned data: ');
                     $log.debug(data.data);
                     vmclass.studentclass = data.data;
