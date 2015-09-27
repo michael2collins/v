@@ -37,7 +37,7 @@
 
         vmclass.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug('studentid: ' + $routeParams.id);          
-        vmclass.classpicpath = '../v1/studentclasspicture' 
+        vmclass.classpicpath = '../v1/studentclasspicture' ;
 
         vmclass.classlistpath = '../v1/studentclasslist';
         vmclass.classstatuspath = '../v1/studentclassstatuses';
@@ -53,7 +53,7 @@
 			$timeout(function() {
 			console.log('isotope init');
 					activate();
-			$scope.$broadcast('iso-init', {name:null, params:null})
+			$scope.$broadcast('iso-init', {name:null, params:null});
 
 		  }, 2000);
 		}
@@ -152,7 +152,7 @@
                     vmclass.catadd(class2age, 'age');
                     vmclass.catadd(class2pgm, 'pgm');
                     //$scope.$emit('iso-method', {name:null, params:null});
-                    $scope.$broadcast('iso-init', {name:null, params:null})
+                    $scope.$broadcast('iso-init', {name:null, params:null});
                     
                     console.log("student concat result is:" + vmclass.concat);
 

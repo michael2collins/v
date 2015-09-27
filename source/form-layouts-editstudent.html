@@ -480,12 +480,12 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                              <div ng-class="{'has-error': editstudentclass.classid.$invalid, 'has-success': !editstudentclass.classid.$invalid}" class="form-group">
-                                <label for="inputsc_Classid" class="control-label">Student Program</label>
-                                  <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.classid.$dirty" ng-class="editstudentclass.classid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                    <input id="inputsc_Classid" type="text" placeholder="Student Program" name="sc_Classid" ng-model="vmclass.studentclass.classid" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <div ng-class="{'has-error': editstudentclass.pgmclass.$invalid, 'has-success': !editstudentclass.pgmclass.$invalid}" class="form-group">
+                                <label for="inputsc_pgmclass" class="control-label">Student Program</label>
+                                  <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.pgmclass.$dirty" ng-class="editstudentclass.pgmclass.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                    <input id="inputsc_pgmclass" type="text" placeholder="Student Program" name="sc_pgmclass" ng-model="vmclass.studentclass.pgmclass" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                   </div>
-                                  <div style="color:maroon" role="alert" ng-messages="editstudentclass.classid.$error" class="has-error">
+                                  <div style="color:maroon" role="alert" ng-messages="editstudentclass.pgmclass.$error" class="has-error">
                                     <div ng-message="required">You did not enter a field</div>
                                     <div ng-message="minlength">Your field is too short</div>
                                     <div ng-message="maxlength">Your field is too long</div>

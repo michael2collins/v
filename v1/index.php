@@ -426,8 +426,9 @@ $app->get('/studentclass/:id',  function($student_id) {
                 $response["error"] = false;
 				$response["contactID"] = $result["contactID"];
 //				$response["classid"] = $result["classid"];
+				$response["pgmclass"] = $result["pgmclass"];
 				$response["classPayName"] = $result["classPayName"];
-//				$response["class"] = $result["class"];
+				$response["class"] = $result["class"];
 				$response["isTestFeeWaived"] = $result["isTestFeeWaived"];
 				$response["classseq"] = $result["classseq"];
 				$response["pgmseq"] = $result["pgmseq"];
