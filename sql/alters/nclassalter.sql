@@ -95,3 +95,50 @@ update nclasspays set pgmseq = 20 where classid = 'Tai Chi Drop In';
 update nclasspays set pgmseq = 21 where classid = 'TaiChi';
 update nclasspays set pgmseq = 22 where classid = 'Zoomba';
 
+--
+-- Table structure for table `nclasspgm`
+--
+
+CREATE TABLE IF NOT EXISTS `nclasspgm` (
+  `classid` bigint(20) NOT NULL,
+  `pgmid` bigint(20) NOT NULL,
+  `pgmcat` varchar(80) NOT NULL,
+  `classcat` varchar(80) NOT NULL,
+  `agecat` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `nclasspgm`
+--
+ALTER TABLE `nclasspgm`
+ ADD PRIMARY KEY (`classid`,`pgmid`);
+
+ insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 11, 8, 'black', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 2, 'other', 'special',  'children or adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 4, 9, 'basic or leopard', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 2, 'adult', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 11, 7, 'black', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 9, 'other', 'special',  'children or adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 10, 7, 'black', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 10, 9, 'black', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 6, 'other', 'special',  'children or adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 15, 'other', 'special',  'children or adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 7, 'other', 'special',  'children or adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 6, 'bbt2', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 15, 'bbt2', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 6, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 15, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 6, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 9, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 3, 'adult', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 4, 'adult', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 17, 9, 'other', 'karate',  'children or adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 3, 9, 'basic or dragon', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 15, 16, 'privates', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 20, 21, 'other', 'wellness',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 0, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 14, 2, 'other', 'fitness',  'children or adult');

@@ -193,32 +193,30 @@ $app->get('/studentclasslist',  function() {
            $db = new DbHandler();
 
             // fetching all user tasks
-            $result = $db->getStudentClassList();
+            $result = $db->getStudentClassPgmList();
 
             $response["error"] = false;
-
-//            $response["classcat"] = array();
-//            $response["pgmcat"] = array();
-//            $response["agecat"] = array();
             $response["studentclasslist"] = array();
         
             // looping through result and preparing  arrays
             while ($slist = $result->fetch_assoc()) {
 				error_log( print_R("student class list results", TRUE ));
-//				error_log( print_R($slist["class"], TRUE ));
                 $tmp = array();
-                $tmp["id"] = $slist["id"];
                 $tmp["class"] = $slist["class"];
+                $tmp["classid"] = $slist["classid"];
+                $tmp["pgm"] = $slist["pgm"];
+                $tmp["pgmid"] = $slist["pgmid"];
                 $tmp["pictureurl"] = $slist["pictureurl"];
-//                array_push($response["studentclasslist"], $tmp);
-//                $tmp["classcat"] = "classcat:"; 
-//                array_push($response["studentclasslist"], $tmp);
+
                 $tmp["classcat"] = array();
                 array_push($tmp["classcat"], explode("or", $slist["classcat"]));
+
                 $tmp["pgmcat"] = array();
                 array_push($tmp["pgmcat"], explode("or", $slist["pgmcat"]));
+
                 $tmp["agecat"] = array();
                 array_push($tmp["agecat"], explode("or", $slist["agecat"]));
+
                 array_push($response["studentclasslist"], $tmp);
 				
             }
@@ -499,7 +497,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 	echoRespnse(200, $response);
 });
 
-$app->put('/studentclass/id/:id/myclass/:class',  function($student_id, $classseq, $pgmseq) use($app) {
+$app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm',  function($student_id, $classseq, $pgmseq) use($app) {
         // check for required params
         //verifyRequiredParams(array('task', 'status'));
 	error_log( print_R("before put student class set request", TRUE ));

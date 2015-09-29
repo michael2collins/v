@@ -351,6 +351,30 @@ class DbHandler {
         return $slists;
     }	
 
+    public function getStudentClassPgmList() {
+        $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat from nclass a, nclasslist b, nclasspgm c where a.id = c.classid and b.id = c.pgmid order by a.class ";
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			if ($stmt->execute()) {
+				error_log( print_R("studentclasspgm list stmt", TRUE ));		
+				error_log( print_R($stmt, TRUE ));		
+				$slists = $stmt->get_result();
+				error_log( print_R("studentclasspgm list returns data", TRUE ));		
+				error_log( print_R($slists, TRUE ));		
+				$stmt->close();
+				return $slists;
+			} else {
+				error_log( print_R("studentclasspgm list execute failed", TRUE ));					
+				printf("Errormessage: %s\n", $this->conn->error);
+			}
+
+        } else {
+				error_log( print_R("studentclasspgm list sql failed", TRUE ));					
+				printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+        } 
+    }
+
 	
     public function getStudentClassList() {
         $sql = "SELECT t.* FROM nclass t order by t.class ";

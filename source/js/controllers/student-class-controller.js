@@ -197,7 +197,7 @@
                 });
         }  
         function setStudentClass(mystudent, myclassid, mypgmid) {
-					var setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + myclassid;
+					var setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + myclassid + 'mypgm/' + mypgmid;
 					$log.debug('studentid: ' + $routeParams.id);          
 					$log.debug('studentclass: ' + myclassid);          
 					$log.debug('studentpgm: ' + mypgmid);          
