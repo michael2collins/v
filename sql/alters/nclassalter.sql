@@ -142,3 +142,8 @@ insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VA
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 20, 21, 'other', 'wellness',  'adult');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 0, 'bbt3', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 14, 2, 'other', 'fitness',  'children or adult');
+
+
+DELETE FROM `nclass` WHERE class in ('Inactive','Injured') ;
+UPDATE `nclasspays` SET `classseq`= null WHERE classseq = 12 ;
+UPDATE `nclasspays` SET `classseq`= null WHERE classseq = 13 ; 

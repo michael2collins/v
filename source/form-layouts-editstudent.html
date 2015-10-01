@@ -516,7 +516,7 @@
                                     <img src="images/classes/{{vmclass.classpictureurl.pictureurl[0].pictureurl}}" alt="" class="img-responsive"/>
                                   </div>
                                   <div class="info">
-                                    <h3>{{vmclass.studentclass.class}}</h3>
+                                    <h3>{{vmclass.studentclass.class}} - {{vmclass.studentclass.pgmclass}}</h3>
                                 </div>
                               </div></div></div></div>
                             </div>
@@ -536,19 +536,19 @@
   --> 
                   <div class="row">
                     <div opt-kind="" ok-key="filter"  class="btn-group">
-                      <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="*" ng-click="vmclass.clearCatSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catadd('{{category}}','cat')" ng-model="classcategories" ng-repeat="category in vmclass.classcategories" class="btn btn-default">{{category}}</button>
                     </div>
                   </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
-                      <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="*" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catadd('{{age}}','age')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
                     </div>
                    </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
-                      <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="*" ng-click="vmclass.clearPgmSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catadd('{{pgm}}','pgm')" ng-model="pgmcategories" ng-repeat="pgm in vmclass.pgmcategories" class="btn btn-default">{{pgm}}</button>
                     </div>
                     </div>
@@ -568,9 +568,9 @@
                           </div>
                           <div class="info">
 <!--                            <h3>{{x.class}}</h3><a href="./#/form-layouts-editstudent/id/{{vmclass.studentclass.contactID}}/class/{{x.id}}" class="mix-link" "><i ng-click="vmclass.setStudentClass()" class="glyphicon glyphicon-link"></i>Set class as<br/>{{x.class}}</a> -->
-                            <h3>{{x.class}}</h3>
+                            <h3>{{x.class}} - {{x.pgm}}</h3>
                             <div >
-                            <button type="button"  ng-click="vmclass.setStudentClass({{vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}})" class="btn btn-default btn-sm mix-link" >Set class as<br/>{{x.class}}</button>
+                            <button type="button"  ng-click="vmclass.setStudentClass({{vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}})" class="btn btn-default btn-sm mix-link" >Set as {{x.class}} - {{x.pgm}}</button>
                             </div>
                           </div>
                         </div>
