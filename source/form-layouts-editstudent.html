@@ -535,21 +535,25 @@
   <!--     <div>{{vmclass.xListcat}}</div>             
   --> 
                   <div class="row">
+                      <button ng-click="vmclass.clearSelect()" class="btn btn-default">Show All</button>
+                  </div>
+                  <div class="row">
                     <div opt-kind="" ok-key="filter"  class="btn-group">
-                      <button ok-sel="*" ng-click="vmclass.clearCatSelect()" class="btn btn-default active">Show All</button>
-                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catadd('{{category}}','cat')" ng-model="classcategories" ng-repeat="category in vmclass.classcategories" class="btn btn-default">{{category}}</button>
+                      <button ng-click="vmclass.clearCatSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catset('{{category}}')" ng-model="classcategories" ng-repeat="category in vmclass.classcategories" class="btn btn-default">{{category}}</button>
                     </div>
                   </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
-                      <button ok-sel="*" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
-                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catadd('{{age}}','age')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
+<!--                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button> -->
+                      <button " ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.ageset('{{age}}')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
                     </div>
                    </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
-                      <button ok-sel="*" ng-click="vmclass.clearPgmSelect()" class="btn btn-default active">Show All</button>
-                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catadd('{{pgm}}','pgm')" ng-model="pgmcategories" ng-repeat="pgm in vmclass.pgmcategories" class="btn btn-default">{{pgm}}</button>
+                      <button ng-click="vmclass.clearPgmSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.pgmset('{{pgm}}')" ng-model="pgmcategories" ng-repeat="pgm in vmclass.pgmcategories" class="btn btn-default">{{pgm}}</button>
                     </div>
                     </div>
 

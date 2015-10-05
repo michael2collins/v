@@ -23,18 +23,21 @@
         vmclass.initclasslist = initclasslist;
         vmclass.setStudentClass = setStudentClass;
 
-        vmclass.catadd=catadd;
+        vmclass.categorys="";
+        vmclass.ages="";
+        vmclass.pgms="";
+        vmclass.catset=catset;
+        vmclass.ageset=ageset;
+        vmclass.pgmset=pgmset;
+        vmclass.concatset=concatset;
         vmclass.clearCatSelect=clearCatSelect;
         vmclass.clearAgeSelect=clearAgeSelect;
         vmclass.clearPgmSelect=clearPgmSelect;
         vmclass.classcategories="";    
-        vmclass.categorys=[];
         vmclass.picID="";
         vmclass.studentclass=[];
         vmclass.classpictureurl=[];
         vmclass.classstatuses=[];
-        vmclass.ages=[];
-        vmclass.pgms=[];
         vmclass.xlistnew=[];
 
         vmclass.path = '../v1/studentclass/' + $routeParams.id;
@@ -67,92 +70,54 @@
       getStudentClassList();
       getStudentClassStatuses();
       
-//        $rootScope.classcategories= ClassServices.distinctCat();
         vmclass.classcategories= ClassServices.distinctCat();
-        console.log("after distinct cat");
-        console.log(vmclass.classcategories);
-
-        
-//        $rootScope.agecategories= ClassServices.distinctAge();
         vmclass.agecategories= ClassServices.distinctAge();
-        console.log("after distinct age");
-        console.log(vmclass.agecategories);
-//        $rootScope.pgmcategories= ClassServices.distinctPgm();
         vmclass.pgmcategories= ClassServices.distinctPgm();
-        console.log("after distinct pgm");
-        console.log(vmclass.pgmcategories);
-        
-//        $rootScope.xList = ClassServices.getAll();
         vmclass.xList = ClassServices.getAll();
-        console.log("xList is");
-        console.log(vmclass.xList);
-//        $rootScope.xListcat = ClassServices.getcat('wellness');
-//        vmclass.xListcat = ClassServices.getcat('wellness');
-//        console.log(vmclass.xListcat);
-//        vmclass.allCategorys = [{"name": "karate"},{"name": "children"}];
 
         getStudentClass();
   }
   
+        function clearSelect() {
+            vmclass.categorys = "";
+            vmclass.pgms = "";
+            vmclass.ages = "";
+            concatset();
+        }
         function clearCatSelect() {
-            vmclass.categorys = [];
-            vmclass.concat=[];
-            if (vmclass.ages.length > 0 && typeof(vmclass.ages) != "undefined") {
-                vmclass.concat=vmclass.concat + vmclass.ages[0];
-            }
-            if (vmclass.pgms.length > 0 && typeof(vmclass.pgms) != "undefined") {
-                vmclass.concat=vmclass.concat + vmclass.pgms[0];
-            }
+            vmclass.categorys = "";
+            concatset();
         }
         function clearPgmSelect() {
-            vmclass.pgms = [];
-            vmclass.concat=[];
-            if (vmclass.categorys.length > 0 && typeof(vmclass.categorys) != "undefined") {
-                vmclass.concat=vmclass.categorys[0];
-            }
-            if (vmclass.ages.length > 0 && typeof(vmclass.ages) != "undefined") {
-                vmclass.concat=vmclass.concat + vmclass.ages[0];
-            }      
+            vmclass.pgms = "";
+            concatset();
         }
         function clearAgeSelect() {
-            vmclass.ages = [];
-            vmclass.concat=[];
-            if (vmclass.categorys.length > 0 && typeof(vmclass.categorys) != "undefined") {
-                vmclass.concat=vmclass.categorys[0];
-            }
-            if (vmclass.pgms.length > 0 && typeof(vmclass.pgms) != "undefined") {
-                vmclass.concat=vmclass.concat + vmclass.pgms[0];
-            }        
+            vmclass.ages = "";
+            concatset();
         }
-        function catadd(addition,type) {
+
+        function ageset(addition) {
             console.log('addition');
             console.log(addition);
-            console.log('type');
-            console.log(type);
-            
-            if (type === "cat") {
-                vmclass.categorys=[];
-                vmclass.categorys.push('.' + addition);
-                console.log(vmclass.categorys);
-            }
-            if (type === "age") {
-                vmclass.ages=[];
-                vmclass.ages.push('.' + addition);
-            }
-            if (type === "pgm") {
-                vmclass.pgms=[];
-                vmclass.pgms.push( '.' + addition);
-            }
-
-            if (vmclass.categorys.length > 0 && typeof(vmclass.categorys) != "undefined") {
-                vmclass.concat=vmclass.categorys[0];
-            }
-            if (vmclass.ages.length > 0 && typeof(vmclass.ages) != "undefined") {
-                vmclass.concat=vmclass.concat + vmclass.ages[0];
-            }
-            if (vmclass.pgms.length > 0 && typeof(vmclass.pgms) != "undefined") {
-                vmclass.concat=vmclass.concat + vmclass.pgms[0];
-            }
+            vmclass.ages = '.' + addition;
+            concatset();
+        }
+        function catset(addition) {
+            console.log('addition');
+            console.log(addition);
+            vmclass.categorys = '.' + addition;
+            concatset();
+        }
+        function pgmset(addition) {
+            console.log('addition');
+            console.log(addition);
+            vmclass.pgms = '.' + addition;
+            concatset();
+        }
+        
+        function concatset() {
+            vmclass.concat = vmclass.ages + vmclass.categorys + vmclass.pgms;
             console.log('search concat');
             console.log(vmclass.concat);
         }
@@ -175,9 +140,10 @@
                     class2age=class2[0].agecat[0];
                     class2pgm=class2[0].programcat[0];
 //                    vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
-                    vmclass.catadd(class2cls, 'cat');
-                    vmclass.catadd(class2age, 'age');
-                    vmclass.catadd(class2pgm, 'pgm');
+                    vmclass.catset(class2cls);
+                    vmclass.ageset(class2age);
+                    vmclass.pgmset(class2pgm);
+                    concatset();
                     //$scope.$emit('iso-method', {name:null, params:null});
                     $scope.$broadcast('iso-init', {name:null, params:null});
                     
