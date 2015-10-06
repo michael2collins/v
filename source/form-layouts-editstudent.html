@@ -535,7 +535,9 @@
   <!--     <div>{{vmclass.xListcat}}</div>             
   --> 
                   <div class="row">
-                      <button ng-click="vmclass.clearSelect()" class="btn btn-default">Show All</button>
+                    <div opt-kind="" ok-key="filter"  class="btn-group">
+                      <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default">Show All</button>
+                    </div>
                   </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter"  class="btn-group">
@@ -545,8 +547,8 @@
                   </div>
                   <div class="row">
                     <div opt-kind="" ok-key="filter" class="btn-group">
-<!--                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button> -->
-                      <button " ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
+<!--                      <button ok-sel="*" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button> -->
+                      <button ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.ageset('{{age}}')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
                     </div>
                    </div>

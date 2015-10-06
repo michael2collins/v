@@ -30,6 +30,7 @@
         vmclass.ageset=ageset;
         vmclass.pgmset=pgmset;
         vmclass.concatset=concatset;
+        vmclass.clearSelect=clearSelect;
         vmclass.clearCatSelect=clearCatSelect;
         vmclass.clearAgeSelect=clearAgeSelect;
         vmclass.clearPgmSelect=clearPgmSelect;
@@ -83,6 +84,8 @@
             vmclass.pgms = "";
             vmclass.ages = "";
             concatset();
+            $rootScope.$emit('iso-method', {name:null, params:null});
+            $rootScope.$broadcast('iso-init', {name:null, params:null});
         }
         function clearCatSelect() {
             vmclass.categorys = "";
@@ -144,8 +147,8 @@
                     vmclass.ageset(class2age);
                     vmclass.pgmset(class2pgm);
                     concatset();
-                    //$scope.$emit('iso-method', {name:null, params:null});
-                    $scope.$broadcast('iso-init', {name:null, params:null});
+                    $scope.$emit('iso-method', {name:null, params:null});
+                  //  $scope.$broadcast('iso-init', {name:null, params:null});
                     
                     console.log("student concat result is:" + vmclass.concat);
 
