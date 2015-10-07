@@ -117,20 +117,13 @@ CREATE TABLE IF NOT EXISTS `nclasspgm` (
 ALTER TABLE `nclasspgm`
  ADD PRIMARY KEY (`classid`,`pgmid`);
 
+ delete from nclasspgm;
  insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 11, 8, 'black', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 2, 'other', 'special',  'children or adult');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 4, 9, 'basic or leopard', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 2, 'adult', 'karate',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 11, 7, 'black', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 9, 'other', 'special',  'children or adult');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 10, 7, 'black', 'karate',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 10, 9, 'black', 'karate',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 6, 'other', 'special',  'children or adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 15, 'other', 'special',  'children or adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 12, 7, 'other', 'special',  'children or adult');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 6, 'bbt2', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 15, 'bbt2', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 6, 'bbt1', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 15, 'bbt3', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 6, 'bbt3', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 9, 'bbt1', 'karate',  'children');
@@ -147,3 +140,4 @@ insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VA
 DELETE FROM `nclass` WHERE class in ('Inactive','Injured') ;
 UPDATE `nclasspays` SET `classseq`= null WHERE classseq = 12 ;
 UPDATE `nclasspays` SET `classseq`= null WHERE classseq = 13 ; 
+delete from nclasspgm where classid in (12,13);

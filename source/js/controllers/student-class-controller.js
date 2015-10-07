@@ -60,7 +60,10 @@
             $timeout(function() {
             console.log('isotope init');
                     activate();
-            $scope.$broadcast('iso-init', {name:null, params:null});
+            //          $scope.$broadcast('iso-init', {name:null, params:null});
+     //       $rootScope.$broadcast('iso-init', {name:null, params:null});
+//            console.log(vmclass.concat);
+ //           $scope.$emit('iso-option', {filter: vmclass.concat});         
 
           }, 2000);
         }
@@ -84,8 +87,35 @@
             vmclass.pgms = "";
             vmclass.ages = "";
             concatset();
-            $rootScope.$emit('iso-method', {name:null, params:null});
-            $rootScope.$broadcast('iso-init', {name:null, params:null});
+         //   vmclass.$emit('iso-method', {name:null, params:null});
+//         var s=angular.element('#isotopeContainer').scope();
+ //        console.log('my s');
+  //       console.log(s);
+            $scope.$emit('iso-option', {filter: '*'});         
+            //$scope.$emit('iso-method', {name:'shuffle', params:null});
+//  var filtersElem = document.querySelector('.filters-button-group');
+//  console.log(filtersElem);
+//  eventie.bind( filtersElem, 'click', function( event ) {
+    // only work with buttons
+//    if ( !matchesSelector( event.target, 'button' ) ) {
+//      return;
+//    }         
+//           var filterValue = event.target.getAttribute('ok-sel');
+//           console.log(filterValue);
+//  });
+  //  var items = s.vmclass.xlistnew.studentclasslist.filter(function( obj ) {
+     //   console.log("obj classid");
+     //   console.log(obj.classid);
+  //      return +obj.classid != +0;
+  //    });
+  //    setTimeout(function(){ 
+     //   console.log("items");
+     //   console.log(items);
+     //   console.log(s.vmclass.xlistnew.studentclasslist);
+  //      s.$apply(s.vmclass.xlistnew.studentclasslist == items);         
+//         s.refreshIso();
+  //    });
+//            $rootScope.$broadcast('iso-init', {name:null, params:null});
         }
         function clearCatSelect() {
             vmclass.categorys = "";
@@ -147,8 +177,9 @@
                     vmclass.ageset(class2age);
                     vmclass.pgmset(class2pgm);
                     concatset();
-                    $scope.$emit('iso-method', {name:null, params:null});
-                  //  $scope.$broadcast('iso-init', {name:null, params:null});
+                  //  $scope.$emit('iso-method', {name:null, params:null});
+            console.log(vmclass.concat);
+            $scope.$emit('iso-option', {filter: vmclass.concat});         
                     
                     console.log("student concat result is:" + vmclass.concat);
 
