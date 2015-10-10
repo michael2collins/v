@@ -16,34 +16,34 @@
         
     function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location){
         /* jshint validthis: true */
-        var vm = this;
+        var vmstudent = this;
 
-        vm.getStudent = getStudent;
-        vm.getAllZips = getAllZips;
-        vm.getStudentLists = getStudentLists;
-        vm.getRankList = getRankList;
-        vm.updateStudent = updateStudent;        
-        vm.students =[];
-        vm.genders =[];
-        vm.zipList=[];
-        vm.concat="";
-        vm.ContactTypeList=[];
-        vm.CurrentRankList=[];
-        vm.CurrentReikiRankList=[];
-        vm.StudentSchoolList=[];
-        vm.GuiSizeList=[];
-        vm.ShirtSizeList=[];
-        vm.BeltSizeList=[];
-        vm.instructorTitleList=[];
+        vmstudent.getStudent = getStudent;
+        vmstudent.getAllZips = getAllZips;
+        vmstudent.getStudentLists = getStudentLists;
+        vmstudent.getRankList = getRankList;
+        vmstudent.updateStudent = updateStudent;        
+        vmstudent.students =[];
+        vmstudent.genders =[];
+        vmstudent.zipList=[];
+        vmstudent.concat="";
+        vmstudent.ContactTypeList=[];
+        vmstudent.CurrentRankList=[];
+        vmstudent.CurrentReikiRankList=[];
+        vmstudent.StudentSchoolList=[];
+        vmstudent.GuiSizeList=[];
+        vmstudent.ShirtSizeList=[];
+        vmstudent.BeltSizeList=[];
+        vmstudent.instructorTitleList=[];
    
         
-        vm.menu_h = $('#sidebar').height();
-        vm.setHeight = setHeight;
-        vm.path = '../v1/students/' + $routeParams.id;
-//      vm.path = '../v1/students/5340';
-        vm.zippath = '../v1/zips';
-        vm.sListPath = '../v1/studentlists';
-        vm.rankListPath = '../v1/ranklist';
+        vmstudent.menu_h = $('#sidebar').height();
+        vmstudent.setHeight = setHeight;
+        vmstudent.path = '../v1/students/' + $routeParams.id;
+//      vmstudent.path = '../v1/students/5340';
+        vmstudent.zippath = '../v1/zips';
+        vmstudent.sListPath = '../v1/studentlists';
+        vmstudent.rankListPath = '../v1/ranklist';
         
         $log.debug('Routeparam is:');
         $log.debug($routeParams.id);          
@@ -102,56 +102,56 @@
 
         
         function getStudent() {
-            return StudentServices.getStudent(vm.path).then(function(data){
+            return StudentServices.getStudent(vmstudent.path).then(function(data){
                     $log.debug('getStudent returned data');
                     $log.debug(data.data);
-                    vm.students = data.data;
+                    vmstudent.students = data.data;
                     
-                    return vm.students;
+                    return vmstudent.students;
                 });
         }
 
         function updateStudent() {
-                    $log.debug('about updateStudent ', vm.students);
-            return StudentServices.updateStudent(vm.path, vm.students).then(function(data){
-                    $log.debug('updateStudent returned data: goto', vm.path);
+                    $log.debug('about updateStudent ', vmstudent.students);
+            return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function(data){
+                    $log.debug('updateStudent returned data: goto', vmstudent.path);
                     $log.debug(data.data);
-                    vm.students = data.data;
+                    vmstudent.students = data.data;
           //          $log.debug('set route', $routeParams);
           //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
-          //          return vm.students;
+          //          return vmstudent.students;
                     getStudent();
                 });
         }
         
         
         function getAllZips() {
-            return StudentServices.getAllZips(vm.zippath).then(function(data){
+            return StudentServices.getAllZips(vmstudent.zippath).then(function(data){
                     $log.debug('getAllZips returned data');
                     $log.debug(data.data);
-                    vm.zipList = data.data;
+                    vmstudent.zipList = data.data;
                     
-                    return vm.zipList;
+                    return vmstudent.zipList;
                 });
         }
 
         function getStudentLists() {
-            return StudentServices.getStudentLists(vm.sListPath).then(function(data){
+            return StudentServices.getStudentLists(vmstudent.sListPath).then(function(data){
                     $log.debug('getStudentLists returned data');
                     $log.debug(data.data);
-                    vm.StudentList= data.data;
+                    vmstudent.StudentList= data.data;
                     
-                    return vm.StudentList;
+                    return vmstudent.StudentList;
                 });
         }
 
         function getRankList() {
-            return StudentServices.getRankList(vm.rankListPath).then(function(data){
+            return StudentServices.getRankList(vmstudent.rankListPath).then(function(data){
                     $log.debug('getRankList returned data');
                     $log.debug(data.data);
-                    vm.RankList= data.data;
+                    vmstudent.RankList= data.data;
                     
-                    return vm.RankList;
+                    return vmstudent.RankList;
                 });
         }
                  
@@ -160,13 +160,13 @@
                 $log.debug('set height');
                 var tab_id = $(this).attr('href');
                 var tab_h = $(tab_id).height();
-                if(tab_h < vm.menu_h){
+                if(tab_h < vmstudent.menu_h){
                     $(tab_id).css('height', '960px');
                 }
             });
         }
         function setLists() {
-            vm.genders=['Female','Male','Unknown'];
+            vmstudent.genders=['Female','Male','Unknown'];
         }
     }
     

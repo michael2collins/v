@@ -53,7 +53,7 @@
         $log.debug('studentclass: ' + $routeParams.myclass);         
         vmclass.studentclass.contactID = $routeParams.id;
         
-          //initclasslist();
+        initclasslist();
 
         function initclasslist() {
             //if you hit the class tab quickly, the delay below will properly set the pix.  need to figure out the relationship of clicking the tab to calling an init.

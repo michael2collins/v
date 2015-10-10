@@ -2,10 +2,13 @@
     'use strict';
 angular
     .module('ng-admin', [
-        'ui.grid',    'ui.utils',
+        'ui.grid',    
+		'ui.utils',
         'ngRoute',    
-        'ui.bootstrap',    'toggle-switch',
-        'ngTouch',  'ngMessages',
+        'ui.bootstrap',    
+		'toggle-switch',
+        'ngTouch',  
+		'ngMessages',
         'ui.grid.pagination',
         'ui.grid.cellNav', 
         'ui.grid.edit', 
@@ -13,17 +16,19 @@ angular
                 'iso.directives',
 		//		'dynamicLayout'
         ])
-  // allow DI for use in controllers, unit tests for lodash
-  .constant('_', window._)
-  // use in views, ng-repeat="x in _.range(3)"
-  .run(function ($rootScope) {
-     $rootScope._ = window._;
-  })		
-    .config(logConfig)
-    .config(routeConfig)
-// Initialize the application
-.run(['$location', function AppRun($location) {
-  //  debugger; // -->> here i debug the $location object to see what angular see's as URL
+		
+		// allow DI for use in controllers, unit tests for lodash
+		.constant('_', window._)
+		
+		// use in views, ng-repeat="x in _.range(3)"
+		.run(function ($rootScope) {
+			$rootScope._ = window._;
+		})		
+		.config(logConfig)
+		.config(routeConfig)
+		// Initialize the application
+		.run(['$location', function AppRun($location) {
+		  //  debugger; // -->> here i debug the $location object to see what angular see's as URL
 }]);
     
     logConfig.$inject = ['$logProvider'];

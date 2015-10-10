@@ -3,7 +3,25 @@
 
     angular
         .module('ng-admin')
-    .controller('AppController', function($scope, $routeParams){
+ 
+    .controller('AppController', AppControllerFirst)
+    .controller('NoneController', AppControllerNone)
+	.controller('MainController', AppControllerMain);
+
+
+    AppControllerFirst.$inject = ['$scope', 
+    '$routeParams', 
+    ];
+    AppControllerNone.$inject = ['$scope', 
+    '$routeParams', 
+    ];
+    AppControllerMain.$inject = ['$scope', 
+    '$routeParams', 
+    ];	
+	
+    function AppControllerFirst( $scope, $routeParams){
+        /* jshint validthis: true */
+        var vm = this;
  
     $scope.data = {};
     $scope.header = {
@@ -340,12 +358,13 @@
             //END SIDEBAR SEARCH FORM
         };
 
-    })
-    .controller('NoneController', function($scope, $routeParams){
+    }
+	function AppControllerNone( $scope, $routeParams){
 
-    })
+    }
 
-    .controller('MainController', function($scope, $routeParams){
+	function AppControllerMain( $scope, $routeParams){
+    
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -775,5 +794,5 @@
         });
         //END CALENDAR
     },50);
-    });
+    }
 })();    
