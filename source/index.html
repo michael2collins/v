@@ -51,8 +51,8 @@
     <link type="text/css" rel="stylesheet" href="css/style.css"/>
     <!--CORE JS -->
  
-    <link rel="stylesheet" href="vendors/angular-ui-grid/ui-grid.css"/>
-    
+<!--    <link rel="stylesheet" href="vendors/angular-ui-grid/ui-grid.css"/> -->
+     <link rel="stylesheet" href="http://ui-grid.info/release/ui-grid.css" type="text/css">
     
 <!--
     <script src="js/lib.js"></script>
@@ -143,7 +143,9 @@
 <!--            <script src="vendors/angular-bootstrap/ui-bootstrap.js"></script> ? -->
    <!--         <script src="vendors/angular-bootstrap/ui-bootstrap-tpls.js"></script> -->
    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.14.0.js"></script>
-            <script src="vendors/angular-ui-grid/ui-grid.js"></script>
+<!--            <script src="vendors/angular-ui-grid/ui-grid.js"></script> -->
+    <script src="http://ui-grid.info/release/ui-grid.js"></script>
+
             <script src="vendors/angular-ui/build/angular-ui.js"></script>
             <script src="vendors/angular-ui/build/angular-ui-ieshiv.js"></script>
             <script src="vendors/angular-ui-utils/ui-utils.js"></script>
@@ -292,8 +294,8 @@
     <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"></body>
     <div ng-controller="AppController as vm" class="default-page">
       <!--BEGIN TEMPLATE SETTING-->
-      <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
-      <!--END TEMPLATE SETTING-->
+  <!--    <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
+   -->   <!--END TEMPLATE SETTING-->
       <!--BEGIN TO TOP--><a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
       <!--END BACK TO TOP-->
       <div id="wrapper" ng-class="header.layout_menu">

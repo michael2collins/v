@@ -30,6 +30,7 @@
                 $scope._menu.hover[i] = 'nav-hover';
             };
             $scope._menu.collapse = function(i){
+                console.log('collapse');
                 $scope._menu.status[i] = !$scope._menu.status[i];
 
                 var current = attributes.$$element.find('a[index='+i+']');
@@ -67,7 +68,7 @@
             attributes.$$element.find('li').children('a').each(function(index, value){
                 $scope._menu.status[index] = true;
                 $(this).attr({'ng-click': '_menu.collapse('+index+')', 'index':index});
-                $('>ul', $(this).parent('li')).attr({'collapse': '_menu.status['+index+']', 'index':index});
+                $('>ul', $(this).parent('li')).attr({'uib-collapse': '_menu.status['+index+']', 'index':index});
             });
 
             $(">li", attributes.$$element).each(function(index, value){

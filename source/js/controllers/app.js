@@ -23,8 +23,8 @@
         /* jshint validthis: true */
         var vm = this;
  
-    $scope.data = {};
-    $scope.header = {
+    vm.data = {};
+    vm.header = {
         layout_menu:'',
         layout_topbar:'',
         animation:'',
@@ -33,12 +33,17 @@
     };
 
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
-        $scope.header.animation = 'fadeInUp';
+        console.log('routechange in app');
+        vm.header.animation = 'fadeInUp';
         setTimeout(function(){
-            $scope.header.animation = '';
+            vm.header.animation = '';
         }, 100);
-
-        $scope.data = $.fn.Data.get(current.originalPath);
+        console.log('originalPath');
+        console.log(current.originalPath);
+        
+        vm.data = $.fn.Data.get(current.originalPath);
+        console.log('data1');
+        console.log( vm.data);
 
         if(-1 == $.inArray(current.originalPath, ['/page-500', '/page-404', '/page-lock-screen', '/page-signup', '/page-signin'])){
             $("body>.default-page").show();
@@ -47,16 +52,16 @@
         else{
             window.scrollTo(0,0);
         }
-        $scope.header.boxed = '';
-        $scope.header.layout_topbar = '';
-        $scope.header.layout_menu = '';
-        $scope.header.header_topbar = '';
+        vm.header.boxed = '';
+        vm.header.layout_topbar = '';
+        vm.header.layout_menu = '';
+        vm.header.header_topbar = '';
 
-        if('/layout-left-sidebar' === current.originalPath){
-            $scope.header.boxed = '';
-            $scope.header.layout_topbar = '';
-            $scope.header.layout_menu = '';
-            $scope.header.header_topbar = '';
+   /*     if('/layout-left-sidebar' === current.originalPath){
+            vm.header.boxed = '';
+            vm.header.layout_topbar = '';
+            vm.header.layout_menu = '';
+            vm.header.header_topbar = '';
             $('#wrapper').removeClass('right-sidebar');
             $('body').removeClass('left-side-collapsed');
             $('body').removeClass('layout-boxed');
@@ -72,9 +77,9 @@
             $('body').removeClass('container');
         }
         else if('/layout-left-sidebar-collapsed' === current.originalPath){
-            $scope.header.boxed = '';
-            $scope.header.layout_topbar = 'logo-collapsed';
-            $scope.header.layout_menu = '';
+            vm.header.boxed = '';
+            vm.header.layout_topbar = 'logo-collapsed';
+            vm.header.layout_menu = '';
             $('#wrapper').removeClass('right-sidebar');
             $('body').removeClass('right-side-collapsed');
             $('body').addClass('left-side-collapsed');
@@ -88,10 +93,10 @@
             $('#sidebar .menu-scroll').css('overflow', 'initial');
         }
         else if('/layout-right-sidebar' === current.originalPath){
-            $scope.header.boxed = '';
-            $scope.header.layout_topbar = '';
-            $scope.header.layout_menu = 'right-sidebar';
-            $scope.header.header_topbar = '';
+            vm.header.boxed = '';
+            vm.header.layout_topbar = '';
+            vm.header.layout_menu = 'right-sidebar';
+            vm.header.header_topbar = '';
             $('body').removeClass('right-side-collapsed');
             $('body').removeClass('left-side-collapsed');
             $('body').removeClass('layout-boxed');
@@ -105,9 +110,9 @@
             });
         }
         else if('/layout-right-sidebar-collapsed' === current.originalPath){
-            $scope.header.boxed = '';
-            $scope.header.layout_topbar = 'logo-collapsed';
-            $scope.header.layout_menu = 'right-sidebar';
+            vm.header.boxed = '';
+            vm.header.layout_topbar = 'logo-collapsed';
+            vm.header.layout_menu = 'right-sidebar';
             $('body').removeClass('layout-boxed');
             $('body > .default-page').removeClass('container');
             $('body').removeClass('left-side-collapsed');
@@ -139,10 +144,10 @@
             $('body').removeAttr('id'); // error 404, 500
         }
 		else{
-            $scope.header.boxed = '';
-            $scope.header.layout_topbar = '';
-            $scope.header.layout_menu = '';
-            $scope.header.header_topbar = '';
+            vm.header.boxed = '';
+            vm.header.layout_topbar = '';
+            vm.header.layout_menu = '';
+            vm.header.header_topbar = '';
             $('#wrapper').removeClass('right-sidebar');
             $('body').removeClass('left-side-collapsed');
             $('body').removeClass('right-side-collapsed');
@@ -157,28 +162,24 @@
                 'wheelStep': 5
             });
 		}
-
+*/
 
 
     });
 
-    $scope.loadTopbar = function() {
+    vm.loadTopbar = function() {
         $("[data-toggle='offcanvas']").on('click', function () {
             $('#sidebar-wrapper').toggleClass('active');
             return false;
         });
-        /****************************************************/
-        /************ Setting toggle in mobile view *********/
+        // Setting toggle in mobile view 
         $('#setting-toggle').click(function(){
           $('.topbar-main').toggle();
         });
-        /************ Setting toggle in mobile view *********/
-        /****************************************************/
     };
 
-    $scope.loadtempsetting = function(){
-        /*************************/
-        /*** Template Setting ***/
+ /*   vm.loadtempsetting = function(){
+        // Template Setting 
         $('#template-setting > a.btn-template-setting').click(function(){
             if($('#template-setting').css('right') < '0'){
                 $('#template-setting').css('right', '0');
@@ -244,9 +245,8 @@
         });
         // End Change Style
     };
-
-    /***********************************/
-    /************ Back To Top *********/
+*/
+    // Back To Top 
     $(window).scroll(function(){
         if ($(this).scrollTop() < 200) {
             $('#totop') .fadeOut();
@@ -258,11 +258,9 @@
         $('html, body').animate({scrollTop:0}, 'fast');
         return false;
     });
-    /************ Back To Top *********/
-    /*********************************/
 
     
-    $scope.loadSidebar = function(){
+    vm.loadSidebar = function(){
             //BEGIN SIDEBAR FIXED
             $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
                 "height": $(window).height() - 50,

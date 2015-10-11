@@ -5,7 +5,6 @@
         .module('ng-admin')
 
 .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent);
-
     FormLayoutsControllerEditStudent.$inject = ['StudentServices', 
     '$scope', 
     '$rootScope',
@@ -13,7 +12,7 @@
     '$log',
     '$location'
     ];
-        
+    
     function FormLayoutsControllerEditStudent( StudentServices, $scope, $rootScope, $routeParams,  $log, $location){
         /* jshint validthis: true */
         var vmstudent = this;
@@ -35,7 +34,7 @@
         vmstudent.ShirtSizeList=[];
         vmstudent.BeltSizeList=[];
         vmstudent.instructorTitleList=[];
-   
+        vmstudent.getBirthday=getBirthday;
         
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
@@ -100,6 +99,11 @@
             });
         }
 
+        function getBirthday(bday) {
+            $log.debug('bday');
+            $log.debug(bday);
+            return new Date(bday);
+        }
         
         function getStudent() {
             return StudentServices.getStudent(vmstudent.path).then(function(data){
