@@ -460,7 +460,7 @@
 
               <div class="portlet-body">
                 <div class="gallery-pages">
-                <div class="row">
+                <div>
                   <form action="" novalidate name="editstudentclass" class="horizontal-form">
                     <div class="form-body pal"><h3 class="block-heading">Class Information</h3>
                       <div class="row">
@@ -534,32 +534,32 @@
   <div>{{vmclass.concat}}</div>
   <!--     <div>{{vmclass.xListcat}}</div>             
   --> 
-                  <div class="row">
+                  <div class="">
                     <div opt-kind="" ok-key="filter"  class="btn-group filters-button-group">
                       <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default">Show All</button>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="">
                     <div opt-kind="" ok-key="filter"  class="btn-group filters-button-groupcat">
                       <button ng-click="vmclass.clearCatSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catset('{{category}}')" ng-model="classcategories" ng-repeat="category in vmclass.classcategories" class="btn btn-default">{{category}}</button>
                     </div>
                   </div>
-                  <div class="row">
+                  <div class="">
                     <div opt-kind="" ok-key="filter" class="btn-group filters-button-groupage">
 <!--                      <button ok-sel="*" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button> -->
                       <button ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.ageset('{{age}}')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
                     </div>
                    </div>
-                  <div class="row">
+                  <div class="">
                     <div opt-kind="" ok-key="filter" class="btn-group filters-button-grouppgm">
                       <button ng-click="vmclass.clearPgmSelect()" class="btn btn-default active">Show All</button>
                       <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.pgmset('{{pgm}}')" ng-model="pgmcategories" ng-repeat="pgm in vmclass.pgmcategories" class="btn btn-default">{{pgm}}</button>
                     </div>
                     </div>
 
-                  <div class="row"> 
+                  <div class=""> 
 
                     <div id="isotopeContainer" isotope-container ng-cloak    class="mix-grid ng-cloak">
 <!--           <div>xlist is: 
