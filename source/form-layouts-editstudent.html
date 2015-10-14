@@ -513,7 +513,7 @@
                         <div class="col-md-6">
                             <div class="col-md-8"><div class="gallery-pages"><div class="mix-grid"><div class="mix"><div class="hover-effect">
                                   <div class="img" ng-if="vmclass.classpictureurl.pictureurl[0].pictureurl">
-                                    <img src="images/classes/{{vmclass.classpictureurl.pictureurl[0].pictureurl}}" alt="" class="img-responsive"/>
+                                    <img ng-src="images/classes/{{vmclass.classpictureurl.pictureurl[0].pictureurl}}" alt="" class="img-responsive"/>
                                   </div>
                                   <div class="info">
                                     <h3>{{vmclass.studentclass.class}} - {{vmclass.studentclass.pgmclass}}</h3>
@@ -568,9 +568,9 @@
   -->    
                     <div ng-repeat="x in vmclass.xlistnew.studentclasslist track by $index" isotope-item=""  class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
                       <div> <!--{{x.classcat[0]}} {{x.agecat[0]}} {{x.pgmcat[0]}} --> </div>
-                        <div class="hover-effect" ng-if="x.pictureurl != '' ">
+                        <div class="hover-effect">
                           <div class="img" >
-                            <img src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive"/>
+                            <img ng-src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive"/>
                           </div>
                           <div class="info">
 <!--                            <h3>{{x.class}}</h3><a href="./#/form-layouts-editstudent/id/{{vmclass.studentclass.contactID}}/class/{{x.id}}" class="mix-link" "><i ng-click="vmclass.setStudentClass()" class="glyphicon glyphicon-link"></i>Set class as<br/>{{x.class}}</a> -->
@@ -580,9 +580,7 @@
                             </div>
                           </div>
                         </div>
-						<div ng-if="x.pictureurl == '' ">
-							<p>no pictures found</p>
-						</div>
+
                       
                     </div>
                   </div>
