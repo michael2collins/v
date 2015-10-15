@@ -13,7 +13,9 @@ angular
         'ui.grid.cellNav', 
         'ui.grid.edit', 
         'ui.grid.selection',
+		'ui.select',
                 'iso.directives',
+				'ngSanitize'
 		//		'dynamicLayout'
         ])
 		

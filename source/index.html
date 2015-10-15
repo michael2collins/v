@@ -210,8 +210,29 @@
   <script type="text/javascript" src="js/services/studentServices.js"></script>
    <script type="text/javascript" src="js/services/classServices.js"></script>
    <script type="text/javascript" src="js/controllers/student-class-controller.js"></script>
+   <script type="text/javascript" src="js/controllers/student-payment-controller.js"></script>
+   <script type="text/javascript" src="js/services/paymentServices.js"></script>
+     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.css"/>
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.js"></script>
+   
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+	  <style>
+    body {
+      padding: 15px;
+    }
+    .select2 > .select2-choice.ui-select-match {
+      /* Because of the inclusion of Bootstrap */
+      height: 29px;
+    }
+    .selectize-control > .selectize-dropdown {
+      top: 36px;
+    }
+  </style>
 
-  <style>
+
+   <style>
   .chosen-choices, .chosen-container {
 	width: 500px !important;
 }
