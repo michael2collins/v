@@ -616,7 +616,7 @@
                </div>
             </div>
          </uib-tab>
-         <uib-tab id="tab-student" heading="Payment">
+         <uib-tab id="tab-student" heading="Payment" >
             <div class="row" ng-controller="StudentPaymentController as vmpayment">
                <div class="col-lg-12">
                   <div class="portlet box portlet-orange">
@@ -627,21 +627,46 @@
                      <div class="portlet-body">
                         <div class="gallery-pages">
                            <div>
-                              <div>{{vmpayment.availableColors}}
-                              </div>
-                              <ui-select  
-                                 multiple tagging
-                                 tagging-label="(custom 'new' label)" 
-                                 ng-model="vmpayment.singleDemo.colors" 
-                                 theme="bootstrap" 
-                                 ng-disabled="disabled" style="width: 300px;" title="Choose a color">
-                                 <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
-                                 <ui-select-choices repeat="color in vmpayment.availableColors | filter:$select.search">
-                                    {{color}}
-                                 </ui-select-choices>
-                              </ui-select>
-                              <hr>
-                              <p>Selected: {{vmpayment.singleDemo.colors}}</p>
+                              <form action="" novalidate name="editstudentpayment" class="horizontal-form">
+                                 <div class="form-body pal">
+                                    <h3 class="block-heading">Payment Information</h3>
+                                    <div class="row">
+                                       <div class="col-md-6">
+                                          <div class="col-md-12">
+                                             <div ng-class="{'has-error': editstudentpayment.sc_ClassPayName.$invalid, 'has-success': !editstudentpayment.sc_ClassPayName.$invalid}" class="form-group">
+                                                <label for="inputsc_ClassPayName" class="control-label">Student Payment</label>
+                                                <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentpayment.sc_ClassPayName.$dirty" ng-class="editstudentpayment.sc_ClassPayName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                   <input id="inputsc_ClassPayName" type="text" placeholder="Student Payment" name="sc_ClassPayName" ng-model="vmpayment.StudentPayment.classPayName" ng-change="vmpayment.updateStudentPayment()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                                </div>
+                                                <div style="color:maroon" role="alert" ng-messages="editstudentpayment.sc_ClassPayName.$error" class="has-error">
+                                                   <div ng-message="required">You did not enter a field</div>
+                                                   <div ng-message="minlength">Your field is too short</div>
+                                                   <div ng-message="maxlength">Your field is too long</div>
+                                                   <div ng-message="email">Your email is missing @ and/or a period</div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+								</div>	
+                              </form>
+                            </div>
+							<div>
+								<div>{{vmpayment.availableColors}}
+								</div>
+								<ui-select  
+								 multiple tagging
+								 tagging-label="(custom 'new' label)" 
+								 ng-model="vmpayment.singleDemo.colors" 
+								 theme="bootstrap" 
+								 ng-disabled="disabled" style="width: 300px;" title="Choose a color">
+								 <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
+								 <ui-select-choices repeat="color in vmpayment.availableColors | filter:$select.search">
+									{{color}}
+								 </ui-select-choices>
+								</ui-select>
+								<hr>
+								<p>Selected: {{vmpayment.singleDemo.colors}}</p>
                            </div>
                         </div>
                      </div>
