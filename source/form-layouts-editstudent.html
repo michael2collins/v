@@ -648,29 +648,34 @@
                                           </div>
                                        </div>
                                     </div>
+									<div class="row">
+									<div class="col-md-12">
+										<div>{{vmpayment.availableColors}}
+										</div>
+										<div class="col-md-6">
+										<ui-select  
+										  tagging
+										 tagging-label="false" 
+										 ng-model="vmpayment.singleDemo.color" 
+										 theme="bootstrap" 
+										 ng-disabled="disabled" style="width: 300px;" title="Choose a color">
+										 <ui-select-match placeholder="Select color...">{{$select.selected}}</ui-select-match>
+										 <ui-select-choices repeat="color in vmpayment.availableColors | filter: $select.search">
+											<div ng-bind-html="color | highlight: $select.search"></div>
+										 </ui-select-choices>
+										</ui-select>
+										</div>
+										<div class="col-md-6">
+										<p>Selected: {{vmpayment.singleDemo.color}}</p>
+										</div>
+									</div>
+								   </div>
 								</div>	
-                              </form>
-                            </div>
-							<div>
-								<div>{{vmpayment.availableColors}}
-								</div>
-								<ui-select  
-								 multiple tagging
-								 tagging-label="(custom 'new' label)" 
-								 ng-model="vmpayment.singleDemo.colors" 
-								 theme="bootstrap" 
-								 ng-disabled="disabled" style="width: 300px;" title="Choose a color">
-								 <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
-								 <ui-select-choices repeat="color in vmpayment.availableColors | filter:$select.search">
-									{{color}}
-								 </ui-select-choices>
-								</ui-select>
-								<hr>
-								<p>Selected: {{vmpayment.singleDemo.colors}}</p>
-                           </div>
-                        </div>
+							</form>
+						</div>
                      </div>
                   </div>
+				  </div>
                </div>
             </div>
          </uib-tab>
