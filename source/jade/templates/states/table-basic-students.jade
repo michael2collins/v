@@ -1,7 +1,7 @@
 doctype html
 div(ng-controller="StudentsTableBasicController as vm")
     .row
-        .col-lg-12     
+        .col-lg-12
             .portlet.box.portlet-green
                 .portlet-header
                     .row
@@ -31,7 +31,7 @@ div(ng-controller="StudentsTableBasicController as vm")
                     //.row
                         .col-lg-12
                         .panel.panel-orange
-                            .panel-heading Student Filter     
+                            .panel-heading Student Filter
                             .panel-body.pan
                                 form.form-horizontal.form-bordered(role="form")
                                     .form-body
@@ -58,7 +58,7 @@ div(ng-controller="StudentsTableBasicController as vm")
                                     th(width='10%') Phone
                                     th(width='20%') Edit/Delete
                                 tr
-                                    th(ng-repeat="field in students.fields") {{field.prefcolumn}}  
+                                    th(ng-repeat="field in students.fields") {{field.prefcolumn}}
                             tbody
                                 tr(ng-repeat="student in students.students | filter : studentquery | limitTo : quantity" )
                                     td {{student.FirstName}} {{student.LastName}}
