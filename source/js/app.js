@@ -4,6 +4,7 @@ angular
     .module('ng-admin', [
         'ui.grid',    
 		'ui.utils',
+		'ui.mask',
         'ngRoute',    
         'ui.bootstrap',    
 		'toggle-switch',
