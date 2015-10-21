@@ -60,7 +60,6 @@
     "brackets-icons.iconset": "devicons",
     "linting.collapsed": false,
     "linting.JSLint.collapsed": true,
-    "proxy": "http://usproxy.es.oneadp.com:8080/",
     "denniskehrig.ShowWhitespace.checked": true,
     "language": {
         "javascript": {

@@ -1,6 +1,4 @@
 {
   "directory" : "bower_components",
-  "json" : "bower.json",
-    "proxy":"http://usproxy.es.oneadp.com:8080/",
-  "https-proxy":"http://usproxy.es.oneadp.com:8080/"
+  "json" : "bower.json"
 }

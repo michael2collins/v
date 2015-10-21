@@ -35,6 +35,7 @@
         vmstudent.BeltSizeList=[];
         vmstudent.instructorTitleList=[];
         vmstudent.getBirthday=getBirthday;
+		vmstudent.dateopen=dateopen;
         
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
@@ -47,6 +48,11 @@
         $log.debug('Routeparam is:');
         $log.debug($routeParams.id);          
 
+	  vmstudent.status = {
+    opened: false
+  };
+
+  
 //        $.fn.Data.Portlet();
 //        setHeight();
         setLists();
@@ -73,14 +79,11 @@
     $scope.minDate = $scope.minDate ? null : new Date();
   };
   $scope.toggleMin();
-
-  $scope.open = function($event) {
-    $event.preventDefault();
-    $event.stopPropagation();
-
-    $scope.opened = true;
+*/
+  function dateopen($event) {
+    vmstudent.status.opened = true;
   };
-
+/*
   $scope.dateOptions = {
  //   formatYear: 'yy',
  //   startingDay: 1
