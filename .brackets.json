@@ -70,5 +70,9 @@
             ],
             "linting.usePreferredOnly": true
         }
-    }
+    },
+    "php-sig.php-smarthints.filteredFunctionList": [
+        "mysql",
+        "pdo"
+    ]
 }

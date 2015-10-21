@@ -1,8 +1,17 @@
+download xampp or equiv
+use sql/vba.sql to do a population of sql
+run alters to fix the vdb
+
+setup composer for php see slim
+http://docs.slimframework.com/start/get-started/#composer-install
+http://www.androidhive.info/2014/01/how-to-create-rest-api-for-android-app-using-php-slim-and-mysql-day-23/
+
+
 
 change httpd.conf to include vdojo conf from v/v
  (last extra and had to comment out httpd-xampp.conf
 
-change php/php.ini 
+change php/php.ini
 date.timezone=America/New_York
 
 httpd.conf
@@ -10,7 +19,8 @@ httpd.conf
 Include c:/v/v/apache_setup/httpd-vdojo.conf
 
 install taskmanager db and add to vdbadmin user
-set password 
+http://www.androidhive.info/2014/01/how-to-create-rest-api-for-android-app-using-php-slim-and-mysql-day-12-2/
+set password
 
 import full db.  change db size
 php.ini
