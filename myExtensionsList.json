@@ -1,0 +1,29 @@
+{
+  "extensions": {
+    "brackets-angular-snippets": true,
+    "brackets-angularjs-codehints": true,
+    "angularui.angularjs": true,
+    "mikaeljorhult.brackets-autoprefixer": true,
+    "martypenner.autosave-files-on-window-blur": true,
+    "brackets-beautify": true,
+    "brackets-bower": true,
+    "zaggino.brackets-git": true,
+    "ivogabe.icons": true,
+    "qw0101.colorhighlighter": true,
+    "delkos": true,
+    "dnbard.documents-toolbar": true,
+    "torin.duplicate": true,
+    "brackets-editorconfig": true,
+    "brackets-emmet": true,
+    "milosh86.extensions-bulk-installer": false,
+    "jonwolfe.file-tree-exclude": true,
+    "funcdocr": true,
+    "brackets-indent-guides": true,
+    "globexdesigns.brackets-jscs": true,
+    "camden.jshint": true,
+    "gruehle.markdown-preview": true,
+    "mackenza.php-smarthints": true,
+    "dkehrig.show-whitespace": true,
+    "dsbonev.whitespace-normalizer": true
+  }
+}
