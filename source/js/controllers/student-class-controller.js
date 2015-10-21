@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -16,7 +16,8 @@
         'ClassServices'
     ];
 
-    function StudentClassController($scope, $rootScope, $routeParams, $log, $http, $location, $timeout, ClassServices) {
+    function StudentClassController($scope, $rootScope, $routeParams,
+        $log, $http, $location, $timeout, ClassServices) {
         /* jshint validthis: true */
         var vmclass = this;
 
@@ -25,9 +26,9 @@
         vmclass.initclasslist = initclasslist;
         vmclass.setStudentClass = setStudentClass;
 
-        vmclass.categorys = "";
-        vmclass.ages = "";
-        vmclass.pgms = "";
+        vmclass.categorys = '';
+        vmclass.ages = '';
+        vmclass.pgms = '';
         vmclass.catset = catset;
         vmclass.ageset = ageset;
         vmclass.pgmset = pgmset;
@@ -36,8 +37,8 @@
         vmclass.clearCatSelect = clearCatSelect;
         vmclass.clearAgeSelect = clearAgeSelect;
         vmclass.clearPgmSelect = clearPgmSelect;
-        vmclass.classcategories = "";
-        vmclass.picID = "";
+        vmclass.classcategories = '';
+        vmclass.picID = '';
         vmclass.studentclass = [];
         vmclass.classpictureurl = [];
         vmclass.classstatuses = [];
@@ -50,7 +51,11 @@
         vmclass.classlistpath = '../v1/studentclasslist';
         vmclass.classstatuspath = '../v1/studentclassstatuses';
 
-        vmclass.setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + $routeParams.myclass;
+        vmclass.setclasspath = '../v1/studentclass/id/' +
+            $routeParams.id +
+            '/myclass/' +
+            $routeParams.myclass;
+
         $log.debug('studentid: ' + $routeParams.id);
         $log.debug('studentclass: ' + $routeParams.myclass);
         vmclass.studentclass.contactID = $routeParams.id;
@@ -58,7 +63,8 @@
         initclasslist();
 
         function initclasslist() {
-            //if you hit the class tab quickly, the delay below will properly set the pix.  need to figure out the relationship of clicking the tab to calling an init.
+            //if you hit the class tab quickly, the delay below will properly set the pix.
+            //need to figure out the relationship of clicking the tab to calling an init.
             $timeout(function () {
                 console.log('isotope init');
                 activate();
@@ -85,9 +91,9 @@
         }
 
         function clearSelect() {
-            vmclass.categorys = "";
-            vmclass.pgms = "";
-            vmclass.ages = "";
+            vmclass.categorys = '';
+            vmclass.pgms = '';
+            vmclass.ages = '';
             concatset();
             //   vmclass.$emit('iso-method', {name:null, params:null});
             //         var s=angular.element('#isotopeContainer').scope();
@@ -123,17 +129,17 @@
         }
 
         function clearCatSelect() {
-            vmclass.categorys = "";
+            vmclass.categorys = '';
             concatset();
         }
 
         function clearPgmSelect() {
-            vmclass.pgms = "";
+            vmclass.pgms = '';
             concatset();
         }
 
         function clearAgeSelect() {
-            vmclass.ages = "";
+            vmclass.ages = '';
             concatset();
         }
 
@@ -171,17 +177,17 @@
                 vmclass.studentclass = data.data;
                 vmclass.picID = vmclass.studentclass.classseq;
                 getStudentClassPicture();
-                console.log("getting concat using student class");
-                console.log("studentclass is:" + vmclass.studentclass.class);
-                var class2;
-                var class2age = "";
-                var class2cls = "";
-                var class2pgm = "";
+                console.log('getting concat using student class');
+                console.log('studentclass is:' + vmclass.studentclass.class);
+                var class2, class2age = '',
+                    class2cls = '',
+                    class2pgm = '';
+
                 class2 = ClassServices.getclass2(vmclass.studentclass.class);
                 class2cls = class2[0].classcat[0];
                 class2age = class2[0].agecat[0];
                 class2pgm = class2[0].programcat[0];
-                //                    vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
+                // vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
                 vmclass.catset(class2cls);
                 vmclass.ageset(class2age);
                 vmclass.pgmset(class2pgm);
@@ -192,14 +198,16 @@
                     filter: vmclass.concat
                 });
 
-                console.log("student concat result is:" + vmclass.concat);
+                console.log('student concat result is:' + vmclass.concat);
 
                 return vmclass.studentclass;
             });
         }
 
         function getStudentClassPicture() {
-            return ClassServices.getStudentClassPicture(vmclass.classpicpath + '/' + vmclass.picID).then(function (data) {
+            return ClassServices.getStudentClassPicture(
+                vmclass.classpicpath + '/' +
+                vmclass.picID).then(function (data) {
                 $log.debug('getStudentClassPicture returned data');
                 $log.debug(data.data);
                 vmclass.classpictureurl = data.data;
@@ -219,7 +227,8 @@
         }
 
         function getStudentClassStatuses() {
-            return ClassServices.getStudentClassStatuses(vmclass.classstatuspath).then(function (data) {
+            return ClassServices.getStudentClassStatuses(
+                vmclass.classstatuspath).then(function (data) {
                 $log.debug('getStudentClassStatuses returned data');
                 $log.debug(data.data);
                 vmclass.classstatuses = data.data;
@@ -230,7 +239,8 @@
 
         function updateStudentClass() {
             $log.debug('about updateStudentClass ', vmclass.studentclass);
-            return ClassServices.updateStudentClass(vmclass.path, vmclass.studentclass).then(function (data) {
+            return ClassServices.updateStudentClass(
+                vmclass.path, vmclass.studentclass).then(function (data) {
                 $log.debug('updateStudentClass returned data: goto', vmclass.path);
                 $log.debug(data.data);
                 vmclass.studentclass = data.data;
@@ -239,14 +249,20 @@
         }
 
         function setStudentClass(mystudent, myclassid, mypgmid) {
-            var setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + myclassid + '/mypgm/' + mypgmid;
+            var setclasspath = '../v1/studentclass/id/' +
+                $routeParams.id +
+                '/myclass/' +
+                myclassid +
+                '/mypgm/' +
+                mypgmid;
             $log.debug('studentid: ' + $routeParams.id);
             $log.debug('studentclass: ' + myclassid);
             $log.debug('studentpgm: ' + mypgmid);
 
             $log.debug('about setStudentClass ', mystudent);
             $log.debug('for class ', myclassid);
-            return ClassServices.setStudentClass(setclasspath, mystudent, myclassid, mypgmid).then(function (data) {
+            return ClassServices.setStudentClass(
+                setclasspath, mystudent, myclassid, mypgmid).then(function (data) {
                 $log.debug('setStudentClass returned data: ');
                 $log.debug(data.data);
                 vmclass.studentclass = data.data;
@@ -254,6 +270,5 @@
             });
         }
     }
-
 
 })();
