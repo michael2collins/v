@@ -627,22 +627,30 @@
                      <div class="portlet-body">
                         <div class="gallery-pages">
                            <div>
-                              <div>{{vmpayment.availableColors}}
-                              </div>
+                              <form action="" novalidate name="editstudentclass" class="horizontal-form">
+                                 <div class="form-body pal">
+                                    <h3 class="block-heading">Class Information</h3>
+                                    <div class="row">
+
+                        <div class="col-lg-12">
+                           <div class="col-lg-6">
                               <ui-select  
-                                 multiple tagging
-                                 tagging-label="(custom 'new' label)" 
-                                 ng-model="vmpayment.singleDemo.colors" 
-                                 theme="bootstrap" 
-                                 ng-disabled="disabled" style="width: 300px;" title="Choose a color">
-                                 <ui-select-match placeholder="Select colors...">{{$item}}</ui-select-match>
-                                 <ui-select-choices repeat="color in vmpayment.availableColors | filter:$select.search">
-                                    {{color}}
+                                 tagging
+                                 tagging-label="('new')" 
+                                 ng-model="vmpayment.singleDemo.color" 
+                                 theme="select2" 
+                                 ng-disabled="disabled" >
+                                 <ui-select-match allow-clear placeholder="Select colors...">{{$select.selected}}</ui-select-match>
+                                 <ui-select-choices repeat="color in vmpayment.availableColors | filter: $select.search">
+                                    <div ng-bind-html="color | highlight: $select.search"></div>
                                  </ui-select-choices>
                               </ui-select>
-                              <hr>
-                              <p>Selected: {{vmpayment.singleDemo.colors}}</p>
-                           </div>
+                              </div>
+                           <div class="col-lg-6">
+                              <p>Selected: {{vmpayment.singleDemo.color}}</p>
+                              </div>
+                              </div>
+                            </div></div></form></div>  
                         </div>
                      </div>
                   </div>

@@ -57,6 +57,15 @@
 			  console.log('colors');
 			  console.log(vmpayment.availableColors);
 			  vmpayment.singleDemo = {};
+              vmpayment.singleDemo.color = '';
+ /* vmpayment.processItem = processItem;
+  function processItem(tag){
+      console.log('processing item');
+      console.log(tag);
+    return {
+      color:tag
+    }
+  }*/
 			  /*
         initclasslist();
 
