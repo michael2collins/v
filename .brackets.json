@@ -60,7 +60,7 @@
     "brackets-icons.iconset": "devicons",
     "linting.collapsed": false,
     "linting.JSLint.collapsed": true,
-    "denniskehrig.ShowWhitespace.checked": true,
+    "denniskehrig.ShowWhitespace.checked": false,
     "language": {
         "javascript": {
             "linting.prefer": [
