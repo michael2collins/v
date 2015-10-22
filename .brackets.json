@@ -58,7 +58,7 @@
     "themes.theme": "delkos",
     "brackets-indent-guides.enabled": true,
     "brackets-icons.iconset": "devicons",
-    "linting.collapsed": false,
+    "linting.collapsed": true,
     "linting.JSLint.collapsed": true,
     "denniskehrig.ShowWhitespace.checked": false,
     "language": {
