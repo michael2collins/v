@@ -29,6 +29,8 @@ $app->get('/studentclass/:id',  function($student_id) {
     }
 });
 
+
+
 $app->put('/studentclass/:id',  function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
@@ -168,6 +170,38 @@ $app->get('/studentclasslist',  function() {
 
     echoRespnse(200, $response);
 });
+
+
+$app->get('/studentclasspaylist',  function() {
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetching all class pays
+    $result = $db->getStudentClassPayList();
+
+    $response["error"] = false;
+    $response["studentclasspaylist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        error_log( print_R("student classpay list results", TRUE ));
+        $tmp = array();
+        $tmp["classpayname"] = $slist["classpayname"];
+        $tmp["firstname"] = $slist["firstname"];
+        $tmp["lastname"] = $slist["lastname"];
+        $tmp["contactID"] = $slist["contactID"];
+
+        array_push($response["studentclasspaylist"], $tmp);
+
+    }
+
+    error_log( print_R($response["studentclasspaylist"], TRUE ));
+    error_log( print_R("student classpay list results end", TRUE ));
+
+
+    echoRespnse(200, $response);
+});
+
 
 $app->get('/studentclassstatuses',  function() {
     $response = array();

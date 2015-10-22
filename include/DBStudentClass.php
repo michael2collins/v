@@ -79,6 +79,38 @@ class StudentClassDbHandler {
         }
     }
 
+    public function getStudentClassPayList() {
+        $sql = "SELECT distinct
+                p.classPayName,
+                c.LastName,
+                c.FirstName,
+                p.contactID
+            FROM ncontacts c, nclasspays p
+            WHERE c.ID = p.contactid
+            order by p.classpayname ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                error_log( print_R("studentclasspay list stmt", TRUE ));
+                error_log( print_R($stmt, TRUE ));
+                $slists = $stmt->get_result();
+                error_log( print_R("studentclasspay list returns data", TRUE ));
+                error_log( print_R($slists, TRUE ));
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("studentclass list execute failed", TRUE ));
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("studentclasspay list sql failed", TRUE ));
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+    }
+
+
     public function getStudentClassPicture($picID) {
         $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? ";
 
@@ -225,13 +257,50 @@ class StudentClassDbHandler {
     }
 
     /**
-     * set student class
+     * set student classpay
+     */
+    public function setStudentClassPay($sc_ContactId,
+                                    $sc_classPayName
+                                   ) {
+        $num_affected_rows = 0;
 
+        $sql = "UPDATE nclasspays t set ";
+        $sql .= " t.classpayname = ? ";
+
+        $sql .= " where contactID = ? ";
+
+        error_log( print_R($sql, TRUE ));
+        error_log( print_R($sc_ContactId, TRUE ));
+        error_log( print_R($sc_classPayName, TRUE ));
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            error_log( print_R("student class pay set prepared", TRUE ));
+            $stmt->bind_param("si",
+                              $sc_classPayName,
+                              $sc_ContactId
+                             );
+            error_log( print_R("student class pay set bind", TRUE ));
+            $stmt->execute();
+            error_log( print_R("student class pay set execute", TRUE ));
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            error_log( print_R("student class pay set done", TRUE ));
+
+        } else {
+            error_log( print_R("student class pay update failed", TRUE ));
+            error_log( print_R($this->conn->error, TRUE ));
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+
+        return $num_affected_rows > 0;
+    }
+
+    /**
+     * set student class
      */
     public function setStudentClass($sc_ContactId,
                                     $sc_classseq,
                                     $sc_pgmseq
-
                                    ) {
         $num_affected_rows = 0;
 
