@@ -1,6 +1,17 @@
-download xampp or equiv
-use sql/vba.sql to do a population of sql
+download xampp or equiv (note mariadb now)
+
+create vdb database using phpadmin
+check v/inclucde/Config.php for DDL and user/password
+
+use sql/vba.sql to do a population of sql (for the mini version)
 run alters to fix the vdb
+usertable.sql
+preftable.sql
+preftablesample.sql
+studentlist.sql
+contactmgmt1.sql
+contact.sql
+nclassalter.sql  (note others were collapsed into this on 10/22/15
 
 setup composer for php see slim
 http://docs.slimframework.com/start/get-started/#composer-install
@@ -34,3 +45,5 @@ Starting from bigger values the order should go like this
     memory_limit
     post_max_size
     upload_max_filesize
+
+    before you can run grunt build, you need to rename secret.json.template to secret.json in v/v/

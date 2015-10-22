@@ -1,11 +1,6 @@
 ALTER TABLE `ncontactmgmt` ADD `contactDate` DATE NULL ;
-UPDATE `ncontactmgmt` SET `contactDate`= date_format(concat(contactdateyyyy, lpad(`contactdatem`,2,'0'),lpad(`contactdated`,2,'0')) ,'%Y%m%d') WHERE 1
-ALTER TABLE `ncontactmgmt`
-DROP PRIMARY KEY,
- ADD PRIMARY KEY(
- `contactid`,
- `contactmgmttype`,
- `contactDate`);
+UPDATE `ncontactmgmt` SET `contactDate`= date_format(concat(contactdateyyyy, lpad(`contactdatem`,2,'0'),lpad(`contactdated`,2,'0')) ,'%Y%m%d') WHERE 1;
+ALTER TABLE `ncontactmgmt` DROP PRIMARY KEY, ADD PRIMARY KEY( `contactid`, `contactmgmttype`, `contactDate`);
 ALTER TABLE `ncontactmgmt` DROP `contactdateyyyy`;
 ALTER TABLE `ncontactmgmt` DROP `contactdatem`;
 ALTER TABLE `ncontactmgmt` DROP `contactdated`;

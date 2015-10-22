@@ -22,6 +22,30 @@ UPDATE nclass SET classcat = 'special', pgmcat = 'other', agecat = 'children or 
 UPDATE nclass SET classcat = 'wellness', pgmcat = 'other', agecat = 'adult' WHERE nclass.class = 'TaiChi';
 UPDATE nclass SET classcat = 'fitness', pgmcat = 'other', agecat = 'children or adult' WHERE nclass.class = 'Zoomba';
 
+ALTER TABLE `nclass` ADD `pictureurl` VARCHAR(200) NULL ;
+
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/adult.jpg' WHERE `nclass`.`class` = "Adult";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/afterschool.jpg' WHERE `nclass`.`class` ="After School";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/basicdragon.jpg' WHERE `nclass`.`class` ="Basic Dragon";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/leopards.jpg' WHERE `nclass`.`class` ="Basic Leopard";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/multiclass.jpg' WHERE `nclass`.`class` ="BBT - Multiclasses";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/bbt1purple.jpg' WHERE `nclass`.`class` ="BBT1 - Purple - B/G";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/bbt1leopard.jpg' WHERE `nclass`.`class` ="BBT1 Leopard";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/bbt2.jpg' WHERE `nclass`.`class` ="BBT2 - Green";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/bbt3.jpg' WHERE `nclass`.`class` ="BBT3 - Brown";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/adultblackbelt.jpg' WHERE `nclass`.`class` ="Blackbelt Adult";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/jrblackbelt.jpg' WHERE `nclass`.`class` ="Blackbelt Jr";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/inactive.jpg' WHERE `nclass`.`class` ="Inactive";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/injured.jpg' WHERE `nclass`.`class` ="Injured";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/kickbox.jpg' WHERE `nclass`.`class` ="Kickboxing";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/private.jpg' WHERE `nclass`.`class` ="Privates Adult";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/privatechild.jpg' WHERE `nclass`.`class` ="Privates Children";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/saturday.png' WHERE `nclass`.`class` ="Saturday Only";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/selfdefence.jpg' WHERE `nclass`.`class` ="Self Defense";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/specialneeds.jpg' WHERE `nclass`.`class` ="Special Needs";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/taichi.jpg' WHERE `nclass`.`class` ="TaiChi";
+UPDATE `vdb`.`nclass` SET `pictureurl` = '/images/zumba.jpg' WHERE `nclass`.`class` ="Zoomba";
+
 UPDATE nclass SET pictureurl = 'adult.jpg' WHERE nclass.class = 'Adult';
 UPDATE nclass SET pictureurl = 'afterschool.jpg' WHERE nclass.class = 'After School';
 UPDATE nclass SET pictureurl = 'basicdragon.jpg' WHERE nclass.class = 'Basic Dragon';
@@ -47,6 +71,16 @@ UPDATE nclass SET pictureurl = 'zumba.jpg' WHERE nclass.class = 'Zoomba';
 ALTER TABLE `nclass` ADD `id` SERIAL NOT NULL FIRST, ADD UNIQUE (`id`) ;
 
 ALTER TABLE `nclasspays` ADD `classseq` BIGINT NOT NULL ;
+ALTER TABLE `nclasspays` CHANGE `isTestFeeWaived` `isTestFeeWaived` INT(1) NULL DEFAULT '0';
+
+ALTER TABLE `nclasspays` ADD `studentclassstatus` VARCHAR(40) NOT NULL ;
+
+
+
+INSERT INTO studentlist (listtype,listkey,listvalue,listorder) VALUES("ClassStatus","Active","Active",1);
+INSERT INTO studentlist (listtype,listkey,listvalue,listorder) VALUES("ClassStatus","Inactive","Inactive",2);
+INSERT INTO studentlist (listtype,listkey,listvalue,listorder) VALUES("ClassStatus","Injured","Injured",3);
+
 
 update nclasspays set classseq = 1 where class = 'Adult';
 update nclasspays set classseq = 2 where class = 'After School';
@@ -70,7 +104,12 @@ update nclasspays set classseq = 19 where class = 'Special Needs';
 update nclasspays set classseq = 20 where class = 'TaiChi';
 update nclasspays set classseq = 21 where class = 'Zoomba';
 
+UPDATE `nclasspays` set `studentclassstatus`= 'Inactive' WHERE class = 'Inactive';
+UPDATE `nclasspays` set `studentclassstatus`= 'Injured' WHERE class = 'Injured';
+UPDATE `nclasspays` set `studentclassstatus`= 'Active' WHERE class not in ( 'Injured', 'Inactive');
+
 ALTER TABLE `nclasslist` ADD `id` SERIAL NOT NULL FIRST, ADD UNIQUE (`id`) ;
+ALTER TABLE `nclasspays` ADD `pgmseq` BIGINT NOT NULL ;
 
 update nclasspays set pgmseq = 1 where classid = 'Adult ATP';
 update nclasspays set pgmseq = 2 where classid = 'Adult Basic';
