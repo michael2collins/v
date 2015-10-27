@@ -183,18 +183,20 @@ $app->get('/studentclasspaylist',  function() {
     $response["studentclasspaylist"] = array();
 
     // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        error_log( print_R("student classpay list results", TRUE ));
-        $tmp = array();
-        $tmp["classpayname"] = $slist["classpayname"];
-        $tmp["firstname"] = $slist["firstname"];
-        $tmp["lastname"] = $slist["lastname"];
-        $tmp["contactID"] = $slist["contactID"];
+    while ($slistc = $result->fetch_assoc()) {
+		//error_log( print_R("student classpay list results", TRUE ));
+        $tmpb = array();
+//        $tmpb["classpayname"] = $slistc["classpayname"];
+ //       $tmpb["firstname"] = $slistc["firstname"];
+  //      $tmpb["lastname"] = $slistc["lastname"];
+   //     $tmpb["contactID"] = $slistc["contactID"];
 
-        array_push($response["studentclasspaylist"], $tmp);
+        array_push($response["studentclasspaylist"], $tmpb);
 
     }
-
+					
+				$row_cnt = $result->num_rows;
+printf("route Result set has %d rows.\n", $row_cnt);
     error_log( print_R($response["studentclasspaylist"], TRUE ));
     error_log( print_R("student classpay list results end", TRUE ));
 

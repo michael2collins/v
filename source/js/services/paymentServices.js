@@ -15,7 +15,8 @@
 			getStudentPaymentList: getStudentPaymentList,
             updateStudentPayment: updateStudentPayment,
             getStudentPayment: getStudentPayment,			
-            setStudentPayment: setStudentPayment			
+            setStudentPayment: setStudentPayment,
+			getClassPayList: getClassPayList			
         };
         return service;
         
@@ -88,6 +89,20 @@
                     // or server returns response with an error status.
                 });
         }
-        
+        function getClassPayList(classpaypath) {
+            return $http({method: 'GET', url: classpaypath}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getClassPayList success:' + classpaypath);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getClassPayList failure:' + classpaypath);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }        
         }
  })();  

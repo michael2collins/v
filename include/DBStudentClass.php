@@ -80,24 +80,34 @@ class StudentClassDbHandler {
     }
 
     public function getStudentClassPayList() {
-        $sql = "SELECT distinct
+        $sqlb = "SELECT distinct
                 p.classPayName,
                 c.LastName,
                 c.FirstName,
                 p.contactID
             FROM ncontacts c, nclasspays p
-            WHERE c.ID = p.contactid
-            order by p.classpayname ";
+            WHERE c.ID = p.contactid and p.classPayName is not null
+            order by p.classPayName ";
 
-        if ($stmt = $this->conn->prepare($sql)) {
-            if ($stmt->execute()) {
+        if ($stmtb = $this->conn->prepare($sqlb)) {
+            if ($stmtb->execute()) {
                 error_log( print_R("studentclasspay list stmt", TRUE ));
-                error_log( print_R($stmt, TRUE ));
-                $slists = $stmt->get_result();
+                error_log( print_R($stmtb, TRUE ));
+                $slistsb = $stmtb->get_result();
+		/*		while ($row = $slistsb->fetch_array(MYSQLI_NUM))
+			    foreach ($row as $r)
+				{
+					error_log( print_R( "$r ", TRUE ));
+				}
+				*/
+				
+				$row_cnt = $slistsb->num_rows;
+				printf("db Result set has %d rows.\n", $row_cnt);
                 error_log( print_R("studentclasspay list returns data", TRUE ));
-                error_log( print_R($slists, TRUE ));
-                $stmt->close();
-                return $slists;
+              //  error_log( print_R($slists, TRUE ));
+                $stmtb->close();
+                return $slistsb;
+			   
             } else {
                 error_log( print_R("studentclass list execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);

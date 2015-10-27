@@ -22,31 +22,18 @@
         var vmpayment = this;
 
         vmpayment.getStudentPayment = getStudentPayment;
+		vmpayment.getStudentClassPayList = getStudentClassPayList;
         vmpayment.updateStudentPayment = updateStudentPayment;
         vmpayment.initclasslist = initclasslist;
-        /*      vmpayment.setStudentPayment = setStudentPayment;
-        vmpayment.categorys="";
-        vmpayment.ages="";
-        vmpayment.pgms="";
-        vmpayment.catset=catset;
-        vmpayment.ageset=ageset;
-        vmpayment.pgmset=pgmset;
-        vmpayment.concatset=concatset;
-        vmpayment.clearSelect=clearSelect;
-        vmpayment.clearCatSelect=clearCatSelect;
-        vmpayment.clearAgeSelect=clearAgeSelect;
-        vmpayment.clearPgmSelect=clearPgmSelect;
-        vmpayment.classcategories="";
-        vmpayment.picID="";
-        vmpayment.classpictureurl=[];
-        vmpayment.classstatuses=[];
-        vmpayment.xlistnew=[];
-*/
+
         vmpayment.StudentPayment = [];
+		vmpayment.ClassPayList = [];
 
         vmpayment.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug('studentid: ' + $routeParams.id);
 
+        vmpayment.classpaylistpath = '../v1/studentclasspaylist';		
+		
         vmpayment.setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + $routeParams.myclass;
         $log.debug('studentid: ' + $routeParams.id);
         $log.debug('StudentPayment: ' + $routeParams.myclass);
@@ -63,7 +50,7 @@
         function initclasslist() {
             $timeout(function () {
                 activate();
-
+				
             }, 2000);
         }
 
@@ -72,116 +59,27 @@
 
             getStudentPayment();
         }
-        /*
-        function clearSelect() {
-            vmpayment.categorys = "";
-            vmpayment.pgms = "";
-            vmpayment.ages = "";
-            concatset();
-         //   vmpayment.$emit('iso-method', {name:null, params:null});
-//         var s=angular.element('#isotopeContainer').scope();
- //        console.log('my s');
-  //       console.log(s);
-            $scope.$emit('iso-option', {filter: '*'});
-            //$scope.$emit('iso-method', {name:'shuffle', params:null});
-//  var filtersElem = document.querySelector('.filters-button-group');
-//  console.log(filtersElem);
-//  eventie.bind( filtersElem, 'click', function( event ) {
-    // only work with buttons
-//    if ( !matchesSelector( event.target, 'button' ) ) {
-//      return;
-//    }
-//           var filterValue = event.target.getAttribute('ok-sel');
-//           console.log(filterValue);
-//  });
-  //  var items = s.vmpayment.xlistnew.StudentPaymentlist.filter(function( obj ) {
-     //   console.log("obj classid");
-     //   console.log(obj.classid);
-  //      return +obj.classid != +0;
-  //    });
-  //    setTimeout(function(){
-     //   console.log("items");
-     //   console.log(items);
-     //   console.log(s.vmpayment.xlistnew.StudentPaymentlist);
-  //      s.$apply(s.vmpayment.xlistnew.StudentPaymentlist == items);
-//         s.refreshIso();
-  //    });
-//            $rootScope.$broadcast('iso-init', {name:null, params:null});
-        }
-        function clearCatSelect() {
-            vmpayment.categorys = "";
-            concatset();
-        }
-        function clearPgmSelect() {
-            vmpayment.pgms = "";
-            concatset();
-        }
-        function clearAgeSelect() {
-            vmpayment.ages = "";
-            concatset();
-        }
-        function ageset(addition) {
-            console.log('addition');
-            console.log(addition);
-            vmpayment.ages = '.' + addition;
-            concatset();
-        }
-        function catset(addition) {
-            console.log('addition');
-            console.log(addition);
-            vmpayment.categorys = '.' + addition;
-            concatset();
-        }
-        function pgmset(addition) {
-            console.log('addition');
-            console.log(addition);
-            vmpayment.pgms = '.' + addition;
-            concatset();
-        }
 
-        function concatset() {
-            vmpayment.concat = vmpayment.ages + vmpayment.categorys + vmpayment.pgms;
-            console.log('search concat');
-            console.log(vmpayment.concat);
-        }
-  */
         function getStudentPayment() {
             return ClassServices.getStudentClass(vmpayment.path).then(function (data) {
                 $log.debug('getStudentPayment returned data');
                 $log.debug(data.data);
                 vmpayment.StudentPayment = data.data;
+				getStudentClassPayList();
                 return vmpayment.StudentPayment;
             });
         }
-        /*
-        function getStudentPaymentPicture() {
-            return PaymentServices.getStudentPaymentPicture(vmpayment.classpicpath + '/' + vmpayment.picID).then(function(data){
-                    $log.debug('getStudentPaymentPicture returned data');
+ 
+        function getStudentClassPayList() {
+            return PaymentServices.getClassPayList(vmpayment.classpaylistpath).then(function(data){
+                    $log.debug('getStudentClassPayList returned data');
                     $log.debug(data.data);
-                    vmpayment.classpictureurl = data.data;
+                    vmpayment.ClassPayList = data.data;
 
-                    return vmpayment.classpictureurl;
+                    return vmpayment.ClassPayList;
                 });
         }
-        function getStudentPaymentList() {
-            return PaymentServices.getStudentPaymentList(vmpayment.classlistpath).then(function(data){
-                    $log.debug('getStudentPaymentList returned data');
-                    $log.debug(data.data);
-                    vmpayment.xlistnew = data.data;
-
-                    return vmpayment.xlistnew;
-                });
-        }
-        function getStudentPaymentStatuses() {
-            return PaymentServices.getStudentPaymentStatuses(vmpayment.classstatuspath).then(function(data){
-                    $log.debug('getStudentPaymentStatuses returned data');
-                    $log.debug(data.data);
-                    vmpayment.classstatuses = data.data;
-
-                    return vmpayment.classstatuses;
-                });
-        }
-        */
+   
         function updateStudentPayment() {
             $log.debug('about updateStudentPayment ', vmpayment.StudentPayment);
             return ClassServices.updateStudentClass(vmpayment.path, vmpayment.StudentPayment).then(function (data) {
