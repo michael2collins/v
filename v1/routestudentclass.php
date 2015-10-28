@@ -184,7 +184,7 @@ $app->get('/studentclasspaylist',  function() {
 
     // looping through result and preparing  arrays
     while ($slistc = $result->fetch_assoc()) {
-		//error_log( print_R("student classpay list results", TRUE ));
+        //error_log( print_R("student classpay list results", TRUE ));
         $tmpb = array();
 //        $tmpb["classpayname"] = $slistc["classpayname"];
  //       $tmpb["firstname"] = $slistc["firstname"];
@@ -194,9 +194,8 @@ $app->get('/studentclasspaylist',  function() {
         array_push($response["studentclasspaylist"], $tmpb);
 
     }
-					
-				$row_cnt = $result->num_rows;
-printf("route Result set has %d rows.\n", $row_cnt);
+    $row_cnt = $result->num_rows;
+    error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
     error_log( print_R($response["studentclasspaylist"], TRUE ));
     error_log( print_R("student classpay list results end", TRUE ));
 

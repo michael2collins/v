@@ -29,6 +29,7 @@ httpd.conf
 #V dojo
 Include c:/v/v/apache_setup/httpd-vdojo.conf
 
+?not sure if still need this
 install taskmanager db and add to vdbadmin user
 http://www.androidhive.info/2014/01/how-to-create-rest-api-for-android-app-using-php-slim-and-mysql-day-12-2/
 set password

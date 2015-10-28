@@ -94,20 +94,20 @@ class StudentClassDbHandler {
                 error_log( print_R("studentclasspay list stmt", TRUE ));
                 error_log( print_R($stmtb, TRUE ));
                 $slistsb = $stmtb->get_result();
-		/*		while ($row = $slistsb->fetch_array(MYSQLI_NUM))
-			    foreach ($row as $r)
-				{
-					error_log( print_R( "$r ", TRUE ));
-				}
-				*/
-				
-				$row_cnt = $slistsb->num_rows;
-				printf("db Result set has %d rows.\n", $row_cnt);
+        /*        while ($row = $slistsb->fetch_array(MYSQLI_NUM))
+                foreach ($row as $r)
+                {
+                    error_log( print_R( "$r ", TRUE ));
+                }
+                */
+
+                $row_cnt = $slistsb->num_rows;
+                error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
                 error_log( print_R("studentclasspay list returns data", TRUE ));
               //  error_log( print_R($slists, TRUE ));
                 $stmtb->close();
                 return $slistsb;
-			   
+
             } else {
                 error_log( print_R("studentclass list execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
