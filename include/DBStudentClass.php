@@ -80,33 +80,25 @@ class StudentClassDbHandler {
     }
 
     public function getStudentClassPayList() {
-        $sqlb = "SELECT distinct
-                p.classPayName,
-                c.LastName,
-                c.FirstName,
-                p.contactID
-            FROM ncontacts c, nclasspays p
-            WHERE c.ID = p.contactid and p.classPayName is not null
-            order by p.classPayName ";
+        $sql = 'SELECT distinct p.classPayName as classpayname,
+		c.LastName as lastname,
+		c.FirstName as firstname,
+		p.contactID as contactID
+		FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid  order by p.classPayName ';
 
-        if ($stmtb = $this->conn->prepare($sqlb)) {
-            if ($stmtb->execute()) {
+        if ($stmt = $this->conn->prepare($sql) ) {
+            if ($stmt->execute() ) {
                 error_log( print_R("studentclasspay list stmt", TRUE ));
-                error_log( print_R($stmtb, TRUE ));
-                $slistsb = $stmtb->get_result();
-        /*        while ($row = $slistsb->fetch_array(MYSQLI_NUM))
-                foreach ($row as $r)
-                {
-                    error_log( print_R( "$r ", TRUE ));
-                }
-                */
-
-                $row_cnt = $slistsb->num_rows;
-                error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
-                error_log( print_R("studentclasspay list returns data", TRUE ));
-              //  error_log( print_R($slists, TRUE ));
-                $stmtb->close();
-                return $slistsb;
+                error_log( print_R($sql, TRUE ));
+                $slists = $stmt->get_result();
+			
+				if (empty($slists)) {
+					return array();
+				}
+              //  $row_cnt = $slists->num_rows;
+              //  error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
+                $stmt->close();
+                return $slists;
 
             } else {
                 error_log( print_R("studentclass list execute failed", TRUE ));

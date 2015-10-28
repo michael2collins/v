@@ -183,16 +183,21 @@ $app->get('/studentclasspaylist',  function() {
     $response["studentclasspaylist"] = array();
 
     // looping through result and preparing  arrays
-    while ($slistc = $result->fetch_assoc()) {
+    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
         //error_log( print_R("student classpay list results", TRUE ));
-        $tmpb = array();
-//        $tmpb["classpayname"] = $slistc["classpayname"];
- //       $tmpb["firstname"] = $slistc["firstname"];
-  //      $tmpb["lastname"] = $slistc["lastname"];
-   //     $tmpb["contactID"] = $slistc["contactID"];
-
-        array_push($response["studentclasspaylist"], $tmpb);
-
+        $tmp = array();
+		if (count($slist) > 0) {
+			$tmp["classpayname"] = (empty($slist["classpayname"]) ? "NULL" : $slist["classpayname"]);
+			$tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+			$tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+			$tmp["contactID"] = (empty($slist["contactID"])  ? "NULL" : $slist["contactID"]);
+		} else {
+			$tmp["classpayname"] = "NULL";
+			$tmp["firstname"] = "NULL";
+			$tmp["lastname"] = "NULL";
+			$tmp["contactID"] = "NULL";
+		}
+        array_push($response["studentclasspaylist"], $tmp);
     }
     $row_cnt = $result->num_rows;
     error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
