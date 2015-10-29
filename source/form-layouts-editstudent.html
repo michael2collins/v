@@ -666,10 +666,9 @@
                        <!--     <div>{{vmpayment.ClassPayList}} -->
                             </div>
                             <div class="col-md-6">
-                              <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classPayName" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
-                                <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected}}</ui-select-match>
-<!--                                <ui-select-choices repeat="paylist.classPayName as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: { 'classpayname': $select.search }">
- -->                               <ui-select-choices repeat="paylist.classPayName as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
+                              <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classPayName" ng-change="vmpayment.updateStudentPayment()" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
+                                <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classPayName}}</ui-select-match>
+                               <ui-select-choices repeat="paylist.classPayName as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
                                 <small>
                                     <p>First: </p>
                                     <p>Last:</p>
