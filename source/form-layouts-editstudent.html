@@ -663,14 +663,20 @@
 						-->
                         <div class="row">
                           <div class="col-md-12">
-                            <div>{{vmpayment.ClassPayList}}
+                       <!--     <div>{{vmpayment.ClassPayList}} -->
                             </div>
                             <div class="col-md-6">
                               <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classPayName" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
                                 <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected}}</ui-select-match>
-                                <ui-select-choices repeat="classPayName in vmpayment.ClassPayList | filter: $select.search">
-                                  <div ng-bind-html="classPayName | highlight: $select.search"></div>
-                                </ui-select-choices>
+<!--                                <ui-select-choices repeat="paylist.classPayName as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: { 'classpayname': $select.search }">
+ -->                               <ui-select-choices repeat="paylist.classPayName as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
+                                <small>
+                                    <p>First: </p>
+                                    <p>Last:</p>
+                                    Payer: <span ng-bind-html="paylist.classPayName | highlight: $select.search"></span>
+                                    <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
+                                </small>
+                                    </ui-select-choices>
                               </ui-select>
                             </div>
                             <div class="col-md-6">

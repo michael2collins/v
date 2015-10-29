@@ -183,20 +183,21 @@ $app->get('/studentclasspaylist',  function() {
     $response["studentclasspaylist"] = array();
 
     // looping through result and preparing  arrays
-    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
+    while ($slist = $result->fetch_assoc()) {
+//    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
         //error_log( print_R("student classpay list results", TRUE ));
         $tmp = array();
-		if (count($slist) > 0) {
-			$tmp["classpayname"] = (empty($slist["classpayname"]) ? "NULL" : $slist["classpayname"]);
-			$tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
-			$tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-			$tmp["contactID"] = (empty($slist["contactID"])  ? "NULL" : $slist["contactID"]);
-		} else {
-			$tmp["classpayname"] = "NULL";
-			$tmp["firstname"] = "NULL";
-			$tmp["lastname"] = "NULL";
-			$tmp["contactID"] = "NULL";
-		}
+        if (count($slist) > 0) {
+            $tmp["classPayName"] = (empty($slist["classPayName"]) ? "NULL" : $slist["classPayName"]);
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["contactID"] = (empty($slist["contactID"])  ? "NULL" : $slist["contactID"]);
+        } else {
+            $tmp["classPayName"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["contactID"] = "NULL";
+        }
         array_push($response["studentclasspaylist"], $tmp);
     }
     $row_cnt = $result->num_rows;

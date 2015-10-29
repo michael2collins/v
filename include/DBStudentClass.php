@@ -80,21 +80,21 @@ class StudentClassDbHandler {
     }
 
     public function getStudentClassPayList() {
-        $sql = 'SELECT distinct p.classPayName as classpayname,
-		c.LastName as lastname,
-		c.FirstName as firstname,
-		p.contactID as contactID
-		FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid  order by p.classPayName ';
+        $sql = 'SELECT distinct p.classPayName as classPayName,
+        c.LastName as lastname,
+        c.FirstName as firstname,
+        p.contactID as contactID
+        FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid  order by p.classPayName ';
 
         if ($stmt = $this->conn->prepare($sql) ) {
             if ($stmt->execute() ) {
                 error_log( print_R("studentclasspay list stmt", TRUE ));
                 error_log( print_R($sql, TRUE ));
                 $slists = $stmt->get_result();
-			
-				if (empty($slists)) {
-					return array();
-				}
+
+                if (empty($slists)) {
+                    return array();
+                }
               //  $row_cnt = $slists->num_rows;
               //  error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
                 $stmt->close();
