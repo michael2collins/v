@@ -89,6 +89,48 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
     echoRespnse(200, $response);
 });
 
+$app->put('/studentclasspaylist/:id',  function($student_id) use($app) {
+    // check for required params
+    //verifyRequiredParams(array('task', 'status'));
+    error_log( print_R("before put student class paylist request", TRUE ));
+
+
+    $request = $app->request();
+    $body = $request->getBody();
+    $studentpayment = json_decode($body);
+
+    error_log( print_R($studentpayment, TRUE ));
+
+    //global $user_id;
+    $contactID = $student_id;
+
+    $classPayName = (empty($studentpayment->classPayName) ? "NULL" : $studentpayment->classPayName);
+
+    error_log( print_R("before update", TRUE ));
+
+    error_log( print_R($contactID, TRUE ));
+    error_log( print_R($classPayName, TRUE ));
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // updating task
+    $result = $db->setStudentClassPay( $contactID,
+                                      $classPayName
+                                     );
+    if ($result) {
+        // task updated successfully
+        $response["error"] = false;
+        $response["message"] = "Student ClassPayName updated successfully";
+    } else {
+        // task failed to update
+        $response["error"] = true;
+        $response["message"] = "Student ClassPayName failed to update. Please try again!";
+    }
+    echoRespnse(200, $response);
+});
+
+
 $app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm',  function($student_id, $classseq, $pgmseq) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));

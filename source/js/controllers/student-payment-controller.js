@@ -22,18 +22,19 @@
         var vmpayment = this;
 
         vmpayment.getStudentPayment = getStudentPayment;
-		vmpayment.getStudentClassPayList = getStudentClassPayList;
+        vmpayment.getStudentClassPayList = getStudentClassPayList;
         vmpayment.updateStudentPayment = updateStudentPayment;
         vmpayment.initclasslist = initclasslist;
 
         vmpayment.StudentPayment = [];
-		vmpayment.ClassPayList = [];
+        vmpayment.ClassPayList = [];
 
         vmpayment.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug('studentid: ' + $routeParams.id);
 
-        vmpayment.classpaylistpath = '../v1/studentclasspaylist';		
-		
+        vmpayment.classpaylistpath = '../v1/studentclasspaylist';
+        vmpayment.updateclasspaylistpath = '../v1/studentclasspaylist/'  + $routeParams.id;
+
         vmpayment.setclasspath = '../v1/studentclass/id/' + $routeParams.id + '/myclass/' + $routeParams.myclass;
         $log.debug('studentid: ' + $routeParams.id);
         $log.debug('StudentPayment: ' + $routeParams.myclass);
@@ -50,7 +51,7 @@
         function initclasslist() {
             $timeout(function () {
                 activate();
-				
+
             }, 2000);
         }
 
@@ -65,11 +66,11 @@
                 $log.debug('getStudentPayment returned data');
                 $log.debug(data.data);
                 vmpayment.StudentPayment = data.data;
-				getStudentClassPayList();
+                getStudentClassPayList();
                 return vmpayment.StudentPayment;
             });
         }
- 
+
         function getStudentClassPayList() {
             return PaymentServices.getClassPayList(vmpayment.classpaylistpath).then(function(data){
                     $log.debug('getStudentClassPayList returned data');
@@ -79,13 +80,13 @@
                     return vmpayment.ClassPayList;
                 });
         }
-   
+
         function updateStudentPayment() {
             $log.debug('about updateStudentPayment ', vmpayment.StudentPayment);
-            return ClassServices.updateStudentClass(vmpayment.path, vmpayment.StudentPayment).then(function (data) {
+            return PaymentServices.updateStudentPayment(vmpayment.updateclasspaylistpath, vmpayment.StudentPayment).then(function (data) {
                 $log.debug('updateStudentPayment returned data: goto', vmpayment.path);
                 $log.debug(data.data);
-                vmpayment.StudentPayment = data.data;
+            //    vmpayment.StudentPayment = data.data;
                 getStudentPayment();
             });
         }
