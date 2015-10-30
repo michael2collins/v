@@ -631,7 +631,7 @@
                               <div ng-class="{'has-error': editstudentpayment.sc_ClassPayName.$invalid, 'has-success': !editstudentpayment.sc_ClassPayName.$invalid}" class="form-group">
                                 <label for="inputsc_ClassPayName" class="control-label">Student Payment</label>
                                 <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentpayment.sc_ClassPayName.$dirty" ng-class="editstudentpayment.sc_ClassPayName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <input id="inputsc_ClassPayName" type="text" placeholder="Student Payment" name="sc_ClassPayName" ng-model="vmpayment.StudentPayment.classPayName" ng-change="vmpayment.updateStudentPayment()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                  <input id="inputsc_ClassPayName" type="text" placeholder="Student Payment" name="sc_ClassPayName" ng-model="vmpayment.StudentPayment.classPayName" ng-change="vmpayment.updateStudentPayment2()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                 </div>
                                 <div style="color:maroon" role="alert" ng-messages="editstudentpayment.sc_ClassPayName.$error" class="has-error">
                                   <div ng-message="required">You did not enter a field</div>
@@ -643,43 +643,25 @@
                             </div>
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="col-md-12">
-                            <div>{{vmpayment.availableColors}}
-                            </div>
-                            <div class="col-md-6">
-                              <ui-select tagging tagging-label="('new')" ng-model="vmpayment.singleDemo.color" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a color">
-                                <ui-select-match allow-clear placeholder="Select color...">{{$select.selected}}</ui-select-match>
-                                <ui-select-choices repeat="color in vmpayment.availableColors | filter: $select.search">
-                                  <div ng-bind-html="color | highlight: $select.search"></div>
-                                </ui-select-choices>
-                              </ui-select>
-                            </div>
-                            <div class="col-md-6">
-                              <p>Selected: {{vmpayment.singleDemo.color}}</p>
-                            </div>
-                          </div>
-                        </div>
 
                         <div class="row">
                           <div class="col-md-12">
                        <!--     <div>{{vmpayment.ClassPayList}} -->
                             </div>
                             <div class="col-md-6">
-                              <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classPayName" ng-change="vmpayment.updateStudentPayment()" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
-                                <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classPayName}}</ui-select-match>
-                               <ui-select-choices repeat="paylist.classPayName as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
+                              <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp"  theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
+                                <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
+                               <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
                                 <small>
-                                    <p>First: </p>
-                                    <p>Last:</p>
-                                    Payer: <span ng-bind-html="paylist.classPayName | highlight: $select.search"></span>
+                                    <p>Name: {{paylist.firstname}} {{fpaylist.lastname}} </p>
+                                    Payer: <span ng-bind-html="paylist.classpaynametmp | highlight: $select.search"></span>
                                     <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
                                 </small>
                                     </ui-select-choices>
                               </ui-select>
                             </div>
                             <div class="col-md-6">
-                              <p>Selected: {{vmpayment.StudentPayment.classPayName}}</p>
+                                <button type="button" ng-click="vmpayment.updateStudentPayment()" class="btn btn-default btn-sm mix-link">Set as {{vmpayment.StudentPayment.classpaynametmp}}</button>
                             </div>
                           </div>
 

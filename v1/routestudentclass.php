@@ -104,7 +104,7 @@ $app->put('/studentclasspaylist/:id',  function($student_id) use($app) {
     //global $user_id;
     $contactID = $student_id;
 
-    $classPayName = (empty($studentpayment->classPayName) ? "NULL" : $studentpayment->classPayName);
+    $classPayName = (empty($studentpayment->classpaynametmp) ? "NULL" : $studentpayment->classpaynametmp);
 
     error_log( print_R("before update", TRUE ));
 
@@ -230,12 +230,12 @@ $app->get('/studentclasspaylist',  function() {
         //error_log( print_R("student classpay list results", TRUE ));
         $tmp = array();
         if (count($slist) > 0) {
-            $tmp["classPayName"] = (empty($slist["classPayName"]) ? "NULL" : $slist["classPayName"]);
+            $tmp["classpaynametmp"] = (empty($slist["classpaynametmp"]) ? "NULL" : $slist["classpaynametmp"]);
             $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
             $tmp["contactID"] = (empty($slist["contactID"])  ? "NULL" : $slist["contactID"]);
         } else {
-            $tmp["classPayName"] = "NULL";
+            $tmp["classpaynametmp"] = "NULL";
             $tmp["firstname"] = "NULL";
             $tmp["lastname"] = "NULL";
             $tmp["contactID"] = "NULL";

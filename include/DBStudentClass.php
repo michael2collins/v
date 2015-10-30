@@ -80,7 +80,7 @@ class StudentClassDbHandler {
     }
 
     public function getStudentClassPayList() {
-        $sql = 'SELECT distinct p.classPayName as classPayName,
+        $sql = 'SELECT distinct p.classPayName as classpaynametmp,
         c.LastName as lastname,
         c.FirstName as firstname,
         p.contactID as contactID

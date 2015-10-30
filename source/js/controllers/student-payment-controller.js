@@ -24,6 +24,7 @@
         vmpayment.getStudentPayment = getStudentPayment;
         vmpayment.getStudentClassPayList = getStudentClassPayList;
         vmpayment.updateStudentPayment = updateStudentPayment;
+        vmpayment.updateStudentPayment2 = updateStudentPayment2;
         vmpayment.initclasslist = initclasslist;
 
         vmpayment.StudentPayment = [];
@@ -46,6 +47,8 @@
         vmpayment.singleDemo = {};
         vmpayment.singleDemo.color = '';
 
+        vmpayment.xtagTransform = xtagTransform;
+
         initclasslist();
 
         function initclasslist() {
@@ -59,6 +62,15 @@
             console.log('payment activate');
 
             getStudentPayment();
+        }
+
+        function xtagTransform(newTag) {
+            console.log('tagTransform');
+            console.log(newTag);
+            var item = {
+                classpaynametmp: newTag};
+
+                return item;
         }
 
         function getStudentPayment() {
@@ -90,6 +102,17 @@
                 getStudentPayment();
             });
         }
+        function updateStudentPayment2() {
+            $log.debug('about updateStudentPayment2 ', vmpayment.StudentPayment);
+            vmpayment.StudentPayment.classpaynametmp = vmpayment.StudentPayment.classPayName;
+            return PaymentServices.updateStudentPayment(vmpayment.updateclasspaylistpath, vmpayment.StudentPayment).then(function (data) {
+                $log.debug('updateStudentPayment returned data: goto', vmpayment.path);
+                $log.debug(data.data);
+            //    vmpayment.StudentPayment = data.data;
+                getStudentPayment();
+            });
+        }
+
         /*
                 function setStudentPayment(mystudent, myclassid, mypgmid) {
                             var setclasspath = '../v1/StudentPayment/id/' + $routeParams.id + '/myclass/' + myclassid + '/mypgm/' + mypgmid;
