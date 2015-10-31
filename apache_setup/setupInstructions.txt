@@ -12,12 +12,14 @@ studentlist.sql
 contactmgmt1.sql
 contact.sql
 nclassalter.sql  (note others were collapsed into this on 10/22/15
+contactpictureurl.sql
 
 setup composer for php see slim
 http://docs.slimframework.com/start/get-started/#composer-install
 http://www.androidhive.info/2014/01/how-to-create-rest-api-for-android-app-using-php-slim-and-mysql-day-23/
 
-
+php C:\ProgramData\ComposerSetup\bin\composer.phar self-update
+composer require flowjs/flow-php-server
 
 change httpd.conf to include vdojo conf from v/v
  (last extra and had to comment out httpd-xampp.conf

@@ -1,21 +1,7 @@
 {
     "require": {
         "slim/slim": "~2.6",
-        "php": ">=5.4"
-		}
+        "php": ">=5.4",
+        "flowjs/flow-php-server": "^1.0"
+        }
 }
-//        "slim/extras": "*",
-//        "slim/middleware": "*",
-//        "monolog/monolog": "*",
-//        "j4mie/paris": "*",
-//        "flynsarmy/slim-monolog": "*"
-//    },
-//    "archive": {
-//        "exclude": ["vendor", ".DS_Store", "*.log"]
-//    },
-//    "autoload": {
-//        "psr-0": {
-//            "API": "lib/"
-//        }
-//    }
-

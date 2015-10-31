@@ -2,45 +2,59 @@
     'use strict';
 angular
     .module('ng-admin', [
-        'ui.grid',    
-		'ui.utils',
-		'ui.mask',
-        'ngRoute',    
-        'ui.bootstrap',    
-		'toggle-switch',
-        'ngTouch',  
-		'ngMessages',
+        'ui.grid',
+        'ui.utils',
+        'ui.mask',
+        'ngRoute',
+        'ui.bootstrap',
+        'toggle-switch',
+        'ngTouch',
+        'ngMessages',
         'ui.grid.pagination',
-        'ui.grid.cellNav', 
-        'ui.grid.edit', 
+        'ui.grid.cellNav',
+        'ui.grid.edit',
         'ui.grid.selection',
-		'ui.select',
+        'ui.select',
                 'iso.directives',
-				'ngSanitize'
-		//		'dynamicLayout'
+                'ngSanitize',
+                'flow'
+        //        'dynamicLayout'
         ])
-		
-		// allow DI for use in controllers, unit tests for lodash
-		.constant('_', window._)
-		
-		// use in views, ng-repeat="x in _.range(3)"
-		.run(function ($rootScope) {
-			$rootScope._ = window._;
-		})		
-		.config(logConfig)
-		.config(routeConfig)
-		// Initialize the application
-		.run(['$location', function AppRun($location) {
-		  //  debugger; // -->> here i debug the $location object to see what angular see's as URL
+
+        // allow DI for use in controllers, unit tests for lodash
+        .constant('_', window._)
+
+        // use in views, ng-repeat="x in _.range(3)"
+        .run(function ($rootScope) {
+            $rootScope._ = window._;
+        })
+        .config(logConfig)
+        .config(routeConfig)
+        .config(['flowFactoryProvider', function (flowFactoryProvider) {
+            flowFactoryProvider.defaults = {
+                target: 'upload.php',
+                permanentErrors: [404, 500, 501],
+                maxChunkRetries: 1,
+                chunkRetryInterval: 5000,
+                simultaneousUploads: 4,
+                singleFile: true};
+            // You can also set default events:
+            flowFactoryProvider.on('catchAll', function (event) {
+            });
+        }])
+
+        // Initialize the application
+        .run(['$location', function AppRun($location) {
+          //  debugger; // -->> here i debug the $location object to see what angular see's as URL
 }]);
-    
+
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider','$locationProvider'];
-    
+//    flowConfig.$inject = ['flowFactoryProvider'];
+
     function logConfig($logProvider){
         $logProvider.debugEnabled(true);
     }
-
 
     function routeConfig($routeProvider, $locationProvider) {
         $routeProvider
@@ -76,10 +90,10 @@ angular
          //   controller: 'FormLayoutsControllerNewStudent'
             })
         .when('/form-layouts-editstudent/id/:id', {
-            templateUrl: 'templates/states/form-layouts-editstudent.html' 
+            templateUrl: 'templates/states/form-layouts-editstudent.html'
             })
         .when('/form-layouts-editstudent/id/:id/myclass/:myclass', {
-            templateUrl: 'templates/states/form-layouts-editstudent.html' 
+            templateUrl: 'templates/states/form-layouts-editstudent.html'
             })
         .when('/table-basic-attendance', {
             templateUrl: 'templates/states/table-basic-attendance.html'
@@ -88,7 +102,7 @@ angular
         .otherwise({
             redirectTo: '/'
           });
-        $locationProvider.html5Mode(true);  
-    //    $locationProvider.hashPrefix('!'); 
+        $locationProvider.html5Mode(true);
+    //    $locationProvider.hashPrefix('!');
     }
 })();
