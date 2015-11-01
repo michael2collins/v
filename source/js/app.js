@@ -31,19 +31,19 @@ angular
         .config(logConfig)
         .config(routeConfig)
         .config(['flowFactoryProvider', function (flowFactoryProvider) {
-            flowFactoryProvider.defaults = {
-                target: 'upload.php',
-                permanentErrors: [404, 500, 501],
-                maxChunkRetries: 1,
-                chunkRetryInterval: 5000,
-                simultaneousUploads: 4,
-                singleFile: true};
-            // You can also set default events:
-            flowFactoryProvider.on('catchAll', function (event) {
-            });
+          flowFactoryProvider.defaults = {
+            target: 'upload.php',
+            permanentErrors: [404, 500, 501],
+            maxChunkRetries: 1,
+            chunkRetryInterval: 5000,
+            simultaneousUploads: 4,
+            singleFile: true
+          };
+          flowFactoryProvider.on('catchAll', function (event) {
+            console.log('catchAll', arguments);
+          })
         }])
-
-        // Initialize the application
+         // Initialize the application
         .run(['$location', function AppRun($location) {
           //  debugger; // -->> here i debug the $location object to see what angular see's as URL
 }]);
