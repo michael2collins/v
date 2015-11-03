@@ -671,7 +671,7 @@
   <h1>flow image example</h1>
   <hr class="soften"/>
 
-  <div         flow-init
+  <div         flow-init="{target: '/v1/upload.php'}"
       flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
       flow-files-submitted="$flow.upload()">
     <div class="thumbnail" ng-hide="$flow.files.length">
@@ -681,8 +681,10 @@
       <img flow-img="$flow.files[0]" />
     </div>
     <div>
-      <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Select image</a>
+        <input type="file" flow-btn />
+<!--      <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Select image</a>
       <a href="#" class="btn" ng-show="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Change</a>
+      -->
       <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
          ng-click="$flow.cancel()">
         Remove
@@ -691,6 +693,12 @@
     <p>
       Only PNG,GIF,JPG files allowed.
     </p>
+    <table>
+    <tr ng-repeat="file in $flow.files">
+    <td>{{$index+1}}</td>
+    <td>{{file.name}}</td>
+    </tr>
+      </table>
   </div>
 </div>
                   </div>
