@@ -41,7 +41,7 @@ angular
           };
           flowFactoryProvider.on('catchAll', function (event) {
             console.log('catchAll', arguments);
-          })
+          });
         }])
          // Initialize the application
         .run(['$location', function AppRun($location) {
