@@ -694,7 +694,7 @@
       Only PNG,GIF,JPG files allowed.
     </p>
     <table>
-    <tr ng-repeat="file in $flow.files">
+    <tr ng-repeat="file in $flow.files" ng-model="vmstudent.students.pictureurl" ng-change="vmstudent.updateStudent()">
     <td>{{$index+1}}</td>
     <td>{{file.name}}</td>
     </tr>

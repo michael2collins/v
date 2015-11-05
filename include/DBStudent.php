@@ -86,6 +86,7 @@ class StudentDbHandler {
                    t.EmergencyContact,
                    t.CurrentIARank,
                    t.ReadyForNextRank,
+                   t.pictureurl,
                    t.nextScheduledTest
         from ncontacts t WHERE t.ID = ? ");
         $stmt->bind_param("i", $student_id);
@@ -131,6 +132,7 @@ class StudentDbHandler {
                 $EmergencyContact,
                 $CurrentIARank,
                 $ReadyForNextRank,
+                $pictureurl,
                 $nextScheduledTest
             );
             // TODO
@@ -178,6 +180,7 @@ class StudentDbHandler {
             $res["EmergencyContact"] = $EmergencyContact;
             $res["CurrentIARank"] = $CurrentIARank;
             $res["ReadyForNextRank"] = $ReadyForNextRank;
+            $res["pictureurl"] = $pictureurl;
             $res["nextScheduledTest"] = $nextScheduledTest;
             $stmt->close();
             return $res;
@@ -220,6 +223,7 @@ class StudentDbHandler {
                                   $instructorTitle,
                                   $CurrentRank,
                                   $CurrentReikiRank,
+                                  $pictureurl,
                                   $CurrentIARank    ) {
         $num_affected_rows = 0;
 
@@ -253,6 +257,7 @@ class StudentDbHandler {
         $sql .= " t.instructorTitle = ?,";
         $sql .= " t.CurrentRank = ?,";
         $sql .= " t.CurrentReikiRank = ?,";
+        $sql .= " t.pictureurl = ?,";
         $sql .= " t.CurrentIARank = ? ";
 
 
@@ -288,12 +293,13 @@ class StudentDbHandler {
         error_log( print_R($instructorTitle, TRUE ));
         error_log( print_R($CurrentRank, TRUE ));
         error_log( print_R($CurrentReikiRank, TRUE ));
+        error_log( print_r($pictureurl, TRUE ));
         error_log( print_R($CurrentIARank, TRUE ));
         error_log( print_R($student_id, TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sssssssssssssssssssssssdissssi",
+            $stmt->bind_param("sssssssssssssssssssssssdisssssi",
                               $LastName,
                               $FirstName    ,
                               $Email    ,
@@ -324,6 +330,7 @@ class StudentDbHandler {
                               $CurrentRank    ,
                               $CurrentReikiRank    ,
                               $CurrentIARank    ,
+                              $pictureurl,
                               $student_id    );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;

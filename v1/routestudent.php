@@ -120,6 +120,7 @@ $app->get('/students/:id',  function($student_id) {
         $response["EmergencyContact"] = $result["EmergencyContact"];
         $response["CurrentIARank"] = $result["CurrentIARank"];
         $response["ReadyForNextRank"] = $result["ReadyForNextRank"];
+        $response["pictureurl"] = $result["pictureurl"];
         $response["nextScheduledTest"] = $result["nextScheduledTest"];
         echoRespnse(200, $response);
     } else {
@@ -175,6 +176,7 @@ $app->put('/students/:id',  function($student_id) use($app) {
     $instructorTitle = $student->instructorTitle;
     $CurrentRank = $student->CurrentRank;
     $CurrentReikiRank = $student->CurrentReikiRank;
+    $pictureurl = $student->pictureurl;
     $CurrentIARank = $student->CurrentIARank;
 
     error_log( print_R("before update", TRUE ));
@@ -208,6 +210,7 @@ $app->put('/students/:id',  function($student_id) use($app) {
     error_log( print_R($instructorTitle, TRUE ));
     error_log( print_R($CurrentRank, TRUE ));
     error_log( print_R($CurrentReikiRank, TRUE ));
+    error_log( print_r($pictureurl, TRUE));
     error_log( print_R($CurrentIARank, TRUE ));
     error_log( print_R($student_id, TRUE ));
 
@@ -245,6 +248,7 @@ $app->put('/students/:id',  function($student_id) use($app) {
                                  $instructorTitle,
                                  $CurrentRank,
                                  $CurrentReikiRank,
+                                 $pictureurl,
                                  $CurrentIARank
 
                                 );
