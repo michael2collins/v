@@ -44,10 +44,12 @@
                 }
 
                 function onLoadImage() {
-                    var width = params.width || this.width / this.height * params.height;
-                    var height = params.height || this.height / this.width * params.width;
+                     /* jshint validthis: true */
+                    var im = this;
+                    var width = params.width || im.width / im.height * params.height;
+                    var height = params.height || im.height / im.width * params.width;
                     canvas.attr({ width: width, height: height });
-                    canvas[0].getContext('2d').drawImage(this, 0, 0, width, height);
+                    canvas[0].getContext('2d').drawImage(im, 0, 0, width, height);
                 }
             }
         };

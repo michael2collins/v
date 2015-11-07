@@ -252,6 +252,9 @@
     "DIRTY_CLASS": false,
 
 
-    "nullFormCtrl": false
+    "nullFormCtrl": false,
+
+    "FileReader": false,
+    "Image": false
     }
 }
