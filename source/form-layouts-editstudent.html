@@ -546,59 +546,59 @@
                             </div>
                           </div>
                         </div>
+                      </div>
                     </form>
-                    </div>
-                    <!--          <div>xlistnew is:
+                  </div>
+                  <!--          <div>xlistnew is:
                                  {{vmclass.xlistnew}}</div>
                                  -->
-                    <!--<div>{{vmclass.classcategories}}</div> -->
-                    <div>{{vmclass.concat}}</div>
-                    <!--     <div>{{vmclass.xListcat}}</div>
+                  <!--<div>{{vmclass.classcategories}}</div> -->
+                  <div>{{vmclass.concat}}</div>
+                  <!--     <div>{{vmclass.xListcat}}</div>
                                  -->
-                    <div class="">
-                      <div opt-kind="" ok-key="filter" class="btn-group filters-button-group">
-                        <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default">Show All</button>
-                      </div>
+                  <div class="">
+                    <div opt-kind="" ok-key="filter" class="btn-group filters-button-group">
+                      <button ok-sel="*" ng-click="vmclass.clearSelect()" class="btn btn-default">Show All</button>
                     </div>
-                    <div class="">
-                      <div opt-kind="" ok-key="filter" class="btn-group filters-button-groupcat">
-                        <button ng-click="vmclass.clearCatSelect()" class="btn btn-default active">Show All</button>
-                        <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catset('{{category}}')" ng-model="classcategories" ng-repeat="category in vmclass.classcategories" class="btn btn-default">{{category}}</button>
-                      </div>
+                  </div>
+                  <div class="">
+                    <div opt-kind="" ok-key="filter" class="btn-group filters-button-groupcat">
+                      <button ng-click="vmclass.clearCatSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.catset('{{category}}')" ng-model="classcategories" ng-repeat="category in vmclass.classcategories" class="btn btn-default">{{category}}</button>
                     </div>
-                    <div class="">
-                      <div opt-kind="" ok-key="filter" class="btn-group filters-button-groupage">
-                        <!--                      <button ok-sel="*" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button> -->
-                        <button ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
-                        <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.ageset('{{age}}')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
-                      </div>
+                  </div>
+                  <div class="">
+                    <div opt-kind="" ok-key="filter" class="btn-group filters-button-groupage">
+                      <!--                      <button ok-sel="*" ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button> -->
+                      <button ng-click="vmclass.clearAgeSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.ageset('{{age}}')" ng-model="agecategories" ng-repeat="age in vmclass.agecategories" class="btn btn-default">{{age}}</button>
                     </div>
-                    <div class="">
-                      <div opt-kind="" ok-key="filter" class="btn-group filters-button-grouppgm">
-                        <button ng-click="vmclass.clearPgmSelect()" class="btn btn-default active">Show All</button>
-                        <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.pgmset('{{pgm}}')" ng-model="pgmcategories" ng-repeat="pgm in vmclass.pgmcategories" class="btn btn-default">{{pgm}}</button>
-                      </div>
+                  </div>
+                  <div class="">
+                    <div opt-kind="" ok-key="filter" class="btn-group filters-button-grouppgm">
+                      <button ng-click="vmclass.clearPgmSelect()" class="btn btn-default active">Show All</button>
+                      <button ok-sel="{{vmclass.concat}}" ng-click="vmclass.pgmset('{{pgm}}')" ng-model="pgmcategories" ng-repeat="pgm in vmclass.pgmcategories" class="btn btn-default">{{pgm}}</button>
                     </div>
-                    <div class="">
-                      <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
-                        <!--           <div>xlist is:
+                  </div>
+                  <div class="">
+                    <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
+                      <!--           <div>xlist is:
                                        {{vmclass.xList.xList}}</div>             -->
-                        <!--                      <dv ng-repeat="x in vmclass.xList.xList track by x.class" isotope-item=""  class="col-md-3 mix {{x.classcat[0]}} {{x.agecat[0]}} {{x.programcat[0]}}">
+                      <!--                      <dv ng-repeat="x in vmclass.xList.xList track by x.class" isotope-item=""  class="col-md-3 mix {{x.classcat[0]}} {{x.agecat[0]}} {{x.programcat[0]}}">
                                        -->
-                        <div ng-repeat="x in vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
-                          <div>
-                            <!--{{x.classcat[0]}} {{x.agecat[0]}} {{x.pgmcat[0]}} -->
+                      <div ng-repeat="x in vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
+                        <div>
+                          <!--{{x.classcat[0]}} {{x.agecat[0]}} {{x.pgmcat[0]}} -->
+                        </div>
+                        <div class="hover-effect">
+                          <div class="img">
+                            <img ng-src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive" />
                           </div>
-                          <div class="hover-effect">
-                            <div class="img">
-                              <img ng-src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive" />
-                            </div>
-                            <div class="info">
-                              <!--                            <h3>{{x.class}}</h3><a href="./#/form-layouts-editstudent/id/{{vmclass.studentclass.contactID}}/class/{{x.id}}" class="mix-link" "><i ng-click="vmclass.setStudentClass()" class="glyphicon glyphicon-link"></i>Set class as<br/>{{x.class}}</a> -->
-                              <h3>{{x.class}} - {{x.pgm}}</h3>
-                              <div>
-                                <button type="button" ng-click="vmclass.setStudentClass({{vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}})" class="btn btn-default btn-sm mix-link">Set as {{x.class}} - {{x.pgm}}</button>
-                              </div>
+                          <div class="info">
+                            <!--                            <h3>{{x.class}}</h3><a href="./#/form-layouts-editstudent/id/{{vmclass.studentclass.contactID}}/class/{{x.id}}" class="mix-link" "><i ng-click="vmclass.setStudentClass()" class="glyphicon glyphicon-link"></i>Set class as<br/>{{x.class}}</a> -->
+                            <h3>{{x.class}} - {{x.pgm}}</h3>
+                            <div>
+                              <button type="button" ng-click="vmclass.setStudentClass({{vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}})" class="btn btn-default btn-sm mix-link">Set as {{x.class}} - {{x.pgm}}</button>
                             </div>
                           </div>
                         </div>
@@ -610,6 +610,7 @@
             </div>
           </div>
         </div>
+
       </uib-tab>
       <uib-tab id="tab-student" heading="Payment">
         <div class="row" ng-controller="StudentPaymentController as vmpayment">
@@ -645,62 +646,98 @@
                         </div>
 
                         <div class="row">
-                          <div class="col-md-12">
-                       <!--     <div>{{vmpayment.ClassPayList}} -->
-                            </div>
-                            <div class="col-md-6">
-                              <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp"  theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
-                                <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
-                               <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
+                          <div class="col-md-6">
+                            <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
+                              <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
+                              <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
                                 <small>
                                     <p>Name: {{paylist.firstname}} {{fpaylist.lastname}} </p>
                                     Payer: <span ng-bind-html="paylist.classpaynametmp | highlight: $select.search"></span>
                                     <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
                                 </small>
-                                    </ui-select-choices>
-                              </ui-select>
-                            </div>
-                            <div class="col-md-6">
-                                <button type="button" ng-click="vmpayment.updateStudentPayment()" class="btn btn-default btn-sm mix-link">Set as {{vmpayment.StudentPayment.classpaynametmp}}</button>
-                            </div>
+                              </ui-select-choices>
+                            </ui-select>
                           </div>
+                          <div class="col-md-6">
+                            <button type="button" ng-click="vmpayment.updateStudentPayment()" class="btn btn-default btn-sm mix-link">Set as {{vmpayment.StudentPayment.classpaynametmp}}</button>
+                          </div>
+                        </div>
 
                       </div>
                     </form>
-                    <div class="container">
-  <h1>flow image example</h1>
-  <hr class="soften"/>
+                    <!-- Example: nv-file-drop="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                    <div class="row" ng-controller="StudentUploadController as vmstupicupload" nv-file-drop="" uploader="vmstupicupload.uploader">
+                      <div class="col-lg-12">
+                        <div >
 
-  <div         flow-init="{target: '/v1/upload.php'}"
-      flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
-      flow-files-submitted="$flow.upload()">
-    <div class="thumbnail" ng-hide="$flow.files.length">
-      <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
-    </div>
-    <div class="thumbnail" ng-show="$flow.files.length">
-      <img flow-img="$flow.files[0]" />
-    </div>
-    <div>
-        <input type="file" flow-btn />
-<!--      <a href="#" class="btn" ng-hide="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Select image</a>
-      <a href="#" class="btn" ng-show="$flow.files.length" flow-btn flow-attrs="{accept:'image/*'}">Change</a>
-      -->
-      <a href="#" class="btn btn-danger" ng-show="$flow.files.length"
-         ng-click="$flow.cancel()">
-        Remove
-      </a>
-    </div>
-    <p>
-      Only PNG,GIF,JPG files allowed.
-    </p>
-    <table>
-    <tr ng-repeat="file in $flow.files" ng-model="vmstudent.students.pictureurl" ng-change="vmstudent.updateStudent()">
-    <td>{{$index+1}}</td>
-    <td>{{file.name}}</td>
-    </tr>
-      </table>
-  </div>
-</div>
+                          <div class="col-md-3">
+                            <h4>Student Picture</h4>
+                            <!-- Example: nv-file-select="" uploader="{Object}" options="{Object}" filters="{String}" -->
+                            <input type="file" nv-file-select="" uploader="vmstupicupload.uploader" single />
+                            <br/>
+
+                          </div>
+
+                          <div class="col-md-9" style="margin-bottom: 40px">
+                            <!--    <h2>Uploads only images (with canvas preview)</h2>
+                            <h3>The queue</h3>
+                            <p>Queue length: {{ vmstupicupload.uploader.queue.length }}</p>
+-->
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th width="20%">Name</th>
+                                  <th ng-show="vmstupicupload.uploader.isHTML5">Size</th>
+                                  <th ng-show="vmstupicupload.uploader.isHTML5">Progress</th>
+                                  <th>Status</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr ng-repeat="item in vmstupicupload.uploader.queue">
+                                  <td>
+                                    <strong>{{ item.file.name }}</strong>
+                                    <!-- Image preview -->
+                                    <!--auto height-->
+                                    <!--<div ng-thumb="{ file: item.file, width: 100 }"></div>-->
+                                    <!--auto width-->
+                                    <div ng-show="vmstupicupload.uploader.isHTML5" ng-thumbupload="{ file: item._file, height: 100 }"></div>
+                                    <!--fixed width and height -->
+                                    <!--<div ng-thumb="{ file: item.file, width: 100, height: 100 }"></div>-->
+                                  </td>
+                                  <td ng-show="vmstupicupload.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                  <td ng-show="vmstupicupload.uploader.isHTML5">
+                                    <div class="progress" style="margin-bottom: 0;">
+                                      <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                    </div>
+                                  </td>
+                                  <td class="text-center">
+                                    <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                    <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                    <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                  </td>
+                                  <td nowrap>
+                                    <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                      <span class="glyphicon glyphicon-upload"></span> Upload
+                                    </button>
+                                    <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                      <span class="glyphicon glyphicon-ban-circle"></span> Cancel
+                                    </button>
+                                    <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                                      <span class="glyphicon glyphicon-trash"></span> Remove
+                                    </button>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+
+                          </div>
+
+
+
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

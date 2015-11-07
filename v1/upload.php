@@ -1,22 +1,12 @@
-//Path to autoload.php from current location
 <?php
-require_once '../vendor/autoload.php';
-
-
-$config = new \Flow\Config();
-$config->setTempDir('../chunks_temp_folder');
-$request = new \Flow\Request();
-$id = $request->getIdentifier();
-   error_log( print_R( "the student picture to save is: $id", TRUE ));
-//echo "the student picture to save is: $request->getIdentifier()";
-
-if (\Flow\Basic::save('../app/images/students/' . $request->getFileName(), $config, $request)) {
-  // file saved successfully and can be accessed at './final_file_destination'
-   error_log( print_R( "the student picture is saved", TRUE ));
-  // echo "saved";
+if ( !empty( $_FILES ) ) {
+    $tempPath = $_FILES[ 'file' ][ 'tmp_name' ];
+    $uploadPath = dirname( __FILE__ ) . DIRECTORY_SEPARATOR . '../app' . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'students' . DIRECTORY_SEPARATOR . $_FILES[ 'file' ][ 'name' ];
+    move_uploaded_file( $tempPath, $uploadPath );
+    $answer = array( 'answer' => 'File transfer completed' );
+    $json = json_encode( $answer );
+    echo $json;
 } else {
-  // This is not a final chunk or request is invalid, continue to upload.
-   error_log( print_R( "the student picture continues or has failed", TRUE ));
-  // echo "saving or died";
+    echo 'No files';
 }
 ?>

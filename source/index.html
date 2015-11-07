@@ -174,6 +174,7 @@
     <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.jquery.min.js"></script>
     <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.proto.min.js"></script>
 
+   <!--
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-flow/2.6.1/ng-flow-standalone.js"></script>
 
       <style>
@@ -181,6 +182,26 @@
       max-width: 200px; max-height: 150px; line-height: 20px; margin-bottom: 5px;
     }
   </style>
+-->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-file-upload/1.1.6/angular-file-upload.js"></script>
+
+<style>
+            .my-drop-zone { border: dotted 3px lightgray; }
+            .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+            .another-file-over-class { border: dotted 3px green; }
+            html, body { height: 100%; }
+            canvas {
+                background-color: #f3f3f3;
+                -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+                -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+                box-shadow: 3px 3px 3px 0 #e3e3e3;
+                border: 1px solid #c3c3c3;
+                height: 100px;
+                margin: 6px 0 0 6px;
+            }
+        </style>
+
 
 <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
 <!--    <script src="js/main.js"></script>    -->
@@ -218,6 +239,8 @@
   <script type="text/javascript" src="js/services/studentServices.js"></script>
    <script type="text/javascript" src="js/services/classServices.js"></script>
    <script type="text/javascript" src="js/controllers/student-class-controller.js"></script>
+   <script type="text/javascript" src="js/controllers/student-upload-controller.js"></script>
+   <script type="text/javascript" src="js/directives/ngThumbupload.js"></script>
 
      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
 
