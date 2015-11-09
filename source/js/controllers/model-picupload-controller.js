@@ -16,7 +16,8 @@
       '$scope',
       '$log',
       '$uibModalInstance',
-      'picfile'
+      'picfile',
+      'StudentServices'
     ];
 
 
@@ -27,51 +28,46 @@
     vmpicmodal.animationsEnabled = true;
 
     vmpicmodal.open = open;
-    vmpicmodal.toggleAnimation = toggleAnimation;
-    vmpicmodal.picfile = ''; //or should we get this from the db
+    vmpicmodal.pic = ''; //or should we get this from the db
+    vmpicmodal.modalInstance = undefined;
 
     function open() {
 
-      var modalInstance = $uibModal.open({
+       vmpicmodal.modalInstance = $uibModal.open({
         animation: vmpicmodal.animationsEnabled,
         templateUrl: 'myPickupload.html',
-        controller: 'ModalPicInstanceController',
+        controller: 'ModalPicInstanceController as vmpicselect',
         size: 'lg',
         resolve: {
           picfile: function () {
-            return vmpicmodal.picfile;
+            return vmpicmodal.picFile;
           }
         }
       });
 
-      modalInstance.result.then(function (selectedpic) {
+      vmpicmodal.modalInstance.result.then(function (selectedpic) {
         vmpicmodal.picfile = selectedpic;
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
     };
 
-
-    function toggleAnimation() {
-      vmpicmodal.animationsEnabled = !vmpicmodal.animationsEnabled;
-    };
-
-
   }
 
-  function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile) {
+  function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile, StudentServices) {
     /* jshint validthis: true */
     var vmpicselect = this;
     vmpicselect.ok = ok;
     vmpicselect.cancel = cancel;
 
+
     vmpicselect.picfile = picfile;
-    vmpicselect.selected = {
-      pic: vmpicselect.picfile
-    }
 
     function ok() {
-      $uibModalInstance.close(vmpicselect.selected.pic);
+      console.log('hit ok');
+      vmpicselect.picFile = StudentServices.getstudentPicFile();
+      console.log('got file for ok:' + vmpicselect.picFile);
+      $uibModalInstance.close(vmpicselect.picFile);
     };
 
     function cancel() {

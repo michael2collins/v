@@ -2,22 +2,34 @@
     'use strict';
 
     angular
-        .module('ng-admin')    
+        .module('ng-admin')
     .factory('StudentServices', StudentServices);
-    
+
     StudentServices.$inject = ['$http','$log'];
 
     function StudentServices( $http, $log ) {
+        var picFile = '';
         var service = {
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
             getStudentLists: getStudentLists,
             getRankList: getRankList,
             updateStudent: updateStudent,
-            getStudent: getStudent
+            getStudent: getStudent,
+            getstudentPicFile: getstudentPicFile,
+            setstudentPicFile: setstudentPicFile
         };
         return service;
-        
+
+        function getstudentPicFile() {
+          $log.debug('getStuPicfile: ' + picFile);
+          return picFile;
+        }
+        function setstudentPicFile(pic) {
+          $log.debug('setStuPicfile: ' + pic);
+          picFile = pic;
+        }
+
         function getAllStudents(path) {
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
@@ -54,7 +66,7 @@
                 success(function(data, status, headers, config) {
                     $log.debug('updateStudent success:' + path);
                     $log.debug(data);
-                  
+
                     return data;
                 }).
                 error(function(data, status, headers, config) {
@@ -110,4 +122,4 @@
         }
 
         }
- })();  
+ })();

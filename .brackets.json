@@ -10,7 +10,7 @@
     "dnbard.documents-toolbar.brackets_font": true,
     "dnbard.documents-toolbar.grayscaleIcons": false,
     "dnbard.documents-toolbar.showCloseButton": true,
-    "brackets-git.gitPath": "git",
+    "brackets-git.gitPath": "C:\\Program Files (x86)\\Git\\cmd\\git.exe",
     "brackets-git.stripWhitespaceFromCommits": true,
     "brackets-git.addEndlineToTheEndOfFile": true,
     "brackets-git.removeByteOrderMark": false,
