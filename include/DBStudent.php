@@ -293,7 +293,7 @@ class StudentDbHandler {
         error_log( print_R($instructorTitle, TRUE ));
         error_log( print_R($CurrentRank, TRUE ));
         error_log( print_R($CurrentReikiRank, TRUE ));
-        error_log( print_r($pictureurl, TRUE ));
+        error_log( print_R($pictureurl, TRUE ));
         error_log( print_R($CurrentIARank, TRUE ));
         error_log( print_R($student_id, TRUE ));
 
@@ -329,8 +329,8 @@ class StudentDbHandler {
                               $instructorTitle    ,
                               $CurrentRank    ,
                               $CurrentReikiRank    ,
-                              $CurrentIARank    ,
                               $pictureurl,
+                              $CurrentIARank    ,
                               $student_id    );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;

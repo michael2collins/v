@@ -22,6 +22,7 @@
         vmstudent.getStudentLists = getStudentLists;
         vmstudent.getRankList = getRankList;
         vmstudent.updateStudent = updateStudent;
+        vmstudent.setStudentPIC = setStudentPIC;
         vmstudent.students = [];
         vmstudent.genders = [];
         vmstudent.zipList = [];
@@ -119,6 +120,21 @@
             $log.debug('about updateStudent ', vmstudent.students);
             return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
                 $log.debug('updateStudent returned data: goto', vmstudent.path);
+                $log.debug(data.data);
+                vmstudent.students = data.data;
+                //          $log.debug('set route', $routeParams);
+                //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
+                //          return vmstudent.students;
+                getStudent();
+            });
+        }
+
+        function setStudentPIC(pic) {
+            $log.debug('about setStudentPIC ', pic);
+            vmstudent.students.pictureurl = pic;
+            $log.debug('about setStudentPIC ', vmstudent.students);
+            return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
+                $log.debug('setStudentPIC returned data: goto', vmstudent.path);
                 $log.debug(data.data);
                 vmstudent.students = data.data;
                 //          $log.debug('set route', $routeParams);

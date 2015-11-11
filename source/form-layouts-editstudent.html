@@ -148,11 +148,23 @@
                               </script>
 
                               <div class="col-md-10">
+                               <!--
                                 <div ng-hide="vmstudent.students.pictureurl" class="form-group">
                                   <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
-                                    <input id="inputpictureurl" type="text" placeholder="File Name" name="pictureurl" ng-model="vmstudent.students.pictureurl" ng-change="vmstudent.updateStudent()" ng-value="vmpicmodal.picfile" minLength="2" maxLength="30" class="form-control">
+                                    <input id="inputpictureurl" type="text" placeholder="File Name" name="pictureurl" ng-model="vmstudent.students.pictureurl" ng-value="vmpicmodal.picfile" minLength="2" maxLength="30" class="form-control">
                                   </div>
-                                </div>
+                                  <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
+
+                                  </div>
+
+
+
+                                </div> -->
+
+                                  <input ng-hide="true" id="picfile" type="text" placeholder="File Name" name="picfile" ng-model="vmpicmodal.picfile" class="form-control">
+
+                                  <button type="button" class="btn btn-default" ng-show="vmpicmodal.picfile" ng-click="vmstudent.setStudentPIC(vmpicmodal.picfile); vmpicmodal.picfile=''">Save Picture</button>
+
                               </div>
                               <div class="col-md-2 ">
                                 <a href="#" ng-click="vmpicmodal.open()"><i class="glyphicon glyphicon-upload"></i>

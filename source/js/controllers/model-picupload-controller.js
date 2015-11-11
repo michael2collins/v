@@ -50,7 +50,7 @@
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
-    };
+    }
 
   }
 
@@ -68,11 +68,11 @@
       vmpicselect.picFile = StudentServices.getstudentPicFile();
       console.log('got file for ok:' + vmpicselect.picFile);
       $uibModalInstance.close(vmpicselect.picFile);
-    };
+    }
 
     function cancel() {
       $uibModalInstance.dismiss('cancel');
-    };
+    }
 
   }
 
