@@ -17,6 +17,7 @@
             updateStudent: updateStudent,
             getStudent: getStudent,
             getstudentPicFile: getstudentPicFile,
+            getstudentPicFiles: getstudentPicFiles,
             setstudentPicFile: setstudentPicFile
         };
         return service;
@@ -25,7 +26,25 @@
           $log.debug('getStuPicfile: ' + picFile);
           return picFile;
         }
-        function setstudentPicFile(pic) {
+
+      function getstudentPicFiles(path) {
+          $log.debug('getStuPicfiles ');
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStuPicfiles success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStuPicfiles failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+
+      function setstudentPicFile(pic) {
           $log.debug('setStuPicfile: ' + pic);
           picFile = pic;
         }
@@ -45,6 +64,7 @@
                     // or server returns response with an error status.
                 });
         }
+
         function getStudent(path) {
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {

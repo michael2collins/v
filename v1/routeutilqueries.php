@@ -47,5 +47,31 @@ $app->get('/ranklist',  function() {
     echoRespnse(200, $response);
 });
 
+$app->get('/studentfiles',  function() {
+
+    $app = \Slim\Slim::getInstance();
+
+  //return list of files/pictures from student dir
+
+    $files = array();
+
+    $dir = opendir('../app/images/students');
+    while ($file = readdir($dir)) {
+        if ($file == '.' || $file == '..') {
+            continue;
+        }
+
+        $files[] = $file;
+    }
+
+    // Http response code
+    $app->status(200);
+
+    // setting response content type to json
+    $app->contentType('application/json');
+
+    echo json_encode($files);
+
+});
 
 ?>

@@ -59,9 +59,27 @@
     var vmpicselect = this;
     vmpicselect.ok = ok;
     vmpicselect.cancel = cancel;
-
-
     vmpicselect.picfile = picfile;
+    vmpicselect.picfilelist = [];
+    vmpicselect.getFiles = getFiles;
+    vmpicselect.picpath = '../v1/studentfiles';
+
+    activate();
+
+    function activate() {
+      getFiles();
+    }
+
+    function getFiles() {
+      console.log('getfiles');
+            return StudentServices.getstudentPicFiles(vmpicselect.picpath).then(function (data) {
+                $log.debug('getstudentPicFiles returned data');
+                $log.debug(data.data);
+                vmpicselect.picfileList = data.data;
+
+                return vmpicselect.picfileList;
+            });
+        }
 
     function ok() {
       console.log('hit ok');

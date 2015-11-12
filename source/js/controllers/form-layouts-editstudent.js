@@ -43,6 +43,7 @@
         vmstudent.path = '../v1/students/' + $routeParams.id;
         //      vmstudent.path = '../v1/students/5340';
         vmstudent.zippath = '../v1/zips';
+
         vmstudent.sListPath = '../v1/studentlists';
         vmstudent.rankListPath = '../v1/ranklist';
 
