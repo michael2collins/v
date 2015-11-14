@@ -21,7 +21,7 @@
     ];
 
 
-  function ModalPicUploadController($scope, $log, $uibModal) {
+  function ModalPicUploadController($scope,  $log, $uibModal) {
     /* jshint validthis: true */
     var vmpicmodal = this;
 
@@ -31,6 +31,7 @@
     vmpicmodal.pic = ''; //or should we get this from the db
     vmpicmodal.student = '';
     vmpicmodal.modalInstance = undefined;
+    vmpicmodal.somestud = $scope;
 
     function open() {
 
@@ -67,10 +68,13 @@
     vmpicselect.renameFile = renameFile;
     vmpicselect.picpath = '../v1/studentfiles';
     vmpicselect.renamepath = '../vi/renamefile';
+    vmpicselect.student = $scope;
 
     activate();
 
     function activate() {
+      console.log("picselect student");
+      console.log(vmpicselect.student);
       getFiles();
     }
 
