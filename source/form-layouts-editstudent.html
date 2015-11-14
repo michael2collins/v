@@ -84,6 +84,9 @@
                             <h3>The queue</h3>
                             <p>Queue length: {{ vmstupicupload.uploader.queue.length }}</p>
 -->
+                               <p>{{vmpicselect}}</p>
+                                <p>{{vmstudent.students.FirstName}}</p>
+
                                           <table class="table">
                                             <thead>
                                               <tr>
@@ -137,7 +140,7 @@
 
 
                                       </div>
-                                      <div ng-repeat file in vmpicselect.picfileList>
+                                      <div ng-repeat="file in vmpicselect.picfileList">
                                       {{file}}
                                       </div>
                                     </div>
@@ -145,9 +148,9 @@
 
                                 </div>
                                 <div class="modal-footer">
-                                  <button class="btn btn-primary" type="button" ng-click="vmpicselect.ok()">OK</button>
+                                  <button class="btn btn-primary" type="button" ng-click="vmpicselect.ok({{vmstudent.students}})">OK</button>
                                   <button class="btn btn-warning" type="button" ng-click="vmpicselect.cancel()">Cancel</button>
-                                </div>{{vmpicselect}}
+                                </div>
                               </script>
 
                               <div class="col-md-10">

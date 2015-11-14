@@ -29,11 +29,12 @@
 
     vmpicmodal.open = open;
     vmpicmodal.pic = ''; //or should we get this from the db
+    vmpicmodal.student = '';
     vmpicmodal.modalInstance = undefined;
 
     function open() {
 
-       vmpicmodal.modalInstance = $uibModal.open({
+      vmpicmodal.modalInstance = $uibModal.open({
         animation: vmpicmodal.animationsEnabled,
         templateUrl: 'myPickupload.html',
         controller: 'ModalPicInstanceController as vmpicselect',
@@ -45,8 +46,9 @@
         }
       });
 
-      vmpicmodal.modalInstance.result.then(function (selectedpic) {
+      vmpicmodal.modalInstance.result.then(function (selectedpic, student) {
         vmpicmodal.picfile = selectedpic;
+        vmpicmodal.student = student;
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
@@ -62,7 +64,9 @@
     vmpicselect.picfile = picfile;
     vmpicselect.picfilelist = [];
     vmpicselect.getFiles = getFiles;
+    vmpicselect.renameFile = renameFile;
     vmpicselect.picpath = '../v1/studentfiles';
+    vmpicselect.renamepath = '../vi/renamefile';
 
     activate();
 
@@ -72,20 +76,38 @@
 
     function getFiles() {
       console.log('getfiles');
-            return StudentServices.getstudentPicFiles(vmpicselect.picpath).then(function (data) {
-                $log.debug('getstudentPicFiles returned data');
-                $log.debug(data.data);
-                vmpicselect.picfileList = data.data;
+      return StudentServices.getstudentPicFiles(vmpicselect.picpath).then(function (data) {
+        $log.debug('getstudentPicFiles returned data');
+        $log.debug(data.data);
+        vmpicselect.picfileList = data.data;
 
-                return vmpicselect.picfileList;
-            });
-        }
+        return vmpicselect.picfileList;
+      });
+    }
 
-    function ok() {
+    function renameFile(student, currentpicfile) {
+      console.log('renameFile');
+      console.log(' student:' );
+      console.log(student);
+      console.log('pic');
+      console.log(currentpicfile);
+
+      return StudentServices.renameStudentPicFile(vmpicselect.picpath, student, currentpicfile).then(function (data) {
+        $log.debug('renameFile returned data');
+        $log.debug(data.data);
+        vmpicselect.newpicfile = data.data;
+
+        return vmpicselect.newpicfile;
+      });
+    }
+
+    function ok(student) {
       console.log('hit ok');
       vmpicselect.picFile = StudentServices.getstudentPicFile();
+      vmpicselect.picFile = renameFile(student, vmpicselect.picfile);
       console.log('got file for ok:' + vmpicselect.picFile);
-      $uibModalInstance.close(vmpicselect.picFile);
+      console.log('for student:' + student);
+      $uibModalInstance.close(vmpicselect.picFile, student);
     }
 
     function cancel() {

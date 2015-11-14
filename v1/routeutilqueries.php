@@ -47,6 +47,23 @@ $app->get('/ranklist',  function() {
     echoRespnse(200, $response);
 });
 
+$app->put('/renamefile',  function() use($app) {
+
+    error_log( print_R("before request", TRUE ));
+
+    $request = $app->request();
+    $body = $request->getBody();
+    $student = json_decode($body);
+    error_log( print_R($student, TRUE ));
+
+    //global $user_id;
+    $LastName = $student->LastName;
+    $FirstName = $student->FirstName;
+
+      $dir = opendir('../app/images/students');
+
+});
+
 $app->get('/studentfiles',  function() {
 
     $app = \Slim\Slim::getInstance();

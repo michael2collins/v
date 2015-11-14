@@ -18,7 +18,8 @@
             getStudent: getStudent,
             getstudentPicFile: getstudentPicFile,
             getstudentPicFiles: getstudentPicFiles,
-            setstudentPicFile: setstudentPicFile
+            setstudentPicFile: setstudentPicFile,
+            renameStudentPicFile: renameStudentPicFile
         };
         return service;
 
@@ -43,6 +44,27 @@
                     // or server returns response with an error status.
                 });
         }
+
+      function renameStudentPicFile(path, student, oldpicfile) {
+          $log.debug('renameStudentPicFile ');
+          $log.debug(student);
+          $log.debug(oldpicfile);
+
+            return $http({method: 'PUT', url: path, data: student, file: oldpicfile}).
+                success(function(data, status, headers, config) {
+                    $log.debug('renameStudentPicFile success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('renameStudentPicFile failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+
 
       function setstudentPicFile(pic) {
           $log.debug('setStuPicfile: ' + pic);
