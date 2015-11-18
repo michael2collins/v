@@ -50,3 +50,63 @@ Starting from bigger values the order should go like this
     upload_max_filesize
 
     before you can run grunt build, you need to rename secret.json.template to secret.json in v/v/
+
+
+    using koder
+    kpm install mysql
+    (password is password)
+sudo apt-get install php5-mysql
+sudo service apache2 restart
+
+kpm install composer
+
+cd Web
+(note index.html is served here and can be access via ip addr)
+mkdir v
+
+kpm install phpmyadmin
+password = password
+
+michael2collins.koding.io/phpmyadmin
+
+edit /etc/php5/apache/php.ini
+sudo service apache2 restart
+
+use phpadmin to upload vdb10282015.sql
+add alter contactpictureurl
+(2 of 3 constraints failed)
+
+ssh-keygen -t rsa -C "michael.collins.natick@gmail.com"
+passphrase is password
+
+added key to my github
+kpm install ungit
+ungit
+michael2collins.koding.io:8448
+
+clone my repo to v under web (created v/v)
+kpm install grunt
+
+sudo /usr/local/bin/node /usr/local/bin/npm install
+
+sudo npm install -g bower
+
+(bower install gives EACCES error - suggested fix below)
+sudo chown -R michael2collins /usr/local
+
+composer install
+
+sudo vi /etc/apache2/apache2.conf
+
+add to bottom
+
+Include /home/michael2collins/Web/v/v/apache_setup/httpd-vdojo.conf
+sudo service apache2 restart
+
+cp /usr/share/php5 dev php ini to use as php.ini to improve logging
+
+kpm install kdbin
+(to open kdopen editor)
+
+sudo apt-get install php5-mysqlnd
+restart apache
