@@ -68,7 +68,7 @@
     vmpicselect.renameFile = renameFile;
     vmpicselect.picpath = '../v1/studentfiles';
     vmpicselect.renamepath = '../vi/renamefile';
-    vmpicselect.student = $scope;
+    vmpicselect.student = StudentServices.getTheStudent();
 
     activate();
 

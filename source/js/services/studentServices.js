@@ -9,6 +9,7 @@
 
     function StudentServices( $http, $log ) {
         var picFile = '';
+        var theStudent = '';
         var service = {
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
@@ -19,13 +20,21 @@
             getstudentPicFile: getstudentPicFile,
             getstudentPicFiles: getstudentPicFiles,
             setstudentPicFile: setstudentPicFile,
-            renameStudentPicFile: renameStudentPicFile
+            renameStudentPicFile: renameStudentPicFile,
+            setTheStudent: setTheStudent,
+            getTheStudent: getTheStudent
         };
         return service;
 
         function getstudentPicFile() {
           $log.debug('getStuPicfile: ' + picFile);
           return picFile;
+        }
+        function setTheStudent(student) {
+            theStudent = student;
+        }
+        function getTheStudent(){
+            return theStudent;
         }
 
       function getstudentPicFiles(path) {

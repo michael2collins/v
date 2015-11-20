@@ -111,6 +111,7 @@
             return StudentServices.getStudent(vmstudent.path).then(function (data) {
                 $log.debug('getStudent returned data');
                 $log.debug(data.data);
+                StudentServices.setTheStudent(data.data);
                 vmstudent.students = data.data;
 
                 return vmstudent.students;
