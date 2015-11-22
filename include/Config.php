@@ -8,7 +8,7 @@ GRANT SELECT, INSERT, UPDATE, DELETE, FILE ON *.* TO 'vdbadmin'@'localhost' REQU
  */
 define('DB_USERNAME', 'vdbadmin');
 define('DB_PASSWORD', 'password');
-define('DB_HOST', 'localhost');
+define('DB_HOST', '127.0.0.1');
 define('DB_NAME', 'vdb');
 
 define('USER_CREATED_SUCCESSFULLY', 0);
