@@ -34,6 +34,7 @@
             theStudent = student;
         }
         function getTheStudent(){
+            $log.debug('getTheStudent', theStudent);
             return theStudent;
         }
 

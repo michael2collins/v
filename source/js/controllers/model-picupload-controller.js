@@ -69,6 +69,8 @@
     vmpicselect.picpath = '../v1/studentfiles';
     vmpicselect.renamepath = '../vi/renamefile';
     vmpicselect.student = StudentServices.getTheStudent();
+    vmpicselect.newpicfile = '';
+    vmpicselect.okpicFile = '';
 
     activate();
 
@@ -105,13 +107,14 @@
       });
     }
 
-    function ok(student) {
+    function ok() {
       console.log('hit ok');
-      vmpicselect.picFile = StudentServices.getstudentPicFile();
-      vmpicselect.picFile = renameFile(student, vmpicselect.picfile);
-      console.log('got file for ok:' + vmpicselect.picFile);
-      console.log('for student:' + student);
-      $uibModalInstance.close(vmpicselect.picFile, student);
+      var thisstudent = StudentServices.getTheStudent();
+      vmpicselect.okpicFile = StudentServices.getstudentPicFile();
+      vmpicselect.okpicFile = renameFile(thisstudent, vmpicselect.okpicFile);
+      console.log('got file for ok:', vmpicselect.okpicFile);
+      console.log('for student:' ,thisstudent);
+      $uibModalInstance.close(vmpicselect.okpicFile, thisstudent);
     }
 
     function cancel() {
