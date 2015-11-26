@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * Echoing json response to client
  * @param String $status_code Http response code

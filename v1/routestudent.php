@@ -15,19 +15,19 @@ $app->get('/students',  function() {
     $prefkey = "allstudents";
     $response["fields"] = array();
 
-    error_log("in index");
-    //        error_log( print_R($userid,TRUE ));
-    //        error_log( print_R(  $prefkey,TRUE));
+    //error_log("in index");
+    //        //error_log( print_R($userid,TRUE ));
+    //        //error_log( print_R(  $prefkey,TRUE));
 
     //get a list of fields from a preferences table
     $fields = $db->getUserPreferences($userid, $prefkey);
 
     while ($field = $fields->fetch_assoc()) {
         $fieldlist["prefcolumn"] = $field["prefcolumn"];
-        //                error_log( print_R($fieldlist["prefcolumn"],TRUE));
+        //                //error_log( print_R($fieldlist["prefcolumn"],TRUE));
         array_push($response["fields"], $fieldlist);
     }
-    //            error_log( print_R($response["fields"],TRUE));
+    //            //error_log( print_R($response["fields"],TRUE));
 
     //going to get all fields and filter them on the array push
     $result = $db->getAllStudents();
@@ -49,18 +49,18 @@ $app->get('/students',  function() {
             }
 */
     $fldcount=count($response["fields"]);
-    //            error_log( print_R($fldcount,TRUE));
+    //            //error_log( print_R($fldcount,TRUE));
     while ($student = $result->fetch_assoc()) {
         $tmp = array();
         for($i = 0; $i < $fldcount; $i++ ) {
-            error_log(" in loop " . $i);
+            //error_log(" in loop " . $i);
             $ff = $response["fields"][$i]["prefcolumn"];
-            //                    error_log(print_R( $ff,TRUE));
+            //                    //error_log(print_R( $ff,TRUE));
             $tmp[$ff] = $student[$ff];
         }
         array_push($response["students"], $tmp);
     }
-    //            error_log( print_R($response,TRUE));
+    //            //error_log( print_R($response,TRUE));
 
     echoRespnse(200, $response);
 });
@@ -100,7 +100,7 @@ $app->get('/students/:id',  function($student_id) {
         $response["CurrentRank"]= $result["CurrentRank"];
         $response["LastPromoted"] = $result["LastPromoted"];
         $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
-        error_log( print_R("get student instructor payment free:" + $response["InstructorPaymentFree"], TRUE ));
+        //error_log( print_R("get student instructor payment free:" + $response["InstructorPaymentFree"], TRUE ));
         $response["ContactType"] = $result["ContactType"];
         $response["include"] = $result["include"];
         $response["InstructorFlag"] = $result["InstructorFlag"];
@@ -138,13 +138,13 @@ $app->get('/students/:id',  function($student_id) {
 $app->put('/students/:id',  function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
-    error_log( print_R("before request", TRUE ));
+    //error_log( print_R("before request", TRUE ));
 
 
     $request = $app->request();
     $body = $request->getBody();
     $student = json_decode($body);
-    error_log( print_R($student, TRUE ));
+    //error_log( print_R($student, TRUE ));
 
     //global $user_id;
     $LastName = $student->LastName;
@@ -179,40 +179,40 @@ $app->put('/students/:id',  function($student_id) use($app) {
     $pictureurl = $student->pictureurl;
     $CurrentIARank = $student->CurrentIARank;
 
-    error_log( print_R("before update", TRUE ));
+    //error_log( print_R("before update", TRUE ));
 
-    error_log( print_R($LastName, TRUE ));
-    error_log( print_R($FirstName, TRUE ));
-    error_log( print_R($Email, TRUE ));
-    error_log( print_R($Email2, TRUE ));
-    error_log( print_R($Phone, TRUE ));
-    error_log( print_R($AltPhone, TRUE ));
-    error_log( print_R($phoneExt, TRUE ));
-    error_log( print_R($altPhoneExt, TRUE ));
-    error_log( print_R($Birthday, TRUE ));
-    error_log( print_R($sex, TRUE ));
-    error_log( print_R($Parent, TRUE ));
-    error_log( print_R($EmergencyContact, TRUE ));
-    error_log( print_R($Notes, TRUE ));
-    error_log( print_R($medicalConcerns, TRUE ));
-    error_log( print_R($Address, TRUE ));
-    error_log( print_R($City, TRUE ));
-    error_log( print_R($State, TRUE ));
-    error_log( print_R($ZIP, TRUE ));
-    error_log( print_R($ContactType, TRUE ));
-    error_log( print_R($quickbooklink, TRUE ));
-    error_log( print_R($StudentSchool, TRUE ));
-    error_log( print_R($GuiSize, TRUE ));
-    error_log( print_R($ShirtSize, TRUE ));
-    error_log( print_R($BeltSize, TRUE ));
-    error_log( print_R($InstructorPaymentFree, TRUE ));
-    error_log( print_R($InstructorFlag, TRUE ));
-    error_log( print_R($instructorTitle, TRUE ));
-    error_log( print_R($CurrentRank, TRUE ));
-    error_log( print_R($CurrentReikiRank, TRUE ));
-    error_log( print_R($pictureurl, TRUE));
-    error_log( print_R($CurrentIARank, TRUE ));
-    error_log( print_R($student_id, TRUE ));
+    //error_log( print_R($LastName, TRUE ));
+    //error_log( print_R($FirstName, TRUE ));
+    //error_log( print_R($Email, TRUE ));
+    //error_log( print_R($Email2, TRUE ));
+    //error_log( print_R($Phone, TRUE ));
+    //error_log( print_R($AltPhone, TRUE ));
+    //error_log( print_R($phoneExt, TRUE ));
+    //error_log( print_R($altPhoneExt, TRUE ));
+    //error_log( print_R($Birthday, TRUE ));
+    //error_log( print_R($sex, TRUE ));
+    //error_log( print_R($Parent, TRUE ));
+    //error_log( print_R($EmergencyContact, TRUE ));
+    //error_log( print_R($Notes, TRUE ));
+    //error_log( print_R($medicalConcerns, TRUE ));
+    //error_log( print_R($Address, TRUE ));
+    //error_log( print_R($City, TRUE ));
+    //error_log( print_R($State, TRUE ));
+    //error_log( print_R($ZIP, TRUE ));
+    //error_log( print_R($ContactType, TRUE ));
+    //error_log( print_R($quickbooklink, TRUE ));
+    //error_log( print_R($StudentSchool, TRUE ));
+    //error_log( print_R($GuiSize, TRUE ));
+    //error_log( print_R($ShirtSize, TRUE ));
+    //error_log( print_R($BeltSize, TRUE ));
+    //error_log( print_R($InstructorPaymentFree, TRUE ));
+    //error_log( print_R($InstructorFlag, TRUE ));
+    //error_log( print_R($instructorTitle, TRUE ));
+    //error_log( print_R($CurrentRank, TRUE ));
+    //error_log( print_R($CurrentReikiRank, TRUE ));
+    //error_log( print_R($pictureurl, TRUE));
+    //error_log( print_R($CurrentIARank, TRUE ));
+    //error_log( print_R($student_id, TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -306,12 +306,12 @@ $app->get('/studentlists',  function() {
         }
     }
 
-    error_log( print_R($response["ContactTypeList"], TRUE ));
-    error_log( print_R($response["StudentSchoolList"], TRUE ));
-    error_log( print_R($response["GuiSizeList"], TRUE ));
-    error_log( print_R($response["ShirtSizeList"], TRUE ));
-    error_log( print_R($response["BeltSizeList"], TRUE ));
-    error_log( print_R($response["instructorTitleList"], TRUE ));
+    //error_log( print_R($response["ContactTypeList"], TRUE ));
+    //error_log( print_R($response["StudentSchoolList"], TRUE ));
+    //error_log( print_R($response["GuiSizeList"], TRUE ));
+    //error_log( print_R($response["ShirtSizeList"], TRUE ));
+    //error_log( print_R($response["BeltSizeList"], TRUE ));
+    //error_log( print_R($response["instructorTitleList"], TRUE ));
 
 
     echoRespnse(200, $response);

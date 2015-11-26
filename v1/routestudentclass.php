@@ -2,7 +2,7 @@
 
 $app->get('/studentclass/:id',  function($student_id) {
     //  global $user_id;
-    error_log( print_R("before get student class request", TRUE ));
+    //error_log( print_R("before get student class request", TRUE ));
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -34,14 +34,14 @@ $app->get('/studentclass/:id',  function($student_id) {
 $app->put('/studentclass/:id',  function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
-    error_log( print_R("before put student class request", TRUE ));
+    //error_log( print_R("before put student class request", TRUE ));
 
 
     $request = $app->request();
     $body = $request->getBody();
     $studentclass = json_decode($body);
 
-    error_log( print_R($studentclass, TRUE ));
+    //error_log( print_R($studentclass, TRUE ));
 
     //global $user_id;
     $contactID = $student_id;
@@ -53,16 +53,16 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
     $pgmseq = $studentclass->pgmseq;
     $studentclassstatus = $studentclass->studentclassstatus;
 
-    error_log( print_R("before update", TRUE ));
+    //error_log( print_R("before update", TRUE ));
 
-    error_log( print_R($contactID, TRUE ));
-    //    error_log( print_R($classid, TRUE ));
-    error_log( print_R($classPayName, TRUE ));
-    //    error_log( print_R($class, TRUE ));
-    error_log( print_R($isTestFeeWaived, TRUE ));
-    error_log( print_R($classseq, TRUE ));
-    error_log( print_R($pgmseq, TRUE ));
-    error_log( print_R($studentclassstatus, TRUE ));
+    //error_log( print_R($contactID, TRUE ));
+    //    //error_log( print_R($classid, TRUE ));
+    //error_log( print_R($classPayName, TRUE ));
+    //    //error_log( print_R($class, TRUE ));
+    //error_log( print_R($isTestFeeWaived, TRUE ));
+    //error_log( print_R($classseq, TRUE ));
+    //error_log( print_R($pgmseq, TRUE ));
+    //error_log( print_R($studentclassstatus, TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
@@ -92,24 +92,24 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
 $app->put('/studentclasspaylist/:id',  function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
-    error_log( print_R("before put student class paylist request", TRUE ));
+    //error_log( print_R("before put student class paylist request", TRUE ));
 
 
     $request = $app->request();
     $body = $request->getBody();
     $studentpayment = json_decode($body);
 
-    error_log( print_R($studentpayment, TRUE ));
+    //error_log( print_R($studentpayment, TRUE ));
 
     //global $user_id;
     $contactID = $student_id;
 
     $classPayName = (empty($studentpayment->classpaynametmp) ? "NULL" : $studentpayment->classpaynametmp);
 
-    error_log( print_R("before update", TRUE ));
+    //error_log( print_R("before update", TRUE ));
 
-    error_log( print_R($contactID, TRUE ));
-    error_log( print_R($classPayName, TRUE ));
+    //error_log( print_R($contactID, TRUE ));
+    //error_log( print_R($classPayName, TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
@@ -134,23 +134,23 @@ $app->put('/studentclasspaylist/:id',  function($student_id) use($app) {
 $app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm',  function($student_id, $classseq, $pgmseq) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
-    error_log( print_R("before put student class set request", TRUE ));
+    //error_log( print_R("before put student class set request", TRUE ));
 
 
     $request = $app->request();
     $body = $request->getBody();
     $studentclass = json_decode($body);
 
-    error_log( print_R($studentclass, TRUE ));
+    //error_log( print_R($studentclass, TRUE ));
 
     //global $user_id;
     $contactID = $student_id;
 
-    error_log( print_R("before update", TRUE ));
+    //error_log( print_R("before update", TRUE ));
 
-    error_log( print_R($contactID, TRUE ));
-    error_log( print_R($classseq, TRUE ));
-    error_log( print_R($pgmseq, TRUE ));
+    //error_log( print_R($contactID, TRUE ));
+    //error_log( print_R($classseq, TRUE ));
+    //error_log( print_R($pgmseq, TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
@@ -185,7 +185,7 @@ $app->get('/studentclasslist',  function() {
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
-        error_log( print_R("student class list results", TRUE ));
+        //error_log( print_R("student class list results", TRUE ));
         $tmp = array();
         $tmp["class"] = $slist["class"];
         $tmp["classid"] = $slist["classid"];
@@ -206,8 +206,8 @@ $app->get('/studentclasslist',  function() {
 
     }
 
-    error_log( print_R($response["studentclasslist"], TRUE ));
-    error_log( print_R("student class list results end", TRUE ));
+    //error_log( print_R($response["studentclasslist"], TRUE ));
+    //error_log( print_R("student class list results end", TRUE ));
 
 
     echoRespnse(200, $response);
@@ -227,7 +227,7 @@ $app->get('/studentclasspaylist',  function() {
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
 //    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
-        //error_log( print_R("student classpay list results", TRUE ));
+        ////error_log( print_R("student classpay list results", TRUE ));
         $tmp = array();
         if (count($slist) > 0) {
             $tmp["classpaynametmp"] = (empty($slist["classpaynametmp"]) ? "NULL" : $slist["classpaynametmp"]);
@@ -243,9 +243,9 @@ $app->get('/studentclasspaylist',  function() {
         array_push($response["studentclasspaylist"], $tmp);
     }
     $row_cnt = $result->num_rows;
-    error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
-    error_log( print_R($response["studentclasspaylist"], TRUE ));
-    error_log( print_R("student classpay list results end", TRUE ));
+    //error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
+    //error_log( print_R($response["studentclasspaylist"], TRUE ));
+    //error_log( print_R("student classpay list results end", TRUE ));
 
 
     echoRespnse(200, $response);
@@ -270,8 +270,8 @@ $app->get('/studentclassstatuses',  function() {
         array_push($response["studentclassstatuses"], $tmp);
     }
 
-    error_log( print_R($response["studentclassstatuses"], TRUE ));
-    error_log( print_R("student class statuses results end", TRUE ));
+    //error_log( print_R($response["studentclassstatuses"], TRUE ));
+    //error_log( print_R("student class statuses results end", TRUE ));
 
     echoRespnse(200, $response);
 });

@@ -49,26 +49,43 @@ $app->get('/ranklist',  function() {
 
 $app->put('/renamefile',  function() use($app) {
 
-    error_log( print_R("before request", TRUE ));
+    error_log( print_R("before request\n", TRUE ), 3, LOG);
 
     $request = $app->request();
+    $response = array();
+    
     $body = $request->getBody();
     $student = json_decode($body);
-    error_log( print_R($student, TRUE ));
+    error_log( print_R($student, TRUE ), 3, LOG);
 
     //global $user_id;
     $LastName = $student->LastName;
     $FirstName = $student->FirstName;
+    $studentid = $student->ID;
+    $newpicfile = $LastName . '.' . $FirstName . '.' . $studentid . ".jpg";
+    $newpicfile2 = STUPICDIR . $newpicfile;
+    $oldpicfile = STUPICDIR . $student->oldpicfile;
+    
+    error_log( print_R('new: ' . $newpicfile2 . "\n", TRUE ), 3, LOG);
+    error_log( print_R('old: ' . $oldpicfile . "\n", TRUE ), 3, LOG);
 
-      $dir = opendir('../app/images/students');
+    rename($oldpicfile, $newpicfile2);
 
+    $response["error"] = false;
+    $response["newpicfile"] = $newpicfile;
+    
+    echoRespnse(200, $response);
+    
 });
 
 $app->get('/studentfiles',  function() {
 
+    //error_log( print_R("enter get studentfiles\n", TRUE ), 3, LOG);
+
     $app = \Slim\Slim::getInstance();
 
   //return list of files/pictures from student dir
+
 
     $files = array();
 

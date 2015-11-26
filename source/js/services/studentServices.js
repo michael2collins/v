@@ -58,9 +58,14 @@
       function renameStudentPicFile(path, student, oldpicfile) {
           $log.debug('renameStudentPicFile ');
           $log.debug(student);
+          $log.debug('pic');
           $log.debug(oldpicfile);
+          $log.debug('path');
+          $log.debug(path);
+          student.oldpicfile = oldpicfile;
+          
 
-            return $http({method: 'PUT', url: path, data: student, file: oldpicfile}).
+            return $http({method: 'PUT', url: path, data: student}).
                 success(function(data, status, headers, config) {
                     $log.debug('renameStudentPicFile success:' + path);
                     $log.debug(data);

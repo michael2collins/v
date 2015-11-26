@@ -67,7 +67,7 @@
     vmpicselect.getFiles = getFiles;
     vmpicselect.renameFile = renameFile;
     vmpicselect.picpath = '../v1/studentfiles';
-    vmpicselect.renamepath = '../vi/renamefile';
+    vmpicselect.renamepath = '../v1/renamefile';
     vmpicselect.student = StudentServices.getTheStudent();
     vmpicselect.newpicfile = '';
     vmpicselect.okpicFile = '';
@@ -98,10 +98,10 @@
       console.log('pic');
       console.log(currentpicfile);
 
-      return StudentServices.renameStudentPicFile(vmpicselect.picpath, student, currentpicfile).then(function (data) {
+      return StudentServices.renameStudentPicFile(vmpicselect.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
         $log.debug(data.data);
-        vmpicselect.newpicfile = data.data;
+        vmpicselect.newpicfile = data.data.newpicfile;
 
         return vmpicselect.newpicfile;
       });

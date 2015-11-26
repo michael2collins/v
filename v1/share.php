@@ -6,7 +6,7 @@ if(strlen(basename($_FILES["userfile"]["name"])) > 0)
 {
   //$uploadfile = basename($_FILES["userfile"]["name"]);
    $uploadfile = realpath('/v/v/app/images/students') . "\\" . basename($_FILES["userfile"]["name"]);
-   error_log( print_R( "the file to save is: $uploadfile", TRUE ));
+  // error_log( print_R( "the file to save is: $uploadfile", TRUE ));
 
   if(move_uploaded_file($_FILES["userfile"]["tmp_name"], $uploadfile))
   {

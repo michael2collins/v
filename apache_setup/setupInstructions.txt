@@ -104,9 +104,24 @@ Include /home/michael2collins/Web/v/v/apache_setup/httpd-vdojo.conf
 sudo service apache2 restart
 
 cp /usr/share/php5 dev php ini to use as php.ini to improve logging
+etc/php5/apache2/php.ini
+
 
 kpm install kdbin
 (to open kdopen editor)
 
 sudo apt-get install php5-mysqlnd
 restart apache
+
+log worked differently - set a constant and mode to write error_log to a specific failed
+check permissions for log dir 
+
+chown www-data:www-data in app student images dir 
+
+sudo a2enmod userdir
+edit mod-enabled
+setup Web instead of public html 
+added put and delete
+
+edit php5.conf in mods-enabled
+comment out user dir section for php restrictions
