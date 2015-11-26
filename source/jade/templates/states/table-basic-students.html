@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<div ng-controller="StudentsTableBasicController as vm">
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="portlet box portlet-green">
+        <div class="portlet-header">
+          <div class="row">
+            <div class="caption">Student List</div>
+            <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config-student-fields" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
+          </div>
+        </div>
+        <div class="portlet-body">
+          <div class="table-tools">
+            <div class="row">
+              <div class="col-lg-12 mbs">
+                <button type="button" class="btn btn-red mrs"><i class="fa fa-plus"></i>&nbsp; Add New</button>
+                <button type="button" class="btn btn-primary mrs"><i class="fa fa-print"></i>&nbsp; Print</button>
+                <button type="button" class="btn btn-primary mrs"><i class="fa fa-file-text-o"></i>&nbsp; PDF</button>
+                <button type="button" class="btn btn-primary mrs"><i class="fa fa-copy"></i>&nbsp; Excel</button>
+              </div>
+            </div>
+          </div>
+          <div ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
+          <!--.row
+          .col-lg-12
+          .panel.panel-orange
+              .panel-heading Student Filter
+              .panel-body.pan
+                  form.form-horizontal.form-bordered(role="form")
+                      .form-body
+                          .form-group
+                              label.control-label.col-md-2 Student Filter
+                              .col-md-2
+                                  input(ng-model="studentquery")
+                              label.control-label.col-md-2 No. Rows
+                              //.col-md-2
+                                  select.selectpicker.form-control(data-style='btn-yellow' ng-model='quantity' ng-change='updateQuantity(quantity)' ng-options='quantity as limit.quantity for limit in limitlist')
+                              .col-md-2
+                                  select.select2picker.form-control(data-style='btn-yellow'  ng-model='quantity' ng-change='updateQuantity(quantity)' )
+                                      option 10
+                                      option 100
+                                      option 1000
+          -->
+          <!--.table-responsive.mtl
+          table#table_id.table.table-hover.table-striped.table-bordered
+              thead
+                  tr
+                      th(width='20%') Name
+                      th(width='15%') Rank
+                      th(width='15%') Status
+                      th(width='20%') Parent
+                      th(width='10%') Phone
+                      th(width='20%') Edit/Delete
+                  tr
+                      th(ng-repeat="field in students.fields") {{field.prefcolumn}}
+              tbody
+                  tr(ng-repeat="student in students.students | filter : studentquery | limitTo : quantity" )
+                      td {{student.FirstName}} {{student.LastName}}
+                      td {{student.CurrentRank}}
+                      td {{student.ContactType}}
+                      td.center {{student.Parent}}
+                      td.center {{student.Phone}}
+                      td
+                          .action-group.btn-group.pull-right.mtm.mbm
+                              button.btn.btn-primary
+                                  i.fa.fa-edit.mrs
+                                  | Edit
+                              button.btn.btn-primary
+                                  i.fa.fa-trash-o.mrs
+                                  | Delete
+                          .clearfix
+          -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="modal-config-student-fields" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" aria-hidden="true" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
+        <h4 id="modal-default-label" class="modal-title">Modal Default</h4>
+      </div>
+      <div class="modal-body">Modal body goes here
+        <div class="panel-body pan">
+          <form role="form" class="form-horizontal form-bordered">
+            <div class="form-body">
+              <div class="form-group">
+                <label class="control-label col-md-3">Pre-selected Options</label>
+                <div class="col-md-6">
+                  <select id="pre-selected-options" multiple="multiple">
+                    <option value="ID"> ID</option>
+                    <option value="LastName" selected="selected"> LastName</option>
+                    <option value="FirstName" selected="selected"> FirstName</option>
+                    <option value="Email" selected="selected"> Email</option>
+                    <option value="Email2"> Email2</option>
+                    <option value="Parent" selected="selected"> Parent</option>
+                    <option value="Phone" selected="selected"> Phone</option>
+                    <option value="AltPhone"> AltPhone</option>
+                    <option value="Address"> Address</option>
+                    <option value="City"> City</option>
+                    <option value="State"> State</option>
+                    <option value="ZIP"> ZIP</option>
+                    <option value="Notes"> Notes</option>
+                    <option value="Birthday"> Birthday</option>
+                    <option value="StartDate"> StartDate</option>
+                    <option value="NewRank"> NewRank</option>
+                    <option value="BeltSize"> BeltSize</option>
+                    <option value="CurrentRank">CurrentRank</option>
+                    <option value="LastPromoted"> LastPromoted</option>
+                    <option value="ReferredBy"> ReferredBy</option>
+                    <option value="ConsentToPublicPictures"> ConsentToPublicPictures</option>
+                    <option value="InstructorPaymentFree"> InstructorPaymentFree</option>
+                    <option value="ContactType"> ContactType</option>
+                    <option value="include"> include</option>
+                    <option value="InstructorFlag"> InstructorFlag</option>
+                    <option value="quickbooklink"> quickbooklink</option>
+                    <option value="instructorTitle"> instructorTitle</option>
+                    <option value="testDate">testDate</option>
+                    <option value="testTime"> testTime</option>
+                    <option value="bdayinclude"> bdayinclude</option>
+                    <option value="signupDate"> signupDate</option>
+                    <option value="sex"> sex</option>
+                    <option value="medicalConcerns"> medicalConcerns</option>
+                    <option value="GuiSize">GuiSize</option>
+                    <option value="ShirtSize"> ShirtSize</option>
+                    <option value="phoneExt"> phoneExt</option>
+                    <option value="altPhoneExt"> altPhoneExt</option>
+                    <option value="CurrentReikiRank"> CurrentReikiRank</option>
+                    <option value="StudentSchool"> StudentSchool</option>
+                    <option value="EmergencyContact"> EmergencyContact</option>
+                    <option value="sendWelcomeCard"> sendWelcomeCard</option>
+                    <option value="dateEntered"> dateEntered</option>
+                    <option value="dateInactive"> dateInactive</option>
+                    <option value="CurrentIARank"> CurrentIARank</option>
+                    <option value="ReadyForNextRank"> ReadyForNextRank</option>
+                    <option value="nextScheduledTest"> nextScheduledTest</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

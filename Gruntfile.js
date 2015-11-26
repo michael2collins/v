@@ -47,6 +47,7 @@ module.exports = function (grunt) {
 		    //ctpl: [ 'src/common/**/*.tpl.html' ],
 		    //translations: ['src/assets/languages/*.json'],
 	  apache: [ 'apache_setup/.htaccess' ],
+	  postjade: [ 'source/jade/templates/states/*.html'],
       html: [ 'src/index.html' ]
 			//less: ['src/less/main.less', 'src/common/**/*.less']
 	},
@@ -193,7 +194,24 @@ module.exports = function (grunt) {
 			}
 		  }
 		  ]
+	  },
+	  copy_jade: {
+		  files: [
+		  {
+				expand: true,
+				nonull: true,
+				src: [ '<%= app_files.postjade %>' ],
+				cwd: '.',
+				dest: 'app/',
+				rename: function(dest,src) {
+				    grunt.log.writeln("post jade copy src:" + src);
+					grunt.log.writeln("post jade copy:" + src.substring(11)); /* source/jade = 11*/
+					return dest + src.substring(11);
+			}
+		  }
+		  ]
 	  }
+	  
 	},
     /**
      * The `index` task compiles the `index.html` file as a Grunt template. CSS
@@ -305,34 +323,34 @@ module.exports = function (grunt) {
         },
         files: {
           "app/index.html": ["source/jade/index.jade"],
-          "app/templates/states/_includes/header-breadcrumb.html": ["source/jade/templates/states/_includes/header-breadcrumb.jade"],
-          "app/templates/states/_includes/template-setting.html": ["source/jade/templates/states/_includes/template-setting.jade"],
-          "app/templates/states/_includes/topbar.html": ["source/jade/templates/states/_includes/topbar.jade"],
-          "app/templates/states/_includes/sidebar.html": ["source/jade/templates/states/_includes/sidebar.jade"],
-          "app/templates/states/main.html": ["source/jade/templates/states/main.jade"],
-//          "app/templates/states/form-layouts-newlead.html": ["source/jade/templates/states/form-layouts-newlead.jade"],
-          "app/templates/states/form-layouts-newstudent.html": ["source/jade/templates/states/form-layouts-newstudent.jade"],
-          "app/templates/states/form-layouts-editstudent.html": ["source/jade/templates/states/form-layouts-editstudent.jade"],
-//          "app/templates/states/form-layouts-newtest.html": ["source/jade/templates/states/form-layouts-newtest.jade"],
-//          "app/templates/states/form-layouts-newweek.html": ["source/jade/templates/states/form-layouts-newweek.jade"],
-//          "app/templates/states/form-layouts-newpayment.html": ["source/jade/templates/states/form-layouts-newpayment.jade"],
-          "app/templates/states/table-basic-attendance.html": ["source/jade/templates/states/table-basic-attendance.jade"],
-//          "app/templates/states/table-basic-leads.html": ["source/jade/templates/states/table-basic-leads.jade"],
-//          "app/templates/states/table-basic-managetest.html": ["source/jade/templates/states/table-basic-managetest.jade"],
-//          "app/templates/states/table-basic-paymenttracking.html": ["source/jade/templates/states/table-basic-paymenttracking.jade"],
-          "app/templates/states/table-basic-students.html": ["source/jade/templates/states/table-basic-students.jade"],
-          "app/templates/states/test.html": ["source/jade/templates/states/test.jade"],
-          "app/templates/states/layout-boxed.html": ["source/jade/templates/states/layout-boxed.jade"],
-          "app/templates/states/layout-left-sidebar-collapsed.html": ["source/jade/templates/states/layout-left-sidebar-collapsed.jade"],
-          "app/templates/states/layout-left-sidebar.html": ["source/jade/templates/states/layout-left-sidebar.jade"],
-          "app/templates/states/layout-right-sidebar-collapsed.html": ["source/jade/templates/states/layout-right-sidebar-collapsed.jade"],
-          "app/templates/states/layout-right-sidebar.html": ["source/jade/templates/states/layout-right-sidebar.jade"],
-//          "app/templates/states/page-404.html": ["source/jade/templates/states/page-404.jade"],
-//          "app/templates/states/page-500.html": ["source/jade/templates/states/page-500.jade"],
-//          "app/templates/states/page-blank.html": ["source/jade/templates/states/page-blank.jade"],
-//          "app/templates/states/page-lock-screen.html": ["source/jade/templates/states/page-lock-screen.jade"],
-//          "app/templates/states/page-signin.html": ["source/jade/templates/states/page-signin.jade"],
-//          "app/templates/states/page-signup.html": ["source/jade/templates/states/page-signup.jade"]
+          "source/jade/templates/states/_includes/header-breadcrumb.html": ["source/jade/templates/states/_includes/header-breadcrumb.jade"],
+          "source/jade/templates/states/_includes/template-setting.html": ["source/jade/templates/states/_includes/template-setting.jade"],
+          "source/jade/templates/states/_includes/topbar.html": ["source/jade/templates/states/_includes/topbar.jade"],
+          "source/jade/templates/states/_includes/sidebar.html": ["source/jade/templates/states/_includes/sidebar.jade"],
+          "source/jade/templates/states/main.html": ["source/jade/templates/states/main.jade"],
+//          "source/jade/templates/states/form-layouts-newlead.html": ["source/jade/templates/states/form-layouts-newlead.jade"],
+          "source/jade/templates/states/form-layouts-newstudent.html": ["source/jade/templates/states/form-layouts-newstudent.jade"],
+          "source/jade/templates/states/form-layouts-editstudent.html": ["source/jade/templates/states/form-layouts-editstudent.jade"],
+//          "source/jade/templates/states/form-layouts-newtest.html": ["source/jade/templates/states/form-layouts-newtest.jade"],
+//          "source/jade/templates/states/form-layouts-newweek.html": ["source/jade/templates/states/form-layouts-newweek.jade"],
+//          "source/jade/templates/states/form-layouts-newpayment.html": ["source/jade/templates/states/form-layouts-newpayment.jade"],
+          "source/jade/templates/states/table-basic-attendance.html": ["source/jade/templates/states/table-basic-attendance.jade"],
+//          "source/jade/templates/states/table-basic-leads.html": ["source/jade/templates/states/table-basic-leads.jade"],
+//          "source/jade/templates/states/table-basic-managetest.html": ["source/jade/templates/states/table-basic-managetest.jade"],
+//          "source/jade/templates/states/table-basic-paymenttracking.html": ["source/jade/templates/states/table-basic-paymenttracking.jade"],
+          "source/jade/templates/states/table-basic-students.html": ["source/jade/templates/states/table-basic-students.jade"],
+          "source/jade/templates/states/test.html": ["source/jade/templates/states/test.jade"],
+          "source/jade/templates/states/layout-boxed.html": ["source/jade/templates/states/layout-boxed.jade"],
+          "source/jade/templates/states/layout-left-sidebar-collapsed.html": ["source/jade/templates/states/layout-left-sidebar-collapsed.jade"],
+          "source/jade/templates/states/layout-left-sidebar.html": ["source/jade/templates/states/layout-left-sidebar.jade"],
+          "source/jade/templates/states/layout-right-sidebar-collapsed.html": ["source/jade/templates/states/layout-right-sidebar-collapsed.jade"],
+          "source/jade/templates/states/layout-right-sidebar.html": ["source/jade/templates/states/layout-right-sidebar.jade"],
+//          "source/jade/templates/states/page-404.html": ["source/jade/templates/states/page-404.jade"],
+//          "source/jade/templates/states/page-500.html": ["source/jade/templates/states/page-500.jade"],
+//          "source/jade/templates/states/page-blank.html": ["source/jade/templates/states/page-blank.jade"],
+//          "source/jade/templates/states/page-lock-screen.html": ["source/jade/templates/states/page-lock-screen.jade"],
+//          "source/jade/templates/states/page-signin.html": ["source/jade/templates/states/page-signin.jade"],
+//          "source/jade/templates/states/page-signup.html": ["source/jade/templates/states/page-signup.jade"]
         }
       }
     },
@@ -503,7 +521,7 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['less', 'jshint', 'concat', 'jade', 'concurrent']);
 
   grunt.registerTask('test', ['karma:development']);
-  grunt.registerTask('build',
+  grunt.registerTask('fullbuild',
     [
       'less',
       'jshint',
@@ -515,7 +533,26 @@ module.exports = function (grunt) {
 	  'clean:apache',
 	  'copy:build_appjs',
 	  'copy:build_apache',
+	  'copy:copy_jade',
 	  'index:build'
+//      'uglify',
+//      'karma:minified',
+//      'jsdoc'
+    ]);
+  grunt.registerTask('build',
+    [
+//      'less',
+//      'jshint',
+//      'karma:development',
+//      'concat',
+//      'jade',
+//      'karma:dist',
+	  'clean:js',
+//	  'clean:apache',
+	  'copy:build_appjs',
+//	  'copy:build_apache',
+	  'copy:copy_jade'
+//	  'index:build'
 //      'uglify',
 //      'karma:minified',
 //      'jsdoc'
