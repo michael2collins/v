@@ -88,14 +88,57 @@ $app->get('/studentfiles',  function() {
 
 
     $files = array();
+    $response["files"] = array();
 
-    $dir = opendir('../app/images/students');
-    while ($file = readdir($dir)) {
+    $studentImageDir = "../app/images/students/";
+
+    $dir = opendir($studentImageDir);
+    while (false !== ($file = readdir($dir))) {
+
         if ($file == '.' || $file == '..') {
             continue;
         }
 
         $files[] = $file;
+    }
+    
+    closedir($dir);
+    
+    // Counts elements in array
+    $indexCount=count($files);
+    
+    // Sorts files
+    sort($files);
+    
+    function human_filesize($bytes, $decimals = 2) {
+        $sz = 'BKMGTP';
+        $factor = floor((strlen($bytes) - 1) / 3);
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+    }
+    
+    // Loops through the array of files
+    for($index=0; $index < $indexCount; $index++) {
+        $tmp = array();
+        
+        error_log( print_R("file list:" . $studentImageDir . $files[$index] . "\n", TRUE ), 3, LOG);
+
+        // Gets File Names
+        $fullname=$studentImageDir . $files[$index];   
+        $name=$files[$index];   
+        // Gets file size 
+        $size=number_format(filesize($studentImageDir . $files[$index]));
+        // Gets Date Modified Data
+        $modtime=date("M j Y g:i A", filemtime($studentImageDir . $files[$index]));
+        $timekey=date("YmdHis", filemtime($studentImageDir . $files[$index]));
+        
+        $tmp["fullname"] = $fullname;
+        $tmp["name"] = $name;
+        $tmp["size"] = $size;
+        $tmp["modtime"] = $modtime;
+        $tmp["timekey"] = $timekey;
+
+        array_push($response["files"], $tmp);
+
     }
 
     // Http response code
@@ -104,7 +147,7 @@ $app->get('/studentfiles',  function() {
     // setting response content type to json
     $app->contentType('application/json');
 
-    echo json_encode($files);
+    echo json_encode($response);
 
 });
 

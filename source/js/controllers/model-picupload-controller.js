@@ -71,8 +71,11 @@
     vmpicselect.student = StudentServices.getTheStudent();
     vmpicselect.newpicfile = '';
     vmpicselect.okpicFile = '';
+    vmpicselect.highlightFilteredHeader = highlightFilteredHeader;
+
 
     activate();
+    setGridOptions();
 
     function activate() {
       console.log("picselect student");
@@ -86,9 +89,10 @@
         $log.debug('getstudentPicFiles returned data');
         $log.debug(data.data);
         vmpicselect.picfileList = data.data;
-
+        vmpicselect.gridOptions.data = data.data.files;
+        
         return vmpicselect.picfileList;
-      });
+      }); 
     }
 
     function renameFile(student, currentpicfile) {
@@ -106,6 +110,41 @@
         return vmpicselect.newpicfile;
       });
     }
+
+   function setGridOptions() {
+            vmpicselect.gridOptions = {
+            enableFiltering: true,
+            enableRowSelection: true,
+            enableSelectAll: false,
+            paginationPageSizes: [10, 50, 100],
+            paginationPageSize: 10,
+            columnDefs: [
+                // default
+                {
+                    field: 'name',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false
+                }, {
+                    field: 'size',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false
+                }, {
+                    field: 'modtime',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false
+                } 
+            ]};
+
+        }
+
+    function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
+            if (col.filters[0].term) {
+                return 'header-filtered';
+            } else {
+                return '';
+            }
+        }
+
 
     function ok() {
       console.log('hit ok');
