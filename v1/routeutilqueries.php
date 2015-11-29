@@ -66,15 +66,15 @@ $app->put('/renamefile',  function() use($app) {
     $newpicfile2 = STUPICDIR . $newpicfile;
     $oldpicfile = STUPICDIR . $student->oldpicfile;
     
-    error_log( print_R('new: ' . $newpicfile2 . "\n", TRUE ), 3, LOG);
-    error_log( print_R('old: ' . $oldpicfile . "\n", TRUE ), 3, LOG);
+    error_log( print_R("new: " . $newpicfile2 . "\n", TRUE ), 3, LOG);
+    error_log( print_R("old: " . $oldpicfile . "\n", TRUE ), 3, LOG);
 
     if ($oldpicfile == STUPICDIR ) {
-        error_log( print_R('old pic is empty, using new pic\n', TRUE), 3, LOG);
+        error_log( print_R("old pic is empty, using new pic\n", TRUE), 3, LOG);
         $response["newpicfile"] = $newpicfile;
         
     } else {
-        error_log( print_R('renaming pic\n', TRUE), 3, LOG);
+        error_log( print_R("renaming pic\n", TRUE), 3, LOG);
         if (!copy($oldpicfile, $oldpicfile . ".bkup")) {
             echo "failed to copy $oldpicfile...\n";
             $response["error"] = true;
@@ -134,8 +134,9 @@ $app->get('/studentfiles',  function() {
     // Loops through the array of files
     for($index=0; $index < $indexCount; $index++) {
         $tmp = array();
-        
-        error_log( print_R("file list:" . $studentImageDir . $files[$index] . "\n", TRUE ), 3, LOG);
+
+        $logstr = "file list:" . $studentImageDir . $files[$index] . "\n";        
+        error_log( print_R($logstr, TRUE ), 3, LOG);
 
         // Gets File Names
         $fullname=$studentImageDir . $files[$index];   

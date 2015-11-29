@@ -117,13 +117,13 @@
                       <div class="col-md-3">
                         <div class="row">
                           <div class="col-md-12">
-                            <div class="thumbnail" ng-hide="vmstudent.students.pictureurl">
+                            <div class="thumbnail" ng-hide="vmstudent.students.pictureurldecache">
                             <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image">
                             </div>
 
 
-                            <div class="thumbnail" ng-show="vmstudent.students.pictureurl">
-                            <img ng-src="./images/students/{{vmstudent.students.pictureurl}}">
+                            <div class="thumbnail" ng-show="vmstudent.students.pictureurldecache">
+                            <img ng-src="./images/students/{{vmstudent.students.pictureurldecache}}">
                             </div>
                           </div>
                         </div>
@@ -245,7 +245,7 @@
                               "vmstudent.setStudentPIC(vmpicmodal.picfile); vmpicmodal.picfile=''"
                               ng-show="vmpicmodal.picfile" type="button">Save Picture</button>
 
-                              <div class="thumbnail"><img ng-src=
+                              <div class="thumbnail" ng-show="vmpicmodal.picfile"><img ng-src=
                               "./images/students/{{vmstudent.students.oldpicfile}}.bkup"/>
                               </div>
                             </div>

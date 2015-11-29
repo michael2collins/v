@@ -345,7 +345,7 @@ class StudentDbHandler {
         //        catch(PDOException $e) {
         //            echo '{"error":{"text":'. $e->getMessage() .'}}';
         //       }
-        return $num_affected_rows > 0;
+        return $num_affected_rows >= 0;
     }
 
 

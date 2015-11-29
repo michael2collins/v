@@ -37,6 +37,7 @@
         vmstudent.instructorTitleList = [];
         vmstudent.getBirthday = getBirthday;
         vmstudent.dateopen = dateopen;
+        vmstudent.students.pictureurldecache = undefined;
 
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
@@ -113,7 +114,7 @@
                 $log.debug(data.data);
                 StudentServices.setTheStudent(data.data);
                 vmstudent.students = data.data;
-
+                vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
                 return vmstudent.students;
             });
         }
@@ -135,15 +136,16 @@
             $log.debug('about setStudentPIC ', pic);
             vmstudent.students.pictureurl = pic;
             $log.debug('about setStudentPIC ', vmstudent.students);
-            return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
-                $log.debug('setStudentPIC returned data: goto', vmstudent.path);
-                $log.debug(data.data);
-                vmstudent.students = data.data;
-                //          $log.debug('set route', $routeParams);
-                //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
-                //          return vmstudent.students;
-                //getStudent();
-            });
+//            return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
+ //               $log.debug('setStudentPIC returned data: goto', vmstudent.path);
+  //              $log.debug(data.data);
+//                vmstudent.students = data.data;
+//                //          $log.debug('set route', $routeParams);
+//                //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
+//                //          return vmstudent.students;
+//                //getStudent();
+//            });
+              updateStudent();
         }
 
         function getAllZips() {
