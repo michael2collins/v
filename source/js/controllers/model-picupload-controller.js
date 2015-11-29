@@ -4,7 +4,8 @@
   angular
     .module('ng-admin')
     .controller('ModalPicUploadController', ModalPicUploadController)
-    .controller('ModalPicInstanceController', ModalPicInstanceController);
+    .controller('ModalPicInstanceController', ModalPicInstanceController)
+    .controller('ModalPicInstance2Controller', ModalPicInstance2Controller);
 
 
   ModalPicUploadController.$inject = [
@@ -19,6 +20,15 @@
       'picfile',
       'StudentServices'
     ];
+  ModalPicInstance2Controller.$inject = [
+      '$scope',
+      '$log',
+      '$uibModalInstance',
+      'picfile',
+      'StudentServices',
+      'uiGridConstants',
+      '$timeout'
+    ];
 
 
   function ModalPicUploadController($scope,  $log, $uibModal) {
@@ -27,13 +37,13 @@
 
     vmpicmodal.animationsEnabled = true;
 
-    vmpicmodal.open = open;
+    vmpicmodal.openpick = openpick;
+    vmpicmodal.opensearch = opensearch;
     vmpicmodal.pic = ''; //or should we get this from the db
     vmpicmodal.student = '';
     vmpicmodal.modalInstance = undefined;
-    vmpicmodal.somestud = $scope;
 
-    function open() {
+    function openpick() {
 
       vmpicmodal.modalInstance = $uibModal.open({
         animation: vmpicmodal.animationsEnabled,
@@ -46,15 +56,38 @@
           }
         }
       });
-
       vmpicmodal.modalInstance.result.then(function (selectedpic, student) {
+          console.log('pick upload modalInstance result picfile:', selectedpic);
         vmpicmodal.picfile = selectedpic;
         vmpicmodal.student = student;
       }, function () {
         $log.info('Modal dismissed at: ' + new Date());
       });
     }
+    
 
+    function opensearch() {
+
+      vmpicmodal.modalInstance = $uibModal.open({
+        animation: vmpicmodal.animationsEnabled,
+        templateUrl: 'myPicksearch.html',
+        controller: 'ModalPicInstance2Controller as vmpicsearch',
+        size: 'lg',
+        resolve: {
+          picfile: function () {
+            return vmpicmodal.picFile;
+          }
+        }
+      });
+      vmpicmodal.modalInstance.result.then(function (selectedpic, student) {
+          console.log('picsearch modalInstance result picfile:', selectedpic);
+        vmpicmodal.picfile = selectedpic;
+        vmpicmodal.student = student;
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+
+    }
   }
 
   function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile, StudentServices) {
@@ -64,36 +97,21 @@
     vmpicselect.cancel = cancel;
     vmpicselect.picfile = picfile;
     vmpicselect.picfilelist = [];
-    vmpicselect.getFiles = getFiles;
     vmpicselect.renameFile = renameFile;
     vmpicselect.picpath = '../v1/studentfiles';
     vmpicselect.renamepath = '../v1/renamefile';
     vmpicselect.student = StudentServices.getTheStudent();
     vmpicselect.newpicfile = '';
     vmpicselect.okpicFile = '';
-    vmpicselect.highlightFilteredHeader = highlightFilteredHeader;
 
 
     activate();
-    setGridOptions();
 
     function activate() {
       console.log("picselect student");
       console.log(vmpicselect.student);
-      getFiles();
     }
 
-    function getFiles() {
-      console.log('getfiles');
-      return StudentServices.getstudentPicFiles(vmpicselect.picpath).then(function (data) {
-        $log.debug('getstudentPicFiles returned data');
-        $log.debug(data.data);
-        vmpicselect.picfileList = data.data;
-        vmpicselect.gridOptions.data = data.data.files;
-        
-        return vmpicselect.picfileList;
-      }); 
-    }
 
     function renameFile(student, currentpicfile) {
       console.log('renameFile');
@@ -106,18 +124,110 @@
         $log.debug('renameFile returned data');
         $log.debug(data.data);
         vmpicselect.newpicfile = data.data.newpicfile;
-
         return vmpicselect.newpicfile;
       });
     }
 
+
+    function ok() {
+      console.log('hit ok');
+      var thisstudent = StudentServices.getTheStudent();
+      vmpicselect.okpicFile = StudentServices.getstudentPicFile();
+      vmpicselect.okpicFile = renameFile(thisstudent, vmpicselect.okpicFile);
+      console.log('got file for ok:', vmpicselect.okpicFile);
+      console.log('for student:' ,thisstudent);
+      $uibModalInstance.close(vmpicselect.okpicFile, thisstudent);
+    }
+
+    function cancel() {
+      $uibModalInstance.dismiss('cancel');
+    }
+
+  }
+
+
+  function ModalPicInstance2Controller($scope, $log, $uibModalInstance, picfile, StudentServices, uiGridConstants, $timeout) {
+    /* jshint validthis: true */
+    var vmpicsearch = this;
+    vmpicsearch.ok = ok;
+    vmpicsearch.cancel = cancel;
+    vmpicsearch.picfile = picfile;
+    vmpicsearch.picfilelist = [];
+    vmpicsearch.getFiles = getFiles;
+    vmpicsearch.renameFile = renameFile;
+    vmpicsearch.picpath = '../v1/studentfiles';
+    vmpicsearch.renamepath = '../v1/renamefile';
+    vmpicsearch.student = StudentServices.getTheStudent();
+    vmpicsearch.newpicfile = '';
+    vmpicsearch.okpicFile = '';
+    vmpicsearch.highlightFilteredHeader = highlightFilteredHeader;
+    vmpicsearch.gridApi = undefined;
+
+    activate();
+    setGridOptions();
+
+    function activate() {
+        console.log("picselect student");
+        console.log(vmpicsearch.student);
+        getFiles();
+    }
+
+
+    function getFiles() {
+      console.log('getfiles');
+      return StudentServices.getstudentPicFiles(vmpicsearch.picpath).then(function (data) {
+        $log.debug('getstudentPicFiles returned data');
+        $log.debug(data.data);
+        vmpicsearch.picfileList = data.data;
+        vmpicsearch.gridOptions.data = data.data.files;
+        $timeout(function() {
+            $log.debug('getfiles timeout');
+   //         $log.debug(vmpicsearch.gridApi);
+            if(vmpicsearch.gridApi.selection.selectRow){
+              vmpicsearch.gridApi.selection.selectRow(vmpicsearch.gridOptions.data[0]);
+            }
+        });
+        return vmpicsearch.picfileList;
+      }); 
+    }
+
+    function renameFile(student, currentpicfile) {
+      console.log('renameFile');
+      console.log(' student:' );
+      console.log(student);
+      console.log('pic');
+      console.log(currentpicfile);
+
+      return StudentServices.renameStudentPicFile(vmpicsearch.renamepath, student, currentpicfile).then(function (data) {
+        $log.debug('renameFile returned data');
+        $log.debug(data.data);
+        vmpicsearch.newpicfile = data.data.newpicfile;
+        return vmpicsearch.newpicfile;
+      });
+    }
+
    function setGridOptions() {
-            vmpicselect.gridOptions = {
+            vmpicsearch.gridOptions = {
             enableFiltering: true,
             enableRowSelection: true,
             enableSelectAll: false,
-            paginationPageSizes: [10, 50, 100],
-            paginationPageSize: 10,
+            multiSelect: false,
+            showGridFooter: true,
+            onRegisterApi: function( gridApi ) {
+                  //set gridApi on scope
+                vmpicsearch.gridApi = gridApi;
+                    console.log('gridApi onRegisterApi');
+        //          console.log(gridApi);
+        //          console.log(vmpicsearch);
+                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
+                        var msg = 'row selected ' + row.entity.name;
+                        console.log(msg);
+                        StudentServices.setstudentPicFile(row.entity.name);
+
+                  });
+            },
+            paginationPageSizes: [5, 50, 100],
+            paginationPageSize: 5,
             columnDefs: [
                 // default
                 {
@@ -149,11 +259,11 @@
     function ok() {
       console.log('hit ok');
       var thisstudent = StudentServices.getTheStudent();
-      vmpicselect.okpicFile = StudentServices.getstudentPicFile();
-      vmpicselect.okpicFile = renameFile(thisstudent, vmpicselect.okpicFile);
-      console.log('got file for ok:', vmpicselect.okpicFile);
+      vmpicsearch.okpicFile = StudentServices.getstudentPicFile();
+      vmpicsearch.okpicFile = renameFile(thisstudent, vmpicsearch.okpicFile);
+      console.log('got file for ok:', vmpicsearch.okpicFile);
       console.log('for student:' ,thisstudent);
-      $uibModalInstance.close(vmpicselect.okpicFile, thisstudent);
+      $uibModalInstance.close(vmpicsearch.okpicFile, thisstudent);
     }
 
     function cancel() {
@@ -161,5 +271,5 @@
     }
 
   }
-
+ 
 })();

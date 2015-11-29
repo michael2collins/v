@@ -69,10 +69,25 @@ $app->put('/renamefile',  function() use($app) {
     error_log( print_R('new: ' . $newpicfile2 . "\n", TRUE ), 3, LOG);
     error_log( print_R('old: ' . $oldpicfile . "\n", TRUE ), 3, LOG);
 
-    rename($oldpicfile, $newpicfile2);
+    if ($oldpicfile == STUPICDIR ) {
+        error_log( print_R('old pic is empty, using new pic\n', TRUE), 3, LOG);
+        $response["newpicfile"] = $newpicfile;
+        
+    } else {
+        error_log( print_R('renaming pic\n', TRUE), 3, LOG);
+        if (!copy($oldpicfile, $oldpicfile . ".bkup")) {
+            echo "failed to copy $oldpicfile...\n";
+            $response["error"] = true;
+        }        
+        if (!rename($oldpicfile, $newpicfile2)) {
+            echo "failed to rename $oldpicfile...\n";
+            $response["error"] = true;
+        }
+        $response["newpicfile"] = $newpicfile;
+        
+    }
 
     $response["error"] = false;
-    $response["newpicfile"] = $newpicfile;
     
     echoRespnse(200, $response);
     

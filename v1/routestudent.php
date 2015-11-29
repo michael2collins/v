@@ -179,10 +179,12 @@ $app->put('/students/:id',  function($student_id) use($app) {
     $pictureurl = $student->pictureurl;
     $CurrentIARank = $student->CurrentIARank;
 
-    //error_log( print_R("before update", TRUE ));
+    error_log( print_R("before update", TRUE ), 3, LOG);
 
-    //error_log( print_R($LastName, TRUE ));
-    //error_log( print_R($FirstName, TRUE ));
+    error_log( print_R('b4 lastnm' , TRUE ), 3, LOG);
+    error_log( print_R( $LastName, TRUE ), 3, LOG);
+    error_log( print_R('b4 fstnm' , TRUE ), 3, LOG);
+    error_log( print_R( $FirstName, TRUE ), 3, LOG);
     //error_log( print_R($Email, TRUE ));
     //error_log( print_R($Email2, TRUE ));
     //error_log( print_R($Phone, TRUE ));
@@ -210,7 +212,8 @@ $app->put('/students/:id',  function($student_id) use($app) {
     //error_log( print_R($instructorTitle, TRUE ));
     //error_log( print_R($CurrentRank, TRUE ));
     //error_log( print_R($CurrentReikiRank, TRUE ));
-    //error_log( print_R($pictureurl, TRUE));
+    error_log( print_R('b4 pic', TRUE), 3, LOG);
+    error_log( print_R($pictureurl, TRUE), 3, LOG);
     //error_log( print_R($CurrentIARank, TRUE ));
     //error_log( print_R($student_id, TRUE ));
 
@@ -253,10 +256,14 @@ $app->put('/students/:id',  function($student_id) use($app) {
 
                                 );
     if ($result) {
+        error_log( print_R('after upstu result good', TRUE), 3, LOG);
+        error_log( print_R('after upstu result good', TRUE), 3, LOG);
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Student updated successfully";
     } else {
+        error_log( print_R('after upstu result bad', TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
         // task failed to update
         $response["error"] = true;
         $response["message"] = "Student failed to update. Please try again!";

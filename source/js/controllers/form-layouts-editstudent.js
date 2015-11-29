@@ -142,7 +142,7 @@
                 //          $log.debug('set route', $routeParams);
                 //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
                 //          return vmstudent.students;
-                getStudent();
+                //getStudent();
             });
         }
 
