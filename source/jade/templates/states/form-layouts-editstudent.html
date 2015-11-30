@@ -1042,7 +1042,7 @@
               </div>
               <div class="portlet-body">
                 <div class="gallery-pages">
-                  <div>
+                  <div class="col-md-6">
                     <form action="" novalidate name="editstudentpayment" class="horizontal-form">
                       <div class="form-body pal">
                         <h3 class="block-heading">Payment Information</h3>
@@ -1086,6 +1086,17 @@
                       </div>
                     </form>
 
+                  </div>
+                  <div class="col-md-6">
+                      <div ng-repeat="family in vmpayment.FamilyList track by $index">
+                          <div class="col-md-3">{{family.firstname}}</div>
+                          <div class="col-md-3">{{family.lastname}}</div>
+                          <div class="col-md-6">
+                              <div class="thumbnail" ng-hide="family.pictureurl">
+                              <img ng-src="./images/students/{{family.pictureurl}}">
+                              </div>
+                          </div>
+                      </div>
                   </div>
                 </div>
               </div>

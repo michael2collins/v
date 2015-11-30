@@ -13,11 +13,12 @@
     '$location',
     '$timeout',
     'ClassServices',
+    'StudentServices',
     'PaymentServices'
     ];
 
     function StudentPaymentController($scope, $rootScope, $routeParams,
-            $log, $http, $location, $timeout, ClassServices, PaymentServices) {
+            $log, $http, $location, $timeout, ClassServices, StudentServices, PaymentServices) {
         /* jshint validthis: true */
         var vmpayment = this;
 
@@ -25,10 +26,12 @@
         vmpayment.getStudentClassPayList = getStudentClassPayList;
         vmpayment.updateStudentPayment = updateStudentPayment;
         vmpayment.updateStudentPayment2 = updateStudentPayment2;
+        vmpayment.getFamily = getFamily;
         vmpayment.initclasslist = initclasslist;
 
         vmpayment.StudentPayment = [];
         vmpayment.ClassPayList = [];
+        vmpayment.FamilyList = [];
 
         vmpayment.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug('studentid: ' + $routeParams.id);
@@ -40,12 +43,8 @@
         $log.debug('studentid: ' + $routeParams.id);
         $log.debug('StudentPayment: ' + $routeParams.myclass);
         vmpayment.StudentPayment.contactID = $routeParams.id;
-
-        vmpayment.availableColors = ['Red', 'Green', 'Blue', 'Yellow', 'Magenta', 'Maroon', 'Umbra', 'Turquoise'];
-        console.log('colors');
-        console.log(vmpayment.availableColors);
-        vmpayment.singleDemo = {};
-        vmpayment.singleDemo.color = '';
+        
+        vmpayment.familypath = '../v1/family/' + $routeParams.id;
 
         vmpayment.xtagTransform = xtagTransform;
 
@@ -79,9 +78,21 @@
                 $log.debug(data.data);
                 vmpayment.StudentPayment = data.data;
                 getStudentClassPayList();
+                getFamily();
                 return vmpayment.StudentPayment;
             });
         }
+
+        function getFamily() {
+            return StudentServices.getFamily(vmpayment.familypath).then(function(data){
+                    $log.debug('getFamily returned data');
+                    $log.debug(data.data);
+                    vmpayment.FamilyList = data.data;
+
+                    return vmpayment.FamilyList;
+                });
+        }
+
 
         function getStudentClassPayList() {
             return PaymentServices.getClassPayList(vmpayment.classpaylistpath).then(function(data){

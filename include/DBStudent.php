@@ -189,6 +189,58 @@ class StudentDbHandler {
         }
     }
 
+
+    /**
+     * Fetching family for  student
+     * @param String $student_id id of the student
+     */
+    public function getFamily($student_id) {
+        $stmt = $this->conn->prepare("SELECT distinct
+                   t.ID as contactid,
+                   t.LastName as lastname,
+                   t.FirstName as firstname ,
+                   t.Parent as parent ,
+                   t.pictureurl as pictureurl,
+                   c.classpayname as classpayname
+            FROM ncontacts c, nclasspays p
+            WHERE c.ID = p.contactid
+            AND p.classpayname in ( select t.classpayname from nclasspays t where t.contactID = ? ) 
+            ORDER BY p.classPayName                   
+        ");
+        $stmt->bind_param("i", $student_id);
+        if ($stmt->execute()) {
+            $res = array();
+            $stmt->bind_result(
+                //           $id, $student, $status, $created_at
+                $contactid,
+                $lastname,
+                $firstname,
+                $parent,
+                $pictureurl,
+                $classpayname
+            );
+            // TODO
+            // $student = $stmt->get_result()->fetch_assoc();
+            $stmt->fetch();
+            //          $res["id"] = $id;
+            //          $res["student"] = $student;
+            //          $res["status"] = $status;
+            //          $res["created_at"] = $created_at;
+            $res["contactid"] = $contactid;
+            $res["lastname"] = $lastname;
+            $res["firstname"] = $firstname;
+            $res["parent"] = $parent;
+            $res["pictureurl"] = $pictureurl;
+            $res["classpayname"] = $classpayname;
+            $stmt->close();
+            return $res;
+        } else {
+            return NULL;
+        }
+    }
+
+
+
     /**
      * Updating student
 

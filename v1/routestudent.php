@@ -129,6 +129,36 @@ $app->get('/students/:id',  function($student_id) {
         echoRespnse(404, $response);
     }
 });
+
+/** family members related to student and setup as payers
+ * 
+*/
+$app->get('/family/:id',  function($student_id) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getFamily($student_id);
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        $response["ContactID"] = $result["contactid"];
+        $response["LastName"] = $result["lastname"];
+        $response["FirstName"] = $result["firstname"];
+        $response["Parent"] = $result["parent"];
+        $response["pictureurl"] = $result["pictureurl"];
+        $response["classpayname"] = $result["classpayname"];
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+
+
+
 /**
  * Updating existing student
  * method PUT
