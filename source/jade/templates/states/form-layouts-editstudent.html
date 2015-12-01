@@ -1088,16 +1088,19 @@
 
                   </div>
                   <div class="col-md-6">
-                      <div ng-repeat="family in vmpayment.FamilyList track by $index">
-                          <div class="col-md-3">{{family.firstname}}</div>
-                          <div class="col-md-3">{{family.lastname}}</div>
-                          <div class="col-md-6">
-                              <div class="thumbnail" ng-hide="family.pictureurl">
-                              <img ng-src="./images/students/{{family.pictureurl}}">
+                  <h3 class="block-heading">Family Members</h3>
+                      <div ng-repeat="family in vmpayment.FamilyList.FamilyList">
+<!--                  <pre>{{family | json}}</pre>  -->
+                          <div class="col-md-3">Name: {{ family.firstname }} {{family.lastname}}</div>
+                          <div class="col-md-9">
+                              <div class="thumbnail" ng-show="family.pictureurl"> 
+                              <img height="200px" ng-src="./images/students/{{family.pictureurl}}">
                               </div>
                           </div>
                       </div>
                   </div>
+<!--                  <pre>{{vmpayment.FamilyList | json}}</pre>  -->
+                  
                 </div>
               </div>
             </div>

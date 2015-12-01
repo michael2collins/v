@@ -195,48 +195,32 @@ class StudentDbHandler {
      * @param String $student_id id of the student
      */
     public function getFamily($student_id) {
-        $stmt = $this->conn->prepare("SELECT distinct
-                   t.ID as contactid,
-                   t.LastName as lastname,
-                   t.FirstName as firstname ,
-                   t.Parent as parent ,
-                   t.pictureurl as pictureurl,
-                   c.classpayname as classpayname
-            FROM ncontacts c, nclasspays p
-            WHERE c.ID = p.contactid
-            AND p.classpayname in ( select t.classpayname from nclasspays t where t.contactID = ? ) 
-            ORDER BY p.classPayName                   
-        ");
+        
+        error_log( print_R("student for getfamily is: " . $student_id . "\n", TRUE ),3, LOG);
+        
+        $sql = " SELECT distinct " ;
+        $sql = $sql . " t.ID as contactid, ";
+        $sql = $sql . "  t.LastName as lastname, ";
+        $sql = $sql . "  t.FirstName as firstname , ";
+        $sql = $sql . " t.Parent as parent , ";
+        $sql = $sql . " t.pictureurl as pictureurl, ";
+        $sql = $sql . " c.classpayname as classpayname ";
+        $sql = $sql . " FROM ncontacts t, nclasspays c ";
+        $sql = $sql . " WHERE t.ID = c.contactid ";
+        $sql = $sql . " AND c.classpayname in ( select p.classpayname from nclasspays p where p.contactID = ? )  ";
+        $sql = $sql . " ORDER BY c.classPayName ";
+
+        error_log( print_R("sql for getfamily is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+            
         $stmt->bind_param("i", $student_id);
-        if ($stmt->execute()) {
-            $res = array();
-            $stmt->bind_result(
-                //           $id, $student, $status, $created_at
-                $contactid,
-                $lastname,
-                $firstname,
-                $parent,
-                $pictureurl,
-                $classpayname
-            );
-            // TODO
-            // $student = $stmt->get_result()->fetch_assoc();
-            $stmt->fetch();
-            //          $res["id"] = $id;
-            //          $res["student"] = $student;
-            //          $res["status"] = $status;
-            //          $res["created_at"] = $created_at;
-            $res["contactid"] = $contactid;
-            $res["lastname"] = $lastname;
-            $res["firstname"] = $firstname;
-            $res["parent"] = $parent;
-            $res["pictureurl"] = $pictureurl;
-            $res["classpayname"] = $classpayname;
-            $stmt->close();
-            return $res;
-        } else {
-            return NULL;
-        }
+        
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
     }
 
 
