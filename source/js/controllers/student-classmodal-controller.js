@@ -68,19 +68,23 @@
     console.log(vmsearch);
     vmsearch.vmclass = $controller('StudentClassController as vmclass', {$scope: $scope});
     
-    vmsearch.ok = ok;
-    vmsearch.cancel = cancel;
-    vmsearch.classname = classname;
+//    vmsearch.ok = ok;
+//    vmsearch.cancel = cancel;
+    vmsearch.close = close;
+    vmsearch.classname = vmsearch.vmclass.studentclass;
 
 
-    function ok() {
+ /*   function ok() {
       console.log('hit ok');
       console.log('got classname for ok:', vmsearch.classname);
       $uibModalInstance.close(vmsearch.classname);
-    }
+    }*/
 
-    function cancel() {
-      $uibModalInstance.dismiss('cancel');
+    function close() {
+      console.log('hit close');
+      console.log('got classname for close:', vmsearch.vmclass.studentclass);
+      $uibModalInstance.close(vmsearch.vmclass.studentclass);
+
     }
 
   }

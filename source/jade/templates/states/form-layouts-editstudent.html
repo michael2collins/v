@@ -48,7 +48,7 @@
                         <div class="row">
                           <div class="col-md-12">
                             <div class="thumbnail" ng-hide="vmstudent.students.pictureurldecache">
-                            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image">
+                            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
                             </div>
 
 
@@ -1009,7 +1009,7 @@
                           <div class="info">
                             <h3>{{x.class}} - {{x.pgm}}</h3>
                             <div>
-                              <button type="button" ng-click="vmsearch.vmclass.setStudentClass({{vmsearch.vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}})" class="btn btn-default btn-sm mix-link">Set as {{x.class}} - {{x.pgm}}</button>
+                              <button type="button" ng-click="vmsearch.vmclass.setStudentClass({{vmsearch.vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}});vmsearch.vmclass.initclasslist()" class="btn btn-default btn-sm mix-link">Set as {{x.class}} - {{x.pgm}}</button>
                             </div>
                           </div>
                         </div>
@@ -1018,12 +1018,13 @@
                   </div>
                         </div>
                         <div class="modal-footer">
-                          <button class="btn btn-primary" type="button" ng-click="vmsearch.ok()">OK</button>
+                          <button class="btn btn-primary" type="button" ng-click="vmsearch.close()">Close</button>
+<!--                          <button class="btn btn-primary" type="button" ng-click="vmsearch.ok()">OK</button>
                           <button class="btn btn-warning" type="button" ng-click="vmsearch.cancel()">Cancel</button>
-                        </div>
+-->                        </div>
                     </script>
 
-                    <div class="col-md-8">
+<!--                    <div class="col-md-8">
                       <input class="form-control" id="classname" name="classname" ng-hide=
                       "false" ng-model="vmsetclassmodal.classname" placeholder="Class Name" type=
                       "text"> 
@@ -1032,7 +1033,7 @@
                       ng-show="vmsetclassmodal.classname" type="button">Save Class</button>
 
                     </div>
-
+-->
 
                     <div class="col-md-4">
                        <a href="#" ng-click="vmsetclassmodal.opensearch()"><i class=
