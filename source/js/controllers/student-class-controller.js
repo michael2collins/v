@@ -73,7 +73,7 @@
                 //            console.log(vmclass.concat);
                 //           $scope.$emit('iso-option', {filter: vmclass.concat});
 
-            }, 2000);
+            }, 300);
         }
 
         function activate() {

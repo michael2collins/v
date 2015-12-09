@@ -48,7 +48,7 @@ module.exports = function (grunt) {
 		    //translations: ['src/assets/languages/*.json'],
 	  apache: [ 'apache_setup/.htaccess' ],
 	  postjade: [ 'source/jade/templates/states/**/*.html'],
-      html: [ 'src/index.html' ]
+      html: [ 'source/index.html' ]
 			//less: ['src/less/main.less', 'src/common/**/*.less']
 	},
 	/**
@@ -206,6 +206,21 @@ module.exports = function (grunt) {
 		  }
 		  ]
 	  },
+	  build_indexhtml: {
+		  files: [
+		  {
+				expand: true,
+				nonull: true,
+				src: [ '<%= app_files.html %>' ],
+				cwd: '.',
+				dest: 'app/',
+				rename: function(dest,src) {
+					grunt.log.writeln("index html:" + src.substring(6)); /* source = 12*/
+					return dest + src.substring(6);
+			}
+		  }
+		  ]
+	  },
 	  copy_jade: {
 		  files: [
 		  {
@@ -333,7 +348,7 @@ module.exports = function (grunt) {
           pretty:true
         },
         files: {
-          "app/index.html": ["source/jade/index.jade"],
+//          "app/index.html": ["source/jade/index.jade"],
           "source/jade/templates/states/_includes/header-breadcrumb.html": ["source/jade/templates/states/_includes/header-breadcrumb.jade"],
           "source/jade/templates/states/_includes/template-setting.html": ["source/jade/templates/states/_includes/template-setting.jade"],
           "source/jade/templates/states/_includes/topbar.html": ["source/jade/templates/states/_includes/topbar.jade"],
@@ -564,6 +579,7 @@ module.exports = function (grunt) {
 	  'clean:html',
 //	  'clean:apache',
 	  'copy:build_appjs',
+	  'copy:build_indexhtml',
 //	  'copy:build_apache',
 	  'copy:copy_jade'
 //	  'index:build'
