@@ -180,6 +180,50 @@ $app->get('/family/:id',  function($student_id) {
     }
 });
 
+/**
+ * get student contact history
+ * method GET
+ * params student_id
+ * url - /studenthistory/:id
+ */
+
+$app->get('/studenthistory/:id',  function($student_id) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getStudentHistory($student_id);
+
+    $response["error"] = false;
+    $response["StudentHistoryList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["contactmgmttype"] = (empty($slist["contactmgmttype"]) ? "NULL" : $slist["contactmgmttype"]);
+            $tmp["contactdate"] = (empty($slist["contactdate"]) ? "NULL" : $slist["contactdate"]);
+            $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
+        } else {
+            $tmp["contactmgmttype"] = "NULL";
+            $tmp["contactdate"] = "NULL";
+            $tmp["contactid"] = "NULL";
+        }
+        array_push($response["StudentHistoryList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+
 
 
 /**

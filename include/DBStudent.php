@@ -223,6 +223,35 @@ class StudentDbHandler {
         return $res;
     }
 
+    /**
+     * Fetching history for  student
+     * @param String $student_id id of the student
+     */
+    public function getStudentHistory($student_id) {
+        
+        error_log( print_R("student for getStudentHistory is: " . $student_id . "\n", TRUE ),3, LOG);
+        
+        $sql = " SELECT  " ;
+        $sql = $sql . " t.contactid as contactid, ";
+        $sql = $sql . "  t.contactdate as contactdate, ";
+        $sql = $sql . "  t.contactmgmttype as contactmgmttype  ";
+        $sql = $sql . " FROM ncontactmgmt t ";
+        $sql = $sql . " WHERE t.contactid = ? ";
+        $sql = $sql . " ORDER BY t.contactdate ";
+
+        error_log( print_R("sql for getStudentHistory is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+            
+        $stmt->bind_param("i", $student_id);
+        
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+
 
 
     /**
