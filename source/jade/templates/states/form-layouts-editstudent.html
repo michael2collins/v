@@ -909,7 +909,7 @@
                       <div class="form-body pal">
                         <h3 class="block-heading">Class Information</h3>
                         <div class="row">
-                          <div class="col-md-6">
+                          <div class="col-md-4">
                             <div class="col-md-12">
                               <div ng-class="{'has-error': editstudentclass.sc_Class.$invalid, 'has-success': !editstudentclass.sc_Class.$invalid}" class="form-group">
                                 <label for="inputsc_Class" class="control-label">Student Class</label>
@@ -956,32 +956,10 @@
                               </div>
                             </div>
                           </div>
-                          <div class="col-md-6">
-                            <div class="col-md-8">
-                              <div class="gallery-pages">
-                                <div class="mix-grid">
-                                  <div class="mix">
-                                    <div class="hover-effect">
-                                      <div class="img" ng-if="vmclass.classpictureurl.pictureurl[0].pictureurl">
-                                        <img ng-src="images/classes/{{vmclass.classpictureurl.pictureurl[0].pictureurl}}" alt="" class="img-responsive" />
-                                      </div>
-                                      <div class="info">
-                                        <h3>{{vmclass.studentclass.class}} - {{vmclass.studentclass.pgmclass}}</h3>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
+                          <div class="col-md-2">
                   
-                  
-                <div class="row row-icons">
-                  <div ng-controller="ModalSetStudentClassController as vmsetclassmodal">
+                                <div class="row row-icons">
+                                  <div ng-controller="ModalSetStudentClassController as vmsetclassmodal">
                     <script id="myClasssearch.html" type="text/ng-template">
                         <div class="modal-header">
                           <h3 class="modal-title">Select Student Class</h3>
@@ -1055,11 +1033,30 @@
                   </div>
                 </div>
                   
-                  
-                  
-                  
-                  
-
+                          </div>
+                          <div class="col-md-6">
+                            <div class="col-md-8">
+                              <div class="gallery-pages">
+                                <div class="mix-grid">
+                                  <div class="mix">
+                                    <div class="hover-effect">
+                                      <div class="img" ng-if="vmclass.classpictureurl.pictureurl[0].pictureurl">
+                                        <img ng-src="images/classes/{{vmclass.classpictureurl.pictureurl[0].pictureurl}}" alt="" class="img-responsive" />
+                                      </div>
+                                      <div class="info">
+                                        <h3>{{vmclass.studentclass.class}} - {{vmclass.studentclass.pgmclass}}</h3>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                 
               </div>
             </div>
           </div>
