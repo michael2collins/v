@@ -422,5 +422,135 @@ $app->get('/studentlists',  function() {
 });
 
 
+ * Student Registration
+ * url - /newstudent
+ * method - POST
+ * params - full list of student fields
+ */
+ 
+$app->post('/newstudent', function() use ($app) {
+    // check for required params
+//    verifyRequiredParams(array('name', 'email', 'password'));
 
+    $response = array();
+
+    // reading post params
+//    $name = $app->request->post('name');
+//    $email = $app->request->post('email');
+//    $password = $app->request->post('password');
+
+    $request = $app->request();
+    $body = $request->getBody();
+    $student = json_decode($body);
+    //error_log( print_R($student, TRUE ));
+
+    //global $user_id;
+    $LastName = $student->LastName;
+    $FirstName = $student->FirstName;
+    $Email = $student->Email;
+    $Email2 = $student->Email2;
+    $Phone = $student->Phone;
+    $AltPhone = $student->AltPhone;
+    $phoneExt = $student->phoneExt;
+    $altPhoneExt = $student->altPhoneExt;
+    $Birthday = $student->Birthday;
+    $sex = $student->sex;
+    $Parent = $student->Parent;
+    $EmergencyContact = $student->EmergencyContact;
+    $Notes = $student->Notes;
+    $medicalConcerns = $student->medicalConcerns;
+    $Address = $student->Address;
+    $City = $student->City;
+    $State = $student->State;
+    $ZIP = $student->ZIP;
+    $ContactType = $student->ContactType;
+    $quickbooklink = $student->quickbooklink;
+    $StudentSchool = $student->StudentSchool;
+    $GuiSize = $student->GuiSize;
+    $ShirtSize = $student->ShirtSize;
+    $BeltSize = $student->BeltSize;
+    $InstructorPaymentFree = $student->InstructorPaymentFree;
+    $InstructorFlag = $student->InstructorFlag;
+    $instructorTitle = $student->instructorTitle;
+    $CurrentRank = $student->CurrentRank;
+    $CurrentReikiRank = $student->CurrentReikiRank;
+    $pictureurl = $student->pictureurl;
+    $CurrentIARank = $student->CurrentIARank;
+
+    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+
+
+    // validating email address
+//    validateEmail($email);
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $result = $db->insertStudent($LastName,
+                                 $FirstName,
+                                 $Email,
+                                 $Email2,
+                                 $Phone,
+                                 $AltPhone,
+                                 $phoneExt,
+                                 $altPhoneExt,
+                                 $Birthday,
+                                 $sex,
+                                 $Parent,
+                                 $EmergencyContact,
+                                 $Notes,
+                                 $medicalConcerns,
+                                 $Address,
+                                 $City,
+                                 $State,
+                                 $ZIP,
+                                 $ContactType,
+                                 $quickbooklink,
+                                 $StudentSchool,
+                                 $GuiSize,
+                                 $ShirtSize,
+                                 $BeltSize,
+                                 $InstructorPaymentFree,
+                                 $InstructorFlag,
+                                 $instructorTitle,
+                                 $CurrentRank,
+                                 $CurrentReikiRank,
+                                 $pictureurl,
+                                 $CurrentIARank
+
+                                );
+    if ($result == USER_CREATED_SUCCESSFULLY) {
+        $response["error"] = false;
+        $response["message"] = "You are successfully registered";
+    } else if ($result == USER_CREATE_FAILED) {
+        $response["error"] = true;
+        $response["message"] = "Oops! An error occurred while registereing";
+    } else if ($result == USER_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this email already existed";
+    } else {
+        error_log( print_R("after insertStudent result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        // task failed to update
+        $response["error"] = true;
+        $response["message"] = "Student failed to update. Please try again!";
+    }
+    echoRespnse(201, $response);
+
+});
+
+
+/**
+ * Validating email address
+ */
+function validateEmail($email) {
+    $app = \Slim\Slim::getInstance();
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $response["error"] = true;
+        $response["message"] = 'Email address is not valid';
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+}
 ?>

@@ -12,7 +12,7 @@ class StudentDbHandler {
     private $conn;
 
     function __construct() {
-        require_once dirname(__FILE__) . '/DbConnect.php';
+        require_once dirname(__FILE__) . '/DbConnecphp';
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -413,6 +413,183 @@ class StudentDbHandler {
         return $num_affected_rows >= 0;
     }
 
+
+ /**
+     * Creating new student
+     */
+    public function createStudent($LastName,
+                                  $FirstName,
+                                  $Email,
+                                  $Email2,
+                                  $Phone,
+                                  $AltPhone,
+                                  $phoneExt,
+                                  $altPhoneExt,
+                                  $Birthday,
+                                  $sex,
+                                  $Parent,
+                                  $EmergencyContact,
+                                  $Notes,
+                                  $medicalConcerns,
+                                  $Address,
+                                  $City,
+                                  $State,
+                                  $ZIP,
+                                  $ContactType,
+                                  $quickbooklink,
+                                  $StudentSchool,
+                                  $GuiSize,
+                                  $ShirtSize,
+                                  $BeltSize,
+                                  $InstructorPaymentFree,
+                                  $InstructorFlag,
+                                  $instructorTitle,
+                                  $CurrentRank,
+                                  $CurrentReikiRank,
+                                  $pictureurl,
+                                  $CurrentIARank        
+        ) {
+        $response = array();
+
+
+        $sql = "INSERT into ncontacts (";
+        $sql .= " LastName ,";
+        $sql .= " FirstName ,";
+        $sql .= " Email ,";
+        $sql .= " Email2 ,";
+        $sql .= " Phone ,";
+        $sql .= " AltPhone ,";
+        $sql .= " phoneExt ,";
+        $sql .= " altPhoneExt ,";
+        $sql .= " Birthday ,";
+        $sql .= " sex ,";
+        $sql .= " Parent ,";
+        $sql .= " EmergencyContact ,";
+        $sql .= " Notes ,";
+        $sql .= " medicalConcerns ,";
+        $sql .= " Address ,";
+        $sql .= " City ,";
+        $sql .= " State ,";
+        $sql .= " ZIP ,";
+        $sql .= " ContactType ,";
+        $sql .= " quickbooklink ,";
+        $sql .= " StudentSchool ,";
+        $sql .= " GuiSize ,";
+        $sql .= " ShirtSize ,";
+        $sql .= " BeltSize ,";
+        $sql .= " InstructorPaymentFree ,";
+        //$sql .= " InstructorFlag ,";
+        $sql .= " instructorTitle ,";
+        $sql .= " CurrentRank ,";
+        $sql .= " CurrentReikiRank ,";
+        $sql .= " pictureurl ,";
+        $sql .= " CurrentIARank ) ";
+        $sql .= " values ( ";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= " ?,";
+        $sql .= ")";
+
+        // First check if user already existed in db
+        if (!$this->isStudentExists($Email, $LastName, $FirstName)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sssssssssssssssssssssssdisssssi",
+                                  $LastName,
+                                  $FirstName    ,
+                                  $Email    ,
+                                  $Email2    ,
+                                  $Phone    ,
+                                  $AltPhone    ,
+                                  $phoneExt    ,
+                                  $altPhoneExt    ,
+                                  $Birthday    ,
+                                  $sex    ,
+                                  $Parent    ,
+                                  $EmergencyContact    ,
+                                  $Notes    ,
+                                  $medicalConcerns    ,
+                                  $Address    ,
+                                  $City    ,
+                                  $State    ,
+                                  $ZIP    ,
+                                  $ContactType    ,
+                                  $quickbooklink    ,
+                                  $StudentSchool    ,
+                                  $GuiSize    ,
+                                  $ShirtSize    ,
+                                  $BeltSize    ,
+                                  $InstructorPaymentFree    ,
+                                  //            $InstructorFlag    ,
+                                  $instructorTitle    ,
+                                  $CurrentRank    ,
+                                  $CurrentReikiRank    ,
+                                  $pictureurl,
+                                  $CurrentIARank    ,
+                                  $student_id    );
+                    $result = $stmt->execute();
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        // User successfully inserted
+                        return USER_CREATED_SUCCESSFULLY;
+                    } else {
+                        // Failed to create user
+                        return USER_CREATE_FAILED;
+                    }
+
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return USER_CREATE_FAILED;
+                }
+
+
+        } else {
+            // User with same email already existed in the db
+            return USER_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
+    
+        /**
+     * Checking for duplicate student by email address, FirstName, LastName
+     * @return boolean
+     */
+    private function isStudentExists($Email, $LastName, $FirstName) {
+        $stmt = $this->conn->prepare("SELECT id from ncontacts WHERE email = ? and LastName = ? and FirstName = ?");
+        $stmt->bind_param("sss", $Email, $LastName, $FirstName);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
 
         /**
      * Fetching fields for user from userpreferences
