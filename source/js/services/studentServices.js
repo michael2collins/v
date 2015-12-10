@@ -10,6 +10,7 @@
     function StudentServices( $http, $log ) {
         var picFile = '';
         var theStudent = '';
+        var activeTab = 'Student Information'; //default
         var service = {
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
@@ -23,10 +24,20 @@
             setstudentPicFile: setstudentPicFile,
             renameStudentPicFile: renameStudentPicFile,
             setTheStudent: setTheStudent,
-            getTheStudent: getTheStudent
+            getTheStudent: getTheStudent,
+            setActiveTab: setActiveTab,
+            getActiveTab: getActiveTab
         };
         return service;
 
+
+        function getActiveTab() {
+            return activeTab;
+        }
+        function setActiveTab(thetab) {
+            activeTab = thetab;
+        }
+        
         function getstudentPicFile() {
           $log.debug('getStuPicfile: ' + picFile);
           return picFile;

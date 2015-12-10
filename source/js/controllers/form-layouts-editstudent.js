@@ -38,6 +38,8 @@
         vmstudent.getBirthday = getBirthday;
         vmstudent.dateopen = dateopen;
         vmstudent.students.pictureurldecache = undefined;
+        vmstudent.setActiveTab = setActiveTab;
+        vmstudent.getActiveTab = getActiveTab;
 
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
@@ -96,8 +98,11 @@
 
         function activate() {
             $log.debug('about activate editstudent ');
+            
             return getStudent().then(function () {
                 $log.debug('activated EditStudent view');
+                var thetab = StudentServices.getActiveTab();
+                $log.debug('activate the active tab', thetab);
 
             });
         }
@@ -192,6 +197,17 @@
         function setLists() {
             vmstudent.genders = ['Female', 'Male', 'Unknown'];
         }
+
+        function setActiveTab( activeTab ){
+            $log.debug('set activetab as:', activeTab);
+            StudentServices.setActiveTab(activeTab);
+        }
+
+        function getActiveTab(){
+            return StudentServices.getActiveTab();
+        }
+
+
     }
 
 })();

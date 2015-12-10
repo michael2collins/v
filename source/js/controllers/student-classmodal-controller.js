@@ -18,7 +18,8 @@
       '$uibModalInstance',
       'classname',
       '$scope',
-      '$controller'
+      '$controller',
+      '$route'
     ];
 
 
@@ -61,7 +62,7 @@
 
 
 
-  function ModalInstanceController( $log, $uibModalInstance, classname, $scope, $controller) {
+  function ModalInstanceController( $log, $uibModalInstance, classname, $scope, $controller, $route) {
     /* jshint validthis: true */
     var vmsearch = this;
     console.log('modal class entered');
@@ -70,7 +71,7 @@
     
 //    vmsearch.ok = ok;
 //    vmsearch.cancel = cancel;
-    vmsearch.close = close;
+    vmsearch.closemodal = closemodal;
     vmsearch.classname = vmsearch.vmclass.studentclass;
 
 
@@ -80,9 +81,10 @@
       $uibModalInstance.close(vmsearch.classname);
     }*/
 
-    function close() {
+    function closemodal() {
       console.log('hit close');
       console.log('got classname for close:', vmsearch.vmclass.studentclass);
+      $route.reload();
       $uibModalInstance.close(vmsearch.vmclass.studentclass);
 
     }

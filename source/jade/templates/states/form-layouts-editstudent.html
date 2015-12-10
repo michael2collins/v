@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<div id="form-layouts-editstudent" class="row" ng-controller="FormLayoutsControllerEditStudent as vmstudent">
+<div id="form-layouts-editstudent" class="row" 
+        ng-controller="FormLayoutsControllerEditStudent as vmstudent"
+        ng-init="active[vmstudent.getActiveTab()]= true"
+        >
   <div class="col-lg-12">
-    <uib-tabset type="pills">
-      <uib-tab id="tab-student" heading="Student Information">
+    <uib-tabset type="pills" >
+      <uib-tab 
+            id="tab-student" 
+            heading="Student Information"
+            active="active.info"
+            select="vmstudent.setActiveTab('info')"
+        >
         <div class="row">
           <div>
             <div class="col-lg-12">
@@ -885,7 +893,12 @@
           </div>
         </div>
       </uib-tab>
-      <uib-tab id="tab-student" heading="Class" select="vmstudent.initclasslist()">
+      <uib-tab 
+            id="tab-student" 
+            heading="Class" 
+            active="active.class"
+            select="vmstudent.setActiveTab('class');vmstudent.initclasslist()"
+        >
         <div class="row" ng-controller="StudentClassController as vmclass">
           <div class="col-lg-12">
             <div class="panel panel-blue">
@@ -1009,7 +1022,7 @@
                           <div class="info">
                             <h3>{{x.class}} - {{x.pgm}}</h3>
                             <div>
-                              <button type="button" ng-click="vmsearch.vmclass.setStudentClass({{vmsearch.vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}});vmsearch.vmclass.initclasslist()" class="btn btn-default btn-sm mix-link">Set as {{x.class}} - {{x.pgm}}</button>
+                              <button type="button" ng-click="vmsearch.vmclass.setStudentClass({{vmsearch.vmclass.studentclass.contactID}},{{x.classid}},{{x.pgmid}})" class="btn btn-default btn-sm mix-link">Set as {{x.class}} - {{x.pgm}}</button>
                             </div>
                           </div>
                         </div>
@@ -1018,7 +1031,7 @@
                   </div>
                         </div>
                         <div class="modal-footer">
-                          <button class="btn btn-primary" type="button" ng-click="vmsearch.close()">Close</button>
+                          <button class="btn btn-primary" type="button" ng-click="vmsearch.closemodal()">Close</button>
 <!--                          <button class="btn btn-primary" type="button" ng-click="vmsearch.ok()">OK</button>
                           <button class="btn btn-warning" type="button" ng-click="vmsearch.cancel()">Cancel</button>
 -->                        </div>
@@ -1053,7 +1066,12 @@
         </div>
 
       </uib-tab>
-      <uib-tab id="tab-student" heading="Payment">
+      <uib-tab 
+             id="tab-student" 
+             heading="Payment"
+             active="active.payment"
+             select="vmstudent.setActiveTab('payment')"
+             >
         <div class="row" ng-controller="StudentPaymentController as vmpayment">
           <div class="col-lg-12">
             <div class="panel panel-blue">
@@ -1123,7 +1141,12 @@
           </div>
         </div>
       </uib-tab>
-      <uib-tab id="tab-student" heading="Student History">
+      <uib-tab 
+            id="tab-student" 
+            heading="Student History"
+            active="active.history"
+             select="vmstudent.setActiveTab('history')"
+            >
         <div class="row" ng-controller="StudentHistoryController as vmhistory">
           <div class="col-lg-12">
             <div class="panel panel-blue">
