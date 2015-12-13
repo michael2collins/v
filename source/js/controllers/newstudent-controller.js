@@ -15,14 +15,15 @@
       '$log',
       '$uibModalInstance',
       'StudentServices',
-      '$window'
+      '$window',
+      'Notification'
     ];
 
 
   function ModalNewStudentController( $log, $uibModal, $location) {
     /* jshint validthis: true */
     var vmnewstudentmodal = this;
-
+    
     vmnewstudentmodal.animationsEnabled = true;
 
     vmnewstudentmodal.openmodal = openmodal;
@@ -58,7 +59,7 @@
 
 
 
-  function ModalInstanceController( $log, $uibModalInstance, StudentServices, $window) {
+  function ModalInstanceController( $log, $uibModalInstance, StudentServices, $window, Notification) {
     /* jshint validthis: true */
     var vmnew = this;
     console.log('modal newstudent entered');
@@ -68,6 +69,8 @@
     vmnew.submit = submit;
     vmnew.cancel = cancel;
     vmnew.thisstudent = '';
+    vmnew.message = '';
+
 
     function submit() {
       console.log('hit submit');
@@ -75,7 +78,7 @@
           $log.debug('createstudent ready to close', vmnew.thisstudent);
           $uibModalInstance.close(vmnew.thisstudent);
       }).catch(function(e){
-          alert("try again");
+         // alert("try again", e);
       });
     }
 
@@ -92,6 +95,8 @@
                     $log.debug(data);
                     vmnew.thisstudent = data;
                     $log.debug(vmnew.thisstudent);
+                    $log.debug(vmnew.thisstudent.message);
+                    vmnew.message = vmnew.thisstudent.message;
         //            $log.debug('location is', $location);
         //            $location.path = '/form-layouts-editstudent/id/' + vmnew.thisstudent.student_id;
     //                var url = "http://" + $window.location.host + '/v/#/form-layouts-editstudent/id/' + vmnew.thisstudent.student_id;
@@ -103,10 +108,11 @@
                 }).catch(function(e) {
                     $log.debug('createStudent failure:');
                     $log.debug("error", e);
+                    vmnew.message = e;
+                    Notification.error({message: e, delay: 5000});
                     throw e;
                 });
     }
-
 
   }
  

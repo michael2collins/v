@@ -1,13 +1,14 @@
 {
-    "name": "NG-ADMIN",
-    "version": "0.0.0",
-    "dependencies": {
-        "angular-route": "~1",
-        "angular-resource": "1.3.x",
-        "angular-ui-utils": "~0.2.3",
-        "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js",
-        "angular-bootstrap-toggle-switch": "~0.5.4",
-        "angular-isotope": "~0.1.14"
-    },
-    "analytics": false
+  "name": "NG-ADMIN",
+  "version": "0.0.0",
+  "dependencies": {
+    "angular-route": "~1",
+    "angular-resource": "1.3.x",
+    "angular-ui-utils": "~0.2.3",
+    "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js",
+    "angular-bootstrap-toggle-switch": "~0.5.4",
+    "angular-isotope": "~0.1.14",
+    "angular-ui-notification": "~0.1.0"
+  },
+  "analytics": false
 }

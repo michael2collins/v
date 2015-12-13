@@ -7,6 +7,7 @@
         'ui.mask',
         'ngRoute',
         'ui.bootstrap',
+        'ui-notification',
         'toggle-switch',
         'ngTouch',
         'ngMessages',
@@ -23,6 +24,17 @@
 
     // allow DI for use in controllers, unit tests for lodash
     .constant('_', window._)
+    .config(function(NotificationProvider) {
+        NotificationProvider.setOptions({
+            delay: 10000,
+            startTop: 20,
+            startRight: 10,
+            verticalSpacing: 20,
+            horizontalSpacing: 20,
+            positionX: 'center',
+            positionY: 'top'
+        });
+    })
 
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {

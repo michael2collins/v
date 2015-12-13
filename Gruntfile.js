@@ -154,6 +154,7 @@ module.exports = function (grunt) {
             'app/vendors/multi-select/js/jquery.multi-select.js',
             'app/vendors/jquery.sparkline/index.js',
             'app/vendors/calendar/zabuto_calendar.min.js'
+            //need to put angular-ui-notification
         ]
       },
       secret: grunt.file.readJSON('./secret.json'),
