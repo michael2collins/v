@@ -422,7 +422,7 @@ $app->get('/studentlists',  function() {
 });
 
 
- * Student Registration
+/* Student Registration
  * url - /newstudent
  * method - POST
  * params - full list of student fields
@@ -435,49 +435,28 @@ $app->post('/newstudent', function() use ($app) {
     $response = array();
 
     // reading post params
-//    $name = $app->request->post('name');
-//    $email = $app->request->post('email');
-//    $password = $app->request->post('password');
-
-    $request = $app->request();
-    $body = $request->getBody();
-    $student = json_decode($body);
-    //error_log( print_R($student, TRUE ));
-
-    //global $user_id;
-    $LastName = $student->LastName;
-    $FirstName = $student->FirstName;
-    $Email = $student->Email;
-    $Email2 = $student->Email2;
-    $Phone = $student->Phone;
-    $AltPhone = $student->AltPhone;
-    $phoneExt = $student->phoneExt;
-    $altPhoneExt = $student->altPhoneExt;
-    $Birthday = $student->Birthday;
-    $sex = $student->sex;
-    $Parent = $student->Parent;
-    $EmergencyContact = $student->EmergencyContact;
-    $Notes = $student->Notes;
-    $medicalConcerns = $student->medicalConcerns;
-    $Address = $student->Address;
-    $City = $student->City;
-    $State = $student->State;
-    $ZIP = $student->ZIP;
-    $ContactType = $student->ContactType;
-    $quickbooklink = $student->quickbooklink;
-    $StudentSchool = $student->StudentSchool;
-    $GuiSize = $student->GuiSize;
-    $ShirtSize = $student->ShirtSize;
-    $BeltSize = $student->BeltSize;
-    $InstructorPaymentFree = $student->InstructorPaymentFree;
-    $InstructorFlag = $student->InstructorFlag;
-    $instructorTitle = $student->instructorTitle;
-    $CurrentRank = $student->CurrentRank;
-    $CurrentReikiRank = $student->CurrentReikiRank;
-    $pictureurl = $student->pictureurl;
-    $CurrentIARank = $student->CurrentIARank;
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+  //      $message            = $dataJsonDecode->message;
+    //    echo $message;     //'Hello world'
 
     error_log( print_R("before insert\n", TRUE ), 3, LOG);
+//    error_log( print_R($data, TRUE ), 3, LOG);
+//    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+
+    $LastName = (isset($dataJsonDecode->thedata->LastName) ? $dataJsonDecode->thedata->LastName : "");
+    $Email = (isset($dataJsonDecode->thedata->Email) ? $dataJsonDecode->thedata->Email : "");
+    $FirstName = (isset($dataJsonDecode->thedata->FirstName) ? $dataJsonDecode->thedata->FirstName : "");
+
+
+//    $LastName = $app->request->post('LastName');
+//    $FirstName = $app->request->post('FirstName');
+//    $Email = $app->request->post('Email');
+
+    error_log( print_R("lastname: $LastName\n", TRUE ), 3, LOG);
+    error_log( print_R("FirstName: $FirstName\n", TRUE ), 3, LOG);
+    error_log( print_R("email: $Email\n", TRUE ), 3, LOG);
 
 
     // validating email address
@@ -487,56 +466,30 @@ $app->post('/newstudent', function() use ($app) {
     $response = array();
 
     // updating task
-    $result = $db->insertStudent($LastName,
+    $student_id = $db->createStudent($LastName,
                                  $FirstName,
-                                 $Email,
-                                 $Email2,
-                                 $Phone,
-                                 $AltPhone,
-                                 $phoneExt,
-                                 $altPhoneExt,
-                                 $Birthday,
-                                 $sex,
-                                 $Parent,
-                                 $EmergencyContact,
-                                 $Notes,
-                                 $medicalConcerns,
-                                 $Address,
-                                 $City,
-                                 $State,
-                                 $ZIP,
-                                 $ContactType,
-                                 $quickbooklink,
-                                 $StudentSchool,
-                                 $GuiSize,
-                                 $ShirtSize,
-                                 $BeltSize,
-                                 $InstructorPaymentFree,
-                                 $InstructorFlag,
-                                 $instructorTitle,
-                                 $CurrentRank,
-                                 $CurrentReikiRank,
-                                 $pictureurl,
-                                 $CurrentIARank
-
+                                 $Email
                                 );
-    if ($result == USER_CREATED_SUCCESSFULLY) {
+
+    if ($student_id > 0) {
         $response["error"] = false;
-        $response["message"] = "You are successfully registered";
-    } else if ($result == USER_CREATE_FAILED) {
+        $response["message"] = "Student created successfully";
+        $response["student_id"] = $student_id;
+        error_log( print_R("Student created: $student_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($student_id == RECORD_ALREADY_EXISTED) {
         $response["error"] = true;
-        $response["message"] = "Oops! An error occurred while registereing";
-    } else if ($result == USER_ALREADY_EXISTED) {
-        $response["error"] = true;
-        $response["message"] = "Sorry, this email already existed";
+        $response["message"] = "Sorry, this email and name already existed";
+        error_log( print_R("student already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
     } else {
         error_log( print_R("after insertStudent result bad\n", TRUE), 3, LOG);
         error_log( print_R( $result, TRUE), 3, LOG);
-        // task failed to update
         $response["error"] = true;
-        $response["message"] = "Student failed to update. Please try again!";
+        $response["message"] = "Failed to create student. Please try again";
+        echoRespnse(400, $response);
     }
-    echoRespnse(201, $response);
+
 
 });
 

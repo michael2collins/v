@@ -55,20 +55,21 @@
                       <div class="col-md-3">
                         <div class="row">
                           <div class="col-md-12">
-                            <div class="thumbnail" ng-hide="vmstudent.students.pictureurldecache">
-                            <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
+<!--                            <div class="thumbnail" ng-hide="vmstudent.students.pictureurl">
+                            <img ng-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
                             </div>
-
-
-                            <div class="thumbnail" ng-show="vmstudent.students.pictureurldecache">
-                            <img ng-src="./images/students/{{vmstudent.students.pictureurldecache}}">
-                            </div>
+-->
+<!--<pre>{{vmstudent.students.pictureurldecache}}</pre> -->
+                                <span class="thumbnail" ng-switch on="vmstudent.students.pictureurldecache">
+                                   <img ng-switch-when="missing" ng-src='./images/students/missing.png'/>
+                                   <img ng-switch-default   ng-src='./images/students/{{vmstudent.students.pictureurldecache}}'/>
+                                </span>
                           </div>
                         </div>
 
 
                         <div class="row row-icons">
-                          <div ng-controller="ModalPicUploadController as vmsearchcmodal">
+                          <div ng-controller="ModalPicUploadController as vmpicmodal">
                             <!--                            <pre>{{ vmpicmodal }}</pre>
 -->
                             <script id="myPickupload.html" type="text/ng-template">
@@ -176,7 +177,7 @@
                                   <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
                                   </div>
                                 </div> -->
-                              <input class="form-control" id="picfile" name="picfile" ng-hide=
+                              <input class="form-control" id="picfile" name="picfile" ng-show=
                               "false" ng-model="vmpicmodal.picfile" placeholder="File Name" type=
                               "text"> 
                               <button class="btn btn-default" ng-click=

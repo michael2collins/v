@@ -34,6 +34,8 @@
     // Initialize the application
     .run(['$location', function AppRun($location) {
         //  debugger; // -->> here i debug the $location object to see what angular see's as URL
+        console.log($location);
+
 }]);
 
     logConfig.$inject = ['$logProvider'];
@@ -45,6 +47,7 @@
     }
 
     function routeConfig($routeProvider, $locationProvider) {
+        console.log('enter routeConfig');
         $routeProvider
             .when('/', {
                 templateUrl: 'templates/states/main.html',
@@ -145,6 +148,9 @@
             })
             .when('/form-layouts-editstudent/id/:id', {
                 templateUrl: 'templates/states/form-layouts-editstudent.html'
+            })
+            .when('/form-layouts-editstudent/id', {
+                templateUrl: 'templates/states/form-layouts-editstudent.html' //this is wrong
             })
             .when('/form-layouts-editstudent/id/:id/myclass/:myclass', {
                 templateUrl: 'templates/states/form-layouts-editstudent.html'

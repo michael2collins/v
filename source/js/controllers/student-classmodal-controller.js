@@ -88,6 +88,7 @@
       $uibModalInstance.close(vmsearch.vmclass.studentclass);
 
     }
+    
 
   }
  

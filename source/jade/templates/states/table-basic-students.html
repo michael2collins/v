@@ -12,64 +12,59 @@
         <div class="portlet-body">
           <div class="table-tools">
             <div class="row">
-              <div class="col-lg-12 mbs">
-                <button type="button" class="btn btn-red mrs"><i class="fa fa-plus"></i>&nbsp; Add New</button>
-                <button type="button" class="btn btn-primary mrs"><i class="fa fa-print"></i>&nbsp; Print</button>
-                <button type="button" class="btn btn-primary mrs"><i class="fa fa-file-text-o"></i>&nbsp; PDF</button>
-                <button type="button" class="btn btn-primary mrs"><i class="fa fa-copy"></i>&nbsp; Excel</button>
-              </div>
+              <div ng-controller="ModalNewStudentController as vmmodal">
+
+                  <div class="col-lg-12 mbs">
+                    <button type="button" ng-click="vmmodal.openmodal()" class="btn btn-red mrs"><i class="fa fa-plus"></i>&nbsp; Add New</button>
+                  </div>
+                    <script id="newStudent.html" type="text/ng-template">
+                        <div class="modal-header">
+                          <h3 class="modal-title">Create New Student</h3>
+                        </div>
+                        <div class="modal-body">
+
+                            <form action="" novalidate name="newstudent" class="form-horizontal">
+                              <div class="form-body pal">
+                               <div class="row">
+                                 <div class="col-md-6">
+                                  <div  class="form-group">
+                                    <label for="inputFirstName" class="control-label">First Name </label>
+                                      <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" 
+                                      ng-model="vmnew.FirstName" 
+                                      minLength="2" maxLength="30"  class="form-control">
+                                  </div>
+                                 </div>
+                                 <div class="col-md-6">
+                                  <div  class="form-group">
+                                    <label for="inputLastName" class="control-label">LastName </label>
+                                      <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" 
+                                      ng-model="vmnew.LastName" 
+                                      minLength="2" maxLength="30" class="form-control">
+                                  </div>
+                                 </div>
+                               </div>
+                               <div class="row">
+                                 <div class="col-md-12">
+                                  <div  class="form-group">
+                                    <label for="inputEmail" class="control-label">Email </label>
+                                      <input id="inputEmail" type="text" placeholder="Email" name="Email" 
+                                      ng-model="vmnew.Email" 
+                                      minLength="2" maxLength="30"  class="form-control">
+                                  </div>
+                                 </div>
+                                </div>
+                             </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
+                          <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
+                        </div>
+                    </script>
+                </div>    
             </div>
           </div>
           <div ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
-          <!--.row
-          .col-lg-12
-          .panel.panel-orange
-              .panel-heading Student Filter
-              .panel-body.pan
-                  form.form-horizontal.form-bordered(role="form")
-                      .form-body
-                          .form-group
-                              label.control-label.col-md-2 Student Filter
-                              .col-md-2
-                                  input(ng-model="studentquery")
-                              label.control-label.col-md-2 No. Rows
-                              //.col-md-2
-                                  select.selectpicker.form-control(data-style='btn-yellow' ng-model='quantity' ng-change='updateQuantity(quantity)' ng-options='quantity as limit.quantity for limit in limitlist')
-                              .col-md-2
-                                  select.select2picker.form-control(data-style='btn-yellow'  ng-model='quantity' ng-change='updateQuantity(quantity)' )
-                                      option 10
-                                      option 100
-                                      option 1000
-          -->
-          <!--.table-responsive.mtl
-          table#table_id.table.table-hover.table-striped.table-bordered
-              thead
-                  tr
-                      th(width='20%') Name
-                      th(width='15%') Rank
-                      th(width='15%') Status
-                      th(width='20%') Parent
-                      th(width='10%') Phone
-                      th(width='20%') Edit/Delete
-                  tr
-                      th(ng-repeat="field in students.fields") {{field.prefcolumn}}
-              tbody
-                  tr(ng-repeat="student in students.students | filter : studentquery | limitTo : quantity" )
-                      td {{student.FirstName}} {{student.LastName}}
-                      td {{student.CurrentRank}}
-                      td {{student.ContactType}}
-                      td.center {{student.Parent}}
-                      td.center {{student.Phone}}
-                      td
-                          .action-group.btn-group.pull-right.mtm.mbm
-                              button.btn.btn-primary
-                                  i.fa.fa-edit.mrs
-                                  | Edit
-                              button.btn.btn-primary
-                                  i.fa.fa-trash-o.mrs
-                                  | Delete
-                          .clearfix
-          -->
         </div>
       </div>
     </div>

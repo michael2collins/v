@@ -5,9 +5,9 @@
         .module('ng-admin')
     .factory('StudentServices', StudentServices);
 
-    StudentServices.$inject = ['$http','$log'];
+    StudentServices.$inject = ['$http', '$q', '$log'];
 
-    function StudentServices( $http, $log ) {
+    function StudentServices( $http, $q, $log ) {
         var picFile = '';
         var theStudent = '';
         var activeTab = 'Student Information'; //default
@@ -27,7 +27,8 @@
             setTheStudent: setTheStudent,
             getTheStudent: getTheStudent,
             setActiveTab: setActiveTab,
-            getActiveTab: getActiveTab
+            getActiveTab: getActiveTab,
+            createStudent: createStudent
         };
         return service;
 
@@ -162,6 +163,109 @@
                     // or server returns response with an error status.
                 });
         }
+
+/*        function createStudent(path, thedata) {
+                    $log.debug('createStudent data before post :' , thedata);
+                return $http({method: 'POST', url: path, data: thedata}).then(function(response) {
+                    $log.debug('createStudent success:' + path);
+                    $log.debug(response.data);
+
+                    return response.data;
+                }).catch(function(e) {
+                    $log.debug('createStudent failure:' + path);
+                    $log.debug("error", e);
+                    throw e;
+                });
+        }
+ */       
+        function createStudent(path, thedata ) {
+                    $log.debug('createStudent data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                    //    params: {
+                    //        action: "add"
+                    //    },
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        
+/*            function getFriends() {
+                    var request = $http({
+                        method: "get",
+                        url: "api/index.cfm",
+                        params: {
+                            action: "get"
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+                }
+                // I remove the friend with the given ID from the remote collection.
+                function removeFriend( id ) {
+                    var request = $http({
+                        method: "delete",
+                        url: "api/index.cfm",
+                        params: {
+                            action: "delete"
+                        },
+                        data: {
+                            id: id
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+                }
+                */
+                // ---
+                // PRIVATE METHODS.
+                // ---
+                // I transform the error response, unwrapping the application dta from
+                // the API response payload.
+                function handleError( response ) {
+                    // The API response from the server should be returned in a
+                    // nomralized format. However, if the request was not handled by the
+                    // server (or what not handles properly - ex. server error), then we
+                    // may have to normalize it on our end, as best we can.
+                    $log.debug('failure:');
+
+                    if (
+                        ! angular.isObject( response.data ) ||
+                        ! response.data.message
+                        ) {
+                        return( $q.reject( "An unknown error occurred." ) );
+                    }
+                    // Otherwise, use expected error message.
+                    return( $q.reject( response.data.message ) );
+                }
+                // I transform the successful response, unwrapping the application data
+                // from the API response payload.
+                function handleSuccess( response ) {
+                    $log.debug(' success:');
+                    $log.debug(response.data);
+                    return( response.data );
+                }
+        
+                
+/*        function createStudent(path, thedata) {
+                    $log.debug('createStudent data before post :' , thedata);
+            return $http({method: 'POST', url: path, data: thedata }).
+                success(function(data, status, headers, config) {
+                    $log.debug('createStudent success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('createStudent failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+*/
+
         function updateStudent(path, students) {
                     $log.debug('updateStudent vm.data before put :' , students);
             return $http({method: 'PUT', url: path, data: students}).

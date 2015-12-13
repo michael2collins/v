@@ -175,31 +175,32 @@
                 $log.debug('getStudentClass returned data');
                 $log.debug(data.data);
                 vmclass.studentclass = data.data;
-                vmclass.picID = vmclass.studentclass.classseq;
-                getStudentClassPicture();
-                console.log('getting concat using student class');
-                console.log('studentclass is:' + vmclass.studentclass.class);
-                var class2, class2age = '',
-                    class2cls = '',
-                    class2pgm = '';
-
-                class2 = ClassServices.getclass2(vmclass.studentclass.class);
-                class2cls = class2[0].classcat[0];
-                class2age = class2[0].agecat[0];
-                class2pgm = class2[0].programcat[0];
-                // vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
-                vmclass.catset(class2cls);
-                vmclass.ageset(class2age);
-                vmclass.pgmset(class2pgm);
-                concatset();
-                //  $scope.$emit('iso-method', {name:null, params:null});
-                console.log(vmclass.concat);
-                $scope.$emit('iso-option', {
-                    filter: vmclass.concat
-                });
-
-                console.log('student concat result is:' + vmclass.concat);
-
+                if (vmclass.studentclass.class !== null) { 
+                    vmclass.picID = vmclass.studentclass.classseq;
+                    getStudentClassPicture();
+                    console.log('getting concat using student class');
+                    console.log('studentclass is:' + vmclass.studentclass.class);
+                    var class2, class2age = '',
+                        class2cls = '',
+                        class2pgm = '';
+    
+                    class2 = ClassServices.getclass2(vmclass.studentclass.class);
+                    class2cls = class2[0].classcat[0];
+                    class2age = class2[0].agecat[0];
+                    class2pgm = class2[0].programcat[0];
+                    // vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
+                    vmclass.catset(class2cls);
+                    vmclass.ageset(class2age);
+                    vmclass.pgmset(class2pgm);
+                    concatset();
+                    //  $scope.$emit('iso-method', {name:null, params:null});
+                    console.log(vmclass.concat);
+                    $scope.$emit('iso-option', {
+                        filter: vmclass.concat
+                    });
+    
+                    console.log('student concat result is:' + vmclass.concat);
+                }
                 return vmclass.studentclass;
             });
         }

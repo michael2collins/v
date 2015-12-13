@@ -119,7 +119,14 @@
                 $log.debug(data.data);
                 StudentServices.setTheStudent(data.data);
                 vmstudent.students = data.data;
-                vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
+                $log.debug('studen pic url', vmstudent.students.pictureurl);
+                if (_.isEmpty(vmstudent.students.pictureurl)) {
+                    $log.debug('empty picture');
+                    vmstudent.students.pictureurldecache = 'missing';
+                } else {
+                    vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
+                }
+                $log.debug('studen pic url decache', vmstudent.students.pictureurldecache);
                 return vmstudent.students;
             });
         }

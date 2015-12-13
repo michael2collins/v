@@ -12,7 +12,7 @@ class StudentDbHandler {
     private $conn;
 
     function __construct() {
-        require_once dirname(__FILE__) . '/DbConnecphp';
+        require_once dirname(__FILE__) . '/DbConnect.php';
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -34,7 +34,8 @@ class StudentDbHandler {
      * Fetching all students
      */
     public function getAllStudents() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t LIMIT 10");
+//        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t LIMIT 10");
+        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t");
         $stmt->execute();
         $students = $stmt->get_result();
         $stmt->close();
@@ -419,159 +420,47 @@ class StudentDbHandler {
      */
     public function createStudent($LastName,
                                   $FirstName,
-                                  $Email,
-                                  $Email2,
-                                  $Phone,
-                                  $AltPhone,
-                                  $phoneExt,
-                                  $altPhoneExt,
-                                  $Birthday,
-                                  $sex,
-                                  $Parent,
-                                  $EmergencyContact,
-                                  $Notes,
-                                  $medicalConcerns,
-                                  $Address,
-                                  $City,
-                                  $State,
-                                  $ZIP,
-                                  $ContactType,
-                                  $quickbooklink,
-                                  $StudentSchool,
-                                  $GuiSize,
-                                  $ShirtSize,
-                                  $BeltSize,
-                                  $InstructorPaymentFree,
-                                  $InstructorFlag,
-                                  $instructorTitle,
-                                  $CurrentRank,
-                                  $CurrentReikiRank,
-                                  $pictureurl,
-                                  $CurrentIARank        
-        ) {
+                                  $Email ) {
         $response = array();
 
 
         $sql = "INSERT into ncontacts (";
         $sql .= " LastName ,";
         $sql .= " FirstName ,";
-        $sql .= " Email ,";
-        $sql .= " Email2 ,";
-        $sql .= " Phone ,";
-        $sql .= " AltPhone ,";
-        $sql .= " phoneExt ,";
-        $sql .= " altPhoneExt ,";
-        $sql .= " Birthday ,";
-        $sql .= " sex ,";
-        $sql .= " Parent ,";
-        $sql .= " EmergencyContact ,";
-        $sql .= " Notes ,";
-        $sql .= " medicalConcerns ,";
-        $sql .= " Address ,";
-        $sql .= " City ,";
-        $sql .= " State ,";
-        $sql .= " ZIP ,";
-        $sql .= " ContactType ,";
-        $sql .= " quickbooklink ,";
-        $sql .= " StudentSchool ,";
-        $sql .= " GuiSize ,";
-        $sql .= " ShirtSize ,";
-        $sql .= " BeltSize ,";
-        $sql .= " InstructorPaymentFree ,";
-        //$sql .= " InstructorFlag ,";
-        $sql .= " instructorTitle ,";
-        $sql .= " CurrentRank ,";
-        $sql .= " CurrentReikiRank ,";
-        $sql .= " pictureurl ,";
-        $sql .= " CurrentIARank ) ";
-        $sql .= " values ( ";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= " ?,";
-        $sql .= ")";
+        $sql .= " Email )";
+        $sql .= " values ( ?, ?, ?)";
 
         // First check if user already existed in db
         if (!$this->isStudentExists($Email, $LastName, $FirstName)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssssssssssssssssssssssdisssssi",
+                $stmt->bind_param("sss",
                                   $LastName,
                                   $FirstName    ,
-                                  $Email    ,
-                                  $Email2    ,
-                                  $Phone    ,
-                                  $AltPhone    ,
-                                  $phoneExt    ,
-                                  $altPhoneExt    ,
-                                  $Birthday    ,
-                                  $sex    ,
-                                  $Parent    ,
-                                  $EmergencyContact    ,
-                                  $Notes    ,
-                                  $medicalConcerns    ,
-                                  $Address    ,
-                                  $City    ,
-                                  $State    ,
-                                  $ZIP    ,
-                                  $ContactType    ,
-                                  $quickbooklink    ,
-                                  $StudentSchool    ,
-                                  $GuiSize    ,
-                                  $ShirtSize    ,
-                                  $BeltSize    ,
-                                  $InstructorPaymentFree    ,
-                                  //            $InstructorFlag    ,
-                                  $instructorTitle    ,
-                                  $CurrentRank    ,
-                                  $CurrentReikiRank    ,
-                                  $pictureurl,
-                                  $CurrentIARank    ,
-                                  $student_id    );
+                                  $Email    
+                                     );
                     $result = $stmt->execute();
+
                     $stmt->close();
                     // Check for successful insertion
                     if ($result) {
+                        $new_student_id = $this->conn->insert_id;
                         // User successfully inserted
-                        return USER_CREATED_SUCCESSFULLY;
+                        return $new_student_id;
                     } else {
                         // Failed to create user
-                        return USER_CREATE_FAILED;
+                        return NULL;
                     }
 
                 } else {
                     printf("Errormessage: %s\n", $this->conn->error);
-                        return USER_CREATE_FAILED;
+                        return NULL;
                 }
 
 
         } else {
             // User with same email already existed in the db
-            return USER_ALREADY_EXISTED;
+            return RECORD_ALREADY_EXISTED;
         }
 
         return $response;
@@ -582,6 +471,13 @@ class StudentDbHandler {
      * @return boolean
      */
     private function isStudentExists($Email, $LastName, $FirstName) {
+
+    error_log( print_R("before isStudentExists\n", TRUE ), 3, LOG);
+    error_log( print_R("lastname: $LastName\n", TRUE ), 3, LOG);
+    error_log( print_R("FirstName: $FirstName\n", TRUE ), 3, LOG);
+    error_log( print_R("email: $Email\n", TRUE ), 3, LOG);
+        
+        
         $stmt = $this->conn->prepare("SELECT id from ncontacts WHERE email = ? and LastName = ? and FirstName = ?");
         $stmt->bind_param("sss", $Email, $LastName, $FirstName);
         $stmt->execute();
