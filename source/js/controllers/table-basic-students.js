@@ -3,7 +3,8 @@
 
     angular
         .module('ng-admin')
-        .controller('StudentsTableBasicController', StudentsTableBasicController);
+        .controller('StudentsTableBasicController', StudentsTableBasicController)
+        .controller('ctrlDualList', ctrlDualList);
 
     StudentsTableBasicController.$inject = [
         'StudentServices',
@@ -12,6 +13,9 @@
         '$log',
         'uiGridConstants'
     ];
+    ctrlDualList.$inject = [
+        '$scope'
+        ];
 
     function StudentsTableBasicController(StudentServices, $scope, $routeParams, $log, uiGridConstants) {
         /* jshint validthis: true */
@@ -136,6 +140,151 @@
             }
         }
 
-
     }
+    
+    function ctrlDualList($scope) {
+        /* jshint validthis: true */
+        var vmDual = this;
+
+        vmDual.arrayObjectIndexOf = arrayObjectIndexOf;
+        vmDual.aToB = aToB;
+        vmDual.bToA = bToA;
+        vmDual.reset = reset;
+        vmDual.toggleA = toggleA;
+        vmDual.toggleB = toggleB;
+        vmDual.drop = drop;
+        
+        
+        vmDual.userData = [
+            { id: 1, firstName: 'Mary', lastName: 'Goodman', role: 'manager', approved: true, points: 34 },
+          {id:2,firstName:'Mark',lastName:'Wilson',role:'developer',approved:true,points:4},
+          {id:3,firstName:'Alex',lastName:'Davies',role:'admin',approved:true,points:56},
+          {id:4,firstName:'Bob',lastName:'Banks',role:'manager',approved:false,points:14},
+          {id:5,firstName:'David',lastName:'Stevens',role:'developer',approved:false,points:100},
+          {id:6,firstName:'Jason',lastName:'Durham',role:'developer',approved:false,points:0},
+          {id:7,firstName:'Jeff',lastName:'Marks',role:'manager',approved:true,points:8},
+          {id:8,firstName:'Betty',lastName:'Abercrombie',role:'manager',approved:true,points:18},
+          {id:9,firstName:'Krista',lastName:'Michaelson',role:'developer',approved:true,points:10},
+          {id:11,firstName:'Devin',lastName:'Sumner',role:'manager',approved:false,points:3},
+          {id:12,firstName:'Navid',lastName:'Palit',role:'manager',approved:true,points:57},
+          {id:13,firstName:'Bhat',lastName:'Phuart',role:'developer',approved:false,points:314},
+          {id:14,firstName:'Nuper',lastName:'Galzona',role:'admin',approved:true,points:94}
+        ];
+ 
+        
+          // init
+        vmDual.selectedA = [];
+        vmDual.selectedB = [];
+           
+        vmDual.listA = vmDual.userData.slice(0,5);
+        vmDual.listB = vmDual.userData.slice(6,10);
+        vmDual.items = vmDual.userData;
+          
+        vmDual.checkedA = false;
+        vmDual.checkedB = false;
+
+        console.log('vmDual');
+        console.log('listA', vmDual.listA);
+        console.log('listB', vmDual.listB);
+        
+
+        function arrayObjectIndexOf(myArray, searchTerm, property) {
+           for(var i = 0, len = myArray.length;  i < len; i++) {
+              if (myArray[i][property] === searchTerm) {
+                  return i;
+              }
+            }
+            return -1;
+        }
+  
+        function aToB() {
+            console.log('aToB');
+            var i;
+            for ( i in vmDual.selectedA) {
+                if (vmDual.selectedA.hasOwnProperty(i)) {
+                    var moveId = arrayObjectIndexOf(vmDual.items, vmDual.selectedA[i], "id"); 
+                    vmDual.listB.push(vmDual.items[moveId]);
+                    var delId = arrayObjectIndexOf(vmDual.listA, vmDual.selectedA[i], "id"); 
+                    vmDual.listA.splice(delId,1);
+                }
+            }
+            reset();
+        }
+  
+        function bToA() {
+            console.log('bToA');
+            var i;
+            for (i in vmDual.selectedB) {
+                if (vmDual.selectedB.hasOwnProperty(i)) {
+                    var moveId = arrayObjectIndexOf(vmDual.items, vmDual.selectedB[i], "id"); 
+                    vmDual.listA.push(vmDual.items[moveId]);
+                    var delId = arrayObjectIndexOf(vmDual.listB, vmDual.selectedB[i], "id"); 
+                    vmDual.listB.splice(delId,1);
+                }
+            }
+            reset();
+        }
+  
+        function reset(){
+            vmDual.selectedA=[];
+            vmDual.selectedB=[];
+            vmDual.toggle=0;
+        }
+  
+        function toggleA() {
+            var i;
+            if (vmDual.selectedA.length>0) {
+                vmDual.selectedA=[];
+            } else {
+                for (i in vmDual.listA) {
+                    if (vmDual.listA.hasOwnProperty(i) ) {
+                        console.log('a i',i);
+                        console.log('a id',vmDual.listA[i].id);
+                        vmDual.selectedA.push(vmDual.listA[i].id);
+                    }
+                }
+            }
+        }
+  
+        function toggleB() {
+            var i;
+            if (vmDual.selectedB.length>0) {
+                vmDual.selectedB=[];
+            } else {
+                for (i in vmDual.listB) {
+                    if (vmDual.listB.hasOwnProperty(i) ) {
+                        console.log('b i',i);
+                        console.log('b id',vmDual.listB[i].id);
+                        vmDual.selectedB.push(vmDual.listB[i].id);
+                    }
+                }
+            }
+        }
+ 
+        function drop(dragEl, dropEl, direction) {
+        console.log('dragl',dragEl);
+        
+            var drag = angular.element(dragEl);
+            console.log('drag', drag);
+            var drop = angular.element(dropEl);
+            console.log('drop', drop);
+            var id = drag.attr("id");
+            console.log('id', id);
+            var ela = document.getElementById(dragEl);
+            var el = ela.getElementsByTagName("input");
+            console.log('el', el);
+            
+            if(!angular.element(el).attr("checked")){
+                console.log('dropclick');
+              angular.element(el).triggerHandler('click');
+            }
+            
+            direction();
+            $scope.$digest();
+          }
+
+        }
+
+
+    
 })();

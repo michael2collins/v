@@ -8,7 +8,8 @@
     "jquery.sparkline": "http://omnipotent.net/jquery.sparkline/latest/jquery.sparkline.js",
     "angular-bootstrap-toggle-switch": "~0.5.4",
     "angular-isotope": "~0.1.14",
-    "angular-ui-notification": "~0.1.0"
+    "angular-ui-notification": "~0.1.0",
+    "lvlDragDrop": "https://github.com/kevinrenskers/lvlDragDrop.git"
   },
   "analytics": false
 }

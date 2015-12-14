@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--
 <div ng-controller="StudentsTableBasicController as vm">
   <div class="row">
     <div class="col-lg-12">
@@ -22,7 +23,7 @@
                           <h3 class="modal-title">Create New Student</h3>
                         </div>
                         <div class="modal-body">
-<!--<pre>{{vmnew.message}}</pre> -->
+< ! - -<pre>{{vmnew.message}}</pre> - - >
                             <form action="" novalidate name="newstudent" class="form-horizontal">
                               <div class="form-body pal">
                                <div class="row">
@@ -70,6 +71,55 @@
     </div>
   </div>
 </div>
+-->
+<div class="container-fluid"> 
+    <div class="container" ng-controller="ctrlDualList as vmDual">
+      <div class="row">
+            <div class="col-md-12 text-center"><h3>Drag &amp; Drop Pick List</h3></div>
+            <div class="col-sm-4 col-sm-offset-1">
+              <div class="list-group" id="list1" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.bToA)">
+                <a href="javascript:;" class="list-group-item active">Staff
+                  <input title="Toggle all" ng-click="vmDual.toggleA()" 
+                    ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right"></a>
+                <span ng-repeat="user in vmDual.listA track by user.id">
+                  <a href="javascript:;" data-id="{{user.id}}" x-lvl-draggable="true" class="list-group-item">{{user.firstName}}
+                    <small class="text-muted"><em>{{user.role}}</em></small>                    
+                    <input id="{{user.id}}" ng-click="vmDual.selectedA.push(user.id)" 
+                        name="selectedA[]" value="{{user.id}}" ng-checked="vmDual.selectedA.indexOf(user.id) > -1" 
+                            type="checkbox" class="pull-right">
+                  </a>
+                </span>
+              </div>
+            </div>
+            <div class="col-md-2 v-center text-center">
+              <div class="btn-group">
+                <button title="Send to list 1" class="btn btn-default" ng-click="vmDual.bToA()" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                <button title="Send to list 2" class="btn btn-default" ng-click="vmDual.aToB()" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
+              </div>
+              <h6 class="text-center">move from list-to-list</h6>
+            </div>
+            <div class="col-sm-4">
+              <div class="list-group" id="list2" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, vdropEl, vmDual.aToB)">
+                <a href="javascript:;" class="list-group-item active">Team Members
+                  <input title="Toggle all" ng-click="vmDual.toggleB()" 
+                  ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right">
+                </a>
+                <span ng-repeat="user in vmDual.listB track by user.id">
+                  <a href="javascript:;" data-id="{{user.id}}" class="list-group-item" x-lvl-draggable="true">{{user.firstName}}
+                    <small class="text-muted"><em>{{user.role}}</em></small>
+                    <input id="{{user.id}}" ng-click="vmDual.selectedB.push(user.id)" 
+                        name="selectedB[]" value="{{user.id}}" ng-checked="vmDual.selectedB.indexOf(user.id) > -1" 
+                            type="checkbox" class="pull-right">
+                  </a>
+                </span>
+              </div>
+            </div>
+      </div>
+    </div>
+   
+
+  </div>
+<!--
 <div id="modal-config-student-fields" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" aria-hidden="true" class="modal fade">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -145,3 +195,4 @@
     </div>
   </div>
 </div>
+-->

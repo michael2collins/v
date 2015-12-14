@@ -8,6 +8,7 @@
         'ngRoute',
         'ui.bootstrap',
         'ui-notification',
+        'lvl.directives.dragdrop',
         'toggle-switch',
         'ngTouch',
         'ngMessages',
@@ -50,6 +51,11 @@
 
 }]);
 
+$(document).ready(function() {
+    console.log('fixing for drag-drop');
+	jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
+	console.log(jQuery.event.props);
+});
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
