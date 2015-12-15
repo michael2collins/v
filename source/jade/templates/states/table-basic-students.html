@@ -72,127 +72,72 @@
   </div>
 </div>
 -->
-<div class="container-fluid"> 
-    <div class="container" ng-controller="ctrlDualList as vmDual">
-      <div class="row">
-            <div class="col-md-12 text-center"><h3>Drag &amp; Drop Pick List</h3></div>
-            <div class="col-sm-4 col-sm-offset-1">
-              <div class="list-group" id="list1" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.bToA)">
-                <a href="javascript:;" class="list-group-item active">Staff
-                  <input title="Toggle all" ng-click="vmDual.toggleA()" 
-                    ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right"></a>
-                <span ng-repeat="user in vmDual.listA track by user.id">
-                  <a href="javascript:;" data-id="{{user.id}}" x-lvl-draggable="true" class="list-group-item">{{user.firstName}}
-                    <small class="text-muted"><em>{{user.role}}</em></small>                    
-                    <input id="{{user.id}}" ng-click="vmDual.selectedA.push(user.id)" 
-                        name="selectedA[]" value="{{user.id}}" ng-checked="vmDual.selectedA.indexOf(user.id) > -1" 
-                            type="checkbox" class="pull-right">
-                  </a>
-                </span>
-              </div>
-            </div>
-            <div class="col-md-2 v-center text-center">
-              <div class="btn-group">
-                <button title="Send to list 1" class="btn btn-default" ng-click="vmDual.bToA()" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
-                <button title="Send to list 2" class="btn btn-default" ng-click="vmDual.aToB()" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
-              </div>
-              <h6 class="text-center">move from list-to-list</h6>
-            </div>
-            <div class="col-sm-4">
-              <div class="list-group" id="list2" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, vdropEl, vmDual.aToB)">
-                <a href="javascript:;" class="list-group-item active">Team Members
-                  <input title="Toggle all" ng-click="vmDual.toggleB()" 
-                  ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right">
-                </a>
-                <span ng-repeat="user in vmDual.listB track by user.id">
-                  <a href="javascript:;" data-id="{{user.id}}" class="list-group-item" x-lvl-draggable="true">{{user.firstName}}
-                    <small class="text-muted"><em>{{user.role}}</em></small>
-                    <input id="{{user.id}}" ng-click="vmDual.selectedB.push(user.id)" 
-                        name="selectedB[]" value="{{user.id}}" ng-checked="vmDual.selectedB.indexOf(user.id) > -1" 
-                            type="checkbox" class="pull-right">
-                  </a>
-                </span>
-              </div>
-            </div>
-      </div>
-    </div>
-   
-
-  </div>
 <!--
-<div id="modal-config-student-fields" tabindex="-1" role="dialog" aria-labelledby="modal-default-label" aria-hidden="true" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
-        <h4 id="modal-default-label" class="modal-title">Modal Default</h4>
-      </div>
-      <div class="modal-body">Modal body goes here
-        <div class="panel-body pan">
-          <form role="form" class="form-horizontal form-bordered">
-            <div class="form-body">
-              <div class="form-group">
-                <label class="control-label col-md-3">Pre-selected Options</label>
-                <div class="col-md-6">
-                  <select id="pre-selected-options" multiple="multiple">
-                    <option value="ID"> ID</option>
-                    <option value="LastName" selected="selected"> LastName</option>
-                    <option value="FirstName" selected="selected"> FirstName</option>
-                    <option value="Email" selected="selected"> Email</option>
-                    <option value="Email2"> Email2</option>
-                    <option value="Parent" selected="selected"> Parent</option>
-                    <option value="Phone" selected="selected"> Phone</option>
-                    <option value="AltPhone"> AltPhone</option>
-                    <option value="Address"> Address</option>
-                    <option value="City"> City</option>
-                    <option value="State"> State</option>
-                    <option value="ZIP"> ZIP</option>
-                    <option value="Notes"> Notes</option>
-                    <option value="Birthday"> Birthday</option>
-                    <option value="StartDate"> StartDate</option>
-                    <option value="NewRank"> NewRank</option>
-                    <option value="BeltSize"> BeltSize</option>
-                    <option value="CurrentRank">CurrentRank</option>
-                    <option value="LastPromoted"> LastPromoted</option>
-                    <option value="ReferredBy"> ReferredBy</option>
-                    <option value="ConsentToPublicPictures"> ConsentToPublicPictures</option>
-                    <option value="InstructorPaymentFree"> InstructorPaymentFree</option>
-                    <option value="ContactType"> ContactType</option>
-                    <option value="include"> include</option>
-                    <option value="InstructorFlag"> InstructorFlag</option>
-                    <option value="quickbooklink"> quickbooklink</option>
-                    <option value="instructorTitle"> instructorTitle</option>
-                    <option value="testDate">testDate</option>
-                    <option value="testTime"> testTime</option>
-                    <option value="bdayinclude"> bdayinclude</option>
-                    <option value="signupDate"> signupDate</option>
-                    <option value="sex"> sex</option>
-                    <option value="medicalConcerns"> medicalConcerns</option>
-                    <option value="GuiSize">GuiSize</option>
-                    <option value="ShirtSize"> ShirtSize</option>
-                    <option value="phoneExt"> phoneExt</option>
-                    <option value="altPhoneExt"> altPhoneExt</option>
-                    <option value="CurrentReikiRank"> CurrentReikiRank</option>
-                    <option value="StudentSchool"> StudentSchool</option>
-                    <option value="EmergencyContact"> EmergencyContact</option>
-                    <option value="sendWelcomeCard"> sendWelcomeCard</option>
-                    <option value="dateEntered"> dateEntered</option>
-                    <option value="dateInactive"> dateInactive</option>
-                    <option value="CurrentIARank"> CurrentIARank</option>
-                    <option value="ReadyForNextRank"> ReadyForNextRank</option>
-                    <option value="nextScheduledTest"> nextScheduledTest</option>
-                  </select>
-                </div>
+<div ng-controller="StudentColPickerController as vmcolmodal">
+<script id="myColumnPicker.html" type="text/ng-template">
+    <div class="modal-header">
+      <h3 class="modal-title">Select Columns</h3>
+    </div>
+    <div class="modal-body">
+-->
+        <div class="container-fluid"> 
+            <div class="container" ng-controller="ctrlDualList as vmDual">
+              <div class="row">
+                    <div class="col-md-12 text-center"><h3>Drag &amp; Drop Pick List</h3></div>
+                    <div class="col-sm-4 col-sm-offset-1">
+                      <div class="list-group" id="list1" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.bToA)">
+                        <a href="javascript:;" class="list-group-item active">Show Columns
+                          <input title="Toggle all" ng-click="vmDual.toggleA()" 
+                            ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right"></a>
+                        <span ng-repeat="col in vmDual.listA track by col.id">
+                          <a href="javascript:;" data-id="{{col.id}}" x-lvl-draggable="true" class="list-group-item">{{col.colname}}
+                            <small class="text-muted"><em>{{col.collabel}}</em></small>                    
+                            <input id="{{col.id}}" ng-click="vmDual.selectedA.push(col.id)" 
+                                name="selectedA[]" value="{{col.id}}" ng-checked="vmDual.selectedA.indexOf(col.id) > -1" 
+                                    type="checkbox" class="pull-right">
+                          </a>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="col-md-2 v-center text-center">
+                      <div class="btn-group">
+                        <button title="Send to list 1" class="btn btn-default" ng-click="vmDual.bToA()" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                        <button title="Send to list 2" class="btn btn-default" ng-click="vmDual.aToB()" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                      </div>
+                      <h6 class="text-center">move from list-to-list</h6>
+                    </div>
+                    <div class="col-sm-4">
+                      <div class="list-group" id="list2" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.aToB)">
+                        <a href="javascript:;" class="list-group-item active">Hide Columns
+                          <input title="Toggle all" ng-click="vmDual.toggleB()" 
+                          ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right">
+                        </a>
+                        <span ng-repeat="col in vmDual.listB track by col.id">
+                          <a href="javascript:;" data-id="{{col.id}}" class="list-group-item" x-lvl-draggable="true">{{col.colname}}
+                            <small class="text-muted"><em>{{col.collabel}}</em></small>
+                            <input id="{{col.id}}" ng-click="vmDual.selectedB.push(col.id)" 
+                                name="selectedB[]" value="{{col.id}}" ng-checked="vmDual.selectedB.indexOf(col.id) > -1" 
+                                    type="checkbox" class="pull-right">
+                          </a>
+                        </span>
+                      </div>
+                    </div>
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+      <!--
       </div>
-      <div class="modal-footer">
-        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" type="button" ng-click="vmpicselect.ok()">OK</button>
+      <button class="btn btn-warning" type="button" ng-click="vmpicselect.cancel()">Cancel</button>
     </div>
-  </div>
+</script> 
+<div class="col-md-4">
+  <a href="#" ng-click="vmpicmodal.openpick()"><i class=
+  "glyphicon glyphicon-upload"></i></a> 
+   <a href="#" ng-click="vmpicmodal.opensearch()"><i class=
+  "glyphicon glyphicon-search"></i></a>
+</div>
+
 </div>
 -->

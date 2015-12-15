@@ -112,13 +112,6 @@
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
-                    name: 'modallink',
-                    displayName: 'Modal',
-                    enableFiltering: false,
-                    enableSorting: false,
-                    enableHiding: false,
-                    cellTemplate: '<button type="button" class="btn btn-blue mrs"  data-toggle="modal" data-target="#modal-config-student-fields" >Modal</button>'
-                }, {
                     name: 'ID',
                     displayName: 'Edit',
                     enableFiltering: false,
@@ -154,8 +147,8 @@
         vmDual.toggleB = toggleB;
         vmDual.drop = drop;
         
-        
-        vmDual.userData = [
+        /*
+        vmDual.userData2  = [
             { id: 1, firstName: 'Mary', lastName: 'Goodman', role: 'manager', approved: true, points: 34 },
           {id:2,firstName:'Mark',lastName:'Wilson',role:'developer',approved:true,points:4},
           {id:3,firstName:'Alex',lastName:'Davies',role:'admin',approved:true,points:56},
@@ -170,14 +163,62 @@
           {id:13,firstName:'Bhat',lastName:'Phuart',role:'developer',approved:false,points:314},
           {id:14,firstName:'Nuper',lastName:'Galzona',role:'admin',approved:true,points:94}
         ];
- 
+        */
+            vmDual.userData = [
+                    {id:1, colname:'LastName', collabel:'LastName'},
+                    {id:2, colname:'FirstName', collabel:'FirstName'},
+                    {id:3 , colname:'Email', collabel:'Email'},
+                    {id:4 , colname:'Parent', collabel:'Parent'},
+                    {id:5 , colname:'Phone', collabel:'Phone'},
+                    {id:6 , colname:'ID', collabel:'ID'},
+                    {id:7 , colname:'Email2', collabel:'Email2'},
+                    {id:8 , colname:'AltPhone', collabel:'AltPhone'},
+                    {id:9 , colname:'Address', collabel:'Address'},
+                    {id:10 , colname:'City', collabel:'City'},
+                    {id:11 , colname:'State', collabel:'State'},
+                    {id:12 , colname:'ZIP', collabel:'ZIP'},
+                    {id:13 , colname:'Notes', collabel:'Notes'},
+                    {id:14 , colname:'Birthday', collabel:'Birthday'},
+                    {id:15 , colname:'StartDate', collabel:'StartDate'},
+                    {id:16 , colname:'NewRank', collabel:'NewRank'},
+                    {id:17 , colname:'BeltSize', collabel:'BeltSize'},
+                    {id:18 , colname:'CurrentRank',collable:'CurrentRank'},
+                    {id:19, colname:'LastPromoted', collabel:'LastPromoted'},
+                    {id:20 , colname:'ReferredBy', collabel:'ReferredBy'},
+                    {id:21 , colname:'ConsentToPublicPictures', collabel:'ConsentToPublicPictures'},
+                    {id:22 , colname:'InstructorPaymentFree', collabel:'InstructorPaymentFree'},
+                    {id:23 , colname:'ContactType', collabel:'ContactType'},
+                    {id:24 , colname:'include', collabel:'include'},
+                    {id:25 , colname:'InstructorFlag', collabel:'InstructorFlag'},
+                    {id:26 , colname:'quickbooklink', collabel:'quickbooklink'},
+                    {id:28 , colname:'instructorTitle', collabel:'instructorTitle'},
+                    {id:29 , colname:'testDate', collabel:'testDate'},
+                    {id:30 , colname:'testTime', collabel:'testTime'},
+                    {id:31 , colname:'bdayinclude', collabel:'bdayinclude'},
+                    {id:32 , colname:'signupDate', collabel:'signupDate'},
+                    {id:33 , colname:'sex', collabel:'sex'},
+                    {id:34 , colname:'medicalConcerns', collabel:'medicalConcerns'},
+                    {id:35 , colname:'GuiSize', collabel:'GuiSize'},
+                    {id:36 , colname:'ShirtSize', collabel:'ShirtSize'},
+                    {id:37 , colname:'phoneExt', collabel:'phoneExt'},
+                    {id:38 , colname:'altPhoneExt', collabel:'altPhoneExt'},
+                    {id:39 , colname:'CurrentReikiRank', collabel:'CurrentReikiRank'},
+                    {id:40 , colname:'StudentSchool', collabel:'StudentSchool'},
+                    {id:41 , colname:'EmergencyContact', collabel:'EmergencyContact'},
+                    {id:42 , colname:'sendWelcomeCard', collabel:'sendWelcomeCard'},
+                    {id:43 , colname:'dateEntered', collabel:'dateEntered'},
+                    {id:44 , colname:'dateInactive', collabel:'dateInactive'},
+                    {id:45 , colname:'CurrentIARank', collabel:'CurrentIARank'},
+                    {id:46 , colname:'ReadyForNextRank', collabel:'ReadyForNextRank'},
+                    {id:47 , colname:'nextScheduledTest', collabel:'nextScheduledTest'}
+        ];
         
           // init
         vmDual.selectedA = [];
         vmDual.selectedB = [];
            
-        vmDual.listA = vmDual.userData.slice(0,5);
-        vmDual.listB = vmDual.userData.slice(6,10);
+        vmDual.listA = vmDual.userData.slice(0,4);
+        vmDual.listB = vmDual.userData.slice(5,46);
         vmDual.items = vmDual.userData;
           
         vmDual.checkedA = false;
