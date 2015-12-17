@@ -34,8 +34,8 @@ class StudentDbHandler {
      * Fetching all students
      */
     public function getAllStudents() {
-//        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t LIMIT 10");
-        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t");
+        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t LIMIT 10");
+//        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t");
         $stmt->execute();
         $students = $stmt->get_result();
         $stmt->close();

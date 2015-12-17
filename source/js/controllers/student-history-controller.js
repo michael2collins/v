@@ -19,13 +19,8 @@
 
   //      vmHistory.updateStudentHistory = updateStudentHistory;
         vmHistory.getStudentHistory = getStudentHistory;
-
         vmHistory.highlightFilteredHeader = highlightFilteredHeader;
-
-        setGridOptions();
         
-        
-
         vmHistory.path = '../v1/studenthistory/' + $routeParams.id;
         $log.debug('studentid for studenthistory: ' + $routeParams.id);
 

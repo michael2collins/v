@@ -32,13 +32,14 @@
     vmsetclassmodal.opensearch = opensearch;
     vmsetclassmodal.classname = '';
     vmsetclassmodal.modalInstance = undefined;
-    console.log('hmm');
+    $log.debug('ModalSetStudentClassController entered');
 //    console.log($controller('StudentClassController as vmclass', {$scope: $scope}));
     vmsetclassmodal.vmclass = $controller('StudentClassController as vmclass', {$scope: $scope});
 
 
     function opensearch() {
-
+        $log.debug('opensearch entered');
+        
       vmsetclassmodal.modalInstance = $uibModal.open({
         animation: vmsetclassmodal.animationsEnabled,
         templateUrl: 'myClasssearch.html',

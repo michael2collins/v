@@ -4,14 +4,14 @@
   angular
     .module('ng-admin')
     .controller('ModalNewStudentController', ModalNewStudentController)
-    .controller('ModalInstanceController', ModalInstanceController);
+    .controller('ModalNewStudentInstanceController', ModalNewStudentInstanceController);
 
 
   ModalNewStudentController.$inject = [
       '$log',
       '$uibModal'
     ];
-  ModalInstanceController.$inject = [
+  ModalNewStudentInstanceController.$inject = [
       '$log',
       '$uibModalInstance',
       'StudentServices',
@@ -37,7 +37,7 @@
       vmnewstudentmodal.modalInstance = $uibModal.open({
         animation: vmnewstudentmodal.animationsEnabled,
         templateUrl: 'newStudent.html',
-        controller: 'ModalInstanceController as vmnew',
+        controller: 'ModalNewStudentInstanceController as vmnew',
         size: 'sm',
         resolve: {
           classname: function () {
@@ -59,7 +59,7 @@
 
 
 
-  function ModalInstanceController( $log, $uibModalInstance, StudentServices, $window, Notification) {
+  function ModalNewStudentInstanceController( $log, $uibModalInstance, StudentServices, $window, Notification) {
     /* jshint validthis: true */
     var vmnew = this;
     console.log('modal newstudent entered');

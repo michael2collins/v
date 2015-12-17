@@ -965,7 +965,7 @@
                         <div class="modal-header">
                           <h3 class="modal-title">Select Student Class</h3>
                         </div>
-                        <div class="modal-body">
+                        <div class="modal-body" >
                   <div>{{vmsearch.vmclass.concat}}</div>
                   <div class="">
                     <div opt-kind="" ok-key="filter" class="btn-group filters-button-group">
@@ -1011,9 +1011,7 @@
                         </div>
                         <div class="modal-footer">
                           <button class="btn btn-primary" type="button" ng-click="vmsearch.closemodal()">Close</button>
-<!--                          <button class="btn btn-primary" type="button" ng-click="vmsearch.ok()">OK</button>
-                          <button class="btn btn-warning" type="button" ng-click="vmsearch.cancel()">Cancel</button>
--->                        </div>
+                        </div>
                     </script>
 
 <!--                    <div class="col-md-8">
@@ -1143,7 +1141,7 @@
             id="tab-student" 
             heading="Student History"
             active="active.history"
-             select="vmstudent.setActiveTab('history')"
+             select="vmstudent.setActiveTab('history'); histtabShown = !histtabShown" deselect="histtabShown = !histtabShown"
             >
         <div class="row" ng-controller="StudentHistoryController as vmhistory">
           <div class="col-lg-12">
@@ -1151,7 +1149,7 @@
               <div class="panel-heading">History</div>
               <div class="panel-body pan">
                 <div ui-grid="vmhistory.gridOptions" 
-                    ui-grid-pagination ui-grid-cellNav class="mygrid">
+                    ui-grid-pagination ui-grid-cellNav class="mygrid" ng-if="histtabShown">
                 </div>
               </div>
             </div>
