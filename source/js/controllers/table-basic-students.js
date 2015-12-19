@@ -7,164 +7,59 @@
         .controller('ctrlDualList', ctrlDualList);
 
     StudentsTableBasicController.$inject = [
-        'StudentServices',
         '$scope',
-        '$routeParams',
-        '$log',
-        'uiGridConstants'
+        '$log'
     ];
     ctrlDualList.$inject = [
-        '$scope'
+        '$scope',
+        '$log',
+        'StudentServices',
+        '$routeParams',
+        'uiGridConstants',
+        '$interval'
         ];
 
-    function StudentsTableBasicController(StudentServices, $scope, $routeParams, $log, uiGridConstants) {
+    function StudentsTableBasicController( $scope,$log) {
         /* jshint validthis: true */
         var vm = this;
 
-        //vm.path = 'testdata/students_vsmall.json';
-        vm.path = '../v1/students';
-        vm.getAllStudents = getAllStudents;
-        vm.highlightFilteredHeader = highlightFilteredHeader;
-        //vm.gridOptions = {};
+        vm.isCollapsed = true;
+
 
         $.fn.Data.Portlet();
-        setGridOptions();
-        activate();
-        
-        function activate() {
-        return getAllStudents().then(function() {
-            $log.debug('activated StudentsTableBasic view');
-            });
-        }
-        
-        //   setTimeout(function(){
-        // Init
-        //      var spinner = $( ".spinner" ).spinner();
-        //    },50);
 
-        function getAllStudents() {
-            return StudentServices.getAllStudents(vm.path).then(function(data){
-               //     $log.debug('getAllStudents returned data');
-                    vm.gridOptions.data = data.data.students;
-               //     $log.debug($scope.gridOptions.data);
-                    return vm.gridOptions.data;
-                });
-        }
-
-
-        function setGridOptions() {
-            vm.gridOptions = {
-            enableFiltering: true,
-            paginationPageSizes: [25, 50, 75],
-            paginationPageSize: 25,
-            columnDefs: [
-                // default
-                {
-                    field: 'name',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'ID2',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'LastName',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'FirstName',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Email',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Email2',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Parent',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Phone',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'AltPhone',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Address',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'City',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'State',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'ZIP',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    name: 'ID',
-                    displayName: 'Edit',
-                    enableFiltering: false,
-                    enableSorting: false,
-                    enableHiding: false,
-                    enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="./#/form-layouts-editstudent/id/{{COL_FIELD}}" >Edit</button></span></div>'
-                }
-            ]};
-
-        }
-
-
-        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
-            if (col.filters[0].term) {
-                return 'header-filtered';
-            } else {
-                return '';
-            }
-        }
 
     }
     
-    function ctrlDualList($scope) {
+    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $interval) {
         /* jshint validthis: true */
         var vmDual = this;
 
         vmDual.arrayObjectIndexOf = arrayObjectIndexOf;
+        vmDual.getUserPrefCols = getUserPrefCols;
+        vmDual.highlightFilteredHeader = highlightFilteredHeader;
+        vmDual.getAllStudents = getAllStudents;
+        vmDual.setGridVisible = setGridVisible;
         vmDual.aToB = aToB;
         vmDual.bToA = bToA;
         vmDual.reset = reset;
         vmDual.toggleA = toggleA;
         vmDual.toggleB = toggleB;
         vmDual.drop = drop;
-        
-        /*
-        vmDual.userData2  = [
-            { id: 1, firstName: 'Mary', lastName: 'Goodman', role: 'manager', approved: true, points: 34 },
-          {id:2,firstName:'Mark',lastName:'Wilson',role:'developer',approved:true,points:4},
-          {id:3,firstName:'Alex',lastName:'Davies',role:'admin',approved:true,points:56},
-          {id:4,firstName:'Bob',lastName:'Banks',role:'manager',approved:false,points:14},
-          {id:5,firstName:'David',lastName:'Stevens',role:'developer',approved:false,points:100},
-          {id:6,firstName:'Jason',lastName:'Durham',role:'developer',approved:false,points:0},
-          {id:7,firstName:'Jeff',lastName:'Marks',role:'manager',approved:true,points:8},
-          {id:8,firstName:'Betty',lastName:'Abercrombie',role:'manager',approved:true,points:18},
-          {id:9,firstName:'Krista',lastName:'Michaelson',role:'developer',approved:true,points:10},
-          {id:11,firstName:'Devin',lastName:'Sumner',role:'manager',approved:false,points:3},
-          {id:12,firstName:'Navid',lastName:'Palit',role:'manager',approved:true,points:57},
-          {id:13,firstName:'Bhat',lastName:'Phuart',role:'developer',approved:false,points:314},
-          {id:14,firstName:'Nuper',lastName:'Galzona',role:'admin',approved:true,points:94}
-        ];
-        */
-            vmDual.userData = [
+        vmDual.userprefpath = "../v1/userprefcols";
+        vmDual.path = '../v1/students';
+
+        vmDual.gcolumns = [];
+        vmDual.selectedA = [];
+        vmDual.selectedB = [];
+        vmDual.userprefcols = [];
+        vmDual.listA = [];
+        vmDual.listB = [];
+        vmDual.checkedA = false;
+        vmDual.checkedB = false;
+        vmDual.gridOptions = {};
+
+        vmDual.userData = [
                     {id:1, colname:'LastName', collabel:'LastName'},
                     {id:2, colname:'FirstName', collabel:'FirstName'},
                     {id:3 , colname:'Email', collabel:'Email'},
@@ -213,23 +108,149 @@
                     {id:47 , colname:'nextScheduledTest', collabel:'nextScheduledTest'}
         ];
         
-          // init
-        vmDual.selectedA = [];
-        vmDual.selectedB = [];
-           
-        vmDual.listA = vmDual.userData.slice(0,4);
-        vmDual.listB = vmDual.userData.slice(5,46);
         vmDual.items = vmDual.userData;
           
-        vmDual.checkedA = false;
-        vmDual.checkedB = false;
 
         console.log('vmDual');
-        console.log('listA', vmDual.listA);
-        console.log('listB', vmDual.listB);
+
+        getUserPrefCols();
+
+
         
+        
+        function activate() {
+            $log.debug('activate');
+        return getAllStudents().then(function() {
+            $log.debug('activated StudentsTableBasic view');
+            });
+        }
+        
+        function getUserPrefCols() {
+            $log.debug('getUserPrefCols entered');
+            return StudentServices.getUserPrefCols(vmDual.userprefpath).then(function(data){
+                    $log.debug('getUserPrefCols returned data');
+                    vmDual.userprefcols = data.data.userprefcols;
+                    $log.debug(vmDual.userprefcols);
+                    var foundit;
+                    for(var j = 0, lenu = vmDual.userData.length; j < lenu; j++) {
+                        foundit = false;
+                        for(var i = 0, len = vmDual.userprefcols.length; i < len; i++) {
+                            //$log.debug('colprefs',vmDual.userprefcols[i].prefcolumn);
+                            if ( vmDual.userData[j].colname == vmDual.userprefcols[i].prefcolumn) {
+                                vmDual.listA.push(vmDual.userData.slice(j,j+1)[0]); //A is the list that we display
+                          //      $log.debug('listA:', vmDual.userData.slice(j,j+1)[0]);
+                                foundit = true;
+                                break; //skip as we found something
+                            }
+                        }
+                        if (!foundit) {
+                        //    $log.debug('listB:', vmDual.userData.slice(j,j+1)[0]);
+                            vmDual.listB.push(vmDual.userData.slice(j,j+1)[0]); //B gets the not matches
+                        }
+                        
+                    }
+                    $log.debug('listA', vmDual.listA);
+                    $log.debug('listB', vmDual.listB);
+
+
+                    setGridOptions();
+
+                    activate();
+
+               //     setGridVisible();
+        
+                    
+                    return vmDual.userprefcols;
+                });
+        }
+
+        function getAllStudents() {
+            $log.debug('getAllStudents tb');
+            return StudentServices.getAllStudents(vmDual.path).then(function(data){
+               //     $log.debug('getAllStudents returned data');
+                    vmDual.gridOptions.data = data.data.students;
+
+               //     $log.debug($scope.gridOptions.data);
+                    return vmDual.gridOptions.data;
+                });
+        }
+
+        
+        function setGridVisible() {
+            $log.debug('setGridVisible tb');
+            var foundit;
+            for(var j = 0, lenu = vmDual.gcolumns.length; j < lenu; j++) {
+                foundit = false;
+                for(var i = 0, len = vmDual.listA.length; i < len; i++) {
+                    if ( vmDual.gcolumns[j].field == vmDual.listA[i].colname) {
+                        vmDual.gcolumns[j].visible = true;
+                        foundit = true;
+                        break; //skip as we found something
+                    }
+                }
+                if (!foundit) {
+                    vmDual.gcolumns[j].visible = false;
+                }
+                
+            }
+            $interval(function () { vmDual.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN); }, 0);
+          $log.debug(vmDual.gridOptions);  
+        } 
+        
+        function setGridOptions() {
+            vmDual.gcolumns = [];
+            $log.debug('setGridOptions col count', vmDual.listA.length);
+            
+            for (var i=0, len = vmDual.listA.length; i < len; i++) {
+         //       $log.debug('colset',vmDual.listA[i].colname);
+                if (vmDual.listA[i].colname == 'ID') {
+                    continue; //skip as we will add it at the end 
+                }
+                var colstruct = {field: vmDual.listA[i].colname, 
+                                    headerCellClass: highlightFilteredHeader,
+                                    enableCellEdit: false };
+                vmDual.gcolumns.push(colstruct);
+            }
+            var collast = {name: 'ID',
+                    displayName: 'Edit',
+                    enableFiltering: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    enableCellEdit: false,
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue mrs" href="./#/form-layouts-editstudent/id/{{COL_FIELD}}" >Edit</button></span></div>'
+                };
+            vmDual.gcolumns.push(collast);
+            $log.debug('gcolumns', vmDual.gcolumns);
+
+                    vmDual.gridOptions = {
+                    enableFiltering: true,
+                    paginationPageSizes: [25, 50, 75],
+                    paginationPageSize: 25,
+                    columnDefs: vmDual.gcolumns,
+                    onRegisterApi: function(gridApi) {
+                        $log.debug('onRegisterApi', gridApi);
+                         vmDual.gridApi = gridApi;
+                        }
+                    };
+
+     //       vmDual.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+            $log.debug('gridOptions', vmDual.gridOptions);
+        }
+
+
+        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
+            $log.debug('highlightFilteredHeader');
+            if (col.filters[0].term) {
+                return 'header-filtered';
+            } else {
+                return '';
+            }
+        }
+
+
 
         function arrayObjectIndexOf(myArray, searchTerm, property) {
+            $log.debug('arrayObjectIndexOf');
            for(var i = 0, len = myArray.length;  i < len; i++) {
               if (myArray[i][property] === searchTerm) {
                   return i;
@@ -239,7 +260,7 @@
         }
   
         function aToB() {
-            console.log('aToB');
+            $log.debug('aToB');
             var i;
             for ( i in vmDual.selectedA) {
                 if (vmDual.selectedA.hasOwnProperty(i)) {
@@ -270,6 +291,8 @@
             vmDual.selectedA=[];
             vmDual.selectedB=[];
             vmDual.toggle=0;
+            setGridVisible();
+
         }
   
         function toggleA() {
@@ -279,8 +302,8 @@
             } else {
                 for (i in vmDual.listA) {
                     if (vmDual.listA.hasOwnProperty(i) ) {
-                        console.log('a i',i);
-                        console.log('a id',vmDual.listA[i].id);
+                 //       console.log('a i',i);
+                 //       console.log('a id',vmDual.listA[i].id);
                         vmDual.selectedA.push(vmDual.listA[i].id);
                     }
                 }
@@ -294,8 +317,8 @@
             } else {
                 for (i in vmDual.listB) {
                     if (vmDual.listB.hasOwnProperty(i) ) {
-                        console.log('b i',i);
-                        console.log('b id',vmDual.listB[i].id);
+                   //     console.log('b i',i);
+                //        console.log('b id',vmDual.listB[i].id);
                         vmDual.selectedB.push(vmDual.listB[i].id);
                     }
                 }
@@ -303,20 +326,20 @@
         }
  
         function drop(dragEl, dropEl, direction) {
-        console.log('dragl',dragEl);
+    //    console.log('dragl',dragEl);
         
             var drag = angular.element(dragEl);
-            console.log('drag', drag);
+        //    console.log('drag', drag);
             var drop = angular.element(dropEl);
-            console.log('drop', drop);
+        //    console.log('drop', drop);
             var id = drag.attr("id");
-            console.log('id', id);
+        //    console.log('id', id);
             var ela = document.getElementById(dragEl);
             var el = ela.getElementsByTagName("input");
-            console.log('el', el);
+        //    console.log('el', el);
             
             if(!angular.element(el).attr("checked")){
-                console.log('dropclick');
+         //       console.log('dropclick');
               angular.element(el).triggerHandler('click');
             }
             

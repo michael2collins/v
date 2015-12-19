@@ -1,5 +1,41 @@
 <?php
 
+$app->get('/userprefcols',  function() {
+    error_log( print_R("userprefcols entered\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $userid = 1; //have to convert name to id
+    $prefkey = "allstudents";
+
+    // fetching all class pays
+    $result = $db->getUserPreferences($userid, $prefkey);
+
+
+    $response["error"] = false;
+    $response["userprefcols"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["prefcolumn"] = (empty($slist["prefcolumn"]) ? "NULL" : $slist["prefcolumn"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["prefcolumn"] = "NULL";
+        }
+        array_push($response["userprefcols"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    error_log( print_R("userprefcols responding\n ", TRUE), 3, LOG);
+
+    echoRespnse(200, $response);
+});
+
+
 /**
  * Listing all tasks of particual user
  * method GET

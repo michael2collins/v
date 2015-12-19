@@ -28,7 +28,8 @@
             getTheStudent: getTheStudent,
             setActiveTab: setActiveTab,
             getActiveTab: getActiveTab,
-            createStudent: createStudent
+            createStudent: createStudent,
+            getUserPrefCols: getUserPrefCols
         };
         return service;
 
@@ -98,9 +99,10 @@
       function setstudentPicFile(pic) {
           $log.debug('setStuPicfile: ' + pic);
           picFile = pic;
-        }
+        } 
 
         function getAllStudents(path) {
+            $log.debug('getAllStudents service entered');
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
                     $log.debug('getAllStudents success:' + path);
@@ -115,6 +117,24 @@
                     // or server returns response with an error status.
                 });
         }
+
+        function getUserPrefCols(path) {
+            $log.debug('getUserPrefCols service entered');
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getUserPrefCols success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getUserPrefCols failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
+
         
         function getFamily(path) {
             return $http({method: 'GET', url: path}).

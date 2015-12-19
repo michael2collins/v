@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <div ng-controller="StudentsTableBasicController as vm">
-  <div class="row">
+  <div class="row" ng-controller="ctrlDualList as vmDual">
     <div class="col-lg-12">
       <div class="portlet box portlet-green">
         <div class="portlet-header">
@@ -16,7 +16,8 @@
               <div ng-controller="ModalNewStudentController as vmmodal">
 
                   <div class="col-lg-12 mbs">
-                    <button type="button" ng-click="vmmodal.openmodal()" class="btn btn-red mrs"><i class="fa fa-plus"></i>&nbsp; Add New</button>
+                    <button type="button" class="btn btn-red mrs" ng-click="vmmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; Add New</button>
+                    <button type="button" class="btn btn-red mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">Columns</button>
                   </div>
                     <script id="newStudent.html" type="text/ng-template">
                         <div class="modal-header">
@@ -65,79 +66,60 @@
                 </div>    
             </div>
           </div>
-          <div ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
+    	<div uib-collapse="vm.isCollapsed">
+    		<div class="well well-lg">
+                <div class="container-fluid"> 
+                    <div class="container" >
+                      <div class="row">
+                            <div class="col-md-12 text-center"><h3>Drag &amp; Drop Pick List</h3></div>
+                            <div class="col-sm-4 col-sm-offset-1">
+                              <div class="list-group" id="list1" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.bToA)">
+                                <a href="javascript:;" class="list-group-item active">Show Columns
+                                  <input title="Toggle all" ng-click="vmDual.toggleA()" 
+                                    ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right"></a>
+                                <span ng-repeat="col in vmDual.listA track by col.id">
+                                  <a href="javascript:;" data-id="{{col.id}}" x-lvl-draggable="true" class="list-group-item">{{col.colname}}
+                                    <small class="text-muted"><em>{{col.collabel}}</em></small>                    
+                                    <input id="{{col.id}}" ng-click="vmDual.selectedA.push(col.id)" 
+                                        name="selectedA[]" value="{{col.id}}" ng-checked="vmDual.selectedA.indexOf(col.id) > -1" 
+                                            type="checkbox" class="pull-right">
+                                  </a>
+                                </span>
+                              </div>
+                            </div>
+                            <div class="col-md-2 v-center text-center">
+                              <div class="btn-group">
+                                <button title="Send to list 1" class="btn btn-default" ng-click="vmDual.bToA()" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                                <button title="Send to list 2" class="btn btn-default" ng-click="vmDual.aToB()" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                              </div>
+                              <h6 class="text-center">move from list-to-list</h6>
+                            </div>
+                            <div class="col-sm-4">
+                              <div class="list-group" id="list2" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.aToB)">
+                                <a href="javascript:;" class="list-group-item active">Hide Columns
+                                  <input title="Toggle all" ng-click="vmDual.toggleB()" 
+                                  ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right">
+                                </a>
+                                <span ng-repeat="col in vmDual.listB track by col.id">
+                                  <a href="javascript:;" data-id="{{col.id}}" class="list-group-item" x-lvl-draggable="true">{{col.colname}}
+                                    <small class="text-muted"><em>{{col.collabel}}</em></small>
+                                    <input id="{{col.id}}" ng-click="vmDual.selectedB.push(col.id)" 
+                                        name="selectedB[]" value="{{col.id}}" ng-checked="vmDual.selectedB.indexOf(col.id) > -1" 
+                                            type="checkbox" class="pull-right">
+                                  </a>
+                                </span>
+                              </div>
+                            </div>
+                      </div>
+                    </div>
+                  </div>
+    		</div>
+    	</div>
+          <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
         </div>
+        <pre>{{vmDual.gridOptions}}</pre>
       </div>
     </div>
   </div>
 </div>
 
-<!--
-<div ng-controller="StudentColPickerController as vmcolmodal">
-<script id="myColumnPicker.html" type="text/ng-template">
-    <div class="modal-header">
-      <h3 class="modal-title">Select Columns</h3>
-    </div>
-    <div class="modal-body">
--->
-        <div class="container-fluid"> 
-            <div class="container" ng-controller="ctrlDualList as vmDual">
-              <div class="row">
-                    <div class="col-md-12 text-center"><h3>Drag &amp; Drop Pick List</h3></div>
-                    <div class="col-sm-4 col-sm-offset-1">
-                      <div class="list-group" id="list1" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.bToA)">
-                        <a href="javascript:;" class="list-group-item active">Show Columns
-                          <input title="Toggle all" ng-click="vmDual.toggleA()" 
-                            ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right"></a>
-                        <span ng-repeat="col in vmDual.listA track by col.id">
-                          <a href="javascript:;" data-id="{{col.id}}" x-lvl-draggable="true" class="list-group-item">{{col.colname}}
-                            <small class="text-muted"><em>{{col.collabel}}</em></small>                    
-                            <input id="{{col.id}}" ng-click="vmDual.selectedA.push(col.id)" 
-                                name="selectedA[]" value="{{col.id}}" ng-checked="vmDual.selectedA.indexOf(col.id) > -1" 
-                                    type="checkbox" class="pull-right">
-                          </a>
-                        </span>
-                      </div>
-                    </div>
-                    <div class="col-md-2 v-center text-center">
-                      <div class="btn-group">
-                        <button title="Send to list 1" class="btn btn-default" ng-click="vmDual.bToA()" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
-                        <button title="Send to list 2" class="btn btn-default" ng-click="vmDual.aToB()" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
-                      </div>
-                      <h6 class="text-center">move from list-to-list</h6>
-                    </div>
-                    <div class="col-sm-4">
-                      <div class="list-group" id="list2" x-lvl-drop-target="true" x-on-drop="vmDual.drop(dragEl, dropEl, vmDual.aToB)">
-                        <a href="javascript:;" class="list-group-item active">Hide Columns
-                          <input title="Toggle all" ng-click="vmDual.toggleB()" 
-                          ng-model="toggle" value="{{toggle}}" type="checkbox" class="pull-right">
-                        </a>
-                        <span ng-repeat="col in vmDual.listB track by col.id">
-                          <a href="javascript:;" data-id="{{col.id}}" class="list-group-item" x-lvl-draggable="true">{{col.colname}}
-                            <small class="text-muted"><em>{{col.collabel}}</em></small>
-                            <input id="{{col.id}}" ng-click="vmDual.selectedB.push(col.id)" 
-                                name="selectedB[]" value="{{col.id}}" ng-checked="vmDual.selectedB.indexOf(col.id) > -1" 
-                                    type="checkbox" class="pull-right">
-                          </a>
-                        </span>
-                      </div>
-                    </div>
-              </div>
-            </div>
-          </div>
-      <!--
-      </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary" type="button" ng-click="vmpicselect.ok()">OK</button>
-      <button class="btn btn-warning" type="button" ng-click="vmpicselect.cancel()">Cancel</button>
-    </div>
-</script> 
-<div class="col-md-4">
-  <a href="#" ng-click="vmpicmodal.openpick()"><i class=
-  "glyphicon glyphicon-upload"></i></a> 
-   <a href="#" ng-click="vmpicmodal.opensearch()"><i class=
-  "glyphicon glyphicon-search"></i></a>
-</div>
-
-</div>
--->

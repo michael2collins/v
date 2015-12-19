@@ -488,7 +488,7 @@ class StudentDbHandler {
     }
 
         /**
-     * Fetching fields for user from userpreferences
+     * Fetching fields for user froerences
      */
     public function getUserPreferences($user_id, $prefkey) {
         error_log("in getUserPreferences");

@@ -25,11 +25,11 @@
     var vmnewstudentmodal = this;
     
     vmnewstudentmodal.animationsEnabled = true;
-
+    
     vmnewstudentmodal.openmodal = openmodal;
     vmnewstudentmodal.modalInstance = undefined;
     vmnewstudentmodal.thisstudent = '';
-    console.log('ModalNewStudentController entered');
+    $log.debug('ModalNewStudentController entered ');
 
 
     function openmodal() {
