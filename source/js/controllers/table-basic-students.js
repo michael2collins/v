@@ -16,7 +16,8 @@
         'StudentServices',
         '$routeParams',
         'uiGridConstants',
-        '$interval'
+        '$window',
+        'Notification'
         ];
 
     function StudentsTableBasicController( $scope,$log) {
@@ -31,7 +32,7 @@
 
     }
     
-    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $interval) {
+    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification) {
         /* jshint validthis: true */
         var vmDual = this;
 
@@ -39,17 +40,21 @@
         vmDual.getUserPrefCols = getUserPrefCols;
         vmDual.highlightFilteredHeader = highlightFilteredHeader;
         vmDual.getAllStudents = getAllStudents;
-        vmDual.setGridVisible = setGridVisible;
+        vmDual.createUserPrefCols = createUserPrefCols;
+        vmDual.submit = submit;
+        vmDual.colreset = colreset;
+        //vmDual.setGridVisible = setGridVisible;
         vmDual.aToB = aToB;
         vmDual.bToA = bToA;
         vmDual.reset = reset;
         vmDual.toggleA = toggleA;
         vmDual.toggleB = toggleB;
         vmDual.drop = drop;
-        vmDual.userprefpath = "../v1/userprefcols";
+        vmDual.userprefpath = "../v1/userprefcols/allstudents";
         vmDual.path = '../v1/students';
 
         vmDual.gcolumns = [];
+        vmDual.thecolumns = [];
         vmDual.selectedA = [];
         vmDual.selectedB = [];
         vmDual.userprefcols = [];
@@ -60,62 +65,43 @@
         vmDual.gridOptions = {};
 
         vmDual.userData = [
-                    {id:1, colname:'LastName', collabel:'LastName'},
-                    {id:2, colname:'FirstName', collabel:'FirstName'},
-                    {id:3 , colname:'Email', collabel:'Email'},
-                    {id:4 , colname:'Parent', collabel:'Parent'},
-                    {id:5 , colname:'Phone', collabel:'Phone'},
-                    {id:6 , colname:'ID', collabel:'ID'},
-                    {id:7 , colname:'Email2', collabel:'Email2'},
-                    {id:8 , colname:'AltPhone', collabel:'AltPhone'},
-                    {id:9 , colname:'Address', collabel:'Address'},
-                    {id:10 , colname:'City', collabel:'City'},
-                    {id:11 , colname:'State', collabel:'State'},
-                    {id:12 , colname:'ZIP', collabel:'ZIP'},
-                    {id:13 , colname:'Notes', collabel:'Notes'},
-                    {id:14 , colname:'Birthday', collabel:'Birthday'},
-                    {id:15 , colname:'StartDate', collabel:'StartDate'},
-                    {id:16 , colname:'NewRank', collabel:'NewRank'},
-                    {id:17 , colname:'BeltSize', collabel:'BeltSize'},
-                    {id:18 , colname:'CurrentRank',collable:'CurrentRank'},
-                    {id:19, colname:'LastPromoted', collabel:'LastPromoted'},
-                    {id:20 , colname:'ReferredBy', collabel:'ReferredBy'},
-                    {id:21 , colname:'ConsentToPublicPictures', collabel:'ConsentToPublicPictures'},
-                    {id:22 , colname:'InstructorPaymentFree', collabel:'InstructorPaymentFree'},
-                    {id:23 , colname:'ContactType', collabel:'ContactType'},
-                    {id:24 , colname:'include', collabel:'include'},
-                    {id:25 , colname:'InstructorFlag', collabel:'InstructorFlag'},
-                    {id:26 , colname:'quickbooklink', collabel:'quickbooklink'},
-                    {id:28 , colname:'instructorTitle', collabel:'instructorTitle'},
-                    {id:29 , colname:'testDate', collabel:'testDate'},
-                    {id:30 , colname:'testTime', collabel:'testTime'},
-                    {id:31 , colname:'bdayinclude', collabel:'bdayinclude'},
-                    {id:32 , colname:'signupDate', collabel:'signupDate'},
-                    {id:33 , colname:'sex', collabel:'sex'},
-                    {id:34 , colname:'medicalConcerns', collabel:'medicalConcerns'},
-                    {id:35 , colname:'GuiSize', collabel:'GuiSize'},
-                    {id:36 , colname:'ShirtSize', collabel:'ShirtSize'},
-                    {id:37 , colname:'phoneExt', collabel:'phoneExt'},
-                    {id:38 , colname:'altPhoneExt', collabel:'altPhoneExt'},
-                    {id:39 , colname:'CurrentReikiRank', collabel:'CurrentReikiRank'},
-                    {id:40 , colname:'StudentSchool', collabel:'StudentSchool'},
-                    {id:41 , colname:'EmergencyContact', collabel:'EmergencyContact'},
-                    {id:42 , colname:'sendWelcomeCard', collabel:'sendWelcomeCard'},
-                    {id:43 , colname:'dateEntered', collabel:'dateEntered'},
-                    {id:44 , colname:'dateInactive', collabel:'dateInactive'},
-                    {id:45 , colname:'CurrentIARank', collabel:'CurrentIARank'},
-                    {id:46 , colname:'ReadyForNextRank', collabel:'ReadyForNextRank'},
-                    {id:47 , colname:'nextScheduledTest', collabel:'nextScheduledTest'}
-        ];
-        
+                    {id:1, colname:'ID', default:'true'},
+                    {id:2, colname:'LastName', default:'true'},
+                    {id:3, colname:'FirstName', default:'true'},
+                    {id:4, colname:'Email', default:'true'},
+                    {id:5 , colname:'Email2', default:'false'},
+                    {id:6 , colname:'Parent', default:'false'},
+                    {id:7 , colname:'Phone', default:'true'},
+                    {id:8 , colname:'AltPhone', default:'false'},
+                    {id:9 , colname:'Address', default:'false'},
+                    {id:10, colname:'City', default:'false'},
+                    {id:11 , colname:'State', default:'false'},
+                    {id:12, colname:'ZIP', default:'false'},
+                    {id:13, colname:'Notes', default:'false'},
+                    {id:14, colname:'Birthday', default:'false'},
+                    {id:15, colname:'NewRank', default:'false'},
+                    {id:16 , colname:'BeltSize', default:'false'},
+                    {id:17 , colname:'CurrentRank', default:'true'},
+                    {id:18 , colname:'LastPromoted', default:'false'},
+                    {id:19 , colname:'InstructorPaymentFree', default:'false'},
+                    {id:20 , colname:'ContactType', default:'false'},
+                    {id:21 , colname:'include', default:'false'},
+                    {id:22 , colname:'InstructorFlag', default:'false'},
+                    {id:23 , colname:'quickbooklink', default:'false'},
+                    {id:24 , colname:'instructorTitle', default:'false'},
+                    {id:25 , colname:'testDate', default:'false'},
+                    {id:26 , colname:'testTime', default:'false'},
+                    {id:27, colname:'bdayinclude', default:'false'},
+                    {id:28, colname:'sex', default:'false'},
+                    {id:29, colname:'medicalConcerns', default:'false'},
+                    {id:30, colname:'GuiSize', default:'false'}
+                    ];
         vmDual.items = vmDual.userData;
           
 
         console.log('vmDual');
 
         getUserPrefCols();
-
-
         
         
         function activate() {
@@ -164,6 +150,75 @@
                 });
         }
 
+
+        function submit() {
+          console.log('hit submit');
+          createUserPrefCols().then(function(){
+              $log.debug('createUserPrefCols ready to close');
+          }).catch(function(e){
+              alert("try again", e);
+          });
+        }
+
+        function colreset() {
+          console.log('hit reset');
+          vmDual.listA = [];
+          vmDual.listB = [];
+            var thisdta;
+            var foundit;
+            $log.debug('dta:', vmDual.userData);
+            
+            for(var j = 0, lenu = vmDual.userData.length; j < lenu; j++) {
+                $log.debug("loop entered", vmDual.userData[j].default);
+                foundit = false;
+                if ( vmDual.userData[j].default === "true") {
+                        thisdta = vmDual.userData.slice(j,j+1)[0];
+                        $log.debug('thisdta listA', thisdta);
+                        vmDual.listA.push(thisdta); //A is the list that we display
+                        foundit = true;
+                        continue; //skip as we found something
+                }
+                if (!foundit) {
+                    thisdta = vmDual.userData.slice(j,j+1)[0];
+                    vmDual.listB.push(thisdta); //B gets the not matches
+                }
+            }
+            $log.debug('listA', vmDual.listA);
+          
+          
+          createUserPrefCols().then(function(){
+              $log.debug('createUserPrefCols ready to close');
+          }).catch(function(e){
+              alert("try again", e);
+          });
+        }
+
+        function createUserPrefCols() {
+            $log.debug('about createUserPrefCols ', vmDual.listA);
+
+            return StudentServices.createUserPrefCols(vmDual.userprefpath, vmDual.listA)
+                .then(function(data){
+                    $log.debug('createUserPrefCols returned data');
+                    $log.debug(data);
+                    vmDual.thecolumns = data;
+                    $log.debug(vmDual.thecolumns);
+                    $log.debug(vmDual.thecolumns.message);
+                    vmDual.message = vmDual.thecolumns.message;
+                    var url = './#/table-basic-students';
+                    $log.debug(url);
+        //            alert(url);
+                    $window.location.href = url;
+                    return vmDual.thecolumns;
+                }).catch(function(e) {
+                    $log.debug('createUserPrefCols failure:');
+                    $log.debug("error", e);
+                    vmDual.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+         }
+
+
         function getAllStudents() {
             $log.debug('getAllStudents tb');
             return StudentServices.getAllStudents(vmDual.path).then(function(data){
@@ -176,7 +231,7 @@
         }
 
         
-        function setGridVisible() {
+/*        function setGridVisible() {
             $log.debug('setGridVisible tb');
             var foundit;
             for(var j = 0, lenu = vmDual.gcolumns.length; j < lenu; j++) {
@@ -193,10 +248,11 @@
                 }
                 
             }
-            $interval(function () { vmDual.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN); }, 0);
+            //vmDual.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+            //savelist to db and refresh window
           $log.debug(vmDual.gridOptions);  
         } 
-        
+  */      
         function setGridOptions() {
             vmDual.gcolumns = [];
             $log.debug('setGridOptions col count', vmDual.listA.length);
@@ -291,7 +347,7 @@
             vmDual.selectedA=[];
             vmDual.selectedB=[];
             vmDual.toggle=0;
-            setGridVisible();
+        //    setGridVisible();
 
         }
   

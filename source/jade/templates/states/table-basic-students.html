@@ -7,8 +7,8 @@
         <div class="portlet-header">
           <div class="row">
             <div class="caption">Student List</div>
-            <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config-student-fields" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
-          </div>
+        <!--    <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config-student-fields" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
+    -->      </div>
         </div>
         <div class="portlet-body">
           <div class="table-tools">
@@ -70,6 +70,9 @@
     		<div class="well well-lg">
                 <div class="container-fluid"> 
                     <div class="container" >
+                          <button class="btn btn-primary" type="button" ng-click="vmDual.submit()">Save Preferences</button>
+                          <button class="btn btn-warning" type="button" ng-click="vmDual.colreset()">Reset Default</button>
+
                       <div class="row">
                             <div class="col-md-12 text-center"><h3>Drag &amp; Drop Pick List</h3></div>
                             <div class="col-sm-4 col-sm-offset-1">
@@ -117,7 +120,7 @@
     	</div>
           <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
         </div>
-        <pre>{{vmDual.gridOptions}}</pre>
+ <!--       <pre>{{vmDual.gridOptions}}</pre> -->
       </div>
     </div>
   </div>

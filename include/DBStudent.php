@@ -421,6 +421,9 @@ class StudentDbHandler {
     public function createStudent($LastName,
                                   $FirstName,
                                   $Email ) {
+
+        error_log( print_R("createStudent entered\n", TRUE ),3, LOG);
+                                      
         $response = array();
 
 
@@ -491,7 +494,7 @@ class StudentDbHandler {
      * Fetching fields for user froerences
      */
     public function getUserPreferences($user_id, $prefkey) {
-        error_log("in getUserPreferences");
+        error_log( print_R("getUserPreferences entered\n", TRUE ),3, LOG);
         //       error_log( print_R($user_id, TRUE ));
         //       error_log( print_R(  $prefkey, TRUE));
         $stmt = $this->conn->prepare("SELECT u.id, u.prefcolumn from userpreferences u WHERE u.user_id = ? AND u.prefkey = ? order by preforder");
@@ -501,6 +504,58 @@ class StudentDbHandler {
         $stmt->close();
         //        error_log( print_R($userpreferences,TRUE));
         return $userpreferences;
+    }
+    
+ /**
+     * Replacing userpreferences
+     */
+    public function createPref($thedata,
+                               $prefkey,
+                                  $user_id) {
+        error_log( print_R("createPref entered\n", TRUE ),3, LOG);
+
+        $response = array();
+
+        //cleanout old and replace with a new set
+        $cleansql = "Delete from userpreferences where user_id = ? and prefkey = ?";
+        if ($stmt = $this->conn->prepare($cleansql) ) {
+            $stmt->bind_param("is", $user_id, $prefkey);
+            $stmt->execute();
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+        $values = array();
+        $cols = array();
+        $types = array();
+        
+        
+        $obj = json_decode($thedata, TRUE);
+        for($i=0; $i<count($obj['thedata']); $i++) {
+            error_log( print_R("loop json:\n", TRUE ),3, LOG);
+            error_log( print_R($obj['thedata'][$i]["colname"], TRUE ),3, LOG);
+            array_push($values, $user_id, $prefkey, $obj['thedata'][$i]["colname"], $i+1 );
+        }
+
+        $table = "userpreferences";
+
+        $cols = array('user_id', 'prefkey', 'prefcolumn', 'preforder');
+        $types  = explode(" ", "i s s i"); 
+
+
+        $result = bulk_insert($this->conn, $table, $cols, $values, $types);        
+
+        // Check for successful insertion
+        if ($result) {
+            return $result;
+        } else {
+            // Failed to create user
+            return NULL;
+        }
+
+        return $response;
     }
 }
 ?>

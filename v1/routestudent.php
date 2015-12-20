@@ -1,13 +1,13 @@
 <?php
 
-$app->get('/userprefcols',  function() {
-    error_log( print_R("userprefcols entered\n ", TRUE), 3, LOG);
+$app->get('/userprefcols/:prefkey',  function($prefkey) {
+    error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
 
     $response = array();
     $db = new StudentDbHandler();
 
     $userid = 1; //have to convert name to id
-    $prefkey = "allstudents";
+    //$prefkey = "allstudents";
 
     // fetching all class pays
     $result = $db->getUserPreferences($userid, $prefkey);
@@ -33,6 +33,47 @@ $app->get('/userprefcols',  function() {
     error_log( print_R("userprefcols responding\n ", TRUE), 3, LOG);
 
     echoRespnse(200, $response);
+});
+
+$app->post('/userprefcols/:prefkey', function($prefkey) use ($app) {
+    error_log( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE), 3, LOG);
+
+    $userid = 1; //have to convert name to id
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("before userprefcols post\n", TRUE ), 3, LOG);
+    error_log( print_R("prefkey: $prefkey\n", TRUE ), 3, LOG);
+
+
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $pref_rslt = $db->createPref($data,
+                                 $prefkey,
+                                 $userid
+                                );
+
+    if ($pref_rslt > 0) {
+        $response["error"] = false;
+        $response["message"] = "Preference created successfully";
+        $response["$pref_rslt"] = $pref_rslt;
+        error_log( print_R("Preference created: $pref_rslt\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after Preference result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create Preference. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
 });
 
 

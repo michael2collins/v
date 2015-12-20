@@ -29,7 +29,8 @@
             setActiveTab: setActiveTab,
             getActiveTab: getActiveTab,
             createStudent: createStudent,
-            getUserPrefCols: getUserPrefCols
+            getUserPrefCols: getUserPrefCols,
+            createUserPrefCols: createUserPrefCols
         };
         return service;
 
@@ -119,7 +120,7 @@
         }
 
         function getUserPrefCols(path) {
-            $log.debug('getUserPrefCols service entered');
+            $log.debug('getUserPrefCols service entered with path:', path);
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
                     $log.debug('getUserPrefCols success:' + path);
@@ -134,6 +135,18 @@
                     // or server returns response with an error status.
                 });
         }
+
+        function createUserPrefCols(path, thedata ) {
+                    $log.debug('createUserPrefCols data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
 
         
         function getFamily(path) {
