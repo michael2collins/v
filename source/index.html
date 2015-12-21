@@ -86,8 +86,9 @@
             <script src="vendors/lightbox/js/lightbox.min.js"></script>
             <script src="vendors/bootstrap-hover-dropdown/bootstrap-hover-dropdown.js"></script>
             <script src="vendors/metisMenu/jquery.metisMenu.js"></script>
-            <script src="vendors/slimScroll/jquery.slimscroll.js"></script>
-            <script src="vendors/jquery-cookie/jquery.cookie.js"></script>
+slimscroll for mobile hamburger menu
+-->            <script src="vendors/slimScroll/jquery.slimscroll.js"></script>
+<!--            <script src="vendors/jquery-cookie/jquery.cookie.js"></script>
 -->            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <!--x         <script src="vendors/jquery.sparkline.js"></script> -->
     <!--mlc stuff on the main graphics page -->
@@ -441,7 +442,7 @@
     <!--V JS-->
     <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"    >
 
-    </body>
+
     <div ng-controller="AppController as vm" class="default-page">
       <!--BEGIN TEMPLATE SETTING-->
   <!--    <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
@@ -450,15 +451,15 @@
       <!--END BACK TO TOP-->
       <div id="wrapper" ng-class="header.layout_menu">
         <!--BEGIN TOPBAR-->
-        <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+        <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
         <!--END TOPBAR-->
         <!--BEGIN SIDEBAR MENU-->
-        <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="loadSidebar()"></div>
+        <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
         <!--END SIDEBAR MENU-->
         <!--BEGIN PAGE WRAPPER-->
         <div id="page-wrapper" ng-class="header.animation" class="animated">
           <!--BEGIN PAGE HEADER & BREADCRUMB-->
-          <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="loadPageHeader()" class="page-header-breadcrumb"></div>
+          <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
           <!--END PAGE HEADER & BREADCRUMB-->
           <!--BEGIN CONTENT-->
           <div ng-view="" class="page-content"></div>
@@ -474,7 +475,7 @@
     </div>
     <div hide="hide" class="extra-page"></div>
 
-</html>
+
 <!--BEGIN MODAL CONFIG PORTLET-->
 <div id="modal-config" class="modal fade">
   <div class="modal-dialog">
@@ -493,4 +494,6 @@
     </div>
   </div>
 </div>
+    </body>
 <!--END MODAL CONFIG PORTLET-->
+</html>

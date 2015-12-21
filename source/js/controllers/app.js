@@ -1,6 +1,6 @@
 (function () {
     'use strict';
-
+ 
     angular
         .module('ng-admin')
  
@@ -31,6 +31,8 @@
         header_topbar:'static',
         boxed:''
     };
+    vm.loadTopbar = loadTopbar;
+    vm.loadSidebar = loadSidebar;
 
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
         console.log('routechange in app');
@@ -167,16 +169,18 @@
 
     });
 
-    vm.loadTopbar = function() {
+    function loadTopbar() {
+        console.log("loadTopbar");
         $("[data-toggle='offcanvas']").on('click', function () {
             $('#sidebar-wrapper').toggleClass('active');
             return false;
         });
         // Setting toggle in mobile view 
         $('#setting-toggle').click(function(){
+            console.log('mobile toggle');
           $('.topbar-main').toggle();
         });
-    };
+    }
 
  /*   vm.loadtempsetting = function(){
         // Template Setting 
@@ -260,7 +264,8 @@
     });
 
     
-    vm.loadSidebar = function(){
+     function loadSidebar(){
+         console.log('loadSidebar');
             //BEGIN SIDEBAR FIXED
             $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
                 "height": $(window).height() - 50,
@@ -284,6 +289,7 @@
 
             $('#menu-toggle').toggle(
                 function() {
+                console.log('menu-toggle');                    
                     if($('#wrapper').hasClass('right-sidebar')) {
                         $('body').addClass('right-side-collapsed');
                         $('.navbar-header').addClass('logo-collapsed');
@@ -354,14 +360,15 @@
                 $(this).find('i').toggleClass('icon-magnifier icon-close');
             });
             //END SIDEBAR SEARCH FORM
-        };
+        }
 
     }
 	function AppControllerNone( $scope, $routeParams){
-
+        console.log('AppControllerNone');
     }
 
 	function AppControllerMain( $scope, $routeParams){
+    console.log('AppControllerMain');
     
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
