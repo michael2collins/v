@@ -10,7 +10,7 @@
         'ui-notification',
         'lvl.directives.dragdrop',
         'toggle-switch',
-        'ngTouch',
+       // 'ngTouch', 
         'ngMessages',
         'ui.grid.pagination',
         'ui.grid.cellNav',

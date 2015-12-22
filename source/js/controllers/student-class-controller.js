@@ -144,8 +144,8 @@
         }
 
         function ageset(addition) {
-            console.log('addition');
-            console.log(addition);
+            console.log('addition', addition);
+            console.log('agecategories',vmclass.agecategories);
             vmclass.ages = '.' + addition;
             concatset();
         }
