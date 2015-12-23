@@ -30,6 +30,104 @@ $app->get('/studentclass/:id',  function($student_id) {
 });
 
 
+$app->get('/classages',  function() {
+
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getClassAges();
+    $response["error"] = false;
+    $response["agecatlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
+        } else {
+            $tmp["agecat"] = "NULL";
+        }
+        array_push($response["agecatlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in ages";
+        error_log( print_R("classages bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/classpgms',  function() {
+
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getClassPgms();
+    $response["error"] = false;
+    $response["pgmcatlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["pgmcat"] = (empty($slist["pgmcat"]) ? "NULL" : $slist["pgmcat"]);
+        } else {
+            $tmp["pgmcat"] = "NULL";
+        }
+        array_push($response["pgmcatlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in pgms";
+        error_log( print_R("classpgms bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/classcats',  function() {
+
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getClassCats();
+    $response["error"] = false;
+    $response["classcatlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
+        } else {
+            $tmp["classcat"] = "NULL";
+        }
+        array_push($response["classcatlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in cats";
+        error_log( print_R("classcats bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
 
 $app->put('/studentclass/:id',  function($student_id) use($app) {
     // check for required params

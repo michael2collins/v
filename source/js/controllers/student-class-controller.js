@@ -23,7 +23,7 @@
 
         vmclass.getStudentClass = getStudentClass;
         vmclass.updateStudentClass = updateStudentClass;
-        vmclass.initclasslist = initclasslist;
+        vmclass.activate = activate;
         vmclass.setStudentClass = setStudentClass;
 
         vmclass.categorys = '';
@@ -37,7 +37,9 @@
         vmclass.clearCatSelect = clearCatSelect;
         vmclass.clearAgeSelect = clearAgeSelect;
         vmclass.clearPgmSelect = clearPgmSelect;
-        vmclass.classcategories = '';
+        vmclass.classcategories = [];
+        vmclass.pgmcategories = [];
+        vmclass.agecategories = [];
         vmclass.picID = '';
         vmclass.studentclass = [];
         vmclass.classpictureurl = [];
@@ -60,34 +62,51 @@
         $log.debug('studentclass: ' + $routeParams.myclass);
         vmclass.studentclass.contactID = $routeParams.id;
 
-        initclasslist();
-
-        function initclasslist() {
-            //if you hit the class tab quickly, the delay below will properly set the pix.
-            //need to figure out the relationship of clicking the tab to calling an init.
-            $timeout(function () {
-                console.log('isotope init');
-                activate();
-                //          $scope.$broadcast('iso-init', {name:null, params:null});
-                //       $rootScope.$broadcast('iso-init', {name:null, params:null});
-                //            console.log(vmclass.concat);
-                //           $scope.$emit('iso-option', {filter: vmclass.concat});
-
-            }, 300);
-        }
-
+        activate();
+        
         function activate() {
-            console.log('class activate');
-
-            getStudentClassList();
+            $log.debug('class activate');
+            
+          getStudentClassList().then(function(){
+              $log.debug('getStudentClassList ready');
             getStudentClassStatuses();
+            $log.debug("listnew in activate", vmclass.xlistnew);
 
-            vmclass.classcategories = ClassServices.distinctCat();
-            vmclass.agecategories = ClassServices.distinctAge();
-            vmclass.pgmcategories = ClassServices.distinctPgm();
-            vmclass.xList = ClassServices.getAll();
+//            vmclass.xList = ClassServices.getAll();
 
-            getStudentClass();
+          }).catch(function(e){
+                $log.debug("getStudentClassList error in activate", e);
+          });
+
+            ClassServices.distinctCat().then(function(data) {
+                $log.debug('distinctCat get:', data);
+                vmclass.classcategories = data.classcatlist;
+                $log.debug("distinctCat in activate", vmclass.classcategories);
+            }).catch(function(e){
+                $log.debug("distinctCat error in activate", e);
+          });
+
+            ClassServices.distinctAge().then(function(data) {
+                $log.debug('distinctAge get:', data);
+                vmclass.agecategories = data.agecatlist;
+                $log.debug("distinctAge in activate", vmclass.agecategories);
+            }).catch(function(e){
+              $log.debug("distinctAge error", e);
+          });
+
+            ClassServices.distinctPgm().then(function(data) {
+                $log.debug('distinctPgm get:', data);
+                vmclass.pgmcategories = data.pgmcatlist;
+            $log.debug("distinctPgm in activate", vmclass.pgmcategories);
+            }).catch(function(e){
+              $log.debug("distinctPgm error", e);
+          });
+
+            getStudentClass().then(function() {
+            }).catch(function(e){
+              $log.debug("getStudentClass error", e);
+          });
+          
         }
 
         function clearSelect() {
@@ -95,37 +114,9 @@
             vmclass.pgms = '';
             vmclass.ages = '';
             concatset();
-            //   vmclass.$emit('iso-method', {name:null, params:null});
-            //         var s=angular.element('#isotopeContainer').scope();
-            //        console.log('my s');
-            //       console.log(s);
             $scope.$emit('iso-option', {
                 filter: '*'
             });
-            //$scope.$emit('iso-method', {name:'shuffle', params:null});
-            //  var filtersElem = document.querySelector('.filters-button-group');
-            //  console.log(filtersElem);
-            //  eventie.bind( filtersElem, 'click', function( event ) {
-            // only work with buttons
-            //    if ( !matchesSelector( event.target, 'button' ) ) {
-            //      return;
-            //    }
-            //           var filterValue = event.target.getAttribute('ok-sel');
-            //           console.log(filterValue);
-            //  });
-            //  var items = s.vmclass.xlistnew.studentclasslist.filter(function( obj ) {
-            //   console.log("obj classid");
-            //   console.log(obj.classid);
-            //      return +obj.classid != +0;
-            //    });
-            //    setTimeout(function(){
-            //   console.log("items");
-            //   console.log(items);
-            //   console.log(s.vmclass.xlistnew.studentclasslist);
-            //      s.$apply(s.vmclass.xlistnew.studentclasslist == items);
-            //         s.refreshIso();
-            //    });
-            //            $rootScope.$broadcast('iso-init', {name:null, params:null});
         }
 
         function clearCatSelect() {
@@ -144,62 +135,56 @@
         }
 
         function ageset(addition) {
-            console.log('addition', addition);
-            console.log('agecategories',vmclass.agecategories);
+            $log.debug('addition', addition);
+            $log.debug('agecategories',vmclass.agecategories);
             vmclass.ages = '.' + addition;
             concatset();
         }
 
         function catset(addition) {
-            console.log('addition');
-            console.log(addition);
+            $log.debug('addition');
+            $log.debug(addition);
             vmclass.categorys = '.' + addition;
             concatset();
         }
 
         function pgmset(addition) {
-            console.log('addition');
-            console.log(addition);
+            $log.debug('addition');
+            $log.debug(addition);
             vmclass.pgms = '.' + addition;
             concatset();
         }
 
         function concatset() {
             vmclass.concat = vmclass.ages + vmclass.categorys + vmclass.pgms;
-            console.log('search concat');
-            console.log(vmclass.concat);
+            $log.debug('search concat');
+            $log.debug(vmclass.concat);
         }
 
         function getStudentClass() {
             return ClassServices.getStudentClass(vmclass.path).then(function (data) {
-                $log.debug('getStudentClass returned data');
-                $log.debug(data.data);
+                $log.debug('getStudentClass returned data', data.data);
                 vmclass.studentclass = data.data;
                 if (vmclass.studentclass.class !== null) { 
                     vmclass.picID = vmclass.studentclass.classseq;
                     getStudentClassPicture();
-                    console.log('getting concat using student class');
-                    console.log('studentclass is:' + vmclass.studentclass.class);
-                    var class2, class2age = '',
-                        class2cls = '',
-                        class2pgm = '';
-    
+
+                    $log.debug('studentclass is:' + vmclass.studentclass.class);
+                    var class2 = '';
+
                     class2 = ClassServices.getclass2(vmclass.studentclass.class);
-                    class2cls = class2[0].classcat[0];
-                    class2age = class2[0].agecat[0];
-                    class2pgm = class2[0].programcat[0];
-                    // vmclass.concat= '.' + class2cls + '.' + class2age + '.' + class2pgm;
-                    vmclass.catset(class2cls);
-                    vmclass.ageset(class2age);
-                    vmclass.pgmset(class2pgm);
+                    $log.debug('studentclass class2 is:' , class2);
+                    vmclass.catset(class2[0].classcat[0]);
+                    vmclass.ageset(class2[0].agecat[0]);
+                    vmclass.pgmset(class2[0].pgmcat[0]);
                     concatset();
-                    //  $scope.$emit('iso-method', {name:null, params:null});
-                    console.log(vmclass.concat);
+
+                    $log.debug(vmclass.concat);
                     $scope.$emit('iso-option', {
                         filter: vmclass.concat
                     });
     
-                    console.log('student concat result is:' + vmclass.concat);
+                    $log.debug('student concat result is:' + vmclass.concat);
                 }
                 return vmclass.studentclass;
             });
@@ -222,7 +207,7 @@
                 $log.debug('getStudentClassList returned data');
                 $log.debug(data.data);
                 vmclass.xlistnew = data.data;
-
+                ClassServices.setxlist(vmclass.xlistnew);
                 return vmclass.xlistnew;
             });
         }

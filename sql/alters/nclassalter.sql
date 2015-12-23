@@ -156,24 +156,43 @@ CREATE TABLE IF NOT EXISTS `nclasspgm` (
 ALTER TABLE `nclasspgm`
  ADD PRIMARY KEY (`classid`,`pgmid`);
 
- delete from nclasspgm;
- insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 11, 8, 'black', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 4, 9, 'basic or leopard', 'karate',  'children');
+delete from nclasspgm;
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 2, 'adult', 'karate',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 10, 7, 'black', 'karate',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 6, 'bbt2', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 15, 'bbt2', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 15, 'bbt3', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 6, 'bbt3', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 9, 'bbt1', 'karate',  'children');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 3, 'adult', 'karate',  'adult');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 4, 'adult', 'karate',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 17, 9, 'other', 'karate',  'children or adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 3, 9, 'basic or dragon', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 1, 13, 'adult', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 2, 5, 'special', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 3, 9, 'dragon', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 3, 11, 'dragon', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 3, 13, 'dragon', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 4, 9, 'leopard', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 4, 11, 'leopard', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 4, 13, 'leopard', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 6, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 10, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 12, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 6, 15, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 7, 6, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 7, 10, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 7, 12, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 7, 15, 'bbt1', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 6, 'bbt2', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 10, 'bbt2', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 12, 'bbt2', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 8, 15, 'bbt2', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 6, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 10, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 12, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 15, 'bbt3', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 10, 7, 'black', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 11, 8, 'black', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 14, 14, 'other', 'fitness',  'both');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 15, 16, 'privates', 'karate',  'adult');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 16, 17, 'privates', 'karate',  'children');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 17, 9, 'other', 'karate',  'both');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 18, 18, 'other', 'karate',  'both');
+insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 19, 19, 'other', 'karate',  'both');
 insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 20, 21, 'other', 'wellness',  'adult');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 9, 0, 'bbt3', 'karate',  'children');
-insert into `nclasspgm` ( `classid`, `pgmid`, `pgmcat`, `classcat`, `agecat`) VALUES ( 14, 2, 'other', 'fitness',  'children or adult');
 
 
 DELETE FROM `nclass` WHERE class in ('Inactive','Injured') ;

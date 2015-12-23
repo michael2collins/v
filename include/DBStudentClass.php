@@ -30,6 +30,31 @@ class StudentClassDbHandler {
         return $slists;
     }
 
+    public function getClassAges() {
+        $stmt = $this->conn->prepare("SELECT distinct agecat FROM nclasspgm order by agecat");
+        $stmt->execute();
+        $agelist = $stmt->get_result();
+        $stmt->close();
+        return $agelist;
+    }
+
+    public function getClassPgms() {
+        $stmt = $this->conn->prepare("SELECT distinct pgmcat FROM nclasspgm order by pgmcat");
+        $stmt->execute();
+        $pgmlist = $stmt->get_result();
+        $stmt->close();
+        return $pgmlist;
+    }
+    
+    public function getClassCats() {
+        $stmt = $this->conn->prepare("SELECT distinct classcat FROM nclasspgm order by classcat");
+        $stmt->execute();
+        $catlist = $stmt->get_result();
+        $stmt->close();
+        return $catlist;
+    }
+
+
     public function getStudentClassPgmList() {
         $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat from nclass a, nclasslist b, nclasspgm c where a.id = c.classid and b.id = c.pgmid order by a.class ";
 
