@@ -13,14 +13,28 @@
         var activeTab = 'Attendance Information'; //default
         var service = {
             getAllAttendances: getAllAttendances,
+            getDOW: getDOW,
             updateAttendance: updateAttendance,
             getAttendance: getAttendance,
             createAttendance: createAttendance,
         };
         return service;
 
-        function getAllAttendances(path) {
-            $log.debug('getAllAttendances service entered');
+        function getAllAttendances(path, thedata) {
+            $log.debug('getAllAttendances service entered', path, thedata);
+            var request = $http({
+                method: "POST",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+
+        function getDOW() {
+            var path = '../v1/DOW';
+            $log.debug('getDOW service entered', path);
             var request = $http({
                 method: "get",
                 url: path,
@@ -48,7 +62,7 @@
         }
 
         function createAttendance(path, thedata ) {
-                    $log.debug('createAttendance data before post :' , thedata);
+                    $log.debug('createAttendance data before post :' , thedata.data);
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -56,7 +70,7 @@
                     //        action: "add"
                     //    },
                         data: {
-                            thedata: thedata
+                            thedata: thedata.data
                         }
                     });
                     return( request.then( handleSuccess, handleError ) );

@@ -30,13 +30,27 @@ $app->get('/Attendance/:id',  function($student_id) {
 });
 
 
-$app->get('/attendance',  function() {
+$app->post('/attendance',  function() use ($app) {
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+        
+    $fp = fopen('/var/log/apache2/attendance.json', 'a+');
+    fwrite($fp, json_encode($data));
+    fwrite($fp, "\n");
+    fclose($fp);
+
+    $thedow = $dataJsonDecode->thedata->data->thedow;
+    $thelimit = $dataJsonDecode->thedata->data->thelimit;
+    
+    error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit\n ", TRUE), 3, LOG);
 
     $response = array();
     $db = new AttendanceDbHandler();
 
     // fetch task
-    $result = $db->getAttendanceList();
+    $result = $db->getAttendanceList($thedow, $thelimit);
     $response["error"] = false;
     $response["attendancelist"] = array();
 
@@ -59,7 +73,20 @@ $app->get('/attendance',  function() {
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
             $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
         } else {
-            $tmp["attendance"] = "NULL";
+            $tmp["ID"] = "NULL";
+            $tmp["MondayOfWeek"] = "NULL";
+            $tmp["ContactId"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["day1"] = "NULL";
+            $tmp["day2"] = "NULL";
+            $tmp["day3"] = "NULL";
+            $tmp["day4"] = "NULL";
+            $tmp["day5"] = "NULL";
+            $tmp["day6"] = "NULL";
+            $tmp["day7"] = "NULL";
+            $tmp["class"] = "NULL";
+            $tmp["rank"] = "NULL";
         }
         array_push($response["attendancelist"], $tmp);
     }
@@ -75,6 +102,40 @@ $app->get('/attendance',  function() {
         echoRespnse(404, $response);
     }
 });
+
+$app->get('/DOW',  function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getDOWList();
+    $response["error"] = false;
+    $response["DOWlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["MondayOfWeek"] = (empty($slist["MondayOfWeek"]) ? "NULL" : $slist["MondayOfWeek"]);
+        } else {
+            $tmp["MondayOfWeek"] = "NULL";
+        }
+        array_push($response["DOWlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in DOW";
+        error_log( print_R("DOW bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+
 
 $app->get('/classpgms',  function() {
 

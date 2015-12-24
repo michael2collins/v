@@ -15,10 +15,11 @@ function echoRespnse($status_code, $response) {
     $app->contentType('application/json');
 
     echo json_encode($response);
-$fp = fopen('/var/log/apache2/results.json', 'a+');
-fwrite($fp, json_encode($response));
-fwrite($fp, "\n");
-fclose($fp);
+    //debug purposes
+    $fp = fopen('/var/log/apache2/results.json', 'a+');
+    fwrite($fp, json_encode($response));
+    fwrite($fp, "\n");
+    fclose($fp);
 }
 
     

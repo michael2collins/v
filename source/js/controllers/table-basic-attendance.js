@@ -16,13 +16,22 @@
 
         var vm=this;
         
-        setGridOptions();
         vm.getAttendance = getAttendance;
+        vm.setLimit = setLimit;
+        vm.setClass = setClass;
+        vm.setDOW = setDOW;
+        vm.refresh = refresh;
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gcolumns = [];
         vm.gridOptions = {};
-
-        vm.path = '../v1/attendance/';
+        vm.DOWlist = [];
+        vm.limit = 100;
+        vm.limits = [10,20,50,100,200,500];
+        vm.dowChoice ='';
+        vm.theclass ='';
+        vm.classes = [];
+        
+        vm.path = '../v1/attendance';
 
         vm.columns = [
                     {id:1, colname:'ID', default:'true'},
@@ -40,27 +49,66 @@
                     {id:13, colname:'rank', default:'false'},
                     ];
 
+        setGridOptions();
         activate();
 
+        function setLimit(thelimit) {
+            $log.debug('setLimit',thelimit);
+            vm.limit = thelimit;
+        }
+        function setDOW(theChoice) {
+            $log.debug('setDOW', theChoice);
+            vm.dowChoice = theChoice;
+        }
+        function setClass(aClass) {
+            $log.debug('setClass',aClass);
+            vm.theclass = aClass;
+        }
+
+        function refresh() {
+            return getAttendance().then(function() {
+                $log.debug('refreshed  view');
+            });
+        }
         
         function activate() {
-        return getAttendance().then(function() {
-            $log.debug('activated  view');
+            return getDOW().then(function() {
+                setDOW(vm.DOWlist[0].MondayOfWeek);
+                return getAttendance().then(function() {
+                    $log.debug('activated  view');
+                });
             });
         }
         
         function getAttendance() {
-            return AttendanceServices.getAllAttendances(vm.path).then(function(data){
+
+            var thedata={
+             "thedow": vm.dowChoice,
+             "thelimit": vm.limit
+            };
+            
+            return AttendanceServices.getAllAttendances(vm.path, {data: thedata}).then(function(data){
                     $log.debug('getAllAttendances returned data');
-                    $log.debug(data.data);
-                    vm.gridOptions.data = data.data.StudentHistoryList;
+                    $log.debug(data);
+                    vm.gridOptions.data = data.attendancelist;
                //     $log.debug($scope.gridOptions.data);
                     return vm.gridOptions.data;
+                });
+        }
+        
+        function getDOW() {
+            return AttendanceServices.getDOW().then(function(data){
+                    $log.debug('getDOW returned data');
+                    $log.debug(data);
+                    vm.DOWlist = data.DOWlist;
+               //     $log.debug($scope.gridOptions.data);
+                    return vm.DOWlist;
                 });
         }
 
         function setGridOptions() {
             vm.gcolumns = [];
+            $log.debug('vm.columns', vm.columns);
             $log.debug('setGridOptions col count', vm.columns.length);
             
             for (var i=0, len = vm.columns.length; i < len; i++) {

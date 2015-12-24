@@ -79,12 +79,43 @@ class AttendanceDbHandler {
         }
     }
 
+    public function getDOWList() {
+            $sql = "SELECT distinct DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek
+                FROM `nattendance` order by mondayofweek desc LIMIT 5";
 
-    public function getAttendanceList() {
-        $sql = "SELECT `ID`, `MondayOfWeek`, `ContactId`, 
-            `day1`, `day2`, `day3`, `day4`, `day5`, `day6`, `day7`, 
-            `firstname`, `lastname`, `class`, `rank` FROM `nattendance` order by alphasortkey ";
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                error_log( print_R("DOW list stmt", TRUE ));
+                error_log( print_R($stmt, TRUE ));
+                $slists = $stmt->get_result();
+                error_log( print_R("DOW list returns data", TRUE ));
+                error_log( print_R($slists, TRUE ));
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("DOW list execute failed", TRUE ));
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
 
+        } else {
+            error_log( print_R("DOW list sql failed", TRUE ));
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+    }
+
+
+    public function getAttendanceList($thedow = NULL, $thelimit) {
+        $sql = "SELECT `ID`, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, `ContactId`, "; 
+        $sql .= "`day1`, `day2`, `day3`, `day4`, `day5`, `day6`, `day7`, ";
+        $sql .= "`firstname`, `lastname`, `class`, `rank` FROM `nattendance` ";
+        if (strlen($thedow) > 0) {
+            $sql .= " where mondayofweek = '" . $thedow . "'";
+        }
+        $sql .= "   order by mondayofweek desc, alphasortkey LIMIT " . $thelimit ;
+
+        error_log( print_R("getAttendanceList sql: $sql", TRUE ));
+        
         if ($stmt = $this->conn->prepare($sql)) {
             if ($stmt->execute()) {
                 error_log( print_R("Attendance list stmt", TRUE ));
