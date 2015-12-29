@@ -11,41 +11,67 @@
         var picFile = '';
         var theAttendance = '';
         var activeTab = 'Attendance Information'; //default
+        var response;
+        var code;
         var service = {
-            getAllAttendances: getAllAttendances,
+  //          getAllAttendances: getAllAttendances,
+            refreshAttendances: refreshAttendances,
             getDOW: getDOW,
+            getSchedule: getSchedule,
             updateAttendance: updateAttendance,
-            getAttendance: getAttendance,
-            createAttendance: createAttendance,
+//            getAttendance: getAttendance,
+            createAttendance: createAttendance
         };
         return service;
-
-        function getAllAttendances(path, thedata) {
-            $log.debug('getAllAttendances service entered', path, thedata);
+/*
+        function getAllAttendances(path, configdata) {
+            $log.debug('getAllAttendances service entered');
+            $log.debug('path',path);
+            $log.debug('configdata',configdata);
+            var themethod="POST";
+            $log.debug('method',themethod);
             var request = $http({
-                method: "POST",
+                method: themethod,
                 url: path,
-                data: {
-                    thedata: thedata
-                }
+              params: {
+                        },
+              headers: {'Content-Type': 'application/json'},
+                data: configdata
             });
+            $log.debug('request', request);
+//            debugger;
+            response = null;
+            code = null;
             return( request.then( handleSuccess, handleError ) );
         }
+*/
+        function refreshAttendances(path) {
+            $log.debug('refreshAttendances service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
 
         function getDOW() {
             var path = '../v1/DOW';
             $log.debug('getDOW service entered', path);
             var request = $http({
                 method: "get",
-                url: path,
-            //    params: {
-            //        action: "get"
-            //    }
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function getSchedule(path) {
+            $log.debug('getSchedule service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
             });
             return( request.then( handleSuccess, handleError ) );
         }
 
-        function getAttendance(path) {
+/*        function getAttendance(path) {
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
                     $log.debug('getAttendance success:' + path);
@@ -60,7 +86,7 @@
                     // or server returns response with an error status.
                 });
         }
-
+*/
         function createAttendance(path, thedata ) {
                     $log.debug('createAttendance data before post :' , thedata.data);
                     var request = $http({
@@ -97,12 +123,16 @@
         // ---
         function handleError( response ) {
             $log.debug('failure:');
-
+            $log.debug(response);
+            $log.debug('status',response.status);
+            $log.debug('config',response.config);
+            //debugger;
             if (
                 ! angular.isObject( response.data ) ||
                 ! response.data.message
                 ) {
-                return( $q.reject( "An unknown error occurred." ) );
+              //  return( $q.reject( "An unknown error occurred." ) );
+              return(null);
             }
             // Otherwise, use expected error message.
             return( $q.reject( response.data.message ) );
@@ -111,7 +141,7 @@
         // from the API response payload.
         function handleSuccess( response ) {
             $log.debug(' success:');
-            $log.debug(response.data);
+            $log.debug(response);
             return( response.data );
         }
 

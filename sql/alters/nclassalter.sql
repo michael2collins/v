@@ -199,3 +199,97 @@ DELETE FROM `nclass` WHERE class in ('Inactive','Injured') ;
 UPDATE `nclasspays` SET `classseq`= null WHERE classseq = 12 ;
 UPDATE `nclasspays` SET `classseq`= null WHERE classseq = 13 ; 
 delete from nclasspgm where classid in (12,13);
+
+--
+-- Table structure for table `schedule`
+--
+
+DROP TABLE IF EXISTS `schedule`;
+CREATE TABLE IF NOT EXISTS `schedule` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `DayOfWeek` varchar(12) NOT NULL,
+  `TimeRange` varchar(20) NOT NULL,
+  `AgeRange` varchar(20) NOT NULL,
+  `Description` varchar(80) NOT NULL,
+  `TakeAttendance` varchar(12) NOT NULL,
+  `TimeStart` varchar(5) NOT NULL,
+  `TimeEnd` varchar(5) NOT NULL,
+  `sortorder` INT NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Sunday','All day','All Ages','No Scheduled Classes','No','00:01','23:59',10);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','Midnight - 3:30PM','All Ages','No Scheduled Classes','No','00:01','15:30',20);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','3:30PM - 4:00','All Ages','Advanced Training Prgm','Yes','15:30','16:00',30);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','4:00PM - 4:30','Ages 4-7','Basic Leopard','Yes','16:00','16:30',40);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','4:30PM - 4:45','Ages 4-7','Leadership','No','16:30','16:45',50);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','4:45PM - 5:30','Ages 4-7','BBT1 Leopard','Yes','16:45','17:30',60);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','5:15PM - 6:00','All Ages','White thru Green w/stripe','All Rank','17:15','18:00',70);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','5:30PM - 6:15','Ages 7-14','BBT3 - Brown','Yes','17:30','18:15',80);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','6:15PM - 6:30','Ages 7-14','Leadership','No','18:15','18:30',90);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','6:30PM - 7:30','Adult','Adult','Yes','18:30','19:30',100);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','7:30PM - 8:30','Adult','Adult Black Belt','No','19:30','20:30',110);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Monday','8:30PM - Midnight','All Ages','No Scheduled Classes','No','20:30','23:59',120);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','Midnight - 3:45PM','All Ages','No Scheduled Classes','No','00:01','15:45',130);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','3:45PM - 4:30','Ages 7-14','BBT2 - Green','Yes','15:45','16:30',140);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','4:30PM - 4:45','Ages 7-14','Leadership','No','16:30','16:45',150);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','4:45PM - 5:30','Ages 7-14','BBT1 - Purple - B/G','Yes','16:45','17:30',160);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','5:30PM - 6:15','Ages 7-14','Basic Dragon','Yes','17:30','18:15',170);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','6:00PM - 6:30','All Ages','Advanced Training Prgm','Yes','18:00','18:30',180);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','6:30PM - 7:30','Ages 13+','Cardio Kickboxing','No','18:30','19:30',190);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','6:30PM - 7:30','Adult','Tai Chi','No','18:30','19:30',200);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','7:30PM - 8:30','Adult','Wellness Class','No','19:30','20:30',210);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Tuesday','8:30PM - Midnight','All Ages','No Scheduled Classes','No','20:30','23:59',220);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','Midnight - 3:30PM','All Ages','No Scheduled Classes','No','00:01','15:30',230);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','3:30PM - 4:00','All Ages','Advanced Training Prgm','Yes','15:30','16:00',240);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','4:00PM - 4:30','Ages 4-7','Basic Leopard','Yes','16:00','16:30',250);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','4:30PM - 4:45','Ages 4-7','Leadership','No','16:30','16:45',260);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','4:45PM - 5:30','Ages 4-7','BBT1 Leopard','Yes','16:45','17:30',270);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','5:15PM - 6:00','All Ages','White thru Green w/stripe','All Rank','17:15','18:00',280);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','5:30PM - 6:15','Ages 7-14','BBT3 - Brown','Yes','17:30','18:15',290);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','6:15PM - 6:30','Ages 7-14','Leadership','No','18:15','18:30',300);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','6:30PM - 7:30','Adult','Teen Defense and Fitness','No','18:30','19:30',310);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','6:30PM - 7:30','Adult','Monthly Classes','No','18:30','19:30',320);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','7:30PM - 8:30','Adult Black Belt','Adult Black Belt','No','19:30','20:30',330);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Wednesday','8:30PM - Midnight','All Ages','No Scheduled Classes','No','20:30','23:59',340);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','Midnight - 3:30PM','All Ages','No Scheduled Classes','No','00:01','15:45',350);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','3:45PM - 4:30','Ages 7-14','BBT1 Leopard','Yes','15:45','16:30',360);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','4:30PM - 4:45','Ages 7-14','Leadership','No','16:30','16:45',370);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','4:45PM - 5:30','Ages 7-14','BBT2 - Green','Yes','16:45','17:30',380);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','5:30PM - 6:15','Ages 7-14','Basic Dragon','Yes','17:30','18:15',390);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','6:00PM - 6:30','All Ages','Advanced Training Prgm','Yes','18:00','18:30',400);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','6:30PM - 7:30','Ages 10-18','Blackbelt Jr','Yes','18:30','19:30',410);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','6:30PM - 7:30','Adult','Adult','Yes','18:30','19:30',420);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','7:30PM - 8:15','Adult','Adult Sport Karate','No','19:30','20:15',430);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Thursday','8:15PM - Midnight','All Ages','No Scheduled Classes','No','20:15','23:59',440);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Friday','Midnight - 9:30AM','All Ages','No Scheduled Classes','No','00:01','09:30',450);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Friday','9:30AM - 10:30','Adult','Master in the Morning','No','09:30','10:30',460);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Friday','4:30PM - 5:30','By Invitation','Grappling','No','16:30','17:30',470);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Friday','5:30PM - Midnight','All Ages','No Scheduled Classes','No','17:30','23:59',480);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','Midnight - 8:00AM','All Ages','No Scheduled Classes','No','00:01','08:00',490);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','8:00AM - 8:45','All Ages','Advanced Training Prgm','Yes','08:00','08:45',500);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','8:45AM - 9:00','All Ages','No Scheduled Classes','No','08:45','09:00',510);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','9:00AM - 10:00','Adult','Adult','Yes','09:00','10:00',520);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','10:05AM - 11:00','Ages 10-18','Blackbelt Jr','Yes','10:05','11:00',530);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','10:30AM - 11:10','Ages 7-14','Basic Dragon','Yes','10:30','11:10',540);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','11:00AM - 11:30','Ages 4-7','All Ranks','All Rank','11:00','11:30',550);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','11:15AM - 11:30','All Ages','Leadership','No','11:15','11:30',560);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','11:30 AM - 12:15','Ages 7-14','Purple thru Brown','All Rank','11:30','12:15',570);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','12:15PM - 1:00','All Ages','Sport Karate','No','12:15','13:00',580);
+insert into schedule (DayofWeek,TimeRange,AgeRange,Description,TakeAttendance,timestart,timeend,sortorder) values ('Saturday','1:00PM - Midnight','All Ages','No Scheduled Classes','No','13:00','23:59',590);
+
+--
+-- Table structure for table 'studentregistration'
+--
+
+DROP TABLE IF EXISTS studentregistration;
+CREATE TABLE IF NOT EXISTS studentregistration (
+  registrationid int(11) NOT NULL AUTO_INCREMENT,
+  studentid int(11) NOT NULL,
+  classid int(11) NOT NULL,
+  registrationtype varchar(20) NOT NULL,
+  PRIMARY KEY (registrationid),
+  UNIQUE KEY unique_studentregistration (studentid,classid)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+ALTER TABLE  `ranklist` ADD  `primaryKarateClass` VARCHAR( 80 ) NOT NULL ;

@@ -43,10 +43,21 @@
         })
         .config(logConfig)
         .config(routeConfig)
+        
+    .run(function($rootScope, $location, $route, $routeParams) {
+        console.log('locationpath',$location.path());
+        console.log('$routeParams',$routeParams);
 
+      $rootScope.$on('$routeChangeSuccess', function () {
+            console.log('$routeChangeSuccess');
+        console.log('routecurrent',$route.current);
+      })
+    })
+    
     // Initialize the application
     .run(['$location', function AppRun($location) {
         //  debugger; // -->> here i debug the $location object to see what angular see's as URL
+        console.log('$location setting in app');
         console.log($location);
 
 }]);
@@ -66,6 +77,7 @@ $(document).ready(function() {
 
     function routeConfig($routeProvider, $locationProvider) {
         console.log('enter routeConfig');
+        
         $routeProvider
             .when('/', {
                 templateUrl: 'templates/states/main.html',
@@ -180,7 +192,7 @@ $(document).ready(function() {
             .otherwise({
                 redirectTo: '/'
             });
-        $locationProvider.html5Mode(true);
+        $locationProvider.html5Mode(false);
         //    $locationProvider.hashPrefix('!');
     }
 })();

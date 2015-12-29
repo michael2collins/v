@@ -35,17 +35,15 @@
     vm.loadSidebar = loadSidebar;
 
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
-        console.log('routechange in app');
+        console.log('routechange in app for success');
         vm.header.animation = 'fadeInUp';
         setTimeout(function(){
             vm.header.animation = '';
         }, 100);
-        console.log('originalPath');
-        console.log(current.originalPath);
-        
+        console.log('originalPath', current.originalPath);
+
         vm.data = $.fn.Data.get(current.originalPath);
-        console.log('data1');
-        console.log( vm.data);
+        console.log('data in $routeChangeSuccess',vm.data);
 
         if(-1 == $.inArray(current.originalPath, ['/page-500', '/page-404', '/page-lock-screen', '/page-signup', '/page-signin'])){
             $("body>.default-page").show();
@@ -168,7 +166,12 @@
 
 
     });
-
+    $scope.$on('$routeChangeError', function (event, current, previous){
+        console.log('routechange in app for error');
+        console.log('originalPath');
+        console.log(current.originalPath);
+    });
+    
     function loadTopbar() {
         console.log("loadTopbar");
         $("[data-toggle='offcanvas']").on('click', function () {
@@ -542,7 +545,7 @@
         //END JQUERY ANIMATE NUMBER
 
         //BEGIN SKYCON
-        var icons = new Skycons({"color": "white"});
+/*        var icons = new Skycons({"color": "white"});
 
         icons.set("clear-day", Skycons.CLEAR_DAY);
         icons.set("clear-night", Skycons.CLEAR_NIGHT);
@@ -556,7 +559,7 @@
         icons.set("fog", Skycons.FOG);
 
         icons.play();
-        //END SKYCON
+*/        //END SKYCON
         //BEGIN LINE CHART SPLINE
         var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
         var d2_2 = [["Jan", 165],["Feb", 172],["Mar", 175],["Apr", 176],["May", 164],["Jun", 171],["Jul", 175],["Aug", 180],["Sep", 181]];

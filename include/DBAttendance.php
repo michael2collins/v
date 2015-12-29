@@ -30,6 +30,34 @@ class AttendanceDbHandler {
         return $slists;
     }
 
+    public function getClassSchedules($DOWid) {
+
+        $sql = "SELECT * FROM schedule where takeAttendance in ('All Rank','Yes') and DayOfWeek = ? order by sortorder";
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $DOWid);
+
+            if ($stmt->execute()) {
+    //            error_log( print_R("getClassSchedules  stmt", TRUE), 3, LOG);
+    //            error_log( print_R($stmt, TRUE), 3, LOG);
+                $schedulelist = $stmt->get_result();
+    //            error_log( print_R("getClassSchedules  returns data", TRUE), 3, LOG);
+                $stmt->close();
+                return $schedulelist;
+            } else {
+                error_log( print_R("getClassSchedules  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassSchedules  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+
     public function getClassAges() {
         $stmt = $this->conn->prepare("SELECT distinct agecat FROM nclasspgm order by agecat");
         $stmt->execute();
@@ -60,20 +88,20 @@ class AttendanceDbHandler {
 
         if ($stmt = $this->conn->prepare($sql)) {
             if ($stmt->execute()) {
-                error_log( print_R("Attendancepgm list stmt", TRUE ));
-                error_log( print_R($stmt, TRUE ));
+                error_log( print_R("Attendancepgm list stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
                 $slists = $stmt->get_result();
-                error_log( print_R("Attendancepgm list returns data", TRUE ));
-                error_log( print_R($slists, TRUE ));
+                error_log( print_R("Attendancepgm list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("Attendancepgm list execute failed", TRUE ));
+                error_log( print_R("Attendancepgm list execute failed", TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("Attendancepgm list sql failed", TRUE ));
+            error_log( print_R("Attendancepgm list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -85,53 +113,59 @@ class AttendanceDbHandler {
 
         if ($stmt = $this->conn->prepare($sql)) {
             if ($stmt->execute()) {
-                error_log( print_R("DOW list stmt", TRUE ));
-                error_log( print_R($stmt, TRUE ));
+                error_log( print_R("DOW list stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
                 $slists = $stmt->get_result();
-                error_log( print_R("DOW list returns data", TRUE ));
-                error_log( print_R($slists, TRUE ));
+                error_log( print_R("DOW list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("DOW list execute failed", TRUE ));
+                error_log( print_R("DOW list execute failed", TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("DOW list sql failed", TRUE ));
+            error_log( print_R("DOW list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
     }
 
 
-    public function getAttendanceList($thedow = NULL, $thelimit) {
+    public function getAttendanceList($thedow = NULL, $thelimit, $theclass = NULL) {
+        error_log( print_R("getAttendanceList entered", TRUE), 3, LOG);
+    error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+
         $sql = "SELECT `ID`, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, `ContactId`, "; 
         $sql .= "`day1`, `day2`, `day3`, `day4`, `day5`, `day6`, `day7`, ";
-        $sql .= "`firstname`, `lastname`, `class`, `rank` FROM `nattendance` ";
-        if (strlen($thedow) > 0) {
-            $sql .= " where mondayofweek = '" . $thedow . "'";
+        $sql .= "`firstname`, `lastname`, `class`, `rank` FROM `nattendance` where (1 = 1) ";
+        if (strlen($thedow) > 0 && $thedow != 'All') {
+            $sql .= " and mondayofweek = '" . $thedow . "'";
+        } 
+        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
+            $sql .= " and class = '" . $theclass . "'";
         }
         $sql .= "   order by mondayofweek desc, alphasortkey LIMIT " . $thelimit ;
 
-        error_log( print_R("getAttendanceList sql: $sql", TRUE ));
+        error_log( print_R("getAttendanceList sql: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
             if ($stmt->execute()) {
-                error_log( print_R("Attendance list stmt", TRUE ));
-                error_log( print_R($stmt, TRUE ));
+                error_log( print_R("Attendance list stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
                 $slists = $stmt->get_result();
-                error_log( print_R("Attendance list returns data", TRUE ));
-                error_log( print_R($slists, TRUE ));
+                error_log( print_R("Attendance list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("Attendance list execute failed", TRUE ));
+                error_log( print_R("Attendance list execute failed", TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("Attendance list sql failed", TRUE ));
+            error_log( print_R("Attendance list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -146,25 +180,25 @@ class AttendanceDbHandler {
 
         if ($stmt = $this->conn->prepare($sql) ) {
             if ($stmt->execute() ) {
-                error_log( print_R("Attendancepay list stmt", TRUE ));
-                error_log( print_R($sql, TRUE ));
+                error_log( print_R("Attendancepay list stmt", TRUE), 3, LOG);
+                error_log( print_R($sql, TRUE), 3, LOG);
                 $slists = $stmt->get_result();
 
                 if (empty($slists)) {
                     return array();
                 }
               //  $row_cnt = $slists->num_rows;
-              //  error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
+              //  error_log( print_R("route Result set has $row_cnt rows.", TRUE), 3, LOG);
                 $stmt->close();
                 return $slists;
 
             } else {
-                error_log( print_R("Attendance list execute failed", TRUE ));
+                error_log( print_R("Attendance list execute failed", TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("Attendancepay list sql failed", TRUE ));
+            error_log( print_R("Attendancepay list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -178,20 +212,20 @@ class AttendanceDbHandler {
             $stmt->bind_param("i", $picID);
 
             if ($stmt->execute()) {
-                error_log( print_R("getAttendancePicture  stmt", TRUE ));
-                error_log( print_R($stmt, TRUE ));
+                error_log( print_R("getAttendancePicture  stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
                 $piclist = $stmt->get_result();
-                error_log( print_R("getAttendancePicture  returns data", TRUE ));
-                error_log( print_R($piclist, TRUE ));
+                error_log( print_R("getAttendancePicture  returns data", TRUE), 3, LOG);
+                error_log( print_R($piclist, TRUE), 3, LOG);
                 $stmt->close();
                 return $piclist;
             } else {
-                error_log( print_R("getAttendancePicture  execute failed", TRUE ));
+                error_log( print_R("getAttendancePicture  execute failed", TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getAttendancePicture  sql failed", TRUE ));
+            error_log( print_R("getAttendancePicture  sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -202,8 +236,8 @@ class AttendanceDbHandler {
      * @param String $student_id id of the student
      */
     public function getClassStudent($student_id) {
-        error_log( print_R("get class student for id", TRUE ));
-        error_log( print_R($student_id, TRUE ));
+        error_log( print_R("get class student for id", TRUE), 3, LOG);
+        error_log( print_R($student_id, TRUE), 3, LOG);
         $stmt = $this->conn->prepare("SELECT
                    t.ID,
                     t.contactid,
@@ -216,7 +250,7 @@ class AttendanceDbHandler {
                     t.Attendancestatus
                    from nclasspays t, nclass c, nclasslist p WHERE t.classseq = c.id and t.pgmseq = p.id and t.contactid = ? ");
         $stmt->bind_param("i", $student_id);
-        error_log( print_R("get class student", TRUE ));
+        error_log( print_R("get class student", TRUE), 3, LOG);
         if ($stmt->execute()) {
             $res = array();
             $stmt->bind_result(
@@ -242,10 +276,10 @@ class AttendanceDbHandler {
             $res["pgmseq"] = $sc_pgmseq;
             $res["Attendancestatus"] = $sc_Attendancestatus;
             $stmt->close();
-            error_log( print_R($res, TRUE ));
+            error_log( print_R($res, TRUE), 3, LOG);
             return $res;
         } else {
-            error_log( print_R("get class student failed", TRUE ));
+            error_log( print_R("get class student failed", TRUE), 3, LOG);
             return NULL;
         }
     }
@@ -278,18 +312,18 @@ class AttendanceDbHandler {
 
         $sql .= " where contactID = ? ";
 
-        error_log( print_R($sql, TRUE ));
-        error_log( print_R($sc_ContactId, TRUE ));
-        //    error_log( print_R($sc_ClassId, TRUE ));
-        error_log( print_R($sc_classPayName, TRUE ));
-        //    error_log( print_R($sc_Class, TRUE ));
-        error_log( print_R($sc_isTestFeeWaved, TRUE ));
-        error_log( print_R($sc_classseq, TRUE ));
-        error_log( print_R($sc_pgmseq, TRUE ));
-        error_log( print_R($sc_Attendancestatus, TRUE ));
+        error_log( print_R($sql, TRUE), 3, LOG);
+        error_log( print_R($sc_ContactId, TRUE), 3, LOG);
+        //    error_log( print_R($sc_ClassId, TRUE), 3, LOG);
+        error_log( print_R($sc_classPayName, TRUE), 3, LOG);
+        //    error_log( print_R($sc_Class, TRUE), 3, LOG);
+        error_log( print_R($sc_isTestFeeWaved, TRUE), 3, LOG);
+        error_log( print_R($sc_classseq, TRUE), 3, LOG);
+        error_log( print_R($sc_pgmseq, TRUE), 3, LOG);
+        error_log( print_R($sc_Attendancestatus, TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class status update prepared", TRUE ));
+            error_log( print_R("student class status update prepared", TRUE), 3, LOG);
             $stmt->bind_param("siiisi",
                               //      $sc_ClassId    ,
                               $sc_classPayName    ,
@@ -300,16 +334,16 @@ class AttendanceDbHandler {
                               $sc_Attendancestatus,
                               $sc_ContactId
                              );
-            error_log( print_R("student class status update bind", TRUE ));
+            error_log( print_R("student class status update bind", TRUE), 3, LOG);
             $stmt->execute();
-            error_log( print_R("student class status update execute", TRUE ));
+            error_log( print_R("student class status update execute", TRUE), 3, LOG);
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("student class status update done", TRUE ));
+            error_log( print_R("student class status update done", TRUE), 3, LOG);
 
         } else {
-            error_log( print_R("student class status update failed", TRUE ));
-            error_log( print_R($this->conn->error, TRUE ));
+            error_log( print_R("student class status update failed", TRUE), 3, LOG);
+            error_log( print_R($this->conn->error, TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
         }
 
@@ -329,26 +363,26 @@ class AttendanceDbHandler {
 
         $sql .= " where contactID = ? ";
 
-        error_log( print_R($sql, TRUE ));
-        error_log( print_R($sc_ContactId, TRUE ));
-        error_log( print_R($sc_classPayName, TRUE ));
+        error_log( print_R($sql, TRUE), 3, LOG);
+        error_log( print_R($sc_ContactId, TRUE), 3, LOG);
+        error_log( print_R($sc_classPayName, TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class pay set prepared", TRUE ));
+            error_log( print_R("student class pay set prepared", TRUE), 3, LOG);
             $stmt->bind_param("si",
                               $sc_classPayName,
                               $sc_ContactId
                              );
-            error_log( print_R("student class pay set bind", TRUE ));
+            error_log( print_R("student class pay set bind", TRUE), 3, LOG);
             $stmt->execute();
-            error_log( print_R("student class pay set execute", TRUE ));
+            error_log( print_R("student class pay set execute", TRUE), 3, LOG);
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("student class pay set done", TRUE ));
+            error_log( print_R("student class pay set done", TRUE), 3, LOG);
 
         } else {
-            error_log( print_R("student class pay update failed", TRUE ));
-            error_log( print_R($this->conn->error, TRUE ));
+            error_log( print_R("student class pay update failed", TRUE), 3, LOG);
+            error_log( print_R($this->conn->error, TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
         }
 
@@ -370,28 +404,28 @@ class AttendanceDbHandler {
 
         $sql .= " where contactID = ? ";
 
-        error_log( print_R($sql, TRUE ));
-        error_log( print_R($sc_ContactId, TRUE ));
-        error_log( print_R($sc_classseq, TRUE ));
-        error_log( print_R($sc_pgmseq, TRUE ));
+        error_log( print_R($sql, TRUE), 3, LOG);
+        error_log( print_R($sc_ContactId, TRUE), 3, LOG);
+        error_log( print_R($sc_classseq, TRUE), 3, LOG);
+        error_log( print_R($sc_pgmseq, TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class status set prepared", TRUE ));
+            error_log( print_R("student class status set prepared", TRUE), 3, LOG);
             $stmt->bind_param("iii",
                               $sc_classseq,
                               $sc_pgmseq,
                               $sc_ContactId
                              );
-            error_log( print_R("student class status set bind", TRUE ));
+            error_log( print_R("student class status set bind", TRUE), 3, LOG);
             $stmt->execute();
-            error_log( print_R("student class status set execute", TRUE ));
+            error_log( print_R("student class status set execute", TRUE), 3, LOG);
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("student class status set done", TRUE ));
+            error_log( print_R("student class status set done", TRUE), 3, LOG);
 
         } else {
-            error_log( print_R("student class status update failed", TRUE ));
-            error_log( print_R($this->conn->error, TRUE ));
+            error_log( print_R("student class status update failed", TRUE), 3, LOG);
+            error_log( print_R($this->conn->error, TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
         }
 

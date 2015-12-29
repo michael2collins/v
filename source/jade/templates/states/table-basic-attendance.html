@@ -5,47 +5,88 @@
       <div class="panel panel-blue">
         <div class="panel-heading">Attendance</div>
         <div class="panel-body pan">
-          <form action="" novalidate name="viewattendance" class="form-horizontal">
-            <div class="form-body pal">
-              <h3 class="block-heading">Attendance List</h3>
               <div class="row">
                 <div class="col-md-4">
                   <div  class="form-group">
-                    <label for="inputclass" class="control-label">Class</label>
+<!--                  <pre>now{{vm.nowChoice}} select{{vm.classes[vm.nowChoice].Description}} theclass:{{vm.theclass}}</pre>
+-->                    <label for="inputclass" class="control-label attendance">Class</label>
                     <div class="input-icon right">
-                      <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.setClass(vm.theclass)"  class="form-control">
-                        <option ng-repeat="g in vm.classes" ng-selected="{{g==vm.theclass}}" placeholder="Pick Class" value="{{g}}">{{g}}</option>
+                      <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.setClass(vm.theclass)"  class="form-control attendance">
+                        <option>All</option>
+                        <option ng-repeat="g in vm.classes" ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  value="{{g.Description}}">{{g.Description}} {{g.TimeRange}}</option>
                       </select>
+<!--                      <p ng-repeat="g in vm.classes">g: {{g}} ch: {{vm.classes[vm.nowChoice]}} isequal: {{g == vm.classes[vm.nowChoice] && 'selected' || 'not' }}</p>
+-->                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+    <!--              <pre>DOWchoice:{{vm.dowChoice}}</pre>
+-->                    <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
+                    <div class="input-icon right">
+                      <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice)" class="form-control attendance">
+                        <option>All</option>
+                        <option ng-repeat="iter in vm.DOWlist" ng-selected="iter.MondayOfWeek === vm.dowChoice" 
+                             value="{{iter.MondayOfWeek}}">{{iter.MondayOfWeek}}</option>
+                      </select>
+<!--                      <p ng-repeat="iter in vm.DOWlist">iter: {{iter.MondayOfWeek}} ch: {{vm.dowChoice}} isequal: {{iter.MondayOfWeek === vm.dowChoice && 'selected' || 'not' }}</p>
+-->                      
                     </div>
                   </div>
                 </div>
                 <div class="col-md-4">
                   <div class="form-group">
-                    <label for="inputDOW" class="control-label">Day Of Week </label>
+<!--                  <pre>limit:{{vm.limit}}</pre>
+-->                    <label for="inputlimit" class="control-label attendance">Limit</label>
                     <div class="input-icon right">
-                      <select id="inputDOW" type="text" name="DOW" ng-model="vm.DOWchoice" ng-change="vm.setDOW(vm.DOWchoice)" class="form-control">
-                        <option ng-repeat="iter in vm.DOWlist" ng-selected="{{iter.MondayOfWeek==vm.DOWchoice}}" 
-                            placeholder="Pick Day" value="{{iter.MondayOfWeek}}">{{iter.MondayOfWeek}}</option>
+                      <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit)" class="form-control attendance">
+                        <option ng-repeat="lim in vm.limits" ng-selected="lim == vm.limit"  
+                            value="{{lim}}">{{lim}}</option>
                       </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-                  <div class="form-group">
-                    <label for="inputlimit" class="control-label">Limit</label>
-                    <div class="input-icon right">
-                      <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit)" class="form-control">
-                        <option ng-repeat="g in vm.limits" ng-selected="{{g==vm.limit}}" placeholder="Pick Limit" value="{{g}}">{{g}}</option>
-                      </select>
-                    </div>
+<!--                      <p ng-repeat="lim in vm.limits">iter: {{lim}} ch: {{lim}} isequal: {{lim == vm.limit && 'selected' || 'not' }}</p>
+-->                    </div>
                   </div>
                 </div>
               </div>
               <div class="row">
-                <button ng-click="vm.refresh()" class="btn btn-blue btn-default">Refresh List</button>
+                <button ng-click="vm.requery()" class="btn btn-blue btn-default attendance">Refresh List</button>
               </div>
-              <div class="row">
-                  <div ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
+
+          <form action="" novalidate name="viewattendance" class="form-horizontal">
+            <div class="form-body pal">
+              <h3 class="block-heading">Attendance List</h3>
+              <div class="row" >
+<!--
+<div ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="grid">
+<div class="grid-msg-overlay" ng-hide="!vm.loading">
+          <div class="msg">
+            <span>
+              Loading Data...
+              <i class="fa fa-spinner fa-spin"></i>
+            </span>
+          </div>
+        </div>
+        <div class="grid-msg-overlay" ng-hide="vm.loading || vm.gridOptions.data.length">
+          <div class="msg">
+            <span>No Data</span>
+          </div>
+        </div>
+</div>
+-->             <div class="col-lg-12" ng-repeat="student in vm.data.attendancelist">
+                    <div class="col-md-2 attendance">{{student.MondayOfWeek}}</div>
+                    <div class="col-md-2 attendance">{{student.firstname}}</div>
+                    <div class="col-md-2 attendance">{{student.lastname}}</div>
+                    <div class="col-md-2 attendance">{{student.rank}}</div>
+                    <div class="col-md-2 attendance">{{student.class}}</div>
+                    <div class="col-md-2 attendance">{{vm.tday}} 
+                    {{vm.tday == 'day1' && student.day1 || 
+                      vm.tday == 'day2' && student.day2 || 
+                      vm.tday == 'day3' && student.day3 || 
+                      vm.tday == 'day4' && student.day4 || 
+                      vm.tday == 'day5' && student.day5 || 
+                      vm.tday == 'day6' && student.day6 || 
+                                student.day7}}</div>
+                </div>
               </div>
 
             </div>

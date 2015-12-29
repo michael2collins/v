@@ -8,48 +8,55 @@
     AttendanceTableBasicController.$inject = [
     '$routeParams',
     '$log',
-    'AttendanceServices'
+    'AttendanceServices',
+    '$location',
+    '$window',
+    '$q'
     ];
 
-    function AttendanceTableBasicController($routeParams, $log, AttendanceServices) {
+    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, $location, $window, $q) {
         /* jshint validthis: true */
 
         var vm=this;
         
-        vm.getAttendance = getAttendance;
+        vm.refreshtheAttendance = refreshtheAttendance;
         vm.setLimit = setLimit;
         vm.setClass = setClass;
         vm.setDOW = setDOW;
-        vm.refresh = refresh;
-        vm.highlightFilteredHeader = highlightFilteredHeader;
-        vm.gcolumns = [];
-        vm.gridOptions = {};
+        vm.requery = requery;
         vm.DOWlist = [];
-        vm.limit = 100;
+        vm.limit = 0;
         vm.limits = [10,20,50,100,200,500];
         vm.dowChoice ='';
         vm.theclass ='';
+        vm.data = [];
         vm.classes = [];
+
+        var d = new Date();
+        var weekday = new Array(7);
+        weekday[0]=  "Sunday";
+        weekday[1] = "Monday";
+        weekday[2] = "Tuesday";
+        weekday[3] = "Wednesday";
+        weekday[4] = "Thursday";
+        weekday[5] = "Friday";
+        weekday[6] = "Saturday";
+
+        var tdays = new Array(7);
+        tdays[0]=  "day1";
+        tdays[1] = "day2";
+        tdays[2] = "day3";
+        tdays[3] = "day4";
+        tdays[4] = "day5";
+        tdays[5] = "day6";
+        tdays[6] = "day7";
+
+        vm.todayDOW = weekday[d.getDay()];
+        vm.tday = tdays[d.getDay()];
+        vm.nowChoice = 0;
+        vm.loading = true;
         
-        vm.path = '../v1/attendance';
 
-        vm.columns = [
-                    {id:1, colname:'ID', default:'true'},
-                    {id:2, colname:'firstname', default:'true'},
-                    {id:3, colname:'lastname', default:'true'},
-                    {id:4, colname:'MondayOfWeek', default:'true'},
-                    {id:5 , colname:'day1', default:'false'},
-                    {id:6 , colname:'day2', default:'false'},
-                    {id:7 , colname:'day3', default:'true'},
-                    {id:8 , colname:'day4', default:'false'},
-                    {id:9 , colname:'day5', default:'false'},
-                    {id:10, colname:'day6', default:'false'},
-                    {id:11 , colname:'day7', default:'false'},
-                    {id:12, colname:'class', default:'false'},
-                    {id:13, colname:'rank', default:'false'},
-                    ];
-
-        setGridOptions();
         activate();
 
         function setLimit(thelimit) {
@@ -57,104 +64,127 @@
             vm.limit = thelimit;
         }
         function setDOW(theChoice) {
-            $log.debug('setDOW', theChoice);
             vm.dowChoice = theChoice;
+            $log.debug('setDOW', vm.dowChoice);
         }
         function setClass(aClass) {
             $log.debug('setClass',aClass);
             vm.theclass = aClass;
         }
 
-        function refresh() {
-            return getAttendance().then(function() {
-                $log.debug('refreshed  view');
-            });
+        function requery() {
+            $log.debug('requery entered');
+            refreshtheAttendance();
         }
         
         function activate() {
-            return getDOW().then(function() {
-                setDOW(vm.DOWlist[0].MondayOfWeek);
-                return getAttendance().then(function() {
-                    $log.debug('activated  view');
-                });
+            $q.all([
+                    getDOW().then(function() {
+                       setDOW(vm.DOWlist[0].MondayOfWeek);
+                       setLimit(100);
+                   }),
+                    getSchedule().then(function() {
+                        $log.debug('nowChoice',vm.nowChoice,'classes',vm.classes);
+                        
+                       setClass(vm.classes[vm.nowChoice].Description);
+                        $log.debug('setClass', vm.theclass);
+                     })
+                ])
+                .then(function() {
+                     return refreshtheAttendance().then(function(zdata) {
+                         $log.debug('refreshtheAttendance returned', zdata);
+                     });
             });
         }
         
-        function getAttendance() {
 
-            var thedata={
-             "thedow": vm.dowChoice,
-             "thelimit": vm.limit
-            };
+        function refreshtheAttendance() {
+            $log.debug('refreshtheAttendance entered');
+            var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
+            $log.debug('pclass:', pclass);
             
-            return AttendanceServices.getAllAttendances(vm.path, {data: thedata}).then(function(data){
-                    $log.debug('getAllAttendances returned data');
+            var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass);
+            //var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit );
+
+            $log.debug('refreshtheAttendance path:', refreshpath);
+            
+             return AttendanceServices.refreshAttendances(refreshpath).then(function(data){
+                    $log.debug('refreshAttendances returned data');
                     $log.debug(data);
-                    vm.gridOptions.data = data.attendancelist;
-               //     $log.debug($scope.gridOptions.data);
-                    return vm.gridOptions.data;
-                });
+                    vm.data = data; 
+                    return vm.data;
+                },
+                function (error) {
+                    console.log('Caught an error:', error); 
+                          $log.debug('set no data route');
+                    //        $location.url('/v/#/table-basic-attendance');
+               //            var url = '#/table-basic-attendance';
+                //           $window.location.href = url;
+                    vm.data = [];
+                    return error;
+                }).
+                finally(function () { 
+                    vm.loading = false; 
+                    vm.loadAttempted = true;
+                }
+                );
+
         }
+
         
         function getDOW() {
             return AttendanceServices.getDOW().then(function(data){
                     $log.debug('getDOW returned data');
                     $log.debug(data);
                     vm.DOWlist = data.DOWlist;
-               //     $log.debug($scope.gridOptions.data);
                     return vm.DOWlist;
                 });
         }
 
-        function setGridOptions() {
-            vm.gcolumns = [];
-            $log.debug('vm.columns', vm.columns);
-            $log.debug('setGridOptions col count', vm.columns.length);
-            
-            for (var i=0, len = vm.columns.length; i < len; i++) {
-         //       $log.debug('colset',vm.columns[i].colname);
-                if (vm.columns[i].colname == 'ID') {
-                    continue; //skip as we will add it at the end 
-                }
-                var colstruct = {field: vm.columns[i].colname, 
-                                    headerCellClass: highlightFilteredHeader,
-                                    enableCellEdit: false };
-                vm.gcolumns.push(colstruct);
-            }
-            var collast = {name: 'ID',
-                    displayName: 'Edit',
-                    enableFiltering: false,
-                    enableSorting: false,
-                    enableHiding: false,
-                    enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/form-layouts-editattendance/id/{{COL_FIELD}}" >Edit</button></span></div>'
-                };
-            vm.gcolumns.push(collast);
-            $log.debug('gcolumns', vm.gcolumns);
+        function getSchedule() {
+            var path='../v1/schedule/' + vm.todayDOW;
+            var d = new Date();
+            var y = d.getFullYear();
+            var h = d.getHours();
+            var mm = d.getMinutes();
 
-                    vm.gridOptions = {
-                    enableFiltering: true,
-                    paginationPageSizes: [25, 50, 75],
-                    paginationPageSize: 25,
-                    columnDefs: vm.gcolumns,
-                    onRegisterApi: function(gridApi) {
-                        $log.debug('onRegisterApi', gridApi);
-                         vm.gridApi = gridApi;
-                        }
-                    };
-
-     //       vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-            $log.debug('gridOptions', vm.gridOptions);
+            return AttendanceServices.getSchedule(path).then(function(data){
+                    vm.classes=[];
+                    $log.debug('getSchedule returned data');
+                    $log.debug(data);
+                    vm.Schedulelist = data.Schedulelist;
+                    for (var i=0; i < vm.Schedulelist.length; i++) {
+                       console.log('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
+                       console.log('TimeRange',vm.Schedulelist[i].TimeRange);
+                       console.log('timestart',vm.Schedulelist[i].TimeStart);
+                       console.log('timeend',vm.Schedulelist[i].TimeEnd);
+                       var start = vm.Schedulelist[i].TimeStart.split(":");
+                       var starth = start[0];
+                       var startmm = start[1];
+                       var end = vm.Schedulelist[i].TimeEnd.split(":");
+                       console.log('end',end);
+                       var endh = end[0];
+                       var endmm = end[1];
+var d1=new Date(parseInt(d.getFullYear(),10),(parseInt(d.getMonth(),10)),parseInt(d.getDate(),10),parseInt(starth,10),parseInt(startmm,10),parseInt(d.getSeconds(),10));
+var d2=new Date(parseInt(d.getFullYear(),10),(parseInt(d.getMonth(),10)),parseInt(d.getDate(),10),parseInt(endh,10),parseInt(endmm,10),parseInt(d.getSeconds(),10));
+console.log('startdate',d1);
+console.log('enddate',d2);
+var startdate=d1.valueOf();
+var enddate=d2.valueOf();                       
+                       //making start inclusive and end not
+                       if (d<enddate && d>=startdate) {
+                           vm.nowChoice = i; //note there may be nmultiples and this will pick the last
+                           $log.debug('nowChoice',vm.nowChoice);
+                       }
+                       vm.classes.push(vm.Schedulelist[i] );
+                    }
+                    
+                    return vm.classes;
+                });
         }
 
 
-        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
-            if (col.filters[0].term) {
-                return 'header-filtered';
-            } else {
-                return '';
-            }
-        }
+
 
     }
 

@@ -30,27 +30,33 @@ $app->get('/Attendance/:id',  function($student_id) {
 });
 
 
-$app->post('/attendance',  function() use ($app) {
+$app->get('/attendance',  function() use ($app) {
 
-    // reading post params
-        $data               = file_get_contents("php://input");
-        $dataJsonDecode     = json_decode($data);
-        
-    $fp = fopen('/var/log/apache2/attendance.json', 'a+');
-    fwrite($fp, json_encode($data));
-    fwrite($fp, "\n");
-    fclose($fp);
+    $allGetVars = $app->request->get();
+    error_log( print_R("attendance entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
 
-    $thedow = $dataJsonDecode->thedata->data->thedow;
-    $thelimit = $dataJsonDecode->thedata->data->thelimit;
+    $thedow = '';
+    $thelimit = '';
+    $theclass = '';
     
-    error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit\n ", TRUE), 3, LOG);
+    if(array_key_exists('thedow', $allGetVars)){
+        $thedow = $allGetVars['thedow'];
+    }
+    if(array_key_exists('thelimit', $allGetVars)){
+        $thelimit = $allGetVars['thelimit'];
+    }
+    if(array_key_exists('theclass', $allGetVars)){
+        $theclass = $allGetVars['theclass'];
+    }
+
+    error_log( print_R("attendance params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
 
     $response = array();
     $db = new AttendanceDbHandler();
 
     // fetch task
-    $result = $db->getAttendanceList($thedow, $thelimit);
+    $result = $db->getAttendanceList($thedow, $thelimit, $theclass);
     $response["error"] = false;
     $response["attendancelist"] = array();
 
@@ -88,20 +94,31 @@ $app->post('/attendance',  function() use ($app) {
             $tmp["class"] = "NULL";
             $tmp["rank"] = "NULL";
         }
+//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
+//        error_log( print_R($tmp, TRUE), 3, LOG);
         array_push($response["attendancelist"], $tmp);
     }
-    $row_cnt = $result->num_rows;
+    $row_cnt = count($response["attendancelist"]);
+    error_log( print_R("attendance cnt: $row_cnt\n ", TRUE), 3, LOG);
 
     if ($row_cnt > 0) {
         $response["error"] = false;
+        error_log( print_R("attendance fine with $row_cnt\n ", TRUE), 3, LOG);
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
         $response["message"] = "error in attendance";
         error_log( print_R("attendance bad\n ", TRUE), 3, LOG);
+        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
+        error_log( print_R("attendance error\n ", TRUE), 3, LOG);
+        error_log( print_R($response, TRUE), 3, LOG);
+        
+//note need to handle 404 data notfound
         echoRespnse(404, $response);
+//        echoRespnse(200, $response);
     }
 });
+
 
 $app->get('/DOW',  function() {
 
@@ -132,6 +149,49 @@ $app->get('/DOW',  function() {
         $response["error"] = true;
         $response["message"] = "error in DOW";
         error_log( print_R("DOW bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/schedule/:DOW',  function($DOWid) {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClassSchedules($DOWid);
+    $response["error"] = false;
+    $response["Schedulelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["DayOfWeek"] = (empty($slist["DayOfWeek"]) ? "NULL" : $slist["DayOfWeek"]);
+            $tmp["TimeRange"] = (empty($slist["TimeRange"]) ? "NULL" : $slist["TimeRange"]);
+            $tmp["AgeRange"] = (empty($slist["AgeRange"]) ? "NULL" : $slist["AgeRange"]);
+            $tmp["Description"] = (empty($slist["Description"]) ? "NULL" : $slist["Description"]);
+            $tmp["TimeStart"] = (empty($slist["TimeStart"]) ? "NULL" : $slist["TimeStart"]);
+            $tmp["TimeEnd"] = (empty($slist["TimeEnd"]) ? "NULL" : $slist["TimeEnd"]);
+        } else {
+            $tmp["DayOfWeek"] = "NULL";
+            $tmp["TimeRange"] = "NULL";
+            $tmp["AgeRange"] = "NULL";
+            $tmp["Description"] = "NULL";
+            $tmp["TimeStart"] = "NULL";
+            $tmp["TimeEnd"] = "NULL";
+        }
+        array_push($response["Schedulelist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Schedulelist";
+        error_log( print_R("Schedulelist bad\n ", TRUE), 3, LOG);
         echoRespnse(404, $response);
     }
 });
