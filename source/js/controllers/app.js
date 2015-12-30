@@ -393,6 +393,7 @@
         });
         //END TODOS LIST
 
+/* JVECTORMAP exception after tab dispkay
         //BEGIN JQUERY JVECTORMAP
         $('.widget-weather').css('height','300px');
         $('#world-map').css('width',$('.col-lg-6').width());
@@ -437,7 +438,8 @@
             $('#world-map').css('height','300px');
         });
         //END JQUERY JVECTORMAP
-
+*/
+/* don't know we'd use this
         //BEGIN JQUERY ANIMATE NUMBER
         $({value: 0}).animate({value: $('.tp-chart input').attr("rel")}, {
             duration: 5000,
@@ -543,7 +545,7 @@
             numberStep: comma_separator_number_step
         }, 5000);
         //END JQUERY ANIMATE NUMBER
-
+*/
         //BEGIN SKYCON
 /*        var icons = new Skycons({"color": "white"});
 
@@ -560,6 +562,7 @@
 
         icons.play();
 */        //END SKYCON
+
         //BEGIN LINE CHART SPLINE
         var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
         var d2_2 = [["Jan", 165],["Feb", 172],["Mar", 175],["Apr", 176],["May", 164],["Jun", 171],["Jul", 175],["Aug", 180],["Sep", 181]];
@@ -612,7 +615,7 @@
             shadowSize: 0
         });
         //END LINE CHART SPLINE
-
+        
         //BEGIN CHART TRAFFIC SOURCES
         var d6_1 = [39];
         var d6_2 = [41];
@@ -778,6 +781,7 @@
         });
         //END AREA CHART SPLINE
 
+/*
         //BEGIN JQUERY ANIMATE NUMBER
         $('#revenue-number').animateNumber({
             number: 3579.95,
@@ -796,7 +800,7 @@
             numberStep: comma_separator_number_step
         }, 5000);
         //END JQUERY ANIMATE number
-
+*/
         //BEGIN CALENDAR
         $("#my-calendar").zabuto_calendar({
             language: "en"

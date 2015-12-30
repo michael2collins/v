@@ -292,4 +292,133 @@ CREATE TABLE IF NOT EXISTS studentregistration (
   UNIQUE KEY unique_studentregistration (studentid,classid)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
-ALTER TABLE  `ranklist` ADD  `primaryKarateClass` VARCHAR( 80 ) NOT NULL ;
+
+ALTER TABLE `nclass`
+  DROP `mondayInst`,
+  DROP `tuesdayInst`,
+  DROP `wednesdayInst`,
+  DROP `thursdayInst`,
+  DROP `saturdayInst`,
+  DROP `satOpenInst`,
+  DROP `satSportInst`,
+  DROP `mondayAssis1`,
+  DROP `mondayAssis2`,
+  DROP `mondayAssis3`,
+  DROP `tuesdayAssis1`,
+  DROP `tuesdayAssis2`,
+  DROP `tuesdayAssis3`,
+  DROP `wedAssis1`,
+  DROP `wedAssis2`,
+  DROP `wedAssis3`,
+  DROP `thurAssis1`,
+  DROP `thurAssis2`,
+  DROP `thurAssis3`,
+  DROP `SatAssis1`,
+  DROP `SatAssis2`,
+  DROP `SatAssis3`;
+  
+  ALTER TABLE  `ranklist` DROP PRIMARY KEY ;
+  ALTER TABLE  `ranklist` ADD  `rankid` INT NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST ;
+  
+  --
+-- Table structure for table `classrank`
+--
+
+DROP TABLE IF EXISTS `classrank`;
+CREATE TABLE IF NOT EXISTS `classrank` (
+  `classid` int(11) NOT NULL,
+  `rankid` int(11) NOT NULL,
+  PRIMARY KEY (`classid`,`rankid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO  `vdb`.`nclass` (
+`id` ,
+`class` ,
+`sort` ,
+`nextClass` ,
+`rankForNextClass` ,
+`ageForNextClass` ,
+`classcat` ,
+`pgmcat` ,
+`agecat` ,
+`pictureurl`
+)
+VALUES (
+NULL ,  'Leadership',  '61', NULL , NULL , NULL ,  '',  '',  '', NULL
+), (
+NULL ,  'Grappling',  '62', NULL , NULL , NULL ,  '',  '',  '', NULL
+);
+
+UPDATE  `vdb`.`nclass` SET  `classcat` =  'karate',
+`pgmcat` =  'leadership',
+`agecat` =  'children' WHERE  `nclass`.`class` =  'Leadership';
+
+UPDATE  `vdb`.`nclass` SET  `classcat` =  'karate',
+`pgmcat` =  'other',
+`agecat` =  'children' WHERE  `nclass`.`class` =  'Grappling';
+
+insert into classrank (rankid,classid) values (1,10);
+insert into classrank (rankid,classid) values (2,11);
+insert into classrank (rankid,classid) values (2,10);
+insert into classrank (rankid,classid) values (3,9);
+insert into classrank (rankid,classid) values (3,1);
+insert into classrank (rankid,classid) values (3,22);
+insert into classrank (rankid,classid) values (4,11);
+insert into classrank (rankid,classid) values (4,10);
+insert into classrank (rankid,classid) values (5,9);
+insert into classrank (rankid,classid) values (5,1);
+insert into classrank (rankid,classid) values (5,22);
+insert into classrank (rankid,classid) values (6,11);
+insert into classrank (rankid,classid) values (6,10);
+insert into classrank (rankid,classid) values (7,9);
+insert into classrank (rankid,classid) values (7,1);
+insert into classrank (rankid,classid) values (7,22);
+insert into classrank (rankid,classid) values (8,11);
+insert into classrank (rankid,classid) values (8,10);
+insert into classrank (rankid,classid) values (9,10);
+insert into classrank (rankid,classid) values (10,10);
+insert into classrank (rankid,classid) values (11,10);
+insert into classrank (rankid,classid) values (12,10);
+insert into classrank (rankid,classid) values (13,10);
+insert into classrank (rankid,classid) values (14,6);
+insert into classrank (rankid,classid) values (14,1);
+insert into classrank (rankid,classid) values (14,22);
+insert into classrank (rankid,classid) values (15,6);
+insert into classrank (rankid,classid) values (15,22);
+insert into classrank (rankid,classid) values (16,6);
+insert into classrank (rankid,classid) values (16,22);
+insert into classrank (rankid,classid) values (17,6);
+insert into classrank (rankid,classid) values (17,1);
+insert into classrank (rankid,classid) values (17,22);
+insert into classrank (rankid,classid) values (22,8);
+insert into classrank (rankid,classid) values (22,1);
+insert into classrank (rankid,classid) values (22,22);
+insert into classrank (rankid,classid) values (23,8);
+insert into classrank (rankid,classid) values (23,22);
+insert into classrank (rankid,classid) values (24,8);
+insert into classrank (rankid,classid) values (24,22);
+insert into classrank (rankid,classid) values (25,8);
+insert into classrank (rankid,classid) values (25,1);
+insert into classrank (rankid,classid) values (25,22);
+insert into classrank (rankid,classid) values (34,4);
+insert into classrank (rankid,classid) values (34,3);
+insert into classrank (rankid,classid) values (34,1);
+insert into classrank (rankid,classid) values (35,4);
+insert into classrank (rankid,classid) values (35,3);
+insert into classrank (rankid,classid) values (40,6);
+insert into classrank (rankid,classid) values (40,1);
+insert into classrank (rankid,classid) values (40,22);
+insert into classrank (rankid,classid) values (41,6);
+insert into classrank (rankid,classid) values (41,22);
+insert into classrank (rankid,classid) values (50,4);
+insert into classrank (rankid,classid) values (50,3);
+insert into classrank (rankid,classid) values (50,1);
+insert into classrank (rankid,classid) values (51,4);
+insert into classrank (rankid,classid) values (51,3);
+insert into classrank (rankid,classid) values (56,4);
+insert into classrank (rankid,classid) values (56,3);
+insert into classrank (rankid,classid) values (56,1);
+insert into classrank (rankid,classid) values (57,4);
+insert into classrank (rankid,classid) values (57,3);
+
+delete from classrank where classid = 22;
