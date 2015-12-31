@@ -18,7 +18,8 @@
       '$log',
       '$uibModalInstance',
       'picfile',
-      'StudentServices'
+      'StudentServices',
+      '$route'
     ];
   ModalPicInstance2Controller.$inject = [
       '$scope',
@@ -27,7 +28,8 @@
       'picfile',
       'StudentServices',
       'uiGridConstants',
-      '$timeout'
+      '$timeout',
+      '$route'
     ];
 
 
@@ -81,6 +83,7 @@
       });
       vmpicmodal.modalInstance.result.then(function (selectedpic, student) {
           console.log('picsearch modalInstance result picfile:', selectedpic);
+        
         vmpicmodal.picfile = selectedpic;
         vmpicmodal.student = student;
       }, function () {
@@ -90,7 +93,7 @@
     }
   }
 
-  function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile, StudentServices) {
+  function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile, StudentServices, $route) {
     /* jshint validthis: true */
     var vmpicselect = this;
     vmpicselect.ok = ok;
@@ -136,6 +139,7 @@
       vmpicselect.okpicFile = renameFile(thisstudent, vmpicselect.okpicFile);
       console.log('got file for ok:', vmpicselect.okpicFile);
       console.log('for student:' ,thisstudent);
+
       $uibModalInstance.close(vmpicselect.okpicFile, thisstudent);
     }
 
@@ -146,7 +150,7 @@
   }
 
 
-  function ModalPicInstance2Controller($scope, $log, $uibModalInstance, picfile, StudentServices, uiGridConstants, $timeout) {
+  function ModalPicInstance2Controller($scope, $log, $uibModalInstance, picfile, StudentServices, uiGridConstants, $timeout, $route) {
     /* jshint validthis: true */
     var vmpicsearch = this;
     vmpicsearch.ok = ok;
@@ -184,7 +188,9 @@
             $log.debug('getfiles timeout');
    //         $log.debug(vmpicsearch.gridApi);
             if(vmpicsearch.gridApi.selection.selectRow){
-              vmpicsearch.gridApi.selection.selectRow(vmpicsearch.gridOptions.data[0]);
+                vmpicsearch.gridApi.selection.getSelectedRows();
+                $log.debug('selectRow');
+        //      vmpicsearch.gridApi.selection.selectRow(vmpicsearch.gridOptions.data[0]);
             }
         });
         return vmpicsearch.picfileList;
@@ -263,6 +269,7 @@
       vmpicsearch.okpicFile = renameFile(thisstudent, vmpicsearch.okpicFile);
       console.log('got file for ok:', vmpicsearch.okpicFile);
       console.log('for student:' ,thisstudent);
+
       $uibModalInstance.close(vmpicsearch.okpicFile, thisstudent);
     }
 
