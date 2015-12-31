@@ -125,3 +125,15 @@ added put and delete
 
 edit php5.conf in mods-enabled
 comment out user dir section for php restrictions
+
+sudo add-apt-repository ppa:nilarimogard/webupd8  
+sudo apt-get update  
+sudo apt-get install grive  
+
+ $ cd ~/GDrive
+    $ grive -a
+ 
+After you are authorized, run:
+ 
+    $ grive
+    
