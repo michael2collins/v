@@ -422,3 +422,20 @@ insert into classrank (rankid,classid) values (57,4);
 insert into classrank (rankid,classid) values (57,3);
 
 delete from classrank where classid = 22;
+
+ALTER TABLE `nclasspays`
+  DROP `address`,
+  DROP `city`,
+  DROP `state`,
+  DROP `zip`,
+  DROP `phone`,
+  DROP `phoneExt`,
+  DROP `altPhone`,
+  DROP `altPhoneExt`,
+  DROP `autoBillEFTDate`,
+  DROP `firstPaymentDate`;
+  
+  ALTER TABLE  `nclasspays` CHANGE  `classid`  `removeclassid` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+  ALTER TABLE  `nclasspays` CHANGE  `class`  `removeclass` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
+  
+  

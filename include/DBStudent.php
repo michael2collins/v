@@ -31,17 +31,61 @@ class StudentDbHandler {
     }
 
     /**
-     * Fetching all students
+     * Fetching all students filtered
      */
-    public function getAllStudents() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t LIMIT 10");
-//        $stmt = $this->conn->prepare("SELECT t.* FROM ncontacts t");
-        $stmt->execute();
-        $students = $stmt->get_result();
-        $stmt->close();
-        return $students;
+    public function getAllStudents($contacttype = NULL, $thelimit, $therank = NULL, $status = NULL) {
+        error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank\n ", TRUE), 3, LOG);
+
+
+        $sql = "SELECT c.*, pays.studentclassstatus from ncontacts  c";
+        $sql .= " LEFT JOIN nclasspays pays ON c.id = pays.contactid ";
+        $sql .= " where (1 = 1)  ";
+        if (strlen($status) > 0 && $status != 'ALL') {
+            $sql .= " and ( pays.studentclassstatus is null or pays.studentclassstatus = '" . $status . "') ";
+        } 
+        if (strlen($contacttype) > 0 && $contacttype != 'All') {
+            $sql .= " and contactType = '" . $contacttype . "'";
+        } 
+        if (strlen($therank) > 0 && $therank != 'NULL' && $therank != 'All') {
+            $sql .= " and CurrentRank = '" . $therank . "'";
+        }
+        $sql .= "   order by CurrentRank, LastName, FirstName ";
+        
+        if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
+            $sql .= "  LIMIT " . $thelimit ;
+        }
+        
+        error_log( print_R("getAllStudents sql: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                error_log( print_R("getAllStudents list stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
+                $students = $stmt->get_result();
+                error_log( print_R("getAllStudents list returns data", TRUE), 3, LOG);
+                error_log( print_R($students, TRUE), 3, LOG);
+                $stmt->close();
+                return $students;
+            } else {
+                error_log( print_R("getAllStudents list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getAllStudents list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
     }
 
+    public function getContactTypes() {
+        $stmt = $this->conn->prepare("SELECT contacttype, count(contacttype) FROM ncontacts group by contacttype order by 2 desc");
+        $stmt->execute();
+        $agelist = $stmt->get_result();
+        $stmt->close();
+        return $agelist;
+    }
 
     /**
      * Fetching single student

@@ -8,7 +8,9 @@
 
     StudentsTableBasicController.$inject = [
         '$scope',
-        '$log'
+        '$log',
+        'StudentServices',
+        '$q'
     ];
     ctrlDualList.$inject = [
         '$scope',
@@ -17,22 +19,128 @@
         '$routeParams',
         'uiGridConstants',
         '$window',
-        'Notification'
+        'Notification',
+        '$controller'
         ];
 
-    function StudentsTableBasicController( $scope,$log) {
+    function StudentsTableBasicController( $scope, $log, StudentServices, $q) {
         /* jshint validthis: true */
         var vm = this;
+        vm.setLimit = setLimit;
+        vm.setRank = setRank;
+        vm.getRank = getRank;
+        vm.activate = activate;
+        vm.getContactType = getContactType;
+        vm.getLimit = getLimit;
+        vm.getStatus = getStatus;
+        vm.setStatus = setStatus;
+        vm.Rank = '';
+        vm.limit = 20;
+        vm.status = 'Active';
+        vm.limits = [10,20,50,100,200,500];
+        vm.statuses = [];
+        vm.contacttypes;
+        vm.RankList = [];
+        vm.StudentList = [];
+        vm.thecontacttype = 'Student';
+        vm.doneActivate = false;
 
-        vm.isCollapsed = true;
+         vm.isCollapsed = true;
 
+        if (!vm.doneActivate) {
+            activate();
+        }
+        
+        function setLimit(thelimit) {
+            $log.debug('setLimit',thelimit);
+            vm.limit = thelimit;
+        }
+        function setContactType(thetype) {
+            $log.debug('thetype',thetype);
+            vm.thecontacttype = thetype;
+        }
+        function setRank(therank) {
+            $log.debug('setRank',therank);
+            vm.Rank = therank;
+        }
+        function setStatus(thestatus) {
+            vm.status = thestatus;
+        }
+        function getStatus() {
+            return vm.status;
+        }
+        function getRank() {
+            $log.debug('getRank');
+            return vm.Rank;
+        }
+        function getContactType(){
+            $log.debug('getContactType');
+            return vm.thecontacttype;
+        }
+        function getLimit() {
+            $log.debug('getLimit');
+            return vm.limit;
+        }
 
-        $.fn.Data.Portlet();
+//        $.fn.Data.Portlet();
+        function activate() {
+            $q.all([
+                    getStudentLists().then(function() {
+                        $log.debug('getStudentLists ContactTypeList',vm.StudentList.ContactTypeList);
+                        $log.debug('getStudentLists ClassStatusList',vm.StudentList.ClassStatusList);
+                       setContactType(vm.StudentList.ContactTypeList[0].listvalue);
+                       setStatus(vm.StudentList.ClassStatusList[0].listvalue);
+                       setLimit(vm.limits[1]);
+                   }),
+                    getRankList().then(function() {
+                        $log.debug('getRankList',vm.RankList);
+                        
+                       setRank('All');
+                        $log.debug('setRank', vm.Rank);
+                     })
+                ])
+                .then(function() {
+                    $log.debug('getAllStudents activate returned');
+                    vm.doneActivate = true;
+            });
+        }
+
+        function getRankList() {
+            var path='../v1/ranklist'
+            return StudentServices.getRankList(path).then(function (data) {
+                $log.debug('getRankList returned data');
+                $log.debug(data.data);
+                vm.RankList = data.data;
+
+                return vm.RankList;
+            });
+        }
+
+        function getStudentLists() {
+            var path = '../v1/studentlists';
+            return StudentServices.getStudentLists(path).then(function (data) {
+                $log.debug('getStudentLists returned data');
+                $log.debug(data.data);
+                vm.StudentList = data.data;
+
+                return vm.StudentList;
+            });
+        }
+
+        function getContactTypes() {
+            return StudentServices.getContactTypeCounts().then(function(data){
+                    $log.debug('controller getContactTypes returned data');
+                    $log.debug(data.data.contacttypes);
+                    vm.contacttypes = data.data.contacttypes;
+                    $log.debug('controller contacttypes service data',vm.contacttypes);
+                    return vm.contacttypes;
+                });
+        }
 
 
     }
     
-    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification) {
+    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification, $controller) {
         /* jshint validthis: true */
         var vmDual = this;
 
@@ -42,6 +150,7 @@
         vmDual.getAllStudents = getAllStudents;
         vmDual.createUserPrefCols = createUserPrefCols;
         vmDual.submit = submit;
+        vmDual.requery = requery;
         vmDual.colreset = colreset;
         //vmDual.setGridVisible = setGridVisible;
         vmDual.aToB = aToB;
@@ -98,18 +207,28 @@
                     ];
         vmDual.items = vmDual.userData;
           
+        vmDual.vm = $controller('StudentsTableBasicController as vm', {$scope: $scope});
 
         console.log('vmDual');
 
         getUserPrefCols();
         
         
-        function activate() {
+        function dualactivate() {
             $log.debug('activate');
-        return getAllStudents().then(function() {
-            $log.debug('activated StudentsTableBasic view');
+            vmDual.vm.activate();
+                getAllStudents().then(function() {
+                    $log.debug('activated StudentsTableBasic view');
+                });
+        }
+
+        function requery() {
+            $log.debug('requery entered');
+            getAllStudents().then(function() {
+                $log.debug('refreshed students');
             });
         }
+
         
         function getUserPrefCols() {
             $log.debug('getUserPrefCols entered');
@@ -141,11 +260,8 @@
 
                     setGridOptions();
 
-                    activate();
+                    dualactivate();
 
-               //     setGridVisible();
-        
-                    
                     return vmDual.userprefcols;
                 });
         }
@@ -204,10 +320,11 @@
                     $log.debug(vmDual.thecolumns);
                     $log.debug(vmDual.thecolumns.message);
                     vmDual.message = vmDual.thecolumns.message;
-                    var url = './#/table-basic-students';
-                    $log.debug(url);
+        //            var url = '#/table-basic-students';
+        //            $log.debug(url);
         //            alert(url);
-                    $window.location.href = url;
+        //            $window.location.href = url;
+                    $window.location.reload();
                     return vmDual.thecolumns;
                 }).catch(function(e) {
                     $log.debug('createUserPrefCols failure:');
@@ -221,7 +338,16 @@
 
         function getAllStudents() {
             $log.debug('getAllStudents tb');
-            return StudentServices.getAllStudents(vmDual.path).then(function(data){
+            
+            var refreshpath = encodeURI(vmDual.path + 
+                '?contacttype=' + vmDual.vm.getContactType() + 
+                '&thelimit=' + vmDual.vm.getLimit() + 
+                '&status=' + vmDual.vm.getStatus() +
+                '&therank=' + vmDual.vm.getRank() );
+
+            $log.debug('refreshtheAttendance path:', refreshpath);
+
+            return StudentServices.getAllStudents(refreshpath).then(function(data){
                //     $log.debug('getAllStudents returned data');
                     vmDual.gridOptions.data = data.data.students;
 
@@ -231,28 +357,6 @@
         }
 
         
-/*        function setGridVisible() {
-            $log.debug('setGridVisible tb');
-            var foundit;
-            for(var j = 0, lenu = vmDual.gcolumns.length; j < lenu; j++) {
-                foundit = false;
-                for(var i = 0, len = vmDual.listA.length; i < len; i++) {
-                    if ( vmDual.gcolumns[j].field == vmDual.listA[i].colname) {
-                        vmDual.gcolumns[j].visible = true;
-                        foundit = true;
-                        break; //skip as we found something
-                    }
-                }
-                if (!foundit) {
-                    vmDual.gcolumns[j].visible = false;
-                }
-                
-            }
-            //vmDual.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
-            //savelist to db and refresh window
-          $log.debug(vmDual.gridOptions);  
-        } 
-  */      
         function setGridOptions() {
             vmDual.gcolumns = [];
             $log.debug('setGridOptions col count', vmDual.listA.length);
@@ -263,7 +367,8 @@
                     continue; //skip as we will add it at the end 
                 }
                 var colstruct = {field: vmDual.listA[i].colname, 
-                                    headerCellClass: highlightFilteredHeader,
+                                    enableFiltering: true,
+                                    headerCellClass: vmDual.highlightFilteredHeader,
                                     enableCellEdit: false };
                 vmDual.gcolumns.push(colstruct);
             }

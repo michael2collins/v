@@ -118,9 +118,64 @@
                   </div>
     		</div>
     	</div>
-          <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="mygrid"></div>
+              <div class="row">
+                <div class="col-md-3">
+                  <div  class="form-group">
+<!--                  <pre>now{{vm.nowChoice}} select{{vm.classes[vm.nowChoice].Description}} theclass:{{vm.theclass}}</pre>
+-->                    <label for="inputcontacttype" class="control-label ">Student Type</label>
+                    <div class="input-icon right">
+                      <select id="inputcontacttype" type="text" name="contacttype" ng-model="vm.thecontacttype" ng-change="vm.setContactType(vm.thecontacttype)"  class="form-control ">
+                        <option>All</option>
+                        <option ng-repeat="g in vm.StudentList.ContactTypeList" 
+                        ng-selected="{{(g.listvalue === vm.thecontacttype) && 'selected' || 'not' }}"  
+                        value="{{g.listkey}}">{{g.listvalue}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="inputRank" class="control-label ">Rank </label>
+                    <div class="input-icon right">
+                      <select id="inputRank" type="text" name="Rank" ng-model="vm.Rank" ng-change="vm.setRank(vm.Rank)" class="form-control">
+                        <option>All</option>
+                        <option ng-repeat="iter in vm.RankList.rankList" ng-selected="iter.ranklist === vm.Rank" 
+                             value="{{iter.ranklist}}">{{iter.ranklist}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="inputStatus" class="control-label ">Status </label>
+                    <div class="input-icon right">
+                      <select id="inputStatus" type="text" name="Status" ng-model="vm.status" ng-change="vm.setStatus(vm.status)" class="form-control">
+                        <option>All</option>
+                        <option ng-repeat="g in vm.StudentList.ClassStatusList" 
+                        ng-selected="{{(g.listvalue === vm.status) && 'selected' || 'not' }}"  
+                        value="{{g.listkey}}">{{g.listvalue}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-3">
+                  <div class="form-group">
+                    <label for="inputlimit" class="control-label ">Limit</label>
+                    <div class="input-icon right">
+                      <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit)" class="form-control">
+                        <option>All</option>
+                        <option ng-repeat="lim in vm.limits" ng-selected="{{(lim == vm.limit) && 'selected' || 'not' }}"  
+                            value="{{lim}}">{{lim}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <button ng-click="vmDual.requery()" class="btn btn-blue btn-default ">Refresh List</button>
+              </div>    	
+          <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit ui-grid-auto-resize class="mygrid"></div>
         </div>
- <!--       <pre>{{vmDual.gridOptions}}</pre> -->
       </div>
     </div>
   </div>

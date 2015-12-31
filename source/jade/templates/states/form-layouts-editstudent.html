@@ -159,7 +159,7 @@
                                 </div>
                                 <div class="modal-body">
                                     <div ui-grid="vmpicsearch.gridOptions" 
-                                        ui-grid-pagination ui-grid-cellNav ui-grid-selection class="mygrid"></div>
+                                        ui-grid-pagination ui-grid-cellNav ui-grid-selection ui-grid-auto-resize class="mygrid"></div>
 
                                 </div>
                                 <div class="modal-footer">
@@ -1083,7 +1083,7 @@
                       </div>
                     </form>
                   </div>
-                 
+               <hr/>  
               </div>
             </div>
           </div>
@@ -1177,7 +1177,7 @@
               <div class="panel-heading">History</div>
               <div class="panel-body pan">
                 <div ui-grid="vmhistory.gridOptions" 
-                    ui-grid-pagination ui-grid-cellNav class="mygrid" ng-if="histtabShown">
+                    ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize class="mygrid" ng-if="histtabShown">
                 </div>
               </div>
             </div>

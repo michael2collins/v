@@ -82,7 +82,32 @@ $app->post('/userprefcols/:prefkey', function($prefkey) use ($app) {
  * method GET
  * url /tasks
  */
-$app->get('/students',  function() {
+$app->get('/students',  function() use($app){
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("students entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $contacttype = '';
+    $thelimit = '';
+    $therank = '';
+    $status = '';
+    
+    if(array_key_exists('contacttype', $allGetVars)){
+        $contacttype = $allGetVars['contacttype'];
+    }
+    if(array_key_exists('thelimit', $allGetVars)){
+        $thelimit = $allGetVars['thelimit'];
+    }
+    if(array_key_exists('therank', $allGetVars)){
+        $therank = $allGetVars['therank'];
+    }
+    if(array_key_exists('status', $allGetVars)){
+        $status = $allGetVars['status'];
+    }
+
+    error_log( print_R("students params: contacttype: $contacttype thelimit: $thelimit therank: $therank\n status: $status ", TRUE), 3, LOG);
+
     $response = array();
     $fieldlist = array();
 
@@ -92,10 +117,6 @@ $app->get('/students',  function() {
     $prefkey = "allstudents";
     $response["fields"] = array();
 
-    //error_log("in index");
-    //        //error_log( print_R($userid,TRUE ));
-    //        //error_log( print_R(  $prefkey,TRUE));
-
     //get a list of fields from a preferences table
     $fields = $db->getUserPreferences($userid, $prefkey);
 
@@ -104,27 +125,13 @@ $app->get('/students',  function() {
         //                //error_log( print_R($fieldlist["prefcolumn"],TRUE));
         array_push($response["fields"], $fieldlist);
     }
-    //            //error_log( print_R($response["fields"],TRUE));
 
     //going to get all fields and filter them on the array push
-    $result = $db->getAllStudents();
+    $result = $db->getAllStudents($contacttype, $thelimit, $therank, $status);
 
     $response["error"] = false;
     $response["students"] = array();
 
-    /*
-            // looping through result and preparing tasks array
-            while ($student = $result->fetch_assoc()) {
-                $tmp = array();
-                $tmp["ID"] = $student["ID"];
-                $tmp["FirstName"] = $student["FirstName"];
-                $tmp["LastName"] = $student["LastName"];
-                $tmp["CurrentRank"] = $student["CurrentRank"];
-                $tmp["Parent"] = $student["Parent"];
-                $tmp["Phone"] = $student["Phone"];
-                array_push($response["students"], $tmp);
-            }
-*/
     $fldcount=count($response["fields"]);
     //            //error_log( print_R($fldcount,TRUE));
     while ($student = $result->fetch_assoc()) {
@@ -142,6 +149,38 @@ $app->get('/students',  function() {
     echoRespnse(200, $response);
 });
 
+$app->get('/contacttypes',  function() {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getContactTypes();
+    $response["error"] = false;
+    $response["contacttypes"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["contacttype"] = (empty($slist["contacttype"]) ? "NULL" : $slist["contacttype"]);
+        } else {
+            $tmp["contacttype"] = "NULL";
+        }
+        array_push($response["contacttypes"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in contacttypes";
+        error_log( print_R("contacttypes bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
 
 
 $app->get('/students/:id',  function($student_id) {
@@ -359,37 +398,8 @@ $app->put('/students/:id',  function($student_id) use($app) {
     error_log( print_R( $LastName, TRUE ), 3, LOG);
     error_log( print_R("b4 fstnm\n " , TRUE ), 3, LOG);
     error_log( print_R( $FirstName, TRUE ), 3, LOG);
-    //error_log( print_R($Email, TRUE ));
-    //error_log( print_R($Email2, TRUE ));
-    //error_log( print_R($Phone, TRUE ));
-    //error_log( print_R($AltPhone, TRUE ));
-    //error_log( print_R($phoneExt, TRUE ));
-    //error_log( print_R($altPhoneExt, TRUE ));
-    //error_log( print_R($Birthday, TRUE ));
-    //error_log( print_R($sex, TRUE ));
-    //error_log( print_R($Parent, TRUE ));
-    //error_log( print_R($EmergencyContact, TRUE ));
-    //error_log( print_R($Notes, TRUE ));
-    //error_log( print_R($medicalConcerns, TRUE ));
-    //error_log( print_R($Address, TRUE ));
-    //error_log( print_R($City, TRUE ));
-    //error_log( print_R($State, TRUE ));
-    //error_log( print_R($ZIP, TRUE ));
-    //error_log( print_R($ContactType, TRUE ));
-    //error_log( print_R($quickbooklink, TRUE ));
-    //error_log( print_R($StudentSchool, TRUE ));
-    //error_log( print_R($GuiSize, TRUE ));
-    //error_log( print_R($ShirtSize, TRUE ));
-    //error_log( print_R($BeltSize, TRUE ));
-    //error_log( print_R($InstructorPaymentFree, TRUE ));
-    //error_log( print_R($InstructorFlag, TRUE ));
-    //error_log( print_R($instructorTitle, TRUE ));
-    //error_log( print_R($CurrentRank, TRUE ));
-    //error_log( print_R($CurrentReikiRank, TRUE ));
     error_log( print_R("b4 pic\n ", TRUE), 3, LOG);
     error_log( print_R($pictureurl, TRUE), 3, LOG);
-    //error_log( print_R($CurrentIARank, TRUE ));
-    //error_log( print_R($student_id, TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -455,6 +465,7 @@ $app->get('/studentlists',  function() {
 
     $response["error"] = false;
     $response["ContactTypeList"] = array();
+    $response["ClassStatusList"] = array();
     $response["StudentSchoolList"] = array();
     $response["GuiSizeList"] = array();
     $response["ShirtSizeList"] = array();
@@ -469,6 +480,9 @@ $app->get('/studentlists',  function() {
         $tmp["listvalue"] = $slist["listvalue"];
         if ($tmp["listtype"] == "ContactType") {
             array_push($response["ContactTypeList"], $tmp);
+        }
+        if ($tmp["listtype"] == "ClassStatus") {
+            array_push($response["ClassStatusList"], $tmp);
         }
         if ($tmp["listtype"] == "beltsize") {
             array_push($response["BeltSizeList"], $tmp);

@@ -27,6 +27,7 @@
             setTheStudent: setTheStudent,
             getTheStudent: getTheStudent,
             setActiveTab: setActiveTab,
+            getContactTypeCounts: getContactTypeCounts,
             getActiveTab: getActiveTab,
             createStudent: createStudent,
             getUserPrefCols: getUserPrefCols,
@@ -329,6 +330,19 @@
                     // or server returns response with an error status.
                 });
         }
+        function getContactTypeCounts() {
+            var path='../v1/contacttypes';
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('StudentServices getContactTypes success:' + path);
+                    $log.debug(data);
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getContactTypes failure:' + path);
+                });
+        }
+        
         function getStudentLists(path) {
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
