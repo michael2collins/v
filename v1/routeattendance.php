@@ -78,6 +78,7 @@ $app->get('/attendance',  function() use ($app) {
             $tmp["day7"] = (empty($slist["day7"]) ? "NULL" : $slist["day7"]);
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
             $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+            $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
         } else {
             $tmp["ID"] = "NULL";
             $tmp["MondayOfWeek"] = "NULL";
@@ -93,6 +94,8 @@ $app->get('/attendance',  function() use ($app) {
             $tmp["day7"] = "NULL";
             $tmp["class"] = "NULL";
             $tmp["rank"] = "NULL";
+            $tmp["pictureurl"] = "NULL";
+            
         }
 //        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
 //        error_log( print_R($tmp, TRUE), 3, LOG);

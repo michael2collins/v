@@ -11,10 +11,12 @@
     'AttendanceServices',
     '$location',
     '$window',
-    '$q'
+    '$q',
+    '$scope',
+    '$route'
     ];
 
-    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, $location, $window, $q) {
+    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, $location, $window, $q, $scope, $route) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -23,12 +25,17 @@
         vm.setLimit = setLimit;
         vm.setClass = setClass;
         vm.setDOW = setDOW;
+        vm.setGridsize = setGridsize;
         vm.requery = requery;
+        vm.selectItem = selectItem;
+        vm.isSelected = isSelected;
+        vm.reload = reload;
         vm.DOWlist = [];
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500];
         vm.dowChoice ='';
         vm.theclass ='';
+        vm.gridsize;
         vm.data = [];
         vm.classes = [];
 
@@ -55,14 +62,24 @@
         vm.tday = tdays[d.getDay()];
         vm.nowChoice = 0;
         vm.loading = true;
-        
+        vm.selectedItem = null;
 
+        setGridsize('col-md-12')
         activate();
 
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
             vm.limit = thelimit;
         }
+        function setGridsize(size) {
+            $log.debug('setGridsize',size);
+            vm.gridsize = size;
+            $scope.$emit('iso-method', {name:'arrange', params:null});
+        }
+        function reload() {
+            $route.reload();
+        }
+        
         function setDOW(theChoice) {
             vm.dowChoice = theChoice;
             $log.debug('setDOW', vm.dowChoice);
@@ -75,6 +92,18 @@
         function requery() {
             $log.debug('requery entered');
             refreshtheAttendance();
+        }
+
+        function selectItem(item){
+            $log.debug('selectItem', item);
+            vm.selectedItem = item;
+        }
+
+        function isSelected(item){
+            if(vm.selectedItem===null){
+                return false;
+            }
+            return item === vm.selectedItem;
         }
         
         function activate() {

@@ -137,14 +137,14 @@ class AttendanceDbHandler {
         error_log( print_R("getAttendanceList entered", TRUE), 3, LOG);
     error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
 
-        $sql = "SELECT `ID`, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, `ContactId`, "; 
+        $sql = "SELECT a.ID, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, a.ContactId, "; 
         $sql .= "`day1`, `day2`, `day3`, `day4`, `day5`, `day6`, `day7`, ";
-        $sql .= "`firstname`, `lastname`, `class`, `rank` FROM `nattendance` where (1 = 1) ";
+        $sql .= " a.firstname, a.lastname, a.class, a.rank, c.pictureurl FROM `nattendance` a, ncontacts c where (1 = 1) and a.ContactId = c.ID ";
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $sql .= " and mondayofweek = '" . $thedow . "'";
         } 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
-            $sql .= " and class = '" . $theclass . "'";
+            $sql .= " and a.class = '" . $theclass . "'";
         }
         $sql .= "   order by mondayofweek desc, alphasortkey LIMIT " . $thelimit ;
 

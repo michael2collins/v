@@ -438,4 +438,5 @@ ALTER TABLE `nclasspays`
   ALTER TABLE  `nclasspays` CHANGE  `classid`  `removeclassid` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
   ALTER TABLE  `nclasspays` CHANGE  `class`  `removeclass` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL ;
   
-  
+UPDATE  `ncontacts` SET  `pictureurl` = CONCAT(  `Lastname` ,  '.',  `firstname` ,  '.',  `ID` ,  '.jpg' ) WHERE 1
+
