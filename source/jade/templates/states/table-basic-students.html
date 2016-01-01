@@ -172,11 +172,12 @@
                 </div>
               </div>
                 <div class="row">
-                          <div class="col-md-6">
-                          <pre>{{vm.studentpick}}</pre>
+                          <div class="col-md-2">
+                                    <!--    on-select="vm.editStudentFromPick($item, $model)" -->
                             <ui-select  ng-model="vm.studentpick" 
                                         theme="select2" 
                                         ng-disabled="disabled" 
+                                        on-select="vm.editStudentFromPick($item)"
                                         style="width: 300px;" 
                                         title="Choose a student">
                               <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
@@ -190,9 +191,12 @@
                               </ui-select-choices>
                             </ui-select>
                           </div>
-                <button ng-click="vmDual.requery()" class="btn btn-blue btn-default ">Refresh List</button>
+                          <div class="col-md-2">
+      <a ng-href="./#/form-layouts-editstudent/id/{{vm.eventResult.item.ID}}" ng-show="vm.eventResult.item.ID" class="btn btn-blue btn-default ">Edit {{vm.eventResult.item.FirstName}}</a>
+                              
+                          </div>
               </div>    	
-
+      <button ng-click="vmDual.requery()" class="btn btn-blue btn-default ">Refresh List</button>
 <div class="row">      
 
 <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ng-style="{height: (30*10)+132+'px'}" class="mygrid" ></div>

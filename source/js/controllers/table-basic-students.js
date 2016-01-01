@@ -36,6 +36,7 @@
         vm.getStatus = getStatus;
         vm.setStatus = setStatus;
         vm.refreshStudents = refreshStudents;
+        vm.editStudentFromPick = editStudentFromPick;
         vm.Rank = '';
         vm.limit = 20;
         vm.status = 'Active';
@@ -48,6 +49,7 @@
         vm.doneActivate = false;
         vm.refreshstudentlist = [];
         vm.studentpick;
+        vm.eventResult;
 
          vm.isCollapsed = true;
 
@@ -151,6 +153,13 @@
                 });
             
         }
+        
+//         function editStudentFromPick(item,model){
+         function editStudentFromPick(item){
+            vm.eventResult = {item: item};
+            $log.debug('editStudentFromPick', vm.eventResult);
+        }
+
 
     }
     
