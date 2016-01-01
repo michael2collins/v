@@ -31,6 +31,7 @@
             getActiveTab: getActiveTab,
             createStudent: createStudent,
             getUserPrefCols: getUserPrefCols,
+            refreshStudents: refreshStudents,
             createUserPrefCols: createUserPrefCols
         };
         return service;
@@ -54,6 +55,18 @@
             $log.debug('getTheStudent', theStudent);
             return theStudent;
         }
+
+     function refreshStudents(input) {
+        var params = {input: input};
+        return $http.get(
+          '../v1/studentnames',
+          {params: params}
+        ).then(function(response) {
+                    $log.debug('refreshStudents service success:');
+                    $log.debug(response.data);
+          return response.data;
+        });
+      }
 
       function getstudentPicFiles(path) {
           $log.debug('getStuPicfiles ');

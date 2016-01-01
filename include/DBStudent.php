@@ -30,6 +30,33 @@ class StudentDbHandler {
         return $slists;
     }
 
+    public function getStudentNames($theinput) {
+        $sql = "SELECT FirstName,LastName,ID FROM ncontacts";
+        $sql .= " where LastName like '%" . $theinput . "%'"; 
+        $sql .= " or FirstName like '%" . $theinput . "%'";
+        $sql .= " order by LastName, FirstName LIMIT 10";
+        error_log( print_R("getStudentNames sql: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getStudentNames list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getStudentNames list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getStudentNames list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
     /**
      * Fetching all students filtered
      */

@@ -76,6 +76,42 @@ $app->post('/userprefcols/:prefkey', function($prefkey) use ($app) {
 
 });
 
+$app->get('/studentnames',  function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("studentnames entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $theinput = '';
+
+    if(array_key_exists('input', $allGetVars)){
+        $theinput = $allGetVars['input'];
+    }
+
+    error_log( print_R("studentnames params: theinput: $theinput \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getStudentNames($theinput);
+    $response["error"] = false;
+    $response["refreshstudentlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+            $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+            $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
+            $tmp["FullName"] = $slist["FirstName"] . " " . $slist["LastName"];
+        array_push($response["refreshstudentlist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
 
 /**
  * Listing all tasks of particual user

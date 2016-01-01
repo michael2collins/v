@@ -7,10 +7,10 @@
         <div class="portlet-header">
           <div class="row">
             <div class="caption">Student List</div>
-        <!--    <div class="tools"><i class="fa fa-chevron-up"></i><i data-toggle="modal" data-target="#modal-config-student-fields" class="fa fa-cog"></i><i class="fa fa-refresh"></i><i class="fa fa-times"></i></div>
-    -->      </div>
+          </div>
         </div>
         <div class="portlet-body">
+
           <div class="table-tools">
             <div class="row">
               <div ng-controller="ModalNewStudentController as vmmodal">
@@ -118,11 +118,11 @@
                   </div>
     		</div>
     	</div>
-              <div class="row">
+
+            <div class="row">
                 <div class="col-md-3">
                   <div  class="form-group">
-<!--                  <pre>now{{vm.nowChoice}} select{{vm.classes[vm.nowChoice].Description}} theclass:{{vm.theclass}}</pre>
--->                    <label for="inputcontacttype" class="control-label ">Student Type</label>
+                    <label for="inputcontacttype" class="control-label ">Student Type</label>
                     <div class="input-icon right">
                       <select id="inputcontacttype" type="text" name="contacttype" ng-model="vm.thecontacttype" ng-change="vm.setContactType(vm.thecontacttype)"  class="form-control ">
                         <option>All</option>
@@ -171,10 +171,32 @@
                   </div>
                 </div>
               </div>
-              <div class="row">
+                <div class="row">
+                          <div class="col-md-6">
+                          <pre>{{vm.studentpick}}</pre>
+                            <ui-select  ng-model="vm.studentpick" 
+                                        theme="select2" 
+                                        ng-disabled="disabled" 
+                                        style="width: 300px;" 
+                                        title="Choose a student">
+                              <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
+                              <ui-select-choices 
+                              repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID"
+                              refresh="vm.refreshStudents($select.search)"
+                              refresh-delay="0">
+                                <small>
+                            <span ng-bind-html="stu.FullName | highlight: $select.search"></span>
+                                </small>
+                              </ui-select-choices>
+                            </ui-select>
+                          </div>
                 <button ng-click="vmDual.requery()" class="btn btn-blue btn-default ">Refresh List</button>
               </div>    	
-          <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit ui-grid-auto-resize class="mygrid"></div>
+
+<div class="row">      
+
+<div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ng-style="{height: (30*10)+132+'px'}" class="mygrid" ></div>
+          </div>
         </div>
       </div>
     </div>

@@ -218,6 +218,7 @@
             enableRowSelection: true,
             enableSelectAll: false,
             multiSelect: false,
+            rowHeight: 128,
             showGridFooter: true,
             onRegisterApi: function( gridApi ) {
                   //set gridApi on scope
@@ -232,8 +233,8 @@
 
                   });
             },
-            paginationPageSizes: [5, 50, 100],
-            paginationPageSize: 5,
+            paginationPageSizes: [3, 50, 100],
+            paginationPageSize: 3,
             columnDefs: [
                 // default
                 {
@@ -248,7 +249,13 @@
                     field: 'modtime',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
-                } 
+                }, {name: 'picture',
+                    field: 'name', 
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <img width="80px" ng-src="./images/students/{{grid.getCellValue(row, col)}}"/></span></div>'
+                }
+                
             ]};
 
         }

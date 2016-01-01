@@ -20,7 +20,8 @@
         'uiGridConstants',
         '$window',
         'Notification',
-        '$controller'
+        '$controller',
+        '$timeout'
         ];
 
     function StudentsTableBasicController( $scope, $log, StudentServices, $q) {
@@ -34,6 +35,7 @@
         vm.getLimit = getLimit;
         vm.getStatus = getStatus;
         vm.setStatus = setStatus;
+        vm.refreshStudents = refreshStudents;
         vm.Rank = '';
         vm.limit = 20;
         vm.status = 'Active';
@@ -44,6 +46,8 @@
         vm.StudentList = [];
         vm.thecontacttype = 'Student';
         vm.doneActivate = false;
+        vm.refreshstudentlist = [];
+        vm.studentpick;
 
          vm.isCollapsed = true;
 
@@ -136,11 +140,21 @@
                     return vm.contacttypes;
                 });
         }
-
+        
+        function refreshStudents(theinput) {
+            return StudentServices.refreshStudents(theinput).then(function(data){
+                    $log.debug('controller refreshStudents returned data');
+                    $log.debug(data);
+                    vm.refreshstudentlist = data;
+                    $log.debug('controller refreshstudentlist service data',vm.refreshstudentlist);
+                    return vm.refreshstudentlist;
+                });
+            
+        }
 
     }
     
-    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification, $controller) {
+    function ctrlDualList($scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification, $controller, $timeout) {
         /* jshint validthis: true */
         var vmDual = this;
 
@@ -149,6 +163,7 @@
         vmDual.highlightFilteredHeader = highlightFilteredHeader;
         vmDual.getAllStudents = getAllStudents;
         vmDual.createUserPrefCols = createUserPrefCols;
+        vmDual.toggleFiltering = toggleFiltering;
         vmDual.submit = submit;
         vmDual.requery = requery;
         vmDual.colreset = colreset;
@@ -172,11 +187,12 @@
         vmDual.checkedA = false;
         vmDual.checkedB = false;
         vmDual.gridOptions = {};
+        vmDual.gridApi = undefined;
 
         vmDual.userData = [
-                    {id:1, colname:'ID', default:'true'},
-                    {id:2, colname:'LastName', default:'true'},
-                    {id:3, colname:'FirstName', default:'true'},
+                    {id:1, colname:'FirstName', default:'true'},
+                    {id:2, colname:'ID', default:'true'},
+                    {id:3, colname:'LastName', default:'true'},
                     {id:4, colname:'Email', default:'true'},
                     {id:5 , colname:'Email2', default:'false'},
                     {id:6 , colname:'Parent', default:'false'},
@@ -213,6 +229,13 @@
 
         getUserPrefCols();
         
+        function toggleFiltering(){
+            $log.debug('toggleFiltering');
+            vmDual.gridOptions.enableFiltering = !vmDual.gridOptions.enableFiltering;
+            //core not found?
+            //$scope.gridApi.core.notifyDataChange( uiGridConstants.dataChange.COLUMN );
+            //vmDual.gridApi.core.notifyDataChange(vmDual.gridApi.grid, uiGridConstants.dataChange.ALL);
+        }
         
         function dualactivate() {
             $log.debug('activate');
@@ -351,7 +374,6 @@
                //     $log.debug('getAllStudents returned data');
                     vmDual.gridOptions.data = data.data.students;
 
-               //     $log.debug($scope.gridOptions.data);
                     return vmDual.gridOptions.data;
                 });
         }
@@ -359,6 +381,7 @@
         
         function setGridOptions() {
             vmDual.gcolumns = [];
+
             $log.debug('setGridOptions col count', vmDual.listA.length);
             
             for (var i=0, len = vmDual.listA.length; i < len; i++) {
@@ -366,35 +389,35 @@
                 if (vmDual.listA[i].colname == 'ID') {
                     continue; //skip as we will add it at the end 
                 }
-                var colstruct = {field: vmDual.listA[i].colname, 
-                                    enableFiltering: true,
-                                    headerCellClass: vmDual.highlightFilteredHeader,
-                                    enableCellEdit: false };
-                vmDual.gcolumns.push(colstruct);
+                vmDual.gcolumns.push({field: vmDual.listA[i].colname, enableFiltering: true, headerCellClass: vmDual.highlightFilteredHeader, enableCellEdit: false });
+                
             }
-            var collast = {name: 'ID',
+
+
+            vmDual.gcolumns.push({name: 'ID',
                     displayName: 'Edit',
                     enableFiltering: false,
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
                     cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/form-layouts-editstudent/id/{{COL_FIELD}}" >Edit</button></span></div>'
-                };
-            vmDual.gcolumns.push(collast);
+                });
+
+
+            vmDual.gridOptions = {
+                enableFiltering: true,
+                paginationPageSizes: [25, 50, 75],
+                paginationPageSize: 25,
+                columnDefs: vmDual.gcolumns,
+                rowHeight: 15,
+                showGridFooter: true,
+                onRegisterApi: function(gridApi) {
+                    $log.debug('vmDual gridapi onRegisterApi');
+                     vmDual.gridApi = gridApi;
+                    }
+            };
+
             $log.debug('gcolumns', vmDual.gcolumns);
-
-                    vmDual.gridOptions = {
-                    enableFiltering: true,
-                    paginationPageSizes: [25, 50, 75],
-                    paginationPageSize: 25,
-                    columnDefs: vmDual.gcolumns,
-                    onRegisterApi: function(gridApi) {
-                        $log.debug('onRegisterApi', gridApi);
-                         vmDual.gridApi = gridApi;
-                        }
-                    };
-
-     //       vmDual.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
             $log.debug('gridOptions', vmDual.gridOptions);
         }
 
