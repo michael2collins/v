@@ -28,7 +28,10 @@
         vm.setGridsize = setGridsize;
         vm.requery = requery;
         vm.selectItem = selectItem;
-        vm.isSelected = isSelected;
+        vm.hasSelected = hasSelected;
+        vm.getMonday = getMonday;
+        vm.getFormattedDate = getFormattedDate;
+        vm.getAttendingCount = getAttendingCount;
         vm.reload = reload;
         vm.DOWlist = [];
         vm.limit = 0;
@@ -63,9 +66,33 @@
         vm.nowChoice = 0;
         vm.loading = true;
         vm.selectedItem = null;
+        vm.checkResults = [];
+        vm.photos = [];
+        vm.attending = [];
+        vm.MondayOfWeek;
+        vm.TuesdayOfWeek;
+        vm.WednesdayOfWeek;
+        vm.ThursdayOfWeek;
+        vm.FridayOfWeek;
+        vm.SaturdayOfWeek;
+        vm.SundayOfWeek;
 
-        setGridsize('col-md-12')
+
+        vm.checkModel = {
+            Sunday:    weekday[0] == vm.todayDOW ? true : false ,
+            Monday:    weekday[1] == vm.todayDOW ? true : false,
+            Tuesday:   weekday[2] == vm.todayDOW ? true : false,
+            Wednesday: weekday[3] == vm.todayDOW ? true : false,
+            Thursday:  weekday[4] == vm.todayDOW ? true : false,
+            Friday:    weekday[5] == vm.todayDOW ? true : false,
+            Saturday:  weekday[6] == vm.todayDOW ? true : false
+        };
+
+
+        //setGridsize('col-md-12');
+        setMonday();
         activate();
+
 
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
@@ -91,22 +118,73 @@
 
         function requery() {
             $log.debug('requery entered');
+            vm.attending=[];
             refreshtheAttendance();
         }
 
+        function setMonday() {
+            vm.MondayOfWeek = getMonday(new Date());
+            var d2 = new Date(vm.MondayOfWeek);
+            var day = d2.getDay();
+            vm.SundayOfWeek    = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() - day ));
+            vm.TuesdayOfWeek   = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day));
+            vm.WednesdayOfWeek = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day));
+            vm.ThursdayOfWeek  = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day + day));
+            vm.FridayOfWeek    = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day + day + day));
+            vm.SaturdayOfWeek  = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day + day + day + day));
+        }
+        
+        function getMonday(d) {
+          d = new Date(d);
+          var day = d.getDay(),
+              diff = d.getDate() - day + (day === 0 ? -6:1); // adjust when day is sunday
+          return new Date(d.setDate(diff));
+        }
+        
+        function getFormattedDate(date) {
+            var d3 = new Date(date);
+          var year = d3.getFullYear();
+          var month = (1 + d3.getMonth()).toString();
+          month = month.length > 1 ? month : '0' + month;
+          var day = d3.getDate().toString();
+          day = day.length > 1 ? day : '0' + day;
+          return year + '/' + month + '/' + day;
+        }
+        
         function selectItem(item){
-            $log.debug('selectItem', item);
-            vm.selectedItem = item;
+            vm.attending.push({
+                attended: item, 
+                class: vm.theclass,
+                theday: vm.todayDOW,
+                tday: vm.tday,
+                DOW: vm.MondayOfWeek
+            });
+            $log.debug('selectedItem', vm.attending);
         }
 
-        function isSelected(item){
-            if(vm.selectedItem===null){
-                return false;
+        function hasSelected(item){
+            for (var i=0, len=vm.attending.length; i < len; i++) {
+                if (vm.attending[i].attended == item) {
+                    return true;
+                }
             }
-            return item === vm.selectedItem;
+            return false;
+        }
+        function getAttendingCount(){
+            return vm.attending.length;
         }
         
         function activate() {
+            $scope.$watchCollection('vm.checkModel', function () {
+                vm.checkResults = [];
+                angular.forEach(vm.checkModel, function (value, key) {
+                    $log.debug('checkmodal', vm.checkResults);
+                  if (value) {
+                    vm.checkResults.push(key);
+                  }
+                });
+             });
+            
             $q.all([
                     getDOW().then(function() {
                        setDOW(vm.DOWlist[0].MondayOfWeek);
@@ -141,6 +219,15 @@
                     $log.debug('refreshAttendances returned data');
                     $log.debug(data);
                     vm.data = data; 
+                    for (var i = 0, len=vm.data.attendancelist.length; i < len; i++) {
+                        vm.photos.push({id: 'photo-' + i, 
+                            src: './images/students/' + vm.data.attendancelist[i].pictureurl,
+                            name: vm.data.attendancelist[i].firstname 
+                                + ' ' + vm.data.attendancelist[i].lastname,
+                            studentID: vm.data.attendancelist[i].ID
+                        });
+                    }
+                    $log.debug('photos',vm.photos);
                     return vm.data;
                 },
                 function (error) {
@@ -170,45 +257,59 @@
                 });
         }
 
-        function getSchedule() {
-            var path='../v1/schedule/' + vm.todayDOW;
+        function setNowChoice() {
+            vm.nowChoice=0;
+            vm.classes=[];
             var d = new Date();
             var y = d.getFullYear();
             var h = d.getHours();
             var mm = d.getMinutes();
+            
+            for (var i=0; i < vm.Schedulelist.length; i++) {
+               console.log('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
+               console.log('TimeRange',vm.Schedulelist[i].TimeRange);
+               console.log('timestart',vm.Schedulelist[i].TimeStart);
+               console.log('timeend',vm.Schedulelist[i].TimeEnd);
+               var start = vm.Schedulelist[i].TimeStart.split(":");
+               var starth = start[0];
+               var startmm = start[1];
+               var end = vm.Schedulelist[i].TimeEnd.split(":");
+               console.log('end',end);
+               var endh = end[0];
+               var endmm = end[1];
+               var d1=new Date(parseInt(d.getFullYear(),10),
+                    (parseInt(d.getMonth(),10)),
+                     parseInt(d.getDate(),10),
+                     parseInt(starth,10),
+                     parseInt(startmm,10),
+                     parseInt(d.getSeconds(),10));
+                var d2=new Date(parseInt(d.getFullYear(),10),
+                    (parseInt(d.getMonth(),10)),
+                     parseInt(d.getDate(),10),
+                     parseInt(endh,10),
+                     parseInt(endmm,10),
+                     parseInt(d.getSeconds(),10));
+                console.log('startdate',d1);
+                console.log('enddate',d2);
+                var startdate=d1.valueOf();
+                var enddate=d2.valueOf();                       
+               //making start inclusive and end not
+               if (d<enddate && d>=startdate) {
+                   vm.nowChoice = i; //note there may be nmultiples and this will pick the last
+                   $log.debug('nowChoice',vm.nowChoice);
+               }
+               vm.classes.push(vm.Schedulelist[i] );
+            }
+            
+        }
+        function getSchedule() {
+            var path='../v1/schedule/' + vm.todayDOW;
 
             return AttendanceServices.getSchedule(path).then(function(data){
-                    vm.classes=[];
                     $log.debug('getSchedule returned data');
                     $log.debug(data);
                     vm.Schedulelist = data.Schedulelist;
-                    for (var i=0; i < vm.Schedulelist.length; i++) {
-                       console.log('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
-                       console.log('TimeRange',vm.Schedulelist[i].TimeRange);
-                       console.log('timestart',vm.Schedulelist[i].TimeStart);
-                       console.log('timeend',vm.Schedulelist[i].TimeEnd);
-                       var start = vm.Schedulelist[i].TimeStart.split(":");
-                       var starth = start[0];
-                       var startmm = start[1];
-                       var end = vm.Schedulelist[i].TimeEnd.split(":");
-                       console.log('end',end);
-                       var endh = end[0];
-                       var endmm = end[1];
-var d1=new Date(parseInt(d.getFullYear(),10),(parseInt(d.getMonth(),10)),parseInt(d.getDate(),10),parseInt(starth,10),parseInt(startmm,10),parseInt(d.getSeconds(),10));
-var d2=new Date(parseInt(d.getFullYear(),10),(parseInt(d.getMonth(),10)),parseInt(d.getDate(),10),parseInt(endh,10),parseInt(endmm,10),parseInt(d.getSeconds(),10));
-console.log('startdate',d1);
-console.log('enddate',d2);
-var startdate=d1.valueOf();
-var enddate=d2.valueOf();                       
-                       //making start inclusive and end not
-                       if (d<enddate && d>=startdate) {
-                           vm.nowChoice = i; //note there may be nmultiples and this will pick the last
-                           $log.debug('nowChoice',vm.nowChoice);
-                       }
-                       vm.classes.push(vm.Schedulelist[i] );
-                    }
-                    
-                    return vm.classes;
+                    setNowChoice();        
                 });
         }
 

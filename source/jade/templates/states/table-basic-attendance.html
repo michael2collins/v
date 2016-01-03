@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 
 <div ng-controller="AttendanceTableBasicController as vm">
-    <div class="col-lg-12">
       <div class="panel panel-blue">
         <div class="panel-heading">Attendance</div>
         <div class="panel-body pan">
+          <div class="col-lg-12">
               <div class="row">
                 <div class="col-md-4">
                   <div  class="form-group">
@@ -45,74 +45,75 @@
               <div class="row">
                 <button ng-click="vm.requery()" class="btn btn-blue btn-default attendance">Refresh List</button>
               </div>
-                <div class="col-md-4">
+              <div class="row">
+<!--                <div class="col-md-4">
                   <div class="form-group">
-                    <label for="gridsize" class="control-label attendance">Grid Size</label>
+                    <label for="gridsize" class="control-label attendance">Columns</label>
                     <div class="input-icon right">
                       <select id="inputgridsize" type="text" name="gridsize" ng-model="vm.gridsize" ng-change="vm.setGridsize(vm.gridsize)" class="form-control attendance">
-                        <option   value="col-md-1">1</option>
-                        <option   value="col-md-2">2</option>
-                        <option   value="col-md-4">4</option>
-                        <option   value="col-md-6">6</option>
-                        <option   value="col-md-12">12</option>
+                        <option   value="col-md-1">12</option>
+                        <option   value="col-md-2">6</option>
+                        <option   value="col-md-4">3</option>
+                        <option   value="col-md-6">2</option>
+                        <option   value="col-md-12">1</option>
                       </select>
                     </div>
                   </div>
                 </div>
-
+-->                <div class="col-md-12">
+<!--                <pre>Modal: {{vm.checkModel}}</pre>
+                <pre>Results: {{vm.checkResults}}</pre>
+    -->
+                 <div class="btn-group">
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.Sunday" uib-btn-checkbox>Sunday <br/> 
+            <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.MondayOfWeek" uib-btn-checkbox>Monday <br/>
+            <div style='font-size: small;'>{{vm.getFormattedDate(vm.MondayOfWeek)}} </div></label>
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.Tuesday" uib-btn-checkbox>Tuesday  <br/>
+            <div style='font-size: small;'> {{vm.TuesdayOfWeek}}</div></label>
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.Wednesday" uib-btn-checkbox>Wednesday  <br/>
+            <div style='font-size: small;'> {{vm.WednesdayOfWeek}}</div></label>
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.Thursday" uib-btn-checkbox>Thursday  <br/>
+            <div style='font-size: small;'> {{vm.ThursdayOfWeek}}</div></label>
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.Friday" uib-btn-checkbox>Friday  <br/>
+            <div style='font-size: small;'> {{vm.FridayOfWeek}}</div></label>
+        <label class="btn btn-green btn-primary attendance" 
+            ng-model="vm.checkModel.Saturday" uib-btn-checkbox>Saturday  <br/>
+            <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>
+                 </div>
+                 </div>
+              </div>
 <!--          <form action="" novalidate name="viewattendance" class="form-horizontal">
             <div class="form-body pal">
--->              <h3 class="block-heading">Attendance List</h3>
-              <div class="row" >
-              <div class="col-md-12">
-<!--
-<div ui-grid="vm.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-edit class="grid">
-<div class="grid-msg-overlay" ng-hide="!vm.loading">
-          <div class="msg">
-            <span>
-              Loading Data...
-              <i class="fa fa-spinner fa-spin"></i>
-            </span>
+-->     
           </div>
         </div>
-        <div class="grid-msg-overlay" ng-hide="vm.loading || vm.gridOptions.data.length">
-          <div class="msg">
-            <span>No Data</span>
-          </div>
-        </div>
-</div>
--->             
-<div class="gallery-pages">
-                    <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
-                      <div ng-repeat="student in vm.data.attendancelist track by $index" 
-                           isotope-item="" class=" mix " ng-class="vm.gridsize">
-                        <div class="hover-effect has-success">
-                         <div class="input-icon-large input-icon right col-md-1">
-                              <i class="glyphicon tooltips" data-hover="tooltip"
-                              ng-class=
-                              "vm.isSelected(student.ID) ? 'glyphicon-ok' : 'glyphicon-remove'"
-                              ng-show="vm.isSelected(student.ID)"></i>                        
-                              <div class="img">
-                                <img ng-src="./images/students/{{student.pictureurl}}" 
-                                    alt="" 
-                                    class="img-thumbnail img-fixheight100 " />
-                              </div>
-                              <div class="info" >
-                                <h4 style="color: white;">{{student.firstname}} {{student.lastname}} </h4>
-                                <div ng-show="vm.isSelected(student.ID)">Selected</div>
-                                <div>
-                                  <button type="button" 
-                                    ng-click="vm.selectItem(student.ID)" 
-                                    class="btn btn-default btn-sm mix-link">Toggle</button>
-                                  
-                                </div>
-                              </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+        <div class="panel-footer"></div>
+      </div>
+
+      <div class="panel panel-blue">
+        <div class="panel-heading">Attendance</div>
+        <div class="panel-body pan">
+
+            <h3 class="block-heading">Attendance List</h3>
+            <div class="row" >
+                <div class="deckgrid clearfix" deckgrid source="vm.photos" 
+                        cardTemplate="templates/states/attendance-card.html">
                 </div>
-</div>                
+        
+            </div>
+        </div>
+      </div>
+      <div class="panel-footer"></div>
+</div>
+
+
 <!--
 <div class="col-lg-12" ng-repeat="student in vm.data.attendancelist">
                     <div class="col-md-2 attendance">{{student.MondayOfWeek}}</div>
@@ -130,13 +131,14 @@
                                 student.day7}}</div>
                 </div>
               </div>
--->
+
             </div>
+            -->
 <!--          </form>
--->
+
         </div>
         <div class="panel-footer"></div>
       </div>
     </div>
 </div>
-
+-->

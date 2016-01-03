@@ -188,9 +188,9 @@
             $log.debug('getfiles timeout');
    //         $log.debug(vmpicsearch.gridApi);
             if(vmpicsearch.gridApi.selection.selectRow){
-                vmpicsearch.gridApi.selection.getSelectedRows();
+        //        vmpicsearch.gridApi.selection.getSelectedRows();
                 $log.debug('selectRow');
-        //      vmpicsearch.gridApi.selection.selectRow(vmpicsearch.gridOptions.data[0]);
+              vmpicsearch.gridApi.selection.selectRow(vmpicsearch.gridOptions.data[0]);
             }
         });
         return vmpicsearch.picfileList;
@@ -223,9 +223,10 @@
             onRegisterApi: function( gridApi ) {
                   //set gridApi on scope
                 vmpicsearch.gridApi = gridApi;
-                    console.log('gridApi onRegisterApi');
+                    console.log('gridApi onRegisterApi',vmpicsearch.gridApi);
         //          console.log(gridApi);
         //          console.log(vmpicsearch);
+                console.log($scope);
                     gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'row selected ' + row.entity.name;
                         console.log(msg);

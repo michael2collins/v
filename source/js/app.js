@@ -20,7 +20,8 @@
         'ui.select',
                 'iso.directives',
                 'ngSanitize',
-    'angularFileUpload'
+    'angularFileUpload',
+    'akoenig.deckgrid'
         //        'dynamicLayout'
         ])
 

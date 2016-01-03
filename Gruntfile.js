@@ -153,7 +153,8 @@ module.exports = function (grunt) {
             'app/vendors/angular-ui-utils/ui-utils-ieshiv.js',
             'app/vendors/multi-select/js/jquery.multi-select.js',
             'app/vendors/jquery.sparkline/index.js',
-            'app/vendors/calendar/zabuto_calendar.min.js'
+            'app/vendors/calendar/zabuto_calendar.min.js',
+            'app.vendors/angular-deckgrid/angular-deckgrid.js'
             //need to put angular-ui-notification
         ]
       },

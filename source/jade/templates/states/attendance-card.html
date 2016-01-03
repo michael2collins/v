@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<!--
+<div class="gallery-pages">
+                    <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
+                      <div ng-repeat="student in vm.data.attendancelist track by $index" 
+                           isotope-item="" class=" mix " ng-class="vm.gridsize">
+                        <div class="hover-effect has-success">
+                         <div class="input-icon-large input-icon right" style='width: 200px;'>
+                              <i class="glyphicon tooltips" data-hover="tooltip"
+                              ng-class=
+                              "vm.isSelected(student.ID) ? 'glyphicon-ok' : 'glyphicon-remove'"
+                              ng-show="vm.isSelected(student.ID)"></i>                        
+                              <div class="img">
+                                <img ng-src="./images/students/{{student.pictureurl}}" 
+                                    alt="" 
+                                    class="img-thumbnail img-fixheight100 " />
+                              </div>
+                              <div class="info" >
+                                <h4 style="color: white;">{{student.firstname}} {{student.lastname}} </h4>
+                                <div ng-show="vm.isSelected(student.ID)">Selected</div>
+                                <div>
+                                  <button type="button" 
+                                    ng-click="vm.selectItem(student.ID)" 
+                                    class="btn btn-default btn-sm mix-link">Toggle</button>
+                                  
+                                </div>
+                              </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+</div>
+-->
+ <div class="photo">
+        <a href="" data-ng-click="card.showIndex = !card.showIndex;mother.vm.selectItem(card.studentID)">Here?
+            <div class="photo-index" data-ng-if="card.showIndex">
+                <p style='font-size: large;' data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.name}} here!</p>
+    
+                <p class="balloon-wrapper">
+<!--                    <span class="balloon">{{card.$index}}</span> -->
+                    <span class="balloon">{{mother.vm.getAttendingCount()}}</span>
+                </p>
+            </div>
+    
+            <div class="photo-wrapper">
+                <img src="" style='height:auto; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+            </div>
+            <div class="photo-description">
+                <h3>{{card.name}}</h3>
+    <!--            <div>
+                  <button type="button" 
+                    data-ng-click="mother.vm.selectItem(card.studentID)" 
+                    class="btn btn-default btn-sm">Herebtn?</button>
+
+                </div>        
+        -->    </div>
+        </a>
+ </div>
