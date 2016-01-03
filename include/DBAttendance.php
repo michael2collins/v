@@ -133,20 +133,72 @@ class AttendanceDbHandler {
     }
 
 
-    public function getAttendanceList($thedow = NULL, $thelimit, $theclass = NULL) {
-        error_log( print_R("getAttendanceList entered", TRUE), 3, LOG);
-    error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+    public function getAttendanceHistory($thedow = NULL, $theclass = NULL) {
+        error_log( print_R("getAttendanceHistory entered", TRUE), 3, LOG);
+    error_log( print_R("getAttendanceHistory entered: thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
 
-        $sql = "SELECT a.ID, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, a.ContactId, "; 
-        $sql .= "`day1`, `day2`, `day3`, `day4`, `day5`, `day6`, `day7`, ";
-        $sql .= " a.firstname, a.lastname, a.class, a.rank, c.pictureurl FROM `nattendance` a, ncontacts c where (1 = 1) and a.ContactId = c.ID ";
+        $sql = "SELECT a.contactid as ContactId, a.classid, n.class ";
+        $sql .= ", DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek ";
+        $sql .= ",rank, c.firstname, c.lastname ";
+        $sql .= ",sum(downum = 1   ) as day1 ";
+        $sql .= ",sum(downum = 2   ) as day2 ";
+        $sql .= ",sum(downum = 3   ) as day3 ";
+        $sql .= ",sum(downum = 4   ) as day4 ";
+        $sql .= ",sum(downum = 5   ) as day5 ";
+        $sql .= ",sum(downum = 6   ) as day6 ";
+        $sql .= ",sum(downum = 7   ) as day7 ";
+        $sql .= " FROM attendance a, ncontacts c, nclass n "; 
+        $sql .= " WHERE attended = 1 ";
+        $sql .= " and a.ContactId = c.ID  and a.classid = n.id ";
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $sql .= " and mondayofweek = '" . $thedow . "'";
         } 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
-            $sql .= " and a.class = '" . $theclass . "'";
+            $sql .= " and n.class = '" . $theclass . "'";
         }
-        $sql .= "   order by mondayofweek desc, alphasortkey LIMIT " . $thelimit ;
+
+        $sql .= " group by contactid, classid, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d'), rank ";
+        $sql .= "   order by mondayofweek desc, c.currentrank " ;
+
+        error_log( print_R("getAttendanceHistory sql: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                error_log( print_R("getAttendanceHistory list stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
+                $slists = $stmt->get_result();
+                error_log( print_R("getAttendanceHistory list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getAttendanceHistory list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getAttendanceHistory list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+    }
+
+    public function getAttendanceList($thedow = NULL, $thelimit, $theclass = NULL) {
+        error_log( print_R("getAttendanceList entered", TRUE), 3, LOG);
+    error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+
+        $sql = "SELECT a.ID, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, a.ContactId "; 
+        $sql .= " , a.DOWnum, c.firstname, c.lastname, n.class, a.classid ";
+        $sql .= " , c.currentrank as rank, c.pictureurl, a.attended ";
+        $sql .= " FROM attendance a, ncontacts c, nclass n ";
+        $sql .= " where (1 = 1) and a.ContactId = c.ID  and a.classid = n.id ";
+        if (strlen($thedow) > 0 && $thedow != 'All') {
+            $sql .= " and mondayofweek = '" . $thedow . "'";
+        } 
+        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
+            $sql .= " and n.class = '" . $theclass . "'";
+        }
+        $sql .= "   order by mondayofweek desc, c.currentrank LIMIT " . $thelimit ;
 
         error_log( print_R("getAttendanceList sql: $sql", TRUE), 3, LOG);
         
@@ -170,6 +222,45 @@ class AttendanceDbHandler {
             return NULL;
         }
     }
+
+    public function getRegistrationList($daynum, $theclass) {
+        error_log( print_R("getRegistrationList entered", TRUE), 3, LOG);
+    error_log( print_R("attendance entered: daynum: $daynum theclass: $theclass\n ", TRUE), 3, LOG);
+
+        $cntsql = "select count(*) from attendance where daynum = " . $daynum ;
+
+        $sql = "SELECT  r.classid, r.studentid, s.rank,  '" . $daynum . "' ";
+        $sql .= " FROM `studentregistration` r, ncontacts s ";
+        $sql .= " WHERE  r.studentid = s.ID ";
+
+        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
+            $sql .= " and r.classid = " . $theclass  ;
+        }
+
+
+        error_log( print_R("getRegistrationList sql: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                error_log( print_R("getRegistrationList list stmt", TRUE), 3, LOG);
+                error_log( print_R($stmt, TRUE), 3, LOG);
+                $slists = $stmt->get_result();
+                error_log( print_R("getRegistrationList list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getRegistrationList list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRegistrationList list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+    }
+
 
     public function getAttendancePayList() {
         $sql = 'SELECT distinct p.classPayName as classpaynametmp,

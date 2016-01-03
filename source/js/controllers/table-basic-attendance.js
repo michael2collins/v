@@ -22,6 +22,7 @@
         var vm=this;
         
         vm.refreshtheAttendance = refreshtheAttendance;
+        vm.getAttendanceHistory = getAttendanceHistory;
         vm.setLimit = setLimit;
         vm.setClass = setClass;
         vm.setDOW = setDOW;
@@ -32,6 +33,8 @@
         vm.getMonday = getMonday;
         vm.getFormattedDate = getFormattedDate;
         vm.getAttendingCount = getAttendingCount;
+        vm.getActiveTab = getActiveTab;
+        vm.setActiveTab = setActiveTab;
         vm.reload = reload;
         vm.DOWlist = [];
         vm.limit = 0;
@@ -41,6 +44,7 @@
         vm.gridsize;
         vm.data = [];
         vm.classes = [];
+        vm.radioModel;
 
         var d = new Date();
         var weekday = new Array(7);
@@ -88,6 +92,7 @@
             Saturday:  weekday[6] == vm.todayDOW ? true : false
         };
 
+        vm.radioModel = vm.todayDOW;
 
         //setGridsize('col-md-12');
         setMonday();
@@ -247,6 +252,38 @@
 
         }
 
+        function getAttendanceHistory() {
+            $log.debug('getAttendanceHistory entered');
+            var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
+            $log.debug('pclass:', pclass);
+            
+            var refreshpath = encodeURI('../v1/attendancehistory?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass);
+
+            $log.debug('getAttendanceHistory path:', refreshpath);
+            
+             return AttendanceServices.getAttendanceHistory(refreshpath).then(function(data){
+                    $log.debug('getAttendanceHistory returned data');
+                    $log.debug(data);
+                    vm.data = data; 
+                    return vm.data;
+                },
+                function (error) {
+                    console.log('Caught an error:', error); 
+                          $log.debug('set no data route');
+                    //        $location.url('/v/#/table-basic-attendance');
+               //            var url = '#/table-basic-attendance';
+                //           $window.location.href = url;
+                    vm.data = [];
+                    return error;
+                }).
+                finally(function () { 
+                    vm.loading = false; 
+                    vm.loadAttempted = true;
+                }
+                );
+
+        }
+
         
         function getDOW() {
             return AttendanceServices.getDOW().then(function(data){
@@ -313,6 +350,14 @@
                 });
         }
 
+        function setActiveTab( activeTab ){
+            $log.debug('set activetab as:', activeTab);
+            AttendanceServices.setActiveTab(activeTab);
+        }
+
+        function getActiveTab(){
+            return AttendanceServices.getActiveTab();
+        }
 
 
 

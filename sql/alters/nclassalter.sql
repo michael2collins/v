@@ -440,3 +440,61 @@ ALTER TABLE `nclasspays`
   
 UPDATE  `ncontacts` SET  `pictureurl` = CONCAT(  `Lastname` ,  '.',  `firstname` ,  '.',  `ID` ,  '.jpg' ) WHERE 1
 
+
+--
+-- Table structure for table `attendance`
+--
+
+CREATE TABLE IF NOT EXISTS `attendance` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `contactID` int(11) NOT NULL,
+  `classID` int(11) NOT NULL,
+  `mondayOfWeek` date NOT NULL,
+  `rank` varchar(80) NOT NULL,
+  `DOWnum` int(11) NOT NULL,
+  `attended` int(11) NOT NULL,
+  PRIMARY KEY (`ID`),
+  UNIQUE KEY `unique_attendance` (`mondayOfWeek`,`classID`,`DOWnum`,`contactID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=31132 ;
+
+
+INSERT INTO  `attendance` (  `contactID` ,  `classID` ,  `mondayOfWeek` ,  `rank` ,  `DOWnum` ,  `attended` ) 
+SELECT contid, c.id, n.mondayofweek, n.rank,  1, 1
+FROM nattendance n, nclass c
+WHERE n.class = c.class
+AND day1 =1;
+
+INSERT INTO  `attendance` (  `contactID` ,  `classID` ,  `mondayOfWeek` ,  `rank` ,  `DOWnum` ,  `attended` ) 
+SELECT contid, c.id, n.mondayofweek, n.rank,  2, 1
+FROM nattendance n, nclass c
+WHERE n.class = c.class
+AND day2 =1;
+
+INSERT INTO `attendance`( `contactID`, `classID`, `mondayOfWeek`, `rank`, `DOWnum`, `attended`) 
+select contid, c.id, n.mondayofweek, n.rank, 3, 1 from nattendance n, nclass c where n.class = c.class and day3 = 1;
+
+INSERT INTO  `attendance` (  `contactID` ,  `classID` ,  `mondayOfWeek` ,  `rank` ,  `DOWnum` ,  `attended` ) 
+SELECT contid, c.id, n.mondayofweek, n.rank,  4, 1
+FROM nattendance n, nclass c
+WHERE n.class = c.class
+AND day4 =1;
+
+INSERT INTO  `attendance` (  `contactID` ,  `classID` ,  `mondayOfWeek` ,  `rank` ,  `DOWnum` ,  `attended` ) 
+SELECT contid, c.id, n.mondayofweek, n.rank,  5, 1
+FROM nattendance n, nclass c
+WHERE n.class = c.class
+AND day5 =1;
+
+INSERT INTO  `attendance` (  `contactID` ,  `classID` ,  `mondayOfWeek` ,  `rank` ,  `DOWnum` ,  `attended` ) 
+SELECT contid, c.id, n.mondayofweek, n.rank,  6, 1
+FROM nattendance n, nclass c
+WHERE n.class = c.class
+AND day6 =1;
+
+INSERT INTO  `attendance` (  `contactID` ,  `classID` ,  `mondayOfWeek` ,  `rank` ,  `DOWnum` ,  `attended` ) 
+SELECT contid, c.id, n.mondayofweek, n.rank,  7, 1
+FROM nattendance n, nclass c
+WHERE n.class = c.class
+AND day7 =1;
+
+

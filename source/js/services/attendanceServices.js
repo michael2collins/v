@@ -16,13 +16,25 @@
         var service = {
   //          getAllAttendances: getAllAttendances,
             refreshAttendances: refreshAttendances,
+            getAttendanceHistory: getAttendanceHistory,
             getDOW: getDOW,
             getSchedule: getSchedule,
             updateAttendance: updateAttendance,
 //            getAttendance: getAttendance,
+            setActiveTab: setActiveTab,
+            getActiveTab: getActiveTab,
             createAttendance: createAttendance
         };
         return service;
+        
+        function getActiveTab() {
+            return activeTab;
+        }
+        function setActiveTab(thetab) {
+            activeTab = thetab;
+        }
+        
+        
 /*
         function getAllAttendances(path, configdata) {
             $log.debug('getAllAttendances service entered');
@@ -45,8 +57,16 @@
             return( request.then( handleSuccess, handleError ) );
         }
 */
+
         function refreshAttendances(path) {
             $log.debug('refreshAttendances service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        function getAttendanceHistory(path) {
+            $log.debug('getAttendanceHistory service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

@@ -30,18 +30,18 @@ $app->get('/Attendance/:id',  function($student_id) {
 });
 
 
-$app->get('/attendance',  function() use ($app) {
+$app->get('/studentregistration',  function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("attendance entered:\n ", TRUE), 3, LOG);
+    error_log( print_R("studentregistration entered:\n ", TRUE), 3, LOG);
     error_log( print_R($allGetVars, TRUE), 3, LOG);
 
-    $thedow = '';
+    $daynum = '';
     $thelimit = '';
     $theclass = '';
     
-    if(array_key_exists('thedow', $allGetVars)){
-        $thedow = $allGetVars['thedow'];
+    if(array_key_exists('daynum', $allGetVars)){
+        $thedow = $allGetVars['daynum'];
     }
     if(array_key_exists('thelimit', $allGetVars)){
         $thelimit = $allGetVars['thelimit'];
@@ -50,15 +50,15 @@ $app->get('/attendance',  function() use ($app) {
         $theclass = $allGetVars['theclass'];
     }
 
-    error_log( print_R("attendance params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+    error_log( print_R("studentregistration params: daynum: $daynum thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
 
     $response = array();
     $db = new AttendanceDbHandler();
 
     // fetch task
-    $result = $db->getAttendanceList($thedow, $thelimit, $theclass);
+    $result = $db->getRegistrationList($daynum, $thelimit, $theclass);
     $response["error"] = false;
-    $response["attendancelist"] = array();
+    $response["studentregistrationlist"] = array();
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
@@ -114,6 +114,172 @@ $app->get('/attendance',  function() use ($app) {
         error_log( print_R("attendance bad\n ", TRUE), 3, LOG);
         error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
         error_log( print_R("attendance error\n ", TRUE), 3, LOG);
+        error_log( print_R($response, TRUE), 3, LOG);
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+});
+
+
+$app->get('/attendance',  function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("attendance entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $thedow = '';
+    $thelimit = '';
+    $theclass = '';
+    
+    if(array_key_exists('thedow', $allGetVars)){
+        $thedow = $allGetVars['thedow'];
+    }
+    if(array_key_exists('thelimit', $allGetVars)){
+        $thelimit = $allGetVars['thelimit'];
+    }
+    if(array_key_exists('theclass', $allGetVars)){
+        $theclass = $allGetVars['theclass'];
+    }
+
+    error_log( print_R("attendance params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getAttendanceList($thedow, $thelimit, $theclass);
+    $response["error"] = false;
+    $response["attendancelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+
+        if (count($slist) > 0) {
+            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+            $tmp["MondayOfWeek"] = (empty($slist["MondayOfWeek"]) ? "NULL" : $slist["MondayOfWeek"]);
+            $tmp["ContactId"] = (empty($slist["studentid"]) ? "NULL" : $slist["studentid"]);
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["attended"] = (empty($slist["attended"]) ? 0 : $slist["attended"]);
+            $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+            $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
+        } else {
+            $tmp["ID"] = "NULL";
+            $tmp["MondayOfWeek"] = "NULL";
+            $tmp["ContactId"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["attended"] = "NULL";
+            $tmp["DOWnum"] = "NULL";
+            $tmp["class"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["rank"] = "NULL";
+            $tmp["pictureurl"] = "NULL";
+            
+        }
+//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
+//        error_log( print_R($tmp, TRUE), 3, LOG);
+        array_push($response["attendancelist"], $tmp);
+    }
+    $row_cnt = count($response["attendancelist"]);
+    error_log( print_R("attendance cnt: $row_cnt\n ", TRUE), 3, LOG);
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        error_log( print_R("attendance fine with $row_cnt\n ", TRUE), 3, LOG);
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in attendance";
+        error_log( print_R("attendance bad\n ", TRUE), 3, LOG);
+        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
+        error_log( print_R("attendance error\n ", TRUE), 3, LOG);
+        error_log( print_R($response, TRUE), 3, LOG);
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+});
+
+$app->get('/attendancehistory',  function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("attendancehistory entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $thedow = '';
+    $thelimit = '';
+    $theclass = '';
+    
+    if(array_key_exists('thedow', $allGetVars)){
+        $thedow = $allGetVars['thedow'];
+    }
+    if(array_key_exists('thelimit', $allGetVars)){
+        $thelimit = $allGetVars['thelimit'];
+    }
+    if(array_key_exists('theclass', $allGetVars)){
+        $theclass = $allGetVars['theclass'];
+    }
+
+    error_log( print_R("attendancehistory params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getAttendanceHistory($thedow, $theclass);
+    $response["error"] = false;
+    $response["attendancehistory"] = array();
+    $tmpcnt = 0;
+    $bypass = false;
+    
+    if ($thelimit == "All" || $thelimit == null) {
+        $bypass = true;
+    }
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmpcnt += 1;
+        if (count($slist) > 0 && ( $tmpcnt <= $thelimit || $bypass = true )) {
+            $tmp["MondayOfWeek"] = (empty($slist["MondayOfWeek"]) ? "NULL" : $slist["MondayOfWeek"]);
+            $tmp["ContactId"] = (empty($slist["ContactId"]) ? "NULL" : $slist["ContactId"]);
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["day1"] = (empty($slist["day1"]) ? "NULL" : $slist["day1"]);
+            $tmp["day2"] = (empty($slist["day2"]) ? "NULL" : $slist["day2"]);
+            $tmp["day3"] = (empty($slist["day3"]) ? "NULL" : $slist["day3"]);
+            $tmp["day4"] = (empty($slist["day4"]) ? "NULL" : $slist["day4"]);
+            $tmp["day5"] = (empty($slist["day5"]) ? "NULL" : $slist["day5"]);
+            $tmp["day6"] = (empty($slist["day6"]) ? "NULL" : $slist["day6"]);
+            $tmp["day7"] = (empty($slist["day7"]) ? "NULL" : $slist["day7"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+        }
+//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
+//        error_log( print_R($tmp, TRUE), 3, LOG);
+        array_push($response["attendancehistory"], $tmp);
+    }
+    $row_cnt = count($response["attendancehistory"]);
+    error_log( print_R("attendancehistory cnt: $row_cnt\n ", TRUE), 3, LOG);
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        error_log( print_R("attendancehistory fine with $row_cnt\n ", TRUE), 3, LOG);
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in attendancehistory";
+        error_log( print_R("attendancehistory bad\n ", TRUE), 3, LOG);
+        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
+        error_log( print_R("attendancehistory error\n ", TRUE), 3, LOG);
         error_log( print_R($response, TRUE), 3, LOG);
         
 //note need to handle 404 data notfound
