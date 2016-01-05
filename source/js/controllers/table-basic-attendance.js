@@ -149,6 +149,7 @@
         }
         
         function getMonday(d) {
+            $log.debug('getMonday',d);
             if (d === null) {
                 d = new Date();
             } else {
@@ -166,7 +167,7 @@
           month = month.length > 1 ? month : '0' + month;
           var day = d3.getDate().toString();
           day = day.length > 1 ? day : '0' + day;
-          return year + '/' + month + '/' + day;
+          return year + '-' + month + '-' + day;
         }
         
         function selectItem(item){
@@ -205,7 +206,7 @@
             
             $q.all([
                     getDOW().then(function() {
-                       setDOW(vm.DOWlist[0].MondayOfWeek);
+                       setDOW(vm.getFormattedDate(vm.MondayOfWeek))
                        setLimit(100);
                    }),
                     getSchedule().then(function() {
