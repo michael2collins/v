@@ -116,6 +116,15 @@
             vm.dowChoice = theChoice;
             $log.debug('setDOW', vm.dowChoice);
         }
+        function getDayNum(aDOW) {
+            $log.debug('getDayNum', aDOW);
+            for (var i=0, len=weekday.length; i < len; i++) {
+                if ( weekday[i] == aDOW ) {
+                    $log.debug('getDayNum returning', i);
+                    return i;
+                }
+            }
+        }
         function setClass(aClass) {
             $log.debug('setClass',aClass);
             vm.theclass = aClass;
@@ -140,7 +149,11 @@
         }
         
         function getMonday(d) {
-          d = new Date(d);
+            if (d === null) {
+                d = new Date();
+            } else {
+                d = new Date(d);
+            }
           var day = d.getDay(),
               diff = d.getDate() - day + (day === 0 ? -6:1); // adjust when day is sunday
           return new Date(d.setDate(diff));
@@ -215,7 +228,7 @@
             var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
             $log.debug('pclass:', pclass);
             
-            var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass);
+            var refreshpath = encodeURI('../v1/studentregistration?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass + '&daynum=' + getDayNum(vm.radioModel));
             //var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit );
 
             $log.debug('refreshtheAttendance path:', refreshpath);
@@ -229,7 +242,7 @@
                             src: './images/students/' + vm.data.attendancelist[i].pictureurl,
                             name: vm.data.attendancelist[i].firstname 
                                 + ' ' + vm.data.attendancelist[i].lastname,
-                            studentID: vm.data.attendancelist[i].ID
+                            studentID: vm.data.attendancelist[i].ContactId
                         });
                     }
                     $log.debug('photos',vm.photos);

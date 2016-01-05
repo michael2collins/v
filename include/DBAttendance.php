@@ -223,19 +223,20 @@ class AttendanceDbHandler {
         }
     }
 
-    public function getRegistrationList($daynum, $theclass) {
+    public function getRegistrationList($daynum, $thedow, $theclass) {
         error_log( print_R("getRegistrationList entered", TRUE), 3, LOG);
-    error_log( print_R("attendance entered: daynum: $daynum theclass: $theclass\n ", TRUE), 3, LOG);
+    error_log( print_R("attendance entered: daynum: $daynum thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
 
-        $cntsql = "select count(*) from attendance where daynum = " . $daynum ;
+        $cntsql = "select count(*) from attendance a, nclass n ";
+        $cntsql .= " where n.id = a.classid ";
+        $cntsql .= " and daynum = " . $daynum ;
+        $cntsql .= " and mondayofweek = '" . $thedow . "'";
+        $cntsql .= " and n.class = '" . $theclass . "'";
 
-        $sql = "SELECT  r.classid, r.studentid, s.rank,  '" . $daynum . "' ";
-        $sql .= " FROM `studentregistration` r, ncontacts s ";
-        $sql .= " WHERE  r.studentid = s.ID ";
-
-        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
-            $sql .= " and r.classid = " . $theclass  ;
-        }
+        $sql = "SELECT  n.class, r.classid, r.studentid, s.currentrank, s.firstname, s.lastname,s.pictureurl,  '" . $daynum . "' as DOWnum ";
+        $sql .= " FROM  studentregistration  r, nclass n, ncontacts s ";
+        $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid ";
+        $sql .= " and n.class = '" . $theclass . "'";
 
 
         error_log( print_R("getRegistrationList sql: $sql", TRUE), 3, LOG);

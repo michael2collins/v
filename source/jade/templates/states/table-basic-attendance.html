@@ -68,6 +68,20 @@
                     <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>
               </div>
             </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
+                    <div class="input-icon right">
+                      <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice)" class="form-control attendance">
+                        <option>{{vm.getMonday()}}</option>
+                        <option ng-repeat="iter in vm.DOWlist" ng-selected="iter.MondayOfWeek === vm.dowChoice" 
+                             value="{{iter.MondayOfWeek}}">{{iter.MondayOfWeek}}</option>
+                      </select>
+                      
+                    </div>
+                  </div>
+                <button ng-click="vm.refreshtheAttendance()" class="btn btn-blue btn-default attendance">Refresh List</button>
+
             <div class="row" >
                 <div class="deckgrid clearfix" deckgrid source="vm.photos" 
                         cardTemplate="templates/states/attendance-card.html">

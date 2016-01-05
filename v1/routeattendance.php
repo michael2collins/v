@@ -58,7 +58,7 @@ $app->get('/studentregistration',  function() use ($app) {
     // fetch task
     $result = $db->getRegistrationList($daynum, $thelimit, $theclass);
     $response["error"] = false;
-    $response["studentregistrationlist"] = array();
+    $response["attendancelist"] = array();
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
@@ -66,18 +66,13 @@ $app->get('/studentregistration',  function() use ($app) {
         if (count($slist) > 0) {
             $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
             $tmp["MondayOfWeek"] = (empty($slist["MondayOfWeek"]) ? "NULL" : $slist["MondayOfWeek"]);
-            $tmp["ContactId"] = (empty($slist["ContactId"]) ? "NULL" : $slist["ContactId"]);
+            $tmp["ContactId"] = (empty($slist["studentid"]) ? "NULL" : $slist["studentid"]);
             $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["day1"] = (empty($slist["day1"]) ? "NULL" : $slist["day1"]);
-            $tmp["day2"] = (empty($slist["day2"]) ? "NULL" : $slist["day2"]);
-            $tmp["day3"] = (empty($slist["day3"]) ? "NULL" : $slist["day3"]);
-            $tmp["day4"] = (empty($slist["day4"]) ? "NULL" : $slist["day4"]);
-            $tmp["day5"] = (empty($slist["day5"]) ? "NULL" : $slist["day5"]);
-            $tmp["day6"] = (empty($slist["day6"]) ? "NULL" : $slist["day6"]);
-            $tmp["day7"] = (empty($slist["day7"]) ? "NULL" : $slist["day7"]);
+            $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
-            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["rank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
         } else {
             $tmp["ID"] = "NULL";
@@ -85,14 +80,9 @@ $app->get('/studentregistration',  function() use ($app) {
             $tmp["ContactId"] = "NULL";
             $tmp["firstname"] = "NULL";
             $tmp["lastname"] = "NULL";
-            $tmp["day1"] = "NULL";
-            $tmp["day2"] = "NULL";
-            $tmp["day3"] = "NULL";
-            $tmp["day4"] = "NULL";
-            $tmp["day5"] = "NULL";
-            $tmp["day6"] = "NULL";
-            $tmp["day7"] = "NULL";
+            $tmp["DOWnum"] = "NULL";
             $tmp["class"] = "NULL";
+            $tmp["classid"] = "NULL";
             $tmp["rank"] = "NULL";
             $tmp["pictureurl"] = "NULL";
             
@@ -102,18 +92,18 @@ $app->get('/studentregistration',  function() use ($app) {
         array_push($response["attendancelist"], $tmp);
     }
     $row_cnt = count($response["attendancelist"]);
-    error_log( print_R("attendance cnt: $row_cnt\n ", TRUE), 3, LOG);
+    error_log( print_R("studentregistration cnt: $row_cnt\n ", TRUE), 3, LOG);
 
     if ($row_cnt > 0) {
         $response["error"] = false;
-        error_log( print_R("attendance fine with $row_cnt\n ", TRUE), 3, LOG);
+        error_log( print_R("getRegistrationList fine with $row_cnt\n ", TRUE), 3, LOG);
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
-        $response["message"] = "error in attendance";
-        error_log( print_R("attendance bad\n ", TRUE), 3, LOG);
+        $response["message"] = "error in getRegistrationList";
+        error_log( print_R("getRegistrationList bad\n ", TRUE), 3, LOG);
         error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
-        error_log( print_R("attendance error\n ", TRUE), 3, LOG);
+        error_log( print_R("getRegistrationList error\n ", TRUE), 3, LOG);
         error_log( print_R($response, TRUE), 3, LOG);
         
 //note need to handle 404 data notfound
