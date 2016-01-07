@@ -228,8 +228,9 @@
             $log.debug('refreshtheAttendance entered');
             var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
             $log.debug('pclass:', pclass);
+            var thisdaynum = getDayNum(vm.radioModel);
             
-            var refreshpath = encodeURI('../v1/studentregistration?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass + '&daynum=' + getDayNum(vm.radioModel));
+            var refreshpath = encodeURI('../v1/studentregistration?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass + '&daynum=' + thisdaynum);
             //var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit );
 
             $log.debug('refreshtheAttendance path:', refreshpath);
@@ -243,7 +244,11 @@
                             src: './images/students/' + vm.data.attendancelist[i].pictureurl,
                             name: vm.data.attendancelist[i].firstname 
                                 + ' ' + vm.data.attendancelist[i].lastname,
-                            studentID: vm.data.attendancelist[i].ContactId
+                            studentID: vm.data.attendancelist[i].ContactId,
+                            rank: vm.data.attendancelist[i].rank,
+                            class: vm.data.attendancelist[i].class,
+                            theday: weekday[thisdaynum],
+                            MondayDOW: getFormattedDate(vm.MondayOfWeek)
                         });
                     }
                     $log.debug('photos',vm.photos);

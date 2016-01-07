@@ -383,15 +383,20 @@ class AttendanceDbHandler {
      */
 
     public function updateAttendance($sc_ContactId,
-                                       //   $sc_ClassId,
-                                       $sc_classPayName,
-                                       //   $sc_Class,
-                                       $sc_isTestFeeWaved,
-                                       $sc_classseq,
-                                       $sc_pgmseq,
-                                       $sc_Attendancestatus
+                                       $sc_class,
+                                       $sc_daynum,
+                                       $sc_attend,
+                                       $sc_mondayDOW
                                       ) {
         $num_affected_rows = 0;
+
+        $cntsql = "select count(*) from attendance a, nclass n ";
+        $cntsql .= " where n.id = a.classid ";
+        $cntsql .= " and daynum = " . $sc_daynum ;
+        $cntsql .= " and mondayofweek = '" . $sc_mondayDOW . "'";
+        $cntsql .= " and n.class = '" . $sc_class . "'";
+        $cntsql .= " and a.studentid = '" . $sc_ContactId . "'";
+        
 
         $sql = "UPDATE nclasspays t set ";
         //        $sql .= " t.classid = ?, ";

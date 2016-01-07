@@ -422,7 +422,7 @@ $app->get('/classcats',  function() {
     }
 });
 
-$app->put('/Attendance/:id',  function($student_id) use($app) {
+$app->put('/attendance/:id',  function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before put student class request", TRUE ));
@@ -436,46 +436,26 @@ $app->put('/Attendance/:id',  function($student_id) use($app) {
 
     //global $user_id;
     $contactID = $student_id;
-    //    $classid = $Attendance->classid;
-    $classPayName = $Attendance->classPayName;
-    //    $class = $Attendance->class;
-    $isTestFeeWaived = $Attendance->isTestFeeWaived;
-    $classseq = $Attendance->classseq;
-    $pgmseq = $Attendance->pgmseq;
-    $Attendancestatus = $Attendance->Attendancestatus;
-
-    //error_log( print_R("before update", TRUE ));
-
-    //error_log( print_R($contactID, TRUE ));
-    //    //error_log( print_R($classid, TRUE ));
-    //error_log( print_R($classPayName, TRUE ));
-    //    //error_log( print_R($class, TRUE ));
-    //error_log( print_R($isTestFeeWaived, TRUE ));
-    //error_log( print_R($classseq, TRUE ));
-    //error_log( print_R($pgmseq, TRUE ));
-    //error_log( print_R($Attendancestatus, TRUE ));
-
+    $class = $Attendance->class;
+    $daynum = $Attendance->daynum;
+    $attend = $Attendance->attend;
+    $mondayDOW = $Attendance->mondayDOW;
+    
     $db = new AttendanceDbHandler();
     $response = array();
 
     // updating task
     $result = $db->updateAttendance( $contactID,
-                                      //                    $classid,
-                                      $classPayName,
-                                      //                    $class,
-                                      $isTestFeeWaived,
-                                      $classseq,
-                                      $pgmseq,
-                                      $Attendancestatus
+                                      $class, $daynum, $attend, $mondayDOW
                                      );
     if ($result) {
         // task updated successfully
         $response["error"] = false;
-        $response["message"] = "Student Class updated successfully";
+        $response["message"] = "Attend put updated successfully";
     } else {
         // task failed to update
         $response["error"] = true;
-        $response["message"] = "Student failed to update. Please try again!";
+        $response["message"] = "Attend failed to update. Please try again!";
     }
     echoRespnse(200, $response);
 });
