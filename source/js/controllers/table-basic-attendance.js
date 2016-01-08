@@ -170,14 +170,36 @@
           return year + '-' + month + '-' + day;
         }
         
-        function selectItem(item){
-            vm.attending.push({
-                attended: item, 
-                class: vm.theclass,
-                theday: vm.todayDOW,
-                tday: vm.tday,
-                DOW: vm.MondayOfWeek
-            });
+        function selectItem(item, indextoggle){
+            $log.debug('selectItem', item, indextoggle);
+            var found=false;
+            
+            for (var i=0, len=vm.attending.length; i < len; i++) {
+                $log.debug('is there?', item, vm.attending[i].attended);
+                if (vm.attending[i].attended == item && indextoggle === true) {
+                    //already there, don't add
+                    //does this actually happen?
+                    found=true;
+                    break;
+                }
+                if (vm.attending[i].attended == item && indextoggle === false) {
+                    //already there, remove
+                    vm.attending.splice(i,1);
+                    found=true;
+                    break;
+                }
+            }
+            //add
+            if (found === false && indextoggle === true) {
+                vm.attending.push({
+                    attended: item, 
+                    class: vm.theclass,
+                    theday: vm.todayDOW,
+                    tday: vm.tday,
+                    DOW: vm.MondayOfWeek
+                });
+            }
+
             $log.debug('selectedItem', vm.attending);
         }
 
@@ -223,6 +245,33 @@
             });
         }
         
+        function updateAttendance() {
+            $log.debug('about updateAttendance ');
+            var updpath = "../v1/updateattendance";
+
+            return AttendanceServices.updateAttendance(updpath, vm)
+                .then(function(data){
+                    $log.debug('updateAttendance returned data');
+                    $log.debug(data);
+                    vm.thisattendance = data;
+                    $log.debug(vm.thisattendance);
+                    $log.debug(vm.thisattendance.message);
+                    vm.message = vm.thisattendance.message;
+        //            var url = './#/form-layouts-editstudent/id/' + vm.thisattendance.student_id;
+        //            $log.debug(url);
+        //            alert(url);
+        //            $window.location.href = url;
+                    return vm.thisattendance;
+                }).catch(function(e) {
+                    $log.debug('updateAttendance failure:');
+                    $log.debug("error", e);
+                    vm.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+        }
+
+
 
         function refreshtheAttendance() {
             $log.debug('refreshtheAttendance entered');
@@ -239,6 +288,7 @@
                     $log.debug('refreshAttendances returned data');
                     $log.debug(data);
                     vm.data = data; 
+                    vm.photos = [];
                     for (var i = 0, len=vm.data.attendancelist.length; i < len; i++) {
                         vm.photos.push({id: 'photo-' + i, 
                             src: './images/students/' + vm.data.attendancelist[i].pictureurl,
@@ -261,6 +311,7 @@
                //            var url = '#/table-basic-attendance';
                 //           $window.location.href = url;
                     vm.data = [];
+                    vm.photos = [];
                     return error;
                 }).
                 finally(function () { 

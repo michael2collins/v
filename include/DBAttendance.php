@@ -376,75 +376,101 @@ class AttendanceDbHandler {
         }
     }
 
+        /**
+     * Checking for duplicate student by email address, FirstName, LastName
+     * @return boolean
+     */
+    private function isAttendanceExists($daynum, $mondayofweek, $classid, $studentid) {
+
+        $cntsql = "select count(*) as attendcount from attendance a ";
+        $cntsql .= " where a.daynum = ? " ;
+        $cntsql .= " and a.mondayofweek = ? ";
+        $cntsql .= " and a.classid = ? ";
+        $cntsql .= " and a.studentid = ? ";
+        
+        $stmt = $this->conn->prepare($cntsql);
+        $stmt->bind_param("isii", $daynum, $mondayofweek, $classid, $studentid);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
 
     /**
-     * Updating student class
-
+     * Updating or inserting attendance
      */
 
     public function updateAttendance($sc_ContactId,
+                                       $sc_classid,
                                        $sc_class,
                                        $sc_daynum,
                                        $sc_attend,
-                                       $sc_mondayDOW
+                                       $sc_mondayDOW, 
+                                       $sc_rank
                                       ) {
         $num_affected_rows = 0;
 
-        $cntsql = "select count(*) from attendance a, nclass n ";
-        $cntsql .= " where n.id = a.classid ";
-        $cntsql .= " and daynum = " . $sc_daynum ;
-        $cntsql .= " and mondayofweek = '" . $sc_mondayDOW . "'";
-        $cntsql .= " and n.class = '" . $sc_class . "'";
-        $cntsql .= " and a.studentid = '" . $sc_ContactId . "'";
+
+        $inssql = " INSERT INTO `attendance`( `contactID`, `classID`, `mondayOfWeek`, `rank`, `DOWnum`, `attended`) ";
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?) ";
+
         
+        if (!$this->isAttendanceExists($sc_daynum, $sc_mondayDOW, $sc_class, $sc_ContactId)) {
 
-        $sql = "UPDATE nclasspays t set ";
-        //        $sql .= " t.classid = ?, ";
-        $sql .= " t.classPayName = ?, ";
-        //    $sql .= " t.class = ?, ";
-        $sql .= " t.isTestFeeWaived = ?, ";
-        $sql .= " t.classseq = ?, ";
-        $sql .= " t.pgmseq = ?, ";
-        $sql .= " t.Attendancestatus = ? ";
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("iissii",
+                                  $sc_ContactId, $sc_classid, $sc_mondayDOW, $sc_rank, $sc_daynum,
+                                  $sc_attend    
+                                     );
+                    $result = $stmt->execute();
 
-        $sql .= " where contactID = ? ";
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_attend_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_attend_id;
+                    } else {
+                        // Failed to create user
+                        return NULL;
+                    }
 
-        error_log( print_R($sql, TRUE), 3, LOG);
-        error_log( print_R($sc_ContactId, TRUE), 3, LOG);
-        //    error_log( print_R($sc_ClassId, TRUE), 3, LOG);
-        error_log( print_R($sc_classPayName, TRUE), 3, LOG);
-        //    error_log( print_R($sc_Class, TRUE), 3, LOG);
-        error_log( print_R($sc_isTestFeeWaved, TRUE), 3, LOG);
-        error_log( print_R($sc_classseq, TRUE), 3, LOG);
-        error_log( print_R($sc_pgmseq, TRUE), 3, LOG);
-        error_log( print_R($sc_Attendancestatus, TRUE), 3, LOG);
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
 
-        if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class status update prepared", TRUE), 3, LOG);
-            $stmt->bind_param("siiisi",
-                              //      $sc_ClassId    ,
-                              $sc_classPayName    ,
-                              //     $sc_Class ,
-                              $sc_isTestFeeWaved,
-                              $sc_classseq,
-                              $sc_pgmseq,
-                              $sc_Attendancestatus,
-                              $sc_ContactId
-                             );
-            error_log( print_R("student class status update bind", TRUE), 3, LOG);
-            $stmt->execute();
-            error_log( print_R("student class status update execute", TRUE), 3, LOG);
-            $num_affected_rows = $stmt->affected_rows;
-            $stmt->close();
-            error_log( print_R("student class status update done", TRUE), 3, LOG);
 
         } else {
-            error_log( print_R("student class status update failed", TRUE), 3, LOG);
-            error_log( print_R($this->conn->error, TRUE), 3, LOG);
-            printf("Errormessage: %s\n", $this->conn->error);
+            // already existed in the db, update
+            $updsql = " UPDATE `attendance` SET attended = ? ";
+            $updsql .= " where a.studentid = ? ";
+            $updsql .= " and a.classid = ? ";
+            $updsql .= " and a.mondayofweek = ? ";
+            $updsql .= " and a.daynum = ? " ;
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+
+                $stmt->bind_param("iiisi",
+                                  $sc_attend, $sc_ContactId, $sc_classid, $sc_mondayDOW, $sc_daynum
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("attendance update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+
         }
 
-        return $num_affected_rows > 0;
+
     }
 
     /**

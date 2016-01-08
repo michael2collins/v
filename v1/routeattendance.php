@@ -422,42 +422,51 @@ $app->get('/classcats',  function() {
     }
 });
 
-$app->put('/attendance/:id',  function($student_id) use($app) {
-    // check for required params
-    //verifyRequiredParams(array('task', 'status'));
-    //error_log( print_R("before put student class request", TRUE ));
 
+$app->post('/updateattendance',  function() use($app) {
+    $response = array();
 
-    $request = $app->request();
-    $body = $request->getBody();
-    $Attendance = json_decode($body);
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
 
-    //error_log( print_R($Attendance, TRUE ));
+    error_log( print_R("attendance post before update insert\n", TRUE ), 3, LOG);
 
-    //global $user_id;
-    $contactID = $student_id;
-    $class = $Attendance->class;
-    $daynum = $Attendance->daynum;
-    $attend = $Attendance->attend;
-    $mondayDOW = $Attendance->mondayDOW;
-    
+    $contactID  = (isset($dataJsonDecode->thedata->student_id) ? $dataJsonDecode->thedata->student_id : "");
+    $class      = (isset($dataJsonDecode->thedata->class)      ? $dataJsonDecode->thedata->class : "");
+    $classid    = (isset($dataJsonDecode->thedata->classid)    ? $dataJsonDecode->thedata->classid : "");
+    $daynum     = (isset($dataJsonDecode->thedata->daynum)     ? $dataJsonDecode->thedata->daynum : "");
+    $attend     = (isset($dataJsonDecode->thedata->attend)     ? $dataJsonDecode->thedata->attend : "");
+    $mondayDOW  = (isset($dataJsonDecode->thedata->mondayDOW)  ? $dataJsonDecode->thedata->mondayDOW : "");
+    $rank       = (isset($dataJsonDecode->thedata->rank)       ? $dataJsonDecode->thedata->rank : "");
+
     $db = new AttendanceDbHandler();
     $response = array();
 
     // updating task
-    $result = $db->updateAttendance( $contactID,
-                                      $class, $daynum, $attend, $mondayDOW
+    $attendance_id = $db->updateAttendance( $contactID,
+                                      $classid, $class, $daynum, $attend, $mondayDOW, $rank
                                      );
-    if ($result) {
-        // task updated successfully
+
+    if ($attendance_id > 1) {
         $response["error"] = false;
-        $response["message"] = "Attend put updated successfully";
+        $response["message"] = "attend created successfully";
+        $response["attendance_id"] = $attendance_id;
+        error_log( print_R("attend created: $student_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($attendance_id == 1) {
+        $response["error"] = false;
+        $response["message"] = "attend updated successfully";
+        error_log( print_R("attend already existed\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
     } else {
-        // task failed to update
+        error_log( print_R("after attend result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
         $response["error"] = true;
-        $response["message"] = "Attend failed to update. Please try again!";
+        $response["message"] = "Failed to create attend. Please try again";
+        echoRespnse(400, $response);
     }
-    echoRespnse(200, $response);
+
 });
 
 $app->put('/Attendancepaylist/:id',  function($student_id) use($app) {

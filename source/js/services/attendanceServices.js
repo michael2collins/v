@@ -22,8 +22,7 @@
             updateAttendance: updateAttendance,
 //            getAttendance: getAttendance,
             setActiveTab: setActiveTab,
-            getActiveTab: getActiveTab,
-            createAttendance: createAttendance
+            getActiveTab: getActiveTab
         };
         return service;
         
@@ -107,8 +106,8 @@
                 });
         }
 */
-        function createAttendance(path, thedata ) {
-                    $log.debug('createAttendance data before post :' , thedata.data);
+        function updateAttendance(path, thedata ) {
+                    $log.debug('updateAttendance data before post :' , thedata.data);
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -122,22 +121,7 @@
                     return( request.then( handleSuccess, handleError ) );
         }        
         
-        function updateAttendance(path, Attendances) {
-                    $log.debug('updateAttendance vm.data before put :' , Attendances);
-            return $http({method: 'PUT', url: path, data: Attendances}).
-                success(function(data, status, headers, config) {
-                    $log.debug('updateAttendance success:' + path);
-                    $log.debug(data);
-
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('updateAttendance failure:' + path);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
-        }
-
+        
         // ---
         // PRIVATE METHODS.
         // ---
