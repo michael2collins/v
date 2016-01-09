@@ -36,6 +36,7 @@
         vm.getActiveTab = getActiveTab;
         vm.setActiveTab = setActiveTab;
         vm.reload = reload;
+        vm.setday = setday;
         vm.DOWlist = [];
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500];
@@ -46,7 +47,6 @@
         vm.classes = [];
         vm.radioModel;
 
-        var d = new Date();
         var weekday = new Array(7);
         weekday[0]=  "Sunday";
         weekday[1] = "Monday";
@@ -65,8 +65,7 @@
         tdays[5] = "day6";
         tdays[6] = "day7";
 
-        vm.todayDOW = weekday[d.getDay()];
-        vm.tday = tdays[d.getDay()];
+        vm.todayDOW ;
         vm.nowChoice = 0;
         vm.loading = true;
         vm.selectedItem = null;
@@ -80,25 +79,23 @@
         vm.FridayOfWeek;
         vm.SaturdayOfWeek;
         vm.SundayOfWeek;
+        vm.radioModel;
+        vm.checkModel = [];
 
-
-        vm.checkModel = {
-            Sunday:    weekday[0] == vm.todayDOW ? true : false ,
-            Monday:    weekday[1] == vm.todayDOW ? true : false,
-            Tuesday:   weekday[2] == vm.todayDOW ? true : false,
-            Wednesday: weekday[3] == vm.todayDOW ? true : false,
-            Thursday:  weekday[4] == vm.todayDOW ? true : false,
-            Friday:    weekday[5] == vm.todayDOW ? true : false,
-            Saturday:  weekday[6] == vm.todayDOW ? true : false
-        };
-
-        vm.radioModel = vm.todayDOW;
 
         //setGridsize('col-md-12');
         setMonday();
         activate();
 
-
+        function settoday(aDay){
+            vm.todayDOW = aDay;
+            $log.debug('settoday',aDay, vm.todayDOW);
+        }
+        function setday(aDay) {
+            vm.photos=[];
+            settoday(weekday[aDay]);
+            getSchedule(vm.todayDOW);
+        }
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
             vm.limit = thelimit;
@@ -216,6 +213,24 @@
         }
         
         function activate() {
+            var d = new Date();
+            var d2 = weekday[d.getDay()];
+            $log.debug('weekday',d2);
+
+            settoday(d2);
+            vm.radioModel = vm.todayDOW;
+            vm.checkModel = {
+                Sunday:    weekday[0] == vm.todayDOW ? true : false ,
+                Monday:    weekday[1] == vm.todayDOW ? true : false,
+                Tuesday:   weekday[2] == vm.todayDOW ? true : false,
+                Wednesday: weekday[3] == vm.todayDOW ? true : false,
+                Thursday:  weekday[4] == vm.todayDOW ? true : false,
+                Friday:    weekday[5] == vm.todayDOW ? true : false,
+                Saturday:  weekday[6] == vm.todayDOW ? true : false
+            };
+            vm.tday = tdays[d.getDay()];
+
+            
             $scope.$watchCollection('vm.checkModel', function () {
                 vm.checkResults = [];
                 angular.forEach(vm.checkModel, function (value, key) {
@@ -225,17 +240,23 @@
                   }
                 });
              });
+            $log.debug('b4 getDOW and schedule', vm.todayDOW);
             
             $q.all([
                     getDOW().then(function() {
-                       setDOW(vm.getFormattedDate(vm.MondayOfWeek))
+                       setDOW(vm.getFormattedDate(vm.MondayOfWeek));
                        setLimit(100);
                    }),
-                    getSchedule().then(function() {
+                    getSchedule(vm.todayDOW).then(function() {
+                        setNowChoice();        
                         $log.debug('nowChoice',vm.nowChoice,'classes',vm.classes);
-                        
-                       setClass(vm.classes[vm.nowChoice].Description);
+
+                        setClass(vm.classes[vm.nowChoice].Description);
                         $log.debug('setClass', vm.theclass);
+                     },function(error) {
+                         vm.photos=[];
+                         vm.nowChoice=0;
+                         setClass("");
                      })
                 ])
                 .then(function() {
@@ -279,7 +300,10 @@
             $log.debug('pclass:', pclass);
             var thisdaynum = getDayNum(vm.radioModel);
             
-            var refreshpath = encodeURI('../v1/studentregistration?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass + '&daynum=' + thisdaynum);
+            var refreshpath = encodeURI('../v1/studentregistration?thedow=' + 
+                vm.dowChoice + '&thelimit=' + 
+                vm.limit + '&theclass=' + 
+                pclass + '&daynum=' + thisdaynum);
             //var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit );
 
             $log.debug('refreshtheAttendance path:', refreshpath);
@@ -305,7 +329,7 @@
                     return vm.data;
                 },
                 function (error) {
-                    console.log('Caught an error:', error); 
+                    $log.debug('Caught an error:', error); 
                           $log.debug('set no data route');
                     //        $location.url('/v/#/table-basic-attendance');
                //            var url = '#/table-basic-attendance';
@@ -338,7 +362,7 @@
                     return vm.data;
                 },
                 function (error) {
-                    console.log('Caught an error:', error); 
+                    $log.debug('Caught an error:', error); 
                           $log.debug('set no data route');
                     //        $location.url('/v/#/table-basic-attendance');
                //            var url = '#/table-basic-attendance';
@@ -364,24 +388,32 @@
                 });
         }
 
+        function fillClassList() {
+            vm.classes=[];
+            for (var i=0; i < vm.Schedulelist.length; i++) {
+               $log.debug('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
+               $log.debug('TimeRange',vm.Schedulelist[i].TimeRange);
+               $log.debug('timestart',vm.Schedulelist[i].TimeStart);
+               $log.debug('timeend',vm.Schedulelist[i].TimeEnd);
+               vm.classes.push(vm.Schedulelist[i] );
+            }
+            
+        }
+        
         function setNowChoice() {
             vm.nowChoice=0;
-            vm.classes=[];
+    //        vm.classes=[];
             var d = new Date();
             var y = d.getFullYear();
             var h = d.getHours();
             var mm = d.getMinutes();
             
-            for (var i=0; i < vm.Schedulelist.length; i++) {
-               console.log('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
-               console.log('TimeRange',vm.Schedulelist[i].TimeRange);
-               console.log('timestart',vm.Schedulelist[i].TimeStart);
-               console.log('timeend',vm.Schedulelist[i].TimeEnd);
-               var start = vm.Schedulelist[i].TimeStart.split(":");
+            for (var i=0; i < vm.classes.length; i++) {
+               var start = vm.classes[i].TimeStart.split(":");
                var starth = start[0];
                var startmm = start[1];
-               var end = vm.Schedulelist[i].TimeEnd.split(":");
-               console.log('end',end);
+               var end = vm.classes[i].TimeEnd.split(":");
+               $log.debug('end',end);
                var endh = end[0];
                var endmm = end[1];
                var d1=new Date(parseInt(d.getFullYear(),10),
@@ -396,8 +428,8 @@
                      parseInt(endh,10),
                      parseInt(endmm,10),
                      parseInt(d.getSeconds(),10));
-                console.log('startdate',d1);
-                console.log('enddate',d2);
+                $log.debug('startdate',d1);
+                $log.debug('enddate',d2);
                 var startdate=d1.valueOf();
                 var enddate=d2.valueOf();                       
                //making start inclusive and end not
@@ -405,19 +437,27 @@
                    vm.nowChoice = i; //note there may be nmultiples and this will pick the last
                    $log.debug('nowChoice',vm.nowChoice);
                }
-               vm.classes.push(vm.Schedulelist[i] );
+            //   vm.classes.push(vm.Schedulelist[i] );
             }
             
         }
-        function getSchedule() {
-            var path='../v1/schedule/' + vm.todayDOW;
+        function getSchedule(aDOW) {
+            $log.debug('getSchedule',aDOW);
+            var path='../v1/schedule/' + aDOW;
 
             return AttendanceServices.getSchedule(path).then(function(data){
                     $log.debug('getSchedule returned data');
                     $log.debug(data);
                     vm.Schedulelist = data.Schedulelist;
-                    setNowChoice();        
-                });
+                    fillClassList();
+                }, function(error) {
+                    $log.debug('Caught an error:', error); 
+                    vm.Schedulelist = [];
+                    fillClassList();
+                    return error;
+                    
+                }
+                );
         }
 
         function setActiveTab( activeTab ){

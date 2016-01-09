@@ -66,24 +66,31 @@
               <div class="col-md-12">
               <div class="btn-group col-md-7">
                     <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(0)"
                     ng-model="vm.radioModel" uib-btn-radio="'Sunday'">Sunday <br/> 
                     <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>
                 <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(1)"
                     ng-model="vm.radioModel" uib-btn-radio="'Monday'">Monday <br/>
                     <div style='font-size: small;'>{{vm.getFormattedDate(vm.MondayOfWeek)}} </div></label>
                 <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(2)"
                     ng-model="vm.radioModel" uib-btn-radio="'Tuesday'">Tuesday  <br/>
                     <div style='font-size: small;'> {{vm.TuesdayOfWeek}}</div></label>
                 <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(3)"
                     ng-model="vm.radioModel" uib-btn-radio="'Wednesday'">Wednesday  <br/>
                     <div style='font-size: small;'> {{vm.WednesdayOfWeek}}</div></label>
                 <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(4)"
                     ng-model="vm.radioModel" uib-btn-radio="'Thursday'">Thursday  <br/>
                     <div style='font-size: small;'> {{vm.ThursdayOfWeek}}</div></label>
                 <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(5)"
                     ng-model="vm.radioModel" uib-btn-radio="'Friday'">Friday  <br/>
                     <div style='font-size: small;'> {{vm.FridayOfWeek}}</div></label>
                 <label class="btn btn-green btn-primary attendance" 
+                    ng-click="vm.setday(6)"
                     ng-model="vm.radioModel" uib-btn-radio="'Saturday'">Saturday  <br/>
                     <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>
             </div>
