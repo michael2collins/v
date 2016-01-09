@@ -295,7 +295,7 @@
 
 
         function refreshtheAttendance() {
-            $log.debug('refreshtheAttendance entered');
+            $log.debug('refreshtheAttendance entered with radioModel', vm.radioModel);
             var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
             $log.debug('pclass:', pclass);
             var thisdaynum = getDayNum(vm.radioModel);
@@ -313,6 +313,7 @@
                     $log.debug(data);
                     vm.data = data; 
                     vm.photos = [];
+                    vm.attending = [];
                     for (var i = 0, len=vm.data.attendancelist.length; i < len; i++) {
                         vm.photos.push({id: 'photo-' + i, 
                             src: './images/students/' + vm.data.attendancelist[i].pictureurl,
@@ -321,9 +322,14 @@
                             studentID: vm.data.attendancelist[i].ContactId,
                             rank: vm.data.attendancelist[i].rank,
                             class: vm.data.attendancelist[i].class,
-                            theday: weekday[thisdaynum],
-                            MondayDOW: getFormattedDate(vm.MondayOfWeek)
+                            theday: vm.data.attendancelist[i].DOWnum,
+                            MondayDOW: vm.data.attendancelist[i].MondayOfWeek,
+                            attended: vm.data.attendancelist[i].attended,
+                            showIndex: vm.data.attendancelist[i].attended == 1 ? true : false
                         });
+                        if (vm.data.attendancelist[i].attended == 1 ) {
+                            selectItem(vm.data.attendancelist[i].ContactId, true);
+                        }
                     }
                     $log.debug('photos',vm.photos);
                     return vm.data;

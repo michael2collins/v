@@ -39,9 +39,13 @@ $app->get('/studentregistration',  function() use ($app) {
     $daynum = '';
     $thelimit = '';
     $theclass = '';
+    $thedow = '';
     
     if(array_key_exists('daynum', $allGetVars)){
-        $thedow = $allGetVars['daynum'];
+        $daynum = $allGetVars['daynum'];
+    }
+    if(array_key_exists('thedow', $allGetVars)){
+        $thedow = $allGetVars['thedow'];
     }
     if(array_key_exists('thelimit', $allGetVars)){
         $thelimit = $allGetVars['thelimit'];
@@ -50,13 +54,13 @@ $app->get('/studentregistration',  function() use ($app) {
         $theclass = $allGetVars['theclass'];
     }
 
-    error_log( print_R("studentregistration params: daynum: $daynum thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+    error_log( print_R("studentregistration params: daynum: $daynum  thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
 
     $response = array();
     $db = new AttendanceDbHandler();
 
     // fetch task
-    $result = $db->getRegistrationList($daynum, $thelimit, $theclass);
+    $result = $db->getRegistrationList($daynum, $thedow, $thelimit, $theclass);
     $response["error"] = false;
     $response["attendancelist"] = array();
 
@@ -64,18 +68,17 @@ $app->get('/studentregistration',  function() use ($app) {
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
         if (count($slist) > 0) {
-            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
-            $tmp["MondayOfWeek"] = (empty($slist["MondayOfWeek"]) ? "NULL" : $slist["MondayOfWeek"]);
+            $tmp["MondayOfWeek"] = $thedow;
             $tmp["ContactId"] = (empty($slist["studentid"]) ? "NULL" : $slist["studentid"]);
             $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);
+            $tmp["DOWnum"] = (empty($slist["downum"]) ? "NULL" : $slist["downum"]);
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
             $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
             $tmp["rank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
+            $tmp["attended"] = (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
         } else {
-            $tmp["ID"] = "NULL";
             $tmp["MondayOfWeek"] = "NULL";
             $tmp["ContactId"] = "NULL";
             $tmp["firstname"] = "NULL";
@@ -85,6 +88,7 @@ $app->get('/studentregistration',  function() use ($app) {
             $tmp["classid"] = "NULL";
             $tmp["rank"] = "NULL";
             $tmp["pictureurl"] = "NULL";
+            $tmp["attended"] = "NULL";
             
         }
 //        error_log( print_R("attendance push\n ", TRUE), 3, LOG);

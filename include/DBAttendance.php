@@ -223,25 +223,49 @@ class AttendanceDbHandler {
         }
     }
 
-    public function getRegistrationList($daynum, $thedow, $theclass) {
+    public function getRegistrationList($daynum, $thedow, $thelimit, $theclass) {
         error_log( print_R("getRegistrationList entered", TRUE), 3, LOG);
     error_log( print_R("attendance entered: daynum: $daynum thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
 
-        $cntsql = "select count(*) from attendance a, nclass n ";
-        $cntsql .= " where n.id = a.classid ";
-        $cntsql .= " and daynum = " . $daynum ;
-        $cntsql .= " and mondayofweek = '" . $thedow . "'";
-        $cntsql .= " and n.class = '" . $theclass . "'";
 
-        $sql = "SELECT  n.class, r.classid, r.studentid, s.currentrank, s.firstname, s.lastname,s.pictureurl,  '" . $daynum . "' as DOWnum ";
+        $sumsql = " select class, classid, studentid, currentrank, firstname, ";
+        $sumsql .= " lastname, pictureurl, downum, sum( attended) as attended from ( ";
+
+        $sql = "SELECT  n.class, r.classid, r.studentid, s.currentrank, s.firstname, ";
+        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, 0 as attended";
         $sql .= " FROM  studentregistration  r, nclass n, ncontacts s ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid ";
         $sql .= " and n.class = '" . $theclass . "'";
 
+        $heresql = " Union ";
+        $heresql .= " SELECT n.class, ";
+        $heresql .= " a.classid, ";
+        $heresql .= " a.ContactId as studentid, "; 
+        $heresql .= " c.currentrank,";
+        $heresql .= " c.firstname, ";
+        $heresql .= " c.lastname, ";
+        $heresql .= " c.pictureurl, ";
+        $heresql .= " a.DOWnum, ";
+        $heresql .= " a.attended ";
+        $heresql .= " FROM attendance a, ncontacts c, nclass n ";
+        $heresql .= " where (1 = 1) and a.ContactId = c.ID  and a.classid = n.id ";
+        $heresql .= " and mondayofweek = '" . $thedow . "'";
+        $heresql .= " and n.class = '" . $theclass . "'";
+        $heresql .= " and a.downum = " . $daynum;
+        $heresql .= " and a.attended = 1 ";
 
-        error_log( print_R("getRegistrationList sql: $sql", TRUE), 3, LOG);
+        $grpsql = " ) sel  ";
+        $grpsql .= "group by 1,2,3,4,5,6,7,8 order by 6,5";
         
-        if ($stmt = $this->conn->prepare($sql)) {
+        $finalsql = $sumsql . $sql . $heresql . $grpsql;
+        
+        error_log( print_R("getRegistrationList heresql: $finalsql", TRUE), 3, LOG);
+
+        //check count, if we have non zero attendances, then get a list of who has attendance and exclude
+        //from generic list, but add the attend list to the generic's that didn't have one 
+        
+        
+        if ($stmt = $this->conn->prepare($finalsql)) {
             if ($stmt->execute()) {
                 error_log( print_R("getRegistrationList list stmt", TRUE), 3, LOG);
                 error_log( print_R($stmt, TRUE), 3, LOG);
