@@ -435,13 +435,15 @@ $app->post('/updateattendance',  function() use($app) {
         $dataJsonDecode     = json_decode($data);
 
     error_log( print_R("attendance post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
 
     $contactID  = (isset($dataJsonDecode->thedata->student_id) ? $dataJsonDecode->thedata->student_id : "");
     $class      = (isset($dataJsonDecode->thedata->class)      ? $dataJsonDecode->thedata->class : "");
     $classid    = (isset($dataJsonDecode->thedata->classid)    ? $dataJsonDecode->thedata->classid : "");
     $daynum     = (isset($dataJsonDecode->thedata->daynum)     ? $dataJsonDecode->thedata->daynum : "");
     $attend     = (isset($dataJsonDecode->thedata->attend)     ? $dataJsonDecode->thedata->attend : "");
-    $mondayDOW  = (isset($dataJsonDecode->thedata->mondayDOW)  ? $dataJsonDecode->thedata->mondayDOW : "");
+    $mondayDOW  = (isset($dataJsonDecode->thedata->DOW)        ? $dataJsonDecode->thedata->DOW : "");
     $rank       = (isset($dataJsonDecode->thedata->rank)       ? $dataJsonDecode->thedata->rank : "");
 
     $db = new AttendanceDbHandler();
@@ -456,7 +458,7 @@ $app->post('/updateattendance',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "attend created successfully";
         $response["attendance_id"] = $attendance_id;
-        error_log( print_R("attend created: $student_id\n", TRUE ), 3, LOG);
+        error_log( print_R("attend created: $attendance_id\n", TRUE ), 3, LOG);
         echoRespnse(201, $response);
     } else if ($attendance_id == 1) {
         $response["error"] = false;
@@ -465,7 +467,7 @@ $app->post('/updateattendance',  function() use($app) {
         echoRespnse(201, $response);
     } else {
         error_log( print_R("after attend result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        error_log( print_R( $attendance_id, TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create attend. Please try again";
         echoRespnse(400, $response);

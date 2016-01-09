@@ -406,19 +406,34 @@ class AttendanceDbHandler {
      */
     private function isAttendanceExists($daynum, $mondayofweek, $classid, $studentid) {
 
+        error_log( print_R("isAttendanceExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
         $cntsql = "select count(*) as attendcount from attendance a ";
-        $cntsql .= " where a.daynum = ? " ;
-        $cntsql .= " and a.mondayofweek = ? ";
-        $cntsql .= " and a.classid = ? ";
-        $cntsql .= " and a.studentid = ? ";
+        $cntsql .= " where a.DOWnum = " . $daynum ;
+        $cntsql .= " and a.mondayofweek =  '" . $mondayofweek . "'";;
+        $cntsql .= " and a.classid =  " . $classid;
+        $cntsql .= " and a.contactID = " . $studentid;
         
-        $stmt = $this->conn->prepare($cntsql);
-        $stmt->bind_param("isii", $daynum, $mondayofweek, $classid, $studentid);
-        $stmt->execute();
-        $stmt->store_result();
-        $num_rows = $stmt->num_rows;
-        $stmt->close();
-        return $num_rows > 0;
+        if ($stmt = $this->conn->prepare($cntsql)) {
+
+        //    $stmt->bind_param("isii", $daynum, $mondayofweek, $classid, $studentid);
+            $stmt->execute();
+            $stmt->store_result();
+            $num_rows = $stmt->num_rows;
+            $stmt->close();
+            return $num_rows > 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
     }
 
 
@@ -435,13 +450,19 @@ class AttendanceDbHandler {
                                        $sc_rank
                                       ) {
         $num_affected_rows = 0;
+        error_log( print_R("attendance update entered", TRUE), 3, LOG);
 
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
 
         $inssql = " INSERT INTO `attendance`( `contactID`, `classID`, `mondayOfWeek`, `rank`, `DOWnum`, `attended`) ";
         $inssql .= " VALUES (?, ?, ?, ?, ?, ?) ";
 
         
-        if (!$this->isAttendanceExists($sc_daynum, $sc_mondayDOW, $sc_class, $sc_ContactId)) {
+        if ($this->isAttendanceExists($sc_daynum, $sc_mondayDOW, $sc_classid, $sc_ContactId) == 0) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
                 $stmt->bind_param("iissii",
@@ -458,6 +479,7 @@ class AttendanceDbHandler {
                         return $new_attend_id;
                     } else {
                         // Failed to create user
+                        printf("Errormessage: %s\n", $this->conn->error);
                         return NULL;
                     }
 
@@ -469,16 +491,16 @@ class AttendanceDbHandler {
 
         } else {
             // already existed in the db, update
-            $updsql = " UPDATE `attendance` SET attended = ? ";
-            $updsql .= " where a.studentid = ? ";
+            $updsql = " UPDATE attendance a SET attended = ? ";
+            $updsql .= " where a.contactID = ? ";
             $updsql .= " and a.classid = ? ";
             $updsql .= " and a.mondayofweek = ? ";
-            $updsql .= " and a.daynum = ? " ;
+            $updsql .= " and a.DOWnum = ? " ;
             
             if ($stmt = $this->conn->prepare($updsql)) {
-
+                $fixattend = $sc_attend ? 1 : 0;
                 $stmt->bind_param("iiisi",
-                                  $sc_attend, $sc_ContactId, $sc_classid, $sc_mondayDOW, $sc_daynum
+                                  $fixattend, $sc_ContactId, $sc_classid, $sc_mondayDOW, $sc_daynum
                                      );
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;

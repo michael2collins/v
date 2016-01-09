@@ -33,7 +33,7 @@
 </div>
 -->
  <div class="photo">
-        <a href="" data-ng-click="card.showIndex = !card.showIndex;mother.vm.selectItem(card.studentID,card.showIndex)">Here?
+        <a href="" data-ng-click="card.showIndex = !card.showIndex;mother.vm.selectItem(card.studentID,card.showIndex, card, true)">Here?
             <div class="photo-index" data-ng-if="card.showIndex">
                 <p style='font-size: large;' 
                     data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.name}} here!</p>

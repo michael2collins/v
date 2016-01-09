@@ -107,7 +107,7 @@
         }
 */
         function updateAttendance(path, thedata ) {
-                    $log.debug('updateAttendance data before post :' , thedata.data);
+                    $log.debug('updateAttendance data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -115,7 +115,7 @@
                     //        action: "add"
                     //    },
                         data: {
-                            thedata: thedata.data
+                            thedata: thedata
                         }
                     });
                     return( request.then( handleSuccess, handleError ) );

@@ -167,37 +167,55 @@
           return year + '-' + month + '-' + day;
         }
         
-        function selectItem(item, indextoggle){
-            $log.debug('selectItem', item, indextoggle);
+        function selectItem(item, indextoggle, card, callrefresh){
+            $log.debug('selectItem', item, indextoggle, callrefresh);
             var found=false;
+            var carddata={};
             
             for (var i=0, len=vm.attending.length; i < len; i++) {
                 $log.debug('is there?', item, vm.attending[i].attended);
                 if (vm.attending[i].attended == item && indextoggle === true) {
                     //already there, don't add
                     //does this actually happen?
+                    carddata = vm.attending[i];
                     found=true;
                     break;
                 }
                 if (vm.attending[i].attended == item && indextoggle === false) {
                     //already there, remove
+                    carddata = vm.attending[i];
+                    carddata.attend = indextoggle;
                     vm.attending.splice(i,1);
                     found=true;
                     break;
                 }
             }
+
             //add
             if (found === false && indextoggle === true) {
-                vm.attending.push({
-                    attended: item, 
+                carddata = {
+                    attended: item,
+                    attend: indextoggle,
                     class: vm.theclass,
                     theday: vm.todayDOW,
                     tday: vm.tday,
-                    DOW: vm.MondayOfWeek
-                });
+                    DOW: getFormattedDate(vm.MondayOfWeek),
+                    student_id: item,
+                    daynum: card.theday,
+                    rank: card.rank,
+                    classid: card.classid
+                };
+                vm.attending.push(carddata);
             }
 
             $log.debug('selectedItem', vm.attending);
+            if (carddata != {} && callrefresh) {
+                updateAttendance(carddata).then(function() {
+                    $log.debug('updateAttendance returns');
+                 },function(error) {
+                    $log.debug('updateAttendance',error);
+                 });
+            }            
         }
 
         function hasSelected(item){
@@ -266,11 +284,10 @@
             });
         }
         
-        function updateAttendance() {
-            $log.debug('about updateAttendance ');
+        function updateAttendance(card) {
             var updpath = "../v1/updateattendance";
-
-            return AttendanceServices.updateAttendance(updpath, vm)
+            $log.debug('about updateAttendance ', card, updpath);
+            return AttendanceServices.updateAttendance(updpath, card)
                 .then(function(data){
                     $log.debug('updateAttendance returned data');
                     $log.debug(data);
@@ -282,6 +299,17 @@
         //            $log.debug(url);
         //            alert(url);
         //            $window.location.href = url;
+                    refreshtheAttendance().then
+                        (function(zdata) {
+                         $log.debug('refreshtheAttendance returned', zdata);
+                     },
+                        function (error) {
+                            $log.debug('Caught an error:', error); 
+                            vm.data = [];
+                            vm.photos = [];
+                            return error;
+                        });
+
                     return vm.thisattendance;
                 }).catch(function(e) {
                     $log.debug('updateAttendance failure:');
@@ -322,13 +350,14 @@
                             studentID: vm.data.attendancelist[i].ContactId,
                             rank: vm.data.attendancelist[i].rank,
                             class: vm.data.attendancelist[i].class,
+                            classid: vm.data.attendancelist[i].classid,
                             theday: vm.data.attendancelist[i].DOWnum,
                             MondayDOW: vm.data.attendancelist[i].MondayOfWeek,
                             attended: vm.data.attendancelist[i].attended,
                             showIndex: vm.data.attendancelist[i].attended == 1 ? true : false
                         });
                         if (vm.data.attendancelist[i].attended == 1 ) {
-                            selectItem(vm.data.attendancelist[i].ContactId, true);
+                            selectItem(vm.data.attendancelist[i].ContactId, true, vm.photos[i], false);
                         }
                     }
                     $log.debug('photos',vm.photos);
