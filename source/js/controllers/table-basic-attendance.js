@@ -13,10 +13,11 @@
     '$window',
     '$q',
     '$scope',
-    '$route'
+    '$route',
+    'Notification'
     ];
 
-    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, $location, $window, $q, $scope, $route) {
+    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, $location, $window, $q, $scope, $route, Notification) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -214,6 +215,7 @@
                     $log.debug('updateAttendance returns');
                  },function(error) {
                     $log.debug('updateAttendance',error);
+                    return ($q.reject(error));
                  });
             }            
         }
@@ -275,6 +277,7 @@
                          vm.photos=[];
                          vm.nowChoice=0;
                          setClass("");
+                         return ($q.reject(error));
                      })
                 ])
                 .then(function() {
@@ -304,10 +307,12 @@
                          $log.debug('refreshtheAttendance returned', zdata);
                      },
                         function (error) {
-                            $log.debug('Caught an error:', error); 
+                            $log.debug('Caught an error refreshtheAttendance after update:', error); 
                             vm.data = [];
                             vm.photos = [];
-                            return error;
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
                         });
 
                     return vm.thisattendance;
@@ -364,14 +369,16 @@
                     return vm.data;
                 },
                 function (error) {
-                    $log.debug('Caught an error:', error); 
-                          $log.debug('set no data route');
+                    $log.debug('Caught an error refreshtheAttendance, going to notify:', error); 
+            //              $log.debug('set no data route');
                     //        $location.url('/v/#/table-basic-attendance');
                //            var url = '#/table-basic-attendance';
                 //           $window.location.href = url;
                     vm.data = [];
                     vm.photos = [];
-                    return error;
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
                 }).
                 finally(function () { 
                     vm.loading = false; 
@@ -397,13 +404,15 @@
                     return vm.data;
                 },
                 function (error) {
-                    $log.debug('Caught an error:', error); 
-                          $log.debug('set no data route');
+                    $log.debug('Caught an error attendancehistory:', error); 
+                    //      $log.debug('set no data route');
                     //        $location.url('/v/#/table-basic-attendance');
                //            var url = '#/table-basic-attendance';
                 //           $window.location.href = url;
                     vm.data = [];
-                    return error;
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
                 }).
                 finally(function () { 
                     vm.loading = false; 
@@ -486,10 +495,12 @@
                     vm.Schedulelist = data.Schedulelist;
                     fillClassList();
                 }, function(error) {
-                    $log.debug('Caught an error:', error); 
+                    $log.debug('Caught an error getSchedule:', error); 
                     vm.Schedulelist = [];
                     fillClassList();
-                    return error;
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
                     
                 }
                 );

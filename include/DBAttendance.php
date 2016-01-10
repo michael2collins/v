@@ -414,20 +414,33 @@ class AttendanceDbHandler {
                 error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
         }
 
-        $cntsql = "select count(*) as attendcount from attendance a ";
-        $cntsql .= " where a.DOWnum = " . $daynum ;
-        $cntsql .= " and a.mondayofweek =  '" . $mondayofweek . "'";;
-        $cntsql .= " and a.classid =  " . $classid;
-        $cntsql .= " and a.contactID = " . $studentid;
+        $cntsql = "select count(*) as attendcount from attendance ";
+        $cntsql .= " where DOWnum = " . $daynum ;
+        $cntsql .= " and mondayofweek =  '" . $mondayofweek . "'";;
+        $cntsql .= " and classid =  " . $classid;
+        $cntsql .= " and contactID = " . $studentid;
+
+        error_log( print_R("attendance isAttendanceExiststs sql: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
 
-        //    $stmt->bind_param("isii", $daynum, $mondayofweek, $classid, $studentid);
             $stmt->execute();
-            $stmt->store_result();
-            $num_rows = $stmt->num_rows;
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isAttendanceExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
             $stmt->close();
-            return $num_rows > 0;
+
+            return $row;
 
         } else {
             printf("Errormessage: %s\n", $this->conn->error);
@@ -490,18 +503,21 @@ class AttendanceDbHandler {
 
 
         } else {
+            $fixattend = $sc_attend ? 1 : 0;
+
             // already existed in the db, update
-            $updsql = " UPDATE attendance a SET attended = ? ";
-            $updsql .= " where a.contactID = ? ";
-            $updsql .= " and a.classid = ? ";
-            $updsql .= " and a.mondayofweek = ? ";
-            $updsql .= " and a.DOWnum = ? " ;
+            $updsql = " UPDATE attendance  SET attended = " . $fixattend;
+            $updsql .= " where contactID = " . $sc_ContactId;
+            $updsql .= " and classid =  " . $sc_classid;
+            $updsql .= " and mondayofweek =  '" . $sc_mondayDOW . "'";;
+            $updsql .= " and DOWnum =  " . $sc_daynum ;
+
+            error_log( print_R("attendance update sql: $updsql", TRUE), 3, LOG);
             
             if ($stmt = $this->conn->prepare($updsql)) {
-                $fixattend = $sc_attend ? 1 : 0;
-                $stmt->bind_param("iiisi",
-                                  $fixattend, $sc_ContactId, $sc_classid, $sc_mondayDOW, $sc_daynum
-                                     );
+//                $stmt->bind_param("iiisi",
+//                                  $fixattend, $sc_ContactId, $sc_classid, $sc_mondayDOW, $sc_daynum
+//                                     );
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();

@@ -104,7 +104,7 @@ $app->get('/studentregistration',  function() use ($app) {
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
-        $response["message"] = "error in getRegistrationList";
+        $response["message"] = "error in getRegistrationList: No records found";
         error_log( print_R("getRegistrationList bad\n ", TRUE), 3, LOG);
         error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
         error_log( print_R("getRegistrationList error\n ", TRUE), 3, LOG);
