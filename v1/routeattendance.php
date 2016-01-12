@@ -1,33 +1,6 @@
 <?php
 
-$app->get('/Attendance/:id',  function($student_id) {
-    //  global $user_id;
-    //error_log( print_R("before get student class request", TRUE ));
 
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetch task
-    $result = $db->getClassStudent($student_id);
-
-    if ($result != NULL) {
-        $response["error"] = false;
-        $response["contactID"] = $result["contactID"];
-        //                $response["classid"] = $result["classid"];
-        $response["pgmclass"] = $result["pgmclass"];
-        $response["classPayName"] = $result["classPayName"];
-        $response["class"] = $result["class"];
-        $response["isTestFeeWaived"] = $result["isTestFeeWaived"];
-        $response["classseq"] = $result["classseq"];
-        $response["pgmseq"] = $result["pgmseq"];
-        $response["Attendancestatus"] = $result["Attendancestatus"];
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "The requested resource doesn't exists";
-        echoRespnse(404, $response);
-    }
-});
 
 
 $app->get('/studentregistration',  function() use ($app) {
@@ -163,6 +136,8 @@ $app->get('/attendance',  function() use ($app) {
             $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
             $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
+            $tmp["readynextrank"] = (empty($slist["readynextrank"]) ? "NULL" : $slist["readynextrank"]);
+            
         } else {
             $tmp["ID"] = "NULL";
             $tmp["MondayOfWeek"] = "NULL";
@@ -175,6 +150,7 @@ $app->get('/attendance',  function() use ($app) {
             $tmp["classid"] = "NULL";
             $tmp["rank"] = "NULL";
             $tmp["pictureurl"] = "NULL";
+            $tmp["readynextrank"] = "NULL";
             
         }
 //        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
@@ -360,73 +336,6 @@ $app->get('/schedule/:DOW',  function($DOWid) {
 });
 
 
-$app->get('/classpgms',  function() {
-
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetch task
-    $result = $db->getClassPgms();
-    $response["error"] = false;
-    $response["pgmcatlist"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["pgmcat"] = (empty($slist["pgmcat"]) ? "NULL" : $slist["pgmcat"]);
-        } else {
-            $tmp["pgmcat"] = "NULL";
-        }
-        array_push($response["pgmcatlist"], $tmp);
-    }
-    $row_cnt = $result->num_rows;
-
-    if ($row_cnt > 0) {
-        $response["error"] = false;
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "error in pgms";
-        error_log( print_R("classpgms bad\n ", TRUE), 3, LOG);
-        echoRespnse(404, $response);
-    }
-});
-
-$app->get('/classcats',  function() {
-
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetch task
-    $result = $db->getClassCats();
-    $response["error"] = false;
-    $response["classcatlist"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
-        } else {
-            $tmp["classcat"] = "NULL";
-        }
-        array_push($response["classcatlist"], $tmp);
-    }
-    $row_cnt = $result->num_rows;
-
-    if ($row_cnt > 0) {
-        $response["error"] = false;
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "error in cats";
-        error_log( print_R("classcats bad\n ", TRUE), 3, LOG);
-        echoRespnse(404, $response);
-    }
-});
-
-
 $app->post('/updateattendance',  function() use($app) {
     $response = array();
 
@@ -475,7 +384,7 @@ $app->post('/updateattendance',  function() use($app) {
 
 });
 
-$app->put('/Attendancepaylist/:id',  function($student_id) use($app) {
+$app->put('/readynextrank/:id',  function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before put student class paylist request", TRUE ));
@@ -483,80 +392,36 @@ $app->put('/Attendancepaylist/:id',  function($student_id) use($app) {
 
     $request = $app->request();
     $body = $request->getBody();
-    $studentpayment = json_decode($body);
+    $studentrank = json_decode($body);
 
-    //error_log( print_R($studentpayment, TRUE ));
+    error_log( print_R("readynextrank entered for student:$student_id" . "/n", TRUE ), 3, LOG);
+    error_log( print_R($studentrank, TRUE ), 3, LOG);
+    error_log( print_R("/n", TRUE ),3, LOG);
 
     //global $user_id;
     $contactID = $student_id;
 
-    $classPayName = (empty($studentpayment->classpaynametmp) ? "NULL" : $studentpayment->classpaynametmp);
-
-    //error_log( print_R("before update", TRUE ));
-
-    //error_log( print_R($contactID, TRUE ));
-    //error_log( print_R($classPayName, TRUE ));
+    $ready = (empty($studentrank->readyness) ? "NULL" : $studentrank->readyness);
 
     $db = new AttendanceDbHandler();
     $response = array();
 
     // updating task
-    $result = $db->setAttendancePay( $contactID,
-                                      $classPayName
+    $result = $db->setStudentNextRank( $contactID,
+                                      $ready
                                      );
     if ($result) {
         // task updated successfully
         $response["error"] = false;
-        $response["message"] = "Student ClassPayName updated successfully";
+        $response["message"] = "Student readynextrank updated successfully";
     } else {
         // task failed to update
         $response["error"] = true;
-        $response["message"] = "Student ClassPayName failed to update. Please try again!";
+        $response["message"] = "Student readynextrank failed to update. Please try again!";
     }
     echoRespnse(200, $response);
 });
 
-
-$app->put('/Attendance/id/:id/myclass/:class/mypgm/:pgm',  function($student_id, $classseq, $pgmseq) use($app) {
-    // check for required params
-    //verifyRequiredParams(array('task', 'status'));
-    //error_log( print_R("before put student class set request", TRUE ));
-
-
-    $request = $app->request();
-    $body = $request->getBody();
-    $Attendance = json_decode($body);
-
-    //error_log( print_R($Attendance, TRUE ));
-
-    //global $user_id;
-    $contactID = $student_id;
-
-    //error_log( print_R("before update", TRUE ));
-
-    //error_log( print_R($contactID, TRUE ));
-    //error_log( print_R($classseq, TRUE ));
-    //error_log( print_R($pgmseq, TRUE ));
-
-    $db = new AttendanceDbHandler();
-    $response = array();
-
-    // updating task
-    $result = $db->setAttendance( $contactID,
-                                   $classseq,
-                                   $pgmseq
-                                  );
-    if ($result) {
-        // task updated successfully
-        $response["error"] = false;
-        $response["message"] = "Student Class set successfully";
-    } else {
-        // task failed to update
-        $response["error"] = true;
-        $response["message"] = "Student failed to update. Please try again!";
-    }
-    echoRespnse(200, $response);
-});
 
 
 $app->get('/Attendancelist',  function() {
@@ -599,87 +464,5 @@ $app->get('/Attendancelist',  function() {
     echoRespnse(200, $response);
 });
 
-
-$app->get('/Attendancepaylist',  function() {
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetching all class pays
-    $result = $db->getAttendancePayList();
-
-    $response["error"] = false;
-    $response["Attendancepaylist"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-//    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
-        ////error_log( print_R("student classpay list results", TRUE ));
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["classpaynametmp"] = (empty($slist["classpaynametmp"]) ? "NULL" : $slist["classpaynametmp"]);
-            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
-            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["contactID"] = (empty($slist["contactID"])  ? "NULL" : $slist["contactID"]);
-        } else {
-            $tmp["classpaynametmp"] = "NULL";
-            $tmp["firstname"] = "NULL";
-            $tmp["lastname"] = "NULL";
-            $tmp["contactID"] = "NULL";
-        }
-        array_push($response["Attendancepaylist"], $tmp);
-    }
-    $row_cnt = $result->num_rows;
-    //error_log( print_R("route Result set has $row_cnt rows.", TRUE ));
-    //error_log( print_R($response["Attendancepaylist"], TRUE ));
-    //error_log( print_R("student classpay list results end", TRUE ));
-
-
-    echoRespnse(200, $response);
-});
-
-
-$app->get('/Attendancestatuses',  function() {
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetching all user tasks
-    $result = $db->getAttendanceStatus();
-
-    $response["error"] = false;
-    $response["Attendancestatuses"] = array();
-
-    // looping through result and preparing  arrays
-    // looping through result and preparing zips array
-    while ($statuses = $result->fetch_assoc()) {
-        $tmp = array();
-        $tmp["status"] = $statuses["listvalue"];
-        array_push($response["Attendancestatuses"], $tmp);
-    }
-
-    //error_log( print_R($response["Attendancestatuses"], TRUE ));
-    //error_log( print_R("student class statuses results end", TRUE ));
-
-    echoRespnse(200, $response);
-});
-
-$app->get('/Attendancepicture/:picID',  function($picID) {
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetching all user tasks
-    $result = $db->getAttendancePicture($picID);
-
-    $response["error"] = false;
-    $response["pictureurl"] = array();
-
-    // looping through result and preparing zips array
-    while ($piclist = $result->fetch_assoc()) {
-        $tmp = array();
-        $tmp["pictureurl"] = $piclist["pictureurl"];
-        array_push($response["pictureurl"], $tmp);
-    }
-
-    echoRespnse(200, $response);
-});
 
 ?>

@@ -24,6 +24,7 @@
         
         vm.refreshtheAttendance = refreshtheAttendance;
         vm.getAttendanceHistory = getAttendanceHistory;
+        vm.setStudentReadyNextRank = setStudentReadyNextRank;
         vm.setLimit = setLimit;
         vm.setClass = setClass;
         vm.setDOW = setDOW;
@@ -359,7 +360,8 @@
                             theday: vm.data.attendancelist[i].DOWnum,
                             MondayDOW: vm.data.attendancelist[i].MondayOfWeek,
                             attended: vm.data.attendancelist[i].attended,
-                            showIndex: vm.data.attendancelist[i].attended == 1 ? true : false
+                            showIndex: vm.data.attendancelist[i].attended == 1 ? true : false,
+                            readyness: vm.data.attendancelist[i].readyness
                         });
                         if (vm.data.attendancelist[i].attended == 1 ) {
                             selectItem(vm.data.attendancelist[i].ContactId, true, vm.photos[i], false);
@@ -515,8 +517,20 @@
             return AttendanceServices.getActiveTab();
         }
 
-
-
+        function setStudentReadyNextRank(thestudent,readyness) {
+            $log.debug('about setStudentReadyNextRank ', thestudent, readyness);
+            var path='../v1/readynextrank/' + thestudent;
+            return AttendanceServices.setStudentReadyNextRank(path, readyness).then(function (data) {
+                $log.debug("setStudentReadyNextRank returned data", data);
+                $log.debug(data);
+                }, function(error) {
+                    $log.debug('Caught an error setStudentReadyNextRank:', error); 
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }
+                );
+        }
     }
 
 })();

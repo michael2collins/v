@@ -536,37 +536,35 @@ class AttendanceDbHandler {
     }
 
     /**
-     * set student classpay
+     * set student next rank
      */
-    public function setAttendancePay($sc_ContactId,
-                                    $sc_classPayName
+    public function setStudentNextRank($sc_ContactId, $sc_ready
                                    ) {
         $num_affected_rows = 0;
 
-        $sql = "UPDATE nclasspays t set ";
-        $sql .= " t.classpayname = ? ";
-
-        $sql .= " where contactID = ? ";
+        $sql = "UPDATE ncontacts  set ";
+        $sql .= " readyForNextRank = ? ";
+        $sql .= " where ID = ?";
 
         error_log( print_R($sql, TRUE), 3, LOG);
         error_log( print_R($sc_ContactId, TRUE), 3, LOG);
-        error_log( print_R($sc_classPayName, TRUE), 3, LOG);
+        error_log( print_R($sc_ready, TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class pay set prepared", TRUE), 3, LOG);
-            $stmt->bind_param("si",
-                              $sc_classPayName,
+//            error_log( print_R("student setStudentNextRank set prepared", TRUE), 3, LOG);
+            $stmt->bind_param("ii",
+                              $sc_ready,
                               $sc_ContactId
                              );
-            error_log( print_R("student class pay set bind", TRUE), 3, LOG);
+ //           error_log( print_R("student setStudentNextRank set bind", TRUE), 3, LOG);
             $stmt->execute();
-            error_log( print_R("student class pay set execute", TRUE), 3, LOG);
+//            error_log( print_R("student setStudentNextRank set execute", TRUE), 3, LOG);
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("student class pay set done", TRUE), 3, LOG);
+//            error_log( print_R("student setStudentNextRank set done", TRUE), 3, LOG);
 
         } else {
-            error_log( print_R("student class pay update failed", TRUE), 3, LOG);
+            error_log( print_R("student setStudentNextRank update failed", TRUE), 3, LOG);
             error_log( print_R($this->conn->error, TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
         }
@@ -574,48 +572,7 @@ class AttendanceDbHandler {
         return $num_affected_rows > 0;
     }
 
-    /**
-     * set student class
-     */
-    public function setAttendance($sc_ContactId,
-                                    $sc_classseq,
-                                    $sc_pgmseq
-                                   ) {
-        $num_affected_rows = 0;
 
-        $sql = "UPDATE nclasspays t set ";
-        $sql .= " t.classseq = ? ,";
-        $sql .= " t.pgmseq = ? ";
-
-        $sql .= " where contactID = ? ";
-
-        error_log( print_R($sql, TRUE), 3, LOG);
-        error_log( print_R($sc_ContactId, TRUE), 3, LOG);
-        error_log( print_R($sc_classseq, TRUE), 3, LOG);
-        error_log( print_R($sc_pgmseq, TRUE), 3, LOG);
-
-        if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class status set prepared", TRUE), 3, LOG);
-            $stmt->bind_param("iii",
-                              $sc_classseq,
-                              $sc_pgmseq,
-                              $sc_ContactId
-                             );
-            error_log( print_R("student class status set bind", TRUE), 3, LOG);
-            $stmt->execute();
-            error_log( print_R("student class status set execute", TRUE), 3, LOG);
-            $num_affected_rows = $stmt->affected_rows;
-            $stmt->close();
-            error_log( print_R("student class status set done", TRUE), 3, LOG);
-
-        } else {
-            error_log( print_R("student class status update failed", TRUE), 3, LOG);
-            error_log( print_R($this->conn->error, TRUE), 3, LOG);
-            printf("Errormessage: %s\n", $this->conn->error);
-        }
-
-        return $num_affected_rows > 0;
-    }
 
 }
 ?>

@@ -17,6 +17,7 @@
   //          getAllAttendances: getAllAttendances,
             refreshAttendances: refreshAttendances,
             getAttendanceHistory: getAttendanceHistory,
+            setStudentReadyNextRank: setStudentReadyNextRank,
             getDOW: getDOW,
             getSchedule: getSchedule,
             updateAttendance: updateAttendance,
@@ -106,6 +107,19 @@
                 });
         }
 */
+        function setStudentReadyNextRank(path, readyness) {
+                    $log.debug('setStudentReadyNextRank before put :',path, readyness);
+                    var dta = {
+                        readyness: readyness
+                    };
+                    var request = $http({
+                        method: "PUT",
+                        url: path,
+                        data: dta
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }
+
         function updateAttendance(path, thedata ) {
                     $log.debug('updateAttendance data before post :' , thedata);
                     var request = $http({
