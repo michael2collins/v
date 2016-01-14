@@ -229,10 +229,10 @@ class AttendanceDbHandler {
 
 
         $sumsql = " select class, classid, studentid, currentrank, firstname, ";
-        $sumsql .= " lastname, pictureurl, downum, sum( attended) as attended from ( ";
+        $sumsql .= " lastname, pictureurl, downum, readyForNextRank, sum( attended) as attended from ( ";
 
         $sql = "SELECT  n.class, r.classid, r.studentid, s.currentrank, s.firstname, ";
-        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, 0 as attended";
+        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum,s.readyForNextRank, 0 as attended";
         $sql .= " FROM  studentregistration  r, nclass n, ncontacts s ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid ";
         $sql .= " and n.class = '" . $theclass . "'";
@@ -245,7 +245,7 @@ class AttendanceDbHandler {
         $heresql .= " c.firstname, ";
         $heresql .= " c.lastname, ";
         $heresql .= " c.pictureurl, ";
-        $heresql .= " a.DOWnum, ";
+        $heresql .= " a.DOWnum,  c.readyForNextRank, ";
         $heresql .= " a.attended ";
         $heresql .= " FROM attendance a, ncontacts c, nclass n ";
         $heresql .= " where (1 = 1) and a.ContactId = c.ID  and a.classid = n.id ";
@@ -255,7 +255,7 @@ class AttendanceDbHandler {
         $heresql .= " and a.attended = 1 ";
 
         $grpsql = " ) sel  ";
-        $grpsql .= "group by 1,2,3,4,5,6,7,8 order by 6,5";
+        $grpsql .= "group by 1,2,3,4,5,6,7,8,9 order by 6,5";
         
         $finalsql = $sumsql . $sql . $heresql . $grpsql;
         
@@ -546,9 +546,9 @@ class AttendanceDbHandler {
         $sql .= " readyForNextRank = ? ";
         $sql .= " where ID = ?";
 
-        error_log( print_R($sql, TRUE), 3, LOG);
-        error_log( print_R($sc_ContactId, TRUE), 3, LOG);
-        error_log( print_R($sc_ready, TRUE), 3, LOG);
+        error_log( print_R($sql . "\n", TRUE), 3, LOG);
+        error_log( print_R($sc_ContactId . "\n", TRUE), 3, LOG);
+        error_log( print_R($sc_ready . "\n", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
 //            error_log( print_R("student setStudentNextRank set prepared", TRUE), 3, LOG);

@@ -51,6 +51,7 @@ $app->get('/studentregistration',  function() use ($app) {
             $tmp["rank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
             $tmp["attended"] = (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
+            $tmp["readyness"] = (empty($slist["readyForNextRank"]) ? "NULL" : $slist["readyForNextRank"]);
         } else {
             $tmp["MondayOfWeek"] = "NULL";
             $tmp["ContactId"] = "NULL";
@@ -62,6 +63,7 @@ $app->get('/studentregistration',  function() use ($app) {
             $tmp["rank"] = "NULL";
             $tmp["pictureurl"] = "NULL";
             $tmp["attended"] = "NULL";
+            $tmp["readyness"] = "NULL";
             
         }
 //        error_log( print_R("attendance push\n ", TRUE), 3, LOG);

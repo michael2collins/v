@@ -10,7 +10,9 @@
 
             <p class="balloon-wrapper">
 <!--                    <span class="balloon">{{card.$index}}</span> -->
-                <span class="balloon">{{mother.vm.getAttendingCount()}}</span>
+                <span 
+                ng-style="card.readyness === 1 && {'background':'lightgreen'}  || card.readyness === 0 && {'background':'yellow'}" 
+                class="balloon">{{mother.vm.getAttendingCount()}}</span>
             </p>
             <p style='font-size: small;' 
                 data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.daynum}}</p>
@@ -21,7 +23,7 @@
             <p style='font-size: small;' 
                 data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.MondayDOW}}</p>
             <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.readynextrank}}</p>
+                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.readyness}}</p>
             
         </div>
 
@@ -35,7 +37,7 @@
  </div>
 <div>
   <button type="button" 
-    data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readynextrank = !card.readynextrank)" 
+    data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readyness = !card.readyness)" 
     class="btn btn-default btn-sm">Ready?</button>
 
 </div>        
