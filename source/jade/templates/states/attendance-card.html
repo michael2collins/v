@@ -11,7 +11,7 @@
             <p class="balloon-wrapper">
 <!--                    <span class="balloon">{{card.$index}}</span> -->
                 <span 
-                ng-style="card.readyness === 1 && {'background':'lightgreen'}  || card.readyness === 0 && {'background':'yellow'}" 
+                ng-style="(card.readyness === true ) && {'background':'lightgreen'}  || (card.readyness === false ) && {'background':'yellow'}" 
                 class="balloon">{{mother.vm.getAttendingCount()}}</span>
             </p>
             <p style='font-size: small;' 

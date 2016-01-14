@@ -51,7 +51,7 @@ $app->get('/studentregistration',  function() use ($app) {
             $tmp["rank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
             $tmp["attended"] = (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
-            $tmp["readyness"] = (empty($slist["readyForNextRank"]) ? "NULL" : $slist["readyForNextRank"]);
+            $tmp["readyness"] = ($slist["readyForNextRank"] == 1 ? true : false);
         } else {
             $tmp["MondayOfWeek"] = "NULL";
             $tmp["ContactId"] = "NULL";
@@ -403,7 +403,7 @@ $app->put('/readynextrank/:id',  function($student_id) use($app) {
     //global $user_id;
     $contactID = $student_id;
 
-    $ready = (empty($studentrank->readyness) ? "NULL" : $studentrank->readyness);
+    $ready = ( $studentrank->readyness == "1" ? 1 : 0);
 
     $db = new AttendanceDbHandler();
     $response = array();
