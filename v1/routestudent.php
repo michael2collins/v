@@ -620,6 +620,309 @@ $app->post('/newstudent', function() use ($app) {
 
 });
 
+/**
+ * get student data for creating events
+ * method GET
+ * url - /eventsource
+ */
+
+$app->get('/eventsource',  function() use($app) {
+    //  global $user_id;
+
+    $allGetVars = $app->request->get();
+
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $limit = '';
+
+    if(array_key_exists('limit', $allGetVars)){
+        $limit = $allGetVars['limit'];
+    }
+
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getEventSource($limit);
+
+    $response["error"] = false;
+    $response["EventsourceList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+$tmp["contactID"] = (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
+$tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
+$tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+$tmp["Email"] = (empty($slist["Email"]) ? "NULL" : $slist["Email"]);
+$tmp["Email2"] = (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
+$tmp["Parent"] = (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
+$tmp["Phone"] = (empty($slist["Phone"]) ? "NULL" : $slist["Phone"]);
+$tmp["AltPhone"] = (empty($slist["AltPhone"]) ? "NULL" : $slist["AltPhone"]);
+$tmp["Address"] = (empty($slist["Address"]) ? "NULL" : $slist["Address"]);
+$tmp["City"] = (empty($slist["City"]) ? "NULL" : $slist["City"]);
+$tmp["State"] = (empty($slist["State"]) ? "NULL" : $slist["State"]);
+$tmp["ZIP"] = (empty($slist["ZIP"]) ? "NULL" : $slist["ZIP"]);
+$tmp["Notes"] = (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
+$tmp["Newrank"] = (empty($slist["Newrank"]) ? "NULL" : $slist["Newrank"]);
+$tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
+$tmp["CurrentRank"] = (empty($slist["CurrentRank"]) ? "NULL" : $slist["CurrentRank"]);
+$tmp["InstructorPaymentFree"] = (empty($slist["InstructorPaymentFree"]) ? "NULL" : $slist["InstructorPaymentFree"]);
+$tmp["ContactType"] = (empty($slist["ContactType"]) ? "NULL" : $slist["ContactType"]);
+$tmp["include"] = (empty($slist["include"]) ? "NULL" : $slist["include"]);
+$tmp["InstructorFlag"] = (empty($slist["InstructorFlag"]) ? "NULL" : $slist["InstructorFlag"]);
+$tmp["quickbooklink"] = (empty($slist["quickbooklink"]) ? "NULL" : $slist["quickbooklink"]);
+$tmp["instructorTitle"] = (empty($slist["instructorTitle"]) ? "NULL" : $slist["instructorTitle"]);
+$tmp["testTime"] = (empty($slist["testTime"]) ? "NULL" : $slist["testTime"]);
+$tmp["bdayinclude"] = (empty($slist["bdayinclude"]) ? "NULL" : $slist["bdayinclude"]);
+$tmp["sex"] = (empty($slist["sex"]) ? "NULL" : $slist["sex"]);
+$tmp["medicalConcerns"] = (empty($slist["medicalConcerns"]) ? "NULL" : $slist["medicalConcerns"]);
+$tmp["GuiSize"] = (empty($slist["GuiSize"]) ? "NULL" : $slist["GuiSize"]);
+$tmp["ShirtSize"] = (empty($slist["ShirtSize"]) ? "NULL" : $slist["ShirtSize"]);
+$tmp["phoneExt"] = (empty($slist["phoneExt"]) ? "NULL" : $slist["phoneExt"]);
+$tmp["altPhoneExt"] = (empty($slist["altPhoneExt"]) ? "NULL" : $slist["altPhoneExt"]);
+$tmp["CurrentReikiRank"] = (empty($slist["CurrentReikiRank"]) ? "NULL" : $slist["CurrentReikiRank"]);
+$tmp["StudentSchool"] = (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
+$tmp["EmergencyContact"] = (empty($slist["EmergencyContact"]) ? "NULL" : $slist["EmergencyContact"]);
+$tmp["CurrentIARank"] = (empty($slist["CurrentIARank"]) ? "NULL" : $slist["CurrentIARank"]);
+$tmp["ReadyForNextRank"] = (empty($slist["ReadyForNextRank"]) ? "NULL" : $slist["ReadyForNextRank"]);
+$tmp["nextScheduledTest"] = (empty($slist["nextScheduledTest"]) ? "NULL" : $slist["nextScheduledTest"]);
+$tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $slist["contactpictureurl"]);
+$tmp["nclassid"] = (empty($slist["nclassid"]) ? "NULL" : $slist["nclassid"]);
+$tmp["nclass"] = (empty($slist["nclass"]) ? "NULL" : $slist["nclass"]);
+$tmp["nclasssort"] = (empty($slist["nclasssort"]) ? "NULL" : $slist["nclasssort"]);
+$tmp["nextClass"] = (empty($slist["nextClass"]) ? "NULL" : $slist["nextClass"]);
+$tmp["rankForNextClass"] = (empty($slist["rankForNextClass"]) ? "NULL" : $slist["rankForNextClass"]);
+$tmp["ageForNextClass"] = (empty($slist["ageForNextClass"]) ? "NULL" : $slist["ageForNextClass"]);
+$tmp["pgrmcat"] = (empty($slist["pgrmcat"]) ? "NULL" : $slist["pgrmcat"]);
+$tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
+$tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
+$tmp["classpictureurl"] = (empty($slist["classpictureurl"]) ? "NULL" : $slist["classpictureurl"]);
+$tmp["PaymentClassName"] = (empty($slist["PaymentClassName"]) ? "NULL" : $slist["PaymentClassName"]);
+$tmp["NumberOfMembers"] = (empty($slist["NumberOfMembers"]) ? "NULL" : $slist["NumberOfMembers"]);
+$tmp["paymenttype"] = (empty($slist["paymenttype"]) ? "NULL" : $slist["paymenttype"]);
+$tmp["PaymentNotes"] = (empty($slist["PaymentNotes"]) ? "NULL" : $slist["PaymentNotes"]);
+$tmp["PaymentPlan"] = (empty($slist["PaymentPlan"]) ? "NULL" : $slist["PaymentPlan"]);
+$tmp["PaymentAmount"] = (empty($slist["PaymentAmount"]) ? "NULL" : $slist["PaymentAmount"]);
+$tmp["PriceSetby"] = (empty($slist["PriceSetby"]) ? "NULL" : $slist["PriceSetby"]);
+$tmp["Pricesetdate"] = (empty($slist["Pricesetdate"]) ? "NULL" : $slist["Pricesetdate"]);
+$tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+$tmp["ranksortkey"] = (empty($slist["ranksortkey"]) ? "NULL" : $slist["ranksortkey"]);
+$tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
+$tmp["rankalphasortkey"] = (empty($slist["rankalphasortkey"]) ? "NULL" : $slist["rankalphasortkey"]);
+$tmp["age"] = (empty($slist["age"]) ? "NULL" : $slist["age"]);
+$tmp["birthday"] = (empty($slist["birthday"]) ? "NULL" : $slist["birthday"]);
+$tmp["lastpromoted"] = (empty($slist["lastpromoted"]) ? "NULL" : $slist["lastpromoted"]);
+$tmp["testdate"] = (empty($slist["testdate"]) ? "NULL" : $slist["testdate"]);
+$tmp["lastpaymentdate"] = (empty($slist["lastpaymentdate"]) ? "NULL" : $slist["lastpaymentdate"]);
+$tmp["nextpaymentdate"] = (empty($slist["nextpaymentdate"]) ? "NULL" : $slist["nextpaymentdate"]);
+            
+        } else {
+$tmp["contactID"] = "NULL";
+$tmp["LastName"] = "NULL";
+$tmp["FirstName"] = "NULL";
+$tmp["Email"] = "NULL";
+$tmp["Email2"] = "NULL";
+$tmp["Parent"] = "NULL";
+$tmp["Phone"] = "NULL";
+$tmp["AltPhone"] = "NULL";
+$tmp["Address"] = "NULL";
+$tmp["City"] = "NULL";
+$tmp["State"] = "NULL";
+$tmp["ZIP"] = "NULL";
+$tmp["Notes"] = "NULL";
+$tmp["Newrank"] = "NULL";
+$tmp["BeltSize"] = "NULL";
+$tmp["CurrentRank"] = "NULL";
+$tmp["InstructorPaymentFree"] = "NULL";
+$tmp["ContactType"] = "NULL";
+$tmp["include"] = "NULL";
+$tmp["InstructorFlag"] = "NULL";
+$tmp["quickbooklink"] = "NULL";
+$tmp["instructorTitle"] = "NULL";
+$tmp["testTime"] = "NULL";
+$tmp["bdayinclude"] = "NULL";
+$tmp["sex"] = "NULL";
+$tmp["medicalConcerns"] = "NULL";
+$tmp["GuiSize"] = "NULL";
+$tmp["ShirtSize"] = "NULL";
+$tmp["phoneExt"] = "NULL";
+$tmp["altPhoneExt"] = "NULL";
+$tmp["CurrentReikiRank"] = "NULL";
+$tmp["StudentSchool"] = "NULL";
+$tmp["EmergencyContact"] = "NULL";
+$tmp["CurrentIARank"] = "NULL";
+$tmp["ReadyForNextRank"] = "NULL";
+$tmp["nextScheduledTest"] = "NULL";
+$tmp["contactpictureurl"] = "NULL";
+$tmp["nclassid"] = "NULL";
+$tmp["nclass"] = "NULL";
+$tmp["nclasssort"] = "NULL";
+$tmp["nextClass"] = "NULL";
+$tmp["rankForNextClass"] = "NULL";
+$tmp["ageForNextClass"] = "NULL";
+$tmp["pgrmcat"] = "NULL";
+$tmp["classcat"] = "NULL";
+$tmp["agecat"] = "NULL";
+$tmp["classpictureurl"] = "NULL";
+$tmp["PaymentClassName"] = "NULL";
+$tmp["NumberOfMembers"] = "NULL";
+$tmp["paymenttype"] = "NULL";
+$tmp["PaymentNotes"] = "NULL";
+$tmp["PaymentPlan"] = "NULL";
+$tmp["PaymentAmount"] = "NULL";
+$tmp["PriceSetby"] = "NULL";
+$tmp["Pricesetdate"] = "NULL";
+$tmp["rankid"] = "NULL";
+$tmp["ranksortkey"] = "NULL";
+$tmp["rankGroup"] = "NULL";
+$tmp["rankalphasortkey"] = "NULL";
+$tmp["age"] = "NULL";
+$tmp["birthday"] = "NULL";
+$tmp["lastpromoted"] = "NULL";
+$tmp["testdate"] = "NULL";
+$tmp["lastpaymentdate"] = "NULL";
+$tmp["nextpaymentdate"] = "NULL";
+}
+        array_push($response["EventsourceList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+
+
+$app->get('/coldefs',  function() use($app){
+    error_log( print_R("coldefs entered", TRUE), 3, LOG);
+
+    $allGetVars = $app->request->get();
+
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $colkey = '';
+    $colsubkey = '';
+
+    if(array_key_exists('colkey', $allGetVars)){
+        $colkey = $allGetVars['colkey'];
+    }
+    if(array_key_exists('colsubkey', $allGetVars)){
+        $colsubkey = $allGetVars['colsubkey'];
+    }
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $userid = 1; //have to convert name to id
+    //$prefkey = "allstudents";
+
+    error_log( print_R("coldefs params: userid: $userid colkey: $colkey colsubkey: $colsubkey\n ", TRUE), 3, LOG);
+
+
+    $response["error"] = false;
+    $response["gcolumns"] = array();
+
+    $tmp = array();
+
+    $sql  = " SELECT colcontent FROM coldefs ";
+    $sql .= " where ";
+    $sql .= " userid = " . $userid;
+    $sql .= " colkey = " . $colkey;
+    $sql .= " colsubkey = " . $colsubkey;
+    
+    if (!$stmt = $this->conn->prepare($sql) ) {
+        $response["error"] = true;
+        $response["message"] = "colcontent failed";
+        echoRespnse(404, $response);
+    } else {
+        $stmt->execute();
+        $stmt->bind_result($colcontent);
+
+        while ($stmt->fetch()) {
+            error_log( print_R("colcontent\n ", TRUE), 3, LOG);
+            error_log( print_R($colcontent, TRUE), 3, LOG);
+            error_log( print_R("\n ", TRUE), 3, LOG);
+            $tmp[] = $colcontent;
+        }
+
+        $stmt->close();
+        
+        array_push($response["gcolumns"], $tmp);
+
+        error_log( print_R("coldefs responding\n ", TRUE), 3, LOG);
+        error_log( print_R($response["gcolumns"], TRUE), 3, LOG);
+        error_log( print_R("\n ", TRUE), 3, LOG);
+    
+        echoRespnse(200, $response);
+    }
+});
+
+$app->get('/coldeflist',  function() use($app){
+    error_log( print_R("coldeflist entered", TRUE), 3, LOG);
+
+    $allGetVars = $app->request->get();
+
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $colkey = '';
+
+    if(array_key_exists('colkey', $allGetVars)){
+        $colkey = $allGetVars['colkey'];
+    }
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $userid = 1; //have to convert name to id
+    //$prefkey = "allstudents";
+
+    error_log( print_R("coldefs params: userid: $userid colkey: $colkey\n ", TRUE), 3, LOG);
+
+
+    $response["error"] = false;
+    $response["colsubkeys"] = array();
+
+    $tmp = array();
+
+    $sql  = " SELECT colsubkeys FROM coldefs ";
+    $sql .= " where ";
+    $sql .= " userid = " . $userid;
+    $sql .= " colkey = " . $colkey;
+
+    if (!$stmt = $this->conn->prepare($sql) ) {
+        $response["error"] = true;
+        $response["message"] = "coldeflist failed";
+        echoRespnse(404, $response);
+    } else {
+        $stmt->execute();
+        $stmt->bind_result($colsubkey);
+
+        while ($stmt->fetch()) {
+            error_log( print_R("colsubkeys\n ", TRUE), 3, LOG);
+            error_log( print_R($colsubkey, TRUE), 3, LOG);
+            error_log( print_R("\n ", TRUE), 3, LOG);
+            $tmp[] = $colsubkey;
+        }
+
+        $stmt->close();
+        
+        array_push($response["colsubkeys"], $tmp);
+
+        error_log( print_R("coldeflist responding\n ", TRUE), 3, LOG);
+        error_log( print_R($response["colsubkeys"], TRUE), 3, LOG);
+        error_log( print_R("\n ", TRUE), 3, LOG);
+    
+        echoRespnse(200, $response);
+    }
+});
 
 /**
  * Validating email address

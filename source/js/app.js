@@ -181,15 +181,18 @@ $(document).ready(function() {
             .when('/form-layouts-editstudent/id/:id', {
                 templateUrl: 'templates/states/form-layouts-editstudent.html'
             })
-            .when('/form-layouts-editstudent/id', {
-                templateUrl: 'templates/states/form-layouts-editstudent.html' //this is wrong
-            })
+  //          .when('/form-layouts-editstudent/id', {
+//                templateUrl: 'templates/states/form-layouts-editstudent.html' //this is wrong
+ //           })
             .when('/form-layouts-editstudent/id/:id/myclass/:myclass', {
                 templateUrl: 'templates/states/form-layouts-editstudent.html'
             })
             .when('/table-basic-attendance', {
                 templateUrl: 'templates/states/table-basic-attendance.html'
                     //    controller: 'AttendanceTableBasicController'
+            })
+            .when('/table-basic-eventcreation', {
+                templateUrl: 'templates/states/table-basic-eventcreation.html'
             })
             .otherwise({
                 redirectTo: '/'

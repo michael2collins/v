@@ -497,4 +497,65 @@ FROM nattendance n, nclass c
 WHERE n.class = c.class
 AND day7 =1;
 
+create or replace view eventsource as 
+SELECT 
+c.ID as  contactID, `LastName`, `FirstName`, `Email`, `Email2`, `Parent`, `Phone`, `AltPhone`, `Address`, `City`, `State`, `ZIP`, `Notes`, `Newrank`, `BeltSize`, `CurrentRank`,  `InstructorPaymentFree`, `ContactType`, `include`, `InstructorFlag`, `quickbooklink`, `instructorTitle`, `testDate`, `testTime`, `bdayinclude`, `sex`, `medicalConcerns`, `GuiSize`, `ShirtSize`, `phoneExt`, `altPhoneExt`, `CurrentReikiRank`, `StudentSchool`, `EmergencyContact`, `CurrentIARank`, `ReadyForNextRank`, `nextScheduledTest`,  c.pictureurl as contactpictureurl
+
+,cl.id as nclassid, 
+cl.class as nclass, 
+cl.sort as nclasssort,
+cl.nextClass,
+cl.rankForNextClass,
+cl.ageForNextClass,
+cp.pgmcat as pgrmcat, cp.classcat as classcat, cp.agecat as agecat,
+
+cl.pictureurl as classpictureurl,
+`PaymentClassName`, `NumberOfMembers`,  `paymenttype`, `PaymentNotes`, `PaymentPlan`, `PaymentAmount`, `PriceSetby`, `Pricesetdate`,
+
+r.rankid,
+
+r.sortkey as ranksortkey,
+r.rankGroup,
+r.alphasortkey as rankalphasortkey
+,(YEAR(CURRENT_TIMESTAMP) - YEAR(birthday) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(birthday, 5))) as age,
+DATE_FORMAT(birthday, '%Y-%m-%d') as birthday,
+DATE_FORMAT(lastpromoted, '%Y-%m-%d') as lastpromoted,
+testdate,
+DATE_FORMAT(lastpaymentdate, '%Y-%m-%d') as lastpaymentdate,
+DATE_FORMAT(nextpaymentdate, '%Y-%m-%d') as nextpaymentdate
+
+FROM 
+ncontacts c
+left join ranklist r on c.currentrank = r.rankid
+left join nclasspays pgm on pgm.contactid = c.id
+left join  nclasspgm cp on cp.pgmid = pgm.pgmseq
+left join nclass cl on cp.classid = cl.id
+left join npayments p on  p.paymentclassname = pgm.classpayname
+ORDER BY c.id;
+
+ALTER TABLE nclass DROP INDEX id_2;`
+ALTER TABLE  `vdb`.`nclass` ADD INDEX  `nclassClass` (  `class` ) COMMENT  '';
+ALTER TABLE  `vdb`.`nclasspays` ADD INDEX  `nclasspayscontactid` (  `contactid` ) COMMENT  '';
+ALTER TABLE `nclasspays` DROP `removeclassid`;
+ALTER TABLE `nclasspays` DROP `removeclass`;
+ALTER TABLE  `vdb`.`nclasspays` ADD INDEX  `paysclassseq` (  `classseq` ) COMMENT  '';
+ALTER TABLE  `vdb`.`nclasspays` ADD INDEX  `payspgmseq` (  `pgmseq` ) COMMENT  '';
+
+`ALTER TABLE nclasspays DROP INDEX nclasspays$class;`
+`ALTER TABLE nclasspays DROP INDEX nclasspays$classid;`
+
+ALTER TABLE  `vdb`.`nclasspgm` ADD INDEX  `nclasspgmpgmid` (  `pgmid` ) COMMENT  '';
+
+--
+-- Table structure for table `coldef`
+--
+
+DROP TABLE IF EXISTS `coldef`;
+CREATE TABLE IF NOT EXISTS `coldef` (
+  `userid` int(11) NOT NULL,
+  `colkey` varchar(80) NOT NULL,
+  `colsubkey` varchar(80) NOT NULL,
+  `colcontent` blob NOT NULL,
+  PRIMARY KEY (`userid`,`colkey`,`colsubkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

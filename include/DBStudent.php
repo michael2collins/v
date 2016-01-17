@@ -628,5 +628,25 @@ class StudentDbHandler {
 
         return $response;
     }
+    
+    /**
+     * Fetching event view
+     */
+    public function getEventSource($thelimit = NULL) {
+
+        $sql = "SELECT * FROM eventsource ";
+        
+        if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
+            $sql .= "  LIMIT " . $thelimit ;
+        }
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute();
+        $slists = $stmt->get_result();
+        $stmt->close();
+        return $slists;
+    }
+    
+
 }
 ?>
