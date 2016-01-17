@@ -14,10 +14,12 @@
     '$q',
     '$scope',
     '$route',
-    'Notification'
+    'Notification',
+    'uiGridConstants',
+    'uiGridGroupingConstants'
     ];
 
-    function EventTableBasicController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification) {
+    function EventTableBasicController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -25,78 +27,84 @@
         vm.refreshtheEvent = refreshtheEvent;
         vm.getEventSource = getEventSource;
         vm.getColDefList = getColDefList;
+        vm.saveState = saveState;
+        vm.restoreState = restoreState;
         vm.setLimit = setLimit;
         vm.getActiveTab = getActiveTab;
         vm.setActiveTab = setActiveTab;
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.limit = 0;
-        vm.limits = [10,20,50,100,200,500];
+        vm.limits = [10,20,50,100,200,500,5000];
         vm.data = [];
+        vm.state = {};
+
 
         vm.listA = [
-"FirstName",
-"Email",
-"Email2",
-"Parent",
-"Phone",
-"AltPhone",
-"Address",
-"City",
-"State",
-"ZIP",
-"Notes",
-"Newrank",
-"BeltSize",
-"CurrentRank",
-"InstructorPaymentFree",
-"ContactType",
-"include",
-"InstructorFlag",
-"quickbooklink",
-"instructorTitle",
-"testTime",
-"bdayinclude",
-"sex",
-"medicalConcerns",
-"GuiSize",
-"ShirtSize",
-"phoneExt",
-"altPhoneExt",
-"CurrentReikiRank",
-"StudentSchool",
-"EmergencyContact",
-"CurrentIARank",
-"ReadyForNextRank",
-"nextScheduledTest",
-"contactpictureurl",
-"nclassid",
-"nclass",
-"nclasssort",
-"nextClass",
-"rankForNextClass",
-"ageForNextClass",
-"pgrmcat",
-"classcat",
-"agecat",
-"classpictureurl",
-"PaymentClassName",
-"NumberOfMembers",
-"paymenttype",
-"PaymentNotes",
-"PaymentPlan",
-"PaymentAmount",
-"PriceSetby",
-"Pricesetdate",
-"rankid",
-"ranksortkey",
-"rankGroup",
-"rankalphasortkey",
-"age",
-"birthday",
-"lastpromoted",
-"testdate",
-"lastpaymentdate",
-"nextpaymentdate"            
+"contactID",	"number",	"FALSE",
+"LastName",	"string",	"TRUE",
+"FirstName",	"string",	"TRUE",
+"Email",	"string",	"FALSE",
+"Email2",	"string",	"FALSE",
+"Parent",	"string",	"FALSE",
+"Phone",	"string",	"FALSE",
+"AltPhone",	"string",	"FALSE",
+"Address",	"string",	"FALSE",
+"City",	"string",	"FALSE",
+"State",	"string",	"FALSE",
+"ZIP",	"string",	"FALSE",
+"Notes",	"string",	"FALSE",
+"Newrank",	"string",	"FALSE",
+"BeltSize",	"string",	"FALSE",
+"CurrentRank",	"string",	"TRUE",
+"InstructorPaymentFree",	"number",	"FALSE",
+"ContactType",	"string",	"TRUE",
+"include",	"boolean",	"FALSE",
+"InstructorFlag",	"boolean",	"FALSE",
+"quickbooklink",	"string",	"FALSE",
+"instructorTitle",	"string",	"FALSE",
+"testTime",	"string",	"FALSE",
+"bdayinclude",	"boolean",	"FALSE",
+"sex",	"string",	"FALSE",
+"medicalConcerns",	"string",	"FALSE",
+"GuiSize",	"string",	"FALSE",
+"ShirtSize",	"string",	"FALSE",
+"phoneExt",	"string",	"FALSE",
+"altPhoneExt",	"string",	"FALSE",
+"CurrentReikiRank",	"string",	"FALSE",
+"StudentSchool",	"string",	"FALSE",
+"EmergencyContact",	"string",	"FALSE",
+"CurrentIARank",	"string",	"FALSE",
+"ReadyForNextRank",	"number",	"FALSE",
+"nextScheduledTest",	"string",	"FALSE",
+"contactpictureurl",	"string",	"FALSE",
+"nclassid",	"number",	"FALSE",
+"nclass",	"string",	"FALSE",
+"nclasssort",	"number",	"FALSE",
+"nextClass",	"string",	"FALSE",
+"rankForNextClass",	"string",	"FALSE",
+"ageForNextClass",	"number",	"FALSE",
+"pgrmcat",	"string",	"TRUE",
+"classcat",	"string",	"TRUE",
+"agecat",	"string",	"TRUE",
+"classpictureurl",	"string",	"FALSE",
+"PaymentClassName",	"string",	"FALSE",
+"NumberOfMembers",	"string",	"FALSE",
+"paymenttype",	"string",	"FALSE",
+"PaymentNotes",	"string",	"FALSE",
+"PaymentPlan",	"string",	"FALSE",
+"PaymentAmount",	"number",	"FALSE",
+"PriceSetby",	"string",	"FALSE",
+"Pricesetdate",	"date",	"FALSE",
+"rankid",	"number",	"FALSE",
+"ranksortkey",	"number",	"FALSE",
+"rankGroup",	"string",	"FALSE",
+"rankalphasortkey",	"string",	"FALSE",
+"age",	"number",	"TRUE",
+"birthday",	"date",	"FALSE",
+"lastpromoted",	"date",	"FALSE",
+"testdate",	"date",	"FALSE",
+"lastpaymentdate",	"date",	"FALSE",
+"nextpaymentdate",	"date",	"FALSE"
 ];
 
         setInitColDefs();
@@ -304,11 +312,25 @@
                 var coldef ={};
                 $log.debug('setGridOptions col count', vm.listA.length);
 
-                for (var i=0, len = vm.listA.length; i < len; i++) {
-    
+                for (var i=0, len = vm.listA.length; i < len; i += 3) {
+                    //$log.debug('vis', vm.listA[i+2]);
+                    var val = (vm.listA[i+2].toLowerCase() === "true");
+                    //$log.debug('vis', val);
+                    var agg = (
+                        vm.listA[i+1] === "number" ? uiGridConstants.aggregationTypes.avg :
+                        vm.listA[i+1] === "string" ? uiGridConstants.aggregationTypes.count :
+                        vm.listA[i+1] === "date" ? uiGridConstants.aggregationTypes.min :
+                        vm.listA[i+1] === "boolean" ? uiGridConstants.aggregationTypes.count :
+                         uiGridConstants.aggregationTypes.count
+                        );
+                    $log.debug('agg', agg);
+
                     coldef = {
                               field: vm.listA[i], 
+                               type: vm.listA[i+1],
+                            visible: val,
                     enableFiltering: true, 
+                    aggregationType: agg,
                     headerCellClass: vm.highlightFilteredHeader, 
                      enableCellEdit: false };
                     
@@ -319,16 +341,46 @@
              });
             
         }
+ 
+        function saveState() {
+            vm.state = vm.gridApi.saveState.save();
+            $log.debug('state', vm.state);
+        }
+ 
+        function restoreState() {
+            vm.gridApi.saveState.restore( $scope, vm.state );
+            $log.debug('state', vm.state);
+        }
         
         function setGridOptions() {
 
             vm.gridOptions = {
                 enableFiltering: true,
-                paginationPageSizes: [25, 50, 75],
-                paginationPageSize: 25,
+                paginationPageSizes: vm.limits,
+                paginationPageSize: 10,
                 columnDefs: vm.gcolumns,
-                rowHeight: 15,
+                //rowHeight: 15,
                 showGridFooter: true,
+                enableColumnResizing: true,
+                enableGridMenu: true,
+                showColumnFooter: true,
+                exporterCsvFilename: 'events.csv',
+                exporterPdfDefaultStyle: {fontSize: 9},
+                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+                exporterPdfFooter: function ( currentPage, pageCount ) {
+                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+                },
+                exporterPdfCustomFormatter: function ( docDefinition ) {
+                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
+                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
+                  return docDefinition;
+                },
+                exporterPdfOrientation: 'portrait',
+                exporterPdfPageSize: 'LETTER',
+                exporterPdfMaxGridWidth: 500,
+                
                 onRegisterApi: function(gridApi) {
                     $log.debug('vm gridapi onRegisterApi');
                      vm.gridApi = gridApi;

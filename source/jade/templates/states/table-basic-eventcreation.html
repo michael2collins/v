@@ -52,26 +52,39 @@
         <div class="panel-body pan">
 
               <div class="row">
-              <div class="col-md-12">
-            <div class="col-md-1"></div>
-            <div class="col-md-2">
-                <button ng-click="vm.refreshtheEvent()" 
-                    class="btn btn-blue btn-default EventCreation">Attendee List</button>
-            </div>
-            </div>
-            </div>
+                  <div class="col-md-12">
+                    <div class="col-md-1">
+                        <button id="save" type="button" class="btn btn-success" 
+                            ng-click="vm.saveState()">Save</button>
+                    </div>
+                    <div class="col-md-1">
+                        <button id="restore" type="button" class="btn btn-success" 
+                            ng-click="vm.restoreState()">Restore</button>                      
+                    </div>
+                    <div class="col-md-2">
+                        <button ng-click="vm.refreshtheEvent()" 
+                                class="btn btn-blue btn-default EventCreation">Attendee List</button>
+                    </div>
+                    <div class="col-md-8"></div>
+                  </div>
+              </div>
 
-            <div class="row" >
-                <div ui-grid="vm.gridOptions" 
-                    ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
-                    class="mygrid" ng-if="eventtabShown">
-
-            </div>
+              <div class="row" >
+                  <div class="col-md-12">
+                   <div ui-grid="vm.gridOptions" ng-style="{height: (30*11)+140+'px'}"
+                        ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                        ui-grid-resize-columns ui-grid-pinning 
+                        ui-grid-selection ui-grid-move-columns  
+                        ui-grid-exporter ui-grid-grouping
+                        ui-grid-save-state 
+                        class="mygrid" ng-if="eventtabShown">
+                   </div>
+                </div>
+                </div>
         </div>
         <div class="panel-footer"></div>
       </div>
         
-       </div>
       </uib-tab>
       <uib-tab 
             id="tab-attendhist" 

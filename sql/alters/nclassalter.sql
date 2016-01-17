@@ -499,7 +499,13 @@ AND day7 =1;
 
 create or replace view eventsource as 
 SELECT 
-c.ID as  contactID, `LastName`, `FirstName`, `Email`, `Email2`, `Parent`, `Phone`, `AltPhone`, `Address`, `City`, `State`, `ZIP`, `Notes`, `Newrank`, `BeltSize`, `CurrentRank`,  `InstructorPaymentFree`, `ContactType`, `include`, `InstructorFlag`, `quickbooklink`, `instructorTitle`, `testDate`, `testTime`, `bdayinclude`, `sex`, `medicalConcerns`, `GuiSize`, `ShirtSize`, `phoneExt`, `altPhoneExt`, `CurrentReikiRank`, `StudentSchool`, `EmergencyContact`, `CurrentIARank`, `ReadyForNextRank`, `nextScheduledTest`,  c.pictureurl as contactpictureurl
+c.ID as  contactID, `LastName`, `FirstName`, `Email`, `Email2`, `Parent`, `Phone`, 
+`AltPhone`, `Address`, `City`, `State`, `ZIP`, `Notes`, `Newrank`, `BeltSize`, 
+`CurrentRank`,  `InstructorPaymentFree`, `ContactType`, `include`, `InstructorFlag`,
+`quickbooklink`, `instructorTitle`, `testTime`, `bdayinclude`, `sex`, `medicalConcerns`, 
+`GuiSize`, `ShirtSize`, `phoneExt`, `altPhoneExt`, `CurrentReikiRank`, `StudentSchool`, 
+`EmergencyContact`, `CurrentIARank`, `ReadyForNextRank`, `nextScheduledTest`, 
+c.pictureurl as contactpictureurl
 
 ,cl.id as nclassid, 
 cl.class as nclass, 
@@ -510,7 +516,9 @@ cl.ageForNextClass,
 cp.pgmcat as pgrmcat, cp.classcat as classcat, cp.agecat as agecat,
 
 cl.pictureurl as classpictureurl,
-`PaymentClassName`, `NumberOfMembers`,  `paymenttype`, `PaymentNotes`, `PaymentPlan`, `PaymentAmount`, `PriceSetby`, `Pricesetdate`,
+`PaymentClassName`, `NumberOfMembers`, 
+`paymenttype`, `PaymentNotes`, `PaymentPlan`, 
+`PaymentAmount`, `PriceSetby`, 
 
 r.rankid,
 
@@ -522,13 +530,13 @@ DATE_FORMAT(birthday, '%Y-%m-%d') as birthday,
 DATE_FORMAT(lastpromoted, '%Y-%m-%d') as lastpromoted,
 testdate,
 DATE_FORMAT(lastpaymentdate, '%Y-%m-%d') as lastpaymentdate,
-DATE_FORMAT(nextpaymentdate, '%Y-%m-%d') as nextpaymentdate
-
+DATE_FORMAT(nextpaymentdate, '%Y-%m-%d') as nextpaymentdate,
+DATE_FORMAT(Pricesetdate, '%Y-%m-%d') as pricesetdate
 FROM 
 ncontacts c
-left join ranklist r on c.currentrank = r.rankid
+left join ranklist r on c.currentrank = r.ranklist
 left join nclasspays pgm on pgm.contactid = c.id
-left join  nclasspgm cp on cp.pgmid = pgm.pgmseq
+left join  nclasspgm cp on cp.pgmid = pgm.pgmseq and cp.classid = pgm.classseq
 left join nclass cl on cp.classid = cl.id
 left join npayments p on  p.paymentclassname = pgm.classpayname
 ORDER BY c.id;
