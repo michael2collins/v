@@ -40,7 +40,7 @@
 
 
         vm.listA = [
-"contactID",	"number",	"FALSE",
+"contactID",	"number",	"TRUE",
 "LastName",	"string",	"TRUE",
 "FirstName",	"string",	"TRUE",
 "Email",	"string",	"FALSE",
@@ -312,6 +312,18 @@
                 var coldef ={};
                 $log.debug('setGridOptions col count', vm.listA.length);
 
+                var defnumfilter = 
+                    [
+                        {
+                          condition: uiGridConstants.filter.GREATER_THAN,
+                          placeholder: '> than'
+                        },
+                        {
+                          condition: uiGridConstants.filter.LESS_THAN,
+                          placeholder: '< than'
+                        }
+                      ];
+                var filt=[];
                 for (var i=0, len = vm.listA.length; i < len; i += 3) {
                     //$log.debug('vis', vm.listA[i+2]);
                     var val = (vm.listA[i+2].toLowerCase() === "true");
@@ -323,7 +335,65 @@
                         vm.listA[i+1] === "boolean" ? uiGridConstants.aggregationTypes.count :
                          uiGridConstants.aggregationTypes.count
                         );
-                    $log.debug('agg', agg);
+                    //$log.debug('agg', agg);
+                    if (vm.listA[i+1] === "number" ) {
+                        filt =   [
+                            {
+                              condition: uiGridConstants.filter.GREATER_THAN,
+                              placeholder: '> than'
+                            },
+                            {
+                              condition: uiGridConstants.filter.LESS_THAN,
+                              placeholder: '< than'
+                            }
+                          ];
+                    } else if (vm.listA[i+1] === "string" ) {
+/*  constants.js
+      GREATER_THAN: 32,
+      GREATER_THAN_OR_EQUAL: 64,
+      LESS_THAN: 128,
+      LESS_THAN_OR_EQUAL: 256,
+      NOT_EQUAL: 512,
+      SELECT: 'select',
+      INPUT: 'input'
+      */
+                        filt =   [
+                            {
+                              condition: uiGridConstants.filter.STARTS_WITH,
+                              placeholder: 'Starts with'
+                            },
+                            {
+                              condition: uiGridConstants.filter.ENDS_WITH,
+                              placeholder: 'Ends with'
+                            },
+                            {
+                              condition: uiGridConstants.filter.CONTAINS,
+                              placeholder: 'Contains'
+                            },
+                            {
+                              condition: uiGridConstants.filter.EXACT,
+                              placeholder: 'Exactly'
+                            }
+                          ];
+
+                    } else if (vm.listA[i+1] === "date" ) {
+                    /*  not working, need to create custom filter  
+                        filt =   [
+                            {
+                              condition: uiGridConstants.filter.GREATER_THAN,
+                              placeholder: '> than'
+                            },
+                            {
+                              condition: uiGridConstants.filter.LESS_THAN,
+                              placeholder: '< than'
+                            }
+                          ];
+                        */ filt = "";
+                    } else {
+                        filt = "";
+                    }
+                    
+                    $log.debug('filt', filt);
 
                     coldef = {
                               field: vm.listA[i], 
@@ -331,6 +401,7 @@
                             visible: val,
                     enableFiltering: true, 
                     aggregationType: agg,
+                            filters: filt,
                     headerCellClass: vm.highlightFilteredHeader, 
                      enableCellEdit: false };
                     
@@ -341,6 +412,31 @@
              });
             
         }
+ 
+ /*
+       onRegisterApi: function(gridApi) {
+        $scope.gridApi = gridApi;
+        $timeout(function() {
+        	$scope.defaultState = $scope.gridApi.saveState.save();
+        }, 50);
+        $timeout(function() {
+          $scope.restoreState();
+        }, 100);
+      },
+    };
+    $scope.state = {};
+    $scope.saveState = function() {
+      $scope.state = $scope.gridApi.saveState.save();
+      console.log($scope.state);
+      localStorage.setItem("reportTravelersState", JSON.stringify($scope.state));
+    };
+    $scope.restoreState = function() {
+      $scope.gridApi.saveState.restore($scope, JSON.parse(localStorage.getItem("reportTravelersState")));
+    };
+    $scope.resetState = function() {
+      $scope.gridApi.saveState.restore($scope, $scope.defaultState);
+    };
+ */
  
         function saveState() {
             vm.state = vm.gridApi.saveState.save();

@@ -706,17 +706,17 @@ $tmp["PaymentNotes"] = (empty($slist["PaymentNotes"]) ? "NULL" : $slist["Payment
 $tmp["PaymentPlan"] = (empty($slist["PaymentPlan"]) ? "NULL" : $slist["PaymentPlan"]);
 $tmp["PaymentAmount"] = (empty($slist["PaymentAmount"]) ? "NULL" : $slist["PaymentAmount"]);
 $tmp["PriceSetby"] = (empty($slist["PriceSetby"]) ? "NULL" : $slist["PriceSetby"]);
-$tmp["Pricesetdate"] = (empty($slist["Pricesetdate"]) ? "NULL" : $slist["Pricesetdate"]);
+$tmp["Pricesetdate"] = (empty($slist["Pricesetdate"]) ? "1900-01-01" : $slist["Pricesetdate"]);
 $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
 $tmp["ranksortkey"] = (empty($slist["ranksortkey"]) ? "NULL" : $slist["ranksortkey"]);
 $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
 $tmp["rankalphasortkey"] = (empty($slist["rankalphasortkey"]) ? "NULL" : $slist["rankalphasortkey"]);
-$tmp["age"] = (empty($slist["age"]) ? "NULL" : $slist["age"]);
-$tmp["birthday"] = (empty($slist["birthday"]) ? "NULL" : $slist["birthday"]);
-$tmp["lastpromoted"] = (empty($slist["lastpromoted"]) ? "NULL" : $slist["lastpromoted"]);
-$tmp["testdate"] = (empty($slist["testdate"]) ? "NULL" : $slist["testdate"]);
-$tmp["lastpaymentdate"] = (empty($slist["lastpaymentdate"]) ? "NULL" : $slist["lastpaymentdate"]);
-$tmp["nextpaymentdate"] = (empty($slist["nextpaymentdate"]) ? "NULL" : $slist["nextpaymentdate"]);
+$tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
+$tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
+$tmp["lastpromoted"] = (empty($slist["lastpromoted"]) ? "1900-01-01" : $slist["lastpromoted"]);
+$tmp["testdate"] = (empty($slist["testdate"]) ? "1900-01-01" : $slist["testdate"]);
+$tmp["lastpaymentdate"] = (empty($slist["lastpaymentdate"]) ? "1900-01-01" : $slist["lastpaymentdate"]);
+$tmp["nextpaymentdate"] = (empty($slist["nextpaymentdate"]) ? "1900-01-01" : $slist["nextpaymentdate"]);
             
         } else {
 $tmp["contactID"] = "NULL";
