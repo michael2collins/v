@@ -17,6 +17,7 @@ $app = new \Slim\Slim();
 // User id from db - Global Variable
 $user_id = NULL;
 
+
 //require_once dirname(__FILE__) . 'auth.php';
 require_once dirname(__FILE__) . '/routestudent.php';
 require_once dirname(__FILE__) . '/routestudentclass.php';
