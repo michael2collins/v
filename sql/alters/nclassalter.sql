@@ -567,3 +567,4 @@ CREATE TABLE IF NOT EXISTS `coldef` (
   PRIMARY KEY (`userid`,`colkey`,`colsubkey`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE  `coldef` CHANGE  `colcontent`  `colcontent` TEXT NOT NULL ;

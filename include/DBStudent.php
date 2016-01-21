@@ -646,6 +646,84 @@ class StudentDbHandler {
         $stmt->close();
         return $slists;
     }
+
+    private function isColDefExists($colkey, $colsubkey, $userid) {
+
+    error_log( print_R("before isColDefExists\n", TRUE ), 3, LOG);
+    error_log( print_R("colkey: $colkey\n", TRUE ), 3, LOG);
+    error_log( print_R("colsubkey: $colsubkey\n", TRUE ), 3, LOG);
+    error_log( print_R("userid: $userid\n", TRUE ), 3, LOG);
+        
+        
+        $stmt = $this->conn->prepare("SELECT colkey from coldef WHERE colkey = ? and colsubkey = ? and userid = ?");
+        $stmt->bind_param("sss", $colkey, $colsubkey, $userid);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+
+ /**
+     * Creating new coldef
+     */
+    public function createColDef($colkey,
+                                  $colsubkey,
+                                  $colcontent, $userid ) {
+
+        error_log( print_R("createColDef entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+
+        $sql = "INSERT into coldef (";
+        $sql .= " colkey ,";
+        $sql .= " colsubkey ,";
+        $sql .= " colcontent ,";
+        $sql .= " userid )";
+        $sql .= " values ( ?, ?, ?, ?)";
+
+    	$null = NULL;
+
+        // First check if user already existed in db
+        if (!$this->isColDefExists($colkey, $colsubkey, $userid)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ssss",
+                                  $colkey,
+                                  $colsubkey, $colcontent,
+                                  $userid    
+                                     );
+
+//                	$stmt->send_long_data(0, $colcontent);
+
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_colkey = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_colkey;
+                    } else {
+                        // Failed to create user
+                        return NULL;
+                    }
+
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+
+
+        } else {
+            // User with same colkey already existed in the db
+            return RECORD_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
     
 
 }

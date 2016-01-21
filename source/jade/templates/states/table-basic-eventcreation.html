@@ -7,15 +7,30 @@
         <div class="panel-heading">EventCreation Settings</div>
         <div class="panel-body pan">
             <div class="col-md-12">
+            <form action="" novalidate name="editstudent" class="form-horizontal">
+            <div class="form-body pal">
+
             <div class="row">
                 <div class="col-md-4">
                   <div  class="form-group">
-                    <label for="inputclass" class="control-label">Events</label>
+                    <label for="inputevent" class="control-label">Events</label>
                     <div class="input-icon right">
 <!--                      <select id="inputclass" type="text" name="class" ng-model="vm.theevent" ng-change="vm.setEvent(vm.theevent)"  class="form-control EventCreation">
                         <option ng-repeat="g in vm.events" ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  value="{{g.Description}}">{{g.Description}}</option>
                       </select>
--->                    </div>
+-->
+
+                            <i data-hover="tooltip" data-original-title="Correct" 
+                                ng-show="editevent.inputevent.$dirty" 
+                                ng-class="editevent.inputevent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputevent" type="text" placeholder="Pick Event" 
+                                name="InputEvent" 
+                                ng-model="vm.colsubkey" 
+                                minLength="2" 
+                                maxLength="80" 
+                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+
+                    </div>
                   </div>
                 </div>
                 <div class="col-md-4">
@@ -33,7 +48,8 @@
 
                 </div>
             </div>
-
+        </div>
+        </form>
         </div>
         </div>
         <div class="panel-footer"></div>

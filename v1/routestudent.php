@@ -924,6 +924,68 @@ $app->get('/coldeflist',  function() use($app){
     }
 });
 
+$app->post('/coldef', function() use ($app) {
+    // check for required params
+//    verifyRequiredParams(array('name', 'email', 'password'));
+
+
+    $userid = 1; //have to convert name to id
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+  //      $message            = $dataJsonDecode->message;
+    //    echo $message;     //'Hello world'
+
+    error_log( print_R("coldef before insert\n", TRUE ), 3, LOG);
+//    error_log( print_R($data, TRUE ), 3, LOG);
+//    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+
+    $colkey = (isset($dataJsonDecode->thedata->colkey) ? $dataJsonDecode->thedata->colkey : "");
+    $colsubkey = (isset($dataJsonDecode->thedata->colsubkey) ? $dataJsonDecode->thedata->colsubkey : "");
+    $colcontent = (isset($dataJsonDecode->thedata->colcontent) ? $dataJsonDecode->thedata->colcontent : "");
+
+    error_log( print_R("colkey: $colkey\n", TRUE ), 3, LOG);
+    error_log( print_R("colsubkey: $colsubkey\n", TRUE ), 3, LOG);
+    error_log( print_R("colcontent:\n", TRUE ), 3, LOG);
+    error_log( print_R($colcontent, TRUE ), 3, LOG);
+
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $colid = $db->createColDef($colkey,
+                                 $colsubkey,
+                                 $colcontent, $userid
+                                );
+
+    if ($colid > 0) {
+        $response["error"] = false;
+        $response["message"] = "colcontent created successfully";
+        $response["$colid"] = $colid;
+        error_log( print_R("colcontent created: $colid\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($colid == RECORD_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this colcontent already existed";
+        error_log( print_R("colcontent already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
+    } else {
+        error_log( print_R("after colcontent result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create colcontent. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+
 /**
  * Validating email address
  */
