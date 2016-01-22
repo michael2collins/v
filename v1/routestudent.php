@@ -976,7 +976,7 @@ $app->post('/coldef', function() use ($app) {
         echoRespnse(409, $response);
     } else {
         error_log( print_R("after colcontent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        error_log( print_R( $colid, TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create colcontent. Please try again";
         echoRespnse(400, $response);

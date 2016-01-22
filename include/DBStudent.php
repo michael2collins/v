@@ -684,7 +684,15 @@ class StudentDbHandler {
         $sql .= " userid )";
         $sql .= " values ( ?, ?, ?, ?)";
 
+        $updsql = "UPDATE coldef set ";
+        $updsql .= " colcontent = ? ";
+        $updsql .= " where colkey = ? ";
+        $updsql .= " and colsubkey = ? ";
+        $updsql .= " and userid = ? ";
+
+
     	$null = NULL;
+        $cont = json_encode($colcontent);
 
         // First check if user already existed in db
         if (!$this->isColDefExists($colkey, $colsubkey, $userid)) {
@@ -692,37 +700,47 @@ class StudentDbHandler {
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ssss",
                                   $colkey,
-                                  $colsubkey, $colcontent,
+                                  $colsubkey, $cont,
+                                  $userid    
+                                     );
+
+//                	$stmt->send_long_data(0, $colcontent);
+
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                    // Check for successful insertion
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same colkey already existed in the db
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("ssss",
+                                  $cont,
+                                  $colkey, $colsubkey,
                                   $userid    
                                      );
 
 //                	$stmt->send_long_data(0, $colcontent);
 
                     $result = $stmt->execute();
-
+                    $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
-                    // Check for successful insertion
-                    if ($result) {
-                        $new_colkey = $this->conn->insert_id;
-                        // User successfully inserted
-                        return $new_colkey;
-                    } else {
-                        // Failed to create user
-                        return NULL;
-                    }
 
-                } else {
-                    printf("Errormessage: %s\n", $this->conn->error);
-                        return NULL;
-                }
-
-
-        } else {
-            // User with same colkey already existed in the db
-            return RECORD_ALREADY_EXISTED;
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+            return $num_affected_rows >= 0;
+                    
         }
 
-        return $response;
     }
     
 

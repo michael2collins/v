@@ -16,10 +16,10 @@ function echoRespnse($status_code, $response) {
 
     echo json_encode($response);
     //debug purposes
-    $fp = fopen('/var/log/apache2/results.json', 'a+');
-    fwrite($fp, json_encode($response));
-    fwrite($fp, "\n");
-    fclose($fp);
+ //   $fp = fopen('/var/log/apache2/results.json', 'a+');
+ //   fwrite($fp, json_encode($response));
+ //   fwrite($fp, "\n");
+ //   fclose($fp);
 }
 
     

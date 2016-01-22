@@ -568,3 +568,4 @@ CREATE TABLE IF NOT EXISTS `coldef` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE  `coldef` CHANGE  `colcontent`  `colcontent` TEXT NOT NULL ;
+ALTER TABLE  `coldef` CHANGE  `colcontent`  `colcontent` VARCHAR( 64000 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
