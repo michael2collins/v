@@ -46,6 +46,9 @@
         vm.coldeflist = [];
         vm.eventtmp;
         vm.gcolumns =[];
+        vm.loading = true; 
+        vm.loadAttempted = false;
+        vm.gridOptions={};
 
 
         vm.listA = [
@@ -116,9 +119,6 @@
 "nextpaymentdate",	"date",	"FALSE"
 ];
 
-        setInitColDefs();
-        setGridOptions();
-        getColDefList();
 
         activate();
 
@@ -134,10 +134,10 @@
         }
 
         function activate() {
+            setInitColDefs();
+            $log.debug('activate setInitColDefs returned');
+            getColDefList();
 
-             refreshtheEvent().then(function(zdata) {
-                 $log.debug('refreshtheEvent returned', zdata);
-             });
         }
         
         function updateEvent(card) {
@@ -269,10 +269,13 @@
             }
 
              return EventServices.getColDefs(refreshpath).then(function(data){
-                    $log.debug('getColDefs returned data');
+                    $log.debug('EventServices in controller getColDefs returned data');
                     $log.debug(data);
-                    vm.gcolumns = data.gcolumns; 
-                    return vm.gcolumns;
+                 //   vm.gcolumns = data.gcolumns[0][0]; 
+                 //   $log.debug('EventServices in controller set gcolumns',vm.gcolumns);
+                    vm.state = JSON.parse(data.gcolumns[0][0]);
+                    $log.debug('EventServices in controller set gcolumns',vm.state);
+                    return vm.state;
                 },
                 function (error) {
                     $log.debug('Caught an error getColDefs:', error); 
@@ -335,11 +338,18 @@
             //if they are saved, then get those, otherwise default 
             getColDefs(vm.colsubkey).then(function(data) {
                 //vm.gcolumns is filled
-                vm.gcolumns = data;
-                
+                $log.debug(" controller getColDefs returned with:",data, vm.colsubkey);
+                $log.debug(" controller getColDefs vmstate is:", vm.state);
+
+        //         setGridOptions();
+
+
              },function(error) {
                 $log.debug('cols not stored:', error);
     
+
+             });
+
                 var coldef ={};
                 $log.debug('setGridOptions col count', vm.listA.length);
 
@@ -440,9 +450,17 @@
                     
                 }
                 $log.debug('gcolumns in coldefs', vm.gcolumns);
-                saveState();
+
+             setGridOptions();
+
+            refreshtheEvent().then(function(zdata) {
+                 $log.debug('refreshtheEvent returned', zdata);
+             if (vm.state != {}) {
+                 restoreState(vm.state);
+             }
              });
-            
+             
+
         }
  
         function saveState() {
@@ -457,9 +475,9 @@
             setColDef(thedata);
         }
  
-        function restoreState() {
-            vm.gridApi.saveState.restore( $scope, vm.state );
-            $log.debug('state', vm.state);
+        function restoreState(thestate) {
+            vm.gridApi.saveState.restore( $scope, thestate );
+            $log.debug('state', thestate);
         }
         
         function setGridOptions() {
@@ -497,8 +515,9 @@
                     }
             };
 
-            $log.debug('gcolumns', vm.gcolumns);
-            $log.debug('gridOptions', vm.gridOptions);
+            $log.debug('setGridOptions gcolumns', vm.gcolumns);
+            $log.debug('setGridOptions gridOptions', vm.gridOptions);
+
         }
 
 
