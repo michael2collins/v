@@ -28,6 +28,7 @@
         vm.getEventSource = getEventSource;
         vm.getColDefList = getColDefList;
         vm.setColDef = setColDef;
+        vm.getColDefs = getColDefs;
         vm.saveState = saveState;
         vm.restoreState = restoreState;
         vm.setLimit = setLimit;
@@ -40,7 +41,11 @@
         vm.state = {};
         vm.thiscoldef = '';
         vm.colkey = 'event';
-        vm.subcolkey = '';
+        vm.colsubkey = '';
+        vm.colsubkeys = [];
+        vm.coldeflist = [];
+        vm.eventtmp;
+        vm.gcolumns =[];
 
 
         vm.listA = [
@@ -113,6 +118,7 @@
 
         setInitColDefs();
         setGridOptions();
+        getColDefList();
 
         activate();
 
@@ -167,8 +173,6 @@
                     throw e;
                 });
         }
-
-
 
         function refreshtheEvent() {
             $log.debug('refreshtheEvent entered ');
@@ -240,21 +244,7 @@
                     $log.debug(vm.thiscoldef);
                     $log.debug(vm.thiscoldef.message);
                     vm.message = vm.thiscoldef.message;
-/*                    refreshtheEvent().then
-                        (function(zdata) {
-                         $log.debug('setColDefs returned', zdata);
-                     },
-                        function (error) {
-                            $log.debug('Caught an error setColDefs after update:', error); 
-                            vm.data = [];
-                            vm.photos = [];
-                            vm.message = error;
-                            Notification.error({message: error, delay: 5000});
-                            return ($q.reject(error));
-                        });
-
-                    return vm.thisEvent;
-*/                    
+                  
                 }).catch(function(e) {
                     $log.debug('setColDefs failure:');
                     $log.debug("error", e);
@@ -267,10 +257,10 @@
 
         function getColDefs(colsubkey) {
             $log.debug('getColDefs entered');
-            var thisgrid = 'eventsource';
-            var refreshpath = encodeURI('../v1/getcoldefs?colkey=' + 
-                thisgrid + "&colsubkey=" + colsubkey);
-
+            var refreshpath = encodeURI('../v1/coldefs?colkey=' + 
+                vm.colkey + "&colsubkey=" + colsubkey);
+            var holdgcol = vm.gcolumns;
+            
             $log.debug('getColDefs path:', refreshpath);
 
             if (colsubkey === null ) {
@@ -281,12 +271,12 @@
              return EventServices.getColDefs(refreshpath).then(function(data){
                     $log.debug('getColDefs returned data');
                     $log.debug(data);
-                    vm.data = data; 
-                    return vm.data;
+                    vm.gcolumns = data.gcolumns; 
+                    return vm.gcolumns;
                 },
                 function (error) {
                     $log.debug('Caught an error getColDefs:', error); 
-                    vm.data = [];
+                    vm.gcolumns = holdgcol;
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -298,23 +288,23 @@
                 );
 
         }
+        
         function getColDefList() {
             $log.debug('getColDefList entered');
-            var thisgrid = 'eventsource';
-            var refreshpath = encodeURI('../v1/getcoldefs?colkey=' + 
-                thisgrid + "&colsubkey=" + colsubkey);
+            var refreshpath = encodeURI('../v1/coldeflist?colkey=' + 
+                vm.colkey );
 
             $log.debug('getColDefList path:', refreshpath);
             
              return EventServices.getColDefList(refreshpath).then(function(data){
                     $log.debug('getColDefList returned data');
                     $log.debug(data);
-                    vm.data = data; 
+                    vm.colsubkeys = data.colsubkeys; 
                     return vm.data;
                 },
                 function (error) {
                     $log.debug('Caught an error getColDefList:', error); 
-                    vm.data = [];
+                    vm.colsubkeys = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -340,9 +330,10 @@
 
         function setInitColDefs() {
             vm.gcolumns = [];
+            vm.colsubkey="Default";
 
             //if they are saved, then get those, otherwise default 
-            getColDefs("Default").then(function(data) {
+            getColDefs(vm.colsubkey).then(function(data) {
                 //vm.gcolumns is filled
                 vm.gcolumns = data;
                 
@@ -433,7 +424,7 @@
                         filt = "";
                     }
                     
-                    $log.debug('filt', filt);
+                  //  $log.debug('filt', filt);
 
                     coldef = {
                               field: vm.listA[i], 
@@ -449,34 +440,10 @@
                     
                 }
                 $log.debug('gcolumns in coldefs', vm.gcolumns);
+                saveState();
              });
             
         }
- 
- /*
-       onRegisterApi: function(gridApi) {
-        $scope.gridApi = gridApi;
-        $timeout(function() {
-        	$scope.defaultState = $scope.gridApi.saveState.save();
-        }, 50);
-        $timeout(function() {
-          $scope.restoreState();
-        }, 100);
-      },
-    };
-    $scope.state = {};
-    $scope.saveState = function() {
-      $scope.state = $scope.gridApi.saveState.save();
-      console.log($scope.state);
-      localStorage.setItem("reportTravelersState", JSON.stringify($scope.state));
-    };
-    $scope.restoreState = function() {
-      $scope.gridApi.saveState.restore($scope, JSON.parse(localStorage.getItem("reportTravelersState")));
-    };
-    $scope.resetState = function() {
-      $scope.gridApi.saveState.restore($scope, $scope.defaultState);
-    };
- */
  
         function saveState() {
             vm.state = vm.gridApi.saveState.save();

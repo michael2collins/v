@@ -818,51 +818,48 @@ $app->get('/coldefs',  function() use($app){
         $colsubkey = $allGetVars['colsubkey'];
     }
 
-    $response = array();
-    $db = new StudentDbHandler();
-
     $userid = 1; //have to convert name to id
     //$prefkey = "allstudents";
 
     error_log( print_R("coldefs params: userid: $userid colkey: $colkey colsubkey: $colsubkey\n ", TRUE), 3, LOG);
 
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getColDefs($colkey, $colsubkey, $userid);
 
     $response["error"] = false;
     $response["gcolumns"] = array();
 
     $tmp = array();
 
-    $sql  = " SELECT colcontent FROM coldefs ";
-    $sql .= " where ";
-    $sql .= " userid = " . $userid;
-    $sql .= " colkey = " . $colkey;
-    $sql .= " colsubkey = " . $colsubkey;
-    
-    if (!$stmt = $this->conn->prepare($sql) ) {
-        $response["error"] = true;
-        $response["message"] = "colcontent failed";
-        echoRespnse(404, $response);
-    } else {
-        $stmt->execute();
-        $stmt->bind_result($colcontent);
-
-        while ($stmt->fetch()) {
-            error_log( print_R("colcontent\n ", TRUE), 3, LOG);
-            error_log( print_R($colcontent, TRUE), 3, LOG);
-            error_log( print_R("\n ", TRUE), 3, LOG);
-            $tmp[] = $colcontent;
-        }
-
-        $stmt->close();
-        
-        array_push($response["gcolumns"], $tmp);
-
-        error_log( print_R("coldefs responding\n ", TRUE), 3, LOG);
-        error_log( print_R($response["gcolumns"], TRUE), 3, LOG);
+//    while ($slist = $result->fetch()) {
+    $slist = $result->fetch_assoc();
+        error_log( print_R("colcontent\n ", TRUE), 3, LOG);
         error_log( print_R("\n ", TRUE), 3, LOG);
-    
+   //     $tmp[] = $colcontent;
+        $tmp[] = $slist["colcontent"];
+
+    array_push($response["gcolumns"], $tmp);
+
+    error_log( print_R("coldefs responding\n ", TRUE), 3, LOG);
+    error_log( print_R($response["gcolumns"], TRUE), 3, LOG);
+    error_log( print_R("\n ", TRUE), 3, LOG);
+
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
         echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in coldef query";
+        error_log( print_R("coldef query bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
     }
+
+
+    
 });
 
 $app->get('/coldeflist',  function() use($app){
@@ -886,42 +883,41 @@ $app->get('/coldeflist',  function() use($app){
 
     error_log( print_R("coldefs params: userid: $userid colkey: $colkey\n ", TRUE), 3, LOG);
 
+    $result = $db->getColDefList($colkey, $userid);
 
     $response["error"] = false;
     $response["colsubkeys"] = array();
 
-    $tmp = array();
-
-    $sql  = " SELECT colsubkeys FROM coldefs ";
-    $sql .= " where ";
-    $sql .= " userid = " . $userid;
-    $sql .= " colkey = " . $colkey;
-
-    if (!$stmt = $this->conn->prepare($sql) ) {
-        $response["error"] = true;
-        $response["message"] = "coldeflist failed";
-        echoRespnse(404, $response);
-    } else {
-        $stmt->execute();
-        $stmt->bind_result($colsubkey);
-
-        while ($stmt->fetch()) {
-            error_log( print_R("colsubkeys\n ", TRUE), 3, LOG);
-            error_log( print_R($colsubkey, TRUE), 3, LOG);
-            error_log( print_R("\n ", TRUE), 3, LOG);
-            $tmp[] = $colsubkey;
-        }
-
-        $stmt->close();
+//    while ($slist = $result->fetch()) {
+    while ($slist = $result->fetch_assoc()) {
+//            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+        $tmp = array();
         
-        array_push($response["colsubkeys"], $tmp);
-
-        error_log( print_R("coldeflist responding\n ", TRUE), 3, LOG);
-        error_log( print_R($response["colsubkeys"], TRUE), 3, LOG);
+        error_log( print_R("colsubkey\n ", TRUE), 3, LOG);
+        error_log( print_R($slist["colsubkey"], TRUE), 3, LOG);
         error_log( print_R("\n ", TRUE), 3, LOG);
-    
-        echoRespnse(200, $response);
+        $tmp["col"] = $slist["colsubkey"];
+        array_push($response["colsubkeys"], $tmp);
     }
+
+
+    error_log( print_R("coldeflist responding\n ", TRUE), 3, LOG);
+    error_log( print_R($response["colsubkeys"], TRUE), 3, LOG);
+    error_log( print_R("\n ", TRUE), 3, LOG);
+
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in coldeflist query";
+        error_log( print_R("coldeflist query bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+
+
 });
 
 $app->post('/coldef', function() use ($app) {

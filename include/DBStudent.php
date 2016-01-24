@@ -629,6 +629,8 @@ class StudentDbHandler {
         return $response;
     }
     
+    
+    
     /**
      * Fetching event view
      */
@@ -664,6 +666,50 @@ class StudentDbHandler {
         return $num_rows > 0;
     }
 
+    public function getColDefs($colkey, $colsubkey, $userid) {
+
+        error_log( print_R("getColDefs entered\n", TRUE ),3, LOG);
+
+        $sql  = " SELECT colcontent FROM coldef ";
+        $sql .= " where ";
+        $sql .= " userid = " . $userid;
+        $sql .= " and colkey = '" . $colkey . "'";
+        $sql .= " and colsubkey = '" . $colsubkey . "'";
+        
+        if (!$stmt = $this->conn->prepare($sql) ) {
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        } else {
+            $stmt->execute();
+            //$slists = $stmt->bind_result($colcontent);
+            $slists = $stmt->get_result();
+
+            $stmt->close();
+            return $slists;
+        }
+    }
+
+    public function getColDefList($colkey, $userid) {
+
+        error_log( print_R("getColDefList entered\n", TRUE ),3, LOG);
+
+        $sql  = " SELECT colsubkey FROM coldef ";
+        $sql .= " where ";
+        $sql .= " userid = " . $userid;
+        $sql .= " and colkey = '" . $colkey . "'";
+
+        if (!$stmt = $this->conn->prepare($sql) ) {
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        } else {
+            $stmt->execute();
+            $slists = $stmt->get_result();
+
+            //$slists = $stmt->bind_result($colsubkey);
+            $stmt->close();
+            return $slists;
+        }
+    }
 
  /**
      * Creating new coldef

@@ -12,6 +12,7 @@
 
             <div class="row">
                 <div class="col-md-4">
+
                   <div  class="form-group">
                     <label for="inputevent" class="control-label">Events</label>
                     <div class="input-icon right">
@@ -31,6 +32,54 @@
                                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
 
                     </div>
+
+                        <div class="row">
+                              <div ng-class="{'has-error': editevent.inputevent.$invalid, 'has-success': !editevent.inputevent.$invalid}" class="form-group">
+                                <label for="input_event" class="control-label">Event</label>
+                                <div class="input-icon right">
+                                    <i data-hover="tooltip" 
+                                        data-original-title="Correct" 
+                                        ng-show="editevent.inputevent.$dirty" 
+                                        ng-class="editevent.inputevent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+                                        class="glyphicon tooltips"></i>
+                                  <input id="input_event" type="text" 
+                                    placeholder="Event" 
+                                    name="inputevent" 
+                                    ng-model="vm.colsubkey" 
+                                    ng-change="vm.getColDefs(vm.colsubkey)" 
+                                    minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                </div>
+                                <div style="color:maroon" role="alert" ng-messages="editevent.inputevent.$error" class="has-error">
+                                  <div ng-message="required">You did not enter a field</div>
+                                  <div ng-message="minlength">Your field is too short</div>
+                                  <div ng-message="maxlength">Your field is too long</div>
+                                </div>
+                              </div>
+                        </div>
+
+                        <div class="row">
+                          <div class="col-md-6">
+                            <ui-select tagging tagging-label="('new')" 
+                                ng-model="vm.colsubkey" 
+                                theme="select2" 
+                                ng-disabled="disabled" 
+                                style="width: 300px;" 
+                                title="Choose an event">
+                  <ui-select-match allow-clear placeholder="Select or add the event...">{{$select.selected.col}}</ui-select-match>
+                              <ui-select-choices 
+                repeat="colkeyitem.col as colkeyitem in vm.colsubkeys| filter: $select.search ">
+                                <small>
+                        Name: <span ng-bind-html="colkeyitem.col | highlight: $select.search"></span>                    <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
+                                </small>
+                              </ui-select-choices>
+                            </ui-select>
+                          </div>
+                          <div class="col-md-6">
+                            <button type="button" ng-click="vm.saveState()" class="btn btn-default btn-sm mix-link">Set as {{vm.colsubkey}}</button>
+                          </div>
+                        </div>
+
+
                   </div>
                 </div>
                 <div class="col-md-4">

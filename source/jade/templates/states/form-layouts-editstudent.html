@@ -1129,7 +1129,7 @@
                               <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
                               <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
                                 <small>
-                                    <p>Name: {{paylist.firstname}} {{fpaylist.lastname}} </p>
+                                    <p>Name: {{paylist.firstname}} {{paylist.lastname}} </p>
                                     Payer: <span ng-bind-html="paylist.classpaynametmp | highlight: $select.search"></span>
                                     <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
                                 </small>
