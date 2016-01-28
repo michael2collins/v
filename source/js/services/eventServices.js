@@ -17,6 +17,7 @@
             getColDefs: getColDefs,
             getColDefList: getColDefList,
             setColDefs: setColDefs,
+            createEvent: createEvent,
 //            updateEvent: updateEvent,
 //            getEvent: getEvent,
             setActiveTab: setActiveTab,
@@ -69,14 +70,11 @@
             return( request.then( handleSuccess, handleError ) );
         }
 
-        function updateEvent(path, thedata ) {
-                    $log.debug('updateEvent data before post :' , thedata);
+        function createEvent(path, thedata ) {
+                    $log.debug('createEvent data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,
-                    //    params: {
-                    //        action: "add"
-                    //    },
                         data: {
                             thedata: thedata
                         }

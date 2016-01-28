@@ -29,6 +29,7 @@
         vm.getColDefList = getColDefList;
         vm.setColDef = setColDef;
         vm.getColDefs = getColDefs;
+        vm.changeColDef = changeColDef;
         vm.saveState = saveState;
         vm.restoreState = restoreState;
         vm.setLimit = setLimit;
@@ -140,12 +141,12 @@
 
         }
         
-        function updateEvent(card) {
-            var updpath = "../v1/updateEvent";
-            $log.debug('about updateEvent ', card, updpath);
+        function createEvent(event) {
+            var path = "../v1/eventregistration";
+            $log.debug('about createEvent ', event, path);
             return EventServices.updateEvent(updpath, card)
                 .then(function(data){
-                    $log.debug('updateEvent returned data');
+                    $log.debug('createEvent returned data');
                     $log.debug(data);
                     vm.thisEvent = data;
                     $log.debug(vm.thisEvent);
@@ -244,6 +245,8 @@
                     $log.debug(vm.thiscoldef);
                     $log.debug(vm.thiscoldef.message);
                     vm.message = vm.thiscoldef.message;
+                    getColDefList();
+
                   
                 }).catch(function(e) {
                     $log.debug('setColDefs failure:');
@@ -254,7 +257,27 @@
                 });
         }
 
+        function changeColDef(colsubkey){
+            $log.debug('changeColDef entered');
+            if (isNewColDef(colsubkey)) {
+                saveState();
+            }
+            getColDefs(vm.colsubkey).then(function(data) {
+                //vm.gcolumns is filled
+                $log.debug(" controller changeColDef returned with:",data, vm.colsubkey);
+                $log.debug(" controller changeColDef vmstate is:", vm.state);
 
+                 if (vm.state != {}) {
+                     restoreState(vm.state);
+                 }
+
+             },function(error) {
+                $log.debug('cols not stored:', error);
+             });
+
+             
+        }
+        
         function getColDefs(colsubkey) {
             $log.debug('getColDefs entered');
             var refreshpath = encodeURI('../v1/coldefs?colkey=' + 
@@ -274,7 +297,7 @@
                  //   vm.gcolumns = data.gcolumns[0][0]; 
                  //   $log.debug('EventServices in controller set gcolumns',vm.gcolumns);
                     vm.state = JSON.parse(data.gcolumns[0][0]);
-                    $log.debug('EventServices in controller set gcolumns',vm.state);
+                    $log.debug('EventServices in controller set vm.state',vm.state);
                     return vm.state;
                 },
                 function (error) {
@@ -463,6 +486,20 @@
 
         }
  
+        function isNewColDef(theevent){
+            $log.debug('isNewColDef', theevent);
+            var isnew = true;
+            for (var i=0, len=vm.colsubkeys.length; i < len; i++) {
+              //  $log.debug('isNewColDef colsubkey:', vm.colsubkeys[i]);
+                if (vm.colsubkeys[i] == theevent) {
+                    $log.debug('isfound');
+                    isnew = false;
+                    break;
+                }
+            }
+            return isnew;
+        }
+        
         function saveState() {
             vm.state = vm.gridApi.saveState.save();
             $log.debug('state', vm.state);

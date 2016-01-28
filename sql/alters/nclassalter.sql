@@ -569,3 +569,13 @@ CREATE TABLE IF NOT EXISTS `coldef` (
 
 ALTER TABLE  `coldef` CHANGE  `colcontent`  `colcontent` TEXT NOT NULL ;
 ALTER TABLE  `coldef` CHANGE  `colcontent`  `colcontent` VARCHAR( 64000 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+
+ALTER TABLE  `eventregistration` ADD  `location` VARCHAR( 200 ) NOT NULL ;
+ALTER TABLE  `eventregistration` CHANGE  `paid`  `paid` INT( 1 ) NULL DEFAULT  '0',
+CHANGE  `include`  `include` INT( 1 ) NULL DEFAULT  '0',
+CHANGE  `attended`  `attended` INT( 1 ) NULL DEFAULT  '0',
+CHANGE  `ordered`  `ordered` INT( 1 ) NULL DEFAULT  '0';
+ALTER TABLE  `eventregistration` ADD  `eventstart` VARCHAR( 12 ) NOT NULL AFTER  `event date` ;
+ALTER TABLE  `eventregistration` ADD  `eventend` VARCHAR( 12 ) NOT NULL AFTER  `eventstart` ;
+ALTER TABLE  `eventregistration` CHANGE  `event date`  `eventdate` DATETIME NOT NULL ;
+

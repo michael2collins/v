@@ -1,5 +1,83 @@
 <?php
 
+/* Event Registration
+ * url - /eventregistration
+ * method - POST
+ * params - full list of event fields
+ */
+ 
+$app->post('/eventregistration', function() use ($app) {
+    // check for required params
+//    verifyRequiredParams(array('name', 'email', 'password'));
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+  //      $message            = $dataJsonDecode->message;
+    //    echo $message;     //'Hello world'
+
+    error_log( print_R("eventregistration before insert\n", TRUE ), 3, LOG);
+//    error_log( print_R($data, TRUE ), 3, LOG);
+//    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+
+    $Event      = (isset($dataJsonDecode->thedata->Event)     ? $dataJsonDecode->thedata->Event : "");
+    $EventDate  = (isset($dataJsonDecode->thedata->EventDate) ? $dataJsonDecode->thedata->EventDate : "");
+    $EventStart = (isset($dataJsonDecode->thedata->EventStart) ? $dataJsonDecode->thedata->EventStart : "");
+    $EventEnd   = (isset($dataJsonDecode->thedata->EventEnd)  ? $dataJsonDecode->thedata->EventEnd : "");
+    $ContactID  = (isset($dataJsonDecode->thedata->ContactId) ? $dataJsonDecode->thedata->ContactId : "");
+    $EventType  = (isset($dataJsonDecode->thedata->EventType) ? $dataJsonDecode->thedata->EventType : "");
+    $Paid       = (isset($dataJsonDecode->thedata->Paid)      ? $dataJsonDecode->thedata->Paid : "");
+    $ShirtSize  = (isset($dataJsonDecode->thedata->ShirtSize) ? $dataJsonDecode->thedata->ShirtSize : "");
+    $Notes      = (isset($dataJsonDecode->thedata->Notes)     ? $dataJsonDecode->thedata->Notes : "");
+    $Include    = (isset($dataJsonDecode->thedata->Include)   ? $dataJsonDecode->thedata->Include : "");
+    $Attended   = (isset($dataJsonDecode->thedata->Attended)  ? $dataJsonDecode->thedata->Attended : "");
+    $Ordered    = (isset($dataJsonDecode->thedata->Ordered)   ? $dataJsonDecode->thedata->Ordered : "");
+    $Location   = (isset($dataJsonDecode->thedata->Location)  ? $dataJsonDecode->thedata->Location : "");
+
+
+    error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
+    error_log( print_R("EventDate: $EventDate\n", TRUE ), 3, LOG);
+    error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+
+
+    // validating email address
+//    validateEmail($email);
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $event = $db->createEvent(
+        $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location
+                                );
+
+    if ($event > 0) {
+        $response["error"] = false;
+        $response["message"] = "Event created successfully";
+        $response["event"] = $event;
+        error_log( print_R("Event created: $event\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($event == RECORD_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this event already existed";
+        error_log( print_R("event already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
+    } else {
+        error_log( print_R("after createEvent result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $event, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create event. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+
 $app->get('/userprefcols/:prefkey',  function($prefkey) {
     error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
 
@@ -611,7 +689,7 @@ $app->post('/newstudent', function() use ($app) {
         echoRespnse(409, $response);
     } else {
         error_log( print_R("after insertStudent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        error_log( print_R( $student_id, TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create student. Please try again";
         echoRespnse(400, $response);

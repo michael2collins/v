@@ -6,35 +6,16 @@
       <div class="panel panel-blue">
         <div class="panel-heading">EventCreation Settings</div>
         <div class="panel-body pan">
-            <div class="col-md-12">
-            <form action="" novalidate name="editstudent" class="form-horizontal">
+          <div class="col-md-12">
+          <form action="" novalidate name="editevent" class="form-horizontal">
             <div class="form-body pal">
 
             <div class="row">
                 <div class="col-md-4">
 
                   <div  class="form-group">
-                    <label for="inputevent" class="control-label">Events</label>
-                    <div class="input-icon right">
-<!--                      <select id="inputclass" type="text" name="class" ng-model="vm.theevent" ng-change="vm.setEvent(vm.theevent)"  class="form-control EventCreation">
-                        <option ng-repeat="g in vm.events" ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  value="{{g.Description}}">{{g.Description}}</option>
-                      </select>
--->
-
-                            <i data-hover="tooltip" data-original-title="Correct" 
-                                ng-show="editevent.inputevent.$dirty" 
-                                ng-class="editevent.inputevent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputevent" type="text" placeholder="Pick Event" 
-                                name="InputEvent" 
-                                ng-model="vm.colsubkey" 
-                                minLength="2" 
-                                maxLength="80" 
-                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-
-                    </div>
-
                         <div class="row">
-                              <div ng-class="{'has-error': editevent.inputevent.$invalid, 'has-success': !editevent.inputevent.$invalid}" class="form-group">
+                              <div ng-class="{'has-error': editevent.inputevent.$invalid, 'has-success': !editevent.inputevent.$invalid}" class="">
                                 <label for="input_event" class="control-label">Event</label>
                                 <div class="input-icon right">
                                     <i data-hover="tooltip" 
@@ -46,8 +27,8 @@
                                     placeholder="Event" 
                                     name="inputevent" 
                                     ng-model="vm.colsubkey" 
-                                    ng-change="vm.getColDefs(vm.colsubkey)" 
-                                    minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                    ng-change="vm.changeColDef(vm.colsubkey)" 
+                                    minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 2500, 'blur': 0 } }" class="">
                                 </div>
                                 <div style="color:maroon" role="alert" ng-messages="editevent.inputevent.$error" class="has-error">
                                   <div ng-message="required">You did not enter a field</div>
@@ -59,13 +40,14 @@
 
                         <div class="row">
                           <div class="col-md-6">
-                            <ui-select tagging tagging-label="('new')" 
+                            <ui-select tagging tagging-label="(custom 'new' label)" 
                                 ng-model="vm.colsubkey" 
+                                on-select="vm.changeColDef($item)"
                                 theme="select2" 
                                 ng-disabled="disabled" 
                                 style="width: 300px;" 
                                 title="Choose an event">
-                  <ui-select-match allow-clear placeholder="Select or add the event...">{{$select.selected.col}}</ui-select-match>
+                  <ui-select-match allow-clear placeholder="Select the event...">{{$select.selected.col}}</ui-select-match>
                               <ui-select-choices 
                 repeat="colkeyitem.col as colkeyitem in vm.colsubkeys| filter: $select.search ">
                                 <small>
@@ -75,7 +57,7 @@
                             </ui-select>
                           </div>
                           <div class="col-md-6">
-                            <button type="button" ng-click="vm.saveState()" class="btn btn-default btn-sm mix-link">Set as {{vm.colsubkey}}</button>
+                            <button type="button" ng-click="vm.saveState()" class="btn btn-default btn-sm mix-link">Save changes for: {{vm.colsubkey}}</button>
                           </div>
                         </div>
 
@@ -97,9 +79,122 @@
 
                 </div>
             </div>
-        </div>
-        </form>
-        </div>
+            <!-- event extras 
+        $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
+        $Location
+
+            -->
+            
+            <div class="row">
+                <div class="col-md-3">
+                          <label for="inputeventdate" class="control-label">eventdate </label>
+                          <div ng-class="{'has-error': editevent.eventdate.$invalid, 
+                                'has-success': !editevent.eventdate.$invalid}" class="form-group">
+                            <div class="col-md-9">
+                              <div class="input-icon right">
+                                <i ng-click="vm.dateopen($event)" 
+                                    data-hover="tooltip" 
+                                    data-original-title="Correct" 
+                                    ng-show="editevent.eventdate.$dirty" 
+                                    ng-class="editevent.eventdate.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+                                    class="glyphicon tooltips"></i>
+                                <input id="inputeventdate" 
+                                    type="text" 
+                                    placeholder="mm/dd/yyyy" 
+                                    name="eventdate" 
+                                    ng-model="vm.eventdate" 
+                                    is-open="vm.status.opened" 
+                                    uib-datepicker-popup="{{vm.bdateformat}}" 
+                                    ng-model-options="{ updateOn: 'default blur', 
+                                        debounce: { 'default': 1500, 'blur': 0 } }" 
+                                    class="form-control">
+                              </div>
+                            </div>
+                            <div style="color:maroon" 
+                                    role="alert" 
+                                    ng-messages="editevent.eventdate.$error" 
+                                    class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                            </div>
+                            <div class="">
+                              <button type="button" 
+                                class="btn btn-default" 
+                                ng-click="vm.dateopen($event)">
+                                <i class="glyphicon glyphicon-calendar"></i></button>
+                            </div>
+
+                </div>
+                
+               </div>
+               <div class="col-md-2">
+                  <div ng-class="{'has-error': editevent.EventType.$invalid, 'has-success': !editevent.EventType.$invalid}" class="form-group">
+                    <label for="inputEventType" class="control-label">Event Type </label>
+                    <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventType.$dirty" ng-class="editevent.EventType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                      <input id="inputEventType" type="text" placeholder="Event Type" name="EventType" ng-model="vm.EventType" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                    </div>
+                    <div style="color:maroon" role="alert" ng-messages="editevent.EventType.$error" class="has-error">
+                      <div ng-message="required">You did not enter a field</div>
+                      <div ng-message="minlength">Your field is too short</div>
+                      <div ng-message="maxlength">Your field is too long</div>
+                      <div ng-message="email">Your email is missing @ and/or a period</div>
+                    </div>
+                  </div>
+                   
+               </div>
+               <div class="col-md-2">
+                  <div ng-class="{'has-error': editevent.EventStart.$invalid, 'has-success': !editevent.EventStart.$invalid}" class="form-group">
+                    <label for="inputEventStart" class="control-label">Event Start </label>
+                    <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventStart.$dirty" ng-class="editevent.EventStart.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                      <input id="inputEventStart" type="text" placeholder="Event Start" name="EventStart" ng-model="vm.EventStart" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                    </div>
+                    <div style="color:maroon" role="alert" ng-messages="editevent.EventStart.$error" class="has-error">
+                      <div ng-message="required">You did not enter a field</div>
+                      <div ng-message="minlength">Your field is too short</div>
+                      <div ng-message="maxlength">Your field is too long</div>
+                      <div ng-message="email">Your email is missing @ and/or a period</div>
+                    </div>
+                  </div>
+                   
+               </div>
+               <div class="col-md-2">
+                  <div ng-class="{'has-error': editevent.EventEnd.$invalid, 'has-success': !editevent.EventEnd.$invalid}" class="form-group">
+                    <label for="inputEventEnd" class="control-label">Event End </label>
+                    <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventEnd.$dirty" ng-class="editevent.EventEnd.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                      <input id="inputEventEnd" type="text" placeholder="Event End" name="EventEnd" ng-model="vm.EventEnd" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                    </div>
+                    <div style="color:maroon" role="alert" ng-messages="editevent.EventEnd.$error" class="has-error">
+                      <div ng-message="required">You did not enter a field</div>
+                      <div ng-message="minlength">Your field is too short</div>
+                      <div ng-message="maxlength">Your field is too long</div>
+                      <div ng-message="email">Your email is missing @ and/or a period</div>
+                    </div>
+                  </div>
+                   
+               </div>
+               <div class="col-md-2">
+                  <div ng-class="{'has-error': editevent.Location.$invalid, 'has-success': !editevent.Location.$invalid}" class="form-group">
+                    <label for="inputLocation" class="control-label">Location </label>
+                    <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.Location.$dirty" ng-class="editevent.Location.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                      <input id="inputLocation" type="text" placeholder="Location" name="Location" ng-model="vm.Location" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                    </div>
+                    <div style="color:maroon" role="alert" ng-messages="editevent.Location.$error" class="has-error">
+                      <div ng-message="required">You did not enter a field</div>
+                      <div ng-message="minlength">Your field is too short</div>
+                      <div ng-message="maxlength">Your field is too long</div>
+                      <div ng-message="email">Your email is missing @ and/or a period</div>
+                    </div>
+                  </div>
+                   
+               </div>
+            
+                
+            </div>
+
+           </div>
+          </form>
+          </div>
         </div>
         <div class="panel-footer"></div>
       </div>
@@ -115,24 +210,6 @@
        <div class="panel panel-blue">
         <div class="panel-heading">Settings</div>
         <div class="panel-body pan">
-
-              <div class="row">
-                  <div class="col-md-12">
-                    <div class="col-md-1">
-                        <button id="save" type="button" class="btn btn-success" 
-                            ng-click="vm.saveState()">Save</button>
-                    </div>
-                    <div class="col-md-1">
-                        <button id="restore" type="button" class="btn btn-success" 
-                            ng-click="vm.restoreState()">Restore</button>                      
-                    </div>
-                    <div class="col-md-2">
-                        <button ng-click="vm.refreshtheEvent()" 
-                                class="btn btn-blue btn-default EventCreation">Attendee List</button>
-                    </div>
-                    <div class="col-md-8"></div>
-                  </div>
-              </div>
 
               <div class="row" >
                   <div class="col-md-12">

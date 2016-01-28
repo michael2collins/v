@@ -19,6 +19,74 @@ class StudentDbHandler {
     }
 
 
+        /**
+     * Checking for duplicate event by name, date, contact
+     * @return boolean
+     */
+    private function isEventExists($Event, $EventDate, $ContactID) {
+
+    error_log( print_R("before isEventExists\n", TRUE ), 3, LOG);
+    error_log( print_R("lastname: $Event\n", TRUE ), 3, LOG);
+    error_log( print_R("FirstName: $EventDate\n", TRUE ), 3, LOG);
+    error_log( print_R("email: $ContactID\n", TRUE ), 3, LOG);
+        
+        
+        $stmt = $this->conn->prepare("SELECT event from eventregistration WHERE event = ? and eventdate = ? and contactid = ?");
+        $stmt->bind_param("sss", $Event, $EventDate, $ContactID);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+
+ /**
+     * Creating new event
+     */
+    public function createEvent($Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location
+    ) {
+
+        error_log( print_R("createEvent entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO eventregistration (event, eventdate, eventstart, eventend, Contact, eventType, paid, shirtSize, Notes, include, attended, ordered, location) VALUES ";
+        $sql .= " values ( ?,?,?,?, ";
+        $sql .= "          ?,?,?,?, ";
+        $sql .= "          ?,?,?,?,?)";
+
+        // First check if user already existed in db
+        if (!$this->isEventExists($Event, $EventDate, $ContactID)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sssssssssssss",
+                                  $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location    
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same event existed
+            return RECORD_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
+    
+
     /**
      * Fetching lookup lists for students
      */
