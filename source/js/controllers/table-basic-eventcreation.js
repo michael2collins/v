@@ -16,10 +16,11 @@
     '$route',
     'Notification',
     'uiGridConstants',
-    'uiGridGroupingConstants'
+    'uiGridGroupingConstants',
+    '$timeout'
     ];
 
-    function EventTableBasicController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants) {
+    function EventTableBasicController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -28,11 +29,13 @@
         vm.getEventSource = getEventSource;
         vm.getColDefList = getColDefList;
         vm.setColDef = setColDef;
+        vm.dateopen = dateopen;
         vm.getColDefs = getColDefs;
         vm.changeColDef = changeColDef;
         vm.saveState = saveState;
         vm.restoreState = restoreState;
         vm.setLimit = setLimit;
+        vm.createEvent = createEvent;
         vm.getActiveTab = getActiveTab;
         vm.setActiveTab = setActiveTab;
         vm.highlightFilteredHeader = highlightFilteredHeader;
@@ -50,7 +53,12 @@
         vm.loading = true; 
         vm.loadAttempted = false;
         vm.gridOptions={};
+        vm.selectedStudents=[];
+        
 
+       vm.status = {
+            opened: false
+        };
 
         vm.listA = [
 "contactID",	"number",	"TRUE",
@@ -120,8 +128,23 @@
 "nextpaymentdate",	"date",	"FALSE"
 ];
 
+        //vm.isChrome = /chrome/i.test(navigator.userAgent);
 
+        $scope.$watch('vm.EventStart', function (value) {
+            if (!value) return;
+            vm.time = new Date(value.toISOString());
+        }, true);
+
+        $scope.$watch('vm.EventEnd', function (value) {
+            if (!value) return;
+            vm.time = new Date(value.toISOString());
+        }, true);
+      
         activate();
+
+        function dateopen($event) {
+            vm.status.opened = true;
+        }
 
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
@@ -141,10 +164,71 @@
 
         }
         
+        function getFormattedDate(date) {
+            var d3 = new Date(date);
+          var year = d3.getFullYear();
+          var month = (1 + d3.getMonth()).toString();
+          month = month.length > 1 ? month : '0' + month;
+          var day = d3.getDate().toString();
+          day = day.length > 1 ? day : '0' + day;
+          return year + '-' + month + '-' + day;
+        }
+
+        function getFormattedTime(date) {
+            var d3 = new Date(date);
+          var hour = addZero(d3.getHours());
+          var min = addZero(d3.getMinutes());
+          return hour + ':' + min ;
+        }
+
+        function addZero(i) {
+            if (i < 10) {
+                i = "0" + i;
+            }
+            return i;
+        }
+        
         function createEvent(event) {
             var path = "../v1/eventregistration";
-            $log.debug('about createEvent ', event, path);
-            return EventServices.updateEvent(updpath, card)
+
+        //    $timeout(function() {
+        //        $log.debug('createEvent timeout');
+       //         $log.debug(vmpicsearch.gridApi);
+        //        if(vm.gridApi.selection.selectRow){
+            //        vmpicsearch.gridApi.selection.getSelectedRows();
+         //           $log.debug('selectRow');
+         //         vm.gridApi.selection.selectRow(vm.gridOptions.data[0]);
+         //       }
+                
+                var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                $log.debug('createEvent', selectedStudentarr);
+          //  });
+            vm.selectedStudents = [];
+            for(var i=0,len=selectedStudentarr.length;i < len;i++){
+                var info = {
+                    contactID: selectedStudentarr[i].contactID,
+                    Paid: "",
+                    ShirtSize: "",
+                    Notes: "",
+                    Include: "",
+                    Attended: "",
+                    Ordered: ""
+                };
+                vm.selectedStudents.push(info);
+            }
+
+
+            var thedata = {
+                Event: event,
+                EventDate: getFormattedDate(vm.EventDate),
+                EventType: vm.EventType,
+                EventStart: getFormattedTime(vm.EventStart),
+                EventEnd: getFormattedTime(vm.EventEnd),
+                Location: vm.Location,
+                selectedStudents: vm.selectedStudents
+            };
+            $log.debug('about createEvent ', path, thedata);
+            return EventServices.createEvent(path, thedata)
                 .then(function(data){
                     $log.debug('createEvent returned data');
                     $log.debug(data);
@@ -549,6 +633,15 @@
                 onRegisterApi: function(gridApi) {
                     $log.debug('vm gridapi onRegisterApi');
                      vm.gridApi = gridApi;
+
+                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
+                        var msg = 'row selected ' + row.entity.contactID;
+                        console.log(msg);
+                    //    StudentServices.setstudentPicFile(row.entity.name);
+
+                  });
+                     
+                     
                     }
             };
 

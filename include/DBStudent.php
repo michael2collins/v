@@ -26,12 +26,12 @@ class StudentDbHandler {
     private function isEventExists($Event, $EventDate, $ContactID) {
 
     error_log( print_R("before isEventExists\n", TRUE ), 3, LOG);
-    error_log( print_R("lastname: $Event\n", TRUE ), 3, LOG);
-    error_log( print_R("FirstName: $EventDate\n", TRUE ), 3, LOG);
-    error_log( print_R("email: $ContactID\n", TRUE ), 3, LOG);
+    error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
+    error_log( print_R("eventd  ate: $EventDate\n", TRUE ), 3, LOG);
+    error_log( print_R("contactid: $ContactID\n", TRUE ), 3, LOG);
         
         
-        $stmt = $this->conn->prepare("SELECT event from eventregistration WHERE event = ? and eventdate = ? and contactid = ?");
+        $stmt = $this->conn->prepare("SELECT event from eventregistration WHERE event = ? and eventdate = ? and contact = ?");
         $stmt->bind_param("sss", $Event, $EventDate, $ContactID);
         $stmt->execute();
         $stmt->store_result();
@@ -53,9 +53,9 @@ class StudentDbHandler {
         $response = array();
 
         $sql = "INSERT INTO eventregistration (event, eventdate, eventstart, eventend, Contact, eventType, paid, shirtSize, Notes, include, attended, ordered, location) VALUES ";
-        $sql .= " values ( ?,?,?,?, ";
-        $sql .= "          ?,?,?,?, ";
-        $sql .= "          ?,?,?,?,?)";
+        $sql .= "  ( ?,?,?,?, ";
+        $sql .= "    ?,?,?,?, ";
+        $sql .= "    ?,?,?,?,?)";
 
         // First check if user already existed in db
         if (!$this->isEventExists($Event, $EventDate, $ContactID)) {

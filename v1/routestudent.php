@@ -20,59 +20,95 @@ $app->post('/eventregistration', function() use ($app) {
 
     error_log( print_R("eventregistration before insert\n", TRUE ), 3, LOG);
 //    error_log( print_R($data, TRUE ), 3, LOG);
-//    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
 
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
 
     $Event      = (isset($dataJsonDecode->thedata->Event)     ? $dataJsonDecode->thedata->Event : "");
     $EventDate  = (isset($dataJsonDecode->thedata->EventDate) ? $dataJsonDecode->thedata->EventDate : "");
     $EventStart = (isset($dataJsonDecode->thedata->EventStart) ? $dataJsonDecode->thedata->EventStart : "");
     $EventEnd   = (isset($dataJsonDecode->thedata->EventEnd)  ? $dataJsonDecode->thedata->EventEnd : "");
-    $ContactID  = (isset($dataJsonDecode->thedata->ContactId) ? $dataJsonDecode->thedata->ContactId : "");
     $EventType  = (isset($dataJsonDecode->thedata->EventType) ? $dataJsonDecode->thedata->EventType : "");
-    $Paid       = (isset($dataJsonDecode->thedata->Paid)      ? $dataJsonDecode->thedata->Paid : "");
-    $ShirtSize  = (isset($dataJsonDecode->thedata->ShirtSize) ? $dataJsonDecode->thedata->ShirtSize : "");
-    $Notes      = (isset($dataJsonDecode->thedata->Notes)     ? $dataJsonDecode->thedata->Notes : "");
-    $Include    = (isset($dataJsonDecode->thedata->Include)   ? $dataJsonDecode->thedata->Include : "");
-    $Attended   = (isset($dataJsonDecode->thedata->Attended)  ? $dataJsonDecode->thedata->Attended : "");
-    $Ordered    = (isset($dataJsonDecode->thedata->Ordered)   ? $dataJsonDecode->thedata->Ordered : "");
     $Location   = (isset($dataJsonDecode->thedata->Location)  ? $dataJsonDecode->thedata->Location : "");
-
 
     error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
     error_log( print_R("EventDate: $EventDate\n", TRUE ), 3, LOG);
-    error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+
+    $eventgood=0;
+    $eventbad=0;
+    $eventexists=0;
+    
+    for($i = 0; $i < count($studentarr); $i++ ) {
+
+        error_log( print_R($studentarr[$i]->contactID, TRUE ), 3, LOG);
+
+        $ContactID  = (isset($studentarr[$i]->contactID) ? 
+                        $studentarr[$i]->contactID : "");
+        $Paid       = (isset($studentarr[$i]->Paid) ? 
+                        $studentarr[$i]->Paid : "");
+        $ShirtSize  = (isset($studentarr[$i]->ShirtSize) ? 
+                        $studentarr[$i]->ShirtSize : "");
+        $Notes      = (isset($studentarr[$i]->Notes)     ? 
+                        $studentarr[$i]->Notes : "");
+        $Include    = (isset($studentarr[$i]->Include)   ? 
+                        $studentarr[$i]->Include : "");
+        $Attended   = (isset($studentarr[$i]->Attended)  ? 
+                        $studentarr[$i]->Attended : "");
+        $Ordered    = (isset($studentarr[$i]->Ordered)   ? 
+                        $studentarr[$i]->Ordered : "");
+
+        error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // creating events
+        $event = $db->createEvent(
+            $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
+            $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location
+                                    );
+    
+        if ($event > 0) {
+            error_log( print_R("Event created: $event\n", TRUE ), 3, LOG);
+            $eventgood += 1;
+        } else if ($event == RECORD_ALREADY_EXISTED) {
+            error_log( print_R("event already existed\n", TRUE ), 3, LOG);
+            $eventexists += 1;
+        } else {
+            error_log( print_R("after createEvent result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $event, TRUE), 3, LOG);
+            $eventbad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($eventgood > 0) {
+            $response["error"] = false;
+            $response["message"] = "Event $eventgood created successfully";
+            $response["event"] = $eventgood;
+            error_log( print_R("Event created: $eventgood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($eventexists > 0) {
+            $response["error"] = true;
+            $response["message"] = "Sorry, this $eventexists event already existed";
+            error_log( print_R("event already existed\n", TRUE ), 3, LOG);
+            echoRespnse(409, $response);
+        } else {
+            error_log( print_R("after createEvent result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $eventbad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $evendbad event. Please try again";
+            echoRespnse(400, $response);
+        }
 
 
     // validating email address
 //    validateEmail($email);
 
-    $db = new StudentDbHandler();
-    $response = array();
-
-    // updating task
-    $event = $db->createEvent(
-        $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
-        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location
-                                );
-
-    if ($event > 0) {
-        $response["error"] = false;
-        $response["message"] = "Event created successfully";
-        $response["event"] = $event;
-        error_log( print_R("Event created: $event\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
-    } else if ($event == RECORD_ALREADY_EXISTED) {
-        $response["error"] = true;
-        $response["message"] = "Sorry, this event already existed";
-        error_log( print_R("event already existed\n", TRUE ), 3, LOG);
-        echoRespnse(409, $response);
-    } else {
-        error_log( print_R("after createEvent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $event, TRUE), 3, LOG);
-        $response["error"] = true;
-        $response["message"] = "Failed to create event. Please try again";
-        echoRespnse(400, $response);
-    }
 
 
 });

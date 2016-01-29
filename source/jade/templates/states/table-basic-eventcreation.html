@@ -57,7 +57,7 @@
                             </ui-select>
                           </div>
                           <div class="col-md-6">
-                            <button type="button" ng-click="vm.saveState()" class="btn btn-default btn-sm mix-link">Save changes for: {{vm.colsubkey}}</button>
+                            <button type="button" ng-click="vm.saveState()" class="btn btn-default btn-sm mix-link">Save grid settings for: {{vm.colsubkey}}</button>
                           </div>
                         </div>
 
@@ -87,7 +87,7 @@
             
             <div class="row">
                 <div class="col-md-3">
-                          <label for="inputeventdate" class="control-label">eventdate </label>
+                          <label for="inputeventdate" class="control-label">Event Date </label>
                           <div ng-class="{'has-error': editevent.eventdate.$invalid, 
                                 'has-success': !editevent.eventdate.$invalid}" class="form-group">
                             <div class="col-md-9">
@@ -102,7 +102,7 @@
                                     type="text" 
                                     placeholder="mm/dd/yyyy" 
                                     name="eventdate" 
-                                    ng-model="vm.eventdate" 
+                                    ng-model="vm.EventDate" 
                                     is-open="vm.status.opened" 
                                     uib-datepicker-popup="{{vm.bdateformat}}" 
                                     ng-model-options="{ updateOn: 'default blur', 
@@ -143,11 +143,13 @@
                   </div>
                    
                </div>
+               
+
                <div class="col-md-2">
                   <div ng-class="{'has-error': editevent.EventStart.$invalid, 'has-success': !editevent.EventStart.$invalid}" class="form-group">
                     <label for="inputEventStart" class="control-label">Event Start </label>
                     <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventStart.$dirty" ng-class="editevent.EventStart.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                      <input id="inputEventStart" type="text" placeholder="Event Start" name="EventStart" ng-model="vm.EventStart" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                      <input id="inputEventStart" type="time" step="60" placeholder="Event Start" name="EventStart" ng-model="vm.EventStart" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                     </div>
                     <div style="color:maroon" role="alert" ng-messages="editevent.EventStart.$error" class="has-error">
                       <div ng-message="required">You did not enter a field</div>
@@ -162,7 +164,7 @@
                   <div ng-class="{'has-error': editevent.EventEnd.$invalid, 'has-success': !editevent.EventEnd.$invalid}" class="form-group">
                     <label for="inputEventEnd" class="control-label">Event End </label>
                     <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventEnd.$dirty" ng-class="editevent.EventEnd.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                      <input id="inputEventEnd" type="text" placeholder="Event End" name="EventEnd" ng-model="vm.EventEnd" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                      <input id="inputEventEnd" type="time" step="60" placeholder="Event End" name="EventEnd" ng-model="vm.EventEnd" ng-change="vm.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                     </div>
                     <div style="color:maroon" role="alert" ng-messages="editevent.EventEnd.$error" class="has-error">
                       <div ng-message="required">You did not enter a field</div>
@@ -192,6 +194,14 @@
                 
             </div>
 
+            <div>
+                  <div class="col-md-6">
+                    <button type="button" ng-click="vm.createEvent(vm.colsubkey)" 
+                        class="btn btn-default btn-sm mix-link"
+                        >Create Event for: {{vm.colsubkey}}</button>
+                  </div>
+
+            </div>
            </div>
           </form>
           </div>
