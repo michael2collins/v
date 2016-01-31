@@ -3,8 +3,24 @@
 <div ng-controller="EventTableBasicController as vm"
         ng-init="active[vm.getActiveTab()]= true">
 
-      <div class="panel panel-blue">
-        <div class="panel-heading">EventCreation Settings</div>
+      <div class="panel panel-orange">
+        <div class="panel-heading">Events</div>
+<!--        <div class="panel-body pan">
+        </div>
+        <div class="panel-footer"></div>
+-->
+      </div>
+
+    <uib-tabset type="pills" >
+      <uib-tab 
+            id="tab-event" 
+            heading="Create"
+            active="active.event"
+             select="vm.setActiveTab('event'); eventtabShown = !eventtabShown" deselect="eventtabShown = !eventtabShown"
+            >
+
+       <div class="panel panel-blue">
+        <div class="panel-heading">Form</div>
         <div class="panel-body pan">
           <div class="col-md-12">
           <form action="" novalidate name="editevent" class="form-horizontal">
@@ -12,60 +28,53 @@
 
             <div class="row">
                 <div class="col-md-4">
-
-                  <div  class="form-group">
-                        <div class="row">
-                              <div ng-class="{'has-error': editevent.inputevent.$invalid, 'has-success': !editevent.inputevent.$invalid}" class="">
-                                <label for="input_event" class="control-label">Event</label>
-                                <div class="input-icon right">
-                                    <i data-hover="tooltip" 
-                                        data-original-title="Correct" 
-                                        ng-show="editevent.inputevent.$dirty" 
-                                        ng-class="editevent.inputevent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
-                                        class="glyphicon tooltips"></i>
-                                  <input id="input_event" type="text" 
-                                    placeholder="Event" 
-                                    name="inputevent" 
-                                    ng-model="vm.colsubkey" 
-                                    ng-change="vm.changeColDef(vm.colsubkey)" 
-                                    minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 2500, 'blur': 0 } }" class="">
-                                </div>
-                                <div style="color:maroon" role="alert" ng-messages="editevent.inputevent.$error" class="has-error">
-                                  <div ng-message="required">You did not enter a field</div>
-                                  <div ng-message="minlength">Your field is too short</div>
-                                  <div ng-message="maxlength">Your field is too long</div>
-                                </div>
-                              </div>
-                        </div>
-
-                        <div class="row">
-                          <div class="col-md-6">
-                            <ui-select tagging tagging-label="(custom 'new' label)" 
-                                ng-model="vm.colsubkey" 
-                                on-select="vm.changeColDef($item)"
-                                theme="select2" 
-                                ng-disabled="disabled" 
-                                style="width: 300px;" 
-                                title="Choose an event">
-                  <ui-select-match allow-clear placeholder="Select the event...">{{$select.selected.col}}</ui-select-match>
-                              <ui-select-choices 
-                repeat="colkeyitem.col as colkeyitem in vm.colsubkeys| filter: $select.search ">
-                                <small>
-                        Name: <span ng-bind-html="colkeyitem.col | highlight: $select.search"></span>                    <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
-                                </small>
-                              </ui-select-choices>
-                            </ui-select>
-                          </div>
-                          <div class="col-md-6">
-                            <button type="button" ng-click="vm.saveState()" class="btn btn-default btn-sm mix-link">Save grid settings for: {{vm.colsubkey}}</button>
-                          </div>
-                        </div>
-
-
+                  <div ng-class="{'has-error': editevent.inputevent.$invalid, 'has-success': !editevent.inputevent.$invalid}" class="">
+                    <label for="input_event" class="control-label">New Event</label>
+                    <div class="input-icon right col-md-12">
+                        <i data-hover="tooltip" 
+                            data-original-title="Correct" 
+                            ng-show="editevent.inputevent.$dirty" 
+                            ng-class="editevent.inputevent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+                            class="glyphicon tooltips"></i>
+                      <input id="input_event" type="text" 
+                        placeholder="Event" 
+                        name="inputevent" 
+                        ng-model="vm.colsubkey" 
+                        ng-change="vm.changeColDef(vm.colsubkey)" 
+                        minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 2500, 'blur': 0 } }" class="form-control">
+                    </div>
+                    <div style="color:maroon" role="alert" ng-messages="editevent.inputevent.$error" class="has-error">
+                      <div ng-message="required">You did not enter a field</div>
+                      <div ng-message="minlength">Your field is too short</div>
+                      <div ng-message="maxlength">Your field is too long</div>
+                    </div>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <div class="form-group">
+                <div class="col-md-7">
+                  <div class="col-md-6">
+                    <label for="query" class="control-label">Previous Grid Query</label>
+                    <ui-select tagging tagging-label="(custom 'new' label)" 
+                        ng-model="vm.colsubkey" 
+                        on-select="vm.changeColDef($item)"
+                        theme="select2" 
+                        ng-disabled="disabled" 
+                        class="col-md-12"
+                        title="Choose a query">
+          <ui-select-match allow-clear placeholder="Select the columns...">{{$select.selected.col}}</ui-select-match>
+                      <ui-select-choices 
+        repeat="colkeyitem.col as colkeyitem in vm.colsubkeys| filter: $select.search ">
+                        <small>
+                Name: <span ng-bind-html="colkeyitem.col | highlight: $select.search"></span>                    <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
+                        </small>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="save btn" class="control-label">Save Grid Setting</label>
+                    <button type="button" ng-click="vm.saveState()"  class="btn btn-default btn-blue col-md-12">For: {{vm.colsubkey}}</button>
+                  </div>
+                </div>
+                <div class="col-md-1">
                     <label for="inputlimit" class="control-label">Limit</label>
                     <div class="input-icon right">
                       <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit)" class="form-control EventCreation">
@@ -73,17 +82,8 @@
                             value="{{lim}}">{{lim}}</option>
                       </select>
                     </div>
-                  </div>
-                </div>
-                <div class="col-md-4">
-
                 </div>
             </div>
-            <!-- event extras 
-        $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
-        $Location
-
-            -->
             
             <div class="row">
                 <div class="col-md-3">
@@ -194,32 +194,18 @@
                 
             </div>
 
-            <div>
+            <div class="row">
                   <div class="col-md-6">
-                    <button type="button" ng-click="vm.createEvent(vm.colsubkey)" 
-                        class="btn btn-default btn-sm mix-link"
+                    <button type="button" ng-click="vm.createEvent(vm.colsubkey); active['eventhistory']= true" 
+                        class="btn btn-default btn-blue"
                         >Create Event for: {{vm.colsubkey}}</button>
+
                   </div>
 
             </div>
            </div>
           </form>
           </div>
-        </div>
-        <div class="panel-footer"></div>
-      </div>
-
-    <uib-tabset type="pills" >
-      <uib-tab 
-            id="tab-event" 
-            heading="Event Creation"
-            active="active.event"
-             select="vm.setActiveTab('event'); eventtabShown = !eventtabShown" deselect="eventtabShown = !eventtabShown"
-            >
-
-       <div class="panel panel-blue">
-        <div class="panel-heading">Settings</div>
-        <div class="panel-body pan">
 
               <div class="row" >
                   <div class="col-md-12">
@@ -240,15 +226,15 @@
       </uib-tab>
       <uib-tab 
             id="tab-attendhist" 
-            heading="Event History"
+            heading="Manage"
             active="active.eventhistory"
-            select="vm.setActiveTab('eventhistory');vm.getEventCreationHistory()">
-       <div class="panel panel-blue">
-        <div class="panel-heading">HistorySettings</div>
+            select="vm.setActiveTab('eventhistory');vm.getEventCreationHistory();eventhistorytabShown = !eventhistorytabShown" deselect="eventhistorytabShown = !eventhistorytabShown">
+       <div class="panel panel-green">
+        <div class="panel-heading">Filters</div>
         <div class="panel-body pan">
           <div class="col-lg-12">
               <div class="row">
-                <button ng-click="vm.getEventCreationHistory()" class="btn btn-blue btn-default EventCreation">Refresh List</button>
+                <button ng-click="vm.getEventCreationHistory()" class="btn btn-green btn-default EventCreation">Refresh List</button>
               </div>
               <div class="row">
                 <div class="col-md-12">

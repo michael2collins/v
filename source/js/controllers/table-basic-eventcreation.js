@@ -54,7 +54,8 @@
         vm.loadAttempted = false;
         vm.gridOptions={};
         vm.selectedStudents=[];
-        
+        vm.selected = false;
+
 
        vm.status = {
             opened: false
@@ -157,6 +158,16 @@
             refreshtheEvent();
         }
 
+        function setActiveTab( activeTab ){
+            $log.debug('set activetab as:', activeTab);
+            EventServices.setActiveTab(activeTab);
+        }
+
+        function getActiveTab(){
+            return EventServices.getActiveTab();
+        }
+
+
         function activate() {
             setInitColDefs();
             $log.debug('activate setInitColDefs returned');
@@ -189,34 +200,13 @@
         }
         
         function createEvent(event) {
-            var path = "../v1/eventregistration";
-
-        //    $timeout(function() {
-        //        $log.debug('createEvent timeout');
-       //         $log.debug(vmpicsearch.gridApi);
-        //        if(vm.gridApi.selection.selectRow){
-            //        vmpicsearch.gridApi.selection.getSelectedRows();
-         //           $log.debug('selectRow');
-         //         vm.gridApi.selection.selectRow(vm.gridOptions.data[0]);
-         //       }
-                
-                var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                $log.debug('createEvent', selectedStudentarr);
-          //  });
-            vm.selectedStudents = [];
-            for(var i=0,len=selectedStudentarr.length;i < len;i++){
-                var info = {
-                    contactID: selectedStudentarr[i].contactID,
-                    Paid: "",
-                    ShirtSize: "",
-                    Notes: "",
-                    Include: "",
-                    Attended: "",
-                    Ordered: ""
-                };
-                vm.selectedStudents.push(info);
+            if (vm.selected === false) {
+                var error = "no rows selected for event";
+                Notification.error({message: error, delay: 5000});
+                return;                
             }
-
+            
+            var path = "../v1/eventregistration";
 
             var thedata = {
                 Event: event,
@@ -236,6 +226,7 @@
                     $log.debug(vm.thisEvent);
                     $log.debug(vm.thisEvent.message);
                     vm.message = vm.thisEvent.message;
+                    Notification.success({message: vm.message, delay: 5000});
                     refreshtheEvent().then
                         (function(zdata) {
                          $log.debug('refreshtheEvent returned', zdata);
@@ -428,14 +419,6 @@
         }
         
 
-        function setActiveTab( activeTab ){
-            $log.debug('set activetab as:', activeTab);
-            EventServices.setActiveTab(activeTab);
-        }
-
-        function getActiveTab(){
-            return EventServices.getActiveTab();
-        }
 
 
         function setInitColDefs() {
@@ -636,12 +619,33 @@
 
                     gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'row selected ' + row.entity.contactID;
-                        console.log(msg);
-                    //    StudentServices.setstudentPicFile(row.entity.name);
+                        $log.debug(msg);
 
-                  });
-                     
-                     
+                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        $log.debug('selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
+                        
+                    });
+                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                        $log.debug("batch");  
+                        //note this will send the list of changed rows
+                    /*    var selectedContacts=[];
+                        for (var index=0, len=rows.length; index < len; index++) {
+                            $log.debug("selected?",rows[index].isSelected);
+                            if (rows[index].isSelected === true) {
+                                selectedContacts.push(rows[index].entity);
+                            }
+                        }
+                        $log.debug("batch", selectedContacts);
+                        setSelectedArray(selectedContacts);
+                        */
+                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        $log.debug('batch selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
+
+                    });
+
+
                     }
             };
 
@@ -649,7 +653,32 @@
             $log.debug('setGridOptions gridOptions', vm.gridOptions);
 
         }
+        
+        function setSelectedArray(inputArray) {
+            vm.selectedStudents = [];
+            
+            if (inputArray.length > 0){
+                vm.selected = true;
+                for(var i=0,len=inputArray.length;i < len;i++){
+                    var info = {
+                        contactID: inputArray[i].contactID,
+                        Paid: "",
+                        ShirtSize: "",
+                        Notes: "",
+                        Include: "",
+                        Attended: "",
+                        Ordered: ""
+                    };
+                    vm.selectedStudents.push(info);
+                }
+            } else {
+                vm.selected = false;
+                return;
+            }
 
+            $log.debug("setarray", vm.selectedStudents);
+            
+        }
 
 
         function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
