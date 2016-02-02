@@ -19,6 +19,64 @@ class StudentDbHandler {
     }
 
 
+    public function getEventNames($theinput) {
+        $sql = "SELECT distinct event FROM eventregistration";
+        $sql .= " where event like '%" . $theinput . "%' "; 
+        $sql .= " order by event";
+        error_log( print_R("getEventNames sql: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEventNames list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEventNames list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEventNames list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getEventDetails($theinput) {
+        $sql = "select e.event, e.eventdate, e.eventstart, e.eventend ";
+        $sql .= ", e.eventType, e.paid, e.shirtSize, e.notes, e.include, e.attended ";
+        $sql .= ", e.ordered, e.location ";
+        $sql .= ", c.LastName, c.FirstName, c.Email, c.Email2, c.Parent,  c.StudentSchool ";
+        $sql .= " from eventregistration e, ncontacts c ";
+        $sql .= " where event = '" . $theinput . "'"; 
+        $sql .= " and c.id = e.contact ";
+        $sql .= " order by e.event, e.eventdate, c.lastname, c.firstname ";
+        
+        error_log( print_R("getEventDetails sql: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEventDetails list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEventDetails list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEventDetails list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
         /**
      * Checking for duplicate event by name, date, contact
      * @return boolean

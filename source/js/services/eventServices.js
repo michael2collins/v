@@ -16,6 +16,8 @@
             getEventSource: getEventSource,
             getColDefs: getColDefs,
             getColDefList: getColDefList,
+            getEventNames: getEventNames,
+            getEventDetails: getEventDetails,
             setColDefs: setColDefs,
             createEvent: createEvent,
 //            updateEvent: updateEvent,
@@ -32,7 +34,20 @@
             activeTab = thetab;
         }
         
+        function getEventNames(path) {
+            $log.debug('getEventNames service entered');
+            $log.debug('path',path);
 
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        function getEventDetails(path) {
+            $log.debug('getEventDetails service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        
 
         function getEventSource(path) {
             $log.debug('getEventSource service entered');

@@ -1,5 +1,94 @@
 <?php
 
+$app->get('/eventnames',  function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("eventnames entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $eventpartial = '';
+
+    if(array_key_exists('eventpartial', $allGetVars)){
+        $eventpartial = $allGetVars['eventpartial'];
+    }
+
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getEventNames($eventpartial);
+    $response["error"] = false;
+    $response["eventlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["event"] = (empty($slist["event"]) ? "NULL" : $slist["event"]);
+        array_push($response["eventlist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+/**
+ * Listing event details for an event
+ * method GET
+ * url /events 
+ */
+ 
+$app->get('/eventdetails',  function() use($app){
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("eventdetails entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $event = '';
+
+    if(array_key_exists('event', $allGetVars)){
+        $event = $allGetVars['event'];
+    }
+
+    error_log( print_R("eventdetails params: event: $event \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getEventDetails($event);
+    $response["error"] = false;
+    $response["eventdetails"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["Event"] = (empty($slist["Event"]) ? "NULL" : $slist["Event"]);
+            $tmp["EventDate"] = (empty($slist["EventDate"]) ? "NULL" : $slist["EventDate"]);
+            $tmp["EventStart"] = (empty($slist["EventStart"]) ? "NULL" : $slist["EventStart"]);
+            $tmp["EventEnd"] =  (empty($slist["EventEnd"]) ? "NULL" : $slist["EventEnd"]);
+            $tmp["EventType"] =  (empty($slist["EventType"]) ? "NULL" : $slist["EventType"]);
+            $tmp["Location"] =  (empty($slist["Location"]) ? "NULL" : $slist["Location"]);
+            $tmp["ContactID"] =  (empty($slist["ContactID"]) ? "NULL" : $slist["ContactID"]);
+            $tmp["Paid"] =  (empty($slist["Paid"]) ? "NULL" : $slist["Paid"]);
+            $tmp["ShirtSize"] =  (empty($slist["ShirtSize"]) ? "NULL" : $slist["ShirtSize"]);
+            $tmp["Notes"] =  (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
+            $tmp["Include"] =  (empty($slist["Include"]) ? "NULL" : $slist["Include"]);
+            $tmp["Attended"] =  (empty($slist["Attended"]) ? "NULL" : $slist["Attended"]);
+            $tmp["Ordered"] =  (empty($slist["Ordered"]) ? "NULL" : $slist["Ordered"]);
+            $tmp["LastName"] =  (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
+            $tmp["FirstName"] =  (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+            $tmp["Email"] =  (empty($slist["Email"]) ? "NULL" : $slist["Email"]);
+            $tmp["Email2"] =  (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
+            $tmp["Parent"] =  (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
+            $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
+        array_push($response["eventdetails"], $tmp);
+    }
+
+
+    echoRespnse(200, $response);
+});
+
 /* Event Registration
  * url - /eventregistration
  * method - POST
