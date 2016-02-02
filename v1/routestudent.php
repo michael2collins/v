@@ -63,7 +63,7 @@ $app->get('/eventdetails',  function() use($app){
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
-            $tmp["Event"] = (empty($slist["Event"]) ? "NULL" : $slist["Event"]);
+            $tmp["Event"] = (empty($slist["event"]) ? "NULL" : $slist["event"]);
             $tmp["EventDate"] = (empty($slist["EventDate"]) ? "NULL" : $slist["EventDate"]);
             $tmp["EventStart"] = (empty($slist["EventStart"]) ? "NULL" : $slist["EventStart"]);
             $tmp["EventEnd"] =  (empty($slist["EventEnd"]) ? "NULL" : $slist["EventEnd"]);

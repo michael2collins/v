@@ -46,9 +46,9 @@ class StudentDbHandler {
     }
 
     public function getEventDetails($theinput) {
-        $sql = "select e.event, e.eventdate, e.eventstart, e.eventend ";
-        $sql .= ", e.eventType, e.paid, e.shirtSize, e.notes, e.include, e.attended ";
-        $sql .= ", e.ordered, e.location ";
+        $sql = "select e.event, e.eventdate as EventDate, e.eventstart as EventStart, e.eventend as EventEnd ";
+        $sql .= ", e.eventType as EventType, e.paid as Paid, e.shirtSize as ShirtSize, e.notes as Notes, e.include as Include, e.attended as Attended";
+        $sql .= ", e.ordered as Ordered, e.location as Location ";
         $sql .= ", c.LastName, c.FirstName, c.Email, c.Email2, c.Parent,  c.StudentSchool ";
         $sql .= " from eventregistration e, ncontacts c ";
         $sql .= " where event = '" . $theinput . "'"; 

@@ -750,27 +750,27 @@
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
-                    field: 'attended',
+                    field: 'Attended',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
-                    field: 'ordered',
+                    field: 'Ordered',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
-                    field: 'paid',
+                    field: 'Paid',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
-                    field: 'shirtSize',
+                    field: 'ShirtSize',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
-                    field: 'notes',
+                    field: 'Notes',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
-                    field: 'include',
+                    field: 'Include',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
