@@ -1,5 +1,5 @@
 <?php
-define("LOG", "/var/log/apache2/php.log", true);
+define("LOG", "/var/log/apache2/php/php.log", true);
 define("STUPICDIR", "/home/michael2collins/Web/v/v/app/images/students/", true);
 
 //require_once '../include/DBAuth.php';

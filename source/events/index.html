@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <title>V Events</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <base href="/">
+
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,400italic,300,700"/>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Oswald:400,700,300"/>
+    <link href="http://fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet" type="text/css"/>
+    <!--CSS FOR PLUGIN-->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css"/>
+
+
+    <!-- used -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.2.3/css/simple-line-icons.css"/>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.css"/>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1-rc.1/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="vendors/angular-bootstrap-toggle-switch/style/bootstrap3/angular-toggle-switch-bootstrap-3.css"/>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.css"/>
+
+    <link rel="stylesheet" href="vendors/bootstrap-clockface/css/clockface.css"/>
+    <link rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css"/>
+
+    <!--CORE CSS -->
+    <link type="text/css" rel="stylesheet" href="css/bootstrap-custom.css"/>
+    <link type="text/css" rel="stylesheet" href="css/themes/default.css"/>
+    <link type="text/css" rel="stylesheet" href="css/themes/blue.css" id="color-style"/>
+    <link type="text/css" rel="stylesheet" href="css/style.css"/>
+    <!--CORE JS -->
+
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
+
+            <script src="vendors/slimScroll/jquery.slimscroll.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+<script src="http://jvectormap.com/js/jquery-jvectormap-2.0.3.min.js"></script>
+<script src="http://jvectormap.com/js/jquery-jvectormap-world-mill-en.js"></script>
+<script src="http://jvectormap.com/js/gdp-data.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js"></script>
+            <script src="vendors/jquery-animateNumber/jquery.animateNumber.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.fillbetween.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.stack.js"></script>
+
+
+
+            <script src="vendors/flot-chart/jquery.flot.tooltip.js"></script>
+            <script src="vendors/flot-chart/jquery.flot.spline.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.js"></script>
+            <script src="vendors/calendar/zabuto_calendar.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.10/js/jquery.dataTables.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.10/js/dataTables.bootstrap.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/js/TableTools.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jeditable.js/1.7.3/jeditable.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-bootgrid/1.3.1/jquery.bootgrid.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/mixitup/2.1.11/jquery.mixitup.js"></script>
+            <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.1-rc.1/js/select2.min.js"></script>            
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script>
+            <script src="vendors/multi-select/js/jquery.multi-select.js"></script>
+            <script src="vendors/jquery.sparkline/index.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
+        
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
+            <script src="vendors/angular-route/angular-route.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.4.8/angular-messages.js"></script>
+            <script src="vendors/angular-resource/angular-resource.js"></script>
+            
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui-ieshiv.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.css"/>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script>            
+            <script src="vendors/angular-ui-utils/ui-utils-ieshiv.js"></script>
+            <script src="vendors/angular-bootstrap-toggle-switch/angular-toggle-switch.js"></script>
+
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-mask/1.6.1/mask.js"></script>
+
+    <script src="http://ui-grid.info/docs/grunt-scripts/csv.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/pdfmake.js"></script>
+    <script src="http://ui-grid.info/docs/grunt-scripts/vfs_fonts.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/3.0.7/ui-grid.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/3.0.7/ui-grid.css"/>
+    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/classie/1.0.1/classie.js"></script>
+    <script src="vendors/angular-isotope/dist/angular-isotope.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.2.0/imagesloaded.pkgd.js"></script>    
+
+   <link data-require="chosen@1.0.0" data-semver="1.0.0" rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.min.css" />
+    <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.jquery.min.js"></script>
+    <script data-require="chosen@1.0.0" data-semver="1.0.0" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.0/chosen.proto.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-file-upload/1.1.6/angular-file-upload.js"></script>
+
+<style>
+            .my-drop-zone { border: dotted 3px lightgray; }
+            .nv-file-over { border: dotted 3px red; } /* Default class applied to drop zones on over */
+            .another-file-over-class { border: dotted 3px green; }
+            html, body { height: 100%; }
+            canvas {
+              /*  background-color: #f3f3f3; */
+                -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
+                -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
+                box-shadow: 3px 3px 3px 0 #e3e3e3;
+                border: 1px solid #c3c3c3;
+                height: 100px;
+                margin: 6px 0 0 6px;
+            }
+        </style>
+
+  <link rel="stylesheet" href="vendors/angular-ui-notification/dist/angular-ui-notification.css">
+  <script src="vendors/angular-ui-notification/dist/angular-ui-notification.js"></script>
+  <script src="vendors/lvlDragDrop/script/lvl-drag-drop.js"></script>
+  <script src="vendors/lvlDragDrop/script/lvl-uuid.js"></script>
+  <style>
+      .lvl-over {
+         border: 1px dashed #555 !important;
+        }
+
+      .lvl-target {
+        background-color: #ddd; 
+        opacity: .5;
+        }
+      [draggable] {
+            cursor: move;
+        }
+  </style>
+  <style>
+      .attendance {
+        font-size: x-large;
+        height: 70px;
+      }
+  </style>
+  
+  <script src="vendors/angular-deckgrid/angular-deckgrid.js"></script>
+  <link href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/hint.css/1.3.6/hint.css" rel="stylesheet" type="text/css">
+
+  
+<!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
+<!--    <script src="js/main.js"></script>    -->
+
+  <!-- compiled JavaScript -->
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/controllers/app.js"></script>
+  <script type="text/javascript" src="js/controllers/data.js"></script>
+  <script type="text/javascript" src="js/controllers/form-layouts.js"></script>
+  <script type="text/javascript" src="js/controllers/form-validation.js"></script>
+  <script type="text/javascript" src="js/controllers/page-404.js"></script>
+  <script type="text/javascript" src="js/controllers/page-500.js"></script>
+  <script type="text/javascript" src="js/controllers/page-lock-screen.js"></script>
+  <script type="text/javascript" src="js/controllers/page-signin.js"></script>
+  <script type="text/javascript" src="js/controllers/page-signup.js"></script>
+  <script type="text/javascript" src="js/directives/ngDropzone.js"></script>
+  <script type="text/javascript" src="js/directives/ngMenu.js"></script>
+  <script type="text/javascript" src="js/directives/ngTab.js"></script>
+  <script type="text/javascript" src="js/directives/scrollSpy.js"></script>
+  <script type="text/javascript" src="js/services/tournamentServices.js"></script>
+  <script type="text/javascript" src="js/services/eventServices.js"></script>
+  <script type="text/javascript" src="js/controllers/tournament.js"></script>
+  <script type="text/javascript" src="js/controllers/newstudentcontroller.js"></script>
+  <script type="text/javascript" src="js/controllers/eventcontroller.js"></script>
+  
+   <script type="text/javascript" src="js/directives/ngThumbupload.js"></script>
+
+   
+
+     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.css"/>
+   <script type="text/javascript" src="js/controllers/select.js"></script>
+
+  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css">
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">
+      <style>
+    body {
+      padding: 15px;
+    }
+    .select2 > .select2-choice.ui-select-match {
+      /* Because of the inclusion of Bootstrap */
+      height: 29px;
+    }
+    .selectize-control > .selectize-dropdown {
+      top: 36px;
+    }
+  </style>
+
+
+
+
+   <style>
+  .chosen-choices, .chosen-container {
+    width: 500px !important;
+}
+</style>
+
+  </head>
+
+    <!--V JS-->
+    <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"    >
+
+
+    <div ng-controller="AppController as vm" class="default-page">
+      <!--BEGIN TEMPLATE SETTING-->
+  <!--    <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
+   -->   <!--END TEMPLATE SETTING-->
+      <!--BEGIN TO TOP--><a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
+      <!--END BACK TO TOP-->
+      <div id="wrapper" ng-class="header.layout_menu">
+        <!--BEGIN TOPBAR-->
+        <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+        <!--END TOPBAR-->
+        <!--BEGIN SIDEBAR MENU-->
+        <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
+        <!--END SIDEBAR MENU-->
+        <!--BEGIN PAGE WRAPPER-->
+        <div id="page-wrapper" ng-class="header.animation" class="animated">
+          <!--BEGIN PAGE HEADER & BREADCRUMB-->
+          <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
+          <!--END PAGE HEADER & BREADCRUMB-->
+          <!--BEGIN CONTENT-->
+          <div ng-view="" class="page-content"></div>
+          <!--END CONTENT-->
+          <!--BEGIN FOOTER-->
+          <div class="page-footer">
+            <div class="copyright">2016 © V - Dojo .</div>
+          </div>
+          <!--END FOOTER-->
+        </div>
+        <!--END PAGE WRAPPER-->
+      </div>
+    </div>
+    <div hide="hide" class="extra-page"></div>
+
+
+
+    </body>
+</html>

@@ -1,0 +1,54 @@
+
+<div ng-class="[header.layout_topbar]" class="navbar-header">
+<a id="setting-toggle"><i class="icon-wrench"></i></a>
+  <button type="button" data-toggle="offcanvas" class="navbar-toggle">
+  <span class="sr-only">Toggle navigation</span>
+  <span class="icon-bar"></span>
+  <span class="icon-bar"></span>
+  <span class="icon-bar"></span>
+  </button>
+  <a id="logo" href="/#/" class="navbar-brand">
+  <span class="icon-social-tumblr"></span>
+  <span class="logo-text">Villaris</span></a>
+</div>
+<div class="topbar-main">
+  <ul class="nav navbar-top-links navbar-right">
+    <li class="dropdown" uib-dropdown on-toggle="toggled(open)" >
+    
+        <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" uib-dropdown-toggle>
+        <!--
+        <img src="images/avatar/MarkCropped.jpg" alt="" class="img-responsive img-circle"/>
+        -->
+    <span>&nbsp;Username here&nbsp;</span><span class="caret"></span>
+        
+    </a>
+      <ul class="dropdown-menu dropdown-user pull-right" uib-dropdown-menu aria-labelledby="simple-dropdown">
+        <li>
+          <div class="navbar-content">
+            <div class="row">
+            <!--
+              <div class="col-md-5 col-xs-5"><img src="images/avatar/MarkCropped.jpg" alt="" class="img-responsive img-circle"/>
+                <p class="text-center mtm"><a href="javascript:void(0);" class="change-avatar"><small>Change Avatar</small></a></p>
+              </div>
+              -->
+              <div class="col-md-7 col-xs-5"><span>User name here</span>
+                <p class="text-muted small">example@mail.com</p>
+    <!--            <div class="divider"></div><a href="javascript:void(0);" class="btn btn-primary btn-sm">View Profile</a>
+              </div>
+              -->
+            </div>
+          </div>
+          <div class="navbar-footer">
+            <div class="navbar-footer-content">
+              <div class="row">
+                <div class="col-md-6 col-xs-6"><a href="javascript:void(0);" class="btn btn-default btn-sm">Change Password</a></div>
+                <div class="col-md-6 col-xs-6"><a href="#/page-lock-screen" class="btn btn-default btn-sm pull-right">Sign Out</a></div>
+              </div>
+            </div>
+          </div>
+          </div>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>

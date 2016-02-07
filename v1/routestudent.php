@@ -203,6 +203,78 @@ $app->post('/eventregistration', function() use ($app) {
 });
 
 
+$app->put('/eventregistration', function() use ($app) {
+    // check for required params
+//    verifyRequiredParams(array('name', 'email', 'password'));
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+  //      $message            = $dataJsonDecode->message;
+    //    echo $message;     //'Hello world'
+
+    error_log( print_R("eventregistration before update\n", TRUE ), 3, LOG);
+//    error_log( print_R($data, TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $Event      = (isset($dataJsonDecode->thedata->Event)     ? 
+                    $dataJsonDecode->thedata->Event : "");
+    $EventDate  = (isset($dataJsonDecode->thedata->EventDate) ? 
+                    $dataJsonDecode->thedata->EventDate : "");
+    $ContactID  = (isset($dataJsonDecode->thedata->contactID) ? 
+                    $dataJsonDecode->thedata->contactID : "");
+    $Paid       = (isset($dataJsonDecode->thedata->Paid)      ? 
+                    $dataJsonDecode->thedata->Paid : "");
+    $ShirtSize  = (isset($dataJsonDecode->thedata->ShirtSize) ? 
+                    $dataJsonDecode->thedata->ShirtSize : "");
+    $Notes      = (isset($dataJsonDecode->thedata->Notes)     ? 
+                    $dataJsonDecode->thedata->Notes : "");
+    $Include    = (isset($dataJsonDecode->thedata->Include)   ? 
+                    $dataJsonDecode->thedata->Include : "");
+    $Attended   = (isset($dataJsonDecode->thedata->Attended)  ? 
+                    $dataJsonDecode->thedata->Attended : "");
+    $Ordered    = (isset($dataJsonDecode->thedata->Ordered)   ? 
+                    $dataJsonDecode->thedata->Ordered : "");
+
+    error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
+    error_log( print_R("EventDate: $EventDate\n", TRUE ), 3, LOG);
+    error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+
+
+    $eventgood=0;
+    $eventbad=0;
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // creating events
+    $event = $db->updateEvent(
+        $Event, $EventDate, $ContactID, 
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered
+                                );
+
+    if ($event > 0) {
+        error_log( print_R("Event updated: $event\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "Event created successfully";
+        $eventgood = 1;
+        $response["event"] = $eventgood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after updateEvent result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $event, TRUE), 3, LOG);
+        $eventbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to update event. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+
 $app->get('/userprefcols/:prefkey',  function($prefkey) {
     error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
 

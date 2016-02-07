@@ -3,9 +3,9 @@
 
     angular
         .module('ng-admin')
-        .controller('EventTableBasicController', EventTableBasicController);
+        .controller('EventController', EventController);
 
-    EventTableBasicController.$inject = [
+    EventController.$inject = [
     '$routeParams',
     '$log',
     'EventServices',
@@ -20,7 +20,7 @@
     '$timeout'
     ];
 
-    function EventTableBasicController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
+    function EventController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -30,6 +30,7 @@
         vm.getEventDetails = getEventDetails;
         vm.updateEvent = updateEvent;
         vm.getEventNames = getEventNames;
+        vm.setEventInfo = setEventInfo;
         vm.getColDefList = getColDefList;
         vm.setColDef = setColDef;
         vm.dateopen = dateopen;
@@ -68,6 +69,7 @@
         vm.EventStart = '';
         vm.Location = '';
         vm.ContactID = '';
+        vm.EventInfo = {};
 
 
        vm.status = {
@@ -154,7 +156,7 @@
             vm.time = new Date(value.toISOString());
         }, true);
       
-        activate();
+      //  activate();
 
         function dateopen($event) {
             vm.status.opened = true;
@@ -211,6 +213,9 @@
                 i = "0" + i;
             }
             return i;
+        }
+        function setEventInfo(info) {
+            vm.EventInfo = info;
         }
         
         function createEvent(event) {
@@ -318,6 +323,8 @@
                 );
 
         }
+
+
 
         function getEventDetails(theevent) {
             $log.debug('getEventDetails entered:', theevent.event);

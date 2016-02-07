@@ -137,3 +137,11 @@ After you are authorized, run:
  
     $ grive
     
+added subdomains test, vdojo, medway
+
+in /etc/apache2/sites-available, copied conf files 
+sudo a2ensite v.conf etc 
+sudo service apache2 restart
+
+in godaddy added aname records to point at subdomains
+    

@@ -19,6 +19,46 @@ class StudentDbHandler {
     }
 
 
+    /**
+     * Updating event
+
+     */
+    public function updateEvent($Event, $EventDate,  $ContactID, 
+            $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered
+        ) {
+
+        $num_affected_rows = 0;
+
+        $sql = "UPDATE eventregistration set ";
+        $sql .= "  paid = ?, shirtSize = ?, Notes = ?, include = ?, attended = ?, ordered = ? ";
+        $sql .= " where event = ? and eventdate = ? and  Contact = ? ";
+
+
+        error_log( print_R($sql, TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sssssssss",
+                $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered,
+                $Event, $EventDate, $ContactID 
+                                     );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+        //handled in common function
+        //echo json_encode($student);
+        //        }
+        //        catch(PDOException $e) {
+        //            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        //       }
+        return $num_affected_rows >= 0;
+    }
+
+
     public function getEventNames($theinput) {
         $sql = "SELECT distinct event FROM eventregistration";
         $sql .= " where event like '%" . $theinput . "%' "; 
