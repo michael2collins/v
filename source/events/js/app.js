@@ -12,6 +12,7 @@
         'toggle-switch',
      //   'ngTouch', 
         'ngMessages',
+        'ngCookies',
         'ui.grid.pagination',
         'ui.grid.cellNav',
         'ui.grid.edit',
@@ -46,6 +47,7 @@
         });
     })
 
+//    .run(authrun)
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {
             $rootScope._ = window._;
@@ -60,7 +62,7 @@
       $rootScope.$on('$routeChangeSuccess', function () {
             console.log('$routeChangeSuccess');
         console.log('routecurrent',$route.current);
-      })
+      });
     })
     
     // Initialize the application
@@ -69,16 +71,46 @@
         console.log('$location setting in app');
         console.log($location);
 
-}]);
-
-$(document).ready(function() {
-    console.log('fixing for drag-drop');
-	jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
-	console.log(jQuery.event.props);
-});
+    }]);
+    
+    $(document).ready(function() {
+        console.log('fixing for drag-drop');
+        jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
+        console.log(jQuery.event.props);
+    });
+    
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
+
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log'];
+    function authrun($rootScope, $location, $cookieStore, $http, $log) {
+        $log.debug('authrun entered');
+
+        // keep user logged in after page refresh
+        $rootScope.globals = $cookieStore.get('globals') || {};
+        $log.debug('authrun globals', $rootScope.globals);
+        
+        if ($rootScope.globals.currentUser) {
+//            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $log.debug('in currentUser');
+        }
+
+        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+            $log.debug('check login on location change',$location.path());
+            // redirect to login page if not logged in and trying to access a restricted page
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup']) === -1;
+            var loggedIn = $rootScope.globals.currentUser;
+            
+            $log.debug('check logn next', restrictedPage, loggedIn);
+            
+            if (restrictedPage && !loggedIn) {
+                $log.debug('restricted and not logged in');
+                $location.path('/page-signin');
+            }
+        });
+    }
 
     function logConfig($logProvider) {
         $logProvider.debugEnabled(true);
@@ -96,8 +128,7 @@ $(document).ready(function() {
                 templateUrl: 'templates/states/page-signin.html'
             })
             .when('/page-signup', {
-                templateUrl: 'templates/states/page-signup.html',
-                controller: 'PageSignupController'
+                templateUrl: 'templates/states/page-signup.html'
             })
             .when('/page-lock-screen', {
                 templateUrl: 'templates/states/page-lock-screen.html',
@@ -118,7 +149,8 @@ $(document).ready(function() {
                 templateUrl: 'templates/states/tournament.html'
             })
             .otherwise({
-                redirectTo: '/'
+                redirectTo: '/page-signin'
+     //           redirectTo: '/'
             });
         $locationProvider.html5Mode(false);
         //    $locationProvider.hashPrefix('!');

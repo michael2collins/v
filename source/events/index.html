@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="ng-admin">
   <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -39,6 +39,7 @@
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.js"></script>
 
             <script src="vendors/slimScroll/jquery.slimscroll.js"></script>
+
             <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 <script src="http://jvectormap.com/js/jquery-jvectormap-2.0.3.min.js"></script>
 <script src="http://jvectormap.com/js/jquery-jvectormap-world-mill-en.js"></script>
@@ -74,6 +75,10 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore.js"></script>
         
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>
+<!-- added for auth -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-cookies.js"></script>
+
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script>
             <script src="vendors/angular-route/angular-route.js"></script>
         <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script>
@@ -173,15 +178,18 @@
   <script type="text/javascript" src="js/directives/ngMenu.js"></script>
   <script type="text/javascript" src="js/directives/ngTab.js"></script>
   <script type="text/javascript" src="js/directives/scrollSpy.js"></script>
+  <script type="text/javascript" src="js/directives/ngThumbupload.js"></script>
+
+
+  <script type="text/javascript" src="js/controllers/newstudentcontroller.js"></script>
+  <script type="text/javascript" src="js/controllers/eventcontroller.js"></script>
   <script type="text/javascript" src="js/services/tournamentServices.js"></script>
   <script type="text/javascript" src="js/services/eventServices.js"></script>
   <script type="text/javascript" src="js/controllers/tournament.js"></script>
-  <script type="text/javascript" src="js/controllers/newstudentcontroller.js"></script>
-  <script type="text/javascript" src="js/controllers/eventcontroller.js"></script>
-  
-   <script type="text/javascript" src="js/directives/ngThumbupload.js"></script>
 
-   
+  <script type="text/javascript" src="js/services/userServices.js"></script>
+  <script type="text/javascript" src="js/services/flashServices.js"></script>  
+ 
 
      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
 
@@ -215,8 +223,7 @@
   </head>
 
     <!--V JS-->
-    <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"    >
-
+    <body  ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"    >
 
     <div ng-controller="AppController as vm" class="default-page">
       <!--BEGIN TEMPLATE SETTING-->
@@ -237,8 +244,19 @@
           <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
           <!--END PAGE HEADER & BREADCRUMB-->
           <!--BEGIN CONTENT-->
+    <div class="jumbotron">
+        <div class="container">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+<!--<div ng-view> -->
+          
           <div ng-view="" class="page-content"></div>
+            </div>
+        </div>
+    </div>
+
           <!--END CONTENT-->
+          
           <!--BEGIN FOOTER-->
           <div class="page-footer">
             <div class="copyright">2016 © V - Dojo .</div>
@@ -248,6 +266,7 @@
         <!--END PAGE WRAPPER-->
       </div>
     </div>
+
     <div hide="hide" class="extra-page"></div>
 
 

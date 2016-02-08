@@ -56,7 +56,7 @@
         vm.header.layout_topbar = '';
         vm.header.layout_menu = '';
         vm.header.header_topbar = '';
-
+/*
         if('/layout-left-sidebar' === current.originalPath){
             vm.header.boxed = '';
             vm.header.layout_topbar = '';
@@ -99,7 +99,7 @@
                 'wheelStep': 5
             });
 		}
-
+*/
  
 
     });
@@ -218,21 +218,7 @@
                 });
             }
 
-            //BEGIN SIDEBAR SEARCH FORM
-            $('.search-form > .input-icon > input').focus(function() {
-                $('.search-form > .input-icon > i.btn-search').removeClass('icon-magnifier').addClass('icon-close');
-            });
-            $('.search-form > .input-icon > input').focusout(function() {
-                $('.search-form > .input-icon > i.btn-search').removeClass('icon-close').addClass('icon-magnifier');
-            });
-            $('.search-form > .input-icon > i.btn-search').click(function() {
-                $('.search-form > .input-icon > input').val('');
-            });
-            $('.btn-search-collapsed').click(function() {
-                $('.search-form').toggleClass('search-form-collapsed');
-                $(this).find('i').toggleClass('icon-magnifier icon-close');
-            });
-            //END SIDEBAR SEARCH FORM
+ 
         }
 
     }
@@ -243,28 +229,6 @@
 	function AppControllerMain( $scope, $routeParams){
     console.log('AppControllerMain');
     
-    setTimeout(function(){
-        var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
-
-        //BEGIN TODOS LIST
-        $("#todos-list-sort").sortable();
-        $("#todos-list-sort").disableSelection();
-
-
-        $('#todos-list-add').click(function() {
-            var index = $('#todos-list-sort > li').length;
-            $('ul#todos-list-sort').append('<li><input type="checkbox" id="task-item-' + index + '" /><label for="task-item-' + index + '" >' + $("#todos-list-input").val() + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="fa fa-trash-o"></span></a></li>');
-            $("[data-hover='tooltip']").tooltip();
-        });
-        $( document ).on( 'click', '#todos-list-sort li a.delete', function() {
-//mlc         $('#todos-list-sort li a.delete').live('click', function() {
-            $(this).parent().remove();
-        });
-        //END TODOS LIST
-
-
-
-    },50);
     }
 })();    
