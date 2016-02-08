@@ -152,7 +152,13 @@
         }
 
         function setLists() {
-            vmstudent.genders = ['Female', 'Male', 'Unknown'];
+            vmstudent.genders = {
+    availableOptions: [
+      {id: 'Female', name: 'Female'},
+      {id: 'Male', name: 'Male'}
+    ],
+   };
+           // vmstudent.genders = {id:'Female', id:'Male'};
         }
 
         function setActiveTab( activeTab ){

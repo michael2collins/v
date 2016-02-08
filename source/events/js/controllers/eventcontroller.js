@@ -376,6 +376,11 @@
                     $log.debug('getEventNames returned data');
                     $log.debug(data);
                     vm.eventlist = data.eventlist; 
+                    $log.debug('default eventlist', vm.eventlist[0].event);
+                    
+                    vm.eventSelected = vm.eventlist[0].event;
+                    vm.setEventInfo(vm.eventSelected);
+                    
                     //check for empty set and do message
                     //messagetxt = "EventDetails obtained";
                     //Notification.success({message: messagetxt, delay: 5000});

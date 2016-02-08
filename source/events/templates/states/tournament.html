@@ -3,53 +3,7 @@
         ng-controller="TournamentController as vmstudent"
         ng-init="active[vmstudent.getActiveTab()]= true"
         >
-  <div class="col-lg-12">
-  <div class="row" ng-controller="EventController as vm">
-  
-      <form action="" novalidate name="edittournament" class="form-horizontal" ng-if="vmstudent.idpresent()">
-        <div class="form-body pal">
-          <h3 class="block-heading">Select Tournament</h3>
-          <div class=row>
-                  <div class="col-md-3">
-                    <label for="query" class="control-label">Pick Event</label>
-                    <ui-select  ng-model="vm.eventSelected" 
-                                theme="select2" 
-                                ng-disabled="disabled" 
-                                on-select="vm.setEventInfo($item)"
-                                style="width: 300px;" 
-                                title="Choose an event">
-                      <ui-select-match placeholder="Filter the events...">{{$select.selected.event}}</ui-select-match>
-                      <ui-select-choices 
-                      repeat="event in vm.eventlist | filter: $select.search track by $index"
-                      refresh="vm.getEventNames($select.search)"
-                      refresh-delay="0">
-                        <small>
-                    <span ng-bind-html="event.event | highlight: $select.search"></span>
-                        </small>
-                      </ui-select-choices>
-                    </ui-select>
 
-                  </div>
-                  <div class="col-md-2">
-                      EventDate:{{vm.EventInfo.EventDate}}
-                  </div>
-                  <div class="col-md-2">
-                      <div class="row">
-                      EventStart:{{vm.EventInfo.EventStart}}
-                      </div>
-                      <div class="row">
-                      EventEnd:{{vm.EventInfo.EventEnd}}
-                      </div>
-                  </div>
-                  <div class="col-md-5">
-                      Location:{{vm.EventInfo.Location}}
-                  </div>
-          </div>
-        </div>  
-      </form>
-          
-    </div>
-  </div>
     <uib-tabset type="pills" >
       <uib-tab 
             id="tab-student" 
@@ -64,13 +18,15 @@
                 <div class="panel-heading">Tournament Participant</div>
                 <div class="panel-body pan">
 
-          <div class="table-tools">
-            <div class="row">
+                  <div class="table-tools">
+                    <div class="row">
               <div ng-controller="ModalNewStudentController as vmmodal">
 
                   <div class="col-lg-12 mbs">
                   <div class="col-md-6">
                     <button ng-if="!vmstudent.idpresent()" type="button" class="btn btn-red mrs" ng-click="vmmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; Register New</button>
+                    <button ng-if="vmstudent.idpresent()" type="button" class="btn btn-red mrs" ng-click="vmmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; Register Another</button>
+                    
                     </div>
                   <div class="col-md-6">
                     <button ng-if="vmstudent.idpresent()" type="button" class="btn btn-green mrs" ng-click="active['tournament']= true" >Next &nbsp; <i class="fa fa-arrow-right"></i></button>
@@ -81,7 +37,7 @@
                           <h3 class="modal-title">Create New Student</h3>
                         </div>
                         <div class="modal-body">
-<pre>{{vmnew.message}}</pre>
+<!--<pre>{{vmnew.message}}</pre> -->
                             <form action="" novalidate name="newstudent" class="form-horizontal">
                               <div class="form-body pal">
                                <div class="row">
@@ -90,7 +46,8 @@
                                     <label for="inputFirstName" class="control-label">First Name </label>
                                       <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" 
                                       ng-model="vmnew.FirstName" 
-                                      minLength="2" maxLength="30"  class="form-control">
+                                      required
+                                      minLength="2" maxLength="50"  class="form-control">
                                   </div>
                                  </div>
                                  <div class="col-md-6">
@@ -98,7 +55,8 @@
                                     <label for="inputLastName" class="control-label">LastName </label>
                                       <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" 
                                       ng-model="vmnew.LastName" 
-                                      minLength="2" maxLength="30" class="form-control">
+                                      required
+                                      minLength="2" maxLength="50" class="form-control">
                                   </div>
                                  </div>
                                </div>
@@ -108,7 +66,8 @@
                                     <label for="inputEmail" class="control-label">Email </label>
                                       <input id="inputEmail" type="text" placeholder="Email" name="Email" 
                                       ng-model="vmnew.Email" 
-                                      minLength="2" maxLength="30"  class="form-control">
+                                      required
+                                      minLength="2" maxLength="255"  class="form-control">
                                   </div>
                                  </div>
                                 </div>
@@ -122,7 +81,7 @@
                     </script>
                 </div>    
             </div>
-          </div>
+                  </div>
                 
                   <form action="" novalidate name="editstudent" class="form-horizontal" ng-if="vmstudent.idpresent()">
                     <div class="form-body pal">
@@ -132,7 +91,7 @@
                           <div ng-class="{'has-error': editstudent.FirstName.$invalid, 'has-success': !editstudent.FirstName.$invalid}" class="form-group">
                             <label for="inputFirstName" class="control-label">First Name </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.FirstName.$dirty" ng-class="editstudent.FirstName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" ng-model="vmstudent.students.FirstName" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" ng-model="vmstudent.students.FirstName" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="50" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control" required>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.FirstName.$error" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -145,8 +104,20 @@
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.LastName.$invalid, 'has-success': !editstudent.LastName.$invalid}" class="form-group">
                             <label for="inputLastName" class="control-label">LastName </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.LastName.$dirty" ng-class="editstudent.LastName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" ng-model="vmstudent.students.LastName" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            <div class="input-icon right">
+                            <i data-hover="tooltip" 
+                                data-original-title="Correct" 
+                                ng-show="editstudent.LastName.$dirty" 
+                                ng-class="editstudent.LastName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="inputLastName" 
+                                type="text" placeholder="Last Name" 
+                                name="LastName" 
+                                ng-model="vmstudent.students.LastName" 
+                                ng-change="vmstudent.updateStudent()" 
+                                minLength="2" maxLength="50" 
+                                ng-model-options=
+                                "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                                class="form-control" required>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.LastName.$error" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -164,15 +135,21 @@
                           <label class="control-label" for="inputEmail">Email</label>
 
                             <div class="input-icon right">
-                              <i class="glyphicon tooltips" data-hover="tooltip"
-                              data-original-title="Correct" ng-class=
+                              <i class="glyphicon tooltips" 
+                                data-hover="tooltip"
+                                data-original-title="Correct" 
+                                ng-class=
                               "editstudent.Email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'"
-                              ng-show="editstudent.Email.$dirty"></i> <input class="form-control"
-                              id="inputEmail" maxlength="80" name="Email" ng-change=
-                              "vmstudent.updateStudent()" ng-model="vmstudent.students.Email"
-                              ng-model-options=
-                              "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                              placeholder="Email Address" type="email">
+                                ng-show="editstudent.Email.$dirty"></i> 
+                             <input class="form-control"
+                                id="inputEmail" 
+                                maxlength="255" 
+                                name="Email" 
+                                ng-change=
+                                "vmstudent.updateStudent()" ng-model="vmstudent.students.Email"
+                                ng-model-options=
+                                "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                              placeholder="Email Address" type="email" required>
                             </div>
 
 
@@ -206,33 +183,27 @@
 
                             <div class="input-icon right">
                               <i class="glyphicon tooltips" data-hover="tooltip"
-                              data-original-title="Correct" ng-class=
+                              data-original-title="Correct" 
+                              ng-class=
                               "editstudent.Phone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'"
-                              ng-show="editstudent.Phone.$dirty"></i> <input class="form-control"
+                              ng-show="editstudent.Phone.$dirty"></i> 
+                              <input class="form-control"
                               id="inputPhone" name="Phone" ng-change="vmstudent.updateStudent()"
                               ng-model="vmstudent.students.Phone" ng-model-options=
                               "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                               placeholder="" type="text" ui-mask="(999) 999-9999">
                             </div>
-
-
                             <div class="has-error" ng-messages="editstudent.Phone.$error" role=
                             "alert" style="color:maroon">
                               <div ng-message="required">
                                 You did not enter a field
                               </div>
-
-
                               <div ng-message="minlength">
                                 Your field is too short
                               </div>
-
-
                               <div ng-message="maxlength">
                                 Your field is too long
                               </div>
-
-
                               <div ng-message="email">
                                 Your email is missing @ and/or a period
                               </div>
@@ -245,20 +216,35 @@
                         <div class="col-md-6">
                           <label for="inputBirthday" class="control-label">Birthday </label>
                           <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
-                            <div class="col-md-11">
+                            <div class="col-md-8">
                               <div class="input-icon right">
-                                <i ng-click="vmstudent.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputBirthday" type="text" placeholder="mm/dd/yyyy" name="Birthday" ng-model="vmstudent.students.Birthday" ng-change="vmstudent.updateStudent()" is-open="vmstudent.status.opened" uib-datepicker-popup="{{vmstudent.bdateformat}}" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <i ng-click="vmstudent.dateopen($event)" 
+                                    data-hover="tooltip" data-original-title="Correct" 
+                                    ng-show="editstudent.Birthday.$dirty" 
+                                    ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+                                    class="glyphicon tooltips"></i>
+                                <input id="inputBirthday" 
+                                    type="text" placeholder="mm/dd/yyyy" 
+                                    name="Birthday" 
+                                    ng-model="vmstudent.students.Birthday" 
+                                    ng-change="vmstudent.updateStudent()" 
+                                    is-open="vmstudent.status.opened" 
+                                    uib-datepicker-popup="{{vmstudent.bdateformat}}" 
+                                    ng-model-options=
+                                    "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                                    class="form-control" required>
                               </div>
                             </div>
-                            <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">
+                            <div class="col-md-1">
+                              <button type="button" class="btn btn-default" ng-click="vmstudent.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                            </div>
+                            <div class="col-md-3 has-error" 
+                                    style="color:maroon" role="alert" 
+                                    ng-messages="editstudent.Birthday.$error" >
                               <div ng-message="required">You did not enter a field</div>
                               <div ng-message="minlength">Your field is too short</div>
                               <div ng-message="maxlength">Your field is too long</div>
                               <div ng-message="email">Your email is missing @ and/or a period</div>
-                            </div>
-                            <div class="col-md-1">
-                              <button type="button" class="btn btn-default" ng-click="vmstudent.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                             </div>
                           </div>
                         </div>
@@ -267,8 +253,16 @@
                             <label for="inputsex" class="control-label">Gender </label>
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.sex.$dirty" ng-class="editstudent.sex.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputsex" type="text" name="sex" ng-model="vmstudent.students.sex" ng-change="vmstudent.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="g in vmstudent.genders" ng-selected="{{g==vmstudent.students.sex}}" placeholder="Select" value="{{g}}">{{g}}</option>
+                              <select id="inputsex" type="text" name="sex" 
+                              ng-model="vmstudent.students.sex" 
+                              ng-change="vmstudent.updateStudent()" 
+                              minLength="" maxLength="" 
+                              ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                              class="form-control" required>
+                                <option ng-repeat="iter in vmstudent.genders.availableOptions" 
+                                ng-selected="{{iter.name==vmstudent.students.sex}}" 
+                                placeholder="Select" 
+                                value="{{iter.id}}">{{iter.name}}</option>
                               </select>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.sex.$error" class="has-error">
@@ -279,6 +273,8 @@
                             </div>
                           </div>
                         </div>
+                        
+                      
                       </div>
                       <div class="row">
                         <div class="col-md-6">
@@ -326,82 +322,14 @@
                           </div>
                         </div>
                       </div>
-<!--                      <h3 class="block-heading">Address Information</h3>
+                      <h3 class="block-heading">Karate Information</h3>
                       <div class="row">
                         <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
-                            <label for="inputAddress" class="control-label">Address </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputAddress" type="text" placeholder="999 Street Address" name="Address" ng-model="vmstudent.students.Address" ng-change="vmstudent.updateStudent()" minLength="5" maxLength="120" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                            </div>
-                            <div style="color:maroon" role="alert" ng-messages="editstudent.Address.$error" class="has-error">
-                              <div ng-message="required">You did not enter a field</div>
-                              <div ng-message="minlength">Your field is too short</div>
-                              <div ng-message="maxlength">Your field is too long</div>
-                              <div ng-message="email">Your email is missing @ and/or a period</div>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.City.$invalid, 'has-success': !editstudent.City.$invalid}" class="form-group">
-                            <label for="inputCity" class="control-label">City </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.City.$dirty" ng-class="editstudent.City.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputCity" type="text" placeholder="City" name="City" ng-model="vmstudent.students.City" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                            </div>
-                            <div style="color:maroon" role="alert" ng-messages="editstudent.City.$error" class="has-error">
-                              <div ng-message="required">You did not enter a field</div>
-                              <div ng-message="minlength">Your field is too short</div>
-                              <div ng-message="maxlength">Your field is too long</div>
-                              <div ng-message="email">Your email is missing @ and/or a period</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.ZIP.$invalid, 'has-success': !editstudent.ZIP.$invalid}" class="form-group">
-                            <label for="inputZIP" class="control-label">Zip/Postal Code </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ZIP.$dirty" ng-class="editstudent.ZIP.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputZIP" type="text" name="ZIP" ng-model="vmstudent.students.ZIP" ng-change="vmstudent.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="z in vmstudent.zipList.zips" ng-selected="{{z==vmstudent.students.ZIP}}" placeholder="Select" value="{{z.zip}}">{{z.zip}} - {{z.city}}</option>
-                              </select>
-                            </div>
-                            <div style="color:maroon" role="alert" ng-messages="editstudent.ZIP.$error" class="has-error">
-                              <div ng-message="required">You did not enter a field</div>
-                              <div ng-message="minlength">Your field is too short</div>
-                              <div ng-message="maxlength">Your field is too long</div>
-                              <div ng-message="email">Your email is missing @ and/or a period</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
--->                      <h3 class="block-heading">Karate Information</h3>
-                      <div class="row">
-<!--                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.ContactType.$invalid, 'has-success': !editstudent.ContactType.$invalid}" class="form-group">
-                            <label for="inputContactType" class="control-label">Contact Type </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ContactType.$dirty" ng-class="editstudent.ContactType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputContactType" type="text" name="ContactType" ng-model="vmstudent.students.ContactType" ng-change="vmstudent.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="iter in vmstudent.StudentList.ContactTypeList" ng-selected="{{iter.listkey==vmstudent.students.ContactType}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                            <div style="color:maroon" role="alert" ng-messages="editstudent.ContactType.$error" class="has-error">
-                              <div ng-message="required">You did not enter a field</div>
-                              <div ng-message="minlength">Your field is too short</div>
-                              <div ng-message="maxlength">Your field is too long</div>
-                              <div ng-message="email">Your email is missing @ and/or a period</div>
-                            </div>
-                          </div>
-                        </div>
-        -->                
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.edittournament.$invalid, 'has-success': !edittournament.CurrentRank.$invalid}" class="form-group">
+                          <div ng-class="{'has-error': editstudent.CurrentRank.$invalid, 'has-success': !editstudent.CurrentRank.$invalid}" class="form-group">
                             <label for="inputCurrentRank" class="control-label">Rank </label>
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.CurrentRank.$dirty" ng-class="editstudent.CurrentRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputCurrentRank" type="text" name="CurrentRank" ng-model="vmstudent.students.CurrentRank" ng-change="vmstudent.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <select id="inputCurrentRank" type="text" name="CurrentRank" ng-model="vmstudent.students.CurrentRank" ng-change="vmstudent.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control" required>
                                 <option ng-repeat="iter in vmstudent.RankList.rankList" ng-selected="{{iter.ranklist==vmstudent.students.CurrentRank}}" placeholder="Select" value="{{iter.ranklist}}">{{iter.ranklist}}</option>
                               </select>
                             </div>
@@ -413,17 +341,22 @@
                             </div>
                           </div>
                         </div>
-<!--                        
-                      </div>
-                      <div class="row">
--->                      
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.StudentSchool.$invalid, 'has-success': !editstudent.StudentSchool.$invalid}" class="form-group">
                             <label for="inputStudentSchool" class="control-label">School </label>
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.StudentSchool.$dirty" ng-class="editstudent.StudentSchool.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputStudentSchool" type="text" name="StudentSchool" ng-model="vmstudent.students.StudentSchool" ng-change="vmstudent.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="iter in vmstudent.StudentList.StudentSchoolList" ng-selected="{{iter.listkey==vmstudent.students.StudentSchool}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              <select id="inputStudentSchool" 
+                              type="text" name="StudentSchool" 
+                              ng-model="vmstudent.students.StudentSchool" 
+                              ng-change="vmstudent.updateStudent()" 
+                              minLength="" maxLength="" 
+                              ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                              class="form-control" required>
+                                <option ng-repeat="iter in vmstudent.StudentList.StudentSchoolList" 
+                                ng-selected="{{iter.listkey==vmstudent.students.StudentSchool}}" 
+                                placeholder="Select" 
+                                value="{{iter.listkey}}">{{iter.listvalue}}</option>
                               </select>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.StudentSchool.$error" class="has-error">
@@ -435,11 +368,23 @@
                           </div>
                         </div>
                       </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <div class="form-group">
+                            <label for="createdby" class="control-label">Created By </label>
+                            <div class="input-icon right">
+                            <p>{{vmstudent.students.createdby}}</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                        </div>
+                      </div>
+
                     </div>
                   </form>
                   <div class="col-lg-12 mbs">
-                  <div class="col-md-6">
-                    <button ng-if="vmstudent.idpresent()" type="button" class="btn btn-red mrs" ng-click="vmmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; Register Another</button>
+                    <div class="col-md-6">
                     </div>
                     <div class="col-md-6">
                     <button ng-if="vmstudent.idpresent()" type="button" class="btn btn-green mrs" ng-click="active['tournament']= true" >Next &nbsp; <i class="fa fa-arrow-right"></i></button>
@@ -458,6 +403,55 @@
             heading="Register for Tournament -->" 
             active="active.tournament"
             select="vmstudent.setActiveTab('tournament');vmstudent.activate();tournamenttabShown = !tournamenttabShown" deselect="tournamenttabShown = !tournamenttabShown" >
+
+  <div class="col-lg-12">
+    <div class="row" ng-controller="EventController as vm">
+  
+      <form action="" novalidate name="edittournament" class="form-horizontal" ng-if="vmstudent.idpresent()">
+        <div class="form-body pal">
+          <h3 class="block-heading">Select Tournament</h3>
+          <div class=row>
+                  <div class="col-md-3">
+                    <label for="query" class="control-label">Pick Event</label>
+                    <ui-select  ng-model="vm.eventSelected" 
+                                theme="select2" 
+                                ng-disabled="disabled" 
+                                on-select="vm.setEventInfo($item)"
+                                style="width: 300px;" 
+                                title="Choose an event"
+                                required>
+                      <ui-select-match placeholder="Filter the events...">{{$select.selected.event}}</ui-select-match>
+                      <ui-select-choices 
+                      repeat="event in vm.eventlist | filter: $select.search track by $index"
+                      refresh="vm.getEventNames($select.search)"
+                      refresh-delay="0">
+                        <small>
+                    <span ng-bind-html="event.event | highlight: $select.search"></span>
+                        </small>
+                      </ui-select-choices>
+                    </ui-select>
+
+                  </div>
+                  <div class="col-md-2">
+                      EventDate:{{vm.EventInfo.EventDate}}
+                  </div>
+                  <div class="col-md-2">
+                      <div class="row">
+                      EventStart:{{vm.EventInfo.EventStart}}
+                      </div>
+                      <div class="row">
+                      EventEnd:{{vm.EventInfo.EventEnd}}
+                      </div>
+                  </div>
+                  <div class="col-md-5">
+                      Location:{{vm.EventInfo.Location}}
+                  </div>
+          </div>
+        </div>  
+      </form>
+          
+    </div>
+  </div>            
         <div class="row" ><!-- add conroller here -->
           <div class="col-lg-12">
             <div class="panel panel-green">
@@ -530,5 +524,4 @@
     </uib-tabset>
 
 
-  </div>
 </div>

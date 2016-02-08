@@ -104,7 +104,12 @@
                 }).catch(function(e) {
                     $log.debug('createStudent failure:');
                     $log.debug("error", e);
-                    
+                    if (e.status == 409) {
+                        var url = './#/tournament/id/' + vmnew.thisstudent.student_id;
+                        $log.debug(url);
+                        $window.location.href = url;
+                        
+                    }
                     vmnew.message = e.message;
                     Notification.error({message: vmnew.message, delay: 5000});
                     throw e;

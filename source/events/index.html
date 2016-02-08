@@ -244,10 +244,10 @@
           <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
           <!--END PAGE HEADER & BREADCRUMB-->
           <!--BEGIN CONTENT-->
-    <div class="jumbotron">
+    <div class="jumbotron" ng-if="flash">
         <div class="container">
             <div class="col-sm-8 col-sm-offset-2">
-                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"  ng-bind="flash.message"></div>
 <!--<div ng-view> -->
           
             </div>
