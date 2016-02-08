@@ -97,19 +97,16 @@
                     $log.debug(vmnew.thisstudent);
                     $log.debug(vmnew.thisstudent.message);
                     vmnew.message = vmnew.thisstudent.message;
-        //            $log.debug('location is', $location);
-        //            $location.path = '/form-layouts-editstudent/id/' + vmnew.thisstudent.student_id;
-    //                var url = "http://" + $window.location.host + '/v/#/form-layouts-editstudent/id/' + vmnew.thisstudent.student_id;
                     var url = './#/tournament/id/' + vmnew.thisstudent.student_id;
                     $log.debug(url);
-        //            alert(url);
                     $window.location.href = url;
                     return vmnew.thisstudent;
                 }).catch(function(e) {
                     $log.debug('createStudent failure:');
                     $log.debug("error", e);
-                    vmnew.message = e;
-                    Notification.error({message: e, delay: 5000});
+                    
+                    vmnew.message = e.message;
+                    Notification.error({message: vmnew.message, delay: 5000});
                     throw e;
                 });
     }

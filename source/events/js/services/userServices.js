@@ -9,7 +9,8 @@
 
     function UserServices( $http, $q, $log, $rootScope, $cookieStore ) {
         var response;
-
+        var apikey;
+        
         var service = {
             Login: Login,
             SetCredentials: SetCredentials,
@@ -18,9 +19,14 @@
             getUserDetails: getUserDetails,
             createUser: createUser,
             updateUser: updateUser,
+            setapikey: setapikey
 //            getUser: getUser,
         };
         return service;
+        
+        function setapikey(key){
+            apikey = key;
+        }
         
         function Login(username, password) {
             var path='/v1/login';
@@ -43,7 +49,9 @@
 
         function SetCredentials(username, password, apiKey) {
             //var authdata = username + ':' + password;
-            $log.debug('SetCredentials entered', username);
+            $log.debug('SetCredentials entered', username,apiKey);
+            setapikey(apiKey);
+            
             var authdata = apiKey;
 
             $rootScope.globals = {
@@ -54,7 +62,7 @@
             };
 
         //    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
-            $http.defaults.headers.common['Authorization'] = authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = authdata; 
             $cookieStore.put('globals', $rootScope.globals);
         }
 
@@ -63,7 +71,7 @@
             
             $rootScope.globals = {};
             $cookieStore.remove('globals');
-            $http.defaults.headers.common.Authorization = '';
+            $http.defaults.headers.common['Authorization'] = '';
         }
     
         function getUserNames(path) {

@@ -13,10 +13,11 @@
             '$location',
             'FlashService',
             'UserServices',
+            'TournamentServices',
             '$q'
             ];
         function PageSigninController($scope, $log, $routeParams, 
-                $location, FlashService, UserServices, $q){
+                $location, FlashService, UserServices, TournamentServices, $q){
         /* jshint validthis: true */
 
             var pagevm = this;
@@ -30,10 +31,10 @@
             $log.debug('username', pagevm.username);
             $log.debug('password', pagevm.password);
             
-//            (function initController() {
+            (function initController() {
                 // reset login status
-//                UserServices.ClearCredentials();
-//            })();
+                UserServices.ClearCredentials();
+            })();
     
 
             function login() {
@@ -46,6 +47,7 @@
                     $log.debug(data);
                     pagevm.apiKey = data.apiKey;
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
+                        TournamentServices.setapikey(pagevm.apiKey);
                         $location.path('/');
                         return data;
                 },
@@ -53,6 +55,8 @@
                     $log.debug('Caught an error UserServices, going to notify:', error); 
                 //    vm.message = error;
                 //    Notification.error({message: error, delay: 5000});
+                        UserServices.SetCredentials('','','');
+                        TournamentServices.setapikey('');
                         FlashService.Err(error);
                     return ($q.reject(error));
                 }).

@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<div class="animated bounceInDown">
+<div class="animated bounceInDown col-md-3 col-md-offset-3">
   <div id="signin-page-content" ng-controller="PageSigninController as pagevm">
     <form name="form" ng-submit="form.$valid && pagevm.login()" class="form" role="form" novalidate> 
       <h1 class="block-heading">Sign In</h1>
-      <p>Dear user, log in to access the admin area!</p>
-      <pre>{{pagevm.username}}</pre>
+      <p>Dear user, log in to access the registration area!</p>
         <div class="form-group" 
         ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">        
         <div class="input-icon"><i class="fa fa-user"></i>

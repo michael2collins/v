@@ -23,7 +23,6 @@
         vmstudent.getStudentLists = getStudentLists;
         vmstudent.getRankList = getRankList;
         vmstudent.updateStudent = updateStudent;
-        vmstudent.setStudentPIC = setStudentPIC;
         vmstudent.students = [];
         vmstudent.genders = [];
         vmstudent.zipList = [];
@@ -90,20 +89,13 @@
             return new Date(bday);
         }
 
+
         function getStudent() {
             return TournamentServices.getStudent(vmstudent.path).then(function (data) {
                 $log.debug('getStudent returned data');
                 $log.debug(data.data);
-                TournamentServices.setTheStudent(data.data);
+                //TournamentServices.setTheStudent(data.data);
                 vmstudent.students = data.data;
-                $log.debug('studen pic url', vmstudent.students.pictureurl);
-                if (_.isEmpty(vmstudent.students.pictureurl)) {
-                    $log.debug('empty picture');
-                    vmstudent.students.pictureurldecache = 'missing';
-                } else {
-                    vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
-                }
-                $log.debug('studen pic url decache', vmstudent.students.pictureurldecache);
                 return vmstudent.students;
             });
         }
@@ -116,13 +108,6 @@
                 vmstudent.students = data.data;
                 getStudent();
             });
-        }
-
-        function setStudentPIC(pic) {
-            $log.debug('about setStudentPIC ', pic);
-            vmstudent.students.pictureurl = pic;
-            $log.debug('about setStudentPIC ', vmstudent.students);
-              updateStudent();
         }
 
         function getAllZips() {

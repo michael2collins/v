@@ -14,7 +14,8 @@
             '$q',
             '$location'
             ];
-        function PageSignupController($scope, $log, $routeParams, FlashService, UserServices, $q, $location){
+        function PageSignupController($scope, $log, $routeParams, 
+            FlashService, UserServices, $q, $location){
         /* jshint validthis: true */
 
             var vm=this;
