@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <nav id="sidebar" role="navigation" class="navbar-default navbar-static-side">
   <div class="sidebar-collapse menu-scroll">
     <ul id="side-menu" ng-menu="" class="nav">
@@ -10,7 +10,7 @@
         <ul class="nav nav-second-level">
           <li><a href="#/page-signin">Login</a></li>
           <li><a href="#/page-signup">Create User</a></li>
-          <li><a href="#/tournament">Medway Registration</a></li>
+          <li ng-show="vm.islogin()"><a href="#/tournament">Medway Registration</a></li>
         </ul>
       </li>
     </ul>

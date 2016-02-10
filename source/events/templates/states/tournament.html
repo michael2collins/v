@@ -3,6 +3,7 @@
         ng-controller="TournamentController as vmstudent"
         ng-init="active[vmstudent.getActiveTab()]= true"
         >
+<div         ng-controller="EventController as vmevent">
 
     <uib-tabset type="pills" >
       <uib-tab 
@@ -403,60 +404,60 @@
             heading="Register for Tournament -->" 
             active="active.tournament"
             select="vmstudent.setActiveTab('tournament');vmstudent.activate();tournamenttabShown = !tournamenttabShown" deselect="tournamenttabShown = !tournamenttabShown" >
+        <div >
 
-  <div class="col-lg-12">
-    <div class="row" ng-controller="EventController as vm">
-  
-      <form action="" novalidate name="edittournament" class="form-horizontal" ng-if="vmstudent.idpresent()">
-        <div class="form-body pal">
-          <h3 class="block-heading">Select Tournament</h3>
-          <div class=row>
-                  <div class="col-md-3">
-                    <label for="query" class="control-label">Pick Event</label>
-                    <ui-select  ng-model="vm.eventSelected" 
-                                theme="select2" 
-                                ng-disabled="disabled" 
-                                on-select="vm.setEventInfo($item)"
-                                style="width: 300px;" 
-                                title="Choose an event"
-                                required>
-                      <ui-select-match placeholder="Filter the events...">{{$select.selected.event}}</ui-select-match>
-                      <ui-select-choices 
-                      repeat="event in vm.eventlist | filter: $select.search track by $index"
-                      refresh="vm.getEventNames($select.search)"
-                      refresh-delay="0">
-                        <small>
-                    <span ng-bind-html="event.event | highlight: $select.search"></span>
-                        </small>
-                      </ui-select-choices>
-                    </ui-select>
-
-                  </div>
-                  <div class="col-md-2">
-                      EventDate:{{vm.EventInfo.EventDate}}
-                  </div>
-                  <div class="col-md-2">
-                      <div class="row">
-                      EventStart:{{vm.EventInfo.EventStart}}
-                      </div>
-                      <div class="row">
-                      EventEnd:{{vm.EventInfo.EventEnd}}
-                      </div>
-                  </div>
-                  <div class="col-md-5">
-                      Location:{{vm.EventInfo.Location}}
-                  </div>
-          </div>
-        </div>  
-      </form>
+            <div class="col-lg-12">
+                <div class="row" >
           
-    </div>
-  </div>            
-        <div class="row" ><!-- add conroller here -->
-          <div class="col-lg-12">
-            <div class="panel panel-green">
-              <div class="panel-heading">Tournament</div>
-              <div class="panel-body pan">
+              <form action="" novalidate name="edittournament" class="form-horizontal" >
+                <div class="form-body pal">
+                  <div class=row>
+                      <div class="col-md-3">
+                        <label for="query" class="control-label">Select Tournament</label>
+                        <ui-select  ng-model="vmevent.eventSelected" 
+                                    theme="select2" 
+                                    ng-disabled="disabled" 
+                                    on-select="vmevent.setEventInfo($item)"
+                                    style="width: 300px;" 
+                                    title="Choose an event"
+                                    required>
+                          <ui-select-match placeholder="Select the event...">{{$select.selected.event}}</ui-select-match>
+                          <ui-select-choices 
+                          repeat="event in vmevent.eventlist | filter: $select.search track by $index"
+                          refresh="vmevent.getEventNames($select.search)"
+                          refresh-delay="0">
+                            <small>
+                        <span ng-bind-html="event.event | highlight: $select.search"></span>
+                            </small>
+                          </ui-select-choices>
+                        </ui-select>
+        
+                      </div>
+                      <div class="col-md-2">
+                        <label for="EventDate" class="control-label">Event Date</label>
+                          <p>{{vmevent.EventInfo.EventDate}}</p>
+                      </div>
+                      <div class="col-md-2">
+                        <label for="EventTimes" class="control-label">Event Time</label>
+                          <p>Starts:{{vmevent.EventInfo.EventStart}}</p>
+                          <p>Ends:{{vmevent.EventInfo.EventEnd}}</p>
+                      </div>
+                      <div class="col-md-5">
+                        <label for="Location" class="control-label">Location</label>
+                          <p>{{vmevent.EventInfo.Location}}</p>
+                      </div>
+                  </div>
+                </div>  
+              </form>
+          
+             </div>
+            </div>            
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-green">
+                        <div class="panel-heading">Select the Participants</div>
+                        <div class="panel-body pan">
                   <div class="col-lg-12 mbs">
                       <div class="col-md-6">
                         <button ng-if="vmstudent.idpresent()" type="button" 
@@ -473,48 +474,81 @@
                             </button>
                         </div>
                   </div>
-                  <form action="" novalidate name="editstudentclass" class="form-horizontal">
-                      <div class="form-body pal">
-                        <h3 class="block-heading">Select</h3>
-                        <div class="row">
+                  <div class="row">      
+                    <div class="col-md-12">
+                        <div ui-grid="vmevent.gridTournamentOptions" 
+                            ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                            ui-grid-resize-columns ui-grid-edit
+                            ui-grid-selection
+                            ng-style="{height: (30*4)+132+'px'}" 
+                            class="mygrid" >
                         </div>
-                      </div>
-                  </form>
+                    </div>
+                  </div>
                   <div class="col-lg-12 mbs">
                       <div class="col-md-6">
-                        <button ng-if="vmstudent.idpresent()" type="button" class="btn btn-blue mrs" ng-click="active['info']= true" ><i class="fa fa-arrow-left"></i> &nbsp; Back </button>
+                        <button  type="button" class="btn btn-blue mrs" ng-click="active['info']= true" ><i class="fa fa-arrow-left"></i> &nbsp; Go back to add more </button>
                         </div>
-                      <div class="col-md-6">
-                        <button ng-if="vmstudent.idpresent()" type="button" class="btn btn-orange mrs" ng-click="active['payment']= true" >Next &nbsp; <i class="fa fa-arrow-right"></i></button>
+                      <div class="col-md-3">
+                        <button type="button" class="btn btn-orange mrs" 
+                            ng-if="vmevent.isSelected()"
+                            ng-click="vmevent.register()" >Register {{vm.selectedStudents.length}} students &nbsp; <i class="fa fa-arrow-right"></i></button>
+                        </div>
+                      <div class="col-md-3">
+                        <button type="button" class="btn btn-orange mrs" ng-click="active['payment']= true" >Move forward to Pay &nbsp; <i class="fa fa-arrow-right"></i></button>
                         </div>
                   </div>
               </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-                        
-        </uib-tab>      
-      <uib-tab 
+            
+        </div>                        
+      </uib-tab>      
+      <uib-tab
              id="tab-student" 
              heading="Pay for Tournament"
              active="active.payment"
-             select="vmstudent.setActiveTab('payment')"
+             select="vmstudent.setActiveTab('payment');vmevent.getEventDetails()"
              >
         <div class="row" >
           <div class="col-lg-12">
             <div class="panel panel-orange">
               <div class="panel-heading">Payment</div>
               <div class="panel-body pan">
-                  <div class="col-md-6">
-                    <form action="" novalidate name="editstudentpayment" class="form-horizontal">
-                      <div class="form-body pal">
-                        <h3 class="block-heading">Payment Information</h3>
-                        <div class="row">
+              <div class="row">
+                <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" ><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_viewcart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>
+              </div>
+<!--              <div class="row" >      
+                <div class="col-md-12">
+                    <div ui-grid="vmevent.gridPaymentOptions" 
+                        ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                        ui-grid-resize-columns
+                        ui-grid-selection
+                        ng-style="{height: (30*4)+132+'px'}" 
+                        class="mygrid" >
+                    </div>
+                    
+                </div>
+                
+              </div> -->
+                <div class="row">
+                    <div ng-repeat="item in vmevent.gridPaymentOptions.data">
+                        <p>{{item.Lastname}}</p>
+                        <p>{{item.FirstName}}</p>
+                        <p>{{item.EventType}}</p>
+                        <div ng-if="item.EventType == 'Two Events'"> 
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
                         </div>
-                      </div>
-                    </form>
-                  </div>
-               <hr/>  
+                        <div ng-if="item.EventType == 'Three Events'"> 
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="7PFKFJ7K8LHBU"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                     
+                        </div>
+                    </div>
+                    
+                </div>
+
+                    
               </div>
             </div>
           </div>
@@ -523,5 +557,5 @@
         </uib-tab>      
     </uib-tabset>
 
-
+    </div>
 </div>

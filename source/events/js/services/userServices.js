@@ -19,13 +19,23 @@
             getUserDetails: getUserDetails,
             createUser: createUser,
             updateUser: updateUser,
-            setapikey: setapikey
+            setapikey: setapikey,
+            isapikey: isapikey
 //            getUser: getUser,
         };
         return service;
         
         function setapikey(key){
+            $log.debug('UserServices setapikey', key);
             apikey = key;
+        }
+
+        function isapikey(){
+            if (typeof apikey != 'undefined') {
+    //            $log.debug('UserServices isapikey', apikey);
+                return apikey.length > 0;
+            } else { return false; }
+
         }
         
         function Login(username, password) {

@@ -12,6 +12,7 @@
         var activeTab = 'Event Information'; //default
         
         var service = {
+            getAllStudents: getAllStudents,
             getAllZips: getAllZips,
             getStudentLists: getStudentLists,
             getRankList: getRankList,
@@ -49,6 +50,16 @@
           return response.data;
         });
       }
+
+        function getAllStudents(path) {
+            $log.debug('getAllStudents service entered');
+                    var request = $http({
+                        method: "GET",
+                        url: path
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+                
+        }
 
  
         function getStudent(path) {

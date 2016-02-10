@@ -3,12 +3,14 @@
 
     angular
         .module('ng-admin')
+        .filter('mapEventType', mapEventType)
         .controller('EventController', EventController);
 
     EventController.$inject = [
     '$routeParams',
     '$log',
     'EventServices',
+    'TournamentServices',
     '$location',
     '$window',
     '$q',
@@ -20,7 +22,21 @@
     '$timeout'
     ];
 
-    function EventController($routeParams, $log, EventServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
+    function mapEventType() {
+          var EventTypeHash = {
+            'Two Events': 'Two Events',
+            'Three Events': 'Three Events'
+          };        
+         return function(input) {
+            if (!input){
+              return '';
+            } else {
+              return EventTypeHash[input];
+            }
+          };
+    }
+    
+    function EventController($routeParams, $log, EventServices, TournamentServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -29,15 +45,18 @@
         vm.getEventSource = getEventSource;
         vm.getEventDetails = getEventDetails;
         vm.updateEvent = updateEvent;
+        vm.isSelected = isSelected;
         vm.getEventNames = getEventNames;
         vm.setEventInfo = setEventInfo;
-        vm.getColDefList = getColDefList;
-        vm.setColDef = setColDef;
+        vm.register = register;
+        vm.notify = notify;
+ //       vm.getColDefList = getColDefList;
+ //       vm.setColDef = setColDef;
         vm.dateopen = dateopen;
-        vm.getColDefs = getColDefs;
-        vm.changeColDef = changeColDef;
-        vm.saveState = saveState;
-        vm.restoreState = restoreState;
+//        vm.getColDefs = getColDefs;
+//        vm.changeColDef = changeColDef;
+//        vm.saveState = saveState;
+//        vm.restoreState = restoreState;
         vm.setLimit = setLimit;
         vm.createEvent = createEvent;
         vm.getActiveTab = getActiveTab;
@@ -58,6 +77,7 @@
         vm.loadAttempted = false;
         vm.gridOptions={};
         vm.gridHistOptions={};
+        vm.gridTournamentOptions={};
         vm.selectedStudents=[];
         vm.selected = false;
         vm.eventSelected = '';
@@ -70,8 +90,22 @@
         vm.Location = '';
         vm.ContactID = '';
         vm.EventInfo = {};
+        vm.eventdefault = 'Two Events';
+        vm.eventfield = 'EventType';
+        vm.eventfieldname = 'EventType';
+        vm.eventarray = [
+          { id: 1, eventtype: 'Two Events' },
+          { id: 2, eventtype: 'Three Events' }
+        ];
 
+        vm.twoeventpay50='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        vm.twoeventpay60='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="EGHLJJYUAW6JA"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        vm.twoeventpay70='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="PK7AC8ZRE835Q"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
 
+        vm.threeeventpay60='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="7PFKFJ7K8LHBU"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        vm.threeeventpay75='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="2RTMGNSY5FTLE"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        vm.threeeventpay90='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="7XWV5FXKAMFEN"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        
        vm.status = {
             opened: false
         };
@@ -156,8 +190,11 @@
             vm.time = new Date(value.toISOString());
         }, true);
       
-      //  activate();
+        activate();
 
+        function isSelected() {
+            return vm.selectedStudents.length > 0 && vm.eventSelected !== null;
+        }
         function dateopen($event) {
             vm.status.opened = true;
         }
@@ -166,7 +203,12 @@
             $log.debug('setLimit',thelimit);
             vm.limit = thelimit;
         }
-
+        
+        function notify(msg) {
+            alert(msg);
+            Notification.success({message: msg, delay: 5000});
+        }
+        
         function requery() {
             $log.debug('requery entered');
             vm.attending=[];
@@ -183,12 +225,43 @@
         }
 
 
-        function activate() {
+        function activateorig() {
             setInitColDefs();
             $log.debug('activate setInitColDefs returned');
             getColDefList();
             setGridHistOptions();
 
+        }
+        
+        function activate() {
+            $log.debug('activate entered');
+            setGridTournamentOptions();
+            setGridPaymentOptions();
+            
+            getAllStudents().then(function() {
+                $log.debug('refreshed students');
+            });
+        }
+
+        function getAllStudents() {
+            $log.debug('TournamentServices getAllStudents entered');
+            var path = '../v1/students';
+            
+            $log.debug('getAllStudents path:', path);
+
+            return TournamentServices.getAllStudents(path).then(function(data){
+                   $log.debug('getAllStudents returned data', data);
+                   addExtraData(data.students, vm.eventfield, vm.eventdefault);
+                    vm.gridTournamentOptions.data = data.students;
+
+                    return vm.gridTournamentOptions.data;
+                });
+        }
+
+        function addExtraData(data,fieldname, fieldvalue){
+            for (var i=0, len=data.length;i < len;i++ ) {
+                data[i][fieldname] = fieldvalue ;
+            }
         }
         
         function getFormattedDate(date) {
@@ -218,7 +291,20 @@
             vm.EventInfo = info;
         }
         
-        function createEvent(event) {
+        function register() {
+            var thedata = {
+                Event: vm.eventSelected.event,
+                EventDate: vm.eventSelected.EventDate,
+                EventStart: vm.eventSelected.EventStart,
+                EventEnd: vm.eventSelected.EventEnd,
+                Location: vm.eventSelected.Location,
+                selectedStudents: vm.selectedStudents
+            };
+            $log.debug('register entered', thedata);
+            createEvent(thedata);
+        }
+        
+        function createEvent(thedata) {
             if (vm.selected === false) {
                 var error = "no rows selected for event";
                 Notification.error({message: error, delay: 5000});
@@ -227,15 +313,6 @@
             
             var path = "../v1/eventregistration";
 
-            var thedata = {
-                Event: event,
-                EventDate: getFormattedDate(vm.EventDate),
-                EventType: vm.EventType,
-                EventStart: getFormattedTime(vm.EventStart),
-                EventEnd: getFormattedTime(vm.EventEnd),
-                Location: vm.Location,
-                selectedStudents: vm.selectedStudents
-            };
             $log.debug('about createEvent ', path, thedata);
             return EventServices.createEvent(path, thedata)
                 .then(function(data){
@@ -246,18 +323,6 @@
                     $log.debug(vm.thisEvent.message);
                     vm.message = vm.thisEvent.message;
                     Notification.success({message: vm.message, delay: 5000});
-                    refreshtheEvent().then
-                        (function(zdata) {
-                         $log.debug('refreshtheEvent returned', zdata);
-                     },
-                        function (error) {
-                            $log.debug('Caught an error refreshtheEvent after update:', error); 
-                            vm.data = [];
-                            vm.photos = [];
-                            vm.message = error;
-                            Notification.error({message: error, delay: 5000});
-                            return ($q.reject(error));
-                        });
 
                     return vm.thisEvent;
                 }).catch(function(e) {
@@ -326,25 +391,27 @@
 
 
 
-        function getEventDetails(theevent) {
-            $log.debug('getEventDetails entered:', theevent.event);
-            var path = encodeURI('../v1/eventdetails?event=' + theevent.event);
+        function getEventDetails() {
+            $log.debug('getEventDetails entered:');
+            var path = encodeURI('../v1/eventdetails');
 
+            
             $log.debug('getEventDetails path:', path);
             
              return EventServices.getEventDetails(path).then(function(data){
                     $log.debug('getEventDetails returned data');
                     $log.debug(data);
-                    vm.gridHistOptions.data = data.eventdetails; 
+                    vm.gridPaymentOptions.data = data.eventdetails; 
+                    
                     $log.debug("details",data.eventdetails[0]);
                     
-                    vm.Event = data.eventdetails[0].Event;
-                    vm.EventType = data.eventdetails[0].EventType;
-                    vm.EventDate = data.eventdetails[0].EventDate;
-                    vm.EventEnd = data.eventdetails[0].EventEnd;
-                    vm.EventStart = data.eventdetails[0].EventStart;
-                    vm.Location = data.eventdetails[0].Location;
-                    vm.ContactID = data.eventdetails[0].ContactID;
+                //    vm.Event = data.eventdetails[0].Event;
+                //    vm.EventType = data.eventdetails[0].EventType;
+                //    vm.EventDate = data.eventdetails[0].EventDate;
+                //    vm.EventEnd = data.eventdetails[0].EventEnd;
+            //        vm.EventStart = data.eventdetails[0].EventStart;
+            //        vm.Location = data.eventdetails[0].Location;
+            //        vm.ContactID = data.eventdetails[0].ContactID;
                     
                     //check for empty set and do message
                     var messagetxt = "EventDetails obtained";
@@ -401,7 +468,7 @@
 
         }
 
-
+/*
         function setColDef(indata) {
             var path = "../v1/coldef";
             $log.debug('about setColDefs ', indata, path);
@@ -580,7 +647,7 @@
       NOT_EQUAL: 512,
       SELECT: 'select',
       INPUT: 'input'
-      */
+      * /
                         filt =   [
                             {
                               condition: uiGridConstants.filter.STARTS_WITH,
@@ -612,7 +679,7 @@
                               placeholder: '< than'
                             }
                           ];
-                        */ filt = "";
+                        * / filt = "";
                     } else {
                         filt = "";
                     }
@@ -731,7 +798,7 @@
                         }
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
-                        */
+                        * /
                         var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
                         $log.debug('batch selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
@@ -883,7 +950,7 @@
                         }
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
-                        */
+                        * /
                 //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
                 //        $log.debug('batch selected', selectedStudentarr);
                 //        setSelectedArray(selectedStudentarr);
@@ -907,6 +974,7 @@
             $log.debug('setGridHistOptions gridOptions', vm.gridHistOptions);
 
         }
+        */
         function updateEvent(colDef, newValue,rowEntity) {
             var path = "../v1/eventregistration";
             var indata = {
@@ -951,13 +1019,14 @@
                 vm.selected = true;
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
-                        ContactID: inputArray[i].ContactID,
-                        Paid: "",
+                        ContactID: inputArray[i].ID,
+                        EventType: inputArray[i].EventType,
+                        Paid: "0",
                         ShirtSize: "",
                         Notes: "",
                         Include: "",
                         Attended: "",
-                        Ordered: ""
+                        Ordered: "1"
                     };
                     vm.selectedStudents.push(info);
                 }
@@ -979,6 +1048,152 @@
             }
         }
 
+        function setGridTournamentOptions() {
+
+            vm.gridTournamentOptions = {
+                enableFiltering: true,
+                paginationPageSizes: vm.limits,
+                paginationPageSize: 10,
+            columnDefs: [
+                // default
+
+                {
+                    field: 'LastName',
+                    enableCellEdit: false,
+                    enableFiltering: false
+                }, {
+                    field: 'FirstName',
+                    enableCellEdit: false,
+                    enableFiltering: false
+                }, {
+                    displayName: '2 or 3 events ? -dbl click to edit',
+                    name: 'EventType',
+                    enableCellEdit: true,
+                    enableFiltering: false,
+                    editableCellTemplate: 'ui-grid/dropdownEditor',
+                    cellFilter: 'mapEventType', editDropdownValueLabel: 'EventType', 
+                    editDropdownOptionsArray: [
+                          { id: 'Two Events', EventType: 'Two Events' },
+                          { id: 'Three Events', EventType: 'Three Events' }
+                        ]
+                }, {
+                    name: 'ID',
+                    displayName: 'Edit',
+                    enableFiltering: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    enableCellEdit: false,
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/tournament/id/{{COL_FIELD}}" >Edit then open first tab</button></span></div>'
+                }],
+
+                //rowHeight: 15,
+                showGridFooter: false,
+                enableColumnResizing: true,
+
+                onRegisterApi: function(gridApi) {
+                    $log.debug('vm gridapi onRegisterApi');
+                     vm.gridTournamentApi = gridApi;
+
+                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
+                        var msg = 'grid row selected ' + row.entity;
+                        $log.debug(msg);
+
+                        var selectedStudentarr = vm.gridTournamentApi.selection.getSelectedRows();
+                        $log.debug('selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
+                        
+                    });
+                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                        $log.debug("grid batch");  
+                        //note this will send the list of changed rows
+                    /*    var selectedContacts=[];
+                        for (var index=0, len=rows.length; index < len; index++) {
+                            $log.debug("selected?",rows[index].isSelected);
+                            if (rows[index].isSelected === true) {
+                                selectedContacts.push(rows[index].entity);
+                            }
+                        }
+                        $log.debug("batch", selectedContacts);
+                        setSelectedArray(selectedContacts);
+                        */
+                        var selectedStudentarr = vm.gridTournamentApi.selection.getSelectedRows();
+                        $log.debug('batch selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
+
+                    });
+                    gridApi.edit.on.afterCellEdit($scope, 
+                            function(rowEntity, colDef, newValue, oldValue) {
+                        $log.debug('rowEntity');
+                        $log.debug(rowEntity);
+                        //Alert to show what info about the edit is available
+                        $log.debug('Column: ' + colDef.name  + 
+                            ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
+                        if (newValue != oldValue) {
+                            //updateEvent(colDef,newValue,rowEntity);       
+                        }
+                    });
+
+                    }
+            };
+
+            $log.debug('setGridTournamentOptions Options:', vm.gridTournamentOptions);
+
+        }
+
+
+
+        function setGridPaymentOptions() {
+
+//  var EventTypeTemplate = '<div>{{COL_FIELD == "Two Events" ? vm.twoeventpay50 : vm.threeeventpay60}}</div';
+//  var EventTypeTemplate = '<div class="ui-grid-cell-contents">{{COL_FIELD == "Two Events" ? "y" : "x"}}</div';
+
+            vm.gridPaymentOptions = {
+                enableFiltering: true,
+                paginationPageSizes: vm.limits,
+                paginationPageSize: 10,
+            columnDefs: [
+                // default
+
+                {
+                    field: 'LastName',
+                    enableCellEdit: false,
+                    enableFiltering: false
+                }, {
+                    field: 'FirstName',
+                    enableCellEdit: false,
+                    enableFiltering: false
+                }, {
+                    displayName: 'Event Types',
+                    name: 'EventType',
+                    enableCellEdit: false,
+                    enableFiltering: false,
+                }, {
+                    name: 'EventType',
+                    field: 'EventType',
+                    displayName: 'Add to Cart',
+                    enableFiltering: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    enableCellEdit: false
+                    }
+                ],
+
+                //rowHeight: 15,
+                showGridFooter: false,
+                enableColumnResizing: true,
+
+                onRegisterApi: function(gridApi) {
+                    $log.debug('vm gridapi onRegisterApi');
+                     vm.gridPaymentApi = gridApi;
+
+                    }
+            };
+
+            $log.debug('setGridTournamentOptions Options:', vm.gridPaymentOptions);
+
+        }
+
+    
 
     }
 

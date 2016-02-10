@@ -48,6 +48,7 @@
                     pagevm.apiKey = data.apiKey;
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
                         TournamentServices.setapikey(pagevm.apiKey);
+                        UserServices.setapikey(pagevm.apiKey);
                         $location.path('/');
                         return data;
                 },
@@ -57,6 +58,7 @@
                 //    Notification.error({message: error, delay: 5000});
                         UserServices.SetCredentials('','','');
                         TournamentServices.setapikey('');
+                        UserServices.setapikey('');
                         FlashService.Err(error);
                     return ($q.reject(error));
                 }).

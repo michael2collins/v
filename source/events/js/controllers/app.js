@@ -11,15 +11,18 @@
 
     AppControllerFirst.$inject = ['$scope', 
     '$routeParams', 
+    'UserServices'
     ];
     AppControllerNone.$inject = ['$scope', 
     '$routeParams', 
+    'UserServices'
     ];
     AppControllerMain.$inject = ['$scope', 
     '$routeParams', 
+    'UserServices'
     ];	
 	
-    function AppControllerFirst( $scope, $routeParams){
+    function AppControllerFirst( $scope, $routeParams, UserServices){
         /* jshint validthis: true */
         var vm = this;
  
@@ -33,6 +36,12 @@
     };
     vm.loadTopbar = loadTopbar;
     vm.loadSidebar = loadSidebar;
+    vm.islogin = islogin;
+    
+    function islogin() {
+    //    console.log('islogin', UserServices.isapikey());
+        return UserServices.isapikey();
+    }
 
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
         console.log('routechange in app for success');
