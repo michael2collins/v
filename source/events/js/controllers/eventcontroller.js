@@ -46,6 +46,7 @@
         vm.getEventDetails = getEventDetails;
         vm.updateEvent = updateEvent;
         vm.isSelected = isSelected;
+        vm.isRegistered = isRegistered;
         vm.getEventNames = getEventNames;
         vm.setEventInfo = setEventInfo;
         vm.register = register;
@@ -62,6 +63,8 @@
         vm.getActiveTab = getActiveTab;
         vm.setActiveTab = setActiveTab;
         vm.highlightFilteredHeader = highlightFilteredHeader;
+        vm.showMe = showMe;
+        vm.registerMe = registerMe;
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500,5000];
         vm.data = [];
@@ -79,6 +82,7 @@
         vm.gridHistOptions={};
         vm.gridTournamentOptions={};
         vm.selectedStudents=[];
+        vm.registeredStudents=[];
         vm.selected = false;
         vm.eventSelected = '';
         vm.eventlist=[];
@@ -90,12 +94,18 @@
         vm.Location = '';
         vm.ContactID = '';
         vm.EventInfo = {};
-        vm.eventdefault = 'Two Events';
-        vm.eventfield = 'EventType';
+        vm.eventdefaultKata = true;
+        vm.eventdefaultSparring = true;
+        vm.eventdefaultWeapons = false;
+        vm.eventfieldKata = 'EventTypeKata';
+        vm.eventfieldSparring = 'EventTypeSparring';
+        vm.eventfieldWeapons = 'EventTypeWeapons';
         vm.eventfieldname = 'EventType';
         vm.eventarray = [
-          { id: 1, eventtype: 'Two Events' },
-          { id: 2, eventtype: 'Three Events' }
+          { id: 'Two Events - Sparring/Kata', EventType: 'Two Events - Sparring/Kata' },
+          { id: 'Two Events - Sparring/Weapons', EventType: 'Two Events - Sparring/Weapons' },
+          { id: 'Two Events - Kata/Weapons', EventType: 'Two Events - Kata/Weapons' },
+          { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
         ];
 
         vm.twoeventpay50='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
@@ -195,6 +205,11 @@
         function isSelected() {
             return vm.selectedStudents.length > 0 && vm.eventSelected !== null;
         }
+
+        function isRegistered() {
+            return vm.registeredStudents.length > 0;
+        }
+        
         function dateopen($event) {
             vm.status.opened = true;
         }
@@ -205,7 +220,6 @@
         }
         
         function notify(msg) {
-            alert(msg);
             Notification.success({message: msg, delay: 5000});
         }
         
@@ -237,9 +251,13 @@
             $log.debug('activate entered');
             setGridTournamentOptions();
             setGridPaymentOptions();
+            getEventNames('');
             
             getAllStudents().then(function() {
-                $log.debug('refreshed students');
+                $log.debug('activate get all students');
+                getEventDetails().then(function(){
+                    $log.debug('activate eventdetails fetched');
+                });
             });
         }
 
@@ -251,7 +269,9 @@
 
             return TournamentServices.getAllStudents(path).then(function(data){
                    $log.debug('getAllStudents returned data', data);
-                   addExtraData(data.students, vm.eventfield, vm.eventdefault);
+                   addExtraData(data.students, vm.eventfieldKata, vm.eventdefaultKata);
+                   addExtraData(data.students, vm.eventfieldSparring, vm.eventdefaultSparring);
+                //   addExtraData(data.students, vm.eventfieldWeapons, vm.eventdefaultWeapons);
                     vm.gridTournamentOptions.data = data.students;
 
                     return vm.gridTournamentOptions.data;
@@ -289,8 +309,21 @@
         }
         function setEventInfo(info) {
             vm.EventInfo = info;
+            $log.debug('setEventInfo', vm.EventInfo);
         }
         
+        function registerall() {
+            var thedata = {
+                Event: vm.eventSelected.event,
+                EventDate: vm.eventSelected.EventDate,
+                EventStart: vm.eventSelected.EventStart,
+                EventEnd: vm.eventSelected.EventEnd,
+                Location: vm.eventSelected.Location,
+                selectedStudents: vm.selectedStudents
+            };
+            $log.debug('register entered', thedata);
+            createEvent(thedata);
+        }
         function register() {
             var thedata = {
                 Event: vm.eventSelected.event,
@@ -402,7 +435,7 @@
                     $log.debug('getEventDetails returned data');
                     $log.debug(data);
                     vm.gridPaymentOptions.data = data.eventdetails; 
-                    
+                    vm.registeredStudents = data.eventdetails;                    
                     $log.debug("details",data.eventdetails[0]);
                     
                 //    vm.Event = data.eventdetails[0].Event;
@@ -446,7 +479,8 @@
                     $log.debug('default eventlist', vm.eventlist[0].event);
                     
                     vm.eventSelected = vm.eventlist[0].event;
-                    vm.setEventInfo(vm.eventSelected);
+                    
+                    vm.setEventInfo(vm.eventlist[0]);
                     
                     //check for empty set and do message
                     //messagetxt = "EventDetails obtained";
@@ -1020,7 +1054,10 @@
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
                         ContactID: inputArray[i].ID,
-                        EventType: inputArray[i].EventType,
+                        EventType: 
+                            inputArray[i].EventTypeKata + 'Kata:' + 
+                            inputArray[i].EventTypeSparring + 'Sparring:' + 
+                            inputArray[i].EventTypeWeapons + 'Weapons:'  ,
                         Paid: "0",
                         ShirtSize: "",
                         Notes: "",
@@ -1047,7 +1084,27 @@
                 return '';
             }
         }
+ function showMe(rowEntity){
+     $log.debug("showMe", rowEntity);
+    //               alert(vm.EventTypeWeapons);
 
+     // vm.gridApi.selection.toggleRowSelection(vm.gridTournamentOptions.data[0]);
+    var selectedStudentarr = [];
+    selectedStudentarr.push(rowEntity);
+    setSelectedArray(selectedStudentarr);
+    }
+
+ function registerMe(rowEntity){
+     $log.debug("showMe", rowEntity);
+    //               alert(vm.EventTypeWeapons);
+
+     // vm.gridApi.selection.toggleRowSelection(vm.gridTournamentOptions.data[0]);
+    var selectedStudentarr = [];
+    selectedStudentarr.push(rowEntity);
+    setSelectedArray(selectedStudentarr);
+    register();
+    }
+                
         function setGridTournamentOptions() {
 
             vm.gridTournamentOptions = {
@@ -1065,30 +1122,51 @@
                     field: 'FirstName',
                     enableCellEdit: false,
                     enableFiltering: false
-                }, {
-                    displayName: '2 or 3 events ? -dbl click to edit',
-                    name: 'EventType',
-                    enableCellEdit: true,
-                    enableFiltering: false,
-                    editableCellTemplate: 'ui-grid/dropdownEditor',
-                    cellFilter: 'mapEventType', editDropdownValueLabel: 'EventType', 
-                    editDropdownOptionsArray: [
-                          { id: 'Two Events', EventType: 'Two Events' },
-                          { id: 'Three Events', EventType: 'Three Events' }
-                        ]
-                }, {
-                    name: 'ID',
-                    displayName: 'Edit',
-                    enableFiltering: false,
-                    enableSorting: false,
-                    enableHiding: false,
-                    enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/tournament/id/{{COL_FIELD}}" >Edit then open first tab</button></span></div>'
-                }],
+                }, 
+//                    displayName: '2 or 3 events ? -dbl click to edit',
+//                    name: 'EventType',
+//                    enableCellEdit: true,
+//                    enableFiltering: false,
+//                    editableCellTemplate: 'ui-grid/dropdownEditor',
+//                    cellFilter: 'mapEventType', editDropdownValueLabel: 'EventType', 
+//                    editDropdownOptionsArray: [
+//          { id: 'Two Events - Sparring/Kata', EventType: 'Two Events - Sparring/Kata' },
+//          { id: 'Two Events - Sparring/Weapons', EventType: 'Two Events - Sparring/Weapons' },
+//          { id: 'Two Events - Kata/Weapons', EventType: 'Two Events - Kata/Weapons' },
+//          { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
+//                        ]
+//                }, 
+                
+                    { name: 'EventTypeSparring', displayName: 'Sparring',
+                      type: 'boolean',enableFiltering: false,
+                      cellTemplate: '<input type="checkbox" ng-model="row.entity.EventTypeSparring">'},
+                    { name: 'EventTypeKata', displayName: 'Kata', 
+                      type: 'boolean',enableFiltering: false,
+                    cellTemplate: '<input type="checkbox" ng-model="row.entity.EventTypeKata">'},
+                    { name: 'EventTypeWeapons', displayName: 'Weapons', 
+                      type: 'boolean',enableFiltering: false,
+                    cellTemplate: '<input type="checkbox" ng-model="row.entity.EventTypeWeapons">'},
+
+                 { name: 'ShowScope2',
+             cellTemplate:'<button class="btn btn-green primary" ng-click="col.grid.appScope.registerMe(row.entity)">Register</button><button class="btn btn-blue primary" ng-click="col.grid.appScope.showMe(row)">Add to cart</button>' 
+                     
+                 }
+
+//                {
+//                    name: 'ID',
+//                    displayName: 'Edit',
+//                    enableFiltering: false,
+//                    enableSorting: false,
+//                    enableHiding: false,
+//                    enableCellEdit: false,
+//                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/tournament/id/{{COL_FIELD}}" >Edit then open first tab</button></span></div>'
+//                }
+                ],
 
                 //rowHeight: 15,
                 showGridFooter: false,
                 enableColumnResizing: true,
+                appScopeProvider: vm,
 
                 onRegisterApi: function(gridApi) {
                     $log.debug('vm gridapi onRegisterApi');
