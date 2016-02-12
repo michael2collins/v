@@ -19,7 +19,8 @@
     'Notification',
     'uiGridConstants',
     'uiGridGroupingConstants',
-    '$timeout'
+    '$timeout',
+    '_'
     ];
 
     function mapEventType() {
@@ -36,7 +37,7 @@
           };
     }
     
-    function EventController($routeParams, $log, EventServices, TournamentServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
+    function EventController($routeParams, $log, EventServices, TournamentServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, _) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -422,7 +423,12 @@
 
         }
 
-
+        function onlyUniqueContactID(value, index, self) { 
+            $log.debug('onlyUnique',value.ContactID, index, self, self.indexOf(value));
+            var test=self.ContactID;
+            $log.debug(test);
+            return test.indexOf(value.ContactID) == index;
+        }
 
         function getEventDetails() {
             $log.debug('getEventDetails entered:');
@@ -435,7 +441,19 @@
                     $log.debug('getEventDetails returned data');
                     $log.debug(data);
                     vm.gridPaymentOptions.data = data.eventdetails; 
-                    vm.registeredStudents = data.eventdetails;                    
+                    var registeredStudentsarr = [];
+                    var registeredStudentsInfo = {};
+                    for (var i=0,len=data.eventdetails.length; i < len;i++){
+                        $log.debug('push to registeredStudentsarr',data.eventdetails[i].ContactID);
+                        registeredStudentsInfo = {
+                            LastName: data.eventdetails[i].LastName,
+                            FirstName: data.eventdetails[i].FirstName,
+                            ContactID: data.eventdetails[i].ContactID
+                        };
+                        registeredStudentsarr.push(registeredStudentsInfo);
+                    }
+                //    vm.registeredStudents = registeredStudentsarr.filter(onlyUniqueContactID);
+                    vm.registeredStudents = _.uniq(registeredStudentsarr, false, function(p){return p.ContactID});
                     $log.debug("details",data.eventdetails[0]);
                     
                 //    vm.Event = data.eventdetails[0].Event;
