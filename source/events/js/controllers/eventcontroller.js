@@ -43,7 +43,6 @@
         var vm=this;
         
         vm.refreshtheEvent = refreshtheEvent;
-        vm.getEventSource = getEventSource;
         vm.getEventDetails = getEventDetails;
         vm.updateEvent = updateEvent;
         vm.isSelected = isSelected;
@@ -52,13 +51,7 @@
         vm.setEventInfo = setEventInfo;
         vm.register = register;
         vm.notify = notify;
- //       vm.getColDefList = getColDefList;
- //       vm.setColDef = setColDef;
         vm.dateopen = dateopen;
-//        vm.getColDefs = getColDefs;
-//        vm.changeColDef = changeColDef;
-//        vm.saveState = saveState;
-//        vm.restoreState = restoreState;
         vm.setLimit = setLimit;
         vm.createEvent = createEvent;
         vm.getActiveTab = getActiveTab;
@@ -66,6 +59,7 @@
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.showMe = showMe;
         vm.registerMe = registerMe;
+        vm.showregister = showregister;
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500,5000];
         vm.data = [];
@@ -220,8 +214,12 @@
             vm.limit = thelimit;
         }
         
-        function notify(msg) {
-            Notification.success({message: msg, delay: 5000});
+        function notify(msg,type) {
+            if (type == "success") {
+                Notification.success({message: msg, delay: 5000});
+            } else {
+                Notification.error({message: msg, delay: 5000});
+            }
         }
         
         function requery() {
@@ -264,24 +262,56 @@
 
         function getAllStudents() {
             $log.debug('TournamentServices getAllStudents entered');
-            var path = '../v1/students';
+            var path = '../v1/eventsource';
             
             $log.debug('getAllStudents path:', path);
 
             return TournamentServices.getAllStudents(path).then(function(data){
                    $log.debug('getAllStudents returned data', data);
-                   addExtraData(data.students, vm.eventfieldKata, vm.eventdefaultKata);
-                   addExtraData(data.students, vm.eventfieldSparring, vm.eventdefaultSparring);
-                //   addExtraData(data.students, vm.eventfieldWeapons, vm.eventdefaultWeapons);
-                    vm.gridTournamentOptions.data = data.students;
+                   addExtraData(data.EventsourceList);
+                //   addExtraData(data.EventsourceList, vm.eventfieldSparring);
+                //   addExtraData(data.EventsourceList, vm.eventfieldWeapons);
+                    vm.gridTournamentOptions.data = data.EventsourceList;
 
                     return vm.gridTournamentOptions.data;
                 });
         }
 
-        function addExtraData(data,fieldname, fieldvalue){
+        function addExtraData(data){
+           $log.debug('addExtraData entered', data);
             for (var i=0, len=data.length;i < len;i++ ) {
-                data[i][fieldname] = fieldvalue ;
+                $log.debug('eventtype in addExtraData',data[i].EventType);
+                $log.debug('kata',data[i].EventTypeKata);
+                $log.debug('Weapons',data[i].EventTypeWeapons);
+                $log.debug('Sparring',data[i].EventTypeSparring);
+                
+//                if (data[i].EventType === "NULL" && data[i][fieldname] == vm.eventfieldKata ) {
+                if ( data[i].EventType === "NULL" ) {
+                    $log.debug('def Kata');
+                    data[i].EventTypeKata = vm.eventdefaultKata ;
+                    data[i].EventTypeSparring = vm.eventdefaultSparring ;
+                    data[i].EventTypeWeapons = vm.eventdefaultWeapons ;
+                } else {
+                    $log.debug('not def');
+                     if (data[i].EventType.indexOf('Kata:1') > -1){
+                         data[i].EventTypeKata = true;
+                     } else {
+                         data[i].EventTypeKata = false;
+                         
+                     }  
+                     if (data[i].EventType.indexOf('Sparring:1') > -1){
+                         data[i].EventTypeSparring = true;
+                     } else {
+                         data[i].EventTypeSparring = false;
+                     }  
+
+                     if (data[i].EventType.indexOf('Weapons:1') > -1){
+                         data[i].EventTypeWeapons = true;
+                     } else {
+                         data[i].EventTypeWeapons = false;
+                         
+                     }
+                }
             }
         }
         
@@ -323,19 +353,24 @@
                 selectedStudents: vm.selectedStudents
             };
             $log.debug('register entered', thedata);
-            createEvent(thedata);
+            createEvent(thedata).then(function(){
+                getEventDetails();
+            }
+            );
         }
         function register() {
             var thedata = {
-                Event: vm.eventSelected.event,
-                EventDate: vm.eventSelected.EventDate,
-                EventStart: vm.eventSelected.EventStart,
-                EventEnd: vm.eventSelected.EventEnd,
-                Location: vm.eventSelected.Location,
+                Event: vm.EventInfo.event,
+                EventDate: vm.EventInfo.EventDate,
+                EventStart: vm.EventInfo.EventStart,
+                EventEnd: vm.EventInfo.EventEnd,
+                Location: vm.EventInfo.Location,
                 selectedStudents: vm.selectedStudents
             };
             $log.debug('register entered', thedata);
-            createEvent(thedata);
+            createEvent(thedata).then(function(){
+                getAllStudents();
+            });
         }
         
         function createEvent(thedata) {
@@ -356,7 +391,7 @@
                     $log.debug(vm.thisEvent);
                     $log.debug(vm.thisEvent.message);
                     vm.message = vm.thisEvent.message;
-                    Notification.success({message: vm.message, delay: 5000});
+                   // Notification.success({message: vm.message, delay: 5000});
 
                     return vm.thisEvent;
                 }).catch(function(e) {
@@ -396,32 +431,7 @@
 
         }
 
-        function getEventSource() {
-            $log.debug('getEventSource entered');
-            var refreshpath = encodeURI('../v1/eventsource');
-
-            $log.debug('getEventSource path:', refreshpath);
-            
-             return EventServices.getEventSource(refreshpath).then(function(data){
-                    $log.debug('getEventSource returned data');
-                    $log.debug(data);
-                    vm.data = data; 
-                    return vm.data;
-                },
-                function (error) {
-                    $log.debug('Caught an error eventsource:', error); 
-                    vm.data = [];
-                    vm.message = error;
-                    Notification.error({message: error, delay: 5000});
-                    return ($q.reject(error));
-                }).
-                finally(function () { 
-                    vm.loading = false; 
-                    vm.loadAttempted = true;
-                }
-                );
-
-        }
+ 
 
         function onlyUniqueContactID(value, index, self) { 
             $log.debug('onlyUnique',value.ContactID, index, self, self.indexOf(value));
@@ -456,17 +466,9 @@
                     vm.registeredStudents = _.uniq(registeredStudentsarr, false, function(p){return p.ContactID});
                     $log.debug("details",data.eventdetails[0]);
                     
-                //    vm.Event = data.eventdetails[0].Event;
-                //    vm.EventType = data.eventdetails[0].EventType;
-                //    vm.EventDate = data.eventdetails[0].EventDate;
-                //    vm.EventEnd = data.eventdetails[0].EventEnd;
-            //        vm.EventStart = data.eventdetails[0].EventStart;
-            //        vm.Location = data.eventdetails[0].Location;
-            //        vm.ContactID = data.eventdetails[0].ContactID;
-                    
                     //check for empty set and do message
                     var messagetxt = "EventDetails obtained";
-                    Notification.success({message: messagetxt, delay: 5000});
+                 //   Notification.success({message: messagetxt, delay: 5000});
                     return;
                 },
                 function (error) {
@@ -520,513 +522,6 @@
 
         }
 
-/*
-        function setColDef(indata) {
-            var path = "../v1/coldef";
-            $log.debug('about setColDefs ', indata, path);
-            return EventServices.setColDefs(path, indata)
-                .then(function(data){
-                    $log.debug('setColDefs returned data');
-                    $log.debug(data);
-                    vm.thiscoldef = data;
-                    $log.debug(vm.thiscoldef);
-                    $log.debug(vm.thiscoldef.message);
-                    vm.message = vm.thiscoldef.message;
-                    getColDefList();
-
-                  
-                }).catch(function(e) {
-                    $log.debug('setColDefs failure:');
-                    $log.debug("error", e);
-                    vm.message = e;
-                    Notification.error({message: e, delay: 5000});
-                    throw e;
-                });
-        }
-
-        function changeColDef(colsubkey){
-            $log.debug('changeColDef entered');
-            if (isNewColDef(colsubkey)) {
-                saveState();
-            }
-            getColDefs(vm.colsubkey).then(function(data) {
-                //vm.gcolumns is filled
-                $log.debug(" controller changeColDef returned with:",data, vm.colsubkey);
-                $log.debug(" controller changeColDef vmstate is:", vm.state);
-
-                 if (vm.state != {}) {
-                     restoreState(vm.state);
-                 }
-
-             },function(error) {
-                $log.debug('cols not stored:', error);
-             });
-
-             
-        }
-        
-        function getColDefs(colsubkey) {
-            $log.debug('getColDefs entered');
-            var refreshpath = encodeURI('../v1/coldefs?colkey=' + 
-                vm.colkey + "&colsubkey=" + colsubkey);
-            var holdgcol = vm.gcolumns;
-            
-            $log.debug('getColDefs path:', refreshpath);
-
-            if (colsubkey === null ) {
-                error = "Nothing selected";
-                return ($q.reject(error));
-            }
-
-             return EventServices.getColDefs(refreshpath).then(function(data){
-                    $log.debug('EventServices in controller getColDefs returned data');
-                    $log.debug(data);
-                 //   vm.gcolumns = data.gcolumns[0][0]; 
-                 //   $log.debug('EventServices in controller set gcolumns',vm.gcolumns);
-                    vm.state = JSON.parse(data.gcolumns[0][0]);
-                    $log.debug('EventServices in controller set vm.state',vm.state);
-                    return vm.state;
-                },
-                function (error) {
-                    $log.debug('Caught an error getColDefs:', error); 
-                    vm.gcolumns = holdgcol;
-                    vm.message = error;
-                    Notification.error({message: error, delay: 5000});
-                    return ($q.reject(error));
-                }).
-                finally(function () { 
-                    vm.loading = false; 
-                    vm.loadAttempted = true;
-                }
-                );
-
-        }
-        
-        function getColDefList() {
-            $log.debug('getColDefList entered');
-            var refreshpath = encodeURI('../v1/coldeflist?colkey=' + 
-                vm.colkey );
-
-            $log.debug('getColDefList path:', refreshpath);
-            
-             return EventServices.getColDefList(refreshpath).then(function(data){
-                    $log.debug('getColDefList returned data');
-                    $log.debug(data);
-                    vm.colsubkeys = data.colsubkeys; 
-                    return vm.data;
-                },
-                function (error) {
-                    $log.debug('Caught an error getColDefList:', error); 
-                    vm.colsubkeys = [];
-                    vm.message = error;
-                    Notification.error({message: error, delay: 5000});
-                    return ($q.reject(error));
-                }).
-                finally(function () { 
-                    vm.loading = false; 
-                    vm.loadAttempted = true;
-                }
-                );
-
-        }
-        
-
-
-
-        function setInitColDefs() {
-            vm.gcolumns = [];
-            vm.colsubkey="Default";
-
-            //if they are saved, then get those, otherwise default 
-            getColDefs(vm.colsubkey).then(function(data) {
-                //vm.gcolumns is filled
-                $log.debug(" controller getColDefs returned with:",data, vm.colsubkey);
-                $log.debug(" controller getColDefs vmstate is:", vm.state);
-
-        //         setGridOptions();
-
-
-             },function(error) {
-                $log.debug('cols not stored:', error);
-    
-
-             });
-
-                var coldef ={};
-                $log.debug('setGridOptions col count', vm.listA.length);
-
-                var defnumfilter = 
-                    [
-                        {
-                          condition: uiGridConstants.filter.GREATER_THAN,
-                          placeholder: '> than'
-                        },
-                        {
-                          condition: uiGridConstants.filter.LESS_THAN,
-                          placeholder: '< than'
-                        }
-                      ];
-                var filt=[];
-                for (var i=0, len = vm.listA.length; i < len; i += 3) {
-                    //$log.debug('vis', vm.listA[i+2]);
-                    var val = (vm.listA[i+2].toLowerCase() === "true");
-                    //$log.debug('vis', val);
-                    var agg = (
-                        vm.listA[i+1] === "number" ? uiGridConstants.aggregationTypes.avg :
-                        vm.listA[i+1] === "string" ? uiGridConstants.aggregationTypes.count :
-                        vm.listA[i+1] === "date" ? uiGridConstants.aggregationTypes.min :
-                        vm.listA[i+1] === "boolean" ? uiGridConstants.aggregationTypes.count :
-                         uiGridConstants.aggregationTypes.count
-                        );
-                    //$log.debug('agg', agg);
-                    if (vm.listA[i+1] === "number" ) {
-                        filt =   [
-                            {
-                              condition: uiGridConstants.filter.GREATER_THAN,
-                              placeholder: '> than'
-                            },
-                            {
-                              condition: uiGridConstants.filter.LESS_THAN,
-                              placeholder: '< than'
-                            }
-                          ];
-                    } else if (vm.listA[i+1] === "string" ) {
-/*  constants.js
-      GREATER_THAN: 32,
-      GREATER_THAN_OR_EQUAL: 64,
-      LESS_THAN: 128,
-      LESS_THAN_OR_EQUAL: 256,
-      NOT_EQUAL: 512,
-      SELECT: 'select',
-      INPUT: 'input'
-      * /
-                        filt =   [
-                            {
-                              condition: uiGridConstants.filter.STARTS_WITH,
-                              placeholder: 'Starts with'
-                            },
-                            {
-                              condition: uiGridConstants.filter.ENDS_WITH,
-                              placeholder: 'Ends with'
-                            },
-                            {
-                              condition: uiGridConstants.filter.CONTAINS,
-                              placeholder: 'Contains'
-                            },
-                            {
-                              condition: uiGridConstants.filter.EXACT,
-                              placeholder: 'Exactly'
-                            }
-                          ];
-
-                    } else if (vm.listA[i+1] === "date" ) {
-                    /*  not working, need to create custom filter  
-                        filt =   [
-                            {
-                              condition: uiGridConstants.filter.GREATER_THAN,
-                              placeholder: '> than'
-                            },
-                            {
-                              condition: uiGridConstants.filter.LESS_THAN,
-                              placeholder: '< than'
-                            }
-                          ];
-                        * / filt = "";
-                    } else {
-                        filt = "";
-                    }
-                    
-                  //  $log.debug('filt', filt);
-
-                    coldef = {
-                              field: vm.listA[i], 
-                               type: vm.listA[i+1],
-                            visible: val,
-                    enableFiltering: true, 
-                    aggregationType: agg,
-                            filters: filt,
-                    headerCellClass: vm.highlightFilteredHeader, 
-                     enableCellEdit: false };
-                    
-                    vm.gcolumns.push(coldef);
-                    
-                }
-                $log.debug('gcolumns in coldefs', vm.gcolumns);
-
-             setGridOptions();
-
-            refreshtheEvent().then(function(zdata) {
-                 $log.debug('refreshtheEvent returned', zdata);
-             if (vm.state != {}) {
-                 restoreState(vm.state);
-             }
-             });
-             
-
-        }
- 
-        function isNewColDef(theevent){
-            $log.debug('isNewColDef', theevent);
-            var isnew = true;
-            for (var i=0, len=vm.colsubkeys.length; i < len; i++) {
-              //  $log.debug('isNewColDef colsubkey:', vm.colsubkeys[i]);
-                if (vm.colsubkeys[i] == theevent) {
-                    $log.debug('isfound');
-                    isnew = false;
-                    break;
-                }
-            }
-            return isnew;
-        }
-        
-        function saveState() {
-            vm.state = vm.gridApi.saveState.save();
-            $log.debug('state', vm.state);
-            var thedata={
-                colkey: vm.colkey,
-                colsubkey: vm.colsubkey,
-                colcontent: vm.state
-            };
-            
-            setColDef(thedata);
-        }
- 
-        function restoreState(thestate) {
-            vm.gridApi.saveState.restore( $scope, thestate );
-            $log.debug('state', thestate);
-        }
-        
-        function setGridOptions() {
-
-            vm.gridOptions = {
-                enableFiltering: true,
-                paginationPageSizes: vm.limits,
-                paginationPageSize: 10,
-                columnDefs: vm.gcolumns,
-                //rowHeight: 15,
-                showGridFooter: true,
-                enableColumnResizing: true,
-                enableGridMenu: true,
-                showColumnFooter: true,
-                exporterCsvFilename: 'events.csv',
-                exporterPdfDefaultStyle: {fontSize: 9},
-                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
-                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
-                exporterPdfFooter: function ( currentPage, pageCount ) {
-                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
-                },
-                exporterPdfCustomFormatter: function ( docDefinition ) {
-                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
-                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
-                  return docDefinition;
-                },
-                exporterPdfOrientation: 'portrait',
-                exporterPdfPageSize: 'LETTER',
-                exporterPdfMaxGridWidth: 500,
-                
-                onRegisterApi: function(gridApi) {
-                    $log.debug('vm gridapi onRegisterApi');
-                     vm.gridApi = gridApi;
-
-                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'row selected ' + row.entity.ContactID;
-                        $log.debug(msg);
-
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                        $log.debug('selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
-                        
-                    });
-                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                        $log.debug("batch");  
-                        //note this will send the list of changed rows
-                    /*    var selectedContacts=[];
-                        for (var index=0, len=rows.length; index < len; index++) {
-                            $log.debug("selected?",rows[index].isSelected);
-                            if (rows[index].isSelected === true) {
-                                selectedContacts.push(rows[index].entity);
-                            }
-                        }
-                        $log.debug("batch", selectedContacts);
-                        setSelectedArray(selectedContacts);
-                        * /
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                        $log.debug('batch selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
-
-                    });
-
-
-                    }
-            };
-
-            $log.debug('setGridOptions gcolumns', vm.gcolumns);
-            $log.debug('setGridOptions gridOptions', vm.gridOptions);
-
-        }
-
-        function setGridHistOptions() {
-
-            vm.gridHistOptions = {
-                enableFiltering: true,
-                paginationPageSizes: vm.limits,
-                paginationPageSize: 10,
-            columnDefs: [
-                // default
-
-                {
-                    field: 'LastName',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'FirstName',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'ContactID',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'Attended',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
-                }, {
-                    field: 'Ordered',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
-                }, {
-                    field: 'Paid',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
-                }, {
-                    field: 'ShirtSize',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
-                }, {
-                    field: 'Notes',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
-                }, {
-                    field: 'Include',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
-                }, {
-                    field: 'Email',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Email2',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Parent',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'StudentSchool',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
-                }, {
-                    field: 'Event',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'EventType',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'EventEnd',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'EventStart',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'Location',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }],
-
-                //rowHeight: 15,
-                showGridFooter: true,
-                enableColumnResizing: true,
-                enableGridMenu: true,
-                showColumnFooter: true,
-                exporterCsvFilename: 'eventhist.csv',
-                exporterPdfDefaultStyle: {fontSize: 9},
-                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
-                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
-                exporterPdfFooter: function ( currentPage, pageCount ) {
-                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
-                },
-                exporterPdfCustomFormatter: function ( docDefinition ) {
-                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
-                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
-                  return docDefinition;
-                },
-                exporterPdfOrientation: 'portrait',
-                exporterPdfPageSize: 'LETTER',
-                exporterPdfMaxGridWidth: 500,
-                
-                onRegisterApi: function(gridHistApi) {
-                    $log.debug('vm gridapi onRegisterApi');
-                     vm.gridHistApi = gridHistApi;
-
-                    gridHistApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'gridhist row selected ' + row.entity;
-                        $log.debug(msg);
-
-                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                 //       $log.debug('selected', selectedStudentarr);
-                 //       setSelectedArray(selectedStudentarr);
-                        
-                    });
-                    gridHistApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                        $log.debug("gridhist batch");  
-                        //note this will send the list of changed rows
-                    /*    var selectedContacts=[];
-                        for (var index=0, len=rows.length; index < len; index++) {
-                            $log.debug("selected?",rows[index].isSelected);
-                            if (rows[index].isSelected === true) {
-                                selectedContacts.push(rows[index].entity);
-                            }
-                        }
-                        $log.debug("batch", selectedContacts);
-                        setSelectedArray(selectedContacts);
-                        * /
-                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                //        $log.debug('batch selected', selectedStudentarr);
-                //        setSelectedArray(selectedStudentarr);
-
-                    });
-                    gridHistApi.edit.on.afterCellEdit($scope, 
-                            function(rowEntity, colDef, newValue, oldValue) {
-                        $log.debug('rowEntity');
-                        $log.debug(rowEntity);
-                        //Alert to show what info about the edit is available
-                        $log.debug('Column: ' + colDef.name  + 
-                            ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
-                        if (newValue != oldValue) {
-                            updateEvent(colDef,newValue,rowEntity);       
-                        }
-                    });
-
-                    }
-            };
-
-            $log.debug('setGridHistOptions gridOptions', vm.gridHistOptions);
-
-        }
-        */
         function updateEvent(colDef, newValue,rowEntity) {
             var path = "../v1/eventregistration";
             var indata = {
@@ -1071,17 +566,19 @@
                 vm.selected = true;
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
-                        ContactID: inputArray[i].ID,
+                        ContactID: inputArray[i].ContactID,
                         EventType: 
-                            inputArray[i].EventTypeKata + 'Kata:' + 
-                            inputArray[i].EventTypeSparring + 'Sparring:' + 
-                            inputArray[i].EventTypeWeapons + 'Weapons:'  ,
+                            {
+                            'Kata': inputArray[i].EventTypeKata, 
+                            'Sparring': inputArray[i].EventTypeSparring, 
+                            'Weapons': inputArray[i].EventTypeWeapons 
+                            }  ,
                         Paid: "0",
                         ShirtSize: "",
                         Notes: "",
-                        Include: "",
+                        Include: "1",
                         Attended: "",
-                        Ordered: "1"
+                        Ordered: ""
                     };
                     vm.selectedStudents.push(info);
                 }
@@ -1102,28 +599,43 @@
                 return '';
             }
         }
- function showMe(rowEntity){
-     $log.debug("showMe", rowEntity);
-    //               alert(vm.EventTypeWeapons);
+        function showMe(rowEntity){
+             $log.debug("showMe", rowEntity);
+            //               alert(vm.EventTypeWeapons);
+        
+             // vm.gridApi.selection.toggleRowSelection(vm.gridTournamentOptions.data[0]);
+            var selectedStudentarr = [];
+            selectedStudentarr.push(rowEntity);
+            setSelectedArray(selectedStudentarr);
+        }
+        
+        function registerMe(rowEntity){
+             $log.debug("registerMe", rowEntity);
 
-     // vm.gridApi.selection.toggleRowSelection(vm.gridTournamentOptions.data[0]);
-    var selectedStudentarr = [];
-    selectedStudentarr.push(rowEntity);
-    setSelectedArray(selectedStudentarr);
-    }
+            var eventcnt = 0;
+            rowEntity.EventTypeWeapons ? eventcnt += 1: eventcnt += 0;
+            rowEntity.EventTypeKata ? eventcnt += 1: eventcnt += 0;
+            rowEntity.EventTypeSparring ? eventcnt += 1: eventcnt += 0;
 
- function registerMe(rowEntity){
-     $log.debug("showMe", rowEntity);
-    //               alert(vm.EventTypeWeapons);
+            if (eventcnt < 2){
+                var msg="You only signed up for " + eventcnt + " events. Please add one more";                               notify(msg,"error");
+            } else {
 
-     // vm.gridApi.selection.toggleRowSelection(vm.gridTournamentOptions.data[0]);
-    var selectedStudentarr = [];
-    selectedStudentarr.push(rowEntity);
-    setSelectedArray(selectedStudentarr);
-    register();
-    }
-                
+                var selectedStudentarr = [];
+                selectedStudentarr.push(rowEntity);
+                setSelectedArray(selectedStudentarr);
+                register();
+            }
+        }
+        function showregister(rowEntity) {
+    //         $log.debug("showregister", rowEntity);
+            return rowEntity.Include == 1;
+        }        
+        
         function setGridTournamentOptions() {
+
+            var ctpl ='<div ng-hide="col.grid.appScope.showregister(row.entity)"> <button class="btn btn-green primary"  ng-click="col.grid.appScope.registerMe(row.entity)">Register</button></div><div ng-show="col.grid.appScope.showregister(row.entity)">Registered - goto Payment</div>' ;
+
 
             vm.gridTournamentOptions = {
                 enableFiltering: true,
@@ -1141,44 +653,31 @@
                     enableCellEdit: false,
                     enableFiltering: false
                 }, 
-//                    displayName: '2 or 3 events ? -dbl click to edit',
-//                    name: 'EventType',
-//                    enableCellEdit: true,
-//                    enableFiltering: false,
-//                    editableCellTemplate: 'ui-grid/dropdownEditor',
-//                    cellFilter: 'mapEventType', editDropdownValueLabel: 'EventType', 
-//                    editDropdownOptionsArray: [
-//          { id: 'Two Events - Sparring/Kata', EventType: 'Two Events - Sparring/Kata' },
-//          { id: 'Two Events - Sparring/Weapons', EventType: 'Two Events - Sparring/Weapons' },
-//          { id: 'Two Events - Kata/Weapons', EventType: 'Two Events - Kata/Weapons' },
-//          { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
-//                        ]
-//                }, 
                 
                     { name: 'EventTypeSparring', displayName: 'Sparring',
                       type: 'boolean',enableFiltering: false,
-                      cellTemplate: '<input type="checkbox" ng-model="row.entity.EventTypeSparring">'},
+                      cellTemplate: '<input type="checkbox" ng-disabled="col.grid.appScope.showregister(row.entity)" ng-model="row.entity.EventTypeSparring">'},
                     { name: 'EventTypeKata', displayName: 'Kata', 
                       type: 'boolean',enableFiltering: false,
-                    cellTemplate: '<input type="checkbox" ng-model="row.entity.EventTypeKata">'},
+                    cellTemplate: '<input type="checkbox" ng-disabled="col.grid.appScope.showregister(row.entity)"  ng-model="row.entity.EventTypeKata">'},
                     { name: 'EventTypeWeapons', displayName: 'Weapons', 
                       type: 'boolean',enableFiltering: false,
-                    cellTemplate: '<input type="checkbox" ng-model="row.entity.EventTypeWeapons">'},
+                    cellTemplate: '<input type="checkbox" ng-disabled="col.grid.appScope.showregister(row.entity)"  ng-model="row.entity.EventTypeWeapons">'},
+//                    { name: 'Include'  
+//                      enableFiltering: true,
+ //                     filter: {term: 'NULL'
+//                      filter: {term: '1',
+ //                         condtion: uiGridConstants.filter.NOT_EQUAL,
+  //                        placeHolder: 'not eq'
+//                      },
+//                      visible: true
+//                    },
 
-                 { name: 'ShowScope2',
-             cellTemplate:'<button class="btn btn-green primary" ng-click="col.grid.appScope.registerMe(row.entity)">Register</button><button class="btn btn-blue primary" ng-click="col.grid.appScope.showMe(row)">Add to cart</button>' 
+                 { name: 'Action',
+                 enableFiltering: false,
+             cellTemplate:ctpl 
                      
                  }
-
-//                {
-//                    name: 'ID',
-//                    displayName: 'Edit',
-//                    enableFiltering: false,
-//                    enableSorting: false,
-//                    enableHiding: false,
-//                    enableCellEdit: false,
-//                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/tournament/id/{{COL_FIELD}}" >Edit then open first tab</button></span></div>'
-//                }
                 ],
 
                 //rowHeight: 15,
@@ -1190,7 +689,7 @@
                     $log.debug('vm gridapi onRegisterApi');
                      vm.gridTournamentApi = gridApi;
 
-                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
+     /*               gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
@@ -1199,25 +698,15 @@
                         setSelectedArray(selectedStudentarr);
                         
                     });
-                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                        $log.debug("grid batch");  
-                        //note this will send the list of changed rows
-                    /*    var selectedContacts=[];
-                        for (var index=0, len=rows.length; index < len; index++) {
-                            $log.debug("selected?",rows[index].isSelected);
-                            if (rows[index].isSelected === true) {
-                                selectedContacts.push(rows[index].entity);
-                            }
-                        }
-                        $log.debug("batch", selectedContacts);
-                        setSelectedArray(selectedContacts);
-                        */
-                        var selectedStudentarr = vm.gridTournamentApi.selection.getSelectedRows();
-                        $log.debug('batch selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
+     */
+    /*                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                            $log.debug("grid batch");  
+                            var selectedStudentarr = vm.gridTournamentApi.selection.getSelectedRows();
+                            $log.debug('batch selected', selectedStudentarr);
+                            setSelectedArray(selectedStudentarr);
 
                     });
-                    gridApi.edit.on.afterCellEdit($scope, 
+     */               gridApi.edit.on.afterCellEdit($scope, 
                             function(rowEntity, colDef, newValue, oldValue) {
                         $log.debug('rowEntity');
                         $log.debug(rowEntity);
@@ -1285,7 +774,7 @@
                     }
             };
 
-            $log.debug('setGridTournamentOptions Options:', vm.gridPaymentOptions);
+            $log.debug('setGridPaymentOptions Options:', vm.gridPaymentOptions);
 
         }
 

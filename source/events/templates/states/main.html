@@ -2,81 +2,81 @@
 <h1>Welcome to your New England Regional Events site</h1>
 <h2>Stay tuned here for future regional activities</h2>
 
-<div class="note note-info">
-<h4 class="block-heading">Instructions for using this site</h4>
-              <p>Click on the headings below for instructions</p>
-            </div>
 
-  <uib-accordion class="col-md-6">
-    <uib-accordion-group heading="Login and User Accounts - For Help click here" class="panel panel-blue">
-          <div class="panel-body">
-          In order to register for a tournament you must create a user account.  Click on left navigation menu to create a user and then login.  You can return to this site and use the participants you create now for future events.  Each time you re-enter this site you will need to login.  On the top right of the site you can signout.  If you forget your password, please contact mailto:mark@natickmartialarts.com .
-          </div>
-    </uib-accordion-group>
-    <uib-accordion-group heading="Adding participants - For Help click here" class="panel panel-blue">
-          <div class="panel-body">
-          Click on Register new to add each person.  Fill in the details on the form and proceed to the registration tab.  If you re-enter the site you can go straight to the registration tab to see your entries.  If you want to edit, click on the edit button and return to the participants tab to edit the details.  
-          </div>
-    
-    </uib-accordion-group>
-    <uib-accordion-group heading="Registration - For Help click here" class="panel panel-green">
-          <div class="panel-body">
-          Click on registration tab or use a button to move to the tab.  Select the tournament.  For each row in the table, double click on the event field to select the number/type of events you are entering for the participant.  Click the selection checkboxes for those you want to register.  You will see a register button appear.  Click on that to complete registration.  If you add another participant later, you can register the new person.  Proceed to the payment tab when finished registration.  You will get an email for each person you have registered.
-          </div>
+
+<div class="portlet portlet-pink">
+      <div class="portlet-header">
+        <div class="caption">2016 Medway Classic  - Tournament </div>
+    </div>    
+      <div class="portlet-body">
       
-    </uib-accordion-group>
-    <uib-accordion-group heading="Payment - For Help click here" class="panel panel-orange">
-          <div class="panel-body">
-          Click on the payment tab after you have completed registration.  For each registered participant you click on add to cart.  The cart will appear as a another tab or window.  When you have finished adding all of the registrants to the shopping cart, then switch to the paypal window to checkout.  You will receive notification from paypal when you have finished paying.  If you have any issues or questions, please contact Mark Lehman at mailto:mark@natickmartialarts.com or call 508-653-2137
-          </div>
-      
-    </uib-accordion-group>
-  </uib-accordion>
-  
-<div class="col-md-6"></div>  
-<hr/>
-<div class="col-sm-12 col-md-8 col-xs-12" id="wide_widgetsSeating">
-<h2>2016 Medway Tournament</h2>
-<img src="images/Medway.jpg" alt="tournament picture" class="img-responsive">	
-				
-        <div id="description"><div class="widget"><h2 style="display:none;"></h2><div class="widget-content widget-content-ntitle"><table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFF99" style="font-family: 'Times New Roman';">
-          <tbody>
-            <tr>
-              <td width="600" valign="top" height="147">
-                <p align="left">
-                  <font color="#FF0000" face="Tahoma" size="5">
-                    <b>Don't Miss This Chance to Improve Your Skills!</b>
-                  </font>
-                </p>
-                <p align="left">
-                  <font face="Tahoma" size="3">Tournament participation is a great way to learn more about yourself and to develop
-                  your martial arts skills.</font>
-                </p>
-                <p align="left">
-                  <font face="Tahoma" size="3">Get
-          more information for this upcoming event from your instructors and
-                  register here on this site to compete.</font>
-                </p>
-                <p align="left">
-                  <font face="Tahoma" size="3">Please be sure to register early to take advantage of the early bird rates.</font>
-                </p>
-              </td>
-            </tr>
-            <tr>
-              <td width="600" valign="top" height="21">
-                <font face="Tahoma" size="3">
-                <br>See you there!
-                <br>
-                <img border="0" src="http://www.natickmartialarts.com/region/images/MasterJulie.jpg">
-                <br>Master Julie Guido
-                <br>Tournament Director</font>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-<div style="clear:both"></div></div><!--widget-content close --><div style="clear:both"></div></div></div>
-</div>
-<div class="col-sm-12 col-md-4 col-xs-12">
+        <div class="panel panel-success">
+              <div class="panel-heading">Sign Up!</div>
+              <div class="panel-body">
+                <div ng-hide="vm.islogin()" class="row col-md-12">
+                    <div class="col-md-4 col-md-offset-1">
+                      <button type="button" class="btn btn-green btn-outlined tournamentlarge" >
+                        <a href="#/page-signup">Create User</a></button>
+                    </div>
+                    <div class="col-md-4">
+                      <button type="button" class="btn btn-green btn-outlined tournamentlarge">
+                          <a href="#/page-signin">Login</a></button>
+                    </div>
+                </div>
+                <div ng-show="vm.islogin()" class="row col-md-12">
+                    <div class="col-md-4 col-md-offset-1">
+                      <button type="button" class="btn btn-green btn-outlined tournamentlarge">
+                        <a href="#/tournament">Let's Register</a></button>
+                    </div>
+                </div>
+             </div>
+        </div>      
+                  
+
+        <div class="row">
+
+        <div class="col-sm-12 col-md-6 col-xs-12" id="wide_widgetsSeating">
+        <img src="images/Medway.jpg" alt="tournament picture" class="img-responsive">	
+        
+        				
+                <div id="description"><div class="widget"><h2 style="display:none;"></h2><div class="widget-content widget-content-ntitle"><table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#FFFF99" style="font-family: 'Times New Roman';">
+                  <tbody>
+                    <tr>
+                      <td width="600" valign="top" height="147">
+                        <p align="left">
+                          <font color="#FF0000" face="Tahoma" size="5">
+                            <b>Don't Miss This Chance to Improve Your Skills!</b>
+                          </font>
+                        </p>
+                        <p align="left">
+                          <font face="Tahoma" size="3">Tournament participation is a great way to learn more about yourself and to develop
+                          your martial arts skills.</font>
+                        </p>
+                        <p align="left">
+                          <font face="Tahoma" size="3">Get
+                  more information for this upcoming event from your instructors and
+                          register here on this site to compete.</font>
+                        </p>
+                        <p align="left">
+                          <font face="Tahoma" size="3">Please be sure to register early to take advantage of the early bird rates.</font>
+                        </p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="600" valign="top" height="21">
+                        <font face="Tahoma" size="3">
+                        <br>See you there!
+                        <br>
+                        <img border="0" src="http://www.natickmartialarts.com/region/images/MasterJulie.jpg">
+                        <br>Master Julie Guido
+                        <br>Tournament Director</font>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+        <div style="clear:both"></div></div><!--widget-content close --><div style="clear:both"></div></div></div>
+        </div>
+        <div class=" col-sm-12 col-md-4 col-xs-12">
 
             <div class="panel panel-info">
               <div class="panel-heading">When</div>
@@ -117,3 +117,39 @@
 </div>
     
 </div>
+
+        </div>
+      </div>
+    
+</div>
+
+<div class="note note-info">
+<h4 class="block-heading">Instructions for using this site</h4>
+              <p>Click on the headings below for instructions</p>
+            </div>
+
+  <uib-accordion class="col-md-6">
+    <uib-accordion-group heading="Login and User Accounts - For Help click here" class="panel panel-blue">
+          <div class="panel-body">
+          In order to register for a tournament you must create a user account.  Click on left navigation menu to create a user and then login.  You can return to this site and use the participants you create now for future events.  Each time you re-enter this site you will need to login.  On the top right of the site you can signout.  If you forget your password, please contact mailto:mark@natickmartialarts.com .
+          </div>
+    </uib-accordion-group>
+    <uib-accordion-group heading="Adding participants - For Help click here" class="panel panel-blue">
+          <div class="panel-body">
+          Click on Register new to add each person.  Fill in the details on the form and proceed to the registration tab.  If you re-enter the site you can go straight to the registration tab to see your entries.  If you want to edit, click on the edit button and return to the participants tab to edit the details.  
+          </div>
+    
+    </uib-accordion-group>
+    <uib-accordion-group heading="Registration - For Help click here" class="panel panel-green">
+          <div class="panel-body">
+          Click on registration tab or use a button to move to the tab.  Select the tournament.  For each row in the table, double click on the event field to select the number/type of events you are entering for the participant.  Click the selection checkboxes for those you want to register.  You will see a register button appear.  Click on that to complete registration.  If you add another participant later, you can register the new person.  Proceed to the payment tab when finished registration.  You will get an email for each person you have registered.
+          </div>
+      
+    </uib-accordion-group>
+    <uib-accordion-group heading="Payment - For Help click here" class="panel panel-orange">
+          <div class="panel-body">
+          Click on the payment tab after you have completed registration.  For each registered participant you click on add to cart.  The cart will appear as a another tab or window.  When you have finished adding all of the registrants to the shopping cart, then switch to the paypal window to checkout.  You will receive notification from paypal when you have finished paying.  If you have any issues or questions, please contact Mark Lehman at mailto:mark@natickmartialarts.com or call 508-653-2137
+          </div>
+      
+    </uib-accordion-group>
+  </uib-accordion>

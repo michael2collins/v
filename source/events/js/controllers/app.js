@@ -37,7 +37,8 @@
     vm.loadTopbar = loadTopbar;
     vm.loadSidebar = loadSidebar;
     vm.islogin = islogin;
-    
+    vm.userdta;
+
     function islogin() {
     //    console.log('islogin', UserServices.isapikey());
         return UserServices.isapikey();
@@ -49,6 +50,10 @@
         setTimeout(function(){
             vm.header.animation = '';
         }, 100);
+        
+        vm.userdta = UserServices.getUserDetails();
+        console.log('$routeChangeSuccess', vm.userdta);
+
         console.log('originalPath', current.originalPath);
 
         vm.data = $.fn.Data.get(current.originalPath);

@@ -41,6 +41,7 @@
         vmstudent.setActiveTab = setActiveTab;
         vmstudent.getActiveTab = getActiveTab;
         vmstudent.EventName = '';
+        vmstudent.age = age;
 
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
@@ -87,6 +88,12 @@
             $log.debug('bday');
             $log.debug(bday);
             return new Date(bday);
+        }
+        function age(bdate) {
+            var birth = new Date(bdate);
+            var curr  = new Date();
+            var diff = curr.getTime() - birth.getTime();
+            return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
         }
 
 

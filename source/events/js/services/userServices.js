@@ -10,6 +10,7 @@
     function UserServices( $http, $q, $log, $rootScope, $cookieStore ) {
         var response;
         var apikey;
+        var userdetails={};
         
         var service = {
             Login: Login,
@@ -53,7 +54,7 @@
                     thedata: data
                 }
             });
-            return( request.then( handleSuccess, handleError ) );
+            return( request.then( handleLogin, handleError ) );
 
         }
 
@@ -91,11 +92,10 @@
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
-        function getUserDetails(path) {
+        function getUserDetails() {
             $log.debug('getUserDetails service entered');
-            $log.debug('path',path);
 
-            return($http.get(path).then( handleSuccess, handleError) );
+            return(userdetails);
         }
         
 
@@ -146,6 +146,15 @@
         // from the API response payload.
         function handleSuccess( response ) {
             $log.debug('UserServices success:');
+            $log.debug(response);
+            return( response.data );
+        }
+        function handleLogin( response ) {
+            $log.debug('UserServices success:');
+            userdetails.username = response.data.username;
+            userdetails.firstname = response.data.firstname;
+            userdetails.lastname = response.data.lastname;
+            userdetails.email = response.data.email;
             $log.debug(response);
             return( response.data );
         }

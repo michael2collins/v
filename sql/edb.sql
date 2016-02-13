@@ -469,3 +469,13 @@ CREATE TABLE IF NOT EXISTS `event` (
 INSERT INTO `event` (`id`, `name`, `date`, `active`, `order`, `start`, `end`, `location`, `type`) VALUES
 (1, 'Medway 2016', '2016-04-10', 1, 1, '9:00 AM', '5:00 PM', 'St. Joseph''s Church Hall 145 Holliston Street, Medway, Massachusetts', 'tournament');
 
+CREATE OR REPLACE VIEW eventsource AS 
+SELECT c.ID AS contactID,  `LastName` ,  `FirstName` ,  `Email` ,  `Email2` ,  `Parent` ,  `Phone` ,  `AltPhone` ,  `Address` ,  `City` ,  `State` ,  `ZIP` ,  `Newrank` ,  `BeltSize` ,  `CurrentRank` ,  `InstructorPaymentFree` , `ContactType` ,  `InstructorFlag` ,  `quickbooklink` ,  `instructorTitle` ,  `testTime` ,  `bdayinclude` ,  `sex` ,  `medicalConcerns` ,  `GuiSize` ,  `phoneExt` ,  `altPhoneExt` ,  `CurrentReikiRank` ,  `StudentSchool` ,  `event` , `eventdate` ,  `eventstart` ,  `eventend` ,  `eventType` ,  `paid` , createdby, er.shirtSize, er.Notes, er.include,  `attended` ,  `ordered` , location, (
+YEAR( 
+CURRENT_TIMESTAMP ) - YEAR( birthday ) - ( RIGHT( 
+CURRENT_TIMESTAMP , 5 ) < RIGHT( birthday, 5 ) )
+) AS age, DATE_FORMAT( birthday,  '%Y-%m-%d' ) AS birthday
+FROM ncontacts c
+LEFT JOIN eventregistration er ON er.contact = c.id
+ORDER BY c.id
+
