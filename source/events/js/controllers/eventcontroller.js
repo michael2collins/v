@@ -103,13 +103,20 @@
           { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
         ];
 
-        vm.twoeventpay50='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
-        vm.twoeventpay60='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="EGHLJJYUAW6JA"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
-        vm.twoeventpay70='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="PK7AC8ZRE835Q"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        vm.discount="earlybird";
+    //    vm.discount="regular";
+    //    vm.discount="late";
+        vm.twoeventpay50="FK26Y8JHFF69W";
+        vm.twoeventpay60="EGHLJJYUAW6JA";
+        vm.twoeventpay70="PK7AC8ZRE835Q";
 
-        vm.threeeventpay60='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="7PFKFJ7K8LHBU"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
-        vm.threeeventpay75='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="2RTMGNSY5FTLE"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
-        vm.threeeventpay90='<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="7XWV5FXKAMFEN"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>';
+        vm.threeeventpay60="7PFKFJ7K8LHBU";
+        vm.threeeventpay75="2RTMGNSY5FTLE";
+        vm.threeeventpay90="7XWV5FXKAMFEN";
+        vm.onedollar="H8LTYBEGHD6GJ";
+        
+        vm.getvalue = getvalue;
+        
         
        vm.status = {
             opened: false
@@ -258,6 +265,24 @@
                     $log.debug('activate eventdetails fetched');
                 });
             });
+        }
+
+        function getvalue(numevents) {
+            if (vm.discount == "earlybird" && numevents == 2) {
+                return vm.twoeventpay50;                
+            } else if (vm.discount == "regular" && numevents == 2) {
+                return vm.twoeventpay60;
+            } else if (vm.discount == "late" && numevents == 2) {
+                return vm.twoeventpay70;
+            } 
+            if (vm.discount == "earlybird" && numevents == 3) {
+                return vm.threeeventpay60;
+            } else if (vm.discount == "regular" && numevents == 3) {
+                return vm.threeeventpay75;
+            } else if (vm.discount == "late" && numevents == 3) {
+                return vm.threeeventpay90;
+            } 
+            return "error";
         }
 
         function getAllStudents() {
@@ -631,6 +656,10 @@
     //         $log.debug("showregister", rowEntity);
             return rowEntity.Include == 1;
         }        
+        function showpaid(rowEntity) {
+    //         $log.debug("showregister", rowEntity);
+            return rowEntity.Paid == 1;
+        }        
         
         function setGridTournamentOptions() {
 
@@ -731,6 +760,8 @@
 
 //  var EventTypeTemplate = '<div>{{COL_FIELD == "Two Events" ? vm.twoeventpay50 : vm.threeeventpay60}}</div';
 //  var EventTypeTemplate = '<div class="ui-grid-cell-contents">{{COL_FIELD == "Two Events" ? "y" : "x"}}</div';
+
+            var ctpl ='<div ng-hide="col.grid.appScope.showregister(row.entity)"> <button class="btn btn-green primary"  ng-click="col.grid.appScope.registerMe(row.entity)">Register</button></div><div ng-show="col.grid.appScope.showpaid(row.entity)">Paid - Issues? 508-653-2137 </div>' ;
 
             vm.gridPaymentOptions = {
                 enableFiltering: true,

@@ -59,7 +59,7 @@
         vm.data = $.fn.Data.get(current.originalPath);
         console.log('data in $routeChangeSuccess',vm.data);
 
-        if(-1 == $.inArray(current.originalPath, ['/page-500', '/page-404', '/page-lock-screen', '/page-signup', '/page-signin'])){
+        if(-1 == $.inArray(current.originalPath, ['/page-500', '/page-404', '/page-lock-screen', '/page-signup', '/page-signin', '/info'])){
             $("body>.default-page").show();
             $("body>.extra-page").hide();
         }
@@ -70,7 +70,7 @@
         vm.header.layout_topbar = '';
         vm.header.layout_menu = '';
         vm.header.header_topbar = '';
-/*
+
         if('/layout-left-sidebar' === current.originalPath){
             vm.header.boxed = '';
             vm.header.layout_topbar = '';
@@ -113,7 +113,7 @@
                 'wheelStep': 5
             });
 		}
-*/
+
  
 
     });

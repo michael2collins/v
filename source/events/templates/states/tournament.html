@@ -14,7 +14,7 @@
             select="vmstudent.setActiveTab('info')"
         >
         <div class="row">
-          <div>
+          <div> 
             <div class="col-lg-12">
               <div class="panel panel-blue">
                 <div class="panel-heading">Tournament Participant</div>
@@ -215,7 +215,7 @@
                               id="inputPhone" name="Phone" ng-change="vmstudent.updateStudent()"
                               ng-model="vmstudent.students.Phone" ng-model-options=
                               "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                              placeholder="" type="text" ui-mask="(999) 999-9999">
+                              placeholder="" type="text" ui-mask="(999) 999-9999" required>
                             </div>
                             <div class="has-error" ng-messages="editstudent.Phone.$error" role=
                             "alert" style="color:maroon">
@@ -248,7 +248,7 @@
                                     ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
                                     class="glyphicon tooltips"></i>
                                 <input id="inputBirthday" 
-                                    type="text" placeholder="mm/dd/yyyy" 
+                                    type="text" placeholder="yyyy-mm-dd" 
                                     name="Birthday" 
                                     ng-model="vmstudent.students.Birthday" 
                                     ng-change="vmstudent.updateStudent()" 
@@ -326,7 +326,7 @@
                           <div ng-class="{'has-error': editstudent.EmergencyContact.$invalid, 'has-success': !editstudent.EmergencyContact.$invalid}" class="form-group">
                             <label for="inputEmergencyContact" class="control-label">Emergency Contact </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.EmergencyContact.$dirty" ng-class="editstudent.EmergencyContact.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputEmergencyContact" type="text" placeholder="Name if different then parent" name="EmergencyContact" ng-model="vmstudent.students.EmergencyContact" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <input id="inputEmergencyContact" type="text" placeholder="Name if different than parent" name="EmergencyContact" ng-model="vmstudent.students.EmergencyContact" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control" required>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.EmergencyContact.$error" class="has-error">
                               <div ng-message="required">You did not enter a field</div>
@@ -618,17 +618,64 @@
                             </div>
                         </td>
                         <td>
-                        <div ng-if="item.EventType == 'Kata:1:Sparring::Weapons:1'"> 
-<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
+                        
+                        <div 
+                            ng-if="item.EventType == 'Kata:1:Sparring::Weapons:1'"
+                            ng-hide="item.Paid == 1"
+                        > 
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
+    <input type="hidden" name="item_name"
+        value="Kata/Weapons Registration - Early Bird - for {{item.FirstName}}">
+    <input type="hidden" name="shopping_url"
+        value="http://events.villaris.us/#/tournament">        
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+    </form>                            
                         </div>
-                        <div ng-if="item.EventType == 'Kata::Sparring:1:Weapons:1'"> 
-<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
+                        <div 
+                            ng-hide="item.Paid == 1"
+                        ng-if="item.EventType == 'Kata::Sparring:1:Weapons:1'"
+                        > 
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
+    <input type="hidden" name="item_name"
+        value="Sparring/Weapons Registration - Early Bird - for {{item.FirstName}}">
+    <input type="hidden" name="shopping_url"
+        value="http://events.villaris.us/#/tournament">        
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
                         </div>
-                        <div ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:'"> 
-<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="FK26Y8JHFF69W"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
+                        <div 
+                            ng-hide="item.Paid == 1"
+                        ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:'"
+                        > 
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
+    <input type="hidden" name="item_name"
+        value="Kata/Sparring Registration - Early Bird - for {{item.FirstName}}">
+    <input type="hidden" name="shopping_url"
+        value="http://events.villaris.us/#/tournament">        
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
                         </div>
-                        <div ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:1'"> 
-<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post"><input type="hidden" name="cmd" value="_s-xclick"><input type="hidden" name="hosted_button_id" value="7PFKFJ7K8LHBU"><input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                     
+                        <div 
+                            ng-hide="item.Paid == 1"
+                        ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:1'"
+                        > 
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(3)}}">
+    <input type="hidden" name="item_name"
+        value="Kata/Sparring/Weapons Registration - Early Bird - for {{item.FirstName}}">
+    <input type="hidden" name="shopping_url"
+        value="http://events.villaris.us/#/tournament">        
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
+                        </div>
+                        <div 
+                            ng-show="item.Paid == 1"
+                        > Paid - See you there!
                         </div>
                             
                         </td>

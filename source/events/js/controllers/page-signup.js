@@ -20,12 +20,14 @@
 
             var vm=this;
             vm.register = register;
+            vm.compare = compare;
             vm.dataLoading;
             vm.firstname;
             vm.username;
             vm.lastname;
             vm.email;
             vm.password;
+            vm.isconfirm;
             vm.confirm_password;
             
             
@@ -34,6 +36,12 @@
 //            $("body>.extra-page").html($(".page-content").html()).show();
 //            $('body').attr('id', 'signup-page');
 
+            vm.re = /^[a-zA-Z]\w{3,14}$/;
+           
+            function compare(repass) {
+                $log.debug('compare',repass);
+                vm.isconfirm = vm.password == repass ? true : false;
+            }
             
             function register() {
                 $log.debug('controller register function entered');

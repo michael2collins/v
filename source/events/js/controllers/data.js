@@ -11,6 +11,7 @@
         '/page-lock-screen': {title:'Page Lock Screen', 'breadcrumb':['Page', 'Page Lock Screen']},
         '/page-signin': {title:'Page Signin', 'breadcrumb':['Page', 'Page Signin ']},
         '/page-signup': {title:'Page Signup', 'breadcrumb':['Page', 'Page Signup ']},
+        '/info': {title:'Page Help', 'breadcrumb':['Page', 'Page Help ']},
     };
 
     $.fn.Data.get = function(id){

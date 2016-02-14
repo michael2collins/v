@@ -127,6 +127,12 @@
             .when('/page-signin', {
                 templateUrl: 'templates/states/page-signin.html'
             })
+            .when('/info', {
+                templateUrl: 'templates/states/info.html'
+            })
+            .when('/terms', {
+                templateUrl: 'templates/states/terms.html'
+            })
             .when('/page-signup', {
                 templateUrl: 'templates/states/page-signup.html'
             })

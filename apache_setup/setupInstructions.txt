@@ -65,7 +65,7 @@ cd Web
 mkdir v
 
 kpm install phpmyadmin
-password = password
+password = password2
 
 michael2collins.koding.io/phpmyadmin
 
@@ -144,4 +144,12 @@ sudo a2ensite v.conf etc
 sudo service apache2 restart
 
 in godaddy added aname records to point at subdomains
+
+sudo apt-get install sendmail
+sudo sendmailconfig
+
+include(`/etc/mail/tls/starttls.m4')dnl
+
+webmin michael2collins 2X.. 
+
     

@@ -35,6 +35,10 @@
                 // reset login status
                 UserServices.ClearCredentials();
             })();
+
+        //    $("body>.default-page").hide();
+        //    $("body>.extra-page").html($(".page-content").html()).show();
+        //    $('body').attr('id', 'signin-page');
     
 
             function login() {
@@ -49,6 +53,10 @@
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
                         TournamentServices.setapikey(pagevm.apiKey);
                         UserServices.setapikey(pagevm.apiKey);
+            $("body>.default-page").show();
+            $("body>.extra-page").html($(".page-content").html()).hide();
+            $('body').attr('id', '');
+
                         $location.path('/');
                         return data;
                 },
@@ -68,9 +76,6 @@
                 );
 
             }            
-//            $("body>.default-page").hide();
-  //          $("body>.extra-page").html($(".page-content").html()).show();
-    //        $('body').attr('id', 'signin-page');
         }
 
 })();    
