@@ -30,6 +30,7 @@
     'angularFileUpload',
     'akoenig.deckgrid'
         //        'dynamicLayout'
+        //
         ])
 
     // allow DI for use in controllers, unit tests for lodash
