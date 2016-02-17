@@ -324,7 +324,7 @@
                         </div>
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.EmergencyContact.$invalid, 'has-success': !editstudent.EmergencyContact.$invalid}" class="form-group">
-                            <label for="inputEmergencyContact" class="control-label">Emergency Contact </label>
+                            <label for="inputEmergencyContact" class="control-label">Emergency Contact and Phone# </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.EmergencyContact.$dirty" ng-class="editstudent.EmergencyContact.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                               <input id="inputEmergencyContact" type="text" placeholder="Name if different than parent" name="EmergencyContact" ng-model="vmstudent.students.EmergencyContact" ng-change="vmstudent.updateStudent()" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control" required>
                             </div>
