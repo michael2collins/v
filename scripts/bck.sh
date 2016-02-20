@@ -8,4 +8,5 @@ cd ~/Backup
 ln -s /etc/apache2 apache2
 ln -s /etc/mysql mysql
 ln -s /etc/phpmyadmin phpmyadmin
+ln -s /etc/php5 php5
 
