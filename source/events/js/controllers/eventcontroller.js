@@ -113,6 +113,16 @@
         vm.threeeventpay60="7PFKFJ7K8LHBU";
         vm.threeeventpay75="2RTMGNSY5FTLE";
         vm.threeeventpay90="7XWV5FXKAMFEN";
+
+        vm.twoeventpay55="VFCXLKYZHE2UE";
+        vm.twoeventpay65="YUM4T83Q96FKJ";
+        vm.twoeventpay75="GXLJ6EXS9SSCU";
+
+        vm.threeeventpay65="UP8TNHE79WGXS";
+        vm.threeeventpay75="NXTPDHU5WMXBA";
+        vm.threeeventpay85="5G8DNQXFVHA78";
+
+
         vm.onedollar="H8LTYBEGHD6GJ";
         
         vm.getvalue = getvalue;
@@ -269,18 +279,18 @@
 
         function getvalue(numevents) {
             if (vm.discount == "earlybird" && numevents == 2) {
-                return vm.twoeventpay50;                
+                return vm.twoeventpay55;                
             } else if (vm.discount == "regular" && numevents == 2) {
-                return vm.twoeventpay60;
+                return vm.twoeventpay65;
             } else if (vm.discount == "late" && numevents == 2) {
-                return vm.twoeventpay70;
+                return vm.twoeventpay75;
             } 
             if (vm.discount == "earlybird" && numevents == 3) {
-                return vm.threeeventpay60;
+                return vm.threeeventpay65;
             } else if (vm.discount == "regular" && numevents == 3) {
                 return vm.threeeventpay75;
             } else if (vm.discount == "late" && numevents == 3) {
-                return vm.threeeventpay90;
+                return vm.threeeventpay85;
             } 
             return "error";
         }

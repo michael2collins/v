@@ -1,6 +1,7 @@
 <?php
 //$to = "somebody@example.com, somebodyelse@example.com";
-$to = "michael.l.collins@adp.com, michael_karen@verizon.net";
+//$to = "michael.l.collins@adp.com, michael_karen@verizon.net";
+$to = "michael.l.collins@adp.com";
 $subject = "HTML email";
 
 $message = "
