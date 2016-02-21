@@ -5,10 +5,15 @@
  * Checking if the request has valid api key in the 'Authorization' header
  */
 function authenticate(\Slim\Route $route) {
+    error_log( print_R("authenticate entered:\n ", TRUE), 3, LOG);
+
     // Getting request headers
     $headers = apache_request_headers();
     $response = array();
     $app = \Slim\Slim::getInstance();
+
+    error_log( print_R("headers:\n ", TRUE), 3, LOG);
+    error_log( print_R($headers, TRUE), 3, LOG);
 
     // Verifying Authorization Header
     if (isset($headers['Authorization'])) {
@@ -25,13 +30,15 @@ function authenticate(\Slim\Route $route) {
             $app->stop();
         } else {
             global $user_id;
+            global $user_name;
             // get user primary key id
             $user_id = $db->getUserId($api_key);
+            $user_name = $db->getUserName($api_key);
         }
     } else {
         // api key is missing in header
         $response["error"] = true;
-        $response["message"] = "Api key is misssing";
+        $response["message"] = "Login before registering";
         echoRespnse(400, $response);
         $app->stop();
     }
@@ -48,33 +55,64 @@ function authenticate(\Slim\Route $route) {
  */
 $app->post('/register', function() use ($app) {
     // check for required params
-    verifyRequiredParams(array('name', 'email', 'password'));
+    error_log( print_R("register entered:\n ", TRUE), 3, LOG);
+ 
+
+//    verifyRequiredParams(array('name','lastname', 'email', 'password'));
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("register before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    if (isset($dataJsonDecode->thedata->firstname)) {
+        $firstname = $dataJsonDecode->thedata->firstname;
+    } else { errorRequiredParams('firstname'); }
+    
+    if (isset($dataJsonDecode->thedata->lastname)) {
+        $lastname =  $dataJsonDecode->thedata->lastname;
+    } else { errorRequiredParams('lastname'); }
+    
+    if (isset($dataJsonDecode->thedata->email)) {
+        $email =  $dataJsonDecode->thedata->email ;
+    } else { errorRequiredParams('email'); }
+    
+    if (isset($dataJsonDecode->thedata->password)) {
+        $password = $dataJsonDecode->thedata->password;
+    } else {errorRequiredParams('password'); }
+
+    if (isset($dataJsonDecode->thedata->username)) {
+        $username = $dataJsonDecode->thedata->username;
+    } else { errorRequiredParams('username'); }
+
 
     $response = array();
 
-    // reading post params
-    $name = $app->request->post('name');
-    $email = $app->request->post('email');
-    $password = $app->request->post('password');
 
     // validating email address
     validateEmail($email);
 
     $db = new DbHandler();
-    $res = $db->createUser($name, $email, $password);
+    $res = $db->createUser($firstname, $lastname, $email, $password, $username);
 
     if ($res == USER_CREATED_SUCCESSFULLY) {
         $response["error"] = false;
         $response["message"] = "You are successfully registered";
+        // echo json response
+        echoRespnse(201, $response);
     } else if ($res == USER_CREATE_FAILED) {
         $response["error"] = true;
-        $response["message"] = "Oops! An error occurred while registereing";
+        $response["message"] = "Oops! An error occurred while registering";
+        // echo json response
+        echoRespnse(400, $response);
     } else if ($res == USER_ALREADY_EXISTED) {
         $response["error"] = true;
         $response["message"] = "Sorry, this email already existed";
+        // echo json response
+        echoRespnse(400, $response);
     }
-    // echo json response
-    echoRespnse(201, $response);
 });
 
 /**
@@ -85,37 +123,59 @@ $app->post('/register', function() use ($app) {
  */
 $app->post('/login', function() use ($app) {
     // check for required params
-    verifyRequiredParams(array('email', 'password'));
+//    verifyRequiredParams(array('username', 'password'));
 
-    // reading post params
-    $email = $app->request()->post('email');
-    $password = $app->request()->post('password');
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+    global $user_name;
+    
+    error_log( print_R("login before insert: $user_name\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    if (isset($dataJsonDecode->thedata->username)) {
+        $username = $dataJsonDecode->thedata->username;
+    } else { errorRequiredParams('username'); }
+
+    if (isset($dataJsonDecode->thedata->password)) {
+        $password = $dataJsonDecode->thedata->password;
+    } else {errorRequiredParams('password'); }
+
     $response = array();
 
     $db = new DbHandler();
     // check for correct email and password
-    if ($db->checkLogin($email, $password)) {
+    if ($db->checkLoginUser($username, $password)) {
         // get the user by email
-        $user = $db->getUserByEmail($email);
+        //$user = $db->getUserByEmail($email);
+        $user = $db->getUserByUsername($username);
 
         if ($user != NULL) {
             $response["error"] = false;
-            $response['name'] = $user['name'];
+            $response['firstname'] = $user['name'];
+            $response['lastname'] = $user['lastname'];
+            $response['username'] = $user['username'];
             $response['email'] = $user['email'];
             $response['apiKey'] = $user['api_key'];
             $response['createdAt'] = $user['created_at'];
+            $user_name = $user['username'];
+            echoRespnse(200, $response);
         } else {
             // unknown error occurred
+            error_log( print_R("login error\n", TRUE ), 3, LOG);
             $response['error'] = true;
             $response['message'] = "An error occurred. Please try again";
+            $user_name = '';
+            echoRespnse(400, $response);
         }
     } else {
         // user credentials are wrong
+            error_log( print_R("login failed\n", TRUE ), 3, LOG);
+            $user_name = '';
         $response['error'] = true;
         $response['message'] = 'Login failed. Incorrect credentials';
+        echoRespnse(403, $response);
     }
 
-    echoRespnse(200, $response);
 });
 
 /*
@@ -127,6 +187,7 @@ $app->post('/login', function() use ($app) {
  * method GET
  * url /tasks
  */
+ /*
 $app->get('/tasks', 'authenticate', function() {
     global $user_id;
     $response = array();
@@ -150,7 +211,7 @@ $app->get('/tasks', 'authenticate', function() {
 
     echoRespnse(200, $response);
 });
-
+*/
 
 
 /**
@@ -159,6 +220,7 @@ $app->get('/tasks', 'authenticate', function() {
  * url /tasks/:id
  * Will return 404 if the task doesn't belongs to user
  */
+ /*
 $app->get('/tasks/:id', 'authenticate', function($task_id) {
     global $user_id;
     $response = array();
@@ -180,6 +242,7 @@ $app->get('/tasks/:id', 'authenticate', function($task_id) {
         echoRespnse(404, $response);
     }
 });
+*/
 
 /**
  * Creating new task in db
@@ -187,6 +250,7 @@ $app->get('/tasks/:id', 'authenticate', function($task_id) {
  * params - name
  * url - /tasks/
  */
+ /*
 $app->post('/tasks', 'authenticate', function() use ($app) {
     // check for required params
     verifyRequiredParams(array('task'));
@@ -211,6 +275,7 @@ $app->post('/tasks', 'authenticate', function() use ($app) {
         echoRespnse(200, $response);
     }
 });
+*/
 
 /**
  * Updating existing task
@@ -218,6 +283,7 @@ $app->post('/tasks', 'authenticate', function() use ($app) {
  * params task, status
  * url - /tasks/:id
  */
+ /*
 $app->put('/tasks/:id', 'authenticate', function($task_id) use($app) {
     // check for required params
     verifyRequiredParams(array('task', 'status'));
@@ -242,12 +308,13 @@ $app->put('/tasks/:id', 'authenticate', function($task_id) use($app) {
     }
     echoRespnse(200, $response);
 });
-
+*/
 /**
  * Deleting task. Users can delete only their tasks
  * method DELETE
  * url /tasks
  */
+ /*
 $app->delete('/tasks/:id', 'authenticate', function($task_id) use($app) {
     global $user_id;
 
@@ -265,6 +332,7 @@ $app->delete('/tasks/:id', 'authenticate', function($task_id) use($app) {
     }
     echoRespnse(200, $response);
 });
+*/
 
 /**
  * Verifying required params posted or not
@@ -279,6 +347,9 @@ function verifyRequiredParams($required_fields) {
         $app = \Slim\Slim::getInstance();
         parse_str($app->request()->getBody(), $request_params);
     }
+    error_log( print_R("verify entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($request_params, TRUE), 3, LOG);
+    
     foreach ($required_fields as $field) {
         if (!isset($request_params[$field]) || strlen(trim($request_params[$field])) <= 0) {
             $error = true;
@@ -293,14 +364,28 @@ function verifyRequiredParams($required_fields) {
         $app = \Slim\Slim::getInstance();
         $response["error"] = true;
         $response["message"] = 'Required field(s) ' . substr($error_fields, 0, -2) . ' is missing or empty';
+    error_log( print_R("verify error:\n ", TRUE), 3, LOG);
+    error_log( print_R(substr($error_fields, 0, -2), TRUE), 3, LOG);
         echoRespnse(400, $response);
         $app->stop();
     }
 }
 
+function errorRequiredParams($required_fields) {
+        $response = array();
+        $app = \Slim\Slim::getInstance();
+        $response["error"] = true;
+        $response["message"] = 'Required field(s) ' . $required_fields . ' is missing or empty';
+    error_log( print_R("verify error:\n ", TRUE), 3, LOG);
+    error_log( print_R($required_fields, TRUE), 3, LOG);
+        echoRespnse(400, $response);
+        $app->stop();
+    
+}
 /**
  * Validating email address
  */
+ /*
 function validateEmail($email) {
     $app = \Slim\Slim::getInstance();
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -310,4 +395,5 @@ function validateEmail($email) {
         $app->stop();
     }
 }
+*/
 ?>

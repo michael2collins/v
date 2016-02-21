@@ -3,7 +3,7 @@
 
 
 
-$app->get('/studentregistration',  function() use ($app) {
+$app->get('/studentregistration','authenticate',  function() use ($app) {
 
     $allGetVars = $app->request->get();
     error_log( print_R("studentregistration entered:\n ", TRUE), 3, LOG);
@@ -92,7 +92,7 @@ $app->get('/studentregistration',  function() use ($app) {
 });
 
 
-$app->get('/attendance',  function() use ($app) {
+$app->get('/attendance', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
     error_log( print_R("attendance entered:\n ", TRUE), 3, LOG);
@@ -180,7 +180,7 @@ $app->get('/attendance',  function() use ($app) {
     }
 });
 
-$app->get('/attendancehistory',  function() use ($app) {
+$app->get('/attendancehistory', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
     error_log( print_R("attendancehistory entered:\n ", TRUE), 3, LOG);
@@ -261,7 +261,7 @@ $app->get('/attendancehistory',  function() use ($app) {
 });
 
 
-$app->get('/DOW',  function() {
+$app->get('/DOW', 'authenticate', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -294,7 +294,7 @@ $app->get('/DOW',  function() {
     }
 });
 
-$app->get('/schedule/:DOW',  function($DOWid) {
+$app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -338,7 +338,7 @@ $app->get('/schedule/:DOW',  function($DOWid) {
 });
 
 
-$app->post('/updateattendance',  function() use($app) {
+$app->post('/updateattendance','authenticate',  function() use($app) {
     $response = array();
 
     // reading post params
@@ -386,7 +386,7 @@ $app->post('/updateattendance',  function() use($app) {
 
 });
 
-$app->put('/readynextrank/:id',  function($student_id) use($app) {
+$app->put('/readynextrank/:id', 'authenticate', function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before put student class paylist request", TRUE ));
@@ -426,7 +426,7 @@ $app->put('/readynextrank/:id',  function($student_id) use($app) {
 
 
 
-$app->get('/Attendancelist',  function() {
+$app->get('/Attendancelist', 'authenticate', function() {
     $response = array();
     $db = new AttendanceDbHandler();
 

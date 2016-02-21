@@ -22,6 +22,26 @@ function echoRespnse($status_code, $response) {
  //   fclose($fp);
 }
 
+    function emailnotify($to,$subject,$message){
+
+        $from = 'From: <webmaster@villaris.us>' ;
+        $replyto = 'mark@natickmartialarts.com' . "\r\n";
+      //  $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
+        
+        // Always set content-type when sending HTML email
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $headers .= "From: $from\r\nReply-to: $replyto";
+    //    $headers .= $cc;
+
+        
+        // More headers
+        //$headers .= 'From: <webmaster@villaris.us>' . "\r\n";
+        //$headers .= 'Cc: myboss@example.com' . "\r\n";
+        
+        mail($to,$subject,$message,$headers);
+    }
+
     
     function bulk_insert($mycon, $table, $cols, $values, $types) {
         error_log( print_R("array insert entered\n", TRUE ),3, LOG);

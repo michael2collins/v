@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/studentclass/:id',  function($student_id) {
+$app->get('/studentclass/:id', 'authenticate', function($student_id) {
     //  global $user_id;
     //error_log( print_R("before get student class request", TRUE ));
 
@@ -30,7 +30,7 @@ $app->get('/studentclass/:id',  function($student_id) {
 });
 
 
-$app->get('/classages',  function() {
+$app->get('/classages', 'authenticate', function() {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -63,7 +63,7 @@ $app->get('/classages',  function() {
     }
 });
 
-$app->get('/classpgms',  function() {
+$app->get('/classpgms', 'authenticate', function() {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -96,7 +96,7 @@ $app->get('/classpgms',  function() {
     }
 });
 
-$app->get('/classcats',  function() {
+$app->get('/classcats', 'authenticate', function() {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -129,7 +129,7 @@ $app->get('/classcats',  function() {
     }
 });
 
-$app->put('/studentclass/:id',  function($student_id) use($app) {
+$app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before put student class request", TRUE ));
@@ -187,7 +187,7 @@ $app->put('/studentclass/:id',  function($student_id) use($app) {
     echoRespnse(200, $response);
 });
 
-$app->put('/studentclasspaylist/:id',  function($student_id) use($app) {
+$app->put('/studentclasspaylist/:id', 'authenticate', function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before put student class paylist request", TRUE ));
@@ -229,7 +229,7 @@ $app->put('/studentclasspaylist/:id',  function($student_id) use($app) {
 });
 
 
-$app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm',  function($student_id, $classseq, $pgmseq) use($app) {
+$app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm', 'authenticate', function($student_id, $classseq, $pgmseq) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before put student class set request", TRUE ));
@@ -271,7 +271,7 @@ $app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm',  function($student_i
 });
 
 
-$app->get('/studentclasslist',  function() {
+$app->get('/studentclasslist', 'authenticate', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -312,7 +312,7 @@ $app->get('/studentclasslist',  function() {
 });
 
 
-$app->get('/studentclasspaylist',  function() {
+$app->get('/studentclasspaylist', 'authenticate', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -350,7 +350,7 @@ $app->get('/studentclasspaylist',  function() {
 });
 
 
-$app->get('/studentclassstatuses',  function() {
+$app->get('/studentclassstatuses', 'authenticate', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -374,7 +374,7 @@ $app->get('/studentclassstatuses',  function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/studentclasspicture/:picID',  function($picID) {
+$app->get('/studentclasspicture/:picID', 'authenticate', function($picID) {
     $response = array();
     $db = new StudentClassDbHandler();
 

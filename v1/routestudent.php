@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/eventnames',  function() use ($app) {
+$app->get('/eventnames', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
     error_log( print_R("eventnames entered:\n ", TRUE), 3, LOG);
@@ -38,7 +38,7 @@ $app->get('/eventnames',  function() use ($app) {
  * url /events 
  */
  
-$app->get('/eventdetails',  function() use($app){
+$app->get('/eventdetails', 'authenticate', function() use($app){
 
     $allGetVars = $app->request->get();
     error_log( print_R("eventdetails entered:\n ", TRUE), 3, LOG);
@@ -95,7 +95,7 @@ $app->get('/eventdetails',  function() use($app){
  * params - full list of event fields
  */
  
-$app->post('/eventregistration', function() use ($app) {
+$app->post('/eventregistration','authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -203,7 +203,7 @@ $app->post('/eventregistration', function() use ($app) {
 });
 
 
-$app->put('/eventregistration', function() use ($app) {
+$app->put('/eventregistration','authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -275,7 +275,7 @@ $app->put('/eventregistration', function() use ($app) {
 });
 
 
-$app->get('/userprefcols/:prefkey',  function($prefkey) {
+$app->get('/userprefcols/:prefkey', 'authenticate', function($prefkey) {
     error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
 
     $response = array();
@@ -310,7 +310,7 @@ $app->get('/userprefcols/:prefkey',  function($prefkey) {
     echoRespnse(200, $response);
 });
 
-$app->post('/userprefcols/:prefkey', function($prefkey) use ($app) {
+$app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($app) {
     error_log( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE), 3, LOG);
 
     $userid = 1; //have to convert name to id
@@ -351,7 +351,7 @@ $app->post('/userprefcols/:prefkey', function($prefkey) use ($app) {
 
 });
 
-$app->get('/studentnames',  function() use ($app) {
+$app->get('/studentnames', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
     error_log( print_R("studentnames entered:\n ", TRUE), 3, LOG);
@@ -393,7 +393,7 @@ $app->get('/studentnames',  function() use ($app) {
  * method GET
  * url /tasks
  */
-$app->get('/students',  function() use($app){
+$app->get('/students', 'authenticate', function() use($app){
 
     $allGetVars = $app->request->get();
     error_log( print_R("students entered:\n ", TRUE), 3, LOG);
@@ -460,7 +460,7 @@ $app->get('/students',  function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->get('/contacttypes',  function() {
+$app->get('/contacttypes', 'authenticate', function() {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -494,7 +494,7 @@ $app->get('/contacttypes',  function() {
 });
 
 
-$app->get('/students/:id',  function($student_id) {
+$app->get('/students/:id', 'authenticate', function($student_id) {
     //  global $user_id;
     $response = array();
     $db = new StudentDbHandler();
@@ -560,7 +560,7 @@ $app->get('/students/:id',  function($student_id) {
 /** family members related to student and setup as payers
  * 
 */
-$app->get('/family/:id',  function($student_id) {
+$app->get('/family/:id', 'authenticate', function($student_id) {
     //  global $user_id;
     $response = array();
     $db = new StudentDbHandler();
@@ -614,7 +614,7 @@ $app->get('/family/:id',  function($student_id) {
  * url - /studenthistory/:id
  */
 
-$app->get('/studenthistory/:id',  function($student_id) {
+$app->get('/studenthistory/:id', 'authenticate', function($student_id) {
     //  global $user_id;
     $response = array();
     $db = new StudentDbHandler();
@@ -659,7 +659,7 @@ $app->get('/studenthistory/:id',  function($student_id) {
  * params task, status
  * url - /tasks/:id
  */
-$app->put('/students/:id',  function($student_id) use($app) {
+$app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before request", TRUE ));
@@ -767,7 +767,7 @@ $app->put('/students/:id',  function($student_id) use($app) {
 });
 
 
-$app->get('/studentlists',  function() {
+$app->get('/studentlists', 'authenticate', function() {
     $response = array();
     $db = new StudentDbHandler();
 
@@ -830,7 +830,7 @@ $app->get('/studentlists',  function() {
  * params - full list of student fields
  */
  
-$app->post('/newstudent', function() use ($app) {
+$app->post('/newstudent', 'authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -901,7 +901,7 @@ $app->post('/newstudent', function() use ($app) {
  * url - /eventsource
  */
 
-$app->get('/eventsource',  function() use($app) {
+$app->get('/eventsource', 'authenticate', function() use($app) {
     //  global $user_id;
 
     $allGetVars = $app->request->get();
@@ -1076,7 +1076,7 @@ $tmp["nextpaymentdate"] = "NULL";
 });
 
 
-$app->get('/coldefs',  function() use($app){
+$app->get('/coldefs', 'authenticate', function() use($app){
     error_log( print_R("coldefs entered", TRUE), 3, LOG);
 
     $allGetVars = $app->request->get();
@@ -1137,7 +1137,7 @@ $app->get('/coldefs',  function() use($app){
     
 });
 
-$app->get('/coldeflist',  function() use($app){
+$app->get('/coldeflist', 'authenticate', function() use($app){
     error_log( print_R("coldeflist entered", TRUE), 3, LOG);
 
     $allGetVars = $app->request->get();
@@ -1195,7 +1195,7 @@ $app->get('/coldeflist',  function() use($app){
 
 });
 
-$app->post('/coldef', function() use ($app) {
+$app->post('/coldef', 'authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 

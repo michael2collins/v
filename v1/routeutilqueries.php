@@ -5,7 +5,7 @@
  * method GET
  * url /zips
  */
-$app->get('/zips',  function() {
+$app->get('/zips', 'authenticate', function() {
     $response = array();
     $db = new UtilDbHandler();
 
@@ -27,7 +27,7 @@ $app->get('/zips',  function() {
 });
 
 
-$app->get('/ranklist',  function() {
+$app->get('/ranklist', 'authenticate', function() {
     $response = array();
     $db = new UtilDbHandler();
 
@@ -47,7 +47,7 @@ $app->get('/ranklist',  function() {
     echoRespnse(200, $response);
 });
 
-$app->put('/renamefile',  function() use($app) {
+$app->put('/renamefile', 'authenticate', function() use($app) {
 
     error_log( print_R("before request\n", TRUE ), 3, LOG);
 
@@ -93,7 +93,7 @@ $app->put('/renamefile',  function() use($app) {
     
 });
 
-$app->get('/studentfiles',  function() {
+$app->get('/studentfiles', 'authenticate', function() {
 
     //error_log( print_R("enter get studentfiles\n", TRUE ), 3, LOG);
 

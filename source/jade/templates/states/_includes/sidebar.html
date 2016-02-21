@@ -2,32 +2,30 @@
 <nav id="sidebar" role="navigation" class="navbar-default navbar-static-side">
   <div class="sidebar-collapse menu-scroll">
     <ul id="side-menu" ng-menu="" class="nav">
-<!--      <li><a href="javascript:;" class="btn-search-collapsed"><i class="icon-magnifier"></i></a>
-        <div class="search-form">
-          <div class="input-icon right"><i class="btn-search icon-magnifier"></i>
-            <input type="text" placeholder="Search..." class="form-control"/>
-          </div>
-        </div>
-      </li>
-      -->
       <li class="sidebar-heading">
         <h4>Main</h4>
       </li>
-      <li><a href="#/"><i class="icon-speedometer"></i><span class="menu-title">Student Dashboard</span></a></li>
-      <li><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Students</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li><a href="#/"><i class="icon-speedometer"></i><span class="menu-title">Student Dashboard</span></a>
+        <ul class="nav nav-second-level">
+          <li><a href="#/page-signin">Login</a></li>
+          <li><a href="#/page-signup">Create User</a></li>
+        </ul>
+          
+      </li>
+      <li ng-show="vm.islogin()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Students</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
           <li><a href="#/table-basic-students">Student List</a></li>
           <li><a href="#/table-basic-attendance">Attendance List</a></li>
           <li><a href="#/table-basic-eventcreation">Create Events</a></li>
         </ul>
       </li>
-      <li><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Testing</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li ng-show="vm.islogin()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Testing</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
           <li><a href="#/table-basic-managetest">Manage Test</a></li>
           <li><a href="#/form-layouts-newtest">New Test</a></li>
         </ul>
       </li>
-      <li><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Manage Studio</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li ng-show="vm.islogin()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Manage Studio</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
           <li><a href="#/table-basic-leads">Leads</a></li>
           <li><a href="#/form-layouts-newlead">New Lead</a></li>
@@ -35,152 +33,7 @@
           <li><a href="/v/form-layouts-newpayment">New Payment </a></li>
         </ul>
       </li>
-<!--      <li><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Layouts</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
-        <ul class="nav nav-second-level">
-          <li><a href="/v/layout-left-sidebar">Left Sidebar</a></li>
-          <li><a href="/v/layout-left-sidebar-collapsed">Left Sidebar Collapsed</a></li>
-          <li><a href="/v/layout-right-sidebar">Right Sidebar</a></li>
-          <li><a href="/v/layout-right-sidebar-collapsed">Right Sidebar Collapsed</a></li>
-          <li><a href="/v/layout-boxed">Boxed Layout</a></li>
-        </ul>
-      </li>
-      -->
-      <!--li.sidebar-heading
-      h4 UI Components
-      
-      -->
-      <!--li
-      a(href='javascript:void(0);')
-          i.icon-note
-          span.menu-title Forms
-          span.fa.arrow
-          span.badge.badge-green 7
-      ul.nav.nav-second-level
-          li
-              a(href='/v/form-components') Form Components
-          li
-              a(href='/v/form-layouts') Form Layouts
-          li
-              a(href='/v/form-validation') Form Validation
-          li
-              a(href='/v/form-multiple-file-upload') Multiple File Upload
-          li
-              a(href='/v/form-dropzone-file-upload') Dropzone File Upload
-      -->
-      <!--li
-      a(href='javascript:void(0);')
-          i.icon-grid
-          span.menu-title Tables
-          span.fa.arrow
-      ul.nav.nav-second-level
-          li
-              a(href='/v/table-basic') Table Layout
-          li
-              a(href='/v/table-editable') Editable Tables
-          li
-              a(href='/v/table-responsive') Responsive Tables
-          li
-              a(href='/v/table-datatables') Datatables
-      -->
-      <!--li
-      a(href='javascript:void(0);')
-          i.icon-paper-plane
-          span.menu-title UI Elements
-          span.fa.arrow
-      ul.nav.nav-second-level
-          li
-              a(href='/v/ui-general') General
-          li
-              a(href='/v/ui-buttons') Buttons
-          li
-              a(href='/v/ui-typography') Typography
-          li
-              a(href='/v/ui-icons') Icons
-          li
-              a(href='/v/ui-portlets') Portlets
-          li
-              a(href='/v/ui-notific8') Notific8
-          li
-              a(href='/v/ui-toastr-notifications') Toastr Notifications
-          li
-              a(href='/v/ui-select-dropdown') Select 2 & Dropdown
-          li
-              a(href='/v/ui-modals') Modals
-          li
-              a(href='/v/ui-tabs-accordions-navs') Tabs, Accordions & Navs
-          li
-              a(href='/v/ui-sliders') Sliders
-          li
-              a(href='/v/ui-nestable-list') Nestable List
-              
-      -->
-      <!--li.sidebar-headingh4 Extras
-      -->
-      <!--li
-      a(href='javascript:void(0);')
-          i.icon-notebook
-          span.menu-title Pages
-          
-          span.fa.arrow
-          span.label.label-warning 12
-      ul.nav.nav-second-level
-          li
-              a(href='/v/page-portfolio') Portfolio
-          li
-              a(href='/v/page-invoice') Invoice
-          li
-              a(href='/v/page-pricing-table') Pricing Tables
-          li
-              a(href='/v/page-fullcalendar') Full Calendar
-          li
-              a(href='/v/page-signin') Sign In
-          li
-              a(href='/v/page-signup') Sign Up
-          li
-              a(href='/v/page-lock-screen') Lock Screen
-          li
-              a(href='/v/page-404') 404 Page
-          li
-              a(href='/v/page-500') 500 Page
-          li
-              a(href='/v/page-blank') Blank
-          li
-              a.btn-fullscreen(href='javascript:void(0)',title='FullScreen') Full Screen
-      -->
-      <!--li
-      a(href='/v/charts')
-          i.icon-pie-chart
-          span.menu-title Charts
-      -->
-      <!--li
-      a(href='/v/transitions')
-          i.icon-magic-wand
-          span.menu-title Transitions
-      -->
-      <!--li
-      a(href='javascript:void(0);')
-          i.icon-vector
-          span.menu-title Multi-Level Dropdown
-          span.fa.arrow
-      ul.nav.nav-second-level
-          li
-              a(href='javascript:void(0);') Second Level Item
-          li
-              a(href='javascript:void(0);') Second Level Item
-          li
-              a(href='javascript:void(0);')
-                  | Third Level
-                  span.fa.arrow
-              ul.nav.nav-third-level
-                  li
-                      a(href='javascript:void(0);') Third Level Item
-                  li
-                      a(href='javascript:void(0);') Third Level Item
-                  li
-                      a(href='javascript:void(0);') Third Level Item
-                  li
-                      a(href='javascript:void(0);') Third Level Item
-      -->
+
     </ul>
   </div>
 </nav>
