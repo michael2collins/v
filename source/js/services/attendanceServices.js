@@ -8,6 +8,7 @@
     AttendanceServices.$inject = ['$http', '$q', '$log'];
 
     function AttendanceServices( $http, $q, $log ) {
+        var apikey;
         var picFile = '';
         var theAttendance = '';
         var activeTab = 'Attendance Information'; //default
@@ -15,6 +16,7 @@
         var code;
         var service = {
   //          getAllAttendances: getAllAttendances,
+             setapikey: setapikey,
             refreshAttendances: refreshAttendances,
             getAttendanceHistory: getAttendanceHistory,
             setStudentReadyNextRank: setStudentReadyNextRank,
@@ -33,6 +35,10 @@
         function setActiveTab(thetab) {
             activeTab = thetab;
         }
+     function setapikey(key) {
+        $log.debug('setapikey', key);
+         apikey = key;
+     }
         
         
 /*

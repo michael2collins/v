@@ -12,6 +12,7 @@
         'toggle-switch',
      //   'ngTouch', 
         'ngMessages',
+        'ngCookies',
         'ui.grid.pagination',
         'ui.grid.cellNav',
         'ui.grid.edit',
@@ -72,14 +73,44 @@
 
 }]);
 
-$(document).ready(function() {
-    console.log('fixing for drag-drop');
-	jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
-	console.log(jQuery.event.props);
-});
+    $(document).ready(function() {
+        console.log('fixing for drag-drop');
+        jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
+        console.log(jQuery.event.props);
+    });
+    
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
+
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log'];
+    function authrun($rootScope, $location, $cookieStore, $http, $log) {
+        $log.debug('authrun entered');
+
+        // keep user logged in after page refresh
+        $rootScope.globals = $cookieStore.get('globals') || {};
+        $log.debug('authrun globals', $rootScope.globals);
+        
+        if ($rootScope.globals.currentUser) {
+//            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $log.debug('in currentUser');
+        }
+
+        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+            $log.debug('check login on location change',$location.path());
+            // redirect to login page if not logged in and trying to access a restricted page
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup']) === -1;
+            var loggedIn = $rootScope.globals.currentUser;
+            
+            $log.debug('check logn next', restrictedPage, loggedIn);
+            
+            if (restrictedPage && !loggedIn) {
+                $log.debug('restricted and not logged in');
+                $location.path('/page-signin');
+            }
+        });
+    }
 
     function logConfig($logProvider) {
         $logProvider.debugEnabled(true);
@@ -93,7 +124,18 @@ $(document).ready(function() {
                 templateUrl: 'templates/states/main.html',
                 controller: 'MainController'
             })
-            .when('/form-components', {
+            .when('/page-signin', {
+                templateUrl: 'templates/states/page-signin.html'
+            })
+            .when('/page-signup', {
+                templateUrl: 'templates/states/page-signup.html'
+            })
+            .when('/page-lock-screen', {
+                templateUrl: 'templates/states/page-lock-screen.html',
+                controller: 'PageLockScreenController'
+            })
+
+/*            .when('/form-components', {
                 templateUrl: 'templates/states/form-components.html',
                 controller: 'FormComponentsController'
             })
@@ -101,24 +143,8 @@ $(document).ready(function() {
                 templateUrl: 'templates/states/form-layouts.html',
                 controller: 'FromLayoutsController'
             })
-            .when('/layout-boxed', {
-                templateUrl: 'templates/states/layout-boxed.html',
-                controller: 'NoneController'
-            })
-            .when('/layout-left-sidebar-collapsed', {
-                templateUrl: 'templates/states/layout-left-sidebar-collapsed.html',
-                controller: 'NoneController'
-            })
-            .when('/layout-left-sidebar', {
+*/            .when('/layout-left-sidebar', {
                 templateUrl: 'templates/states/layout-left-sidebar.html',
-                controller: 'NoneController'
-            })
-            .when('/layout-right-sidebar-collapsed', {
-                templateUrl: 'templates/states/layout-right-sidebar-collapsed.html',
-                controller: 'NoneController'
-            })
-            .when('/layout-right-sidebar', {
-                templateUrl: 'templates/states/layout-right-sidebar.html',
                 controller: 'NoneController'
             })
             .when('/page-404', {
@@ -128,54 +154,6 @@ $(document).ready(function() {
             .when('/page-500', {
                 templateUrl: 'templates/states/page-500.html',
                 controller: 'Page500Controller'
-            })
-            .when('/ui-buttons', {
-                templateUrl: 'templates/states/ui-buttons.html',
-                controller: 'UiButtonsController'
-            })
-            .when('/ui-general', {
-                templateUrl: 'templates/states/ui-general.html',
-                controller: 'UiGeneralController'
-            })
-            .when('/ui-icons', {
-                templateUrl: 'templates/states/ui-icons.html',
-                controller: 'NoneController'
-            })
-            .when('/ui-modals', {
-                templateUrl: 'templates/states/ui-modals.html',
-                controller: 'NoneController'
-            })
-            .when('/ui-nestable-list', {
-                templateUrl: 'templates/states/ui-nestable-list.html',
-                controller: 'UiNestableListController'
-            })
-            .when('/ui-portlets', {
-                templateUrl: 'templates/states/ui-portlets.html',
-                controller: 'UiPortletsController'
-            })
-            .when('/ui-sliders', {
-                templateUrl: 'templates/states/ui-sliders.html',
-                controller: 'UiSlidersController'
-            })
-            .when('/ui-tabs-accordions-navs', {
-                templateUrl: 'templates/states/ui-tabs-accordions-navs.html',
-                controller: 'NoneController'
-            })
-            .when('/ui-typography', {
-                templateUrl: 'templates/states/ui-typography.html',
-                controller: 'UiTypographyController'
-            })
-            .when('/ui-notific8', {
-                templateUrl: 'templates/states/ui-notific8.html',
-                controller: 'UiNotific8Controller'
-            })
-            .when('/ui-toastr-notifications', {
-                templateUrl: 'templates/states/ui-toastr-notifications.html',
-                controller: 'UiToastrNotificationsController'
-            })
-            .when('/ui-select-dropdown', {
-                templateUrl: 'templates/states/ui-select-dropdown.html',
-                controller: 'UiSelectDropdownController'
             })
             .when('/table-basic-students', {
                 templateUrl: 'templates/states/table-basic-students.html'
@@ -203,7 +181,8 @@ $(document).ready(function() {
                 templateUrl: 'templates/states/table-basic-eventcreation.html'
             })
             .otherwise({
-                redirectTo: '/'
+                redirectTo: '/page-signin'
+     //           redirectTo: '/'
             });
         $locationProvider.html5Mode(false);
         //    $locationProvider.hashPrefix('!');

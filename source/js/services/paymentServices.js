@@ -8,10 +8,11 @@
     PaymentServices.$inject = ['_', '$http', '$log'];
 
     function PaymentServices( _ , $http, $log ) {
+        var apikey;
  
 
     var service = {
-  
+             setapikey: setapikey,
 			getStudentPaymentList: getStudentPaymentList,
             updateStudentPayment: updateStudentPayment,
             getStudentPayment: getStudentPayment,			
@@ -20,7 +21,11 @@
         };
         return service;
         
-  
+       function setapikey(key) {
+        $log.debug('setapikey', key);
+         apikey = key;
+       }
+
 
         function getStudentPayment(path) {
             return $http({method: 'GET', url: path}).

@@ -8,10 +8,13 @@
     StudentServices.$inject = ['$http', '$q', '$log'];
 
     function StudentServices( $http, $q, $log ) {
+        var apikey;
+        
         var picFile = '';
         var theStudent = '';
         var activeTab = 'Student Information'; //default
         var service = {
+             setapikey: setapikey,
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
             getStudentLists: getStudentLists,
@@ -43,6 +46,12 @@
         function setActiveTab(thetab) {
             activeTab = thetab;
         }
+
+     function setapikey(key) {
+        $log.debug('setapikey', key);
+         apikey = key;
+     }
+
         
         function getstudentPicFile() {
           $log.debug('getStuPicfile: ' + picFile);

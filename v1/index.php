@@ -2,7 +2,7 @@
 define("LOG", "/var/log/apache2/php/php.log", true);
 define("STUPICDIR", "/home/michael2collins/Web/v/v/app/images/students/", true);
 
-//require_once '../include/DBAuth.php';
+require_once '../include/DBAuth.php';
 require_once '../include/DBUtilQueries.php';
 require_once '../include/DBStudent.php';
 require_once '../include/DBStudentClass.php';
@@ -18,7 +18,7 @@ $app = new \Slim\Slim();
 $user_id = NULL;
 
 
-//require_once dirname(__FILE__) . 'auth.php';
+require_once dirname(__FILE__) . '/auth.php';
 require_once dirname(__FILE__) . '/routestudent.php';
 require_once dirname(__FILE__) . '/routestudentclass.php';
 require_once dirname(__FILE__) . '/routeattendance.php';

@@ -8,11 +8,13 @@
     EventServices.$inject = ['$http', '$q', '$log'];
 
     function EventServices( $http, $q, $log ) {
+        var apikey;
         var activeTab = 'Event Information'; //default
         var response;
         var service = {
   //          getAllEvents: getAllEvents,
 //            refreshEvents: refreshEvents,
+             setapikey: setapikey,
             getEventSource: getEventSource,
             getColDefs: getColDefs,
             getColDefList: getColDefList,
@@ -33,6 +35,11 @@
         function setActiveTab(thetab) {
             activeTab = thetab;
         }
+
+     function setapikey(key) {
+        $log.debug('setapikey', key);
+         apikey = key;
+     }
         
         function getEventNames(path) {
             $log.debug('getEventNames service entered');
