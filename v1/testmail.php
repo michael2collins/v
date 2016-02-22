@@ -1,7 +1,9 @@
 <?php
 //$to = "somebody@example.com, somebodyelse@example.com";
 //$to = "michael.l.collins@adp.com, michael_karen@verizon.net";
-$to = "michael.l.collins@adp.com";
+$to = "michael.collins.natick@gmail.com";
+#$to = "E79eaOQkDm5Qub@dkimvalidator.com";
+#$to = "autorespond+dkim@dk.elandsys.com";
 $subject = "HTML email";
 
 $message = "
@@ -30,8 +32,8 @@ $headers = "MIME-Version: 1.0" . "\r\n";
 $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
 // More headers
-$headers .= 'From: <webmaster@villaris.us>' . "\r\n";
-//$headers .= 'Cc: myboss@example.com' . "\r\n";
+$headers .= 'From: <michael2collins@villaris.us>' . "\r\n";
+#$headers .= 'Cc: michael.collins.natick@gmail.com' . "\r\n";
 
 mail($to,$subject,$message,$headers);
 ?>
