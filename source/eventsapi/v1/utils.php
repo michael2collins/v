@@ -25,7 +25,7 @@ function echoRespnse($status_code, $response) {
  
     function emailnotify($to,$subject,$message){
 
-        $from = 'From: <webmaster@villaris.us>' ;
+        $from = 'From: <michael2collins@villaris.us>' ;
         $replyto = 'mark@natickmartialarts.com' . "\r\n";
       //  $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
         
@@ -38,7 +38,7 @@ function echoRespnse($status_code, $response) {
         
         // More headers
         //$headers .= 'From: <webmaster@villaris.us>' . "\r\n";
-        //$headers .= 'Cc: myboss@example.com' . "\r\n";
+       // $headers .= 'Cc: villaris.us@gmail.com' . "\r\n";
         
         mail($to,$subject,$message,$headers);
     }

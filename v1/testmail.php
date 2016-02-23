@@ -1,7 +1,7 @@
 <?php
 //$to = "somebody@example.com, somebodyelse@example.com";
 //$to = "michael.l.collins@adp.com, michael_karen@verizon.net";
-$to = "michael.collins.natick@gmail.com";
+$to = "villaris.us@gmail.com";
 #$to = "E79eaOQkDm5Qub@dkimvalidator.com";
 #$to = "autorespond+dkim@dk.elandsys.com";
 $subject = "HTML email";
