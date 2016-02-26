@@ -38,7 +38,7 @@ function echoRespnse($status_code, $response) {
         
         // More headers
         //$headers .= 'From: <webmaster@villaris.us>' . "\r\n";
-       // $headers .= 'Cc: villaris.us@gmail.com' . "\r\n";
+        $headers .= 'Cc: mark@natickmartialarts.com' . "\r\n";
         
         mail($to,$subject,$message,$headers);
     }
