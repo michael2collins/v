@@ -61,7 +61,7 @@
     }
   }
 
-
+ 
 
   function ModalInstanceController( $log, $uibModalInstance, classname, $scope, $controller, $route) {
     /* jshint validthis: true */

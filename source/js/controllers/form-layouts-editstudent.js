@@ -64,37 +64,14 @@
         getStudentLists();
         getRankList();
         activate();
-        /*
-          $scope.today = function() {
-            $scope.dt = new Date();
-          };
-          $scope.today();
 
-          $scope.clear = function () {
-            $scope.dt = null;
-          };
-
-          // Disable weekend selection
-          $scope.disabled = function(date, mode) {
-            return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-          };
-
-          $scope.toggleMin = function() {
-            $scope.minDate = $scope.minDate ? null : new Date();
-          };
-          $scope.toggleMin();
-*/
         function dateopen($event) {
             vmstudent.status.opened = true;
         }
-        /*
-          $scope.dateOptions = {
-         //   formatYear: 'yy',
-         //   startingDay: 1
-          };
-          $scope.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
-          $scope.format = $scope.formats[4];
-         */
+        
+          vmstudent.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
+          vmstudent.bdateformat = vmstudent.formats[4];
+         
 
         function activate() {
             $log.debug('about activate editstudent ');
@@ -126,6 +103,13 @@
                 } else {
                     vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
                 }
+                $log.debug('get Birthday:', vmstudent.students.Birthday);
+                if (_.isEmpty(vmstudent.students.Birthday)) {
+                    vmstudent.students.Birthday = getBirthday(new Date());
+                } else {
+                    vmstudent.students.Birthday = getBirthday(vmstudent.students.Birthday);
+                }
+
                 $log.debug('studen pic url decache', vmstudent.students.pictureurldecache);
                 return vmstudent.students;
             });
@@ -133,6 +117,8 @@
 
         function updateStudent() {
             $log.debug('about updateStudent ', vmstudent.students);
+            $log.debug('with Birthday', vmstudent.students.Birthday);
+            
             return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
                 $log.debug('updateStudent returned data: goto', vmstudent.path);
                 $log.debug(data.data);

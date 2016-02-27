@@ -236,12 +236,12 @@
 
         function setStudentClass(mystudent, myclassid, mypgmid) {
             var setclasspath = '../v1/studentclass/id/' +
-                $routeParams.id +
+                mystudent +
                 '/myclass/' +
                 myclassid +
                 '/mypgm/' +
                 mypgmid;
-            $log.debug('studentid: ' + $routeParams.id);
+            $log.debug('studentid: ' + mystudent);
             $log.debug('studentclass: ' + myclassid);
             $log.debug('studentpgm: ' + mypgmid);
 

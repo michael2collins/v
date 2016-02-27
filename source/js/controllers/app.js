@@ -243,6 +243,35 @@
     
 
     }
+
+/*    var addEventListener = window.EventTarget.prototype.addEventListener;
+window.EventTarget.prototype.addEventListener = function (event, callback, bubble) {
+    addEventListener.call(this, event, wrap(callback), bubble);
+};
+var removeEventListener = window.EventTarget.prototype.removeEventListener;
+window.EventTarget.prototype.removeEventListener = function (event, callback, bubble) {
+    removeEventListener.call(this, event, callback._wrapped || callback, bubble);
+};
+
+    function wrap(func) {
+    // Ensure we only wrap the function once.
+    if (!func._wrapped) {
+        func._wrapped = function () {
+            try{
+                func.apply(this, arguments);
+            } catch(e) {
+                console.log(e.message, "from", e.stack);
+                // You can send data to your server
+                // sendError(data);
+                throw e;
+            }
+        };
+    }
+    
+    return func._wrapped;
+    }
+  */  
+    
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -263,180 +292,15 @@
         });
         //END TODOS LIST
 
-/* JVECTORMAP exception after tab dispkay
-        //BEGIN JQUERY JVECTORMAP
-        $('.widget-weather').css('height','300px');
-        $('#world-map').css('width',$('.col-lg-6').width());
-        $('#world-map').css('height','400px');
-        $('#world-map').vectorMap({
-            map: 'world_mill_en',
-            scaleColors: ['#B33F93', '#B33F91'],
-            normalizeFunction: 'polynomial',
-            hoverOpacity: 0.7,
-            hoverColor: false,
-            markerStyle: {
-                initial: {
-                    "fill": '#B33F93',
-                    "stroke": '#B33F93',
-                    "stroke-width": 10,
-                    "stroke-opacity": 0.5
-                }
-            },
-            backgroundColor: 'transparent',
-            markers: [
-                {latLng: [41.90, 12.45], name: 'Vatican City'},
-                {latLng: [-0.52, 166.93], name: 'Nauru'},
-                {latLng: [-8.51, 179.21], name: 'Tuvalu'},
-                {latLng: [7.11, 171.06], name: 'Marshall Islands'},
-                {latLng: [17.3, -62.73], name: 'Saint Kitts and Nevis'},
-                {latLng: [3.2, 73.22], name: 'Maldives'},
-                {latLng: [35.88, 14.5], name: 'Malta'},
-                {latLng: [12.05, -61.75], name: 'Grenada'},
-                {latLng: [-4.61, 55.45], name: 'Seychelles'},
-                {latLng: [7.35, 134.46], name: 'Palau'},
-                {latLng: [42.5, 1.51], name: 'Andorra'},
-                {latLng: [6.91, 158.18], name: 'Federated States of Micronesia'},
-                {latLng: [1.3, 103.8], name: 'Singapore'},
-                {latLng: [1.46, 173.03], name: 'Kiribati'},
-                {latLng: [-21.13, -175.2], name: 'Tonga'},
-                {latLng: [-20.2, 57.5], name: 'Mauritius'},
-                {latLng: [26.02, 50.55], name: 'Bahrain'}
-            ]
-        });
-        $( window ).resize(function() {
-            $('#world-map').css('width',$('.col-lg-6').width());
-            $('#world-map').css('height','300px');
-        });
-        //END JQUERY JVECTORMAP
-*/
-/* don't know we'd use this
-        //BEGIN JQUERY ANIMATE NUMBER
-        $({value: 0}).animate({value: $('.tp-chart input').attr("rel")}, {
-            duration: 5000,
-            easing:'swing',
-            step: function()
-            {
-                $('.tp-chart input').val(Math.ceil(this.value)).trigger('change');
-            }
-        });
-        $({value: 0}).animate({value: $('.is-chart input').attr("rel")}, {
-            duration: 5000,
-            easing:'swing',
-            step: function()
-            {
-                $('.is-chart input').val(Math.ceil(this.value)).trigger('change');
-            }
-        });
-        $('#tp-number').animateNumber({
-            number: 55,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $({value: 0}).animate({value: $('.tp-chart input').attr("rel")}, {
-            duration: 5000,
-            easing:'swing',
-            step: function()
-            {
-                $('.tp-chart input').val(Math.ceil(this.value)).trigger('change');
-            }
-        });
 
-        $(".dial").knob({
-            'draw' : function () {
-                $(this.i).val(this.cv + '%');
-            },
-            'fgColor': '#e74c3c'
-        });
-        $({value: 0}).animate({value: $('.stats-chart.visits-stats input').attr("rel")}, {
-            duration: 5000,
-            easing:'swing',
-            step: function()
-            {
-                $('.stats-chart.visits-stats input').val(Math.ceil(this.value)).trigger('change');
-            }
-        });
-        $({value: 0}).animate({value: $('.stats-chart.pageviews-stats input').attr("rel")}, {
-            duration: 5000,
-            easing:'swing',
-            step: function()
-            {
-                $('.stats-chart.pageviews-stats input').val(Math.ceil(this.value)).trigger('change');
-            }
-        });
-        $('#bg-number').animateNumber({
-            number: 13287,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#at-number').animateNumber({
-            number: 8636,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#tm-number').animateNumber({
-            number: 853,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#gr-number').animateNumber({
-            number: 15,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#is-number').animateNumber({
-            number: 1305,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $({value: 0}).animate({value: $('.is-chart input').attr("rel")}, {
-            duration: 5000,
-            easing:'swing',
-            step: function()
-            {
-                $('.is-chart input').val(Math.ceil(this.value)).trigger('change');
-            }
-        });
-        $('#visits-number').animateNumber({
-            number: 3790,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#pageviews-number').animateNumber({
-            number: 54387,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#earning-number').animateNumber({
-            number: 50645,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#new-customer-number').animateNumber({
-            number: 3420,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#users-number').animateNumber({
-            number: 15,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#app-number').animateNumber({
-            number: 32890,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        //END JQUERY ANIMATE NUMBER
-*/
-        //BEGIN SKYCON
-/*        var icons = new Skycons({"color": "white"});
 
-        icons.set("clear-day", Skycons.CLEAR_DAY);
-        icons.set("clear-night", Skycons.CLEAR_NIGHT);
-        icons.set("partly-cloudy-day", Skycons.PARTLY_CLOUDY_DAY);
-        icons.set("partly-cloudy-night", Skycons.PARTLY_CLOUDY_NIGHT);
-        icons.set("cloudy", Skycons.CLOUDY);
-        icons.set("rain", Skycons.RAIN);
-        icons.set("sleet", Skycons.SLEET);
-        icons.set("snow", Skycons.SNOW);
-        icons.set("wind", Skycons.WIND);
-        icons.set("fog", Skycons.FOG);
-
-        icons.play();
-*/        //END SKYCON
+        try {
 
         //BEGIN LINE CHART SPLINE
         var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
         var d2_2 = [["Jan", 165],["Feb", 172],["Mar", 175],["Apr", 176],["May", 164],["Jun", 171],["Jul", 175],["Aug", 180],["Sep", 181]];
         var d2_3 = [["Jan", 128],["Feb", 131],["Mar", 140],["Apr", 150],["May", 140],["Jun", 144],["Jul", 146],["Aug", 155],["Sep", 158]];
+
         $.plot("#line-chart-spline", [{
             data: d2_1,
             label: "Children",
@@ -449,7 +313,7 @@
             data: d2_3,
             label: "Blackbelts",
             color: "#2980b9"
-        }], {
+        }], {   
             series: {
                 lines: {
                     show: !1
@@ -485,7 +349,7 @@
             shadowSize: 0
         });
         //END LINE CHART SPLINE
-        
+            
         //BEGIN CHART TRAFFIC SOURCES
         var d6_1 = [39];
         var d6_2 = [41];
@@ -675,7 +539,16 @@
         $("#my-calendar").zabuto_calendar({
             language: "en"
         });
+
+        } catch(e) {
+                console.log(e.message, "from", e.stack);
+                // You can send data to your server
+                // sendError(data);
+                //throw e;
+        }
+
+        
         //END CALENDAR
-    },50);
+    },500);
     
 })();    

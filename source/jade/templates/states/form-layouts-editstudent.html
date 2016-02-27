@@ -568,7 +568,15 @@
                             <div class="col-md-11">
                               <div class="input-icon right">
                                 <i ng-click="vmstudent.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputBirthday" type="text" placeholder="mm/dd/yyyy" name="Birthday" ng-model="vmstudent.students.Birthday" ng-change="vmstudent.updateStudent()" is-open="vmstudent.status.opened" uib-datepicker-popup="{{vmstudent.bdateformat}}" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                <input id="inputBirthday" 
+                                    type="text" 
+                                    placeholder="mm/dd/yyyy" 
+                                    name="Birthday" 
+                                    ng-model="vmstudent.students.Birthday" 
+                                    ng-change="vmstudent.updateStudent()" 
+                                    is-open="vmstudent.status.opened" 
+                                    uib-datepicker-popup="{{vmstudent.bdateformat}}" 
+                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                               </div>
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">
@@ -1118,7 +1126,7 @@
                                   <div ng-message="maxlength">Your field is too long</div>
                                   <div ng-message="email">Your email is missing @ and/or a period</div>
                                 </div>
-                              </div>
+                              </div> 
                             </div>
                           </div>
                         </div>
