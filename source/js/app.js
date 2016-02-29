@@ -83,12 +83,12 @@
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
 
-    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log'];
-    function authrun($rootScope, $location, $cookieStore, $http, $log) {
+    authrun.$inject = ['$rootScope', '$location', '$cookies', '$http', '$log'];
+    function authrun($rootScope, $location, $cookies, $http, $log) {
         $log.debug('authrun entered');
 
         // keep user logged in after page refresh
-        $rootScope.globals = $cookieStore.get('globals') || {};
+        $rootScope.globals = $cookieStore.getObject('globals') || {};
         $log.debug('authrun globals', $rootScope.globals);
         
         if ($rootScope.globals.currentUser) {

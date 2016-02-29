@@ -5,9 +5,9 @@
         .module('ng-admin')
     .factory('UserServices', UserServices);
 
-    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookieStore'];
+    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookies'];
 
-    function UserServices( $http, $q, $log, $rootScope, $cookieStore ) {
+    function UserServices( $http, $q, $log, $rootScope, $cookies ) {
         var response;
         var apikey;
         var userdetails={};
@@ -21,21 +21,42 @@
             createUser: createUser,
             updateUser: updateUser,
             setapikey: setapikey,
+            getapikey: getapikey,
             isapikey: isapikey
 //            getUser: getUser,
         };
         return service;
         
         function setapikey(key){
-            $log.debug('UserServices setapikey', key);
+    //        $log.debug('UserServices setapikey', key);
             apikey = key;
+            return apikey;
+        }
+        function getapikey(){
+   //         $log.debug('UserServices getapikey', apikey);
+            return apikey;
         }
 
         function isapikey(){
-            if (typeof apikey != 'undefined') {
-    //            $log.debug('UserServices isapikey', apikey);
-                return apikey.length > 0;
-            } else { return false; }
+
+            var cookiecheck = $cookies.getObject('globals');
+         //   $log.debug('cookie is:',cookiecheck);
+
+//            if (typeof apikey != 'undefined') {
+//    //            $log.debug('UserServices isapikey', apikey);
+//                return apikey.length > 0;
+//            } else { return false; }
+            if (typeof cookiecheck != 'undefined') {
+                if (typeof apikey != 'undefined') {
+                    return apikey.length > 0;
+                } else {
+                    //user refreshed page, but kept their browser session
+                    //todo add session timeout
+                    setapikey(cookiecheck.currentUser.authdata);
+                    $http.defaults.headers.common['Authorization'] = cookiecheck.currentUser.authdata; 
+                    return apikey.length > 0;
+                }
+            } else {return false;}
 
         }
         
@@ -74,14 +95,15 @@
 
         //    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
             $http.defaults.headers.common['Authorization'] = authdata; 
-            $cookieStore.put('globals', $rootScope.globals);
+            //todo add expiration, secure, domain
+            $cookies.putObject('globals', $rootScope.globals);
         }
 
         function ClearCredentials() {
             $log.debug('ClearCredentials entered');
             
             $rootScope.globals = {};
-            $cookieStore.remove('globals');
+            $cookies.remove('globals');
             $http.defaults.headers.common['Authorization'] = '';
             setapikey('');
         }
@@ -94,7 +116,7 @@
         }
 
         function getUserDetails() {
-            $log.debug('getUserDetails service entered');
+            $log.debug('getUserDetails service entered',userdetails);
 
             return(userdetails);
         }

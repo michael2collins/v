@@ -8,9 +8,12 @@
     ClassServices.$inject = ['_', '$http', '$q', '$log'];
 
     function ClassServices( _ , $http, $q, $log ) {
+    var apikey;
+
     var xlistnew = [];
     
     var service = {
+             setapikey: setapikey,
             setxlist: setxlist,
             getclass2: getclass2,
             distinctCat: distinctCat,
@@ -25,6 +28,11 @@
             setStudentClass: setStudentClass            
         };
         return service;
+
+     function setapikey(key) {
+//        $log.debug('ClassServices setapikey', key);
+         apikey = key;
+     }
         
         function setxlist(mylist) {
             xlistnew = mylist;

@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <div id="form-layouts-editstudent" class="row" 
         ng-controller="FormLayoutsControllerEditStudent as vmstudent"
-        ng-init="active[vmstudent.getActiveTab()]= true"
         >
+<!--                ng-init="active[vmstudent.getActiveTab()]= true" -->
+
   <div class="col-lg-12">
-    <uib-tabset type="pills" >
+    <uib-tabset type="pills" active="vmstudent.active">
       <uib-tab 
-            id="tab-student" 
+            index="1"
+            id="tab-studentinfo" 
             heading="Student Information"
-            active="active.info"
-            select="vmstudent.setActiveTab('info')"
+            select="vmstudent.setActiveTab(1,'studentinfoselect');infotabShown = !infotabShown" deselect="infotabShown = !infotabShown"
         >
         <div class="row">
           <div>
@@ -903,10 +904,10 @@
         </div>
       </uib-tab>
       <uib-tab 
-            id="tab-student" 
+            index="2"
+            id="tab-studentclass" 
             heading="Class" 
-            active="active.class"
-            select="vmstudent.setActiveTab('class');vmstudent.activate();classtabShown = !classtabShown" deselect="classtabShown = !classtabShown" >
+            select="vmstudent.setActiveTab(2,'studentclassselect');classtabShown = !classtabShown" deselect="classtabShown = !classtabShown" >
         <div class="row" ng-controller="StudentClassController as vmclass">
           <div class="col-lg-12">
 <!--                        <pre>{{vmclass.xList.xList | json}}</pre>
@@ -968,7 +969,7 @@
                             </div>
                           </div>
                           <div class="col-md-2">
-                  
+
                 <div class="row row-icons">
                 <div ng-controller="ModalSetStudentClassController as vmsetclassmodal">
                     <script id="myClasssearch.html" type="text/ng-template">
@@ -1035,7 +1036,7 @@
                           <div class="info">
                             <h4>{{x.class}} - {{x.pgm}}</h4>
                             <div>
-                              <button type="button" ng-click="vmsearch.vmclass.setStudentClass(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);vmsearch.closemodal()" class="btn btn-default btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
+                              <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-default btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
                             </div>
                           </div>
                         </div>
@@ -1061,7 +1062,7 @@
 -->
 
                     <div class="col-md-4">
-                       <a href="#" ng-click="vmsetclassmodal.opensearch()"><i class=
+                       <a href ng-click="vmsetclassmodal.opensearch()"><i class=
                       "glyphicon glyphicon-search"></i></a>
                     </div>
                   </div>
@@ -1098,10 +1099,10 @@
 
       </uib-tab>
       <uib-tab 
-             id="tab-student" 
+            index="3"
+             id="tab-studentpayment" 
              heading="Payment"
-             active="active.payment"
-             select="vmstudent.setActiveTab('payment')"
+             select="vmstudent.setActiveTab(3,'studentpaymentselect'); paymenttabShown = !paymenttabShown" deselect="paymenttabShown = !paymenttabShown"
              >
         <div class="row" ng-controller="StudentPaymentController as vmpayment">
           <div class="col-lg-12">
@@ -1160,7 +1161,7 @@
                           <div class="col-md-3">Name: {{ family.firstname }} {{family.lastname}}</div>
                           <div class="col-md-9">
                               <div class="thumbnail" ng-show="family.pictureurl"> 
-                              <img height="200px" ng-src="./images/students/{{family.pictureurl}}">
+                              <img height="200px" ng-src="{{ './images/students/' + family.pictureurl || '' }}">
                               </div>
                           </div>
                       </div>
@@ -1173,10 +1174,10 @@
         </div>
       </uib-tab>
       <uib-tab 
-            id="tab-student" 
+            index="4"
+            id="tab-studenthist" 
             heading="Student History"
-            active="active.history"
-             select="vmstudent.setActiveTab('history'); histtabShown = !histtabShown" deselect="histtabShown = !histtabShown"
+             select="vmstudent.setActiveTab(4,'studenthistselect'); histtabShown = !histtabShown" deselect="histtabShown = !histtabShown"
             >
         <div class="row" ng-controller="StudentHistoryController as vmhistory">
           <div class="col-lg-12">

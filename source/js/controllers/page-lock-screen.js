@@ -15,11 +15,13 @@
             'EventServices',
             'StudentServices',
             'PaymentServices',
+            'ClassServices',
             '$q'
             ];
         function PageLockScreenController($scope, $log, $routeParams, 
                 $location, UserServices, AttendanceServices,
-                EventServices,StudentServices,PaymentServices, $q){
+                EventServices,StudentServices,PaymentServices, ClassServices,
+                $q){
         /* jshint validthis: true */
 
             var pagevm = this;

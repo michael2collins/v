@@ -37,6 +37,7 @@ function authenticate(\Slim\Route $route) {
         }
     } else {
         // api key is missing in header
+        error_log( print_R("missing auth header", TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Login before registering";
         echoRespnse(400, $response);

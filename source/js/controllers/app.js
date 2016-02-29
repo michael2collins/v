@@ -11,7 +11,12 @@
 
     AppControllerFirst.$inject = ['$scope', 
     '$routeParams', 
-    'UserServices'
+    'UserServices',
+    'AttendanceServices',
+    'EventServices',
+    'StudentServices',
+    'PaymentServices',
+    'ClassServices'
     ];
     AppControllerNone.$inject = ['$scope', 
     '$routeParams', 
@@ -22,7 +27,14 @@
     'UserServices'
     ];	
 	
-    function AppControllerFirst( $scope, $routeParams, UserServices){
+    function AppControllerFirst( $scope, $routeParams, 
+         UserServices,
+         AttendanceServices,
+         EventServices, 
+         StudentServices, 
+         PaymentServices,
+         ClassServices
+    ){
         /* jshint validthis: true */
         var vm = this;
  
@@ -40,8 +52,20 @@
     vm.userdta;
 
     function islogin() {
-    //    console.log('islogin', UserServices.isapikey());
-        return UserServices.isapikey();
+//        console.log('islogin');
+        var isok = UserServices.isapikey();
+ //       console.log(isok);
+        if (isok) {
+            var thekey = UserServices.getapikey();
+            AttendanceServices.setapikey(thekey);
+            EventServices.setapikey(thekey);
+            StudentServices.setapikey(thekey);
+            PaymentServices.setapikey(thekey);
+            ClassServices.setapikey(thekey);
+            UserServices.setapikey(thekey);
+        }
+        
+        return isok;
     }
 
     $scope.$on('$routeChangeSuccess', function (event, current, previous){

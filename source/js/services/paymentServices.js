@@ -22,7 +22,7 @@
         return service;
         
        function setapikey(key) {
-        $log.debug('setapikey', key);
+       // $log.debug('setapikey', key);
          apikey = key;
        }
 

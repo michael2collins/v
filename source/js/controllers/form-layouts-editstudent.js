@@ -40,6 +40,7 @@
         vmstudent.students.pictureurldecache = undefined;
         vmstudent.setActiveTab = setActiveTab;
         vmstudent.getActiveTab = getActiveTab;
+        vmstudent.active = [];
 
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
@@ -78,8 +79,11 @@
             
             return getStudent().then(function () {
                 $log.debug('activated EditStudent view');
+            //    StudentServices.setActiveTab(1,'EditStudent controller');
                 var thetab = StudentServices.getActiveTab();
                 $log.debug('activate the active tab', thetab);
+            //    vmstudent.active[thetab] = true;
+                vmstudent.active = thetab;
 
             });
         }
@@ -158,7 +162,7 @@
 
         function getStudentLists() {
             return StudentServices.getStudentLists(vmstudent.sListPath).then(function (data) {
-                $log.debug('getStudentLists returned data');
+                $log.debug('controller getStudentLists returned data');
                 $log.debug(data.data);
                 vmstudent.StudentList = data.data;
 
@@ -191,13 +195,15 @@
             vmstudent.genders = ['Female', 'Male', 'Unknown'];
         }
 
-        function setActiveTab( activeTab ){
-            $log.debug('set activetab as:', activeTab);
-            StudentServices.setActiveTab(activeTab);
+        function setActiveTab( activeTab, thecaller ){
+            $log.debug('set activetab as:', activeTab, thecaller);
+            StudentServices.setActiveTab(activeTab, thecaller);
         }
 
         function getActiveTab(){
-            return StudentServices.getActiveTab();
+            var atab =  StudentServices.getActiveTab();
+            $log.debug('get activetab is:', atab);
+            return atab;
         }
 
 

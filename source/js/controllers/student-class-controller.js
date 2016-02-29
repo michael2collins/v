@@ -25,7 +25,7 @@
         vmclass.updateStudentClass = updateStudentClass;
         vmclass.activate = activate;
         vmclass.setStudentClass = setStudentClass;
-
+        
         vmclass.categorys = '';
         vmclass.ages = '';
         vmclass.pgms = '';
@@ -58,12 +58,14 @@
             '/myclass/' +
             $routeParams.myclass;
 
+
         $log.debug('studentid: ' + $routeParams.id);
         $log.debug('studentclass: ' + $routeParams.myclass);
         vmclass.studentclass.contactID = $routeParams.id;
 
         activate();
-        
+
+
         function activate() {
             $log.debug('class activate');
             
@@ -73,10 +75,6 @@
             $log.debug("listnew in activate", vmclass.xlistnew);
 
 //            vmclass.xList = ClassServices.getAll();
-
-          }).catch(function(e){
-                $log.debug("getStudentClassList error in activate", e);
-          });
 
             ClassServices.distinctCat().then(function(data) {
                 $log.debug('distinctCat get:', data);
@@ -106,6 +104,12 @@
             }).catch(function(e){
               $log.debug("getStudentClass error", e);
           });
+
+
+          }).catch(function(e){
+                $log.debug("getStudentClassList error in activate", e);
+          });
+
           
         }
 
@@ -251,8 +255,6 @@
                 setclasspath, mystudent, myclassid, mypgmid).then(function (data) {
                 $log.debug('setStudentClass returned data: ');
                 $log.debug(data.data);
-                vmclass.studentclass = data.data;
-                getStudentClass();
             });
         }
     }

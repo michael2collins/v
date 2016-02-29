@@ -12,7 +12,7 @@
         
         var picFile = '';
         var theStudent = '';
-        var activeTab = 'Student Information'; //default
+        var activeTab = 1; //default
         var service = {
              setapikey: setapikey,
             getAllStudents: getAllStudents,
@@ -43,12 +43,13 @@
         function getActiveTab() {
             return activeTab;
         }
-        function setActiveTab(thetab) {
+        function setActiveTab(thetab,thecaller) {
+            $log.debug('StudentServices setActiveTab called', thetab, thecaller);
             activeTab = thetab;
         }
 
      function setapikey(key) {
-        $log.debug('setapikey', key);
+//        $log.debug('StudentServices setapikey', key);
          apikey = key;
      }
 
@@ -366,16 +367,17 @@
         }
         
         function getStudentLists(path) {
+            $log.debug('StudentServices getStudentLists entered', apikey);
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
-                    $log.debug('getStudentLists success:' + path);
+                    $log.debug('StudentServices getStudentLists success:' , path, apikey);
                     $log.debug(data);
                     // this callback will be called asynchronously
                     // when the response is available
                     return data;
                 }).
                 error(function(data, status, headers, config) {
-                    $log.debug('getStudentLists failure:' + path);
+                    $log.debug('StudentServices getStudentLists failure:', path, apikey);
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
