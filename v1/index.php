@@ -16,6 +16,9 @@ $app = new \Slim\Slim();
 
 // User id from db - Global Variable
 $user_id = NULL;
+global $rolelist;
+$rolelist = array("admin","operator");
+
 
 
 require_once dirname(__FILE__) . '/auth.php';

@@ -31,9 +31,13 @@ function authenticate(\Slim\Route $route) {
         } else {
             global $user_id;
             global $user_name;
+            global $role;
+            global $school;
             // get user primary key id
             $user_id = $db->getUserId($api_key);
             $user_name = $db->getUserName($api_key);
+            $role = $db->getRole($api_key);
+            $school = $db->getSchool($user_id);
         }
     } else {
         // api key is missing in header

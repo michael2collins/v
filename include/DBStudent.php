@@ -226,8 +226,10 @@ class StudentDbHandler {
     /**
      * Fetching all students filtered
      */
-    public function getAllStudents($contacttype = NULL, $thelimit, $therank = NULL, $status = NULL) {
-        error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank\n ", TRUE), 3, LOG);
+    public function getAllStudents($contacttype = NULL, $thelimit, 
+        $therank = NULL, 
+        $status = NULL) {
+        error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank \n ", TRUE), 3, LOG);
 
 
         $sql = "SELECT c.*, pays.studentclassstatus from ncontacts  c";
@@ -242,6 +244,12 @@ class StudentDbHandler {
         if (strlen($therank) > 0 && $therank != 'NULL' && $therank != 'All') {
             $sql .= " and CurrentRank = '" . $therank . "'";
         }
+        
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getAllStudents sql after security: $sql", TRUE), 3, LOG);
+        
+
         $sql .= "   order by CurrentRank, LastName, FirstName ";
         
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
@@ -954,7 +962,8 @@ class StudentDbHandler {
         }
 
     }
-    
 
+
+    
 }
 ?>

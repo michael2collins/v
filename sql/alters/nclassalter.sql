@@ -579,3 +579,31 @@ ALTER TABLE  `eventregistration` ADD  `eventstart` VARCHAR( 12 ) NOT NULL AFTER 
 ALTER TABLE  `eventregistration` ADD  `eventend` VARCHAR( 12 ) NOT NULL AFTER  `eventstart` ;
 ALTER TABLE  `eventregistration` CHANGE  `event date`  `eventdate` DATETIME NOT NULL ;
 
+
+ALTER TABLE  `classrank` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+update classrank set school = 'Natick'
+
+ALTER TABLE  `nclass` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+update nclass set school = 'Natick'
+
+ALTER TABLE  `nclasslist` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+UPDATE nclasslist SET school =  'Natick'
+
+ALTER TABLE  `nclasspgm` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+UPDATE nclasspgm SET school =  'Natick'
+
+ALTER TABLE  `notherclass` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+update notherclass set school = 'Natick'
+
+ALTER TABLE  `ranklist` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+UPDATE ranklist SET school =  'Natick'
+
+ALTER TABLE  `schedule` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+update schedule set school = 'Natick'
+
+ALTER TABLE  `studentlist` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+update studentlist set school = 'Natick'
+
+ALTER TABLE  `testtimes` ADD  `school` VARCHAR( 20 ) NOT NULL ;
+UPDATE  `testtimes` SET school =  'Natick'
+

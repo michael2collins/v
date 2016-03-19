@@ -438,7 +438,7 @@
             heading="Register for Tournament -->"
             class="tournamentlarge"
             active="active.tournament"
-            ng-disabled="editstudent.$invalid"
+            disable="editstudent.$invalid"
             select="vmevent.notify('Select students to register');vmstudent.setActiveTab('tournament');vmstudent.activate();tournamenttabShown = !tournamenttabShown" deselect="tournamenttabShown = !tournamenttabShown" >
         <div >
 
@@ -559,7 +559,7 @@
       <uib-tab
              id="tab-student" 
              heading="Pay for Tournament"
-            ng-disabled="editstudent.$invalid"
+             disable="editstudent.$invalid"
              class="tournamentlarge"
              active="active.payment"
              select="vmstudent.setActiveTab('payment');vmevent.getEventDetails()"
@@ -627,7 +627,7 @@
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
     <input type="hidden" name="item_name"
-        value="Kata/Weapons Registration - Early Bird - for {{item.FirstName}}">
+        value="Kata/Weapons Registration - Regular - for {{item.FirstName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
@@ -642,7 +642,7 @@
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
     <input type="hidden" name="item_name"
-        value="Sparring/Weapons Registration - Early Bird - for {{item.FirstName}}">
+        value="Sparring/Weapons Registration - Regular - for {{item.FirstName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
@@ -655,7 +655,7 @@
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
     <input type="hidden" name="item_name"
-        value="Kata/Sparring Registration - Early Bird - for {{item.FirstName}}">
+        value="Kata/Sparring Registration - Regular - for {{item.FirstName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
@@ -668,7 +668,7 @@
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(3)}}">
     <input type="hidden" name="item_name"
-        value="Kata/Sparring/Weapons Registration - Early Bird - for {{item.FirstName}}">
+        value="Kata/Sparring/Weapons Registration - Regular - for {{item.FirstName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            

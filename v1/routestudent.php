@@ -395,8 +395,13 @@ $app->get('/studentnames', 'authenticate', function() use ($app) {
  */
 $app->get('/students', 'authenticate', function() use($app){
 
+    checkSecurity();
+    global $user_id;
+    
     $allGetVars = $app->request->get();
+    
     error_log( print_R("students entered:\n ", TRUE), 3, LOG);
+    
     error_log( print_R($allGetVars, TRUE), 3, LOG);
 
     $contacttype = '';
@@ -424,12 +429,12 @@ $app->get('/students', 'authenticate', function() use($app){
 
     $db = new StudentDbHandler();
 
-    $userid = 1; //have to convert name to id
+//    $userid = 1; //have to convert name to id
     $prefkey = "allstudents";
     $response["fields"] = array();
 
     //get a list of fields from a preferences table
-    $fields = $db->getUserPreferences($userid, $prefkey);
+    $fields = $db->getUserPreferences($user_id, $prefkey);
 
     while ($field = $fields->fetch_assoc()) {
         $fieldlist["prefcolumn"] = $field["prefcolumn"];
@@ -1269,4 +1274,47 @@ function validateEmail($email) {
         $app->stop();
     }
 }
+
+function checkSecurity() {
+    $app = \Slim\Slim::getInstance();
+    global $role;
+    global $school;
+    global $user_id;
+    global $rolelist;
+    
+    error_log( print_R("role: $role school: $school user: $user_id\n ", TRUE), 3, LOG);
+
+    if (!isset($school, $user_id)) {
+        $response["error"] = true;
+        $response["message"] = 'security is not valid';
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+    if (isset($role) && !in_array($role, $rolelist)) {
+        $response["error"] = true;
+        $response["message"] = 'security is not valid';
+        echoRespnse(400, $response);
+        $app->stop();
+        
+    }
+    
+}
+
+function addSecurity($insql, $field) {
+    $app = \Slim\Slim::getInstance();
+    global $role;
+    global $school;
+    global $user_id;
+    error_log( print_R("role: $role school: $school user: $user_id\n ", TRUE), 3, LOG);
+    error_log( print_R("addSecurity: $insql\n ", TRUE), 3, LOG);
+
+
+    if ( $role != 'admin') {
+        //admin can see all data, others need to filter by school or user  
+        $insql .= " and " .  $field . " = '" . $school . "'";
+    }
+    return $insql;
+    
+}
+
 ?>

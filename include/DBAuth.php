@@ -255,6 +255,40 @@ class DbHandler {
         }
     }
 
+    public function getRole($api_key) {
+        $stmt = $this->conn->prepare("SELECT role FROM users WHERE api_key = ?");
+        $stmt->bind_param("s", $api_key);
+        if ($stmt->execute()) {
+            $stmt->bind_result($role);
+            $stmt->fetch();
+            // TODO
+            // $user_id = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+        error_log( print_R("getRole:  role: $role\n ", TRUE), 3, LOG);
+            
+            return $role;
+        } else {
+            return NULL;
+        }
+    }
+
+    public function getSchool($userid) {
+        $stmt = $this->conn->prepare("SELECT school FROM users WHERE id = ?");
+        $stmt->bind_param("s", $userid);
+        if ($stmt->execute()) {
+            $stmt->bind_result($school);
+            $stmt->fetch();
+            // TODO
+            // $user_id = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+        error_log( print_R("getSchool:  school: $school\n ", TRUE), 3, LOG);
+            
+            return $school;
+        } else {
+            return NULL;
+        }
+    }
+
     /**
      * Validating user api key
      * If the api key is there in db, it is a valid key

@@ -103,8 +103,8 @@
           { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
         ];
 
-        vm.discount="earlybird";
-    //    vm.discount="regular";
+     //   vm.discount="earlybird";
+        vm.discount="regular";
     //    vm.discount="late";
         vm.twoeventpay50="FK26Y8JHFF69W";
         vm.twoeventpay60="EGHLJJYUAW6JA";
