@@ -60,9 +60,16 @@ class StudentDbHandler {
 
 
     public function getEventNames($theinput) {
-        $sql = "SELECT distinct event FROM eventregistration";
+        $sql = "SELECT distinct event FROM eventregistration e, ncontacts c ";
         $sql .= " where event like '%" . $theinput . "%' "; 
-        $sql .= " order by event";
+        $sql .= " and c.ID = e.contact " ;
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getEventNames sql after security: $sql", TRUE), 3, LOG);
+
+        
+        $sql .= " order by event ";
         error_log( print_R("getEventNames sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
@@ -93,6 +100,12 @@ class StudentDbHandler {
         $sql .= " from eventregistration e, ncontacts c ";
         $sql .= " where event = '" . $theinput . "'"; 
         $sql .= " and c.id = e.contact ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getEventDetails sql after security: $sql", TRUE), 3, LOG);
+
+
         $sql .= " order by e.event, e.eventdate, c.lastname, c.firstname ";
         
         error_log( print_R("getEventDetails sql: $sql", TRUE), 3, LOG);
@@ -129,7 +142,12 @@ class StudentDbHandler {
     error_log( print_R("contactid: $ContactID\n", TRUE ), 3, LOG);
         
         
-        $stmt = $this->conn->prepare("SELECT event from eventregistration WHERE event = ? and eventdate = ? and contact = ?");
+        $sql = "SELECT event from eventregistration e, ncontacts c WHERE event = ? ";
+        $sql .= " and eventdate = ? and contact = ?" ;
+        
+        $stmt = $this->conn->prepare($sql);
+
+        
         $stmt->bind_param("sss", $Event, $EventDate, $ContactID);
         $stmt->execute();
         $stmt->store_result();
@@ -189,7 +207,15 @@ class StudentDbHandler {
      * Fetching lookup lists for students
      */
     public function getStudentLists() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM studentlist t order by t.listtype, t.listorder");
+        $sql = "SELECT t.* FROM studentlist t where (1=1) ";
+
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by t.listtype, t.listorder";
+        
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $slists = $stmt->get_result();
         $stmt->close();
@@ -197,9 +223,15 @@ class StudentDbHandler {
     }
 
     public function getStudentNames($theinput) {
-        $sql = "SELECT FirstName,LastName,ID FROM ncontacts";
-        $sql .= " where LastName like '%" . $theinput . "%'"; 
-        $sql .= " or FirstName like '%" . $theinput . "%'";
+        $sql = "SELECT FirstName,LastName,ID FROM ncontacts ";
+        $sql .= " where LastName like '%" . $theinput . "%' " ; 
+        $sql .= " or FirstName like '%" . $theinput . "%' ";
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudentNames sql after security: $sql", TRUE), 3, LOG);
+
+
         $sql .= " order by LastName, FirstName LIMIT 10";
         error_log( print_R("getStudentNames sql: $sql", TRUE), 3, LOG);
 
@@ -232,7 +264,7 @@ class StudentDbHandler {
         error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank \n ", TRUE), 3, LOG);
 
 
-        $sql = "SELECT c.*, pays.studentclassstatus from ncontacts  c";
+        $sql = "SELECT c.*, pays.studentclassstatus from ncontacts  c ";
         $sql .= " LEFT JOIN nclasspays pays ON c.id = pays.contactid ";
         $sql .= " where (1 = 1)  ";
         if (strlen($status) > 0 && $status != 'ALL') {
@@ -281,7 +313,16 @@ class StudentDbHandler {
     }
 
     public function getContactTypes() {
-        $stmt = $this->conn->prepare("SELECT contacttype, count(contacttype) FROM ncontacts group by contacttype order by 2 desc");
+        $sql = "SELECT contacttype, count(contacttype) FROM ncontacts where (1=1) ";
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " group by contacttype order by 2 desc";
+
+        $stmt = $this->conn->prepare($sql);
+
         $stmt->execute();
         $agelist = $stmt->get_result();
         $stmt->close();
@@ -293,7 +334,7 @@ class StudentDbHandler {
      * @param String $student_id id of the student
      */
     public function getStudent($student_id) {
-        $stmt = $this->conn->prepare("SELECT
+        $sql = "SELECT
                    t.ID,
                    t.LastName,
                    t.FirstName,
@@ -334,7 +375,14 @@ class StudentDbHandler {
                    t.ReadyForNextRank,
                    t.pictureurl,
                    t.nextScheduledTest
-        from ncontacts t WHERE t.ID = ? ");
+        from ncontacts t WHERE t.ID = ? ";
+
+        $schoolfield = "t.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudent sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+        
         $stmt->bind_param("i", $student_id);
         if ($stmt->execute()) {
             $res = array();
@@ -454,6 +502,11 @@ class StudentDbHandler {
         $sql = $sql . " FROM ncontacts t, nclasspays c ";
         $sql = $sql . " WHERE t.ID = c.contactid ";
         $sql = $sql . " AND c.classpayname in ( select p.classpayname from nclasspays p where p.contactID = ? )  ";
+        
+        $schoolfield = "t.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
+        
         $sql = $sql . " ORDER BY c.classPayName ";
 
         error_log( print_R("sql for getfamily is: " . $sql . "\n", TRUE ),3, LOG);
@@ -481,8 +534,15 @@ class StudentDbHandler {
         $sql = $sql . " t.contactid as contactid, ";
         $sql = $sql . "  t.contactdate as contactdate, ";
         $sql = $sql . "  t.contactmgmttype as contactmgmttype  ";
-        $sql = $sql . " FROM ncontactmgmt t ";
+        $sql = $sql . " FROM ncontactmgmt t, ncontacts n ";
         $sql = $sql . " WHERE t.contactid = ? ";
+        $sql = $sql . " and n.ID = t.contactid ";
+
+        $schoolfield = "n.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudentHistory sql after security: $sql", TRUE), 3, LOG);
+        
+        
         $sql = $sql . " ORDER BY t.contactdate ";
 
         error_log( print_R("sql for getStudentHistory is: " . $sql . "\n", TRUE ),3, LOG);
@@ -573,6 +633,10 @@ class StudentDbHandler {
 
 
         $sql .= " where ID = ? ";
+
+        $schoolfield = "t.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("updateStudent sql after security: $sql", TRUE), 3, LOG);
 
         error_log( print_R($sql, TRUE ));
         error_log( print_R($LastName, TRUE ));
@@ -671,21 +735,24 @@ class StudentDbHandler {
                                       
         $response = array();
 
+        global $school;        
 
         $sql = "INSERT into ncontacts (";
         $sql .= " LastName ,";
         $sql .= " FirstName ,";
-        $sql .= " Email )";
-        $sql .= " values ( ?, ?, ?)";
+        $sql .= " Email, ";
+        $sql .= " studentschool )";
+        $sql .= " values ( ?, ?, ?, ?)";
 
         // First check if user already existed in db
-        if (!$this->isStudentExists($Email, $LastName, $FirstName)) {
+        if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("sss",
                                   $LastName,
                                   $FirstName    ,
-                                  $Email    
+                                  $Email,
+                                  $school
                                      );
                     $result = $stmt->execute();
 
@@ -718,16 +785,21 @@ class StudentDbHandler {
      * Checking for duplicate student by email address, FirstName, LastName
      * @return boolean
      */
-    private function isStudentExists($Email, $LastName, $FirstName) {
+    private function isStudentExists($Email, $LastName, $FirstName, $inschool) {
 
     error_log( print_R("before isStudentExists\n", TRUE ), 3, LOG);
     error_log( print_R("lastname: $LastName\n", TRUE ), 3, LOG);
     error_log( print_R("FirstName: $FirstName\n", TRUE ), 3, LOG);
     error_log( print_R("email: $Email\n", TRUE ), 3, LOG);
+    error_log( print_R("school: $inschool\n", TRUE ), 3, LOG);
         
         
-        $stmt = $this->conn->prepare("SELECT id from ncontacts WHERE email = ? and LastName = ? and FirstName = ?");
-        $stmt->bind_param("sss", $Email, $LastName, $FirstName);
+        $sql = "SELECT id from ncontacts WHERE email = ? ";
+        $sql .= " and LastName = ? and FirstName = ? ";
+        $sql .= " and studentschool = ?  ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("sss", $Email, $LastName, $FirstName, $inschool);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
@@ -811,6 +883,11 @@ class StudentDbHandler {
     public function getEventSource($thelimit = NULL) {
 
         $sql = "SELECT * FROM eventsource ";
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getEventSource sql after security: $sql", TRUE), 3, LOG);
+
         
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
             $sql .= "  LIMIT " . $thelimit ;

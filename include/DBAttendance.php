@@ -23,7 +23,16 @@ class AttendanceDbHandler {
      * Fetching lookup lists for students class
      */
     public function getAttendanceStatus() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' order by t.listtype, t.listorder");
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' ";
+
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("updateStudent sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by t.listtype, t.listorder";
+
+        $stmt = $this->conn->prepare($sql);
+
         $stmt->execute();
         $slists = $stmt->get_result();
         $stmt->close();
@@ -31,11 +40,14 @@ class AttendanceDbHandler {
     }
 
     public function getClassSchedules($DOWid) {
+        
+        global $school;
 
-        $sql = "SELECT * FROM schedule where takeAttendance in ('All Rank','Yes') and DayOfWeek = ? order by sortorder";
+        $sql = "SELECT * FROM schedule where takeAttendance in ('All Rank','Yes') ";
+        $sql .= " and DayOfWeek = ? and school = ?  order by sortorder";
         
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $DOWid);
+            $stmt->bind_param("ss", $DOWid, $school);
 
             if ($stmt->execute()) {
     //            error_log( print_R("getClassSchedules  stmt", TRUE), 3, LOG);
@@ -59,34 +71,100 @@ class AttendanceDbHandler {
 
 
     public function getClassAges() {
-        $stmt = $this->conn->prepare("SELECT distinct agecat FROM nclasspgm order by agecat");
-        $stmt->execute();
-        $agelist = $stmt->get_result();
-        $stmt->close();
-        return $agelist;
+
+        global $school;
+
+        $sql = "SELECT distinct agecat FROM nclasspgm "; 
+        $sql .= " where school = ? ";
+        $sql .= " order by agecat";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
+            if ($stmt->execute()) {
+                $agelist = $stmt->get_result();
+                $stmt->close();
+                return $agelist;
+            } else {
+                error_log( print_R("getClassAges  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassAges  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
     }
 
     public function getClassPgms() {
-        $stmt = $this->conn->prepare("SELECT distinct pgmcat FROM nclasspgm order by pgmcat");
-        $stmt->execute();
-        $pgmlist = $stmt->get_result();
-        $stmt->close();
-        return $pgmlist;
+
+        global $school;
+
+        $sql = "SELECT distinct pgmcat FROM nclasspgm ";
+        $sql .= " where school = ? ";
+        $sql .= " order by pgmcat";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
+            if ($stmt->execute()) {
+                $pgmlist = $stmt->get_result();
+                $stmt->close();
+                return $pgmlist;
+            } else {
+                error_log( print_R("getClassPgms  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassPgms  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
     }
     
     public function getClassCats() {
-        $stmt = $this->conn->prepare("SELECT distinct classcat FROM nclasspgm order by classcat");
-        $stmt->execute();
-        $catlist = $stmt->get_result();
-        $stmt->close();
-        return $catlist;
+
+        global $school;
+
+        $sql = "SELECT distinct classcat FROM nclasspgm ";
+        $sql .= " where school = ? ";
+        $sql .= " order by classcat";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
+            if ($stmt->execute()) {
+                $catlist = $stmt->get_result();
+                $stmt->close();
+                return $catlist;
+            } else {
+                error_log( print_R("getClassCats  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassCats  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+
     }
 
 
     public function getAttendancePgmList() {
-        $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat from nclass a, nclasslist b, nclasspgm c where a.id = c.classid and b.id = c.pgmid order by a.class ";
+
+        global $school;
+
+        $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat ";
+        $sql .= " from nclass a, nclasslist b, nclasspgm c ";
+        $sql .= " where a.id = c.classid and b.id = c.pgmid ";
+        $sql .= " where school = ? ";
+        $sql .= " order by a.class ";
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
             if ($stmt->execute()) {
                 error_log( print_R("Attendancepgm list stmt", TRUE), 3, LOG);
                 error_log( print_R($stmt, TRUE), 3, LOG);
@@ -108,10 +186,17 @@ class AttendanceDbHandler {
     }
 
     public function getDOWList() {
-            $sql = "SELECT distinct DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek
-                FROM `nattendance` order by mondayofweek desc LIMIT 5";
+
+        global $school;
+        
+            $sql = "SELECT distinct DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek ";
+            $sql .= " FROM nattendance n, ncontacts c ";
+            $sql .= " where c.ID = n.contactid ";
+            $sql .= " and c.studentschool = ? ";
+            $sql .= " order by mondayofweek desc LIMIT 5";
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
             if ($stmt->execute()) {
                 error_log( print_R("DOW list stmt", TRUE), 3, LOG);
                 error_log( print_R($stmt, TRUE), 3, LOG);
@@ -150,6 +235,12 @@ class AttendanceDbHandler {
         $sql .= " FROM attendance a, ncontacts c, nclass n "; 
         $sql .= " WHERE attended = 1 ";
         $sql .= " and a.ContactId = c.ID  and a.classid = n.id ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getAttendanceHistory sql after security: $sql", TRUE), 3, LOG);
+
+
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $sql .= " and mondayofweek = '" . $thedow . "'";
         } 
@@ -192,6 +283,11 @@ class AttendanceDbHandler {
         $sql .= " , c.currentrank as rank, c.pictureurl, a.attended ";
         $sql .= " FROM attendance a, ncontacts c, nclass n ";
         $sql .= " where (1 = 1) and a.ContactId = c.ID  and a.classid = n.id ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getAttendanceHistory sql after security: $sql", TRUE), 3, LOG);
+
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $sql .= " and mondayofweek = '" . $thedow . "'";
         } 
@@ -237,6 +333,10 @@ class AttendanceDbHandler {
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid ";
         $sql .= " and n.class = '" . $theclass . "'";
 
+        $schoolfield = "s.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+
+
         $heresql = " Union ";
         $heresql .= " SELECT n.class, ";
         $heresql .= " a.classid, ";
@@ -253,6 +353,10 @@ class AttendanceDbHandler {
         $heresql .= " and n.class = '" . $theclass . "'";
         $heresql .= " and a.downum = " . $daynum;
         $heresql .= " and a.attended = 1 ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($heresql, $schoolfield);
+
 
         $grpsql = " ) sel  ";
         $grpsql .= "group by 1,2,3,4,5,6,7,8,9 order by 6,5";
@@ -288,11 +392,15 @@ class AttendanceDbHandler {
 
 
     public function getAttendancePayList() {
-        $sql = 'SELECT distinct p.classPayName as classpaynametmp,
-        c.LastName as lastname,
-        c.FirstName as firstname,
-        p.contactID as contactID
-        FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid  order by p.classPayName ';
+        $sql = "SELECT distinct p.classPayName as classpaynametmp, ";
+        $sql .= " c.LastName as lastname, c.FirstName as firstname, p.contactID as contactID ";
+        $sql .=" FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid ";
+        $sql .= " order by p.classPayName ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " order by p.classPayName ";
 
         if ($stmt = $this->conn->prepare($sql) ) {
             if ($stmt->execute() ) {
@@ -322,10 +430,12 @@ class AttendanceDbHandler {
 
 
     public function getAttendancePicture($picID) {
-        $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? ";
+        global $school;
+        
+        $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? and t.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("i", $picID);
+            $stmt->bind_param("is", $picID, $school);
 
             if ($stmt->execute()) {
                 error_log( print_R("getAttendancePicture  stmt", TRUE), 3, LOG);
@@ -352,6 +462,9 @@ class AttendanceDbHandler {
      * @param String $student_id id of the student
      */
     public function getClassStudent($student_id) {
+        
+        global $school;
+        
         error_log( print_R("get class student for id", TRUE), 3, LOG);
         error_log( print_R($student_id, TRUE), 3, LOG);
         $stmt = $this->conn->prepare("SELECT
@@ -364,8 +477,10 @@ class AttendanceDbHandler {
                     t.classseq,
                     t.pgmseq,
                     t.Attendancestatus
-                   from nclasspays t, nclass c, nclasslist p WHERE t.classseq = c.id and t.pgmseq = p.id and t.contactid = ? ");
-        $stmt->bind_param("i", $student_id);
+                   from nclasspays t, nclass c, nclasslist p WHERE t.classseq = c.id and t.pgmseq = p.id and t.contactid = ? and n.school = ? ");
+                   
+                   
+        $stmt->bind_param("is", $student_id, $school);
         error_log( print_R("get class student", TRUE), 3, LOG);
         if ($stmt->execute()) {
             $res = array();
@@ -541,10 +656,11 @@ class AttendanceDbHandler {
     public function setStudentNextRank($sc_ContactId, $sc_ready
                                    ) {
         $num_affected_rows = 0;
+        global $school;
 
         $sql = "UPDATE ncontacts  set ";
         $sql .= " readyForNextRank = ? ";
-        $sql .= " where ID = ?";
+        $sql .= " where ID = ? and studentschool = ?";
 
         error_log( print_R($sql . "\n", TRUE), 3, LOG);
         error_log( print_R($sc_ContactId . "\n", TRUE), 3, LOG);
@@ -552,9 +668,10 @@ class AttendanceDbHandler {
 
         if ($stmt = $this->conn->prepare($sql)) {
 //            error_log( print_R("student setStudentNextRank set prepared", TRUE), 3, LOG);
-            $stmt->bind_param("ii",
+            $stmt->bind_param("iis",
                               $sc_ready,
-                              $sc_ContactId
+                              $sc_ContactId,
+                              $school
                              );
  //           error_log( print_R("student setStudentNextRank set bind", TRUE), 3, LOG);
             $stmt->execute();
