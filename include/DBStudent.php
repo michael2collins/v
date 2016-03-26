@@ -98,7 +98,7 @@ class StudentDbHandler {
         $sql .= ", e.ordered as Ordered, e.location as Location ";
         $sql .= ", c.LastName, c.FirstName, c.Email, c.Email2, c.Parent,  c.StudentSchool ";
         $sql .= " from eventregistration e, ncontacts c ";
-        $sql .= " where event = '" . $theinput . "'"; 
+        $sql .= " where event = ? "; 
         $sql .= " and c.id = e.contact ";
 
         $schoolfield = "c.studentschool";
@@ -111,6 +111,8 @@ class StudentDbHandler {
         error_log( print_R("getEventDetails sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $theinput);
+            
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getEventDetails list returns data", TRUE), 3, LOG);

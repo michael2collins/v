@@ -145,12 +145,16 @@
         //vm.isChrome = /chrome/i.test(navigator.userAgent);
 
         $scope.$watch('vm.EventStart', function (value) {
-            if (!value) return;
+            $log.debug('vm.EventStart', value);
+            var defValue = "1/1/1900";
+            if (!value || value == "NULL") return new Date(defValue.toISOString());
             vm.time = new Date(value.toISOString());
         }, true);
 
         $scope.$watch('vm.EventEnd', function (value) {
-            if (!value) return;
+            $log.debug('vm.EventEnd', value);
+            var defValue = "1/1/1900";
+            if (!value || value == "NULL") return new Date(defValue.toISOString());
             vm.time = new Date(value.toISOString());
         }, true);
       
