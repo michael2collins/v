@@ -336,6 +336,8 @@ class AttendanceDbHandler {
         $schoolfield = "s.studentschool";
         $sql = addSecurity($sql, $schoolfield);
 
+        error_log( print_R("getRegistrationList firstsql: $sql \n", TRUE), 3, LOG);
+
 
         $heresql = " Union ";
         $heresql .= " SELECT n.class, ";
@@ -355,7 +357,9 @@ class AttendanceDbHandler {
         $heresql .= " and a.attended = 1 ";
 
         $schoolfield = "c.studentschool";
-        $sql = addSecurity($heresql, $schoolfield);
+        $heresql = addSecurity($heresql, $schoolfield);
+
+        error_log( print_R("getRegistrationList secondsql: $heresql \n", TRUE), 3, LOG);
 
 
         $grpsql = " ) sel  ";

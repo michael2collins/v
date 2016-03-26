@@ -41,8 +41,8 @@ angular.module('ng-admin')
                 var h = element.height();
                 // using 20 here because it seems even a missing image will have ~18px width 
                 // after this error function has been called
-                if (w <= 20) { w = 100; }
-                if (h <= 20) { h = 100; }
+                if (w <= 100) { w = 400; }
+                if (h <= 200) { h = 600; }
                 var url = 'http://placehold.it/' + w + 'x' + h + '/cccccc/ffffff&text=Image Not Uploaded!';
                 element.prop('src', url);
                 element.css('border', 'double 3px #cccccc');

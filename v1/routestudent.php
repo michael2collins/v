@@ -1312,7 +1312,11 @@ function addSecurity($insql, $field) {
     if ( $role != 'admin') {
         //admin can see all data, others need to filter by school or user  
         $insql .= " and " .  $field . " = '" . $school . "'";
+        error_log( print_R("addSecurity done: $insql\n ", TRUE), 3, LOG);
+    } else {
+        error_log( print_R("addSecurity not needed for admin\n ", TRUE), 3, LOG);
     }
+
     return $insql;
     
 }
