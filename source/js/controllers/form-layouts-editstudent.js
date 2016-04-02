@@ -41,7 +41,8 @@
         vmstudent.setActiveTab = setActiveTab;
         vmstudent.getActiveTab = getActiveTab;
         vmstudent.active = [];
-
+  //      vmstudent.media;
+    //    vmstudent.callback = callback;
         vmstudent.menu_h = $('#sidebar').height();
         vmstudent.setHeight = setHeight;
         vmstudent.path = '../v1/students/' + $routeParams.id;
@@ -94,6 +95,10 @@
             return new Date(bday);
         }
 
+//        function callback(media) {
+//            $log.debug('callback entered');
+//            //$log.debug(media);
+//        }
         function getStudent() {
             return StudentServices.getStudent(vmstudent.path).then(function (data) {
                 $log.debug('getStudent returned data');

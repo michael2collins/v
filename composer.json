@@ -1,6 +1,7 @@
 {
     "require": {
         "slim/slim": "~2.6",
+        "palanik/slim-no-cache": "*",
         "php": ">=5.4",
         "flowjs/flow-php-server": "^1.0"
         }

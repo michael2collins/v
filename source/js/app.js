@@ -30,6 +30,8 @@
                 'ngSanitize',
     'angularFileUpload',
     'akoenig.deckgrid'
+//    'omr.directives'
+//    'webcam'
         //        'dynamicLayout'
         //
         ])

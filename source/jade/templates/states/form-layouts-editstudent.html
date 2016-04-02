@@ -67,7 +67,89 @@
                                 </span>
                           </div>
                         </div>
+                        <div class="row">
+<div id="my_photo_booth">
+    <div id="my_camera" style="width:320px; height:240px;"></div>
 
+    <script language="JavaScript">
+        Webcam.attach( '#my_camera' );
+
+    </script>
+        <form>
+			<div id="pre_take_buttons">
+				<!-- This button is shown before the user takes a snapshot -->
+				<input type=button value="Take Snapshot" onClick="preview_snapshot()">
+			</div>
+			<div id="post_take_buttons" style="display:none">
+				<!-- These buttons are shown after a snapshot is taken -->
+				<input type=button value="&lt; Take Another" onClick="cancel_preview()">
+				<input type=button value="Save Photo &gt;" onClick="save_photo()" style="font-weight:bold;">
+			</div>
+		</form>
+
+</div>
+<div id="results" style="display:none">
+		<!-- Your captured image will appear here... -->
+</div>
+	
+
+<script language="JavaScript">
+		// preload shutter audio clip
+		var shutter = new Audio();
+		shutter.autoplay = false;
+		shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : 'shutter.mp3';
+		
+		function preview_snapshot() {
+			// play sound effect
+			try { shutter.currentTime = 0; } catch(e) {;} // fails in IE
+			shutter.play();
+			
+			// freeze camera so user can preview current frame
+			Webcam.freeze();
+			
+			// swap button sets
+			document.getElementById('pre_take_buttons').style.display = 'none';
+			document.getElementById('post_take_buttons').style.display = '';
+		}
+		
+		function cancel_preview() {
+			// cancel preview freeze and return to live camera view
+			Webcam.unfreeze();
+			
+			// swap buttons back to first set
+			document.getElementById('pre_take_buttons').style.display = '';
+			document.getElementById('post_take_buttons').style.display = 'none';
+		}
+		
+		function save_photo() {
+			// actually snap photo (from preview freeze) and display it
+			Webcam.snap( function(data_uri) {
+				// display results in page
+				document.getElementById('results').innerHTML = 
+					'<h2>Here is your large, cropped image:</h2>' + 
+					'<img src="'+data_uri+'"/><br/></br>' + 
+					'<a href="'+data_uri+'" target="_blank">Open image in new window...</a>';
+				
+				// shut down camera, stop capturing
+				Webcam.reset();
+                Webcam.upload( data_uri, '../v1/myuploadscript.php', function(code, text) {
+                });
+                 Webcam.on( 'uploadComplete', function(code, text) {
+                    // Upload complete!
+                    // 'code' will be the HTTP response code from the server, e.g. 200
+                    // 'text' will be the raw response content
+                    console.log("uploaded",code,text);
+                } );
+                
+				// show results, hide photo booth
+				document.getElementById('results').style.display = '';
+				document.getElementById('my_photo_booth').style.display = 'none';
+			} );
+		}
+	</script>
+
+
+                        </div>
 
                         <div class="row row-icons">
                           <div ng-controller="ModalPicUploadController as vmpicmodal">

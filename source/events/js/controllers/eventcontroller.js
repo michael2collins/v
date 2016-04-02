@@ -104,8 +104,8 @@
         ];
 
      //   vm.discount="earlybird";
-        vm.discount="regular";
-    //    vm.discount="late";
+     //   vm.discount="regular";
+        vm.discount="late";
         vm.twoeventpay50="FK26Y8JHFF69W";
         vm.twoeventpay60="EGHLJJYUAW6JA";
         vm.twoeventpay70="PK7AC8ZRE835Q";

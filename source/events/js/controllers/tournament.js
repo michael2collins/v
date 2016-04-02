@@ -112,7 +112,8 @@
             return TournamentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
                 $log.debug('updateStudent returned data: goto', vmstudent.path);
                 $log.debug(data.data);
-                vmstudent.students = data.data;
+                //data returned is not the student
+       //         vmstudent.students = data.data;
                 getStudent();
             });
         }

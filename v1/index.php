@@ -14,6 +14,10 @@ require '.././libs/Slim/Slim.php';
 
 $app = new \Slim\Slim();
 
+require ('.././libs/Slim/Middleware/SlimNoCache.php');
+
+$app->add(new \SlimNoCache\SlimNoCache());
+
 // User id from db - Global Variable
 $user_id = NULL;
 global $rolelist;
@@ -29,4 +33,5 @@ require_once dirname(__FILE__) . '/routeutilqueries.php';
 require_once dirname(__FILE__) . '/utils.php';
 
 $app->run();
+
 ?>

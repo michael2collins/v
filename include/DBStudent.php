@@ -750,7 +750,7 @@ class StudentDbHandler {
         if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sss",
+                $stmt->bind_param("ssss",
                                   $LastName,
                                   $FirstName    ,
                                   $Email,
@@ -801,7 +801,7 @@ class StudentDbHandler {
         $sql .= " and studentschool = ?  ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("sss", $Email, $LastName, $FirstName, $inschool);
+        $stmt->bind_param("ssss", $Email, $LastName, $FirstName, $inschool);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;

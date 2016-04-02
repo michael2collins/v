@@ -1,4 +1,5 @@
 {
   "directory" : "bower_components",
-  "json" : "bower.json"
+  "json" : "bower.json",
+  "tmp" : "/home/michael2collins/Web/v/v/temp"
 }
