@@ -144,6 +144,7 @@
 			// actually snap photo (from preview freeze) and display it
 			Webcam.snap( function(data_uri) {
 
+
 			var lname = document.getElementById('inputLastName').value;
 			var fname = document.getElementById('inputFirstName').value;
 			var stuid = document.getElementById('studentid').innerHTML;
@@ -168,6 +169,15 @@
                     // 'code' will be the HTTP response code from the server, e.g. 200
                     // 'text' will be the raw response content
                     console.log("uploaded",code,text);
+                    var em = angular.element(document.getElementById('form-layouts-editstudent'));
+                    //console.log("em", em);
+                    var emscope = em.scope();
+                    console.log("emscope", emscope);
+                    setTimeout(function() {
+                        emscope.vmstudent.setStudentPIC(picnm);
+                        console.log("finished setpic");
+                    }, 1000);    
+
                 } );
                 
 				// show results, hide photo booth
