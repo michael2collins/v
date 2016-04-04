@@ -1,5 +1,49 @@
 <?php
 
+$app->post('/picupload', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("picupload entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $picnm = '';
+
+    if(array_key_exists('picnm', $allGetVars)){
+        $picnm = $allGetVars['picnm'];
+    } else {
+        error_log( print_R("picupload result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to upload picture. Please try again";
+        echoRespnse(400, $response);
+    }
+
+    if ( !empty( $_FILES ) ) {
+        $tempPath = $_FILES[ 'webcam' ][ 'tmp_name' ];
+        $uploadPath = dirname( __FILE__ ) . 
+            DIRECTORY_SEPARATOR . '../app' . 
+            DIRECTORY_SEPARATOR . 'images' . 
+            DIRECTORY_SEPARATOR . 'students' . 
+            DIRECTORY_SEPARATOR . $picnm;
+        move_uploaded_file( $tempPath, $uploadPath );
+        if (!is_writeable($uploadPath)) {
+            $response["error"] = true;
+            $response["message"] = "Failed to upload. Cannot write to destination file";
+            echoRespnse(400, $response);
+        }        
+        $response["error"] = false;
+        $response["message"] = "Pic created successfully";
+        $response["picname"] = $picnm;
+        error_log( print_R("Pic uploaded\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("picupload result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to upload picture. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+
 $app->get('/eventnames', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();

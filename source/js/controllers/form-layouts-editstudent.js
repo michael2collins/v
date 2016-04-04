@@ -108,7 +108,7 @@
                 $log.debug('studen pic url', vmstudent.students.pictureurl);
                 if (_.isEmpty(vmstudent.students.pictureurl)) {
                     $log.debug('empty picture');
-                    vmstudent.students.pictureurldecache = 'missing';
+                    vmstudent.students.pictureurldecache = 'missingstudentpicture.png';
                 } else {
                     vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
                 }

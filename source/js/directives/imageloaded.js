@@ -43,7 +43,7 @@ angular.module('ng-admin')
                 // after this error function has been called
                 if (w <= 100) { w = 400; }
                 if (h <= 200) { h = 600; }
-                var url = 'http://placehold.it/' + w + 'x' + h + '/cccccc/ffffff&text=Image Not Uploaded!';
+                var url = '//placehold.it/' + w + 'x' + h + '/cccccc/ffffff&text=Image Not Uploaded!';
                 element.prop('src', url);
                 element.css('border', 'double 3px #cccccc');
             });

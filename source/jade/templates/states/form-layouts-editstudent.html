@@ -21,6 +21,7 @@
                   <form action="" novalidate name="editstudent" class="form-horizontal">
                     <div class="form-body pal">
                       <h3 class="block-heading">Student Information</h3>
+                      <div id="studentid" ng-model="vmstudent.students.ID" >{{vmstudent.students.ID}}</div>
                       <div class="row">
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.FirstName.$invalid, 'has-success': !editstudent.FirstName.$invalid}" class="form-group">
@@ -56,34 +57,34 @@
                       <div class="col-md-3">
                         <div class="row">
                           <div class="col-md-12">
-<!--                            <div class="thumbnail" ng-hide="vmstudent.students.pictureurl">
-                            <img ng-src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&amp;text=no+image">
-                            </div>
--->
-<!--<pre>{{vmstudent.students.pictureurldecache}}</pre> -->
                                 <span class="thumbnail" ng-switch on="vmstudent.students.pictureurldecache">
-                                   <img ng-switch-when="missing" ng-src='./images/students/missing.png'/>
-                                   <img ng-switch-default   ng-src='./images/students/{{vmstudent.students.pictureurldecache}}'/>
+                                   <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
+                                   <img ng-switch-default   ng-src='../images/students/{{vmstudent.students.pictureurldecache}}'/>
                                 </span>
                           </div>
                         </div>
                         <div class="row">
+                        <span ng-switch on="vmstudent.students.pictureurldecache">
+                        <div ng-switch-when="missingstudentpicture.png">
 <div id="my_photo_booth">
+<pre>firstname {{vmstudent.students.FirstName}}</pre>
     <div id="my_camera" style="width:320px; height:240px;"></div>
 
     <script language="JavaScript">
         Webcam.attach( '#my_camera' );
-
     </script>
         <form>
 			<div id="pre_take_buttons">
 				<!-- This button is shown before the user takes a snapshot -->
 				<input type=button value="Take Snapshot" onClick="preview_snapshot()">
+				<input type=button value="Camera On" onClick="test()">
+				<input type=button value="Camera On" onClick="camera_on()">
 			</div>
 			<div id="post_take_buttons" style="display:none">
 				<!-- These buttons are shown after a snapshot is taken -->
 				<input type=button value="&lt; Take Another" onClick="cancel_preview()">
 				<input type=button value="Save Photo &gt;" onClick="save_photo()" style="font-weight:bold;">
+				<input type=button value="Camera Off" onClick="camera_off()">
 			</div>
 		</form>
 
@@ -97,7 +98,7 @@
 		// preload shutter audio clip
 		var shutter = new Audio();
 		shutter.autoplay = false;
-		shutter.src = navigator.userAgent.match(/Firefox/) ? 'shutter.ogg' : 'shutter.mp3';
+		shutter.src = navigator.userAgent.match(/Firefox/) ? '../images/shutter.ogg' : '../images/shutter.mp3';
 		
 		function preview_snapshot() {
 			// play sound effect
@@ -120,19 +121,47 @@
 			document.getElementById('pre_take_buttons').style.display = '';
 			document.getElementById('post_take_buttons').style.display = 'none';
 		}
+		function test() {
+			var lname = document.getElementById('inputLastName').value;
+		    console.log("cam",lname);
+		}
+		function camera_off() {
+			Webcam.reset();
+			
+			// swap buttons back to first set
+			document.getElementById('pre_take_buttons').style.display = '';
+			document.getElementById('post_take_buttons').style.display = 'none';
+		}
+		function camera_on() {
+            Webcam.attach( '#my_camera' );
+			
+			// swap buttons back to first set
+			document.getElementById('pre_take_buttons').style.display = 'none';
+			document.getElementById('post_take_buttons').style.display = '';
+		}
 		
 		function save_photo() {
 			// actually snap photo (from preview freeze) and display it
 			Webcam.snap( function(data_uri) {
+
+			var lname = document.getElementById('inputLastName').value;
+			var fname = document.getElementById('inputFirstName').value;
+			var stuid = document.getElementById('studentid').innerHTML;
+            var picnm = lname + "." + fname + "." + stuid + ".jpg";
+            var ur = '../v1/picupload?picnm=' + picnm;
+            
+            console.log("picnm",ur);
+            
 				// display results in page
 				document.getElementById('results').innerHTML = 
 					'<h2>Here is your large, cropped image:</h2>' + 
 					'<img src="'+data_uri+'"/><br/></br>' + 
-					'<a href="'+data_uri+'" target="_blank">Open image in new window...</a>';
+				//	'<a href="'+data_uri+'" target="_blank">Open image in new window...</a>';
 				
 				// shut down camera, stop capturing
 				Webcam.reset();
-                Webcam.upload( data_uri, '../v1/myuploadscript.php', function(code, text) {
+                Webcam.upload( data_uri, ur, function(code, text) {
+                    console.log("upload called",code,text);
                 });
                  Webcam.on( 'uploadComplete', function(code, text) {
                     // Upload complete!
@@ -142,13 +171,16 @@
                 } );
                 
 				// show results, hide photo booth
-				document.getElementById('results').style.display = '';
-				document.getElementById('my_photo_booth').style.display = 'none';
+			//	document.getElementById('results').style.display = '';
+			//	document.getElementById('my_photo_booth').style.display = 'none';
 			} );
 		}
 	</script>
-
-
+                        </div>
+                        <div ng-switch-default>
+                            
+                        </div>
+                        </span>
                         </div>
 
                         <div class="row row-icons">
