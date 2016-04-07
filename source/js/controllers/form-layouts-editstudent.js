@@ -40,6 +40,7 @@
         vmstudent.students.pictureurldecache = undefined;
         vmstudent.setActiveTab = setActiveTab;
         vmstudent.getActiveTab = getActiveTab;
+        
         vmstudent.active = [];
   //      vmstudent.media;
     //    vmstudent.callback = callback;

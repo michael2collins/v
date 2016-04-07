@@ -4,12 +4,10 @@
     angular
         .module('ng-admin')
  
-    .controller('AppController', AppControllerFirst)
-    .controller('NoneController', AppControllerNone)
-	.controller('MainController', AppControllerMain);
+    .controller('AppController', AppController);
 
 
-    AppControllerFirst.$inject = ['$scope', 
+    AppController.$inject = ['$scope', 
     '$routeParams', 
     'UserServices',
     'AttendanceServices',
@@ -18,16 +16,8 @@
     'PaymentServices',
     'ClassServices'
     ];
-    AppControllerNone.$inject = ['$scope', 
-    '$routeParams', 
-    'UserServices'
-    ];
-    AppControllerMain.$inject = ['$scope', 
-    '$routeParams', 
-    'UserServices'
-    ];	
-	
-    function AppControllerFirst( $scope, $routeParams, 
+
+    function AppController( $scope, $routeParams, 
          UserServices,
          AttendanceServices,
          EventServices, 
@@ -257,45 +247,8 @@
  
         }
 
-    }
-	function AppControllerNone( $scope, $routeParams, UserServices){
-        console.log('AppControllerNone');
-    }
 
-	function AppControllerMain( $scope, $routeParams, UserServices){
-    console.log('AppControllerMain');
-    
 
-    }
-
-/*    var addEventListener = window.EventTarget.prototype.addEventListener;
-window.EventTarget.prototype.addEventListener = function (event, callback, bubble) {
-    addEventListener.call(this, event, wrap(callback), bubble);
-};
-var removeEventListener = window.EventTarget.prototype.removeEventListener;
-window.EventTarget.prototype.removeEventListener = function (event, callback, bubble) {
-    removeEventListener.call(this, event, callback._wrapped || callback, bubble);
-};
-
-    function wrap(func) {
-    // Ensure we only wrap the function once.
-    if (!func._wrapped) {
-        func._wrapped = function () {
-            try{
-                func.apply(this, arguments);
-            } catch(e) {
-                console.log(e.message, "from", e.stack);
-                // You can send data to your server
-                // sendError(data);
-                throw e;
-            }
-        };
-    }
-    
-    return func._wrapped;
-    }
-  */  
-    
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -574,5 +527,6 @@ window.EventTarget.prototype.removeEventListener = function (event, callback, bu
         
         //END CALENDAR
     },500);
-    
+	}
+
 })();    

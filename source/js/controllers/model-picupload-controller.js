@@ -11,7 +11,9 @@
   ModalPicUploadController.$inject = [
       '$scope',
       '$log',
-      '$uibModal'
+      '$uibModal',
+      '$document',
+      '$window'
     ];
   ModalPicInstanceController.$inject = [
       '$scope',
@@ -33,7 +35,7 @@
     ];
 
 
-  function ModalPicUploadController($scope,  $log, $uibModal) {
+  function ModalPicUploadController($scope,  $log, $uibModal, $document, $window) {
     /* jshint validthis: true */
     var vmpicmodal = this;
 
@@ -41,9 +43,125 @@
 
     vmpicmodal.openpick = openpick;
     vmpicmodal.opensearch = opensearch;
+    vmpicmodal.openCamera = openCamera;
+    vmpicmodal.preview_snapshot = preview_snapshot;
+    vmpicmodal.cancel_preview = cancel_preview;
+    vmpicmodal.camera_on = camera_on;
+    vmpicmodal.camera_off = camera_off;
+    vmpicmodal.save_photo = save_photo;
+    
     vmpicmodal.pic = ''; //or should we get this from the db
     vmpicmodal.student = '';
     vmpicmodal.modalInstance = undefined;
+
+	    vmpicmodal.shutter = new Audio();
+		vmpicmodal.shutter.autoplay = false;
+		vmpicmodal.shutter.src = navigator.userAgent.match(/Firefox/) ? '../images/shutter.ogg' : '../images/shutter.mp3';
+		vmpicmodal.pre_take_buttons;
+        vmpicmodal.post_take_buttons;
+        vmpicmodal.Webcam = $window.Webcam;
+        vmpicmodal.data_uri;
+        vmpicmodal.post_take_buttons = false;
+        vmpicmodal.pre_take_buttons = true;
+        
+    //    openCamera();
+        
+    function openCamera() {
+        console.log("openCamera");
+        angular.forEach(angular.element(document).find('div'), function(node) {
+            //console.log('finddiv',node);
+//          if(node.id == 'photowrapper'){
+          if(node.id == 'my_camera'){
+            //do something   ]
+                console.log('mycam', node);
+                vmpicmodal.Webcam.attach( node );
+            }
+        });
+        
+    }
+
+		function pretakon() {
+			// swap buttons back to first set
+			vmpicmodal.pre_take_buttons = true;
+			vmpicmodal.post_take_buttons = false;
+		}
+		function posttakeon() {
+			// swap button sets
+			vmpicmodal.pre_take_buttons = false;
+			vmpicmodal.post_take_buttons = true;
+		}
+		
+		function preview_snapshot() {
+			// play sound effect
+			try { vmpicmodal.shutter.currentTime = 0; } catch(e) {;} // fails in IE
+			vmpicmodal.shutter.play();
+			
+			// freeze camera so user can preview current frame
+			vmpicmodal.Webcam.freeze();
+			posttakeon();
+		}
+		
+		function cancel_preview() {
+			// cancel preview freeze and return to live camera view
+			vmpicmodal.Webcam.unfreeze();
+			pretakon();
+		}
+		function camera_off() {
+			vmpicmodal.Webcam.reset();
+			
+			pretakon();
+		}
+		function camera_on() {
+            vmpicmodal.Webcam.attach( '#my_camera' );
+			posttakeon();
+		}
+		
+		function save_photo(picnm) {
+			// actually snap photo (from preview freeze) and display it
+			vmpicmodal.Webcam.snap( function(data_uri) {
+
+                vmpicmodal.data_uri = data_uri;            
+
+    			//var lname = document.getElementById('inputLastName').value;
+    			//var fname = document.getElementById('inputFirstName').value;
+    			//var stuid = document.getElementById('studentid').innerHTML;
+                //var picnm = lname + "." + fname + "." + stuid + ".jpg";
+                var ur = '../v1/picupload?picnm=' + picnm;
+                console.log("picnm",ur);
+                
+    			// display results in page
+    		//	document.getElementById('results').innerHTML = 
+    		//		'<h2>Here is your large, cropped image:</h2>' + 
+    		//		'<img src="'+data_uri+'"/><br/></br>' + 
+    			//	'<a href="'+data_uri+'" target="_blank">Open image in new window...</a>';
+			
+			// shut down camera, stop capturing
+			    vmpicmodal.Webcam.reset();
+                vmpicmodal.Webcam.upload( data_uri, ur, function(code, text) {
+                    console.log("upload called",code,text);
+                });
+                vmpicmodal.Webcam.on( 'uploadComplete', function(code, text) {
+                    // Upload complete!
+                    // 'code' will be the HTTP response code from the server, e.g. 200
+                    // 'text' will be the raw response content
+                    console.log("uploaded",code,text);
+        //            var em = angular.element(document.getElementById('form-layouts-editstudent'));
+                    //console.log("em", em);
+          //          var emscope = em.scope();
+        //            console.log("emscope", emscope);
+         //           setTimeout(function() {
+          //              emscope.vmstudent.setStudentPIC(picnm);
+        //                console.log("finished setpic");
+         //           }, 1000);    
+                    //call services to save pic
+                } );
+                
+				// show results, hide photo booth
+			//	document.getElementById('results').style.display = '';
+			//	document.getElementById('my_photo_booth').style.display = 'none';
+			} );
+		}
+
 
     function openpick() {
 
