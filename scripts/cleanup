@@ -1,0 +1,7 @@
+sudo find /home/michael2collins/GDrive/vdojo/dbbackup -maxdepth 1 -name "backup*.zip" -exec /home/michael2collins/scripts/isOldrm.sh {} 2 \;
+sudo find /home/michael2collins/Web/backups -maxdepth 1 -name "backup*.zip" -exec /home/michael2collins/scripts/isOldrm.sh {} 2 \;
+sudo find /home/michael2collins/GDrive/vdojo/dbbackup -maxdepth 1 -name "database*.zip" -exec /home/michael2collins/scripts/isOldrm.sh {} 2 \;
+sudo find /home/michael2collins/Web/backups -maxdepth 1 -name "database*.zip" -exec /home/michael2collins/scripts/isOldrm.sh {} 2 \;
+sudo find /home/michael2collins/GDrive/vdojo/dbbackup -maxdepth 1 -name "*.log" -exec /home/michael2collins/scripts/isOldrm.sh {} 2 \;
+sudo find /home/michael2collins/Web/backups -maxdepth 1 -name "*.log" -exec /home/michael2collins/scripts/isOldrm.sh {} 2 \;
+#sudo find /home/michael2collins/GDrive/vdojo/dbbackup -maxdepth 1 -name "backup*.zip" -exec ./isOld.sh {} 7  \;
