@@ -10,10 +10,11 @@
     '$rootScope',
     '$routeParams',
     '$log',
-    '$location'
+    '$location',
+    'Notification'
     ];
 
-    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location) {
+    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location,Notification) {
         /* jshint validthis: true */
         var vmstudent = this;
 
@@ -86,7 +87,10 @@
                 $log.debug('activate the active tab', thetab);
             //    vmstudent.active[thetab] = true;
                 vmstudent.active = thetab;
-
+            },function(error) {
+                    $log.debug('activate editstudent',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 
@@ -122,6 +126,10 @@
 
                 $log.debug('studen pic url decache', vmstudent.students.pictureurldecache);
                 return vmstudent.students;
+            },function(error) {
+                    $log.debug('getStudent',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 
@@ -137,6 +145,10 @@
                 //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
                 //          return vmstudent.students;
                 getStudent();
+            },function(error) {
+                    $log.debug('updateStudent',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 
@@ -163,7 +175,12 @@
                 vmstudent.zipList = data.data;
 
                 return vmstudent.zipList;
-            });
+            },function(error) {
+                    $log.debug('getAllZips',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
+            });        
+            
         }
 
         function getStudentLists() {
@@ -173,6 +190,10 @@
                 vmstudent.StudentList = data.data;
 
                 return vmstudent.StudentList;
+            },function(error) {
+                    $log.debug('getStudentLists ',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 
@@ -183,6 +204,10 @@
                 vmstudent.RankList = data.data;
 
                 return vmstudent.RankList;
+            },function(error) {
+                    $log.debug('getRankList ',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 

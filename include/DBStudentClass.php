@@ -322,6 +322,29 @@ class StudentClassDbHandler {
         return $num_affected_rows > 0;
     }
 
+        /**
+     * Checking for studentclass existing
+     * @return boolean
+     */
+    private function isStudentClassExists($contactid, $classseq, $pgmseq) {
+    error_log( print_R("before isStudentClassExists\n", TRUE ), 3, LOG);
+    error_log( print_R("contactid: $contactid\n", TRUE ), 3, LOG);
+    error_log( print_R("classseq  ate: $classseq\n", TRUE ), 3, LOG);
+    error_log( print_R("pgmseq: $pgmseq\n", TRUE ), 3, LOG);
+        
+        
+        $sql = "SELECT * from nclasspays WHERE contactid = ? and classseq = ? and pgmseq = ? ";
+
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bind_param("sss", $contactid, $classseq, $pgmseq);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
     /**
      * set student class
      */
@@ -337,29 +360,56 @@ class StudentClassDbHandler {
 
         $sql .= " where contactID = ? ";
 
+        $inssql = "INSERT into nclasspays ( `contactid`,`classseq`,  `pgmseq`) VALUES ";
+        $inssql .= " ( ?, ?, ? ) ";
+
         error_log( print_R($sql, TRUE ));
         error_log( print_R($sc_ContactId, TRUE ));
         error_log( print_R($sc_classseq, TRUE ));
         error_log( print_R($sc_pgmseq, TRUE ));
 
-        if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class status set prepared", TRUE ));
-            $stmt->bind_param("iii",
-                              $sc_classseq,
-                              $sc_pgmseq,
-                              $sc_ContactId
-                             );
-            error_log( print_R("student class status set bind", TRUE ));
-            $stmt->execute();
-            error_log( print_R("student class status set execute", TRUE ));
-            $num_affected_rows = $stmt->affected_rows;
-            $stmt->close();
-            error_log( print_R("student class status set done", TRUE ));
-
+        // First check if studentclass already existed in db
+        if ($this->isStudentClassExists($sc_ContactId, $sc_classseq, $sc_pgmseq)) {
+            if ($stmt = $this->conn->prepare($sql)) {
+                error_log( print_R("student class status set prepared", TRUE ));
+                $stmt->bind_param("iii",
+                                  $sc_classseq,
+                                  $sc_pgmseq,
+                                  $sc_ContactId
+                                 );
+                error_log( print_R("student class status set bind", TRUE ));
+                $stmt->execute();
+                error_log( print_R("student class status set execute", TRUE ));
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                error_log( print_R("student class status set done", TRUE ));
+    
+            } else {
+                error_log( print_R("student class status update failed", TRUE ));
+                error_log( print_R($this->conn->error, TRUE ));
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
         } else {
-            error_log( print_R("student class status update failed", TRUE ));
-            error_log( print_R($this->conn->error, TRUE ));
-            printf("Errormessage: %s\n", $this->conn->error);
+            if ($stmt = $this->conn->prepare($inssql)) {
+                error_log( print_R("student class status insert set prepared", TRUE ));
+                $stmt->bind_param("iii",
+                                  $sc_ContactId,
+                                  $sc_classseq,
+                                  $sc_pgmseq
+                                 );
+                error_log( print_R("student class status insert set bind", TRUE ));
+                $stmt->execute();
+                error_log( print_R("student class status insert set execute", TRUE ));
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                error_log( print_R("student class status insert set done", TRUE ));
+    
+            } else {
+                error_log( print_R("student class status insert failed", TRUE ));
+                error_log( print_R($this->conn->error, TRUE ));
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+            
         }
 
         return $num_affected_rows > 0;

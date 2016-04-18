@@ -47,24 +47,24 @@ $app->get('/eventnames', 'authenticate',  function() use ($app) {
 $app->get('/eventdetails', 'authenticate',  function() use($app){
     global $user_name;
 
-//    $allGetVars = $app->request->get();
+    $allGetVars = $app->request->get();
     error_log( print_R("eventdetails entered:\n ", TRUE), 3, LOG);
-//    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
 
-    $event = '';
+    $eventname = '';
 
- //   if(array_key_exists('event', $allGetVars)){
- //       $event = $allGetVars['event'];
- //   }
+    if(array_key_exists('eventname', $allGetVars)){
+        $eventname = $allGetVars['eventname'];
+    }
 
-    error_log( print_R("eventdetails params: event: $event for: $user_name\n ", TRUE), 3, LOG);
+    error_log( print_R("eventdetails params: event: $eventname for: $user_name\n ", TRUE), 3, LOG);
 
     $response = array();
     $db = new StudentDbHandler();
 
     // fetch task
 //    $result = $db->getEventDetails($event,$user_name);
-    $result = $db->getEventDetails($user_name);
+    $result = $db->getEventDetails($user_name,$eventname);
     $response["error"] = false;
     $response["eventdetails"] = array();
 
@@ -217,7 +217,7 @@ $app->post('/eventregistration', 'authenticate', function() use ($app) {
 $message = "
 <html>
 <head>
-<title>Medway 2016 Student Registered</title>
+<title>XXXX Student Registered</title>
 </head>
 <body>
 <p>You have successfully registerd.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
@@ -247,7 +247,7 @@ $message = "
 </html>
 ";
 
-$subject = 'Medway 2016 Registration for ' . 
+$subject = 'XXXX Registration for ' . 
                 $response["FirstName"] . ' ' . 
                 $response["LastName"] . ' of '  . 
                 $response["StudentSchool"];
@@ -1016,16 +1016,20 @@ $app->get('/eventsource', 'authenticate',  function() use($app) {
     error_log( print_R($allGetVars, TRUE), 3, LOG);
 
     $limit = '';
+    $eventname = '';
 
     if(array_key_exists('limit', $allGetVars)){
         $limit = $allGetVars['limit'];
     }
 
+    if(array_key_exists('eventname', $allGetVars)){
+        $eventname = $allGetVars['eventname'];
+    }
 
     $response = array();
     $db = new StudentDbHandler();
 
-    $result = $db->getEventSource($user_name, $limit);
+    $result = $db->getEventSource($user_name, $eventname, $limit);
 
     $response["error"] = false;
     $response["EventsourceList"] = array();

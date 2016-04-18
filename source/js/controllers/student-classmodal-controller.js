@@ -75,7 +75,7 @@
     $log.debug('modal class entered');
     
     vmsearch.vmclass = $controller('StudentClassController as vmclass', {$scope: $scope});
-//    $log.debug(vmsearch.vmclass);
+    $log.debug(vmsearch.vmclass);
 
 
 //    vmsearch.ok = ok;

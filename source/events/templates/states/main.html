@@ -4,12 +4,12 @@
 
 
 
-<div class="portlet portlet-pink">
+<div class="portlet portlet-green">
       <div class="portlet-header">
-        <div class="caption">2016 Medway Classic  - Tournament </div>
-    </div>    
+        <div class="caption">Registration </div>
+      </div>    
       <div class="portlet-body">
-<!--      
+
         <div class="panel panel-success">
               <div class="panel-heading">Sign Up!</div>
               <div class="panel-body">
@@ -19,8 +19,7 @@
                         href="#/page-signup">Create User</a>
                     </div>
                     <div class="col-md-4">
-                      
-                 <a class="btn btn-green btn-outlined tournamentlarge" href="#/page-signin">Login</a>
+                       <a class="btn btn-green btn-outlined tournamentlarge" href="#/page-signin">Login</a>
                     </div>
                 </div>
                 <div ng-show="vm.islogin()" class="row col-md-12">
@@ -31,8 +30,15 @@
                 </div>
              </div>
         </div>      
-      -->            
-        <div class="row">
+
+    </div>
+</div>
+<div class="portlet portlet-pink" ng-hide="true">
+
+      <div class="portlet-header">
+        <div class="caption">2016 Medway Classic  - Tournament </div>
+      </div>    
+        <div class="row" ng-hide="true">
         <h2>
          <a href="images/medway.pdf"> Click here to download pdf of schedule
              
@@ -41,8 +47,10 @@
         </h2>
 
         </div>
+      </div>
+      <div class="portlet-body" ng-hide="true">
 
-        <div class="row">
+        <div class="row" >
 
         <div class="col-sm-12 col-md-6 col-xs-12" id="wide_widgetsSeating">
         <img src="images/Medway.jpg" alt="tournament picture" class="img-responsive">	

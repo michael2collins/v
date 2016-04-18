@@ -239,11 +239,11 @@
             }
         }
         
-        function requery() {
-            $log.debug('requery entered');
-            vm.attending=[];
-            refreshtheEvent();
-        }
+//        function requery() {
+//            $log.debug('requery entered');
+//            vm.attending=[];
+//            refreshtheEvent();
+//        }
 
         function setActiveTab( activeTab ){
             $log.debug('set activetab as:', activeTab);
@@ -267,14 +267,16 @@
             $log.debug('activate entered');
             setGridTournamentOptions();
             setGridPaymentOptions();
-            getEventNames('');
-            
-            getAllStudents().then(function() {
-                $log.debug('activate get all students');
-                getEventDetails().then(function(){
-                    $log.debug('activate eventdetails fetched');
+            getEventNames('').then(function() {
+                getAllStudents().then(function() {
+                    $log.debug('activate get all students');
+                    getEventDetails().then(function(){
+                        $log.debug('activate eventdetails fetched');
+                    });
                 });
+                
             });
+            
         }
 
         function getvalue(numevents) {
@@ -441,7 +443,7 @@
         function refreshtheEvent() {
             $log.debug('refreshtheEvent entered ');
 
-            var refreshpath = encodeURI('../v1/eventsource?thelimit=' + vm.limit );
+            var refreshpath = encodeURI('../v1/eventsource?eventname=' + vm.eventSelected + 'thelimit=' + vm.limit );
 
             $log.debug('refreshtheEvent path:', refreshpath);
             
@@ -477,7 +479,7 @@
 
         function getEventDetails() {
             $log.debug('getEventDetails entered:');
-            var path = encodeURI('../v1/eventdetails');
+            var path = encodeURI('../v1/eventdetails?eventname=' + vm.eventSelected);
 
             
             $log.debug('getEventDetails path:', path);

@@ -1078,7 +1078,7 @@
                               <div ng-class="{'has-error': editstudentclass.pgmclass.$invalid, 'has-success': !editstudentclass.pgmclass.$invalid}" class="form-group">
                                 <label for="inputsc_pgmclass" class="control-label">Student Program</label>
                                 <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.pgmclass.$dirty" ng-class="editstudentclass.pgmclass.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <input id="inputsc_pgmclass" type="text" placeholder="Student Program" name="sc_pgmclass" ng-model="vmclass.studentclass.pgmclass" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                  <input id="inputsc_pgmclass" type="text" placeholder="Student Program" name="pgmclass" ng-model="vmclass.studentclass.pgmclass" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                 </div>
                                 <div style="color:maroon" role="alert" ng-messages="editstudentclass.pgmclass.$error" class="has-error">
                                   <div ng-message="required">You did not enter a field</div>
@@ -1093,7 +1093,7 @@
                                 <label for="inputsc_Classstatus" class="control-label">Student Status</label>
                                 <div class="input-icon right">
                                   <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.studentclassstatus.$dirty" ng-class="editstudentclass.studentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <select id="inputsc_Classstatus" type="text" name="sc_Classstatus" ng-model="vmclass.studentclass.studentclassstatus" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                  <select id="inputsc_Classstatus" type="text" name="studentclassstatus" ng-model="vmclass.studentclass.studentclassstatus" ng-change="vmclass.updateStudentClass()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                     <option ng-repeat="iter in vmclass.classstatuses.studentclassstatuses" ng-selected="{{iter.status==vmclass.studentclass.studentclassstatus}}" placeholder="Select" value="{{iter.status}}">{{iter.status}}</option>
                                   </select>
                                 </div>
@@ -1166,6 +1166,7 @@
                           </div>
                           <div class="row">
                     <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
+                    <pre>{{vmsearch.vmclass}}</pre>
                       <div ng-repeat="x in vmsearch.vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
                         <div class="hover-effect">
                           <div class="img">

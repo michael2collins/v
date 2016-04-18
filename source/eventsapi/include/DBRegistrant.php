@@ -87,11 +87,11 @@ class StudentDbHandler {
     }
 
 //    public function getEventDetails($theinput, $username) {
-    public function getEventDetails( $username) {
+    public function getEventDetails( $username, $eventname) {
         
-        if (strlen($username) == 0) {
+        if (strlen($username) == 0 || strlen($eventname) == 0) {
             error_log( print_R("getEventDetails list sql failed", TRUE), 3, LOG);
-            printf("Errormessage: %s\n", 'username missing');
+            printf("Errormessage: %s\n", 'username or eventname missing');
             return NULL;
         }
         
@@ -101,13 +101,15 @@ class StudentDbHandler {
         $sql .= ", c.LastName, c.FirstName, c.Email, c.Email2, c.Parent,  c.StudentSchool , c.ID";
         $sql .= " from eventregistration e, ncontacts c ";
 //        $sql .= " where event = '" . $theinput . "'"; 
-        $sql .= " where createdby = '" . $username . "'"; 
+        $sql .= " where createdby = ? "; 
         $sql .= " and c.id = e.contact ";
+        $sql .= " and e.event = ? ";
         $sql .= " order by e.event, e.eventdate, c.lastname, c.firstname ";
         
         error_log( print_R("getEventDetails sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss", $username, $eventname );
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getEventDetails list returns data", TRUE), 3, LOG);
@@ -288,23 +290,24 @@ class StudentDbHandler {
 
     }
     
-    public function getEventSource( $username, $thelimit = NULL ) {
-        error_log( print_R("getEventSource entered:  user: $username\n ", TRUE), 3, LOG);
+    public function getEventSource( $username,$eventname, $thelimit = NULL ) {
+        error_log( print_R("getEventSource entered: event: $eventname  user: $username\n ", TRUE), 3, LOG);
 
-        if (strlen($username) == 0) {
+        if (strlen($username) == 0 || strlen($eventname) == 0) {
             error_log( print_R("getEventSource list sql failed", TRUE), 3, LOG);
-            printf("Errormessage: %s\n", 'username missing');
+            printf("Errormessage: %s\n", 'username or eventname missing');
             return NULL;
         }
 
         $sql = "SELECT * FROM eventsource ";
-        $sql .= " where createdby = '" . $username . "'";
+        $sql .= " where createdby = ? and event = ? ";
 
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
             $sql .= "  LIMIT " . $thelimit ;
         }
 
         $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $username, $eventname );
         $stmt->execute();
         $slists = $stmt->get_result();
         $stmt->close();

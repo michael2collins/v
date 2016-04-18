@@ -189,9 +189,17 @@
                     });
     
                     $log.debug('student concat result is:' + vmclass.concat);
+                } else {
+                     vmclass.studentclass.contactID = $routeParams.id; 
+                    $log.debug('studentclass class is null, other data is:', vmclass.studentclass);
                 }
                 return vmclass.studentclass;
+            },function(error) {
+                    $log.debug('getStudentClass ',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
+
         }
 
         function getStudentClassPicture() {
@@ -213,6 +221,10 @@
                 vmclass.xlistnew = data.data;
                 ClassServices.setxlist(vmclass.xlistnew);
                 return vmclass.xlistnew;
+            },function(error) {
+                    $log.debug('getStudentClassList ',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 
@@ -235,6 +247,10 @@
                 $log.debug(data.data);
                 vmclass.studentclass = data.data;
                 getStudentClass();
+            },function(error) {
+                    $log.debug('updateStudentClass ',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
             });
         }
 
