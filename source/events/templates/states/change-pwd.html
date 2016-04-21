@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<div class="animated bounceInDown col-md-3 col-md-offset-3">
+  <div id="signup-page-content" ng-controller="ChangepwdController as vm">
+
+    <form name="form" ng-submit="vm.register()" role="form">
+      <h1 class="block-heading">Change Password</h1>
+      <div class="row mbl">
+        <div class="col-md-6">
+            <div class="form-group" ng-class="{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }">
+                <input 
+                    type="text" 
+                    name="firstName" 
+                    value="" 
+                    id="firstName" 
+                    class="form-control" 
+                    ng-model="vm.firstname" 
+                    required placeholder="First Name"/>
+                <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="help-block">First name is required</span>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="form-group" ng-class="{ 'has-error': form.lastName.$dirty && form.lastName.$error.required }">
+                <input type="text" 
+                    name="lastName" 
+                    id="lastName" 
+                    class="form-control" 
+                    ng-model="vm.lastname" required placeholder="Last Name"/>
+                <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">Last name is required</span>
+            </div>
+        </div>
+       </div>
+        <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
+            <input type="text" 
+                name="username" 
+                id="username" 
+                class="form-control" 
+                ng-model="vm.username" required placeholder="User Name"/>
+            <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+        </div>
+        <div class="form-group input-icon mbl" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }"><i class="fa fa-key"></i>
+            <input type="password" 
+                name="password" 
+                id="password" 
+                value=""
+                placeholder="Password"
+                class="form-control" 
+                ng-model="vm.password" 
+                ng-pattern="re"
+                required />
+            <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+            <span ng-show="form.password.$error.pattern" class="help-block">Not a valid password.</span>
+        </div>
+      <div class="mbl">
+        <input type="password" 
+            name="confirm_password" 
+            value="" 
+            ng-keyup="vm.compare(vm.confirm_password)"
+            ng-pattern="re"
+            placeholder="Confirm Password" 
+            class="form-control"
+                ng-model="vm.confirm_password" 
+                required />
+<span ng-show="vm.isconfirm || form.confirm_password.$dirty " ng-class="{true:'green',false:'red'}[vm.isconfirm]">Password does {{vm.isconfirm==true?'':'not'}} match</span>            
+      </div>
+
+      <div class="input-icon mbl" 
+        ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
+        <i class="fa fa-envelope"></i>
+        <input type="email" 
+            name="email" 
+            value="" 
+            placeholder="Your Email" 
+            class="form-control"
+                ng-model="vm.email" 
+                required />
+            <span ng-show="form.email.$error.email" class="help-block">Not valid email.</span>
+      </div>
+
+<span class="help-block mtm mbl text-muted">By clicking Create my account, you agree to our<a href="/#/terms"> Terms and Data Use Policy</a></span>
+        
+        <div class="form-actions">
+            <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" 
+                class="btn btn-lg btn-primary btn-block">Create my account</button>
+            <img ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+            <a href="#/login" class="btn btn-link">Cancel</a>
+        </div>
+
+    </form>
+  </div>
+</div>
+    

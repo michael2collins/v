@@ -100,7 +100,7 @@
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             $log.debug('check login on location change',$location.path());
             // redirect to login page if not logged in and trying to access a restricted page
-            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup']) === -1;
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/info','/terms','/page-lock-screen']) === -1;
             var loggedIn = $rootScope.globals.currentUser;
             var thekey = UserServices.isapikey();
         $log.debug('check logn next', restrictedPage, loggedIn);
@@ -137,17 +137,18 @@
             .when('/page-signup', {
                 templateUrl: 'templates/states/page-signup.html'
             })
+            .when('/change-pwd', {
+                templateUrl: 'templates/states/change-pwd.html'
+            })
+            .when('/reset-pwd', {
+                templateUrl: 'templates/states/reset-pwd.html'
+            })
+            .when('/forgot-pwd', {
+                templateUrl: 'templates/states/forgot-pwd.html'
+            })
             .when('/page-lock-screen', {
                 templateUrl: 'templates/states/page-lock-screen.html',
                 controller: 'PageLockScreenController'
-            })
-            .when('/page-404', {
-                templateUrl: 'templates/states/page-404.html',
-                controller: 'Page404Controller'
-            })
-            .when('/page-500', {
-                templateUrl: 'templates/states/page-500.html',
-                controller: 'Page500Controller'
             })
            .when('/tournament', {
                 templateUrl: 'templates/states/tournament.html'
