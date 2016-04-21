@@ -37,7 +37,9 @@
                         type="button" class="btn btn-red mrs"
                         ng-disabled="editstudent.$invalid"
                         ng-click="vmmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; Register Another</button>
-                    <div ng-show="vmevent.isRegistered()">
+                        
+<!--                    <div ng-show="vmevent.isRegistered()">  -->
+                    <div >
                         You have {{vmevent.registeredStudents.length}} registered Participants</div>
                     <div ng-repeat="stu in vmevent.registeredStudents">
                         <div class="col-md-3"><span>

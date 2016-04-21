@@ -299,19 +299,30 @@
 
         function getAllStudents() {
             $log.debug('TournamentServices getAllStudents entered');
-            var path = '../v1/eventsource';
+//            var path = '../v1/eventsource';
+            var path = encodeURI('../v1/eventsource?eventname=' + vm.eventSelected );
             
             $log.debug('getAllStudents path:', path);
 
             return TournamentServices.getAllStudents(path).then(function(data){
                    $log.debug('getAllStudents returned data', data);
-                   addExtraData(data.EventsourceList);
+                   if (data.length > 0 ) {
+                    addExtraData(data.EventsourceList); 
+                   }
                 //   addExtraData(data.EventsourceList, vm.eventfieldSparring);
                 //   addExtraData(data.EventsourceList, vm.eventfieldWeapons);
                     vm.gridTournamentOptions.data = data.EventsourceList;
 
                     return vm.gridTournamentOptions.data;
+                },
+                function (error) {
+                    $log.debug('Caught an error getAllStudents, going to notify:', error); 
+                    vm.gridTournamentOptions.data = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
                 });
+                
         }
 
         function addExtraData(data){

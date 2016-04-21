@@ -293,21 +293,28 @@ class StudentDbHandler {
     public function getEventSource( $username,$eventname, $thelimit = NULL ) {
         error_log( print_R("getEventSource entered: event: $eventname  user: $username\n ", TRUE), 3, LOG);
 
-        if (strlen($username) == 0 || strlen($eventname) == 0) {
+/*        if (strlen($username) == 0 || strlen($eventname) == 0) {
+            error_log( print_R("getEventSource list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", 'username or eventname missing');
+            return NULL;
+        }
+ */       if (strlen($username) == 0 ) {
             error_log( print_R("getEventSource list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", 'username or eventname missing');
             return NULL;
         }
 
         $sql = "SELECT * FROM eventsource ";
-        $sql .= " where createdby = ? and event = ? ";
+//        $sql .= " where createdby = ? and event = ? ";
+        $sql .= " where createdby = ? ";
 
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
             $sql .= "  LIMIT " . $thelimit ;
         }
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $username, $eventname );
+//        $stmt->bind_param("ss", $username, $eventname );
+        $stmt->bind_param("s", $username );
         $stmt->execute();
         $slists = $stmt->get_result();
         $stmt->close();

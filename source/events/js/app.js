@@ -47,7 +47,7 @@
         });
     })
 
-//    .run(authrun)
+    .run(authrun)
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {
             $rootScope._ = window._;
@@ -83,8 +83,8 @@
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
 
-    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log'];
-    function authrun($rootScope, $location, $cookieStore, $http, $log) {
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices'];
+    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices) {
         $log.debug('authrun entered');
 
         // keep user logged in after page refresh
@@ -102,10 +102,11 @@
             // redirect to login page if not logged in and trying to access a restricted page
             var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup']) === -1;
             var loggedIn = $rootScope.globals.currentUser;
+            var thekey = UserServices.isapikey();
+        $log.debug('check logn next', restrictedPage, loggedIn);
+        $log.debug('check userservices isapikey', thekey);
             
-            $log.debug('check logn next', restrictedPage, loggedIn);
-            
-            if (restrictedPage && !loggedIn) {
+            if (restrictedPage && ( !loggedIn || !thekey)) {
                 $log.debug('restricted and not logged in');
                 $location.path('/page-signin');
             }

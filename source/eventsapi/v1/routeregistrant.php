@@ -65,36 +65,48 @@ $app->get('/eventdetails', 'authenticate',  function() use($app){
     // fetch task
 //    $result = $db->getEventDetails($event,$user_name);
     $result = $db->getEventDetails($user_name,$eventname);
-    $response["error"] = false;
-    $response["eventdetails"] = array();
 
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-            $tmp["Event"] = (empty($slist["event"]) ? "NULL" : $slist["event"]);
-            $tmp["EventDate"] = (empty($slist["EventDate"]) ? "NULL" : $slist["EventDate"]);
-            $tmp["EventStart"] = (empty($slist["EventStart"]) ? "NULL" : $slist["EventStart"]);
-            $tmp["EventEnd"] =  (empty($slist["EventEnd"]) ? "NULL" : $slist["EventEnd"]);
-            $tmp["EventType"] =  (empty($slist["EventType"]) ? "NULL" : $slist["EventType"]);
-            $tmp["Location"] =  (empty($slist["Location"]) ? "NULL" : $slist["Location"]);
-            $tmp["ContactID"] =  (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
-            $tmp["Paid"] =  (empty($slist["Paid"]) ? "NULL" : $slist["Paid"]);
-            $tmp["ShirtSize"] =  (empty($slist["ShirtSize"]) ? "NULL" : $slist["ShirtSize"]);
-            $tmp["Notes"] =  (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
-            $tmp["Include"] =  (empty($slist["Include"]) ? "NULL" : $slist["Include"]);
-            $tmp["Attended"] =  (empty($slist["Attended"]) ? "NULL" : $slist["Attended"]);
-            $tmp["Ordered"] =  (empty($slist["Ordered"]) ? "NULL" : $slist["Ordered"]);
-            $tmp["LastName"] =  (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
-            $tmp["FirstName"] =  (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
-            $tmp["Email"] =  (empty($slist["Email"]) ? "NULL" : $slist["Email"]);
-            $tmp["Email2"] =  (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
-            $tmp["Parent"] =  (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
-            $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
-        array_push($response["eventdetails"], $tmp);
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+
+        $response["error"] = false;
+        $response["eventdetails"] = array();
+    
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+                $tmp["Event"] = (empty($slist["event"]) ? "NULL" : $slist["event"]);
+                $tmp["EventDate"] = (empty($slist["EventDate"]) ? "NULL" : $slist["EventDate"]);
+                $tmp["EventStart"] = (empty($slist["EventStart"]) ? "NULL" : $slist["EventStart"]);
+                $tmp["EventEnd"] =  (empty($slist["EventEnd"]) ? "NULL" : $slist["EventEnd"]);
+                $tmp["EventType"] =  (empty($slist["EventType"]) ? "NULL" : $slist["EventType"]);
+                $tmp["Location"] =  (empty($slist["Location"]) ? "NULL" : $slist["Location"]);
+                $tmp["ContactID"] =  (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+                $tmp["Paid"] =  (empty($slist["Paid"]) ? "NULL" : $slist["Paid"]);
+                $tmp["ShirtSize"] =  (empty($slist["ShirtSize"]) ? "NULL" : $slist["ShirtSize"]);
+                $tmp["Notes"] =  (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
+                $tmp["Include"] =  (empty($slist["Include"]) ? "NULL" : $slist["Include"]);
+                $tmp["Attended"] =  (empty($slist["Attended"]) ? "NULL" : $slist["Attended"]);
+                $tmp["Ordered"] =  (empty($slist["Ordered"]) ? "NULL" : $slist["Ordered"]);
+                $tmp["LastName"] =  (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
+                $tmp["FirstName"] =  (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+                $tmp["Email"] =  (empty($slist["Email"]) ? "NULL" : $slist["Email"]);
+                $tmp["Email2"] =  (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
+                $tmp["Parent"] =  (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
+                $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
+            array_push($response["eventdetails"], $tmp);
+        }
+    
+
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "No records for eventdetails";
+        error_log( print_R("No rows found\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
     }
-
-
-    echoRespnse(200, $response);
+    
 });
 
 /* Event Registration
@@ -372,126 +384,7 @@ $app->put('/eventregistration', 'authenticate', function() use ($app) {
 
 });
 
-/*
-$app->get('/userprefcols/:prefkey', 'authenticate',  function($prefkey) {
-    error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
 
-    $response = array();
-    $db = new StudentDbHandler();
-
-    $userid = 1; //have to convert name to id
-    //$prefkey = "allstudents";
-
-    // fetching all class pays
-    $result = $db->getUserPreferences($userid, $prefkey);
-
-
-    $response["error"] = false;
-    $response["userprefcols"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
-            $tmp["prefcolumn"] = (empty($slist["prefcolumn"]) ? "NULL" : $slist["prefcolumn"]);
-        } else {
-            $tmp["id"] = "NULL";
-            $tmp["prefcolumn"] = "NULL";
-        }
-        array_push($response["userprefcols"], $tmp);
-    }
-    $row_cnt = $result->num_rows;
-
-    error_log( print_R("userprefcols responding\n ", TRUE), 3, LOG);
-
-    echoRespnse(200, $response);
-});
-
-$app->post('/userprefcols/:prefkey', function($prefkey) use ($app) {
-    error_log( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE), 3, LOG);
-
-    $userid = 1; //have to convert name to id
-
-    $response = array();
-
-    // reading post params
-        $data               = file_get_contents("php://input");
-        $dataJsonDecode     = json_decode($data);
-
-    error_log( print_R("before userprefcols post\n", TRUE ), 3, LOG);
-    error_log( print_R("prefkey: $prefkey\n", TRUE ), 3, LOG);
-
-
-
-    $db = new StudentDbHandler();
-    $response = array();
-
-    // updating task
-    $pref_rslt = $db->createPref($data,
-                                 $prefkey,
-                                 $userid
-                                );
-
-    if ($pref_rslt > 0) {
-        $response["error"] = false;
-        $response["message"] = "Preference created successfully";
-        $response["$pref_rslt"] = $pref_rslt;
-        error_log( print_R("Preference created: $pref_rslt\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
-    } else {
-        error_log( print_R("after Preference result bad\n", TRUE), 3, LOG);
-        $response["error"] = true;
-        $response["message"] = "Failed to create Preference. Please try again";
-        echoRespnse(400, $response);
-    }
-
-
-});
-
-$app->get('/studentnames',  function() use ($app) {
-
-    $allGetVars = $app->request->get();
-    error_log( print_R("studentnames entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
-
-    $theinput = '';
-
-    if(array_key_exists('input', $allGetVars)){
-        $theinput = $allGetVars['input'];
-    }
-
-    error_log( print_R("studentnames params: theinput: $theinput \n ", TRUE), 3, LOG);
-
-    $response = array();
-    $db = new StudentDbHandler();
-
-    // fetch task
-    $result = $db->getStudentNames($theinput);
-    $response["error"] = false;
-    $response["refreshstudentlist"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
-            $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
-            $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
-            $tmp["FullName"] = $slist["FirstName"] . " " . $slist["LastName"];
-        array_push($response["refreshstudentlist"], $tmp);
-    }
-        //send no errors
-        echoRespnse(200, $response);
-    
-});
-*/
-
-/**
- * Listing all tasks of particual user
- * method GET
- * url /tasks
- */
- 
 $app->get('/students', 'authenticate',  function() use($app){
 
     global $user_name;
@@ -542,59 +435,35 @@ $app->get('/students', 'authenticate',  function() use($app){
     //going to get all fields and filter them on the array push
     $result = $db->getAllStudents($contacttype, $thelimit, $therank, $status, $user_name);
 
-    $response["error"] = false;
-    $response["students"] = array();
-
-    $fldcount=count($response["fields"]);
-    //            //error_log( print_R($fldcount,TRUE));
-    while ($student = $result->fetch_assoc()) {
-        $tmp = array();
-        for($i = 0; $i < $fldcount; $i++ ) {
-            //error_log(" in loop " . $i);
-            $ff = $response["fields"][$i]["prefcolumn"];
-            //                    //error_log(print_R( $ff,TRUE));
-            $tmp[$ff] = $student[$ff];
-        }
-        array_push($response["students"], $tmp);
-    }
-    //            //error_log( print_R($response,TRUE));
-
-    echoRespnse(200, $response);
-});
-/*
-$app->get('/contacttypes',  function() {
-
-    $response = array();
-    $db = new StudentDbHandler();
-
-    // fetch task
-    $result = $db->getContactTypes();
-    $response["error"] = false;
-    $response["contacttypes"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["contacttype"] = (empty($slist["contacttype"]) ? "NULL" : $slist["contacttype"]);
-        } else {
-            $tmp["contacttype"] = "NULL";
-        }
-        array_push($response["contacttypes"], $tmp);
-    }
     $row_cnt = $result->num_rows;
 
     if ($row_cnt > 0) {
         $response["error"] = false;
+        $response["students"] = array();
+    
+        $fldcount=count($response["fields"]);
+        //            //error_log( print_R($fldcount,TRUE));
+        while ($student = $result->fetch_assoc()) {
+            $tmp = array();
+            for($i = 0; $i < $fldcount; $i++ ) {
+                //error_log(" in loop " . $i);
+                $ff = $response["fields"][$i]["prefcolumn"];
+                //                    //error_log(print_R( $ff,TRUE));
+                $tmp[$ff] = $student[$ff];
+            }
+            array_push($response["students"], $tmp);
+        }
+        //            //error_log( print_R($response,TRUE));
+
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
-        $response["message"] = "error in contacttypes";
-        error_log( print_R("contacttypes bad\n ", TRUE), 3, LOG);
+        $response["message"] = "No records for getAllStudents";
+        error_log( print_R("No rows found\n ", TRUE), 3, LOG);
         echoRespnse(404, $response);
     }
+
 });
-*/
 
 $app->get('/students/:id', 'authenticate',  function($student_id) {
     //  global $user_id;
@@ -660,101 +529,6 @@ $app->get('/students/:id', 'authenticate',  function($student_id) {
     }
 });
 
-/** family members related to student and setup as payers
- * 
-*/
-/*
-$app->get('/family/:id',  function($student_id) {
-    //  global $user_id;
-    $response = array();
-    $db = new StudentDbHandler();
-
-    // fetch task
-    $result = $db->getFamily($student_id);
-
-    $response["error"] = false;
-    $response["FamilyList"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-//    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
-        ////error_log( print_R("student classpay list results", TRUE ));
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["classpayname"] = (empty($slist["classpayname"]) ? "NULL" : $slist["classpayname"]);
-            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
-            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
-            $tmp["parent"] = (empty($slist["parent"])  ? "NULL" : $slist["parent"]);
-            $tmp["pictureurl"] = (empty($slist["pictureurl"])  ? "NULL" : $slist["pictureurl"]);
-        } else {
-            $tmp["classpayname"] = "NULL";
-            $tmp["firstname"] = "NULL";
-            $tmp["lastname"] = "NULL";
-            $tmp["contactid"] = "NULL";
-            $tmp["parent"] = "NULL";
-            $tmp["pictureurl"] = "NULL";
-        }
-        array_push($response["FamilyList"], $tmp);
-    }
-    
-    $row_cnt = $result->num_rows;
-    //error_log( print_R("route Result set has $r
-
-    if ($result != NULL) {
-        $response["error"] = false;
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "The requested resource doesn't exists";
-        echoRespnse(404, $response);
-    }
-});
-*/
-/**
- * get student contact history
- * method GET
- * params student_id
- * url - /studenthistory/:id
- */
-/*
-$app->get('/studenthistory/:id',  function($student_id) {
-    //  global $user_id;
-    $response = array();
-    $db = new StudentDbHandler();
-
-    $result = $db->getStudentHistory($student_id);
-
-    $response["error"] = false;
-    $response["StudentHistoryList"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["contactmgmttype"] = (empty($slist["contactmgmttype"]) ? "NULL" : $slist["contactmgmttype"]);
-            $tmp["contactdate"] = (empty($slist["contactdate"]) ? "NULL" : $slist["contactdate"]);
-            $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
-        } else {
-            $tmp["contactmgmttype"] = "NULL";
-            $tmp["contactdate"] = "NULL";
-            $tmp["contactid"] = "NULL";
-        }
-        array_push($response["StudentHistoryList"], $tmp);
-    }
-    
-    $row_cnt = $result->num_rows;
-
-    if ($result != NULL) {
-        $response["error"] = false;
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "The requested resource doesn't exists";
-        echoRespnse(404, $response);
-    }
-});
-*/
 
 
 /**
@@ -1031,52 +805,55 @@ $app->get('/eventsource', 'authenticate',  function() use($app) {
 
     $result = $db->getEventSource($user_name, $eventname, $limit);
 
-    $response["error"] = false;
-    $response["EventsourceList"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["Event"] = (empty($slist["event"]) ? "NULL" : $slist["event"]);
-            $tmp["EventDate"] = (empty($slist["eventdate"]) ? "NULL" : $slist["eventdate"]);
-            $tmp["EventStart"] = (empty($slist["eventstart"]) ? "NULL" : $slist["eventstart"]);
-            $tmp["EventEnd"] =  (empty($slist["eventend"]) ? "NULL" : $slist["eventend"]);
-            $tmp["EventType"] =  (empty($slist["eventType"]) ? "NULL" : $slist["eventType"]);
-            $tmp["Location"] =  (empty($slist["location"]) ? "NULL" : $slist["location"]);
-            $tmp["ContactID"] =  (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
-            $tmp["Paid"] =  (empty($slist["paid"]) ? "NULL" : $slist["paid"]);
-            $tmp["ShirtSize"] =  (empty($slist["shirtSize"]) ? "NULL" : $slist["shirtSize"]);
-            $tmp["Notes"] =  (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
-            $tmp["Include"] =  (empty($slist["include"]) ? "NULL" : $slist["include"]);
-            $tmp["Attended"] =  (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
-            $tmp["Ordered"] =  (empty($slist["ordered"]) ? "NULL" : $slist["ordered"]);
-            $tmp["LastName"] =  (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
-            $tmp["FirstName"] =  (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
-            $tmp["Email"] =  (empty($slist["Email"]) ? "NULL" : $slist["Email"]);
-            $tmp["Email2"] =  (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
-            $tmp["Parent"] =  (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
-            $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
-            $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
-            $tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
-
-        } else {
-            $tmp["contactID"] = "NULL";
-            $tmp["LastName"] = "NULL";
-            $tmp["FirstName"] = "NULL";
-
-}
-        array_push($response["EventsourceList"], $tmp);
-    }
-    
     $row_cnt = $result->num_rows;
 
-    if ($result != NULL) {
+    if ($row_cnt > 0) {
+
+        $response["error"] = false;
+        $response["EventsourceList"] = array();
+    
+    
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+                $tmp["Event"] = (empty($slist["event"]) ? "NULL" : $slist["event"]);
+                $tmp["EventDate"] = (empty($slist["eventdate"]) ? "NULL" : $slist["eventdate"]);
+                $tmp["EventStart"] = (empty($slist["eventstart"]) ? "NULL" : $slist["eventstart"]);
+                $tmp["EventEnd"] =  (empty($slist["eventend"]) ? "NULL" : $slist["eventend"]);
+                $tmp["EventType"] =  (empty($slist["eventType"]) ? "NULL" : $slist["eventType"]);
+                $tmp["Location"] =  (empty($slist["location"]) ? "NULL" : $slist["location"]);
+                $tmp["ContactID"] =  (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
+                $tmp["Paid"] =  (empty($slist["paid"]) ? "NULL" : $slist["paid"]);
+                $tmp["ShirtSize"] =  (empty($slist["shirtSize"]) ? "NULL" : $slist["shirtSize"]);
+                $tmp["Notes"] =  (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
+                $tmp["Include"] =  (empty($slist["include"]) ? "NULL" : $slist["include"]);
+                $tmp["Attended"] =  (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
+                $tmp["Ordered"] =  (empty($slist["ordered"]) ? "NULL" : $slist["ordered"]);
+                $tmp["LastName"] =  (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
+                $tmp["FirstName"] =  (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+                $tmp["Email"] =  (empty($slist["Email"]) ? "NULL" : $slist["Email"]);
+                $tmp["Email2"] =  (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
+                $tmp["Parent"] =  (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
+                $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
+                $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
+                $tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
+    
+            } else {
+                $tmp["contactID"] = "NULL";
+                $tmp["LastName"] = "NULL";
+                $tmp["FirstName"] = "NULL";
+    
+            }
+            array_push($response["EventsourceList"], $tmp);
+        }
+    
+
         $response["error"] = false;
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
-        $response["message"] = "The requested resource doesn't exists";
+        $response["message"] = "The requested resource doesn't exist";
         echoRespnse(404, $response);
     }
 });

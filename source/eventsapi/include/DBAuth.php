@@ -28,7 +28,6 @@ class DbHandler {
      */
     public function createUser($name,$lastname, $email, $password, $username) {
         require_once 'PassHash.php';
-        $response = array();
 
         // First check if user already existed in db
         if (!$this->isUserExists($email)) {
@@ -59,8 +58,92 @@ class DbHandler {
             return USER_ALREADY_EXISTED;
         }
 
-        return $response;
     }
+
+    public function changePassword($newpassword, $currentpassword, $email, $username) {
+        require_once 'PassHash.php';
+
+        // First check if user already existed in db
+        if ($this->checkLoginUser($username,$currentpassword)) {
+            // Generating password hash
+            $password_hash = PassHash::hash($newpassword);
+            $curpassword_hash = PassHash::hash($currentpassword);
+
+            // insert query
+            $stmt = $this->conn->prepare("update users set password_hash = ? where username = ? and email = ? and password_hash = ?");
+            $stmt->bind_param("ssss",  $password_hash, $username, $email, $curpassword_hash);
+
+            $result = $stmt->execute();
+
+            $stmt->close();
+
+            // Check for successful insertion
+            if ($result) {
+                // User successfully inserted
+                return USER_CREATED_SUCCESSFULLY;
+            } else {
+                // Failed to create user
+                return USER_CREATE_FAILED;
+            }
+        } else {
+            // curr password didn't match
+            return NULL;
+        
+        }
+
+    }
+
+    public function resetPassword($newpassword, $username) {
+        require_once 'PassHash.php';
+
+        // Generating password hash
+        $password_hash = PassHash::hash($newpassword);
+
+        // insert query
+        $stmt = $this->conn->prepare("update users set password_hash = ?, token_hash = null where username = ?");
+        $stmt->bind_param("ss",  $password_hash, $username);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+
+        // Check for successful insertion
+        if ($result) {
+            // User successfully inserted
+            return USER_CREATED_SUCCESSFULLY;
+        } else {
+            // Failed to create user
+            return USER_CREATE_FAILED;
+        }
+
+    }
+
+
+    public function saveResetToken($token, $username) {
+        require_once 'PassHash.php';
+
+        // Generating token hash
+        $token_hash = PassHash::hash($token);
+
+        // insert query
+        $stmt = $this->conn->prepare("update users set token_hash = ? where username = ?");
+        $stmt->bind_param("ss",  $token_hash, $username);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+
+        // Check for successful insertion
+        if ($result) {
+            // User successfully inserted
+            return USER_CREATED_SUCCESSFULLY;
+        } else {
+            // Failed to create user
+            return USER_CREATE_FAILED;
+        }
+
+    }
+
 
     /**
      * Checking user login
@@ -180,11 +263,11 @@ class DbHandler {
     }
 
     public function getUserByUsername($username) {
-        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at FROM users WHERE username = ?");
+        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         if ($stmt->execute()) {
             // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at);
+            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash);
             $stmt->fetch();
             $user = array();
             $user["name"] = $name;
@@ -194,6 +277,7 @@ class DbHandler {
             $user["api_key"] = $api_key;
             $user["status"] = $status;
             $user["created_at"] = $created_at;
+            $user["token_hash"] = $token_hash;
             $stmt->close();
             return $user;
         } else {
@@ -278,122 +362,6 @@ class DbHandler {
         return md5(uniqid(rand(), true));
     }
 
-    /* ------------- `tasks` table method ------------------ */
-
-    /**
-     * Creating new task
-     * @param String $user_id user id to whom task belongs to
-     * @param String $task task text
-     */
- /*   public function createTask($user_id, $task) {
-        $stmt = $this->conn->prepare("INSERT INTO tasks(task) VALUES(?)");
-        $stmt->bind_param("s", $task);
-        $result = $stmt->execute();
-        $stmt->close();
-
-        if ($result) {
-            // task row created
-            // now assign the task to user
-            $new_task_id = $this->conn->insert_id;
-            $res = $this->createUserTask($user_id, $new_task_id);
-            if ($res) {
-                // task created successfully
-                return $new_task_id;
-            } else {
-                // task failed to create
-                return NULL;
-            }
-        } else {
-            // task failed to create
-            return NULL;
-        }
-    }
-*/
-    /**
-     * Fetching single task
-     * @param String $task_id id of the task
-     */
-/*    public function getTask($task_id, $user_id) {
-        $stmt = $this->conn->prepare("SELECT t.id, t.task, t.status, t.created_at from tasks t, user_tasks ut WHERE t.id = ? AND ut.task_id = t.id AND ut.user_id = ?");
-        $stmt->bind_param("ii", $task_id, $user_id);
-        if ($stmt->execute()) {
-            $res = array();
-            $stmt->bind_result($id, $task, $status, $created_at);
-            // TODO
-            // $task = $stmt->get_result()->fetch_assoc();
-            $stmt->fetch();
-            $res["id"] = $id;
-            $res["task"] = $task;
-            $res["status"] = $status;
-            $res["created_at"] = $created_at;
-            $stmt->close();
-            return $res;
-        } else {
-            return NULL;
-        }
-    }
-*/
-    /**
-     * Fetching all user tasks
-     * @param String $user_id id of the user
-     */
- /*   public function getAllUserTasks($user_id) {
-        $stmt = $this->conn->prepare("SELECT t.* FROM tasks t, user_tasks ut WHERE t.id = ut.task_id AND ut.user_id = ?");
-        $stmt->bind_param("i", $user_id);
-        $stmt->execute();
-        $tasks = $stmt->get_result();
-        $stmt->close();
-        return $tasks;
-    }
-
-*/
-    /**
-     * Updating task
-     * @param String $task_id id of the task
-     * @param String $task task text
-     * @param String $status task status
-     */
-/*    public function updateTask($user_id, $task_id, $task, $status) {
-        $stmt = $this->conn->prepare("UPDATE tasks t, user_tasks ut set t.task = ?, t.status = ? WHERE t.id = ? AND t.id = ut.task_id AND ut.user_id = ?");
-        $stmt->bind_param("siii", $task, $status, $task_id, $user_id);
-        $stmt->execute();
-        $num_affected_rows = $stmt->affected_rows;
-        $stmt->close();
-        return $num_affected_rows > 0;
-    }
-
-    /**
-     * Deleting a task
-     * @param String $task_id id of the task to delete
-     */
-/*    public function deleteTask($user_id, $task_id) {
-        $stmt = $this->conn->prepare("DELETE t FROM tasks t, user_tasks ut WHERE t.id = ? AND ut.task_id = t.id AND ut.user_id = ?");
-        $stmt->bind_param("ii", $task_id, $user_id);
-        $stmt->execute();
-        $num_affected_rows = $stmt->affected_rows;
-        $stmt->close();
-        return $num_affected_rows > 0;
-    }
-*/
-    /* ------------- `user_tasks` table method ------------------ */
-
-    /**
-     * Function to assign a task to user
-     * @param String $user_id id of the user
-     * @param String $task_id id of the task
-     */
-/*    public function createUserTask($user_id, $task_id) {
-        $stmt = $this->conn->prepare("INSERT INTO user_tasks(user_id, task_id) values(?, ?)");
-        $stmt->bind_param("ii", $user_id, $task_id);
-        $result = $stmt->execute();
-
-        if (false === $result) {
-            die('execute() failed: ' . htmlspecialchars($stmt->error));
-        }
-        $stmt->close();
-        return $result;
-    }
-*/
 
 }
 ?>

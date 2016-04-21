@@ -21,7 +21,10 @@
             createUser: createUser,
             updateUser: updateUser,
             setapikey: setapikey,
-            isapikey: isapikey
+            isapikey: isapikey,
+            forgotpassword: forgotpassword,
+            resetpassword: resetpassword,
+            changepassword: changepassword
 //            getUser: getUser,
         };
         return service;
@@ -37,6 +40,39 @@
                 return apikey.length > 0;
             } else { return false; }
 
+        }
+
+        function forgotpassword(path) {
+            $log.debug('forgotpassword service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function resetpassword(path) {
+            $log.debug('resetpassword service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function changepassword(newpassword,oldpassword,username,email) {
+            var path="/v1/changepassword";
+            $log.debug('changepasswordpassword service entered');
+            $log.debug('path',path);
+            var data={
+              username: username,
+              newpassword: newpassword,
+              oldpassword: oldpassword,
+              email: email
+            };
+
+            var request = $http({
+                method: "POST",
+                url: path,
+                data: {
+                    thedata: data
+                }
+            });
+            return( request.then( handleLogin, handleError ) );
         }
         
         function Login(username, password) {

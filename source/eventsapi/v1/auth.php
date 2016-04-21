@@ -178,161 +178,245 @@ $app->post('/login', function() use ($app) {
 
 });
 
-/*
- * ------------------------ METHODS WITH AUTHENTICATION ------------------------
- */
 
-/**
- * Listing all tasks of particual user
- * method GET
- * url /tasks
- */
- /*
-$app->get('/tasks', 'authenticate', function() {
-    global $user_id;
-    $response = array();
-    $db = new DbHandler();
+$app->get('/forgotpassword', function() use ($app) {
 
-    // fetching all user tasks
-    $result = $db->getAllUserTasks($user_id);
+    $allGetVars = $app->request->get();
+    error_log( print_R("forgotpassword entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
 
-    $response["error"] = false;
-    $response["tasks"] = array();
+    $username = '';
+    $user = '';
 
-    // looping through result and preparing tasks array
-    while ($task = $result->fetch_assoc()) {
-        $tmp = array();
-        $tmp["id"] = $task["id"];
-        $tmp["task"] = $task["task"];
-        $tmp["status"] = $task["status"];
-        $tmp["createdAt"] = $task["created_at"];
-        array_push($response["tasks"], $tmp);
+    if(array_key_exists('username', $allGetVars)){
+        $username = $allGetVars['username'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "User missing";
+        echoRespnse(400, $response);
+        $app->stop();
     }
 
-    echoRespnse(200, $response);
-});
-*/
-
-
-/**
- * Listing single task of particual user
- * method GET
- * url /tasks/:id
- * Will return 404 if the task doesn't belongs to user
- */
- /*
-$app->get('/tasks/:id', 'authenticate', function($task_id) {
-    global $user_id;
     $response = array();
+
     $db = new DbHandler();
 
-    // fetch task
-    $result = $db->getTask($task_id, $user_id);
+    $user = $db->getUserByUsername($username);
 
+    if ($user != NULL) {
+        $response["error"] = false;
+        $response['firstname'] = $user['name'];
+        $response['lastname'] = $user['lastname'];
+        $response['username'] = $user['username'];
+        $response['email'] = $user['email'];
+        $response['apiKey'] = $user['api_key'];
+        $response['createdAt'] = $user['created_at'];
+        $user_name = $user['username'];
+    } else {
+        // unknown error occurred
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. User not found. Please try again";
+        $user_name = '';
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+
+    $token = md5(microtime (TRUE)*100000);
+    $tokenToSendInMail = $token;
+//    $tokenToStoreInDB = hash($token);
+
+    //update user save reset token
+    $tokenresult = $db->saveResetToken($token,$username);
+
+    $Subject = 'Instructions for resetting the password for your account with villaris.us';
+    $Body    = "
+        <p>Hi,</p>
+        <p>            
+        We have received a request for a password reset on the account associated with this email address.
+        </p>
+        <p>
+        To confirm and reset your password, please click <a href=\"https://events.villaris.us/v1/resetpassword?user=$user_name&amp;token=$tokenToSendInMail\">here</a>.  If you did not initiate this request,
+        please disregard this message.
+        </p>
+        <p>
+        If you have any questions about this email, you may contact us at support@events.villaris.us.
+        </p>
+        <p>
+        With regards,
+        <br>
+        The Villaris Events Team
+        </p>";
+
+    emailnotify($to,$Subject,$Body);
+});
+
+$app->post('/changepassword', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("changepassword post entered\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $username    = (isset($dataJsonDecode->thedata->username)    ? $dataJsonDecode->thedata->username : "bad");
+    $email       = (isset($dataJsonDecode->thedata->email)       ? $dataJsonDecode->thedata->email : "bad");
+    $newpassword = (isset($dataJsonDecode->thedata->newpassword) ? $dataJsonDecode->thedata->newpassword : "bad");
+    $oldpassword = (isset($dataJsonDecode->thedata->oldpassword) ? $dataJsonDecode->thedata->oldpassword : "bad");
+
+    if($username == "bad" || $email == "bad" || $newpassword = "bad" || $oldpassword == "bad") {
+        $response["error"] = true;
+        $response["message"] = "Fields missing";
+        echoRespnse(403, $response);
+        $app->stop();
+    }
+
+    $response = array();
+
+    $db = new DbHandler();
+
+    $user = $db->getUserByUsername($username);
+
+    if ($user != NULL) {
+        $response["error"] = false;
+        $response['firstname'] = $user['name'];
+        $response['lastname'] = $user['lastname'];
+        $response['username'] = $user['username'];
+        $response['email'] = $user['email'];
+        $response['apiKey'] = $user['api_key'];
+        $response['createdAt'] = $user['created_at'];
+        $user_name = $user['username'];
+    } else {
+        // unknown error occurred
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. User not found. Please try again";
+        $user_name = '';
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+
+    //new not same as old checked in the frontend
+    
+    //update user save reset token
+    $result = $db->changePassword($newpassword,$oldpassword,$email, $username);
     if ($result != NULL) {
+        //should they login with their new password 
         $response["error"] = false;
-        $response["id"] = $result["id"];
-        $response["task"] = $result["task"];
-        $response["status"] = $result["status"];
-        $response["createdAt"] = $result["created_at"];
-        echoRespnse(200, $response);
+        $user_name = $user['username'];
+    } else {
+        // unknown error occurred
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. User not updated. Please try again";
+        $user_name = '';
+        echoRespnse(403, $response);
+        $app->stop();
+    }
+
+});
+
+
+$app->get('/resetpassword', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("resetpassword entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $username = '';
+    $user = '';
+    $newpassword = '';
+    $email = '';
+
+    if(array_key_exists('user', $allGetVars)){
+        $username = $allGetVars['user'];
     } else {
         $response["error"] = true;
-        $response["message"] = "The requested resource doesn't exists";
-        echoRespnse(404, $response);
+        $response["message"] = "User missing";
+        echoRespnse(400, $response);
+        $app->stop();
     }
-});
-*/
-
-/**
- * Creating new task in db
- * method POST
- * params - name
- * url - /tasks/
- */
- /*
-$app->post('/tasks', 'authenticate', function() use ($app) {
-    // check for required params
-    verifyRequiredParams(array('task'));
+    if(array_key_exists('token', $allGetVars)){
+        $token = $allGetVars['token'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Tokens missing";
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+    if(array_key_exists('newpassword', $allGetVars)){
+        $newpassword = $allGetVars['newpassword'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "New Password missing";
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+    if(array_key_exists('email', $allGetVars)){
+        $email = $allGetVars['email'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "New Password missing";
+        echoRespnse(400, $response);
+        $app->stop();
+    }
 
     $response = array();
-    $task = $app->request->post('task');
-
-    global $user_id;
-    $db = new DbHandler();
-
-    // creating new task
-    $task_id = $db->createTask($user_id, $task);
-
-    if ($task_id != NULL) {
-        $response["error"] = false;
-        $response["message"] = "Task created successfully";
-        $response["task_id"] = $task_id;
-        echoRespnse(201, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "Failed to create task. Please try again";
-        echoRespnse(200, $response);
-    }
-});
-*/
-
-/**
- * Updating existing task
- * method PUT
- * params task, status
- * url - /tasks/:id
- */
- /*
-$app->put('/tasks/:id', 'authenticate', function($task_id) use($app) {
-    // check for required params
-    verifyRequiredParams(array('task', 'status'));
-
-    global $user_id;
-    $task = $app->request->put('task');
-    $status = $app->request->put('status');
 
     $db = new DbHandler();
-    $response = array();
 
-    // updating task
-    $result = $db->updateTask($user_id, $task_id, $task, $status);
-    if ($result) {
-        // task updated successfully
-        $response["error"] = false;
-        $response["message"] = "Task updated successfully";
-    } else {
-        // task failed to update
-        $response["error"] = true;
-        $response["message"] = "Task failed to update. Please try again!";
-    }
-    echoRespnse(200, $response);
-});
-*/
-/**
- * Deleting task. Users can delete only their tasks
- * method DELETE
- * url /tasks
- */
- /*
-$app->delete('/tasks/:id', 'authenticate', function($task_id) use($app) {
-    global $user_id;
+    $user = $db->getUserByUsername($username);
 
-    $db = new DbHandler();
-    $response = array();
-    $result = $db->deleteTask($user_id, $task_id);
-    if ($result) {
-        // task deleted successfully
+    if ($user != NULL) {
         $response["error"] = false;
-        $response["message"] = "Task deleted succesfully";
+        $response['firstname'] = $user['name'];
+        $response['lastname'] = $user['lastname'];
+        $response['username'] = $user['username'];
+        $response['email'] = $user['email'];
+        $response['createdAt'] = $user['created_at'];
+        $user_name = $user['username'];
     } else {
-        // task failed to delete
-        $response["error"] = true;
-        $response["message"] = "Task failed to delete. Please try again!";
+        // unknown error occurred
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. User not found. Please try again";
+        $user_name = '';
+        echoRespnse(400, $response);
+        $app->stop();
     }
-    echoRespnse(200, $response);
+
+    //may want to add question/answer checking
+    if ($token != $user['token_hash'] || $email != $user['email']) {
+        //we should update a badpassword count
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. Please try again";
+        $user_name = '';
+        echoRespnse(403, $response);
+        $app->stop();
+        
+    }
+    //update user save reset token
+    $result = $db->resetPassword($newpassword,$username);
+    if ($result != NULL) {
+        //should they login with their new password ?
+        $response["error"] = false;
+        $user_name = $user['username'];
+    } else {
+        // unknown error occurred
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. User not updated. Please try again";
+        $user_name = '';
+        echoRespnse(403, $response);
+        $app->stop();
+    }
+
 });
-*/
 
 /**
  * Verifying required params posted or not
