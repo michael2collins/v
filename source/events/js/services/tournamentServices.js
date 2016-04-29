@@ -35,7 +35,7 @@
         }
 
      function setapikey(key) {
-        $log.debug('setapikey', key);
+        $log.debug('TournamentServices setapikey', key);
          apikey = key;
      }
  

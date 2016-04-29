@@ -110,10 +110,10 @@ class DbHandler {
         // Check for successful insertion
         if ($result) {
             // User successfully inserted
-            return USER_CREATED_SUCCESSFULLY;
+            return 1;
         } else {
             // Failed to create user
-            return USER_CREATE_FAILED;
+            return -1;
         }
 
     }
@@ -136,10 +136,10 @@ class DbHandler {
         // Check for successful insertion
         if ($result) {
             // User successfully inserted
-            return USER_CREATED_SUCCESSFULLY;
+            return 1;
         } else {
             // Failed to create user
-            return USER_CREATE_FAILED;
+            return -1;
         }
 
     }

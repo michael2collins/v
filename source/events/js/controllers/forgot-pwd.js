@@ -21,16 +21,14 @@
         /* jshint validthis: true */
 
             var pagevm = this;
-            pagevm.login = login;
+            pagevm.forgotpwd = forgotpwd;
             pagevm.username;
-            pagevm.password;
             pagevm.dataLoading;
             pagevm.apiKey;
             
             $log.debug('enter ForgotpwdController');
             $log.debug('username', pagevm.username);
-            $log.debug('password', pagevm.password);
-            
+
             (function initController() {
                 // reset login status
                 UserServices.ClearCredentials();
@@ -41,21 +39,19 @@
         //    $('body').attr('id', 'signin-page');
     
 
-            function login() {
-                $log.debug('controller login function entered', pagevm.username, pagevm.password);
-                
+            function forgotpwd() {
+                $log.debug('controller forgotpwd function entered', pagevm.username);
+                var path = '../v1/forgotpassword?username=' + pagevm.username;
                 pagevm.dataLoading = true;
 
-                 return UserServices.Login(pagevm.username, pagevm.password).then(function(data){
+                 return UserServices.forgotpassword(path).then(function(data){
                     $log.debug('UserServices returned data');
                     $log.debug(data);
                     pagevm.apiKey = data.apiKey;
-                        UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
-                        TournamentServices.setapikey(pagevm.apiKey);
-                        UserServices.setapikey(pagevm.apiKey);
-            $("body>.default-page").show();
-            $("body>.extra-page").html($(".page-content").html()).hide();
-            $('body').attr('id', '');
+       //     $("body>.default-page").show();
+        //    $("body>.extra-page").html($(".page-content").html()).hide();
+        //    $('body').attr('id', '');
+                        alert("Check your email for reset information");
 
                         $location.path('/');
                         return data;
@@ -66,7 +62,6 @@
                 //    Notification.error({message: error, delay: 5000});
                         UserServices.SetCredentials('','','');
                         TournamentServices.setapikey('');
-                        UserServices.setapikey('');
                         FlashService.Err(error);
                     return ($q.reject(error));
                 }).

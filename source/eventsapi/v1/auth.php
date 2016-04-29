@@ -193,7 +193,7 @@ $app->get('/forgotpassword', function() use ($app) {
     } else {
         $response["error"] = true;
         $response["message"] = "User missing";
-        echoRespnse(400, $response);
+        echoRespnse(404, $response);
         $app->stop();
     }
 
@@ -224,34 +224,43 @@ $app->get('/forgotpassword', function() use ($app) {
 
     $token = md5(microtime (TRUE)*100000);
     $tokenToSendInMail = $token;
+    $to = $response['email'];
 //    $tokenToStoreInDB = hash($token);
 
     //update user save reset token
-    $tokenresult = $db->saveResetToken($token,$username);
+    if ($tokenresult = $db->saveResetToken($token,$username) ) {
 
-    $Subject = 'Instructions for resetting the password for your account with villaris.us';
-    $Body    = "
-        <p>Hi,</p>
-        <p>            
-        We have received a request for a password reset on the account associated with this email address.
-        </p>
-        <p>
-        To confirm and reset your password, please click <a href=\"https://events.villaris.us/v1/resetpassword?user=$user_name&amp;token=$tokenToSendInMail\">here</a>.  If you did not initiate this request,
-        please disregard this message.
-        </p>
-        <p>
-        If you have any questions about this email, you may contact us at support@events.villaris.us.
-        </p>
-        <p>
-        With regards,
-        <br>
-        The Villaris Events Team
-        </p>";
-
-    emailnotify($to,$Subject,$Body);
+        $Subject = 'Instructions for resetting the password for your account with villaris.us';
+        $Body    = "
+            <p>Hi,</p>
+            <p>            
+            We have received a request for a password reset on the account associated with this email address.
+            </p>
+            <p>
+            To confirm and reset your password, please click <a href=\"https://events.villaris.us/v1/confirmresetpassword?user=" . urlencode($user_name) . "&token=" . urlencode($tokenToSendInMail) . "\">here</a>.  If you did not initiate this request,
+            please contact mark@natickmartialarts.com to investigate.
+            </p>
+            <p>
+            If you have any questions about this email, you may contact us at support@events.villaris.us.
+            </p>
+            <p>
+            With regards,
+            <br>
+            The Villaris Events Team
+            </p>";
+    
+        emailnotify($to,$Subject,$Body);
+    } else {
+            error_log( print_R("reset pwd failed\n", TRUE ), 3, LOG);
+            $user_name = '';
+        $response['error'] = true;
+        $response['message'] = 'Reset failed.';
+        echoRespnse(403, $response);
+    }
+    
 });
 
-$app->post('/changepassword', function() use ($app) {
+$app->post('/changepassword', 'authenticate', function() use ($app) {
 
     $response = array();
 
@@ -320,8 +329,73 @@ $app->post('/changepassword', function() use ($app) {
 
 });
 
+$app->get('/confirmresetpassword', function() use ($app) {
 
-$app->get('/resetpassword', function() use ($app) {
+    $allGetVars = $app->request->get();
+    error_log( print_R("resetpassword entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $username = '';
+    $user = '';
+    $token = '';
+    $intoken_hash = '';
+
+    if(array_key_exists('user', $allGetVars)){
+        $username = $allGetVars['user'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "User missing";
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+    if(array_key_exists('token', $allGetVars)){
+        $token = $allGetVars['token'];
+
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Tokens missing";
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+
+    $response = array();
+
+    $db = new DbHandler();
+
+    $user = $db->getUserByUsername($username);
+        error_log( print_R("post getuser query hash:\n", TRUE ), 3, LOG);
+        error_log( print_R($user['token_hash'], TRUE ), 3, LOG);
+        error_log( print_R("post getuser query token:\n", TRUE ), 3, LOG);
+        error_log( print_R($token, TRUE ), 3, LOG);
+
+if (PassHash::check_password($user['token_hash'], $token)) {
+        $response["error"] = false;
+        $response['firstname'] = $user['name'];
+        $response['lastname'] = $user['lastname'];
+        $response['username'] = $user['username'];
+        $response['email'] = $user['email'];
+        $response['createdAt'] = $user['created_at'];
+        $response['token_hash'] = $user['token_hash'];
+            $response['apiKey'] = $user['api_key'];
+        $user_name = $user['username'];
+        //now redirect to changePassword with approval
+        $app->redirect('/#/reset-pwd?user=' . urlencode($user_name) . '&token=' . urlencode($token));
+    } else {
+        // unknown error occurred
+        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $response['error'] = true;
+        $response['message'] = "An error occurred. User not found. Please try again";
+        $user_name = '';
+            $response['apiKey'] = '';
+        echoRespnse(403, $response);
+        $app->stop();
+    }
+
+
+});
+
+
+$app->get('/resetpassword',  function() use ($app) {
 
     $allGetVars = $app->request->get();
     error_log( print_R("resetpassword entered:\n ", TRUE), 3, LOG);
@@ -331,6 +405,7 @@ $app->get('/resetpassword', function() use ($app) {
     $user = '';
     $newpassword = '';
     $email = '';
+    $api_key = '';
 
     if(array_key_exists('user', $allGetVars)){
         $username = $allGetVars['user'];
@@ -370,14 +445,22 @@ $app->get('/resetpassword', function() use ($app) {
     $db = new DbHandler();
 
     $user = $db->getUserByUsername($username);
+        error_log( print_R("post reset getuser query: hash\n", TRUE ), 3, LOG);
+        error_log( print_R($user['token_hash'], TRUE ), 3, LOG);
+        error_log( print_R("post reset getuser query: token\n", TRUE ), 3, LOG);
+        error_log( print_R($token, TRUE ), 3, LOG);
+    //may want to add question/answer checking
 
-    if ($user != NULL) {
+if (PassHash::check_password($user['token_hash'], $token)) {
+
         $response["error"] = false;
         $response['firstname'] = $user['name'];
         $response['lastname'] = $user['lastname'];
         $response['username'] = $user['username'];
         $response['email'] = $user['email'];
         $response['createdAt'] = $user['created_at'];
+        $response['token_hash'] = $user['token_hash'];
+            $api_key = $user['api_key'];
         $user_name = $user['username'];
     } else {
         // unknown error occurred
@@ -389,29 +472,21 @@ $app->get('/resetpassword', function() use ($app) {
         $app->stop();
     }
 
-    //may want to add question/answer checking
-    if ($token != $user['token_hash'] || $email != $user['email']) {
-        //we should update a badpassword count
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
-        $response['error'] = true;
-        $response['message'] = "An error occurred. Please try again";
-        $user_name = '';
-        echoRespnse(403, $response);
-        $app->stop();
-        
-    }
     //update user save reset token
     $result = $db->resetPassword($newpassword,$username);
-    if ($result != NULL) {
+    if ($result == 1) {
         //should they login with their new password ?
         $response["error"] = false;
         $user_name = $user['username'];
+        $response['api_key'] = $api_key;
+        echoRespnse(200, $response);
     } else {
         // unknown error occurred
         error_log( print_R("login error\n", TRUE ), 3, LOG);
         $response['error'] = true;
-        $response['message'] = "An error occurred. User not updated. Please try again";
+        $response['message'] = "A reset error occurred. User not updated. Please try again";
         $user_name = '';
+        $api_key = '';
         echoRespnse(403, $response);
         $app->stop();
     }

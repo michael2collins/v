@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <div class="animated bounceInDown col-md-3 col-md-offset-3">
   <div id="signin-page-content" ng-controller="ResetpwdController as pagevm">
-    <form name="form" ng-submit="form.$valid && pagevm.login()" class="form" role="form" novalidate> 
+    <form name="form" ng-submit="form.$valid && pagevm.resetpwd()" class="form" role="form" novalidate> 
       <h1 class="block-heading">Reset Password</h1>
-      <p>Dear user, log in to access the registration area!</p>
+      <p>Dear user, please enter your new password!</p>
         <div class="form-group" 
         ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">        
         <div class="input-icon"><i class="fa fa-user"></i>
@@ -19,27 +19,51 @@
 
         </div>
       </div>
-        <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
-
-        <div class="input-icon"><i class="fa fa-key"></i>
-            <input 
-                type="password"
-                placeholder="Password"
+        <div class="form-group input-icon mbl" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }"><i class="fa fa-key"></i>
+            <input type="password" 
                 name="password" 
-                autocomplete="on"
                 id="password" 
+                value=""
+                placeholder="Password"
                 class="form-control" 
+                ng-keyup="pagevm.compare(pagevm.confirm_password)"
                 ng-model="pagevm.password" 
+                ng-pattern="pagevm.re"
                 required />
             <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
-
+            <span ng-show="form.password.$error.pattern" class="help-block">Not a valid password.</span>
         </div>
+      <div class="mbl">
+        <input type="password" 
+            name="confirm_password" 
+            value="" 
+            id="confirm_password"
+            ng-keyup="pagevm.compare(pagevm.confirm_password)"
+            ng-pattern="pagevm.re"
+            placeholder="Confirm Password" 
+            class="form-control"
+                ng-model="pagevm.confirm_password" 
+                required />
+<span ng-show="pagevm.isconfirm || form.confirm_password.$dirty " ng-class="{true:'green',false:'red'}[pagevm.isconfirm]">Password does {{pagevm.isconfirm==true?'':'not'}} match</span>            
       </div>
+      <div class="input-icon mbl" 
+        ng-class="{ 'has-error': form.email.$dirty && form.email.$error.required }">
+        <i class="fa fa-envelope"></i>
+        <input type="email" 
+            name="email" 
+            value="" 
+            placeholder="Your Email" 
+            class="form-control"
+                ng-model="pagevm.email" 
+                required />
+            <span ng-show="form.email.$error.email" class="help-block">Not valid email.</span>
+      </div>
+
         <div class="form-actions">
             <button type="submit" 
                 ng-disabled="form.$invalid || pagevm.dataLoading" 
                 class="btn btn-primary">
-                  Login
+                  Reset
                   &nbsp;<i class="fa fa-chevron-circle-right"></i>
             </button>
             <a id="btn-forgot-pwd" href="/#/forgot-pwd" class="mlm">Forgot your password?</a>

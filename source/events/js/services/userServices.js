@@ -15,6 +15,7 @@
         var service = {
             Login: Login,
             SetCredentials: SetCredentials,
+            ResetCredentials: ResetCredentials,
             ClearCredentials: ClearCredentials,
             getUserNames: getUserNames,
             getUserDetails: getUserDetails,
@@ -109,6 +110,23 @@
             };
 
         //    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = authdata; 
+            $cookieStore.put('globals', $rootScope.globals);
+        }
+
+        function ResetCredentials(username, apiKey) {
+            //var authdata = username + ':' + password;
+            $log.debug('ResetCredentials entered', username,apiKey);
+            setapikey(apiKey);
+            
+            var authdata = apiKey;
+
+            $rootScope.globals = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
             $http.defaults.headers.common['Authorization'] = authdata; 
             $cookieStore.put('globals', $rootScope.globals);
         }
