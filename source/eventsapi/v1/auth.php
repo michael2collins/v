@@ -273,11 +273,10 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
     error_log( print_R($thedata, TRUE ), 3, LOG);
 
     $username    = (isset($dataJsonDecode->thedata->username)    ? $dataJsonDecode->thedata->username : "bad");
-    $email       = (isset($dataJsonDecode->thedata->email)       ? $dataJsonDecode->thedata->email : "bad");
-    $newpassword = (isset($dataJsonDecode->thedata->newpassword) ? $dataJsonDecode->thedata->newpassword : "bad");
+    $password = (isset($dataJsonDecode->thedata->password) ? $dataJsonDecode->thedata->password : "bad");
     $oldpassword = (isset($dataJsonDecode->thedata->oldpassword) ? $dataJsonDecode->thedata->oldpassword : "bad");
 
-    if($username == "bad" || $email == "bad" || $newpassword = "bad" || $oldpassword == "bad") {
+    if($username == "bad" ||  $password == "bad" || $oldpassword == "bad") {
         $response["error"] = true;
         $response["message"] = "Fields missing";
         echoRespnse(403, $response);
@@ -312,8 +311,8 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
     //new not same as old checked in the frontend
     
     //update user save reset token
-    $result = $db->changePassword($newpassword,$oldpassword,$email, $username);
-    if ($result != NULL) {
+    $result = $db->changePassword($password,$oldpassword, $username);
+    if ($result > 0) {
         //should they login with their new password 
         $response["error"] = false;
         $user_name = $user['username'];

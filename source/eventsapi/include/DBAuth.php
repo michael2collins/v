@@ -60,7 +60,7 @@ class DbHandler {
 
     }
 
-    public function changePassword($newpassword, $currentpassword, $email, $username) {
+    public function changePassword($newpassword, $currentpassword,  $username) {
         require_once 'PassHash.php';
 
         // First check if user already existed in db
@@ -70,8 +70,8 @@ class DbHandler {
             $curpassword_hash = PassHash::hash($currentpassword);
 
             // insert query
-            $stmt = $this->conn->prepare("update users set password_hash = ? where username = ? and email = ? and password_hash = ?");
-            $stmt->bind_param("ssss",  $password_hash, $username, $email, $curpassword_hash);
+            $stmt = $this->conn->prepare("update users set password_hash = ? where username = ?  ");
+            $stmt->bind_param("ss",  $password_hash, $username);
 
             $result = $stmt->execute();
 
@@ -80,14 +80,14 @@ class DbHandler {
             // Check for successful insertion
             if ($result) {
                 // User successfully inserted
-                return USER_CREATED_SUCCESSFULLY;
+                return 1;
             } else {
                 // Failed to create user
-                return USER_CREATE_FAILED;
+                return -1;
             }
         } else {
             // curr password didn't match
-            return NULL;
+            return -2;
         
         }
 
