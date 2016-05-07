@@ -62,6 +62,91 @@ class DbHandler {
         return $response;
     }
 
+   public function changePassword($newpassword, $currentpassword,  $username) {
+        require_once 'PassHash.php';
+
+        // First check if user already existed in db
+        if ($this->checkLoginUser($username,$currentpassword)) {
+            // Generating password hash
+            $password_hash = PassHash::hash($newpassword);
+            $curpassword_hash = PassHash::hash($currentpassword);
+
+            // insert query
+            $stmt = $this->conn->prepare("update users set password_hash = ? where username = ?  ");
+            $stmt->bind_param("ss",  $password_hash, $username);
+
+            $result = $stmt->execute();
+
+            $stmt->close();
+
+            // Check for successful insertion
+            if ($result) {
+                // User successfully inserted
+                return 1;
+            } else {
+                // Failed to create user
+                return -1;
+            }
+        } else {
+            // curr password didn't match
+            return -2;
+        
+        }
+
+    }
+
+    public function resetPassword($newpassword, $username) {
+        require_once 'PassHash.php';
+
+        // Generating password hash
+        $password_hash = PassHash::hash($newpassword);
+
+        // insert query
+        $stmt = $this->conn->prepare("update users set password_hash = ?, token_hash = null where username = ?");
+        $stmt->bind_param("ss",  $password_hash, $username);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+
+        // Check for successful insertion
+        if ($result) {
+            // User successfully inserted
+            return 1;
+        } else {
+            // Failed to create user
+            return -1;
+        }
+
+    }
+
+
+    public function saveResetToken($token, $username) {
+        require_once 'PassHash.php';
+
+        // Generating token hash
+        $token_hash = PassHash::hash($token);
+
+        // insert query
+        $stmt = $this->conn->prepare("update users set token_hash = ? where username = ?");
+        $stmt->bind_param("ss",  $token_hash, $username);
+
+        $result = $stmt->execute();
+
+        $stmt->close();
+
+        // Check for successful insertion
+        if ($result) {
+            // User successfully inserted
+            return 1;
+        } else {
+            // Failed to create user
+            return -1;
+        }
+
+    }
+
+
     /**
      * Checking user login
      * @param String $email User login email id
@@ -179,12 +264,12 @@ class DbHandler {
         }
     }
 
-    public function getUserByUsername($username) {
-        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at FROM users WHERE username = ?");
+  public function getUserByUsername($username) {
+        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         if ($stmt->execute()) {
             // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at);
+            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash);
             $stmt->fetch();
             $user = array();
             $user["name"] = $name;
@@ -194,6 +279,7 @@ class DbHandler {
             $user["api_key"] = $api_key;
             $user["status"] = $status;
             $user["created_at"] = $created_at;
+            $user["token_hash"] = $token_hash;
             $stmt->close();
             return $user;
         } else {

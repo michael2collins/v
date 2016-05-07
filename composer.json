@@ -2,6 +2,7 @@
     "require": {
         "slim/slim": "~2.6",
         "palanik/slim-no-cache": "*",
+        "slim/logger": "0.1.*",
         "php": ">=5.4",
         "flowjs/flow-php-server": "^1.0"
         }

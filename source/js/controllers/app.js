@@ -14,7 +14,10 @@
     'EventServices',
     'StudentServices',
     'PaymentServices',
-    'ClassServices'
+    'ClassServices',
+    '$cookies',
+    '$cookieStore',
+    '$log'
     ];
 
     function AppController( $scope, $routeParams, 
@@ -23,12 +26,16 @@
          EventServices, 
          StudentServices, 
          PaymentServices,
-         ClassServices
+         ClassServices,
+         $cookies,
+         $cookieStore,
+         $log
     ){
         /* jshint validthis: true */
         var vm = this;
  
     vm.data = {};
+    vm.userdta={};
     vm.header = {
         layout_menu:'',
         layout_topbar:'',
@@ -39,13 +46,25 @@
     vm.loadTopbar = loadTopbar;
     vm.loadSidebar = loadSidebar;
     vm.islogin = islogin;
-    vm.userdta;
+    vm.isokf = isokf;
+    vm.isok;
+
+    islogin();
+    
+    function isokf() {
+//        $log.debug('isokf');
+        vm.isok = UserServices.isapikey();
+        return vm.isok;
+    }
+
 
     function islogin() {
-//        console.log('islogin');
-        var isok = UserServices.isapikey();
- //       console.log(isok);
-        if (isok) {
+
+        $log.debug('islogin');
+        vm.isok = UserServices.isapikey();
+
+        if (vm.isok) {
+            $log.debug('setting apikey for services');
             var thekey = UserServices.getapikey();
             AttendanceServices.setapikey(thekey);
             EventServices.setapikey(thekey);
@@ -53,9 +72,11 @@
             PaymentServices.setapikey(thekey);
             ClassServices.setapikey(thekey);
             UserServices.setapikey(thekey);
+            vm.userdta = UserServices.getUserDetails();
+            loadSidebar();
+            loadTopbar();
         }
         
-        return isok;
     }
 
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
@@ -71,7 +92,7 @@
         vm.data = $.fn.Data.get(current.originalPath);
         console.log('data in $routeChangeSuccess',vm.data);
 
-        if(-1 == $.inArray(current.originalPath, ['/page-500', '/page-404', '/page-lock-screen', '/page-signup', '/page-signin'])){
+        if(-1 == $.inArray(current.originalPath, ['/page-lock-screen', '/page-signup', '/page-signin','/reset-pwd','/change-pwd','/forget-pwd'])){
             $("body>.default-page").show();
             $("body>.extra-page").hide();
         }

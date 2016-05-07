@@ -8,19 +8,19 @@
   <span class="icon-bar"></span>
   <span class="icon-bar"></span>
   </button>
-  <a id="logo" href="/#/" class="navbar-brand">
+  <a id="logo" href="#/main" class="navbar-brand">
   <span class="icon-social-tumblr"></span>
   <span class="logo-text">V Dojo</span></a>
 </div>
 
 <div class="topbar-main">
-  <ul class="nav navbar-top-links navbar-right">
-    <li class="dropdown" uib-dropdown on-toggle="toggled(open)" ng-show="vm.islogin()" >
+  <ul class="nav navbar-top-links navbar-left">
+    <li class="dropdown" uib-dropdown on-toggle="toggled(open)" ng-show="vm.isokf()" >
     
         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" uib-dropdown-toggle>
-        <!--
+        
         <img src="images/avatar/MarkCropped.jpg" alt="" class="img-responsive img-circle"/>
-        -->
+        
     <span>&nbsp;{{vm.userdta.username}}&nbsp;</span><span class="caret"></span>
         
     </a>
@@ -43,8 +43,7 @@
           <div class="navbar-footer">
             <div class="navbar-footer-content">
               <div class="row">
-<!--                <div class="col-md-6 col-xs-6"><a href="javascript:void(0);" class="btn btn-default btn-sm">Change Password</a></div>
--->
+                <div class="col-md-6 col-xs-6"><a href="#/change-pwd" class="btn btn-default btn-sm">Change Password</a></div>
                 <div class="col-md-6 col-xs-6"><a href="#/page-lock-screen" class="btn btn-default btn-sm pull-right">Sign Out</a></div>
               </div>
             </div>

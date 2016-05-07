@@ -93,8 +93,8 @@ getting error over https
 
             <!--            <script src="vendors/jquery-cookie/jquery.cookie.js"></script>-->
 <!--            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script> -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-
+ <!--why this?           <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+-->
 
 <!--            not needed for event app -->
             <script src="vendors/jquery-jvectormap/jquery-jvectormap-1.2.2.min.js"></script>   
@@ -164,16 +164,16 @@ https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.
         <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
         
 <!--    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.js"></script>-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular.js"></script>
     
 <!-- added for auth -->  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-cookies.js"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-cookies.js"></script> 
 
 <!--        <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.js"></script> -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
         
 <!--            <script src="vendors/angular-route/angular-route.js"></script>-->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-route.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-route.min.js"></script>
             
 <!--            <script src="vendors/angular-touch/angular-touch.js"></script>
 mlc some problems with mobile
@@ -182,13 +182,13 @@ mlc some problems with mobile
 -->
 
 <!--        <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular-animate.js"></script> -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-animate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-animate.min.js"></script>
         
 <!--            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-messages/1.4.7/angular-messages.js"></script> -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-messages.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-messages.min.js"></script>
             
 <!--            <script src="vendors/angular-resource/angular-resource.js"></script> -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.7/angular-resource.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-resource.min.js"></script>
             
 <!--   <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.14.3/ui-bootstrap-tpls.js"></script> -->
@@ -301,6 +301,47 @@ mlc some problems with mobile
 <!-- <link href="https://cdn.jsdelivr.net/hint.css/1.3.6/hint.css" rel="stylesheet" type="text/css"> -->
  <link href="https://cdnjs.cloudflare.com/ajax/libs/hint.css/2.1.0/hint.min.css" rel="stylesheet" type="text/css">
   
+
+<!--     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script> -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.10/angular-sanitize.min.js"></script>
+
+ <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.css"/> -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.14.2/select.min.js"/>
+ 
+<!-- bug   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.js"></script>
+   -->
+     <script type="text/javascript" src="js/controllers/select.js"></script>
+
+     <!--   <script type="text/javascript" src="js/controllers/select.css"></script> -->
+
+<!--  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css"/>
+  
+<!--    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.1/css/selectize.default.min.css"/>
+
+    <style>
+    body {
+      padding: 15px;
+    }
+    .select2 > .select2-choice.ui-select-match {
+      /* Because of the inclusion of Bootstrap */
+      height: 29px;
+    }
+    .selectize-control > .selectize-dropdown {
+      top: 36px;
+    }
+  </style>
+
+
+
+
+   <style>
+  .chosen-choices, .chosen-container {
+    width: 500px !important;
+}
+</style>
+
 <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
 <!--    <script src="js/main.js"></script>    -->
 
@@ -346,51 +387,16 @@ mlc some problems with mobile
    <script type="text/javascript" src="js/controllers/student-classmodal-controller.js"></script>
    <script type="text/javascript" src="js/controllers/student-history-controller.js"></script>
    <script type="text/javascript" src="js/controllers/newstudent-controller.js"></script>
+   <script type="text/javascript" src="js/controllers/change-pwd.js"></script>
+   <script type="text/javascript" src="js/controllers/reset-pwd.js"></script>
+   <script type="text/javascript" src="js/controllers/forgot-pwd.js"></script>
+   
   <script type="text/javascript" src="js/directives/imageloaded.js"></script>
 <script type="text/javascript" src="js/services/userServices.js"></script>
 <script type="text/javascript" src="js/services/flashServices.js"></script>
 
-<!--     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script> -->
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.7/angular-sanitize.min.js"></script>
-
- <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.css"/> -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.14.2/select.min.js"/>
- 
-<!-- bug   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.13.2/select.js"></script>
-   -->
-     <script type="text/javascript" src="js/controllers/select.js"></script>
-
-     <!--   <script type="text/javascript" src="js/controllers/select.css"></script> -->
-
-<!--  <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css"> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css"/>
-  
-<!--    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.1/css/selectize.default.min.css"/>
-
-    <style>
-    body {
-      padding: 15px;
-    }
-    .select2 > .select2-choice.ui-select-match {
-      /* Because of the inclusion of Bootstrap */
-      height: 29px;
-    }
-    .selectize-control > .selectize-dropdown {
-      top: 36px;
-    }
-  </style>
-
-
    <script type="text/javascript" src="js/controllers/student-payment-controller.js"></script>
    <script type="text/javascript" src="js/services/paymentServices.js"></script>
-
-
-   <style>
-  .chosen-choices, .chosen-container {
-    width: 500px !important;
-}
-</style>
 
   </head>
 
@@ -399,10 +405,9 @@ mlc some problems with mobile
 
 
     <div ng-controller="AppController as vm" class="default-page">
-      <!--BEGIN TEMPLATE SETTING-->
-  <!--    <div id="temp-setting" ng-include="'templates/states/_includes/template-setting.html'" onload="loadtempsetting()"></div>
-   -->   <!--END TEMPLATE SETTING-->
-      <!--BEGIN TO TOP--><a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
+
+      <!--BEGIN TO TOP-->
+      <a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
       <!--END BACK TO TOP-->
       <div id="wrapper" ng-class="header.layout_menu">
         <!--BEGIN TOPBAR-->
@@ -417,15 +422,14 @@ mlc some problems with mobile
           <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
           <!--END PAGE HEADER & BREADCRUMB-->
 
-    <div class="jumbotron" ng-if="flash">
-        <div class="container">
-            <div class="col-sm-8 col-sm-offset-2">
-                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"  ng-bind="flash.message"></div>
-<!--<div ng-view> -->
-          
+        <div class="jumbotron" ng-if="flash">
+            <div class="container">
+                <div class="col-sm-8 col-sm-offset-2">
+                    <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }"  ng-bind="flash.message"></div>
+    
+                </div>
             </div>
-        </div>
-    </div>          
+        </div>          
           
           <!--BEGIN CONTENT-->
           <div ng-view="" class="page-content"></div>
@@ -442,24 +446,5 @@ mlc some problems with mobile
     <div hide="hide" class="extra-page"></div>
  
 
-<!--BEGIN MODAL CONFIG PORTLET-->
-<div id="modal-config" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" data-dismiss="modal" aria-hidden="true" class="close">&times;</button>
-        <h4 class="modal-title">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eleifend et nisl eget porta. Curabitur elementum sem molestie nisl varius, eget tempus odio molestie. Nunc vehicula sem arcu, eu pulvinar neque cursus ac. Aliquam ultricies lobortis magna et aliquam. Vestibulum egestas eu urna sed ultricies. Nullam pulvinar dolor vitae quam dictum condimentum. Integer a sodales elit, eu pulvinar leo. Nunc nec aliquam nisi, a mollis neque. Ut vel felis quis tellus hendrerit placerat. Vivamus vel nisl non magna feugiat dignissim sed ut nibh. Nulla elementum, est a pretium hendrerit, arcu risus luctus augue, mattis aliquet orci ligula eget massa. Sed ut ultricies felis.</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
     </body>
-<!--END MODAL CONFIG PORTLET-->
 </html>

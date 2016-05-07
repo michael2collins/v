@@ -5,29 +5,29 @@
       <li class="sidebar-heading">
         <h4>Main</h4>
       </li>
-      <li><a href="#/"><i class="icon-speedometer"></i><span class="menu-title">Student Dashboard</span></a>
+      <li><a href="#/main"><i class="icon-speedometer"></i><span class="menu-title">Student Dashboard</span></a>
           
       </li>
-      <li><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Login</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li ng-hide="vm.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Login</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
-          <li><a href="#/page-signin">Login</a></li>
-          <li><a href="#/page-signup">Create User</a></li>
+          <li ng-hide="vm.isokf()"><a href="#/page-signin">Login</a></li>
+          <li ng-hide="vm.isokf()"><a href="#/page-signup">Create User</a></li> 
         </ul>
       </li>
-      <li ng-show="vm.islogin()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Students</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li ng-show="vm.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Students</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
           <li><a href="#/table-basic-students">Student List</a></li>
           <li><a href="#/table-basic-attendance">Attendance List</a></li>
           <li><a href="#/table-basic-eventcreation">Create Events</a></li>
         </ul>
       </li>
-      <li ng-show="vm.islogin()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Testing</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li ng-show="vm.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Testing</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
           <li><a href="#/table-basic-managetest">Manage Test</a></li>
           <li><a href="#/form-layouts-newtest">New Test</a></li>
         </ul>
       </li>
-      <li ng-show="vm.islogin()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Manage Studio</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
+      <li ng-show="vm.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Manage Studio</span><span class="fa arrow"></span><span class="label label-violet">5</span></a>
         <ul class="nav nav-second-level">
           <li><a href="#/table-basic-leads">Leads</a></li>
           <li><a href="#/form-layouts-newlead">New Lead</a></li>

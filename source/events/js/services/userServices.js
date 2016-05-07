@@ -5,9 +5,9 @@
         .module('ng-admin')
     .factory('UserServices', UserServices);
 
-    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookieStore'];
+    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookieStore','$cookies'];
 
-    function UserServices( $http, $q, $log, $rootScope, $cookieStore ) {
+    function UserServices( $http, $q, $log, $rootScope, $cookieStore, $cookies ) {
         var response;
         var apikey;
         var userdetails={};

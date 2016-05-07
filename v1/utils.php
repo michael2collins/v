@@ -8,11 +8,22 @@
  */
 function echoRespnse($status_code, $response) {
     $app = \Slim\Slim::getInstance();
+
+$app = new \Slim\Slim(array(
+    'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
+        'path' => NEWLOG
+        )
+    )));
+
+
     // Http response code
     $app->status($status_code);
 
     // setting response content type to json
     $app->contentType('application/json');
+
+    $response["thecook"] = $app->getCookie('slim_session');
+    $response["theses"] = $_SESSION;
 
     echo json_encode($response);
     //debug purposes
@@ -25,7 +36,7 @@ function echoRespnse($status_code, $response) {
     function emailnotify($to,$subject,$message){
 
         $from = 'From: <webmaster@villaris.us>' ;
-        $replyto = 'mark@natickmartialarts.com' . "\r\n";
+        $replyto = 'michael.collins.natick@gmail.com' . "\r\n";
       //  $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
         
         // Always set content-type when sending HTML email

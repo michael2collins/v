@@ -18,6 +18,7 @@
             'StudentServices',
             'PaymentServices',
             'ClassServices',
+            '$cookieStore',
             '$q'
             ];
         function PageSigninController($scope, $log, $routeParams, 
@@ -53,10 +54,11 @@
                 pagevm.dataLoading = true;
 
                  return UserServices.Login(pagevm.username, pagevm.password).then(function(data){
-                    $log.debug('UserServices returned data');
+                    $log.debug('UserServices login returned data');
                     $log.debug(data);
                     pagevm.apiKey = data.apiKey;
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
+
                         AttendanceServices.setapikey(pagevm.apiKey);
                         EventServices.setapikey(pagevm.apiKey);
                         StudentServices.setapikey(pagevm.apiKey);
@@ -67,7 +69,7 @@
             $("body>.extra-page").html($(".page-content").html()).hide();
             $('body').attr('id', '');
 
-                        $location.path('/');
+                        $location.path('/main');
                         return data;
                 },
                 function (error) {

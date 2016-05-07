@@ -5,9 +5,9 @@
         .module('ng-admin')
     .factory('UserServices', UserServices);
 
-    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookies'];
+    UserServices.$inject = ['$http', '$q', '$log', '$rootScope',  '$cookieStore','$cookies'];
 
-    function UserServices( $http, $q, $log, $rootScope, $cookies ) {
+    function UserServices( $http, $q, $log, $rootScope,  $cookieStore, $cookies ) {
         var response;
         var apikey;
         var userdetails={};
@@ -15,6 +15,7 @@
         var service = {
             Login: Login,
             SetCredentials: SetCredentials,
+            ResetCredentials: ResetCredentials,
             ClearCredentials: ClearCredentials,
             getUserNames: getUserNames,
             getUserDetails: getUserDetails,
@@ -22,7 +23,10 @@
             updateUser: updateUser,
             setapikey: setapikey,
             getapikey: getapikey,
-            isapikey: isapikey
+            isapikey: isapikey,
+            forgotpassword: forgotpassword,
+            resetpassword: resetpassword,
+            changepassword: changepassword
 //            getUser: getUser,
         };
         return service;
@@ -39,13 +43,10 @@
 
         function isapikey(){
 
+//cookies isn't working
             var cookiecheck = $cookies.getObject('globals');
-         //   $log.debug('cookie is:',cookiecheck);
+//            $log.debug('cookie is:',cookiecheck, $cookies.getAll());
 
-//            if (typeof apikey != 'undefined') {
-//    //            $log.debug('UserServices isapikey', apikey);
-//                return apikey.length > 0;
-//            } else { return false; }
             if (typeof cookiecheck != 'undefined') {
                 if (typeof apikey != 'undefined') {
                     return apikey.length > 0;
@@ -56,8 +57,43 @@
                     $http.defaults.headers.common['Authorization'] = cookiecheck.currentUser.authdata; 
                     return apikey.length > 0;
                 }
-            } else {return false;}
+            } else {
+                return false;
+                
+            }
 
+        }
+        function forgotpassword(path) {
+            $log.debug('forgotpassword service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function resetpassword(path) {
+            $log.debug('resetpassword service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function changepassword(newpassword,oldpassword,username,email) {
+            var path="/v1/changepassword";
+            $log.debug('changepasswordpassword service entered');
+            $log.debug('path',path);
+            var data={
+              username: username,
+              newpassword: newpassword,
+              oldpassword: oldpassword,
+              email: email
+            };
+
+            var request = $http({
+                method: "POST",
+                url: path,
+                data: {
+                    thedata: data
+                }
+            });
+            return( request.then( handleLogin, handleError ) );
         }
         
         function Login(username, password) {
@@ -92,18 +128,54 @@
                     authdata: authdata
                 }
             };
-
+            var creds = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
+            
+            var expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 1);            
+              
         //    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
             $http.defaults.headers.common['Authorization'] = authdata; 
             //todo add expiration, secure, domain
-            $cookies.putObject('globals', $rootScope.globals);
+            $log.debug('SetCredentials globals', creds);
+            $cookies.putObject('globals', creds, {
+                    "path": "/", 
+                    "domain":  "villaris.us", 
+                    "secure": true, 
+                    "expires": expireDate
+            });
+            $log.debug('SetCredentials exit', $cookies.getObject('globals'));
+
+        }
+        
+        function ResetCredentials(username, apiKey) {
+            //var authdata = username + ':' + password;
+            $log.debug('ResetCredentials entered', username,apiKey);
+            setapikey(apiKey);
+            
+            var authdata = apiKey;
+
+            $rootScope.globals = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
+            $http.defaults.headers.common['Authorization'] = authdata; 
+ //           $cookieStore.put('globals', $rootScope.globals);
+            $cookieStore.put('globals', $rootScope.globals);
         }
 
         function ClearCredentials() {
             $log.debug('ClearCredentials entered');
             
             $rootScope.globals = {};
-            $cookies.remove('globals');
+            $cookieStore.remove('globals');
+  //          $cookieStore.remove('globals');
             $http.defaults.headers.common['Authorization'] = '';
             setapikey('');
         }
@@ -117,8 +189,33 @@
 
         function getUserDetails() {
             $log.debug('getUserDetails service entered',userdetails);
+            if (_.isEmpty(userdetails) && isapikey()) {
+                var cookiecheck = $cookies.getObject('globals');
+                var usernm = cookiecheck.currentUser.username;
+                $log.debug('getUserDetails service refresh user',usernm);
 
-            return(userdetails);
+                var path="../v1/userdetails?usernm=" + usernm;
+
+                getUserNames(path).then(function(data){
+                    $log.debug('getUserNames returned data');
+                    $log.debug(data);
+                    userdetails.username = data.username;
+                    userdetails.firstname = data.firstname;
+                    userdetails.lastname = data.lastname;
+                    userdetails.email = data.email;
+                        return userdetails;
+                },
+                function (error) {
+                    $log.debug('Caught an error getUserDetails refresh user , going to notify:', error); 
+                    
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }
+                );
+            } else {
+                return userdetails;
+            }
+            
         }
         
 

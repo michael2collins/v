@@ -49,13 +49,13 @@
             positionY: 'top'
         });
     })
-
+    
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {
             $rootScope._ = window._;
-        })
-        .config(logConfig)
-        .config(routeConfig)
+    })
+    .config(logConfig)
+    .config(routeConfig)
         
     .run(function($rootScope, $location, $route, $routeParams) {
         console.log('locationpath',$location.path());
@@ -73,42 +73,67 @@
         console.log('$location setting in app');
         console.log($location);
 
-}]);
+    }])
+    
+    .run(authrun);
 
+    
+    logConfig.$inject = ['$logProvider'];
+    routeConfig.$inject = ['$routeProvider', '$locationProvider'];
+    //    flowConfig.$inject = ['flowFactoryProvider'];
+
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','$window','$cookies'];
+    
     $(document).ready(function() {
         console.log('fixing for drag-drop');
         jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
         console.log(jQuery.event.props);
     });
     
-    logConfig.$inject = ['$logProvider'];
-    routeConfig.$inject = ['$routeProvider', '$locationProvider'];
-    //    flowConfig.$inject = ['flowFactoryProvider'];
-
-    authrun.$inject = ['$rootScope', '$location', '$cookies', '$http', '$log'];
-    function authrun($rootScope, $location, $cookies, $http, $log) {
+    
+    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
         $log.debug('authrun entered');
-
+        var loggedIn=false;
         // keep user logged in after page refresh
-        $rootScope.globals = $cookieStore.getObject('globals') || {};
-        $log.debug('authrun globals', $rootScope.globals);
-        
-        if ($rootScope.globals.currentUser) {
+//        var huh2 = $rootScope.globals || {}; 
+//        var huh = $cookieStore.get('globals') || {};
+        var huh3 = $cookies.get('globals') || {};
+        $log.debug('authrun globals orig',  huh3) ;
+
+        if (! _.isEmpty(huh3.currentUser)) {
 //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
-            $http.defaults.headers.common['Authorization'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; // jshint ignore:line
             $log.debug('in currentUser');
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
             $log.debug('check login on location change',$location.path());
-            // redirect to login page if not logged in and trying to access a restricted page
-            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup']) === -1;
-            var loggedIn = $rootScope.globals.currentUser;
+
+            // keep user logged in after page refresh
+//add later            $rootScope.globals = $cookieStore.get('globals') || {};
+           // huh2 = $rootScope.globals || {};
+            var huh = $cookies.get('globals') || {};
+            huh3 = _.isEmpty(huh) ? null : JSON.parse(huh);
             
-            $log.debug('check logn next', restrictedPage, loggedIn);
+            $log.debug('authrun globals on $locationChangeStart', huh, huh3);
+
+            if (huh3 !== null ) {
+    //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+                $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; // jshint ignore:line
+                $log.debug('in currentUser');
+                loggedIn = true;
+            }
+
+
+            // redirect to login page if not logged in and trying to access a restricted page
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/page-lock-screen']) === -1;
+            var thekey = UserServices.isapikey();
+        $log.debug('check logn next', restrictedPage, loggedIn);
+        $log.debug('check userservices isapikey', thekey);
             
             if (restrictedPage && !loggedIn) {
                 $log.debug('restricted and not logged in');
+            //    alert('restricted page');
                 $location.path('/page-signin');
             }
         });
@@ -122,7 +147,7 @@
         console.log('enter routeConfig');
         
         $routeProvider
-            .when('/', {
+            .when('/main', {
                 templateUrl: 'templates/states/main.html'
             })
             .when('/page-signin', {
@@ -131,52 +156,37 @@
             .when('/page-signup', {
                 templateUrl: 'templates/states/page-signup.html'
             })
+            .when('/change-pwd', {
+                templateUrl: 'templates/states/change-pwd.html'
+            })
+            .when('/reset-pwd', {
+                templateUrl: 'templates/states/reset-pwd.html'
+            })
+            .when('/forgot-pwd', {
+                templateUrl: 'templates/states/forgot-pwd.html'
+            })
             .when('/page-lock-screen', {
                 templateUrl: 'templates/states/page-lock-screen.html',
                 controller: 'PageLockScreenController'
             })
-
-/*            .when('/form-components', {
-                templateUrl: 'templates/states/form-components.html',
-                controller: 'FormComponentsController'
-            })
-            .when('/form-layouts', {
-                templateUrl: 'templates/states/form-layouts.html',
-                controller: 'FromLayoutsController'
-            })
-*/            .when('/layout-left-sidebar', {
-                templateUrl: 'templates/states/layout-left-sidebar.html',
-                controller: 'NoneController'
-            })
-            .when('/page-404', {
-                templateUrl: 'templates/states/page-404.html',
-                controller: 'Page404Controller'
-            })
-            .when('/page-500', {
-                templateUrl: 'templates/states/page-500.html',
-                controller: 'Page500Controller'
+            .when('/layout-left-sidebar', {
+                templateUrl: 'templates/states/layout-left-sidebar.html'
+    //            controller: 'NoneController'
             })
             .when('/table-basic-students', {
                 templateUrl: 'templates/states/table-basic-students.html'
-                    //controller is in template jade
-                    //    controller: 'StudentsTableBasicController'
             })
             .when('/form-layouts-newstudent', {
                 templateUrl: 'templates/states/form-layouts-newstudent.html'
-                    //   controller: 'FormLayoutsControllerNewStudent'
             })
             .when('/form-layouts-editstudent/id/:id', {
                 templateUrl: 'templates/states/form-layouts-editstudent.html'
             })
-  //          .when('/form-layouts-editstudent/id', {
-//                templateUrl: 'templates/states/form-layouts-editstudent.html' //this is wrong
- //           })
             .when('/form-layouts-editstudent/id/:id/myclass/:myclass', {
                 templateUrl: 'templates/states/form-layouts-editstudent.html'
             })
             .when('/table-basic-attendance', {
                 templateUrl: 'templates/states/table-basic-attendance.html'
-                    //    controller: 'AttendanceTableBasicController'
             })
             .when('/table-basic-eventcreation', {
                 templateUrl: 'templates/states/table-basic-eventcreation.html'
