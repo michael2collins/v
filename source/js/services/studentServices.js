@@ -35,7 +35,8 @@
             createStudent: createStudent,
             getUserPrefCols: getUserPrefCols,
             refreshStudents: refreshStudents,
-            createUserPrefCols: createUserPrefCols
+            createUserPrefCols: createUserPrefCols,
+            saveStudentPic: saveStudentPic
         };
         return service;
 
@@ -120,6 +121,25 @@
                 });
         }
 
+      function saveStudentPic( student, picnm) {
+          $log.debug('saveStudentPic :',student,picnm);
+          student.picnm = picnm;
+          var path = '../v1/pic';
+
+            return $http({method: 'PUT', url: path, data: student}).
+                success(function(data, status, headers, config) {
+                    $log.debug('saveStudentPic success:' + path);
+                    $log.debug(data);
+                    // this callback will be called asynchronously
+                    // when the response is available
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('saveStudentPic failure:' + path);
+                    // called asynchronously if an error occurs
+                    // or server returns response with an error status.
+                });
+        }
 
       function setstudentPicFile(pic) {
           $log.debug('setStuPicfile: ' + pic);

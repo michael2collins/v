@@ -95,7 +95,10 @@
 			<div id="post_take_buttons" ng-show="vmpicmodal.post_take_buttons">
 				<!-- These buttons are shown after a snapshot is taken -->
 				<input type=button value="&lt; Take Another" ng-click="vmpicmodal.cancel_preview()">
-				<input type=button value="Save Photo &gt;" ng-click="vmpicmodal.save_photo()" style="font-weight:bold;">
+				<input type=button value="Save Photo &gt;" ng-click="vmpicmodal.save_photo(vmstudent.students.FirstName + '.' 
+				+ vmstudent.students.LastName + '.'
+				+ vmstudent.students.ID + '.jpg',vmstudent.students
+				)" style="font-weight:bold;">
 				<input type=button value="Camera Off" ng-click="camera_off()">
 			</div>
 		</form>
@@ -815,7 +818,7 @@
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.CurrentRank.$dirty" ng-class="editstudent.CurrentRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                               <select id="inputCurrentRank" type="text" name="CurrentRank" ng-model="vmstudent.students.CurrentRank" ng-change="vmstudent.updateStudent()" 
-                              minLength="3" maxLength="20"
+                              minLength="3" maxLength="30"
                               required
                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                 <option ng-repeat="iter in vmstudent.RankList.rankList" ng-selected="{{iter.ranklist==vmstudent.students.CurrentRank}}" placeholder="Select" value="{{iter.ranklist}}">{{iter.ranklist}}</option>

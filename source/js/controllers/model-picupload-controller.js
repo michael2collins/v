@@ -13,7 +13,8 @@
       '$log',
       '$uibModal',
       '$document',
-      '$window'
+      '$window',
+      'StudentServices'
     ];
   ModalPicInstanceController.$inject = [
       '$scope',
@@ -35,7 +36,7 @@
     ];
 
 
-  function ModalPicUploadController($scope,  $log, $uibModal, $document, $window) {
+  function ModalPicUploadController($scope,  $log, $uibModal, $document, $window, StudentServices) {
     /* jshint validthis: true */
     var vmpicmodal = this;
 
@@ -116,7 +117,7 @@
 			posttakeon();
 		}
 		
-		function save_photo(picnm) {
+		function save_photo(picnm,student) {
 			// actually snap photo (from preview freeze) and display it
 			vmpicmodal.Webcam.snap( function(data_uri) {
 
@@ -154,6 +155,15 @@
         //                console.log("finished setpic");
          //           }, 1000);    
                     //call services to save pic
+                     StudentServices.saveStudentPic(student,picnm).then(function (data) {
+                        $log.debug('saveStudentPic returned data:');
+                        $log.debug(data);
+                    },function(error) {
+                            $log.debug('saveStudentPic',error);
+                            Notification.error({message: error, delay: 5000});
+                            return (error);
+                    });
+                    
                 } );
                 
 				// show results, hide photo booth

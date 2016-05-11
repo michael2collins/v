@@ -1,5 +1,43 @@
 <?php
 
+$app->put('/pic', 'authenticate', function() use($app) {
+
+    error_log( print_R("before pic request\n", TRUE ), 3, LOG);
+
+    $request = $app->request();
+    $response = array();
+    
+    $body = $request->getBody();
+    $student = json_decode($body);
+    error_log( print_R($student, TRUE ), 3, LOG);
+
+    //global $user_id;
+    $studentid = $student->ID;
+    $picnm = $student->picnm;
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $pic_rslt = $db->savepic($studentid,
+                                 $picnm
+                                );
+
+    if ($pic_rslt > 0) {
+        $response["error"] = false;
+        $response["message"] = "Pic created successfully";
+        $response["pic_rslt"] = $pic_rslt;
+        error_log( print_R("picnm created: $pic_rslt\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after Pic result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to save picture. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
 $app->post('/picupload', function() use ($app) {
 
     $allGetVars = $app->request->get();

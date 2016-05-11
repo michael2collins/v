@@ -18,6 +18,32 @@ class StudentDbHandler {
         $this->conn = $db->connect();
     }
 
+    public function savepic($studentid, $picnm) {
+
+        $num_affected_rows = 0;
+
+        $sql = "UPDATE ncontacts set ";
+        $sql .= "  pictureurl = ? ";
+        $sql .= " where ID =  ? ";
+
+
+        error_log( print_R($sql, TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                $picnm, $studentid 
+                                     );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+        return $num_affected_rows > 0;
+    }
+
 
     /**
      * Updating event
