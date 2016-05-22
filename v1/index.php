@@ -16,8 +16,6 @@ require '.././vendor/autoload.php';
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim();
-$app->log->setEnabled(true);
-$app->log->setLevel(\Slim\Log::DEBUG);
 //global $logWriter;
 //$logWriter = new \Slim\LogWriter(fopen(LOG, 'a'));
 //$app = new \Slim\Slim(array('log.writer' => $logWriter));
@@ -27,7 +25,23 @@ $app = new \Slim\Slim(array(
         'path' => NEWLOG
         )
     )));
-$app->log->debug("This is a test from the logger...");
+
+$app->log->setEnabled(true);
+/*
+    const EMERGENCY = 1;
+    const ALERT     = 2;
+    const CRITICAL  = 3;
+    const FATAL     = 3; //DEPRECATED replace with CRITICAL
+    const ERROR     = 4;
+    const WARN      = 5;
+    const NOTICE    = 6;
+    const INFO      = 7;
+    const DEBUG     = 8;
+*/
+
+$app->log->setLevel(\Slim\Log::WARN);
+
+//$app->log->debug("This is a test from the logger...");
     
 require ('.././libs/Slim/Middleware/SlimNoCache.php');
 require ('.././libs/Slim/Middleware/SessionCookie.php');
@@ -64,6 +78,6 @@ require_once dirname(__FILE__) . '/utils.php';
 
 $app->run();
 
-$app->log->debug("This is a 2 test from the logger...");
+//$app->log->debug("This is a 2 test from the logger...");
 
 ?>

@@ -270,7 +270,7 @@
             return( response.data );
         }
         function handleLogin( response ) {
-            $log.debug('UserServices success:');
+            $log.debug('UserServices handleLogin success:');
             userdetails.username = response.data.username;
             userdetails.firstname = response.data.firstname;
             userdetails.lastname = response.data.lastname;

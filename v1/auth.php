@@ -134,7 +134,7 @@ $app->post('/login', function() use ($app) {
         $dataJsonDecode     = json_decode($data);
     global $user_name;
     
-    error_log( print_R("login before insert: $user_name\n", TRUE ), 3, LOG);
+    error_log( print_R("login entered: $user_name\n", TRUE ), 3, LOG);
     error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
 
     if (isset($dataJsonDecode->thedata->username)) {
@@ -150,9 +150,12 @@ $app->post('/login', function() use ($app) {
     $db = new DbHandler();
     // check for correct email and password
     if ($db->checkLoginUser($username, $password)) {
+        error_log( print_R("checkLoginUser: $username\n", TRUE ), 3, LOG);
         // get the user by email
         //$user = $db->getUserByEmail($email);
         $user = $db->getUserByUsername($username);
+ //       error_log( print_R("getUserByUsername:", TRUE ), 3, LOG);
+ //       error_log( print_R($user, TRUE ), 3, LOG);
 
         if ($user != NULL) {
             $response["error"] = false;
@@ -163,6 +166,8 @@ $app->post('/login', function() use ($app) {
             $response['apiKey'] = $user['api_key'];
             $response['createdAt'] = $user['created_at'];
             $user_name = $user['username'];
+//            error_log( print_R("login return:", TRUE ), 3, LOG);
+//            error_log( print_R($response, TRUE ), 3, LOG);
             echoRespnse(200, $response);
         } else {
             // unknown error occurred

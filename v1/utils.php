@@ -9,12 +9,6 @@
 function echoRespnse($status_code, $response) {
     $app = \Slim\Slim::getInstance();
 
-$app = new \Slim\Slim(array(
-    'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
-        'path' => NEWLOG
-        )
-    )));
-
 
     // Http response code
     $app->status($status_code);
@@ -22,8 +16,8 @@ $app = new \Slim\Slim(array(
     // setting response content type to json
     $app->contentType('application/json');
 
-    $response["thecook"] = $app->getCookie('slim_session');
-    $response["theses"] = $_SESSION;
+//    $response["thecook"] = $app->getCookie('slim_session');
+//    $response["theses"] = $_SESSION;
 
     echo json_encode($response);
     //debug purposes

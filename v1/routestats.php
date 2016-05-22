@@ -1,10 +1,10 @@
 <?php
 
-$app->get('/studentstats', 'authenticate', function() use ($app) {
+$app->get('/attendstats', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("studentstats entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("attendstats entered: ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $thetype = '';
 
@@ -12,15 +12,15 @@ $app->get('/studentstats', 'authenticate', function() use ($app) {
         $thetype = $allGetVars['thetype'];
     }
 
-    error_log( print_R("studentstats params: thetype: $thetype \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("attendstats params: thetype: $thetype  ", TRUE));
 
     $response = array();
     $db = new StatsDbHandler();
 
     // fetch task
-    $result = $db->getStudentStats($thetype );
+    $result = $db->getAttendStats($thetype );
     $response["error"] = false;
-    $response["studentstats"] = array();
+    $response["attendstats"] = array();
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
@@ -41,22 +41,203 @@ $app->get('/studentstats', 'authenticate', function() use ($app) {
         }
 //        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
 //        error_log( print_R($tmp, TRUE), 3, LOG);
-        array_push($response["studentstats"], $tmp);
+        array_push($response["attendstats"], $tmp);
     }
-    $row_cnt = count($response["studentstats"]);
-    error_log( print_R("studentstats cnt: $row_cnt\n ", TRUE), 3, LOG);
+    $row_cnt = count($response["attendstats"]);
+    $app->log->debug( print_R("attendstats cnt: $row_cnt ", TRUE));
 
     if ($row_cnt > 0) {
         $response["error"] = false;
-        error_log( print_R("studentstats fine with $row_cnt\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("attendstats fine with $row_cnt ", TRUE));
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in attendstats";
+        $app->log->debug( print_R("attendstats bad ", TRUE));
+        $app->log->debug( print_R("rowcnt error: $row_cnt ", TRUE));
+        $app->log->debug( print_R("attendstats error ", TRUE));
+        $app->log->debug( print_R($response, TRUE));
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+});
+
+$app->post('/studentstats', 'authenticate', function() use ($app) {
+
+    $app->log->setLevel(\Slim\Log::INFO);
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    $app->log->info( print_R("attendance post before update insert\n", TRUE ));
+    $thedata  = (isset($dataJsonDecode->thedata) ?
+        $dataJsonDecode->thedata : "");
+    $app->log->info( print_R($thedata, TRUE ));
+
+    $thecategory  = (isset($dataJsonDecode->thedata->thecategory) ? 
+        $dataJsonDecode->thedata->thecategory : "");
+    $timeint  = (isset($dataJsonDecode->thedata->timeint) ? 
+        $dataJsonDecode->thedata->timeint : "");
+    $thedate  = (isset($dataJsonDecode->thedata->thedate) ? 
+        $dataJsonDecode->thedata->thedate : ""); 
+    $thedateearly  = (isset($dataJsonDecode->thedata->thedateearly) ? 
+        $dataJsonDecode->thedata->thedateearly : ""); 
+    $thedatelate  = (isset($dataJsonDecode->thedata->thedatelate) ? 
+        $dataJsonDecode->thedata->thedatelate : ""); 
+
+    if (strlen($thedateearly) > 0 && ! DateTime::createFromFormat('Y-m-d H:i:s', $thedateearly)) {
+        $msg = "bad early date: $thedateearly";
+        $app->log->error( print_R($msg,TRUE)); 
+        $response["error"] = true;
+        $response["message"] = "error in studentstatsmonths: $msg";
+        $app->log->error( print_R($response, TRUE));
+        echoRespnse(404, $response);
+    };
+    if (strlen($thedatelate) > 0 && ! DateTime::createFromFormat('Y-m-d H:i:s', $thedatelate)) {
+        $msg = "bad late date: $thedatelate";
+        $app->log->error( print_R($msg,TRUE)); 
+        $response["error"] = true;
+        $response["message"] = "error in studentstatsmonths: $msg";
+        $app->log->error( print_R($response, TRUE));
+        echoRespnse(404, $response);
+    };
+
+
+    $app->log->info( print_R("studentstats params: thecategory: $thecategory tr: $timeint td: $thedate ", TRUE));
+
+    $response = array();
+    $db = new StatsDbHandler();
+
+    // fetch task
+    $result = $db->getStudentStats($thecategory, $timeint,$thedateearly,$thedatelate, $thedate, $app );
+    $response["error"] = false;
+    $response["studentstats"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+
+        if (count($slist) > 0) {
+            $tmp["summaryvalue"] = (empty($slist["summaryvalue"]) ? "NULL" : $slist["summaryvalue"]);
+            $tmp["month"] = (empty($slist["month"]) ? "NULL" : $slist["month"]);
+            $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["datetype"] = (empty($slist["datetype"]) ? "NULL" : $slist["datetype"]);
+
+        } else {
+            $tmp["summaryvalue"] = "NULL";
+            $tmp["month"] = "NULL";
+            $tmp["category"] = "NULL";
+            $tmp["type"] = "NULL";
+            $tmp["datetype"] = "NULL";
+
+        }
+        $app->log->debug( print_R("attendance push ", TRUE));
+        $app->log->debug( print_R($tmp, TRUE));
+        array_push($response["studentstats"], $tmp);
+    }
+    
+    $row_cnt = count($response["studentstats"]);
+    $app->log->info( print_R("studentstats cnt: $row_cnt ", TRUE));
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        $response["thedata"] = $thedata;
+        $app->log->info( print_R("studentstats fine with $row_cnt ", TRUE));
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
         $response["message"] = "error in studentstats";
-        error_log( print_R("studentstats bad\n ", TRUE), 3, LOG);
-        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
-        error_log( print_R("studentstats error\n ", TRUE), 3, LOG);
-        error_log( print_R($response, TRUE), 3, LOG);
+        $app->log->info( print_R("studentstats bad ", TRUE));
+        $app->log->info( print_R("rowcnt error: $row_cnt ", TRUE));
+        $app->log->info( print_R("studentstats error ", TRUE));
+        $app->log->info( print_R($response, TRUE));
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+});
+
+$app->post('/studentstatsmonths', 'authenticate', function() use ($app) {
+
+    $app->log->setLevel(\Slim\Log::INFO);
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    $app->log->info( print_R("studentstatsmonths post before convert", TRUE ));
+    $thedata  = (isset($dataJsonDecode->thedata) ?
+        $dataJsonDecode->thedata : "");
+    $app->log->info( print_R($thedata, TRUE ));
+
+    $thedate  = (isset($dataJsonDecode->thedata->thedate) ? 
+        $dataJsonDecode->thedata->thedate : ""); 
+    $thedateearly  = (isset($dataJsonDecode->thedata->thedateearly) ? 
+        $dataJsonDecode->thedata->thedateearly : ""); 
+    $thedatelate  = (isset($dataJsonDecode->thedata->thedatelate) ? 
+        $dataJsonDecode->thedata->thedatelate : ""); 
+
+    if (strlen($thedateearly) > 0 && ! DateTime::createFromFormat('Y-m-d H:i:s', $thedateearly)) {
+        $msg = "bad early date: $thedateearly";
+        $app->log->error( print_R($msg,TRUE)); 
+        $response["error"] = true;
+        $response["message"] = "error in studentstatsmonths: $msg";
+        $app->log->error( print_R($response, TRUE));
+        echoRespnse(404, $response);
+    };
+    if (strlen($thedatelate) > 0 && ! DateTime::createFromFormat('Y-m-d H:i:s', $thedatelate)) {
+        $msg = "bad late date: $thedatelate";
+        $app->log->error( print_R($msg,TRUE)); 
+        $response["error"] = true;
+        $response["message"] = "error in studentstatsmonths: $msg";
+        $app->log->error( print_R($response, TRUE));
+        echoRespnse(404, $response);
+    };
+
+
+    $app->log->info( print_R("studentstats params: td: $thedate dte: $thedateearly dtl: $thedatelate", TRUE));
+
+    $response = array();
+    $db = new StatsDbHandler();
+
+    // fetch task
+    $result = $db->getStudentStatsMonths($thedate, $thedateearly, $thedatelate, $app );
+    $response["error"] = false;
+    $response["monthlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+
+        if (count($slist) > 0) {
+            $tmp["month"] = (empty($slist["month"]) ? "NULL" : $slist["month"]);
+
+        } else {
+            $tmp["month"] = "NULL";
+
+        }
+        $app->log->debug( print_R("studentstatsmonths push ", TRUE));
+        $app->log->debug( print_R($tmp, TRUE));
+        array_push($response["monthlist"], $tmp);
+    }
+    
+    $row_cnt = count($response["monthlist"]);
+    $app->log->info( print_R("studentstatsmonths cnt: $row_cnt ", TRUE));
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        $app->log->info( print_R("studentstatsmonths fine with $row_cnt ", TRUE));
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in studentstatsmonths";
+        $app->log->error( print_R("studentstatsmonths bad ", TRUE));
+        $app->log->error( print_R("rowcnt error: $row_cnt ", TRUE));
+        $app->log->error( print_R("studentstatsmonths error ", TRUE));
+        $app->log->error( print_R($response, TRUE));
         
 //note need to handle 404 data notfound
         echoRespnse(404, $response);

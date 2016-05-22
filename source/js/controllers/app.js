@@ -3,7 +3,6 @@
  
     angular
         .module('ng-admin')
- 
     .controller('AppController', AppController);
 
 
@@ -15,11 +14,13 @@
     'StudentServices',
     'PaymentServices',
     'ClassServices',
+    'StatsServices',
     '$cookies',
     '$cookieStore',
-    '$log'
+    '$log',
+    'Notification'
     ];
-
+ 
     function AppController( $scope, $routeParams, 
          UserServices,
          AttendanceServices,
@@ -27,9 +28,11 @@
          StudentServices, 
          PaymentServices,
          ClassServices,
+         StatsServices,
          $cookies,
          $cookieStore,
-         $log
+         $log,
+         Notification
     ){
         /* jshint validthis: true */
         var vm = this;
@@ -45,9 +48,12 @@
     };
     vm.loadTopbar = loadTopbar;
     vm.loadSidebar = loadSidebar;
+    vm.getStudentStats = getStudentStats;
+    vm.getStudentStatsMonths = getStudentStatsMonths;
     vm.islogin = islogin;
     vm.isokf = isokf;
     vm.isok;
+    vm.studentstats;
 
     islogin();
     
@@ -72,9 +78,12 @@
             PaymentServices.setapikey(thekey);
             ClassServices.setapikey(thekey);
             UserServices.setapikey(thekey);
+            StatsServices.setapikey(thekey);
             vm.userdta = UserServices.getUserDetails();
             loadSidebar();
             loadTopbar();
+            getStudentStats();
+            getStudentStatsMonths('startdate');
         }
         
     }
@@ -269,7 +278,6 @@
         }
 
 
-
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -296,20 +304,65 @@
 
         //BEGIN LINE CHART SPLINE
         var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
-        var d2_2 = [["Jan", 165],["Feb", 172],["Mar", 175],["Apr", 176],["May", 164],["Jun", 171],["Jul", 175],["Aug", 180],["Sep", 181]];
-        var d2_3 = [["Jan", 128],["Feb", 131],["Mar", 140],["Apr", 150],["May", 140],["Jun", 144],["Jul", 146],["Aug", 155],["Sep", 158]];
+        var d2_2 = [["Jan", -32],["Feb", -22],["Mar", -13],["Apr", -24],["May", -16],["Jun", -27],["Jul", -15],["Aug", -31],["Sep", -14]];
+        var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
+
+        // Add a SumArray method to all arrays by expanding the Array prototype(do this once in a general place)
+        Array.prototype.SumArray = function (arr) {
+            var sum = [];
+            var sumx,sumy;
+            if (arr !== null && this.length == arr.length) {
+                for (var i = 0; i < arr.length; i++) {
+                    sumy = this[i][1] + arr[i][1];
+                    sumx = this[i][0];
+                    sum.push([sumx,sumy]);
+                }
+            }
+        
+            return sum;
+        };
+
+        function gety(x,seriesIndex) {
+            $log.debug('gety:',x,seriesIndex);
+            var retvl;
+        if (seriesIndex == 1) {
+            var d2_1a = { "dta": {
+                "Jan": 'xxx',
+                "Feb": 'yyy',
+                "Mar": 'zzzz',
+                "Apr": 'ab ab',
+                "May": 'asdf',
+                "Jun": 183,
+                "Jul": 185,
+                "Aug": 188,
+                "Sep": 202
+                }};
+                retvl = _.chain(d2_1a).pluck(x).value();
+        } else {
+            retvl = 'no text';
+        }
+                //$log.debug('x',retvl);
+            return(retvl);   
+        }
+        
+        var d2_sum = d2_1.SumArray(d2_2);
+        console.log('sumarr',d2_sum); // [6,8,10,12]
 
         $.plot("#line-chart-spline", [{
             data: d2_1,
-            label: "Children",
+            label: "Students",
             color: "#2ecc71"
         },{
+            data: d2_sum,
+            label: "Net",
+            color: "#aaaadd"
+        },{
             data: d2_2,
-            label: "Adults",
+            label: "Break",
             color: "#e74c3c"
         },{
             data: d2_3,
-            label: "Blackbelts",
+            label: "Inactive",
             color: "#2980b9"
         }], {   
             series: {
@@ -333,10 +386,17 @@
                 hoverable: !0
             },
             tooltip: !0,
-            tooltipOpts: {
-                content: "%x : %y",
-                defaultTheme: false
-            },
+      tooltipOpts: {
+           content: function(label, xval, yval, flotItem){
+              // $log.debug('flot %j',flotItem);
+               return "new students <b>"+ gety(xval,flotItem.seriesIndex) + "</b> for:" + yval;
+           },
+           shifts: {
+             x: -30,
+             y: -50
+           },
+           defaultTheme: false
+       },            
             xaxis: {
                 tickColor: "#fafafa",
                 mode: "categories"
@@ -548,6 +608,75 @@
         
         //END CALENDAR
     },500);
-	}
+
+
+        function getStudentStats() {
+            $log.debug('getStudentStats entered');
+            var myTime = '1970/01/01';
+            var oraFormat = "YYYY-MM-DD HH:mm:ss";
+            
+            vm.studentstats = [];
+            
+            for (var iter=1,len=11;iter < len;iter++) {
+                var thedata = {
+                    thecategory: 'ContactType',
+                    timeint: iter,
+                    thedate: 'startdate',
+                    thedateearly: moment(myTime, "YYYY/MM/DD").format(oraFormat),
+                    thedatelate: moment(new Date()).format(oraFormat)
+                };
+        
+                 StatsServices.getStudentStats(thedata).then( handleStatsSuccess, handleError);
+                    
+            }
+        }
+        function handleError( response ) {
+            if (
+               ! angular.isObject( response.data ) ||
+                ! response.data.message
+            ) {
+                response.data.message =  "getStudentStats An unknown error occurred";
+            }
+            $log.debug(' getStudentStats error',response.data.message);
+            Notification.error({message: response.data.message, delay: 5000});
+            return;
+        }
+        
+        function handleStatsSuccess( response ) {
+            $log.debug('stats success:');
+            $log.debug(response);
+                response.data.studentstats.timeint = response.data.thedata.timeint;
+                vm.studentstats.push(response.data.studentstats); 
+
+            return( response );
+        }        
+        
+        function getStudentStatsMonths(datetype) {
+            $log.debug('getStudentStatsMonths entered');
+
+            var myTime = '1970/01/01';
+            var oraFormat = "YYYY-MM-DD HH:mm:ss";
+            var thedata = {
+                thedate: datetype,
+                thedateearly: moment(myTime, "YYYY/MM/DD").format(oraFormat),
+                thedatelate: moment(new Date()).format(oraFormat),
+                
+            };
+    
+            return StatsServices.getStudentStatsMonths(thedata).then(
+                function (data) {
+                    $log.debug( 'getStudentStatsMonths returned data', data);
+                },
+                function(error) {
+                        $log.debug(' getStudentStatsMonths error',error);
+                        Notification.error({message: error, delay: 5000});
+                        return (error);
+                }
+            );
+            
+        }
+
+  }
+
 
 })();    
