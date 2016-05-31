@@ -71,6 +71,75 @@ class StatsDbHandler {
 
     }
 
+    public function getStudentStatsDetails(  $thedate = "DEFAULT", $earliest = NULL, $latest = NULL, $thecategory = NULL, $app ) {
+        $app->log->info( print_R("getStudentStatsDetails entered", TRUE));
+        $app->log->info( print_R("getStudentStatsDetails entered: thedate: $thedate  ", TRUE));
+
+        $querytypes = array(
+            ''                  => "ContactType",
+            "DEFAULT"           => "ContactType",
+            "instructorflag"    => "instructorflag", 
+            "ContactType"       => "ContactType", 
+            "sex"               => "sex", 
+            "pgrmcat"           => "pgrmcat", 
+            "classcat"          => "classcat", 
+            "agecat"            => "agecat", 
+            "age"               => "age", 
+            "CurrentRank"       => "CurrentRank", 
+            "Nclass"            => "Nclass"
+        );
+        $querytype = $querytypes[$thecategory] ?: $querytypes["DEFAULT"];
+
+        $querydates = array(
+            "DEFAULT"           => "startdate",
+            ''                  => "startdate",
+            "startdate"         => "startdate", 
+            "inactivedate"      => "inactivedate", 
+            "lasttestdate"      => "lasttestdate"
+        );
+        $querydate = $querydates[$thedate] ?: $querydates["DEFAULT"];
+
+        $app->log->info( print_R("getStudentStatsDetails conversion: q: $querydate ", TRUE));
+        $tr = 24;
+        $earlydate = (strlen($earliest) > 0) ? $earliest : "TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) )" ;  
+        $latedate = (strlen($latest) > 0) ? $latest : " CURDATE( ) "; 
+
+$tr = 10;
+        $sql = "SELECT distinct DATE_FORMAT( {$querydate} , '%Y-%m' ) AS month,firstname,lastname,contactid ";
+        $sql .= "  ,   {$querytype} AS category, '{$querytype}' AS type ";
+        $sql .= " from studentstats ";
+        $sql .= " where {$querydate} is not null "; 
+        $sql .= " and  {$querydate} >= '" . $earlydate . "'";
+        $sql .= " and {$querydate} <=  '" . $latedate . "'"; 
+        $sql .= " and  {$querydate} >= TIMESTAMPADD( MONTH , -" . $tr . ", '" . $latedate . "') ";
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " order by month";
+
+        $app->log->info( print_R("getStudentStatsDetails sql after security: $sql", TRUE));
+
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $detailslist = $stmt->get_result();
+                $stmt->close();
+                return $detailslist;
+            } else {
+                $app->log->error( print_R("getStudentStatsDetails  execute failed", TRUE));
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            $app->log->error( print_R("getStudentStatsDetails  sql failed", TRUE));
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+
     public function getAttend($thetype = NULL) {
         $app->log->debug( print_R("get entered", TRUE));
         $app->log->debug( print_R("get entered: thetype: $thetype \n ", TRUE));

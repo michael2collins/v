@@ -108,35 +108,40 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
     $app->log->info( print_R("studentstats params: thecategory: $thecategory tr: $timeint td: $thedate ", TRUE));
 
     $response = array();
+    
     $db = new StatsDbHandler();
 
-    // fetch task
-    $result = $db->getStudentStats($thecategory, $timeint,$thedateearly,$thedatelate, $thedate, $app );
     $response["error"] = false;
     $response["studentstats"] = array();
 
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-
-        if (count($slist) > 0) {
-            $tmp["summaryvalue"] = (empty($slist["summaryvalue"]) ? "NULL" : $slist["summaryvalue"]);
-            $tmp["month"] = (empty($slist["month"]) ? "NULL" : $slist["month"]);
-            $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
-            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
-            $tmp["datetype"] = (empty($slist["datetype"]) ? "NULL" : $slist["datetype"]);
-
-        } else {
-            $tmp["summaryvalue"] = "NULL";
-            $tmp["month"] = "NULL";
-            $tmp["category"] = "NULL";
-            $tmp["type"] = "NULL";
-            $tmp["datetype"] = "NULL";
-
+    for ($i = 0;$i < $timeint; $i++) {  
+        
+        // fetch task
+        $result = $db->getStudentStats($thecategory, $i,$thedateearly,$thedatelate, $thedate, $app );
+    
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+    
+            if (count($slist) > 0) {
+                $tmp["summaryvalue"] = (empty($slist["summaryvalue"]) ? "NULL" : $slist["summaryvalue"]);
+                $tmp["month"] = (empty($slist["month"]) ? "NULL" : $slist["month"]);
+                $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
+                $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+                $tmp["datetype"] = (empty($slist["datetype"]) ? "NULL" : $slist["datetype"]);
+    
+            } else {
+                $tmp["summaryvalue"] = "NULL";
+                $tmp["month"] = "NULL";
+                $tmp["category"] = "NULL";
+                $tmp["type"] = "NULL";
+                $tmp["datetype"] = "NULL";
+    
+            }
+            $app->log->debug( print_R("attendance push ", TRUE));
+            $app->log->debug( print_R($tmp, TRUE));
+            array_push($response["studentstats"], $tmp);
         }
-        $app->log->debug( print_R("attendance push ", TRUE));
-        $app->log->debug( print_R($tmp, TRUE));
-        array_push($response["studentstats"], $tmp);
     }
     
     $row_cnt = count($response["studentstats"]);
@@ -146,7 +151,6 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
         $response["error"] = false;
         $response["thedata"] = $thedata;
         $app->log->info( print_R("studentstats fine with $row_cnt ", TRUE));
-        echoRespnse(200, $response);
     } else {
         $response["error"] = true;
         $response["message"] = "error in studentstats";
@@ -159,6 +163,59 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
         echoRespnse(404, $response);
 //        echoRespnse(200, $response);
     }
+
+    // fetch task
+    $result = $db->getStudentStatsDetails($thedate, $thedateearly, $thedatelate, $thecategory, $app );
+    $response["detailslist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+
+        if (count($slist) > 0) {
+            $tmp["month"] = (empty($slist["month"]) ? "NULL" : $slist["month"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["firstname"] = (empty($slist["Firstname"]) ? "NULL" : $slist["Firstname"]);
+            $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
+            $tmp["datetype"] = $thedate;
+            $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+
+        } else {
+            $tmp["month"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            $tmp["contactid"] = "NULL";
+            $tmp["datetype"] = $thedate;
+            $tmp["category"] = "NULL";
+            $tmp["type"] = "NULL";
+
+        }
+        $app->log->debug( print_R("studentstatsdetails push ", TRUE));
+        $app->log->debug( print_R($tmp, TRUE));
+        array_push($response["detailslist"], $tmp);
+    }
+    
+    $row_cnt = count($response["detailslist"]);
+    $app->log->info( print_R("studentstatsdetails cnt: $row_cnt ", TRUE));
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        $app->log->info( print_R("studentstatsdetails fine with $row_cnt ", TRUE));
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in studentstatsdetails";
+        $app->log->error( print_R("studentstatsdetails bad ", TRUE));
+        $app->log->error( print_R("rowcnt error: $row_cnt ", TRUE));
+        $app->log->error( print_R("studentstatsdetails error ", TRUE));
+        $app->log->error( print_R($response, TRUE));
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+    
 });
 
 $app->post('/studentstatsmonths', 'authenticate', function() use ($app) {
@@ -244,5 +301,6 @@ $app->post('/studentstatsmonths', 'authenticate', function() use ($app) {
 //        echoRespnse(200, $response);
     }
 });
+
 
 ?>

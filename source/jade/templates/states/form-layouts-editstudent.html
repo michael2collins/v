@@ -1042,7 +1042,7 @@
                                 <div class="input-icon right">
                                   <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.studentclassstatus.$dirty" ng-class="editstudentclass.studentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                   <select id="inputsc_Classstatus" type="text" name="studentclassstatus" ng-model="vmclass.studentclass.studentclassstatus" 
-                                  ng-change="vmclass.updateStudentClass()" 
+                                  ng-change="vmclass.changeStudentStatus()" 
                                   minLength="2" maxLength="30" 
                                   required
                                   ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">

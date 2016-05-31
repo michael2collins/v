@@ -18,7 +18,8 @@
     '$cookies',
     '$cookieStore',
     '$log',
-    'Notification'
+    'Notification',
+    '$q'
     ];
  
     function AppController( $scope, $routeParams, 
@@ -32,7 +33,8 @@
          $cookies,
          $cookieStore,
          $log,
-         Notification
+         Notification,
+         $q
     ){
         /* jshint validthis: true */
         var vm = this;
@@ -54,6 +56,7 @@
     vm.isokf = isokf;
     vm.isok;
     vm.studentstats;
+    vm.studentstatsdetails;
 
     islogin();
     
@@ -82,8 +85,22 @@
             vm.userdta = UserServices.getUserDetails();
             loadSidebar();
             loadTopbar();
-            getStudentStats();
-            getStudentStatsMonths('startdate');
+
+            var getdatestr = 'startdate';
+
+            $q.all([
+                    getStudentStatsMonths(getdatestr).then(function() {
+                        $log.debug('getStudentStatsMonths returned');
+                     }),
+                    getStudentStats(getdatestr).then(function() {
+                        $log.debug('getStudentStats returned');
+                     })
+                ])
+                .then(function() {
+                    $log.debug('getAll stats done returned');
+            });
+            
+            
         }
         
     }
@@ -277,7 +294,7 @@
  
         }
 
-
+    function genGraph() {
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -303,9 +320,13 @@
         try {
 
         //BEGIN LINE CHART SPLINE
-        var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
-        var d2_2 = [["Jan", -32],["Feb", -22],["Mar", -13],["Apr", -24],["May", -16],["Jun", -27],["Jul", -15],["Aug", -31],["Sep", -14]];
-        var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
+        //var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
+        
+        var d2_1 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType','Student');
+        $log.debug('d2_1', d2_1);
+        
+//        var d2_2 = [["Jan", -32],["Feb", -22],["Mar", -13],["Apr", -24],["May", -16],["Jun", -27],["Jul", -15],["Aug", -31],["Sep", -14]];
+ //       var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
 
         // Add a SumArray method to all arrays by expanding the Array prototype(do this once in a general place)
         Array.prototype.SumArray = function (arr) {
@@ -324,35 +345,40 @@
 
         function gety(x,seriesIndex) {
             $log.debug('gety:',x,seriesIndex);
-            var retvl;
-        if (seriesIndex == 1) {
-            var d2_1a = { "dta": {
-                "Jan": 'xxx',
-                "Feb": 'yyy',
-                "Mar": 'zzzz',
-                "Apr": 'ab ab',
-                "May": 'asdf',
-                "Jun": 183,
-                "Jul": 185,
-                "Aug": 188,
-                "Sep": 202
-                }};
-                retvl = _.chain(d2_1a).pluck(x).value();
+            var retvl=[];
+            //seriesIndex == 1 is ContactType = student, type = active
+            
+        if (seriesIndex === 0) {
+            var d2_1a = contentForGraph(vm.studentstats,'month','summaryvalue','ContactType','Student');
+            $log.debug('gety d2_1a',d2_1a,x);
+            for (var iter=0,len=d2_1a.length;iter<len;iter++) {
+                for(var diter=0,dlen=d2_1a[iter].length;diter<dlen;diter++) {
+                    if(d2_1a[iter][diter].month === x) {
+                        $log.debug('d2_1a content',d2_1a[iter][diter].details);
+                        var dta = {
+                            'firstname': d2_1a[iter][diter].details.firstname,
+                            'lastname': d2_1a[iter][diter].details.lastname,
+                            'contactid': d2_1a[iter][diter].details.contactid
+                        };
+                        retvl.push(dta);
+                    }
+                }
+            }
         } else {
             retvl = 'no text';
         }
-                //$log.debug('x',retvl);
-            return(retvl);   
+                $log.debug('gety x',JSON.stringify(retvl));
+            return(JSON.stringify(retvl));   
         }
         
-        var d2_sum = d2_1.SumArray(d2_2);
-        console.log('sumarr',d2_sum); // [6,8,10,12]
+//        var d2_sum = d2_1.SumArray(d2_2);
+ //       console.log('sumarr',d2_sum); // [6,8,10,12]
 
         $.plot("#line-chart-spline", [{
             data: d2_1,
             label: "Students",
             color: "#2ecc71"
-        },{
+/*        },{
             data: d2_sum,
             label: "Net",
             color: "#aaaadd"
@@ -364,7 +390,7 @@
             data: d2_3,
             label: "Inactive",
             color: "#2980b9"
-        }], {   
+  */      }], {   
             series: {
                 lines: {
                     show: !1
@@ -609,47 +635,97 @@
         //END CALENDAR
     },500);
 
+    }
+        function datToGraph(data, x, y, type, category) {
+            $log.debug('datToGraph:',data, x,y,type,category);
+            var res=[];
 
-        function getStudentStats() {
+            for(var iter=0,len = data.length;iter<len;iter++) {
+                var d = [];
+                d[0] = data[iter][x];
+                d[1] = data[iter][y];
+                
+                if(data[iter].type === type &&
+                    data[iter].category === category) {
+                        $log.debug('datIf found:',d,data[iter].type,data[iter].category);
+                        res.push(d);
+                    }
+            }
+            $log.debug('datToGraph res:', res);
+            return res;
+        }
+        function contentForGraph(data, x, y, type, category) {
+            $log.debug('contentForGraph:',data, x,y,type,category);
+            var res=[];
+
+            for(var iter=0,len = data.length;iter<len;iter++) {
+                var d = [];
+                d[0] = data[iter][x];
+                d[1] = data[iter].details;
+                var dta;
+                var dtaarr=[];
+                for (var diter=0,dlen=d[1].length;diter<dlen;diter++) {
+                    $log.debug('diter',d[1][diter]);
+                    dta = {
+                      'item': diter,
+                      'month': d[0],
+                      'details': {
+                          'lastname': d[1][diter].details.lastname,
+                          'firstname': d[1][diter].details.firstname,
+                          'contactid': d[1][diter].details.contactid
+                      }
+                    };
+                    dtaarr.push(dta);
+                }
+                
+                if(data[iter].type === type &&
+                    data[iter].category === category) {
+                        $log.debug('contentIf found:',dtaarr,data[iter].type,data[iter].category);
+                        res.push(dtaarr);
+                    }
+            }
+            $log.debug('contentForGraph res:', res);
+            return res;
+        }
+        
+        function getStudentStats(datestr) {
             $log.debug('getStudentStats entered');
             var myTime = '1970/01/01';
             var oraFormat = "YYYY-MM-DD HH:mm:ss";
             
-            vm.studentstats = [];
-            
-            for (var iter=1,len=11;iter < len;iter++) {
-                var thedata = {
-                    thecategory: 'ContactType',
-                    timeint: iter,
-                    thedate: 'startdate',
-                    thedateearly: moment(myTime, "YYYY/MM/DD").format(oraFormat),
-                    thedatelate: moment(new Date()).format(oraFormat)
-                };
-        
-                 StatsServices.getStudentStats(thedata).then( handleStatsSuccess, handleError);
-                    
-            }
-        }
-        function handleError( response ) {
-            if (
-               ! angular.isObject( response.data ) ||
-                ! response.data.message
-            ) {
-                response.data.message =  "getStudentStats An unknown error occurred";
-            }
-            $log.debug(' getStudentStats error',response.data.message);
-            Notification.error({message: response.data.message, delay: 5000});
-            return;
-        }
-        
-        function handleStatsSuccess( response ) {
-            $log.debug('stats success:');
-            $log.debug(response);
-                response.data.studentstats.timeint = response.data.thedata.timeint;
-                vm.studentstats.push(response.data.studentstats); 
 
-            return( response );
-        }        
+            var thedata = {
+                thecategory: 'ContactType',
+                timeint: 11,
+                thedate: datestr,
+                thedateearly: moment(myTime, "YYYY/MM/DD").format(oraFormat),
+                thedatelate: moment(new Date()).format(oraFormat)
+            };
+            return StatsServices.getStudentStats(thedata).then( 
+                
+                function ( response ) {
+                    $log.debug('stats success:');
+                    $log.debug(response);
+                        response.data.studentstats.timeint = response.data.thedata.timeint;
+                        vm.studentstats = response.data.studentstats; 
+                        vm.studentstatsdetails = response.data.detailslist;
+                        mergedata();
+                        genGraph();
+                        return response;
+                },
+                function ( response ) {
+                    if (
+                       ! angular.isObject( response.data ) ||
+                        ! response.data.message
+                    ) {
+                        response.data.message =  "getStudentStats An unknown error occurred";
+                    }
+                    $log.debug(' getStudentStats error',response.data.message);
+                    Notification.error({message: response.data.message, delay: 5000});
+                    return ($q.reject(response));
+                }
+            );    
+        }
         
         function getStudentStatsMonths(datetype) {
             $log.debug('getStudentStatsMonths entered');
@@ -670,9 +746,54 @@
                 function(error) {
                         $log.debug(' getStudentStatsMonths error',error);
                         Notification.error({message: error, delay: 5000});
-                        return (error);
+                        return ($q.reject(error));
                 }
             );
+            
+        }
+
+        function mergedata() {
+            $log.debug('mergedata entered'); 
+            for (var iter=0,len=vm.studentstats.length;iter<len;iter++ ){
+                vm.studentstats[iter].details = [];
+                for (var diter=0,lend=vm.studentstatsdetails.length;diter<lend;diter++ ){
+            /*            $log.debug('check a match', 
+                            vm.studentstats[iter].month, 
+                            vm.studentstatsdetails[diter].month, 
+                            vm.studentstats[iter].datetype,
+                            vm.studentstatsdetails[diter].datetype,
+                            vm.studentstats[iter].type,
+                            vm.studentstatsdetails[diter].type,
+                            vm.studentstats[iter].category,
+                            vm.studentstatsdetails[diter].category
+                            );
+              */  
+                    if (vm.studentstats[iter].month === vm.studentstatsdetails[diter].month
+                        && 
+                        vm.studentstats[iter].datetype === vm.studentstatsdetails[diter].datetype
+                        && 
+                        vm.studentstats[iter].type === vm.studentstatsdetails[diter].type
+                        && 
+                        vm.studentstats[iter].category === vm.studentstatsdetails[diter].category
+                    ) {
+                        //todo: check if contacttype needs to be added to details to match in above too
+                        var dta = {
+                            'iter': diter,
+                            'details': vm.studentstatsdetails[diter]
+                        };
+                        vm.studentstats[iter].details.push(dta);
+                        $log.debug('found a match', 
+                            vm.studentstats[iter].month, 
+                            vm.studentstats[iter].datetype,
+                            vm.studentstats[iter].details
+                            );
+                        
+                    }
+                    
+                }
+            }
+            
+            $log.debug('merged stats',vm.studentstats);
             
         }
 

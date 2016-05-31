@@ -150,6 +150,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     $classseq = $studentclass->classseq;
     $pgmseq = $studentclass->pgmseq;
     $studentclassstatus = $studentclass->studentclassstatus;
+    $changestatus = $studentclass->changestatus;
 
     //error_log( print_R("before update", TRUE ));
 
@@ -183,7 +184,32 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
         // task failed to update
         $response["error"] = true;
         $response["message"] = "Student failed to update. Please try again!";
+        echoRespnse(400, $response);
     }
+
+    if ($changestatus == true) {
+        $db2 = new StudentDbHandler();
+        $dt1=date("Y-m-d");
+        $response = array();
+    
+        // updating task
+        $result2 = $db2->createStudentHistory( $contactID,
+                                                'date' . $studentclassstatus,
+                                                $dt1 , 
+                                                $app                                      
+                                         );
+        if ($result2) {
+            // task updated successfully
+            $response["error"] = false;
+            $response["message"] = " Student class updated successfully and history";
+        } else {
+            // task failed to update
+            $response["error"] = true;
+            $response["message"] = " Student class successful but Student history failed to update. Please try again!";
+            echoRespnse(400, $response);
+        }
+    }
+    
     echoRespnse(200, $response);
 });
 

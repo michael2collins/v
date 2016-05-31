@@ -37,7 +37,7 @@
 
         function getStudentStatsMonths( thedata ) {
                     $log.debug('getStudentStatsMonths data before post :' , thedata);
-                    var path = '../v1/studentstatsmonths'
+                    var path = '../v1/studentstatsmonths';
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -47,6 +47,7 @@
                     });
                     return( request.then( handleSuccess, handleError ) );
         }        
+
 
         function handleError( response ) {
             // The API response from the server should be returned in a

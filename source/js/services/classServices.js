@@ -121,7 +121,7 @@
                 });
         }
         function updateStudentClass(path, studentclass) {
-                    $log.debug('vm.data before put :' + studentclass);
+                    $log.debug('vm.data before put :', studentclass);
             return $http({method: 'PUT', url: path, data: studentclass}).
                 success(function(data, status, headers, config) {
                     $log.debug('updateStudentClass success:' + path);

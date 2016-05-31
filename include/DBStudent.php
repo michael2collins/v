@@ -751,6 +751,84 @@ class StudentDbHandler {
         return $num_affected_rows >= 0;
     }
 
+ /**
+     * Creating new student
+     */
+    public function createStudentHistory($contactid,
+                                  $histtype,
+                                  $histdate,$app ) {
+
+        $app->log->info( print_R("createStudentHistory entered: $contactid, $histtype, $histdate", TRUE));
+                                      
+        $response = array();
+
+        //update status if active/inactive for the date
+        if ($histtype == 'dateInactive' || 
+            $histtype == 'dateActive'  ||
+            $histtype == 'dateInjured' ) {
+            if ($this->isStatusExists($contactid,$histdate)) {
+                $sql = "UPDATE ncontactmgmt  set contactmgmttype = ? ";
+                $sql .= " where contactid = ? and ";
+                $sql .= " contactDate = ?  ";
+
+                if ($stmt = $this->conn->prepare($sql)) {
+                    $stmt->bind_param("sss",
+                                      $histtype    ,
+                                      $contactid,
+                                      $histdate
+                                         );
+                        $result = $stmt->execute();
+        
+                        $stmt->close();
+                        // Check for successful insertion
+                        if ($result) {
+                            return 1;
+                        } else {
+                            // Failed to update
+                            return NULL;
+                        }
+        
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+
+            }
+        }
+
+
+        $sql = "INSERT into ncontactmgmt (";
+        $sql .= " contactid ,";
+        $sql .= " contactmgmttype ,";
+        $sql .= " contactDate ) ";
+        $sql .= " values ( ?, ?, ?) ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sss",
+                              $contactid,
+                              $histtype    ,
+                              $histdate
+                                 );
+                $result = $stmt->execute();
+
+                $stmt->close();
+                // Check for successful insertion
+                if ($result) {
+                    return 1;
+                } else {
+                    // Failed to create user
+                    return NULL;
+                }
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        return $response;
+    }
+
 
  /**
      * Creating new student
@@ -828,6 +906,21 @@ class StudentDbHandler {
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("ssss", $Email, $LastName, $FirstName, $inschool);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+    private function isStatusExists($contactid, $histdate) {
+
+        $sql = "SELECT contactid from ncontactmgmt WHERE contactid = ? ";
+        $sql .= " and contactdate = ? ";
+        $sql .= " and contactmgmttype in ('dateInactive','dateActive' ) ";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("ss", $contactid, $histdate);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;

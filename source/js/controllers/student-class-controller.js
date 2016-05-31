@@ -13,16 +13,18 @@
         '$http',
         '$location',
         '$timeout',
-        'ClassServices'
+        'ClassServices',
+        'Notification'
     ];
 
     function StudentClassController($scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices) {
+        $log, $http, $location, $timeout, ClassServices, Notification) {
         /* jshint validthis: true */
         var vmclass = this;
 
         vmclass.getStudentClass = getStudentClass;
         vmclass.updateStudentClass = updateStudentClass;
+        vmclass.changeStudentStatus = changeStudentStatus;
         vmclass.activate = activate;
         vmclass.setStudentClass = setStudentClass;
         
@@ -45,6 +47,7 @@
         vmclass.classpictureurl = [];
         vmclass.classstatuses = [];
         vmclass.xlistnew = [];
+        vmclass.changestatus = false;
 
         vmclass.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug('studentid: ' + $routeParams.id);
@@ -239,7 +242,13 @@
             });
         }
 
+        function changeStudentStatus() {
+            $log.debug('about changeStudentStatus ', vmclass.changestatus);
+            vmclass.changestatus = true;
+            updateStudentClass();
+        }
         function updateStudentClass() {
+            vmclass.studentclass.changestatus = vmclass.changestatus;
             $log.debug('about updateStudentClass ', vmclass.studentclass);
             return ClassServices.updateStudentClass(
                 vmclass.path, vmclass.studentclass).then(function (data) {

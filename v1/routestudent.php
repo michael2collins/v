@@ -965,6 +965,8 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
         $response["message"] = "Student created successfully";
         $response["student_id"] = $student_id;
         error_log( print_R("Student created: $student_id\n", TRUE ), 3, LOG);
+        $dt1=date("Y-m-d");
+        $histid = createStudentHistory($student_id,'StartDate',$dt1);
         echoRespnse(201, $response);
     } else if ($student_id == RECORD_ALREADY_EXISTED) {
         $response["error"] = true;
@@ -1342,6 +1344,31 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
 
 });
 
+function createStudentHistory($contactid,$histtype,$histdate) {
+    $app = \Slim\Slim::getInstance();
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $histid = $db->createStudentHistory($contactid,$histtype,$histdate,$app);
+
+    if ($histid > 0) {
+        $response["error"] = false;
+        $response["message"] = "histcontent created successfully";
+        $response["$histid"] = $histid;
+        $app->log->info( print_R("createStudentHistory created: $histid", TRUE));
+
+        return 201;
+    } else {
+        error_log( print_R("after histcontent result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $histid, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create histcontent. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+}
 
 /**
  * Validating email address
