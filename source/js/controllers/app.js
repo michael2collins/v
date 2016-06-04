@@ -57,6 +57,7 @@
     vm.isok;
     vm.studentstats;
     vm.studentstatsdetails;
+    vm.myj = {};
 
     islogin();
     
@@ -355,10 +356,11 @@
                 for(var diter=0,dlen=d2_1a[iter].length;diter<dlen;diter++) {
                     if(d2_1a[iter][diter].month === x) {
                         $log.debug('d2_1a content',d2_1a[iter][diter].details);
-                        var dta = {
-                            'firstname': d2_1a[iter][diter].details.firstname,
-                            'lastname': d2_1a[iter][diter].details.lastname,
-                            'contactid': d2_1a[iter][diter].details.contactid
+                        var dta = { "item": {
+                            "firstname": d2_1a[iter][diter].details.firstname,
+                            "lastname": d2_1a[iter][diter].details.lastname,
+                            "contactid": d2_1a[iter][diter].details.contactid
+                            }
                         };
                         retvl.push(dta);
                     }
@@ -415,7 +417,21 @@
       tooltipOpts: {
            content: function(label, xval, yval, flotItem){
               // $log.debug('flot %j',flotItem);
-               return "new students <b>"+ gety(xval,flotItem.seriesIndex) + "</b> for:" + yval;
+              var xy = JSON.parse(gety(xval,flotItem.seriesIndex));
+              console.log('xy',xy,xval,yval);
+//               return 'new students:<br/> <json-formatter json="'+ gety(xval,flotItem.seriesIndex) + 
+//               '" open="1"></json-formatter> <br/> for:' + yval;
+                var xx='';
+                for (var iter=0,len=xy.length;iter<len;iter++) {
+                    //console.log('each', xy[iter].item.firstname);
+                     xx = xx + '<div class="row col-md-12"> name:' + xy[iter].item.firstname + ' ' +
+                                                    xy[iter].item.lastname + ' ' +
+                                                    '<br/> id:' + xy[iter].item.contactid +
+                            '</div>';
+                }
+                console.log('xx',xx);
+//               return 'new students: ' + xx + ' for:' + yval;
+               return xx;
            },
            shifts: {
              x: -30,

@@ -56,6 +56,7 @@
     })
     .config(logConfig)
     .config(routeConfig)
+ //   .config(formatterConfig)
         
     .run(function($rootScope, $location, $route, $routeParams) {
         console.log('locationpath',$location.path());
@@ -64,7 +65,7 @@
       $rootScope.$on('$routeChangeSuccess', function () {
             console.log('$routeChangeSuccess');
         console.log('routecurrent',$route.current);
-      })
+      });
     })
     
     // Initialize the application
@@ -77,7 +78,7 @@
     
     .run(authrun);
 
-    
+//    formatterConfig.$inject = ['JSONFormatterConfigProvider'];
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
@@ -139,6 +140,12 @@
         });
     }
 
+ /*   function formatterConfig(JSONFormatterConfigProvider) {
+
+      // Enable the hover preview feature
+      JSONFormatterConfigProvider.hoverPreviewEnabled = true;
+    }
+   */ 
     function logConfig($logProvider) {
         $logProvider.debugEnabled(true);
     }
