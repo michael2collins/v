@@ -105,18 +105,32 @@ class StatsDbHandler {
         $latedate = (strlen($latest) > 0) ? $latest : " CURDATE( ) "; 
 
 $tr = 10;
-        $sql = "SELECT distinct DATE_FORMAT( {$querydate} , '%Y-%m' ) AS month,firstname,lastname,contactid ";
-        $sql .= "  ,   {$querytype} AS category, '{$querytype}' AS type ";
+        $sql = "SELECT distinct DATE_FORMAT( startdate , '%Y-%m' ) AS month,firstname,lastname,contactid ";
+        $sql .= "  ,   ContactType AS category, 'ContactType' AS type, classstatus, 'startdate' as datetype ";
         $sql .= " from studentstats ";
-        $sql .= " where {$querydate} is not null "; 
-        $sql .= " and  {$querydate} >= '" . $earlydate . "'";
-        $sql .= " and {$querydate} <=  '" . $latedate . "'"; 
-        $sql .= " and  {$querydate} >= TIMESTAMPADD( MONTH , -" . $tr . ", '" . $latedate . "') ";
-
+        $sql .= " where startdate is not null "; 
+        $sql .= " and  startdate >= '" . $earlydate . "'";
+        $sql .= " and startdate <=  '" . $latedate . "'"; 
+        $sql .= " and  startdate >= TIMESTAMPADD( MONTH , -" . $tr . ", '" . $latedate . "') ";
+        $sql .= " and contactType in ('Student','BlackBelt') ";
+        $sql .= " and classstatus in ('Active') ";
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
 
-        $sql .= " order by month";
+        $sql .= " UNION All ";
+
+        $sql .= " SELECT distinct DATE_FORMAT( inactivedate , '%Y-%m' ) AS month,firstname,lastname,contactid ";
+        $sql .= "  ,   classstatus AS category, 'ContactType' AS type, classstatus, 'inactivedate' as datetype ";
+        $sql .= " from studentstats ";
+        $sql .= " where  inactivedate is not null "; 
+        $sql .= " and  inactivedate >= '" . $earlydate . "'";
+        $sql .= " and inactivedate <=  '" . $latedate . "'"; 
+        $sql .= " and  inactivedate >= TIMESTAMPADD( MONTH , -" . $tr . ", '" . $latedate . "') ";
+        $sql .= " and classstatus in ('Break','Inactive', 'Injured') ";
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " order by month ";
 
         $app->log->info( print_R("getStudentStatsDetails sql after security: $sql", TRUE));
 
@@ -221,6 +235,7 @@ $tr = 10;
             "lasttestdate"      => "lasttestdate"
         );
         $querydate = $querydates[$thedate] ?: $querydates["DEFAULT"];
+//        $sql .= "     {$querytype} AS category, '{$querytype}' AS type, ";
 
         $earlydate = (strlen($earliest) > 0) ? "'" .  $earliest . "'" : "TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) )" ;  
         $latedate = (strlen($latest) > 0) ? "'" . $latest . "'" : " CURDATE( ) "; 
@@ -228,25 +243,52 @@ $tr = 10;
     $app->log->info( print_R("getStudentStats conversion: q: $querytype tr: $tr qd: $querydate \n ", TRUE));
         
         $sql  = " SELECT SUM( IF( TIMESTAMPDIFF( DAY , ";
-        $sql .= "     {$querydate},   TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) ) >0, 1, 0 ) ) AS summaryvalue, ";
+        $sql .= " startdate,  TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) ) >=0, 1, 0 ) ) as summaryvalue, " ;
         $sql .= "     DATE_FORMAT( TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) , '%Y-%m' ) AS month, ";
-        $sql .= "     {$querytype} AS category, '{$querytype}' AS type, '{$querydate}' as datetype ";
+        $sql .= "     ContactType AS category, 'ContactType' AS type, ";
+        $sql .= " 'startdate' as datetype , classstatus ";
         $sql .= "     FROM studentstats ";
         $sql .= "     WHERE (1 = 1) ";
 
-        $sql .= " and  {$querydate} is not null "; 
-        $sql .= " and  {$querydate} >= " . $earlydate ;
-        $sql .= " and  {$querydate} <= " . $latedate ; 
+        $sql .= " and  startdate is not null "; 
+        $sql .= " and  startdate  >= " . $earlydate ;
+        $sql .= " and  startdate <= " . $latedate ; 
+        $sql .= " and contactType in ('Student','BlackBelt') ";
+        $sql .= " and classstatus in ('Active') ";
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
-        $app->log->info( print_R("getStudentStats sql after security: $sql", TRUE));
+        $sql .= "     GROUP BY DATE_FORMAT( TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) , '%Y-%m' ) , ";
+        $sql .= "         category, TYPE, datetype, classstatus ";
+
+        $sql .= " UNION All ";
+
+        $sql  .= " SELECT SUM( IF( TIMESTAMPDIFF( DAY , ";
+        $sql .= " inactivedate,  TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) ) >=0, 1, 0 ) ) * -1 as summaryvalue, ";
+        $sql .= "     DATE_FORMAT( TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) , '%Y-%m' ) AS month, ";
+        $sql .= "     classstatus AS category, 'ContactType' AS type, ";
+        $sql .= " 'inactivedate' as datetype, classstatus ";
+        $sql .= "     FROM studentstats ";
+        $sql .= "     WHERE (1 = 1) ";
+
+        $sql .= " and  inactivedate is not null "; 
+        $sql .= " and  inactivedate  >= " . $earlydate ;
+        $sql .= " and  inactivedate <= " . $latedate ; 
+        $sql .= " and classstatus in ('Break','Inactive', 'Injured') ";
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+
+
+//        $app->log->info( print_R("getStudentStats sql after security: $sql", TRUE));
 
 //        $sql .= "     and {$querydate}    <= TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( )) ";
 
 
         $sql .= "     GROUP BY DATE_FORMAT( TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) , '%Y-%m' ) , ";
-        $sql .= "         category, TYPE, datetype ";
+        $sql .= "         category, TYPE, datetype, classstatus ";
+
+        $sql .= " order by month ";
 
 
         $app->log->info( print_R("getStudentStats sql: $sql", TRUE));

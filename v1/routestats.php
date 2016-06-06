@@ -114,7 +114,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
     $response["error"] = false;
     $response["studentstats"] = array();
 
-    for ($i = 0;$i < $timeint; $i++) {  
+    for ($i = $timeint - 1;$i >= 0; $i--) {  
         
         // fetch task
         $result = $db->getStudentStats($thecategory, $i,$thedateearly,$thedatelate, $thedate, $app );
@@ -124,18 +124,20 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
             $tmp = array();
     
             if (count($slist) > 0) {
-                $tmp["summaryvalue"] = (empty($slist["summaryvalue"]) ? "NULL" : $slist["summaryvalue"]);
+                $tmp["summaryvalue"] = (empty($slist["summaryvalue"]) ? "0" : $slist["summaryvalue"]);
                 $tmp["month"] = (empty($slist["month"]) ? "NULL" : $slist["month"]);
                 $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
                 $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
                 $tmp["datetype"] = (empty($slist["datetype"]) ? "NULL" : $slist["datetype"]);
+                $tmp["classstatus"] = (empty($slist["classstatus"]) ? "NULL" : $slist["classstatus"]);
     
             } else {
-                $tmp["summaryvalue"] = "NULL";
+                $tmp["summaryvalue"] = "0";
                 $tmp["month"] = "NULL";
                 $tmp["category"] = "NULL";
                 $tmp["type"] = "NULL";
                 $tmp["datetype"] = "NULL";
+                $tmp["classstatus"] = "NULL";
     
             }
             $app->log->debug( print_R("attendance push ", TRUE));
@@ -177,18 +179,20 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
             $tmp["firstname"] = (empty($slist["Firstname"]) ? "NULL" : $slist["Firstname"]);
             $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
-            $tmp["datetype"] = $thedate;
+            $tmp["datetype"] = (empty($slist["datetype"]) ? "NULL" : $slist["datetype"]);
             $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
             $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["classstatus"] = (empty($slist["classstatus"]) ? "NULL" : $slist["classstatus"]);
 
         } else {
             $tmp["month"] = "NULL";
             $tmp["lastname"] = "NULL";
             $tmp["firstname"] = "NULL";
             $tmp["contactid"] = "NULL";
-            $tmp["datetype"] = $thedate;
+            $tmp["datetype"] = "NULL";
             $tmp["category"] = "NULL";
             $tmp["type"] = "NULL";
+            $tmp["classstatus"] = "NULL";
 
         }
         $app->log->debug( print_R("studentstatsdetails push ", TRUE));
@@ -303,4 +307,3 @@ $app->post('/studentstatsmonths', 'authenticate', function() use ($app) {
 });
 
 
-?>

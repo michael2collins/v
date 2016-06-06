@@ -86,6 +86,7 @@
             vm.userdta = UserServices.getUserDetails();
             loadSidebar();
             loadTopbar();
+            vm.filterstat = filterstat;
 
             var getdatestr = 'startdate';
 
@@ -106,6 +107,16 @@
         
     }
 
+    function filterstat(val) {
+        var pass = false;
+        pass =  (           val.category === 'Inactive' && 
+            val.type === 'ContactType' &&
+            val.datetype === 'inactivedate' &&
+            val.summaryvalue < 0);
+        $log.debug('filterstat',val,pass);
+
+        return (pass);
+    }
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
         console.log('routechange in app for success');
         vm.header.animation = 'fadeInUp';
@@ -295,6 +306,53 @@
  
         }
 
+        function getYType(index) {
+            switch(index) {
+                case 0:
+                    return 'Student';
+                case 1:
+                    return 'BlackBelt';
+                case 2:
+                    return 'Net';
+                case 3:
+                    return 'Break';
+                case 4:
+                    return 'Injured';
+                default:
+                    return '';
+            }            
+            
+        }
+        function getYStatus(index) {
+            switch(index) {
+                case 0:
+                    return 'Active';
+                case 1:
+                    return 'Active';
+                case 2:
+                    return 'Net';
+                case 3:
+                    return 'NotActive';
+                case 4:
+                    return 'NotActive';
+                default:
+                    return '';
+            }            
+            
+        }
+        function categoryGetStatus(category) {
+            switch(category) {
+                case 'BlackBelt':
+                    return 'Active';
+                case 'Student':
+                    return 'Active';
+                default:
+                //matching Injured, Break
+                    return 'Inactive';
+            }            
+            
+        }
+
     function genGraph() {
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
@@ -323,76 +381,95 @@
         //BEGIN LINE CHART SPLINE
         //var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
         
-        var d2_1 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType','Student');
+        var d2_1 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(0));
         $log.debug('d2_1', d2_1);
-        
+        var d2_2 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(1));
+        $log.debug('d2_2', d2_2);
+        var d2_3 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(3));
+        $log.debug('d2_3', d2_3);
+        var d2_4 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(4));
+        $log.debug('d2_4', d2_4);
+
 //        var d2_2 = [["Jan", -32],["Feb", -22],["Mar", -13],["Apr", -24],["May", -16],["Jun", -27],["Jul", -15],["Aug", -31],["Sep", -14]];
  //       var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
 
         // Add a SumArray method to all arrays by expanding the Array prototype(do this once in a general place)
         Array.prototype.SumArray = function (arr) {
+            $log.debug('sum:',arr,this);
             var sum = [];
             var sumx,sumy;
-            if (arr !== null && this.length == arr.length) {
+            if (arr !== null && this.length === arr.length) {
                 for (var i = 0; i < arr.length; i++) {
-                    sumy = this[i][1] + arr[i][1];
+                    sumy = parseFloat(this[i][1]) + parseFloat(arr[i][1]);
                     sumx = this[i][0];
                     sum.push([sumx,sumy]);
                 }
+                return sum;
+            } else {
+                $log.debug('sum: nothing to add');
+                return this;            
             }
         
-            return sum;
         };
+
 
         function gety(x,seriesIndex) {
             $log.debug('gety:',x,seriesIndex);
             var retvl=[];
-            //seriesIndex == 1 is ContactType = student, type = active
-            
-        if (seriesIndex === 0) {
-            var d2_1a = contentForGraph(vm.studentstats,'month','summaryvalue','ContactType','Student');
-            $log.debug('gety d2_1a',d2_1a,x);
-            for (var iter=0,len=d2_1a.length;iter<len;iter++) {
-                for(var diter=0,dlen=d2_1a[iter].length;diter<dlen;diter++) {
-                    if(d2_1a[iter][diter].month === x) {
-                        $log.debug('d2_1a content',d2_1a[iter][diter].details);
-                        var dta = { "item": {
-                            "firstname": d2_1a[iter][diter].details.firstname,
-                            "lastname": d2_1a[iter][diter].details.lastname,
-                            "contactid": d2_1a[iter][diter].details.contactid
-                            }
-                        };
-                        retvl.push(dta);
+            if (getYType(seriesIndex) !== 'Net') {
+                var d2_1a = contentForGraph(vm.studentstats,
+                                            'month',
+                                            'summaryvalue',
+                                            'ContactType',
+                                            getYType(seriesIndex),
+                                            getYStatus(seriesIndex)
+                                            );
+                $log.debug('gety d2_1a',d2_1a,x);
+                for (var iter=0,len=d2_1a.length;iter<len;iter++) {
+                    for(var diter=0,dlen=d2_1a[iter].length;diter<dlen;diter++) {
+                        if(d2_1a[iter][diter].month === x) {
+                            $log.debug('d2_1a content',d2_1a[iter][diter].details);
+                            var dta = { "item": {
+                                "firstname": d2_1a[iter][diter].details.firstname,
+                                "lastname": d2_1a[iter][diter].details.lastname,
+                                "contactid": d2_1a[iter][diter].details.contactid
+                                }
+                            };
+                            retvl.push(dta);
+                        }
                     }
                 }
+            } else {
+                retvl = 'no text';
             }
-        } else {
-            retvl = 'no text';
-        }
-                $log.debug('gety x',JSON.stringify(retvl));
+            $log.debug('gety x',JSON.stringify(retvl));
             return(JSON.stringify(retvl));   
         }
         
-//        var d2_sum = d2_1.SumArray(d2_2);
- //       console.log('sumarr',d2_sum); // [6,8,10,12]
+        var d2_sum = d2_1.SumArray(d2_2).SumArray(d2_3).SumArray(d2_4);
+        console.log('sumarr',d2_sum); // [6,8,10,12]
 
         $.plot("#line-chart-spline", [{
             data: d2_1,
-            label: "Students",
+            label: "Student",
             color: "#2ecc71"
-/*        },{
+        },{
+            data: d2_2,
+            label: "BlackBelt",
+            color: "#3498db"
+        },{
             data: d2_sum,
             label: "Net",
             color: "#aaaadd"
         },{
-            data: d2_2,
+            data: d2_3,
             label: "Break",
             color: "#e74c3c"
         },{
-            data: d2_3,
-            label: "Inactive",
-            color: "#2980b9"
-  */      }], {   
+            data: d2_4,
+            label: "Injured",
+            color: "#ffce54"
+        }], {   
             series: {
                 lines: {
                     show: !1
@@ -416,21 +493,25 @@
             tooltip: !0,
       tooltipOpts: {
            content: function(label, xval, yval, flotItem){
-              // $log.debug('flot %j',flotItem);
+            //  $log.debug('flot %j',flotItem);
               var xy = JSON.parse(gety(xval,flotItem.seriesIndex));
-              console.log('xy',xy,xval,yval);
+              console.log('xy',xy,xval,yval,getYType(flotItem.seriesIndex));
 //               return 'new students:<br/> <json-formatter json="'+ gety(xval,flotItem.seriesIndex) + 
 //               '" open="1"></json-formatter> <br/> for:' + yval;
                 var xx='';
-                for (var iter=0,len=xy.length;iter<len;iter++) {
-                    //console.log('each', xy[iter].item.firstname);
-                     xx = xx + '<div class="row col-md-12"> name:' + xy[iter].item.firstname + ' ' +
-                                                    xy[iter].item.lastname + ' ' +
-                                                    '<br/> id:' + xy[iter].item.contactid +
-                            '</div>';
-                }
+                 if (xy !== 'no text' ) {
+                    for (var iter=0,len=xy.length;iter<len;iter++) {
+                        //console.log('each', xy[iter].item.firstname);
+                             xx = xx + '<div class="row col-md-12"> name:' + 
+                                            xy[iter].item.firstname + ' ' +
+                                            xy[iter].item.lastname + ' ' +
+                                        '<br/> id:' + xy[iter].item.contactid +
+                                        '</div>';
+                    }
+                 }
                 console.log('xx',xx);
 //               return 'new students: ' + xx + ' for:' + yval;
+                xx +=  'Count:' + yval ;
                return xx;
            },
            shifts: {
@@ -446,7 +527,14 @@
             yaxis: {
                 tickColor: "#fafafa"
             },
-            shadowSize: 0
+            shadowSize: 0,
+            legend: {
+                backgroundOpacity: 0.5,
+						noColumns: 5,
+						container: '#line-chart-spline-legend',
+						labelBoxBorderColor: "white",
+						position: "ne"
+            }
         });
         //END LINE CHART SPLINE
             
@@ -670,8 +758,8 @@
             $log.debug('datToGraph res:', res);
             return res;
         }
-        function contentForGraph(data, x, y, type, category) {
-            $log.debug('contentForGraph:',data, x,y,type,category);
+        function contentForGraph(data, x, y, type, category, status) {
+            $log.debug('contentForGraph:',data, x,y,type,category,status);
             var res=[];
 
             for(var iter=0,len = data.length;iter<len;iter++) {
@@ -693,12 +781,21 @@
                     };
                     dtaarr.push(dta);
                 }
-                
-                if(data[iter].type === type &&
-                    data[iter].category === category) {
+
+                if (status === 'Active' &&
+                    data[iter].type === type && 
+                    data[iter].category === category 
+                    ) {
                         $log.debug('contentIf found:',dtaarr,data[iter].type,data[iter].category);
                         res.push(dtaarr);
-                    }
+                }  
+                if( status === 'NotActive' &&
+                    data[iter].type === type && 
+                    data[iter].classstatus === category
+                    ) {
+                        $log.debug('contentIf found:',dtaarr,data[iter].type,data[iter].category);
+                        res.push(dtaarr);
+                }
             }
             $log.debug('contentForGraph res:', res);
             return res;
@@ -773,7 +870,7 @@
             for (var iter=0,len=vm.studentstats.length;iter<len;iter++ ){
                 vm.studentstats[iter].details = [];
                 for (var diter=0,lend=vm.studentstatsdetails.length;diter<lend;diter++ ){
-            /*            $log.debug('check a match', 
+                        $log.debug('check a match', 
                             vm.studentstats[iter].month, 
                             vm.studentstatsdetails[diter].month, 
                             vm.studentstats[iter].datetype,
@@ -781,16 +878,21 @@
                             vm.studentstats[iter].type,
                             vm.studentstatsdetails[diter].type,
                             vm.studentstats[iter].category,
+                            vm.studentstats[iter].classstatus,
                             vm.studentstatsdetails[diter].category
                             );
-              */  
+                
                     if (vm.studentstats[iter].month === vm.studentstatsdetails[diter].month
                         && 
+                        vm.studentstats[iter].type === vm.studentstatsdetails[diter].type
+                        &&
+                        (vm.studentstats[iter].category === 'Inactive' || 
+                        vm.studentstats[iter].category === 'Injured' ? 
+                        vm.studentstats[iter].classstatus === vm.studentstatsdetails[diter].category :
                         vm.studentstats[iter].datetype === vm.studentstatsdetails[diter].datetype
                         && 
-                        vm.studentstats[iter].type === vm.studentstatsdetails[diter].type
-                        && 
                         vm.studentstats[iter].category === vm.studentstatsdetails[diter].category
+                        )
                     ) {
                         //todo: check if contacttype needs to be added to details to match in above too
                         var dta = {
