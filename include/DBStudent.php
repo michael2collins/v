@@ -289,7 +289,9 @@ class StudentDbHandler {
     public function getAllStudents($contacttype = NULL, $thelimit, 
         $therank = NULL, 
         $status = NULL) {
-        error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank \n ", TRUE), 3, LOG);
+
+        global $user_id;
+        error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank user: $user_id \n ", TRUE), 3, LOG);
 
 
         $sql = "SELECT c.*, pays.studentclassstatus from ncontacts  c ";
@@ -298,6 +300,7 @@ class StudentDbHandler {
         if (strlen($status) > 0 && $status != 'ALL') {
             $sql .= " and ( pays.studentclassstatus is null or pays.studentclassstatus = '" . $status . "') ";
         } 
+
         if (strlen($contacttype) > 0 && $contacttype != 'All') {
             $sql .= " and contactType = '" . $contacttype . "'";
         } 
@@ -932,7 +935,7 @@ class StudentDbHandler {
      * Fetching fields for user froerences
      */
     public function getUserPreferences($user_id, $prefkey) {
-        error_log( print_R("getUserPreferences entered\n", TRUE ),3, LOG);
+        error_log( print_R("getUserPreferences entered: $user_id key: $prefkey\n", TRUE ),3, LOG);
         //       error_log( print_R($user_id, TRUE ));
         //       error_log( print_R(  $prefkey, TRUE));
         $stmt = $this->conn->prepare("SELECT u.id, u.prefcolumn from userpreferences u WHERE u.user_id = ? AND u.prefkey = ? order by preforder");

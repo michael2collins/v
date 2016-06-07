@@ -9,7 +9,7 @@
           <div ng-repeat="stats in vm.studentstats | orderBy: 'timeint':true | filter: vm.filterstat ">
             <div ng-repeat="d in stats.details">
                 {{d.details.firstname}} {{d.details.lastname}} became {{d.details.classstatus}} on {{d.details.month}} 
-                <a ng-href="./#/form-layouts-editstudent/id/{{d.contactid}}" 
+                <a ng-href="./#/form-layouts-editstudent/id/{{d.details.contactid}}" 
                 class="btn btn-blue btn-default">Edit {{d.details.firstname}}</a>
             </div>
           </div>

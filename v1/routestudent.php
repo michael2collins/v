@@ -363,11 +363,12 @@ $app->get('/userprefcols/:prefkey', 'authenticate', function($prefkey) {
     $response = array();
     $db = new StudentDbHandler();
 
-    $userid = 1; //have to convert name to id
+    global $user_id;
+    //$userid = 1; //have to convert name to id
     //$prefkey = "allstudents";
 
     // fetching all class pays
-    $result = $db->getUserPreferences($userid, $prefkey);
+    $result = $db->getUserPreferences($user_id, $prefkey);
 
 
     $response["error"] = false;
@@ -395,8 +396,8 @@ $app->get('/userprefcols/:prefkey', 'authenticate', function($prefkey) {
 $app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($app) {
     error_log( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE), 3, LOG);
 
-    $userid = 1; //have to convert name to id
-
+//    $userid = 1; //have to convert name to id
+    global $user_id;
     $response = array();
 
     // reading post params
@@ -414,7 +415,7 @@ $app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($ap
     // updating task
     $pref_rslt = $db->createPref($data,
                                  $prefkey,
-                                 $userid
+                                 $user_id
                                 );
 
     if ($pref_rslt > 0) {
