@@ -106,12 +106,12 @@ class StatsDbHandler {
 
 $tr = 10;
         $sql = "SELECT distinct DATE_FORMAT( startdate , '%Y-%m' ) AS month,firstname,lastname,contactid ";
-        $sql .= "  ,   ContactType AS category, 'ContactType' AS type, classstatus, 'startdate' as datetype ";
+        $sql .= "  ,   ContactType AS category, 'ContactType' AS type, classstatus, 'startdate' as datetype, startdate as fulldate ";
         $sql .= " from studentstats ";
         $sql .= " where startdate is not null "; 
         $sql .= " and  startdate >= '" . $earlydate . "'";
         $sql .= " and startdate <=  '" . $latedate . "'"; 
-        $sql .= " and  startdate >= TIMESTAMPADD( MONTH , -" . $tr . ", '" . $latedate . "') ";
+        $sql .= " and  last_day(startdate) >= TIMESTAMPADD( MONTH , -" . $tr . ", last_day('" . $latedate . "')) ";
         $sql .= " and contactType in ('Student','BlackBelt') ";
         $sql .= " and classstatus in ('Active') ";
         $schoolfield = "studentschool";
@@ -120,12 +120,12 @@ $tr = 10;
         $sql .= " UNION All ";
 
         $sql .= " SELECT distinct DATE_FORMAT( inactivedate , '%Y-%m' ) AS month,firstname,lastname,contactid ";
-        $sql .= "  ,   classstatus AS category, 'ContactType' AS type, classstatus, 'inactivedate' as datetype ";
+        $sql .= "  ,   classstatus AS category, 'ContactType' AS type, classstatus, 'inactivedate' as datetype, inactivedate as fulldate ";
         $sql .= " from studentstats ";
         $sql .= " where  inactivedate is not null "; 
         $sql .= " and  inactivedate >= '" . $earlydate . "'";
         $sql .= " and inactivedate <=  '" . $latedate . "'"; 
-        $sql .= " and  inactivedate >= TIMESTAMPADD( MONTH , -" . $tr . ", '" . $latedate . "') ";
+        $sql .= " and  last_day(inactivedate) >= TIMESTAMPADD( MONTH , -" . $tr . ", last_day('" . $latedate . "')) ";
         $sql .= " and classstatus in ('Break','Inactive', 'Injured') ";
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
@@ -243,7 +243,7 @@ $tr = 10;
     $app->log->info( print_R("getStudentStats conversion: q: $querytype tr: $tr qd: $querydate \n ", TRUE));
         
         $sql  = " SELECT SUM( IF( TIMESTAMPDIFF( DAY , ";
-        $sql .= " startdate,  TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) ) >=0, 1, 0 ) ) as summaryvalue, " ;
+        $sql .= " last_day(startdate),  TIMESTAMPADD( MONTH , -" . $tr . ", last_day(CURDATE( )) ) ) >=-1, 1, 0 ) ) as summaryvalue, " ;
         $sql .= "     DATE_FORMAT( TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) , '%Y-%m' ) AS month, ";
         $sql .= "     ContactType AS category, 'ContactType' AS type, ";
         $sql .= " 'startdate' as datetype , classstatus ";
@@ -252,7 +252,7 @@ $tr = 10;
 
         $sql .= " and  startdate is not null "; 
         $sql .= " and  startdate  >= " . $earlydate ;
-        $sql .= " and  startdate <= " . $latedate ; 
+        $sql .= " and  (startdate) <= (" . $latedate . ")" ; 
         $sql .= " and contactType in ('Student','BlackBelt') ";
         $sql .= " and classstatus in ('Active') ";
 
@@ -264,7 +264,7 @@ $tr = 10;
         $sql .= " UNION All ";
 
         $sql  .= " SELECT SUM( IF( TIMESTAMPDIFF( DAY , ";
-        $sql .= " inactivedate,  TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) ) >=0, 1, 0 ) ) * -1 as summaryvalue, ";
+        $sql .= " last_day(inactivedate),  TIMESTAMPADD( MONTH , -" . $tr . ", last_day(CURDATE( )) ) ) >=-1, 1, 0 ) ) * -1 as summaryvalue, ";
         $sql .= "     DATE_FORMAT( TIMESTAMPADD( MONTH , -" . $tr . ", CURDATE( ) ) , '%Y-%m' ) AS month, ";
         $sql .= "     classstatus AS category, 'ContactType' AS type, ";
         $sql .= " 'inactivedate' as datetype, classstatus ";
@@ -273,7 +273,7 @@ $tr = 10;
 
         $sql .= " and  inactivedate is not null "; 
         $sql .= " and  inactivedate  >= " . $earlydate ;
-        $sql .= " and  inactivedate <= " . $latedate ; 
+        $sql .= " and  (inactivedate) <= (" . $latedate . ")" ; 
         $sql .= " and classstatus in ('Break','Inactive', 'Injured') ";
 
         $schoolfield = "studentschool";

@@ -183,6 +183,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
             $tmp["category"] = (empty($slist["category"]) ? "NULL" : $slist["category"]);
             $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
             $tmp["classstatus"] = (empty($slist["classstatus"]) ? "NULL" : $slist["classstatus"]);
+            $tmp["fulldate"] = (empty($slist["fulldate"]) ? "NULL" : $slist["fulldate"]);
 
         } else {
             $tmp["month"] = "NULL";
@@ -193,6 +194,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
             $tmp["category"] = "NULL";
             $tmp["type"] = "NULL";
             $tmp["classstatus"] = "NULL";
+            $tmp["fulldate"] = "NULL";
 
         }
         $app->log->debug( print_R("studentstatsdetails push ", TRUE));

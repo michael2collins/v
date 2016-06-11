@@ -432,7 +432,8 @@
                             var dta = { "item": {
                                 "firstname": d2_1a[iter][diter].details.firstname,
                                 "lastname": d2_1a[iter][diter].details.lastname,
-                                "contactid": d2_1a[iter][diter].details.contactid
+                                "contactid": d2_1a[iter][diter].details.contactid,
+                                "fulldate": d2_1a[iter][diter].details.fulldate
                                 }
                             };
                             retvl.push(dta);
@@ -505,7 +506,9 @@
                              xx = xx + '<div class="row col-md-12"> name:' + 
                                             xy[iter].item.firstname + ' ' +
                                             xy[iter].item.lastname + ' ' +
-                                        '<br/> id:' + xy[iter].item.contactid +
+                                            '<br/> id: ' + 
+                                            xy[iter].item.contactid + ' on: ' +
+                                            xy[iter].item.fulldate +
                                         '</div>';
                     }
                  }
@@ -776,7 +779,8 @@
                       'details': {
                           'lastname': d[1][diter].details.lastname,
                           'firstname': d[1][diter].details.firstname,
-                          'contactid': d[1][diter].details.contactid
+                          'contactid': d[1][diter].details.contactid,
+                          'fulldate': d[1][diter].details.fulldate
                       }
                     };
                     dtaarr.push(dta);
