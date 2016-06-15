@@ -937,13 +937,14 @@
         }
         
         function setSelectedArray(inputArray) {
+            $log.debug("setSelectedArray entered", inputArray);
             vm.selectedStudents = [];
             
             if (inputArray.length > 0){
                 vm.selected = true;
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
-                        ContactID: inputArray[i].ContactID,
+                        ContactID: inputArray[i].contactID,
                         Paid: "",
                         ShirtSize: "",
                         Notes: "",

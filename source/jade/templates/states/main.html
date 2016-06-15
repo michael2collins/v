@@ -1,6 +1,72 @@
 <!DOCTYPE html>
  
 <div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
+
+<div class="col-lg-12">
+    <div class="panel">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-3">
+            <div id="external-events">
+              <h4>Draggable Events</h4>
+              <input id="event-name" type="text" value="" placeholder="Event name..." class="form-control"><br><a id="event-add" href="javascript:;" class="btn btn-primary btn-sm">Add Event</a>
+              <hr>
+              <div class="external-event label label-default ui-draggable" style="position: relative;">My Event 1</div>
+              <div class="external-event label label-default ui-draggable" style="position: relative;">My Event 2</div>
+              <div class="external-event label label-default ui-draggable" style="position: relative;">My Event 3</div>
+              <div class="external-event label label-default ui-draggable" style="position: relative;">My Event 4</div>
+              <div class="external-event label label-default ui-draggable" style="position: relative;">My Event 5</div>
+              <div id="event-block"></div>
+              <p>
+                <input id="drop-remove" type="checkbox">&nbsp;
+                <label for="drop-remove">Remove after drop</label>
+              </p>
+            </div>
+
+      <div class="panel">
+        <div class="panel-body">
+          <h4 class="block-heading"><i class="icon-directions mrs"></i>Todo List</h4>
+          <div id="todos-list">
+            <ul id="todos-list-sort" class="list-unstyled">
+              <li>
+                <div class="input-group">
+                  <input id="todos-list-input" type="text" placeholder="New task content" value="" class="form-control"/><span class="input-group-btn">
+                    <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
+                </div>
+              </li>
+              <li>
+                <input type="checkbox" id="task-item-1"/>
+                <label for="task-item-1">Setup birthday party for Jack</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+              </li>
+              <li>
+                <input type="checkbox" id="task-item-2"/>
+                <label for="task-item-2">Generate Attendance sheets</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+              </li>
+              <li>
+                <input type="checkbox" id="task-item-3"/>
+                <label for="task-item-3">Print the brochures</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+              </li>
+              <li>
+                <input type="checkbox" id="task-item-4"/>
+                <label for="task-item-4">Prepare/Send Belt Rank Congratulations Cards</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+              </li>
+              <li>
+                <input type="checkbox" id="task-item-5"/>
+                <label for="task-item-5">Capture leads from Movie Night</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+            
+          </div>
+          <div class="col-md-9">
+            <div id="calendar" ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
   <div class="row">
     <div class="col-lg-4">
       <div class="panel">
@@ -187,44 +253,8 @@
       </div>
     </div>
     <div class="col-sm-6 col-md-6 col-lg-5">
-      <div class="panel">
-        <div class="panel-body">
-          <h4 class="block-heading"><i class="icon-directions mrs"></i>Todo List</h4>
-          <div id="todos-list">
-            <ul id="todos-list-sort" class="list-unstyled">
-              <li>
-                <div class="input-group">
-                  <input id="todos-list-input" type="text" placeholder="New task content" value="" class="form-control"/><span class="input-group-btn">
-                    <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
-                </div>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-1"/>
-                <label for="task-item-1">Setup birthday party for Jack</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-2"/>
-                <label for="task-item-2">Generate Attendance sheets</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-3"/>
-                <label for="task-item-3">Print the brochures</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-4"/>
-                <label for="task-item-4">Prepare/Send Belt Rank Congratulations Cards</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-5"/>
-                <label for="task-item-5">Capture leads from Movie Night</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
     </div>
     <div class="col-lg-3">
-      <div id="my-calendar"></div>
     </div>
   </div>
   <div class="row">

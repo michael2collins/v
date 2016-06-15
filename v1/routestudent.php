@@ -214,10 +214,10 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
     
     for($i = 0; $i < count($studentarr); $i++ ) {
 
-        error_log( print_R($studentarr[$i]->contactID, TRUE ), 3, LOG);
+        error_log( print_R($studentarr[$i]->ContactID, TRUE ), 3, LOG);
 
-        $ContactID  = (isset($studentarr[$i]->contactID) ? 
-                        $studentarr[$i]->contactID : "");
+        $ContactID  = (isset($studentarr[$i]->ContactID) ? 
+                        $studentarr[$i]->ContactID : "");
         $Paid       = (isset($studentarr[$i]->Paid) ? 
                         $studentarr[$i]->Paid : "");
         $ShirtSize  = (isset($studentarr[$i]->ShirtSize) ? 
