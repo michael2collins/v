@@ -1,4 +1,26 @@
 <!DOCTYPE html>
+<style>
+#calendar .fc-day-number {
+    text-decoration: underline;
+    width: 15px;
+    height: 16px;
+    text-align: right;
+}
+/*
+#calendar .fc-day-number:hover {
+    cursor: pointer;
+}
+*/
+
+#calendar .my-cell-overlay-day-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 19px;
+    height: 16px;
+    cursor: pointer;
+}
+ </style>
  
 <div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
 

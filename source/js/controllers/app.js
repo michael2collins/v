@@ -306,6 +306,40 @@
                       });
     }
 
+    // Called after the calendar layout has been rendered, 
+    // but before events are added.
+/*    function onCalendarViewRender(view, element) {
+        // The .fc-cell-overlay div isn't created until a selection event happens. 
+        // Force a selection event to trigger the creation of this div.
+        $('#calendar').fullCalendar('select', 
+            pageData.calendarMonth, 
+            pageData.calendarMonth, 
+            true);
+    
+        // Create our corner overlay so we can detect whether the 
+        // mouse was over the day when the click event occurred.
+        var corner = $('<div>').addClass('my-cell-overlay-day-corner');
+        $('.fc-cell-overlay').append(corner);
+    }
+  */  
+    
+    function onCalendarDayClick(date, jsEvent, view) {
+        // Check to see whether the mouse was hovering over our day corner overlay 
+        // that is itself applied to the fullCalendar's selection overlay div.
+        // If it is, then we know we clicked on the day number and not some other 
+        // part of the cell.
+    //    if ($('.my-cell-overlay-day-corner').is(':hover')) {
+    //        alert('Click!');
+    //    }
+        $log.debug('onCalendarDayClick entered', date, jsEvent, view);
+        if ($(jsEvent.target).is('td')) { 
+            // Clicked on the day number in the month view 
+            $('#calendar').fullCalendar('changeView', 'agendaDay'); 
+            $('#calendar').fullCalendar('gotoDate', date); 
+        } 
+    }
+
+
     /* initialize the calendar
     
      -----------------------------------------------------------------*/
@@ -322,12 +356,14 @@
                 eventLimit: 3 // adjust to 6 only for agendaWeek/agendaDay
             }
         },        
+        selectable : true,
+    //    viewRender : onCalendarViewRender,
+        dayClick   : onCalendarDayClick,
         editable: true,
         droppable: true, // this allows things to be dropped onto the calendar !!!
-//        drop: function(date, allDay) { // this function is called when something is dropped
         drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
-        $log.debug('drop entered',date, jsEvent, ui, resourceId);
-        $log.debug('drop entered',jsEvent.target.style.backgroundColor);
+            $log.debug('drop entered',date, jsEvent, ui, resourceId);
+            $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
  
             // retrieve the dropped element's stored Event Object
             var originalEventObject = $(this).data('eventObject');
@@ -336,7 +372,13 @@
             var copiedEventObject = $.extend({}, originalEventObject);
 
             // assign it the date that was reported
-            copiedEventObject.start = date;
+            if (date._ambigTime === true) {
+                copiedEventObject.start = moment(date).add(6,'hours');
+            } else {
+                copiedEventObject.start = moment(date);
+            }
+            
+            copiedEventObject.end = moment(copiedEventObject.start).add(1,'hours');
             copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
             copiedEventObject.textColor = jsEvent.target.style.color;
             var inner = jsEvent.target.innerText;
@@ -371,42 +413,33 @@
             }
 
         },
-         dayClick: function(date) {
-            alert('a day has been clicked!',date);
-            $log.debug('dayclick',date);
-
-        },
-/*          eventClick: function(calEvent, jsEvent, view) {
-            $log.debug('eventclick',calEvent, jsEvent,view);
-
-            alert('Event: ' + calEvent.title);
-            alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
-            alert('View: ' + view.name);
-
-        // change the border color just for fun
-            $(this).css('border-color', 'red');
-
-        },
-  */
+/*        dayClick: function(date, jsEvent, view) { 
+            if ($(jsEvent.target).is('td')) { 
+                // Clicked on the day number in the month view 
+                $('#calendar').fullCalendar('changeView', 'agendaDay'); 
+                $('#calendar').fullCalendar('gotoDate', date); 
+            } 
+        },        
+ */
         eventClick: function (event, jsEvent, view) {
             $log.debug('eventclick',event, jsEvent,view);
-                    //set the values and open the modal
-                    var eventText;
-                    try{
-                        eventText = JSON.stringify(event.description);
-                    } catch(e) {
-                        eventText = event.description;
-                    }
-                    $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
-                    $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
-                    
-                    $("#eventInfo").html(eventText);
-                    $("#eventLink").attr('href', event.url);
-                    $("#eventContent").dialog({
-                        modal: true,
-                        title: event.title
-                    });
-                    return false;
+            //set the values and open the modal
+            var eventText;
+            try{
+                eventText = JSON.stringify(event.description);
+            } catch(e) {
+                eventText = event.description;
+            }
+            $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
+            $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
+            
+            $("#eventInfo").html(eventText);
+            $("#eventLink").attr('href', event.url);
+            $("#eventContent").dialog({
+                modal: true,
+                title: event.title
+            });
+            return false;
         },  
         eventDrop: function(event, delta, revertFunc) {
 
