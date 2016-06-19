@@ -5,7 +5,6 @@
         .module('ng-admin')
     .controller('AppController', AppController);
 
-
     AppController.$inject = ['$scope', 
     '$routeParams', 
     'UserServices',
@@ -58,6 +57,7 @@
     vm.studentstats;
     vm.studentstatsdetails;
     vm.myj = {};
+    vm.notify = notify;
 
     islogin();
     
@@ -204,6 +204,7 @@
 
         // store the Event Object in the DOM element so we can get to it later
         el.data('eventObject', eventObject);
+        $log.debug('drag after EventObject',el);
 
         // make the event draggable using jQuery UI
         el.draggable({
@@ -214,11 +215,99 @@
     };
 
     $('#external-events div.external-event').each(function() {
+        
         eventDrag($(this));
+        $log.debug('external-events after drag',$(this));
+        
+    });
+    $('#todos-list-sort > li > label.external-event').each(function() {
+        
+        eventDrag($(this));
+        $log.debug('todos external-events after drag',$(this));
+        
     });
 
+    function sendNotification(title, options) {
+      // Memoize based on feature detection.
+      if ("Notification" in window) {
+        sendNotification = function (title, options) {
+            console.log('in window');
+          try {
+              window.Notification.requestPermission().then(function(permission) {
+                  console.log('requestPermission',permission);
+                  if (permission !== 'granted') {
+                      console.log('fallback notify from incognito');
+                      alert(title + ": " + options.body);
+                  } else {
+                      return new window.Notification(title, options);
+                  }
+              });
+          } catch(e) {
+              console.log('notification requestPermission error',e);
+          }
+            
+        };
+      } else if ("mozNotification" in navigator) {
+        sendNotification = function (title, options) {
+          // Gecko < 22
+          console.log('in moz');
+          return navigator.mozNotification
+                   .createNotification(title, options.body, options.icon)
+                   .show();
+        };
+      } else {
+        sendNotification = function (title, options) {
+            console.log('fallback notify');
+          alert(title + ": " + options.body);
+        };
+      }
+      return sendNotification(title, options);
+    }
+
+      /**
+       *  Generate a random four-digit hex value.
+       */
+      function s4() {
+          return Math.floor((1 + Math.random()) * 0x10000)
+              .toString(16).substring(1);
+      }
+
+
+      /**
+       *  Generate a random UUID string.
+       *  @return {String} A randomly-generated UUID string.
+       */
+      function generateTag() {
+          return [s4() + s4(), s4(), s4(), s4(), s4() + s4() + s4()].join('-');
+      }
+      
+    function notify(){
+        $log.debug('notify entered');
+                      var title = "I'm from Angular ?";
+                      var body = 'This is a simple demo for the notification API Angular Service';
+     //                 NotifyMe.launch(title, {
+                      sendNotification(title, {
+                          body: body,
+          icon: 'http://us.cdn2.123rf.com/168nwm/dxinerz/dxinerz1506/'
+              + 'dxinerz150601488/41355464-bell-notification-call-icon-vector'
+              + '-image-can-also-be-used-for-education-academics-and-science'
+              + '-suitab.jpg',
+          lang: 'en-US',                         
+          tag: generateTag(),
+                          onclick:function(){
+                              console.log("On Click Triggered");
+                          },
+                          onerror:function(){
+                              console.log("On Error Triggered");
+                          },
+                          onclose:function(){
+                              console.log("On Close Triggered");
+                          }
+                      });
+    }
 
     /* initialize the calendar
+    
      -----------------------------------------------------------------*/
 
     $('#calendar').fullCalendar({
@@ -227,10 +316,19 @@
             center: 'title',
             right: 'month,agendaWeek,agendaDay'
         },
+        eventLimit: 3, // for all non-agenda views
+        views: {
+            agenda: {
+                eventLimit: 3 // adjust to 6 only for agendaWeek/agendaDay
+            }
+        },        
         editable: true,
         droppable: true, // this allows things to be dropped onto the calendar !!!
-        drop: function(date, allDay) { // this function is called when something is dropped
-
+//        drop: function(date, allDay) { // this function is called when something is dropped
+        drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
+        $log.debug('drop entered',date, jsEvent, ui, resourceId);
+        $log.debug('drop entered',jsEvent.target.style.backgroundColor);
+ 
             // retrieve the dropped element's stored Event Object
             var originalEventObject = $(this).data('eventObject');
 
@@ -239,7 +337,28 @@
 
             // assign it the date that was reported
             copiedEventObject.start = date;
-            copiedEventObject.allDay = allDay;
+            copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
+            copiedEventObject.textColor = jsEvent.target.style.color;
+            var inner = jsEvent.target.innerText;
+            $log.debug('drop parsing',inner);
+            var innerJ,desc;
+            try {
+                innerJ = JSON.parse(inner);
+                desc = innerJ.details.name;
+            } catch(e) {
+                $log.debug('json parse err',e);
+                innerJ = inner;   
+                desc = inner;
+            }
+            $log.debug('drop entered',innerJ);
+            $log.debug('drop entered',desc);
+            
+            copiedEventObject.title = desc;
+            copiedEventObject.description = innerJ;
+            
+
+//            copiedEventObject.allDay = allDay;
+            $log.debug('after set copiedEventObject',copiedEventObject);
 
             // render the event on the calendar
             // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
@@ -251,7 +370,52 @@
                 $(this).remove();
             }
 
-        }
+        },
+         dayClick: function(date) {
+            alert('a day has been clicked!',date);
+            $log.debug('dayclick',date);
+
+        },
+/*          eventClick: function(calEvent, jsEvent, view) {
+            $log.debug('eventclick',calEvent, jsEvent,view);
+
+            alert('Event: ' + calEvent.title);
+            alert('Coordinates: ' + jsEvent.pageX + ',' + jsEvent.pageY);
+            alert('View: ' + view.name);
+
+        // change the border color just for fun
+            $(this).css('border-color', 'red');
+
+        },
+  */
+        eventClick: function (event, jsEvent, view) {
+            $log.debug('eventclick',event, jsEvent,view);
+                    //set the values and open the modal
+                    var eventText;
+                    try{
+                        eventText = JSON.stringify(event.description);
+                    } catch(e) {
+                        eventText = event.description;
+                    }
+                    $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
+                    $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
+                    
+                    $("#eventInfo").html(eventText);
+                    $("#eventLink").attr('href', event.url);
+                    $("#eventContent").dialog({
+                        modal: true,
+                        title: event.title
+                    });
+                    return false;
+        },  
+        eventDrop: function(event, delta, revertFunc) {
+
+            $log.debug('eventdrop',event, event.title + " was dropped on " + event.start.format());
+    
+            if (!confirm("Are you sure about this change?")) {
+                revertFunc();
+            }
+        }        
     });
 
     var addEvent = function (name) {
@@ -259,11 +423,14 @@
         var html = $('<div class="external-event label label-default">' + name + '</div>');
         $('#event-block').append(html);
         eventDrag(html);
+        $log.debug('after addEvent drag',html);
+        
     };
 
     $('#event-add').on('click', function () {
         var name = $('#event-name').val();
         addEvent(name);
+        $log.debug('after addEvent click',name);
     });
     
     function loadTopbar() {
@@ -993,4 +1160,4 @@
   }
 
 
-})();    
+})();

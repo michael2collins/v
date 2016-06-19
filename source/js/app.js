@@ -30,6 +30,8 @@
                 'ngSanitize',
     'angularFileUpload',
     'akoenig.deckgrid'
+  //      'notifyme'
+
 //    'omr.directives'
 //    'webcam'
         //        'dynamicLayout'
@@ -89,9 +91,21 @@
         console.log('fixing for drag-drop');
         jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
         console.log(jQuery.event.props);
+
+    // request permission on page load for Notification
+        console.log('onload permission check b4:',Notification.permission);
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+        console.log('perm',Notification.permission);
+      } else {
+            var notification = new Notification('Notification title', {
+              icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+              body: "Hey there! You've been notified!",
+            });
+      }
     });
     
-    
+
     function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
         $log.debug('authrun entered');
         var loggedIn=false;
