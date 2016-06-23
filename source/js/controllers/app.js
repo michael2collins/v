@@ -12,13 +12,15 @@
     'EventServices',
     'StudentServices',
     'PaymentServices',
-    'ClassServices',
+    'ClassServices', 
     'StatsServices',
     '$cookies',
     '$cookieStore',
     '$log',
     'Notification',
-    '$q'
+    '$q',
+    '$window',
+    '$interval'
     ];
  
     function AppController( $scope, $routeParams, 
@@ -33,7 +35,9 @@
          $cookieStore,
          $log,
          Notification,
-         $q
+         $q,
+         $window,
+         $interval
     ){
         /* jshint validthis: true */
         var vm = this;
@@ -56,10 +60,22 @@
     vm.isok;
     vm.studentstats;
     vm.studentstatsdetails;
+    vm.listOfTimes=[];
     vm.myj = {};
     vm.notify = notify;
+    vm.intervalValue = 5000; //milli
+    vm.initTime = moment();
+    vm.checktime;
+    vm.okNotify=false;
+    vm.okoptions=[true,false];
+    vm.mycolor = Math.random() * 0xFFFFFF;
+    vm.settextcolor = settextcolor;
+    vm.textcolor = 0xFFFFFF ^ vm.mycolor; // Set to complement of textColor.
 
     islogin();
+    //works but is annoying
+    intervalChecker();
+    
     
     function isokf() {
 //        $log.debug('isokf');
@@ -67,6 +83,78 @@
         return vm.isok;
     }
 
+    function getTimeSet() {
+          var sample1 = moment(vm.initTime).add(15,'seconds');
+          var sample2 = moment(vm.initTime).add(20,'seconds');
+          var sample3 = moment(vm.initTime).add(20,'seconds');
+          var sample4 = moment(vm.initTime).add(45,'seconds');
+          var listOfTimes = [
+            {"title": "sample1","time": sample1},
+            {"title": "sample2","time": sample2},
+            {"title": "sample3","time": sample3},
+            {"title": "sample4","time": sample4}
+          ];
+        return listOfTimes;        
+    }
+    function intervalChecker() {
+        $log.debug('intervalChecker entered, using',vm.intervalValue, vm.initTime, vm.okNotify);
+
+        //only get one set.  need another loop outside of this to fetch another set
+        vm.listOfTimes = getTimeSet();
+        
+        $interval(function() {
+//          eedisplayService.getData(...)
+ //         .then(function(response) {
+            // update the content in the view 
+          //})
+          vm.checktime = moment();
+          for (var iter=0,len=vm.listOfTimes.length;iter<len;iter++) {
+                    $log.debug('intervalChecker: b4 if', 
+                        vm.checktime, 
+                        vm.okNotify, 
+                        vm.intervalValue,
+                        vm.listOfTimes[iter],
+                        iter, len);
+              if( moment(vm.checktime) <= moment(vm.listOfTimes[iter].time).
+                    add(  vm.intervalValue/1000, 'seconds')  &&
+                  moment(vm.checktime) > moment(vm.listOfTimes[iter].time) ) {
+                    $log.debug('intervalChecker: found in interval', 
+                        vm.checktime, 
+                        vm.okNotify, 
+                        vm.intervalValue,
+                        vm.listOfTimes[iter]);
+                        if (vm.okNotify === true) {
+                            $log.debug('going to notify',vm.listOfTimes[iter]);
+                            notify(vm.listOfTimes[iter]);
+                        }
+                        vm.listOfTimes[iter].remove = true;
+                  }
+              vm.listOfTimes[iter].remove = false;
+          }
+          for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
+                    $log.debug('intervalChecker: b4 removal if', 
+                        vm.checktime, 
+                        vm.okNotify, 
+                        vm.intervalValue,
+                        vm.listOfTimes[niter],
+                        niter,nlen);
+            if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
+                //i think there is a transitional period where it is in 
+                // process of being cleared that the count is wrong
+                if(
+                    moment(vm.checktime) > moment(vm.listOfTimes[niter].time).
+                    add(vm.intervalValue/1000, 'seconds') ||
+                    vm.listOfTimes[niter].remove === true
+                    ) {
+                        $log.debug('dropping too old ones',vm.listOfTimes[niter]);
+                        //remove if they were passed by in the loop above
+                          vm.listOfTimes.splice(niter,1);
+                }
+            }
+           }
+          
+        }, vm.intervalValue);
+    }
 
     function islogin() {
 
@@ -229,17 +317,17 @@
 
     function sendNotification(title, options) {
       // Memoize based on feature detection.
-      if ("Notification" in window) {
+      if ("Notification" in $window) {
         sendNotification = function (title, options) {
             console.log('in window');
           try {
-              window.Notification.requestPermission().then(function(permission) {
+              $window.Notification.requestPermission().then(function(permission) {
                   console.log('requestPermission',permission);
                   if (permission !== 'granted') {
                       console.log('fallback notify from incognito');
                       alert(title + ": " + options.body);
                   } else {
-                      return new window.Notification(title, options);
+                      return new $window.Notification(title, options);
                   }
               });
           } catch(e) {
@@ -281,9 +369,9 @@
           return [s4() + s4(), s4(), s4(), s4(), s4() + s4() + s4()].join('-');
       }
       
-    function notify(){
+    function notify(msg){
         $log.debug('notify entered');
-                      var title = "I'm from Angular ?";
+                      var title = msg.title;
                       var body = 'This is a simple demo for the notification API Angular Service';
      //                 NotifyMe.launch(title, {
                       sendNotification(title, {
@@ -339,7 +427,6 @@
         } 
     }
 
-
     /* initialize the calendar
     
      -----------------------------------------------------------------*/
@@ -356,7 +443,8 @@
                 eventLimit: 3 // adjust to 6 only for agendaWeek/agendaDay
             }
         },        
-        selectable : true,
+        selectable: true,
+        selectHelper: true,
     //    viewRender : onCalendarViewRender,
         dayClick   : onCalendarDayClick,
         editable: true,
@@ -421,7 +509,52 @@
             } 
         },        
  */
-        eventClick: function (event, jsEvent, view) {
+/*        select: function(start, end) {
+            $('#eventStart').datepicker("setDate", new Date(start));
+            $('#eventEnd').datepicker("setDate", new Date(end));
+            $('#calEventDialog').dialog('open');
+        },
+        */
+        select: function(start, end) {
+            $log.debug('select entered', start, end);
+            $("#eventStart").val(moment(start));
+            $("#eventEnd").val(moment(end));
+            $log.debug('start',$("#eventStart"),'end',$("#eventEnd"));
+            $('#calEventDialog').dialog('open');
+			},        
+        eventClick: function(calEvent, jsEvent, view) {
+            $log.debug('eventClick entered', calEvent, jsEvent, view);
+            $("#eventStart").val(moment(calEvent.start));
+            $("#eventEnd").val(moment(calEvent.end));
+            
+            $('#calEventDialog #eventTitle').val(calEvent.title);
+            //                    alert(calEvent.className);
+            //                alert(calEvent.className=="gbcs-halfday-event"?"1":"2");
+            //                    $('#allday[value="' + calEvent.className=="gbcs-halfday-event"?"1":"2" + '"]').prop('checked', true);
+            $('#calEventDialog #allday').val([calEvent.className == "gbcs-halfday-event" ? "1" : "2"]).prop('checked', true);
+            $("#calEventDialog").dialog("option", "buttons", [
+                {
+                text: "Update",
+                click: function() {
+                    $log.debug('save in edit. note need to update');
+                    $(this).dialog("close");
+                }},
+            {
+                text: "Delete",
+                click: function() {
+                    $(this).dialog("close");
+                }},
+            {
+                text: "Cancel",
+                click: function() {
+                    $(this).dialog("close");
+                }}
+            ]);
+            $("#calEventDialog").dialog("option", "title", "Edit Event");
+            $('#calEventDialog').dialog('open');
+        },
+
+/*        eventClick: function (event, jsEvent, view) {
             $log.debug('eventclick',event, jsEvent,view);
             //set the values and open the modal
             var eventText;
@@ -441,7 +574,7 @@
             });
             return false;
         },  
-        eventDrop: function(event, delta, revertFunc) {
+  */      eventDrop: function(event, delta, revertFunc) {
 
             $log.debug('eventdrop',event, event.title + " was dropped on " + event.start.format());
     
@@ -451,9 +584,69 @@
         }        
     });
 
+    var title = $('#eventTitle');
+    var start = $('#eventStart');
+    var end = $('#eventEnd');
+    var eventClass, color;
+    $('#calEventDialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        title: 'Add Event',
+        width: 400,
+        buttons: {
+            Save: function() {
+                $log.debug('save cal',title.val(),start.val(),end.val());
+                if ($('input:radio[name=allday]:checked').val() == "1") {
+                    eventClass = "gbcs-halfday-event";
+                    color = "#9E6320";
+                    end.val(start.val());
+                }
+                else {
+                    eventClass = "gbcs-allday-event";
+                    color = "#875DA8";
+                }
+        /*        if (title.val() !== '') {
+                    $('#calendar').fullCalendar('renderEvent', {
+                        title: title.val(),
+                        start: start.val(),
+                        end: end.val(),
+                        allDay: true,
+                        className: eventClass,
+                        color: color
+                    }, true // make the event "stick"
+                    );
+                }
+          */
+				var eventData;
+				$log.debug('isTitle', title);
+				if (title) {
+					eventData = {
+						title: title.val(),
+						start: start.val(),
+						end: end.val(),
+						className: eventClass,
+						color: color
+					};
+                    $log.debug('isTitle yes', eventData);
+					
+					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+				}
+          
+                $('#calendar').fullCalendar('unselect');
+                $(this).dialog('close');
+            },
+            Cancel: function() {
+                $(this).dialog('close');
+            }
+        }
+    });
+
     var addEvent = function (name) {
+        var thecolor = vm.mycolor;
+        var thetextcolor = vm.textcolor;
         name = name.length === 0 ? "Untitled Event" : name;
-        var html = $('<div class="external-event label label-default">' + name + '</div>');
+        var html = $('<div class="external-event label label-default" style="background-color: ' + 
+            thecolor + '!important; color:' + thetextcolor + ' !important;">' + name + '</div>');
         $('#event-block').append(html);
         eventDrag(html);
         $log.debug('after addEvent drag',html);
@@ -465,6 +658,92 @@
         addEvent(name);
         $log.debug('after addEvent click',name);
     });
+    
+    function settextcolor() {
+        vm.textcolor = hexToComplimentary(vm.mycolor);
+  //      vm.textcolor = 0xFFFFFF ^ vm.mycolor;
+        $log.debug('settextcolor',vm.mycolor,vm.textcolor);
+    }
+    /* hexToComplimentary : Converts hex value to HSL, shifts
+ * hue by 180 degrees and then converts hex, giving complimentary color
+ * as a hex value
+ * @param  [String] hex : hex value  
+ * @return [String] : complimentary color as hex value
+ */
+function hexToComplimentary(hex){
+
+    // Convert hex to rgb
+    // Credit to Denis http://stackoverflow.com/a/36253499/4939630
+    var rgb = 'rgb(' + (hex = hex.replace('#', '')).match(new RegExp('(.{' + hex.length/3 + '})', 'g')).map(function(l) { return parseInt(hex.length%2 ? l+l : l, 16); }).join(',') + ')';
+
+    // Get array of RGB values
+    rgb = rgb.replace(/[^\d,]/g, '').split(',');
+
+    var r = rgb[0], g = rgb[1], b = rgb[2];
+
+    // Convert RGB to HSL
+    // Adapted from answer by 0x000f http://stackoverflow.com/a/34946092/4939630
+    r /= 255.0;
+    g /= 255.0;
+    b /= 255.0;
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2.0;
+
+    if(max == min) {
+        h = s = 0;  //achromatic
+    } else {
+        var d = max - min;
+        s = (l > 0.5 ? d / (2.0 - max - min) : d / (max + min));
+
+        if(max == r && g >= b) {
+            h = 1.0472 * (g - b) / d ;
+        } else if(max == r && g < b) {
+            h = 1.0472 * (g - b) / d + 6.2832;
+        } else if(max == g) {
+            h = 1.0472 * (b - r) / d + 2.0944;
+        } else if(max == b) {
+            h = 1.0472 * (r - g) / d + 4.1888;
+        }
+    }
+
+    h = h / 6.2832 * 360.0 + 0;
+
+    // Shift hue to opposite side of wheel and convert to [0-1] value
+    h+= 180;
+    if (h > 360) { h -= 360; }
+    h /= 360;
+
+    // Convert h s and l values into r g and b values
+    // Adapted from answer by Mohsen http://stackoverflow.com/a/9493060/4939630
+    if(s === 0){
+        r = g = b = l; // achromatic
+    } else {
+        var hue2rgb = function hue2rgb(p, q, t){
+            if(t < 0) t += 1;
+            if(t > 1) t -= 1;
+            if(t < 1/6) return p + (q - p) * 6 * t;
+            if(t < 1/2) return q;
+            if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+        };
+
+        var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+        var p = 2 * l - q;
+
+        r = hue2rgb(p, q, h + 1/3);
+        g = hue2rgb(p, q, h);
+        b = hue2rgb(p, q, h - 1/3);
+    }
+
+    r = Math.round(r * 255);
+    g = Math.round(g * 255); 
+    b = Math.round(b * 255);
+
+    // Convert r b and g values to hex
+    rgb = b | (g << 8) | (r << 16); 
+    return "#" + (0x1000000 | rgb).toString(16).substring(1);
+}  
     
     function loadTopbar() {
         console.log("loadTopbar");

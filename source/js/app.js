@@ -29,7 +29,8 @@
                 'iso.directives',
                 'ngSanitize',
     'angularFileUpload',
-    'akoenig.deckgrid'
+    'akoenig.deckgrid',
+    'color.picker'
   //      'notifyme'
 
 //    'omr.directives'
