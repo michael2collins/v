@@ -62,15 +62,16 @@
     vm.studentstatsdetails;
     vm.listOfTimes=[];
     vm.myj = {};
-    vm.notify = notify;
+    vm.mynotify = mynotify;
     vm.intervalValue = 5000; //milli
     vm.initTime = moment();
     vm.checktime;
     vm.okNotify=false;
     vm.okoptions=[true,false];
-    vm.mycolor = Math.random() * 0xFFFFFF;
+//    vm.mycolor = Math.random() * 0xFFFFFF;
+    vm.mycolor = '#'+Math.floor(Math.random()*16777215).toString(16);
     vm.settextcolor = settextcolor;
-    vm.textcolor = 0xFFFFFF ^ vm.mycolor; // Set to complement of textColor.
+    vm.textcolor = getColorByBgColor(vm.mycolor); // Set to complement of textColor.
 
     islogin();
     //works but is annoying
@@ -125,7 +126,7 @@
                         vm.listOfTimes[iter]);
                         if (vm.okNotify === true) {
                             $log.debug('going to notify',vm.listOfTimes[iter]);
-                            notify(vm.listOfTimes[iter]);
+                            mynotify(vm.listOfTimes[iter]);
                         }
                         vm.listOfTimes[iter].remove = true;
                   }
@@ -352,24 +353,24 @@
       return sendNotification(title, options);
     }
 
-      /**
-       *  Generate a random four-digit hex value.
-       */
+      //
+      //  Generate a random four-digit hex value.
+      //
       function s4() {
           return Math.floor((1 + Math.random()) * 0x10000)
               .toString(16).substring(1);
       }
 
 
-      /**
-       *  Generate a random UUID string.
-       *  @return {String} A randomly-generated UUID string.
-       */
+      //
+      // *  Generate a random UUID string.
+      // *  @return {String} A randomly-generated UUID string.
+      //
       function generateTag() {
           return [s4() + s4(), s4(), s4(), s4(), s4() + s4() + s4()].join('-');
       }
       
-    function notify(msg){
+    function mynotify(msg){
         $log.debug('notify entered');
                       var title = msg.title;
                       var body = 'This is a simple demo for the notification API Angular Service';
@@ -394,23 +395,7 @@
                       });
     }
 
-    // Called after the calendar layout has been rendered, 
-    // but before events are added.
-/*    function onCalendarViewRender(view, element) {
-        // The .fc-cell-overlay div isn't created until a selection event happens. 
-        // Force a selection event to trigger the creation of this div.
-        $('#calendar').fullCalendar('select', 
-            pageData.calendarMonth, 
-            pageData.calendarMonth, 
-            true);
-    
-        // Create our corner overlay so we can detect whether the 
-        // mouse was over the day when the click event occurred.
-        var corner = $('<div>').addClass('my-cell-overlay-day-corner');
-        $('.fc-cell-overlay').append(corner);
-    }
-  */  
-    
+
     function onCalendarDayClick(date, jsEvent, view) {
         // Check to see whether the mouse was hovering over our day corner overlay 
         // that is itself applied to the fullCalendar's selection overlay div.
@@ -427,9 +412,8 @@
         } 
     }
 
-    /* initialize the calendar
-    
-     -----------------------------------------------------------------*/
+    // initialize the calendar
+    // -----------------------------------------------------------------
 
     $('#calendar').fullCalendar({
         header: {
@@ -501,20 +485,20 @@
             }
 
         },
-/*        dayClick: function(date, jsEvent, view) { 
-            if ($(jsEvent.target).is('td')) { 
-                // Clicked on the day number in the month view 
-                $('#calendar').fullCalendar('changeView', 'agendaDay'); 
-                $('#calendar').fullCalendar('gotoDate', date); 
-            } 
-        },        
- */
-/*        select: function(start, end) {
-            $('#eventStart').datepicker("setDate", new Date(start));
-            $('#eventEnd').datepicker("setDate", new Date(end));
-            $('#calEventDialog').dialog('open');
-        },
-        */
+//        dayClick: function(date, jsEvent, view) { 
+//            if ($(jsEvent.target).is('td')) { 
+//                // Clicked on the day number in the month view 
+//                $('#calendar').fullCalendar('changeView', 'agendaDay'); 
+//                $('#calendar').fullCalendar('gotoDate', date); 
+//            } 
+//        },        
+ //
+//        select: function(start, end) {
+//            $('#eventStart').datepicker("setDate", new Date(start));
+//            $('#eventEnd').datepicker("setDate", new Date(end));
+ //           $('#calEventDialog').dialog('open');
+ //       },
+ //       
         select: function(start, end) {
             $log.debug('select entered', start, end);
             $("#eventStart").val(moment(start));
@@ -554,27 +538,7 @@
             $('#calEventDialog').dialog('open');
         },
 
-/*        eventClick: function (event, jsEvent, view) {
-            $log.debug('eventclick',event, jsEvent,view);
-            //set the values and open the modal
-            var eventText;
-            try{
-                eventText = JSON.stringify(event.description);
-            } catch(e) {
-                eventText = event.description;
-            }
-            $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
-            $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
-            
-            $("#eventInfo").html(eventText);
-            $("#eventLink").attr('href', event.url);
-            $("#eventContent").dialog({
-                modal: true,
-                title: event.title
-            });
-            return false;
-        },  
-  */      eventDrop: function(event, delta, revertFunc) {
+      eventDrop: function(event, delta, revertFunc) {
 
             $log.debug('eventdrop',event, event.title + " was dropped on " + event.start.format());
     
@@ -605,18 +569,6 @@
                     eventClass = "gbcs-allday-event";
                     color = "#875DA8";
                 }
-        /*        if (title.val() !== '') {
-                    $('#calendar').fullCalendar('renderEvent', {
-                        title: title.val(),
-                        start: start.val(),
-                        end: end.val(),
-                        allDay: true,
-                        className: eventClass,
-                        color: color
-                    }, true // make the event "stick"
-                    );
-                }
-          */
 				var eventData;
 				$log.debug('isTitle', title);
 				if (title) {
@@ -660,16 +612,28 @@
     });
     
     function settextcolor() {
-        vm.textcolor = hexToComplimentary(vm.mycolor);
+        vm.textcolor = getColorByBgColor(vm.mycolor);
   //      vm.textcolor = 0xFFFFFF ^ vm.mycolor;
         $log.debug('settextcolor',vm.mycolor,vm.textcolor);
     }
-    /* hexToComplimentary : Converts hex value to HSL, shifts
- * hue by 180 degrees and then converts hex, giving complimentary color
- * as a hex value
- * @param  [String] hex : hex value  
- * @return [String] : complimentary color as hex value
- */
+
+//
+// * Get color (black/white) depending on bgColor so it would be clearly seen.
+// * @param bgColor
+// * @returns {string}
+//
+function getColorByBgColor(bgColor) {
+    $log.debug('getColorByBgColor',bgColor);
+    if (!bgColor) { return ''; }
+    return (parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff';
+}    
+    
+// hexToComplimentary : Converts hex value to HSL, shifts
+// hue by 180 degrees and then converts hex, giving complimentary color
+// as a hex value
+ // @param  [String] hex : hex value  
+ // @return [String] : complimentary color as hex value
+ //
 function hexToComplimentary(hex){
 
     // Convert hex to rgb
@@ -1256,26 +1220,6 @@ function hexToComplimentary(hex){
         });
         //END AREA CHART SPLINE
 
-/*
-        //BEGIN JQUERY ANIMATE NUMBER
-        $('#revenue-number').animateNumber({
-            number: 3579.95,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#tax-number').animateNumber({
-            number: 295.35,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#shipping-number').animateNumber({
-            number: 30.00,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        $('#quantity-number').animateNumber({
-            number: 14,
-            numberStep: comma_separator_number_step
-        }, 5000);
-        //END JQUERY ANIMATE number
-*/
         //BEGIN CALENDAR
         $("#my-calendar").zabuto_calendar({
             language: "en"

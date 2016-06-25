@@ -1,37 +1,30 @@
 <!DOCTYPE html>
-<style>
-#calendar .fc-day-number {
-    text-decoration: underline;
-    width: 15px;
-    height: 16px;
-    text-align: right;
-}
-/*
-#calendar .fc-day-number:hover {
-    cursor: pointer;
-}
-*/
-
-#calendar .my-cell-overlay-day-corner {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 19px;
-    height: 16px;
-    cursor: pointer;
-}
- </style>
  
+     <div id="calEventDialog" style="display: none">
+        <form novalidate class="simple-form">
+            <label for="eventTitle">Title</label>
+            <input type="text" name="eventTitle" id="eventTitle" /><br>
+            <label for="eventStart">Start Date</label>
+            <input type="text" name="eventStart" id="eventStart" /><br>
+            <label for="eventEnd">End Date</label>
+            <input type="text" name="eventEnd" id="eventEnd" /><br>
+            <input type="radio" id="allday" name="allday" value="1">
+            Half Day
+            <input type="radio" id="allday" name="allday" value="2">
+            All Day
+        </form>
+    </div> 
+
 <div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
 
   <button type="button" 
-    data-ng-click="vm.notify()" 
+    data-ng-click="vm.mynotify()" 
     class="btn btn-default btn-sm">Notify Me</button>
-<div class="col-lg-12">
-    <div class="panel">
-      <div class="panel-body">
-        <div class="col-md-6">
-            <div class="form-group">
+    <div class="col-lg-12">
+        <div class="panel">
+          <div class="panel-body">
+            <div class="col-md-6">
+                <div class="form-group">
               <select id="inputokNotify" type="text" name="okNotify" 
                 ng-model="vm.okNotify" 
                 required
@@ -40,10 +33,6 @@
               </select>
             </div>
         </div>
-<!--        <div class="modal-footer">
-          <button class="btn btn-primary" type="button" ng-click="vm.submit()">Submit</button>
-        </div>  
--->        
         <div class="col-md-6">
         <p>Time is: {{vm.checktime}}</p>
           <div class="row" ng-repeat="msg in vm.listOfTimes ">
@@ -51,9 +40,10 @@
       
           </div>
         </div>
+      </div>
     </div>
 </div>
-
+ 
 <div class="col-lg-12">
     <div class="panel">
       <div class="panel-body">
@@ -68,14 +58,14 @@
                 style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
                 >
               <br>
-<color-picker
-    ng-model="vm.mycolor"
-    color-picker-format="'hex'"
-    color-picker-swatch="true"
-    color-picker-swatch-pos="'right'"
-    color-picker-swatch-only="true"
-    color-picker-on-change="vm.settextcolor()"
-></color-picker>
+                <color-picker
+                    ng-model="vm.mycolor"
+                    color-picker-format="'hex'"
+                    color-picker-swatch="true"
+                    color-picker-swatch-pos="'right'"
+                    color-picker-swatch-only="true"
+                    color-picker-on-change="vm.settextcolor()"
+                ></color-picker>
               <a id="event-add" href="javascript:;" class="btn btn-primary btn-sm">Add Event</a>
               <hr>
               <div class="external-event label label-default ui-draggable" 
@@ -94,29 +84,14 @@
                 <label for="drop-remove">Remove after drop</label>
               </p>
             </div>
-            
-<div id="calEventDialog">
-    <form>
-        <fieldset>
-        <label for="eventTitle">Title</label>
-        <input type="text" name="eventTitle" id="eventTitle" /><br>
-        <label for="eventStart">Start Date</label>
-        <input type="text" name="eventStart" id="eventStart" /><br>
-        <label for="eventEnd">End Date</label>
-        <input type="text" name="eventEnd" id="eventEnd" /><br>
-        <input type="radio" id="allday" name="allday" value="1">
-        Half Day
-        <input type="radio" id="allday" name="allday" value="2">
-        All Day
-        </fieldset>
-    </form>
-</div>
-<div id="eventContent" title="Event Details" style="display: none">
-    Start: <span id="startTime"></span><br>
-    End: <span id="endTime"></span><br><br>
-    <div id="eventInfo"></div>
-    <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
-</div>
+       
+    
+    <div id="eventContent" title="Event Details" style="display: none">
+        Start: <span id="startTime"></span><br>
+        End: <span id="endTime"></span><br><br>
+        <div id="eventInfo"></div>
+        <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
+    </div>
 
       <div class="panel">
         <div class="panel-body">
@@ -172,6 +147,7 @@
     </div>
   </div>
   </div>
+ 
   <div class="row">
     <div class="col-lg-4">
       <div class="panel">
@@ -482,4 +458,5 @@
       </div>
     </div>
   </div>
+  
 </div>
