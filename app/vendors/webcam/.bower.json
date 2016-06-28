@@ -43,8 +43,7 @@
     "tag": "3.1.1",
     "commit": "844db8bbd1c7db55a939bffcbd74c14e55810185"
   },
-  "_source": "git://github.com/jonashartmann/webcam-directive.git",
+  "_source": "https://github.com/jonashartmann/webcam-directive.git",
   "_target": "^3.1.1",
-  "_originalSource": "webcam-directive",
-  "_direct": true
+  "_originalSource": "webcam-directive"
 }

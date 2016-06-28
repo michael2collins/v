@@ -30,8 +30,7 @@
     "tag": "v0.1.14",
     "commit": "8731c6de895365b4d1087d44d8134fe4693022bf"
   },
-  "_source": "git://github.com/mankindsoftware/angular-isotope.git",
+  "_source": "https://github.com/mankindsoftware/angular-isotope.git",
   "_target": "~0.1.14",
-  "_originalSource": "angular-isotope",
-  "_direct": true
+  "_originalSource": "angular-isotope"
 }

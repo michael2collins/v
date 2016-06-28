@@ -35,8 +35,7 @@
     "tag": "v0.5.0",
     "commit": "61ece901e53773ddda2a4de27dc1a8b74293a8c1"
   },
-  "_source": "git://github.com/akoenig/angular-deckgrid.git",
+  "_source": "https://github.com/akoenig/angular-deckgrid.git",
   "_target": "~0.5.0",
-  "_originalSource": "angular-deckgrid",
-  "_direct": true
+  "_originalSource": "angular-deckgrid"
 }
