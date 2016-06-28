@@ -17,32 +17,34 @@
 
 <div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
 
-  <button type="button" 
-    data-ng-click="vm.mynotify()" 
-    class="btn btn-default btn-sm">Notify Me</button>
+<!--    <button type="button" 
+        data-ng-click="vm.mynotify()" 
+        class="btn btn-default btn-sm">Notify Me
+    </button>
+-->    
     <div class="col-lg-12">
         <div class="panel">
           <div class="panel-body">
             <div class="col-md-6">
                 <div class="form-group">
-              <select id="inputokNotify" type="text" name="okNotify" 
-                ng-model="vm.okNotify" 
-                required
-                ng-options="o for o in vm.okoptions track by o"
-                class="form-control">
-              </select>
+                  <select id="inputokNotify" type="text" name="okNotify" 
+                    ng-model="vm.okNotify" 
+                    required
+                    ng-options="o for o in vm.okoptions track by o"
+                    class="form-control">
+                  </select>
+                </div>
             </div>
-        </div>
-        <div class="col-md-6">
-        <p>Time is: {{vm.checktime}}</p>
-          <div class="row" ng-repeat="msg in vm.listOfTimes ">
-          {{msg.title}} at {{msg.time}}
-      
+            <div class="col-md-6">
+                <p>Time is: {{vm.checktime}}</p>
+                  <div class="row" ng-repeat="msg in vm.listOfTimes ">
+                  {{msg.title}} at {{msg.time}}
+              
+                  </div>
+            </div>
           </div>
         </div>
-      </div>
     </div>
-</div>
  
 <div class="col-lg-12">
     <div class="panel">
@@ -50,38 +52,58 @@
         <div class="row">
           <div class="col-md-3">
             <div id="external-events">
-              <h4>Draggable Events</h4>
-              <input id="event-name" 
-                type="text" 
-                value="" 
-                placeholder="Event name..." 
-                style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
-                >
-                <color-picker
+              <h4>Events</h4>
+              <div class="col-md-12 input-group" >
+                  <div class="col-md-2">
+                  <color-picker
                     ng-model="vm.mycolor"
                     color-picker-format="'hex'"
                     color-picker-swatch="true"
                     color-picker-swatch-pos="'right'"
                     color-picker-swatch-only="true"
-                    color-picker-on-change="vm.settextcolor()"
-                ></color-picker>
-              <a id="event-add" href="javascript:;" class="btn btn-primary btn-sm">Add Event</a>
-              <hr>
-              <div class="external-event label label-default ui-draggable" 
-              style="position: relative;background-color: red !important;">Karen Event 1</div>
-              <div class="external-event label label-default ui-draggable " 
-              style="position: relative;background-color: red !important;">Mark Event 2</div>
-              <div class="external-event label label-default ui-draggable " 
-              style="position: relative;background-color: blue !important;">Mike Event 3</div>
-              <div class="external-event label label-default ui-draggable " 
-              style="position: relative;background-color: yellow !important; color: black;">Roy Event 4</div>
-              <div class="external-event label label-default ui-draggable " 
-              style="position: relative;background-color: orange !important; color: black;">Matt Event 5</div>
+                    color-picker-on-change="vm.settextcolor()">
+                        
+                  </color-picker>
+                  </div>
+                  <div class="col-md-9 input-group">
+                  <input id="event-name" 
+                    type="text"
+                    class="form-control"
+                    value="" 
+                    placeholder="Event name..." 
+                    style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
+                    >
+                    <span class="input-group-btn">
+                      <a id="event-add" 
+                        href="javascript:;" 
+                        class="btn btn-primary">Add</a>
+                    </span>
+                  </div>
+              </div>
+              <div class="col-md-12">
+                  <hr>
+                  <div class="external-event label label-default ui-draggable" 
+                    style="position: relative;background-color: red !important;">
+                        Karen Event 1</div>
+                  <div class="external-event label label-default ui-draggable " 
+                    style="position: relative;background-color: red !important;">
+                        Mark Event 2</div>
+                  <div class="external-event label label-default ui-draggable " 
+                    style="position: relative;background-color: blue !important;">
+                        Mike Event 3</div>
+                  <div class="external-event label label-default ui-draggable " 
+                    style="position: relative;background-color: yellow !important; color: black;">
+                        Roy Event 4</div>
+                  <div class="external-event label label-default ui-draggable " 
+                      style="position: relative;background-color: orange !important; color: black;">
+                        Matt Event 5</div>
+              </div>
               <div id="event-block"></div>
-              <p>
+<!--              <p>
                 <input id="drop-remove" type="checkbox">&nbsp;
                 <label for="drop-remove">Remove after drop</label>
               </p>
+-->              
             </div>
        
     
