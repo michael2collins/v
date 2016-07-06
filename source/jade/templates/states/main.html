@@ -1,6 +1,6 @@
 <!DOCTYPE html>
  
-     <div id="calEventDialog" style="display: none">
+    <div id="calEventDialog" style="display: none">
         <form novalidate class="simple-form">
             <label for="eventTitle">Title</label>
             <input type="text" name="eventTitle" id="eventTitle" /><br>
@@ -8,12 +8,19 @@
             <input type="text" name="eventStart" id="eventStart" /><br>
             <label for="eventEnd">End Date</label>
             <input type="text" name="eventEnd" id="eventEnd" /><br>
-            <input type="radio" id="allday" name="allday" value="1">
-            Half Day
-            <input type="radio" id="allday" name="allday" value="2">
-            All Day
+            <input type="radio" id="allday" name="allday" value="1">Portion of Day
+            <input type="radio" id="allday" name="allday" value="2">All Day
+            <input id="reminderCheckbox" type="checkbox">&nbsp;
+            <label for="reminderCheckbox">Reminder</label>
+              <select id="reminderInterval" type="text" name="reminderInterval" 
+                ng-model="vm.reminderInterval" 
+                ng-options="r for r in vm.reminderOptions track by r"
+                class="form-control">
+              </select>
+            
         </form>
     </div> 
+
 
 <div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
 

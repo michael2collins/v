@@ -64,6 +64,9 @@
     vm.myj = {};
     vm.mynotify = mynotify;
     vm.intervalValue = 5000; //milli
+    vm.reminderInterval;
+    vm.reminderOptions=['15 min','1 hour','1 day'];
+    
     vm.initTime = moment();
     vm.checktime;
     vm.okNotify=false;
@@ -110,21 +113,22 @@
           //})
           vm.checktime = moment();
           for (var iter=0,len=vm.listOfTimes.length;iter<len;iter++) {
-                    $log.debug('intervalChecker: b4 if', 
+/*                    $log.debug('intervalChecker: b4 if', 
                         vm.checktime, 
                         vm.okNotify, 
                         vm.intervalValue,
                         vm.listOfTimes[iter],
                         iter, len);
-              if( moment(vm.checktime) <= moment(vm.listOfTimes[iter].time).
+  */
+                if( moment(vm.checktime) <= moment(vm.listOfTimes[iter].time).
                     add(  vm.intervalValue/1000, 'seconds')  &&
                   moment(vm.checktime) > moment(vm.listOfTimes[iter].time) ) {
-                    $log.debug('intervalChecker: found in interval', 
+            /*        $log.debug('intervalChecker: found in interval', 
                         vm.checktime, 
                         vm.okNotify, 
                         vm.intervalValue,
                         vm.listOfTimes[iter]);
-                        if (vm.okNotify === true) {
+              */          if (vm.okNotify === true) {
                             $log.debug('going to notify',vm.listOfTimes[iter]);
                             mynotify(vm.listOfTimes[iter]);
                         }
@@ -133,13 +137,13 @@
               vm.listOfTimes[iter].remove = false;
           }
           for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
-                    $log.debug('intervalChecker: b4 removal if', 
+        /*            $log.debug('intervalChecker: b4 removal if', 
                         vm.checktime, 
                         vm.okNotify, 
                         vm.intervalValue,
                         vm.listOfTimes[niter],
                         niter,nlen);
-            if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
+         */   if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
                 //i think there is a transitional period where it is in 
                 // process of being cleared that the count is wrong
                 if(
@@ -202,7 +206,7 @@
             val.type === 'ContactType' &&
             val.datetype === 'inactivedate' &&
             val.summaryvalue < 0);
-        $log.debug('filterstat',val,pass);
+//        $log.debug('filterstat',val,pass);
 
         return (pass);
     }
@@ -395,6 +399,56 @@
                       });
     }
 
+    function calsave(screen,title,start,end,reminderCheckbox,reminderInterval,updateflag,theevent){
+        $log.debug('save cal',
+            screen,
+            title.val(),
+            start.val(),
+            end.val(),
+            reminderCheckbox.val(),
+            reminderInterval.val(),
+            updateflag,
+            theevent);
+            
+        if ($('input:radio[name=allday]:checked').val() == "1") {
+            eventClass = "gbcs-partialday-event";
+            color = "#9E6320";
+            end.val(start.val());
+        }
+        else {
+            eventClass = "gbcs-allday-event";
+            color = "#875DA8";
+        }
+		var eventData;
+		$log.debug('isTitle', title);
+		if (updateflag && theevent !== null) {
+				theevent.title = title.val();
+				theevent.start = start.val();
+				theevent.end =  end.val();
+                theevent.reminderInterval =  reminderInterval.val();
+                theevent.reminderCheckbox = reminderCheckbox.val();
+				theevent.className = eventClass;
+				theevent.color = color;
+		    $('#calendar').fullCalendar('updateEvent', theevent);
+		}
+		
+		if (updateflag !== true && title) {
+			eventData = {
+				title: title.val(),
+				start: start.val(),
+				end: end.val(),
+                reminderInterval: reminderInterval.val(),
+                reminderCheckbox: reminderCheckbox.val(),
+				className: eventClass,
+				color: color
+			};
+            $log.debug('isTitle yes', eventData);
+    		$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
+		}
+      
+
+        
+    }
 
     function onCalendarDayClick(date, jsEvent, view) {
         // Check to see whether the mouse was hovering over our day corner overlay 
@@ -434,8 +488,8 @@
         editable: true,
         droppable: true, // this allows things to be dropped onto the calendar !!!
         drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
-            $log.debug('drop entered',date, jsEvent, ui, resourceId);
-            $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
+      //      $log.debug('drop entered',date, jsEvent, ui, resourceId);
+     //       $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
  
             // retrieve the dropped element's stored Event Object
             var originalEventObject = $(this).data('eventObject');
@@ -454,7 +508,7 @@
             copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
             copiedEventObject.textColor = jsEvent.target.style.color;
             var inner = jsEvent.target.innerText;
-            $log.debug('drop parsing',inner);
+    //        $log.debug('drop parsing',inner);
             var innerJ,desc;
             try {
                 innerJ = JSON.parse(inner);
@@ -464,15 +518,15 @@
                 innerJ = inner;   
                 desc = inner;
             }
-            $log.debug('drop entered',innerJ);
-            $log.debug('drop entered',desc);
+//            $log.debug('drop entered',innerJ);
+ //           $log.debug('drop entered',desc);
             
             copiedEventObject.title = desc;
             copiedEventObject.description = innerJ;
             
 
 //            copiedEventObject.allDay = allDay;
-            $log.debug('after set copiedEventObject',copiedEventObject);
+   //         $log.debug('after set copiedEventObject',copiedEventObject);
 
             // render the event on the calendar
             // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
@@ -510,22 +564,34 @@
             $log.debug('eventClick entered', calEvent, jsEvent, view);
             $("#eventStart").val(moment(calEvent.start));
             $("#eventEnd").val(moment(calEvent.end));
+            $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
+            $("#reminderInterval").val(calEvent.reminderInterval);
             
             $('#calEventDialog #eventTitle').val(calEvent.title);
-            //                    alert(calEvent.className);
-            //                alert(calEvent.className=="gbcs-halfday-event"?"1":"2");
-            //                    $('#allday[value="' + calEvent.className=="gbcs-halfday-event"?"1":"2" + '"]').prop('checked', true);
-            $('#calEventDialog #allday').val([calEvent.className == "gbcs-halfday-event" ? "1" : "2"]).prop('checked', true);
+            $('#calEventDialog #allday').val(
+                    [calEvent.className == "gbcs-partialday-event" ? "1" : "2"]
+                ).prop('checked', true);
             $("#calEventDialog").dialog("option", "buttons", [
                 {
                 text: "Update",
                 click: function() {
                     $log.debug('save in edit. note need to update');
+                    var title = $('#eventTitle');
+                    var start = $('#eventStart');
+                    var end = $('#eventEnd');
+                    var reminderInterval = $('#reminderInterval');
+                    var reminderCheckbox = $('#reminderCheckbox');
+                    var screen = $(this);
+                    calsave(screen,title,start,end,reminderCheckbox,reminderInterval,true,calEvent);
+                    $('#calendar').fullCalendar('unselect');
+
                     $(this).dialog("close");
                 }},
             {
                 text: "Delete",
                 click: function() {
+                    $log.debug('delete event entered',calEvent);
+                    $('#calendar').fullCalendar('removeEvents', calEvent._id);                    
                     $(this).dialog("close");
                 }},
             {
@@ -551,6 +617,11 @@
     var title = $('#eventTitle');
     var start = $('#eventStart');
     var end = $('#eventEnd');
+    var reminderInterval = $('#reminderInterval');
+    var reminderCheckbox = $('#reminderCheckbox');
+    
+    
+    
     var eventClass, color;
     $('#calEventDialog').dialog({
         resizable: false,
@@ -559,31 +630,8 @@
         width: 400,
         buttons: {
             Save: function() {
-                $log.debug('save cal',title.val(),start.val(),end.val());
-                if ($('input:radio[name=allday]:checked').val() == "1") {
-                    eventClass = "gbcs-halfday-event";
-                    color = "#9E6320";
-                    end.val(start.val());
-                }
-                else {
-                    eventClass = "gbcs-allday-event";
-                    color = "#875DA8";
-                }
-				var eventData;
-				$log.debug('isTitle', title);
-				if (title) {
-					eventData = {
-						title: title.val(),
-						start: start.val(),
-						end: end.val(),
-						className: eventClass,
-						color: color
-					};
-                    $log.debug('isTitle yes', eventData);
-					
-					$('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
-				}
-          
+                var screen = $(this);
+                calsave(screen,title,start,end,reminderCheckbox,reminderInterval,false,null);
                 $('#calendar').fullCalendar('unselect');
                 $(this).dialog('close');
             },
