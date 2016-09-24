@@ -62,17 +62,26 @@ $app->post('/picupload', function() use ($app) {
             DIRECTORY_SEPARATOR . 'images' . 
             DIRECTORY_SEPARATOR . 'students' . 
             DIRECTORY_SEPARATOR . $picnm;
-        move_uploaded_file( $tempPath, $uploadPath );
         if (!is_writeable($uploadPath)) {
             $response["error"] = true;
             $response["message"] = "Failed to upload. Cannot write to destination file";
             echoRespnse(400, $response);
         }        
-        $response["error"] = false;
-        $response["message"] = "Pic created successfully";
-        $response["picname"] = $picnm;
-        error_log( print_R("Pic uploaded\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
+	#$uploadPath = "/home/michael2collins/test/x.jpg";
+	error_log( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ),3, LOG);
+
+        if(move_uploaded_file( $tempPath, $uploadPath )) {
+            $response["error"] = false;
+            $response["message"] = "Pic created successfully";
+            $response["picname"] = $picnm;
+            error_log( print_R("Pic uploaded\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R(error_get_last(), TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to upload. Error write to destination file";
+            echoRespnse(400, $response);
+        }
     } else {
         error_log( print_R("picupload result bad\n", TRUE), 3, LOG);
         $response["error"] = true;
