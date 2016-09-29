@@ -520,105 +520,10 @@
                           </div>
                         </div>
                       </div>
-                    </div>
 
 <!--mlc -->
-                      <div class="row">
-
-                        <div class="col-md-9">
-                          <div class="col-md-6">
-                            <div ng-class="{'has-error': editstudent.Email.$invalid, 'has-success': !editstudent.Email.$invalid}" class="form-group">
-                              <label for="inputEmail" class="control-label">Email </label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Email.$dirty" ng-class="editstudent.Email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputEmail" type="email" placeholder="Email Address" name="Email" ng-model="vmstudent.students.Email" ng-change="vmstudent.updateStudent()" 
-                                
-                                maxLength="80" 
-                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudent.Email.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div ng-class="{'has-error': editstudent.Email2.$invalid, 'has-success': !editstudent.Email2.$invalid}" class="form-group">
-                              <label for="inputEmail2" class="control-label">Email2 </label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Email2.$dirty" ng-class="editstudent.Email2.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputEmail2" type="email" placeholder="Alternate Email" name="Email2" ng-model="vmstudent.students.Email2" ng-change="vmstudent.updateStudent()" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudent.Email2.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
-                            </div>
-                          </div>
-                          <!--   </div>
-                      <div class="row"> -->
-                          <div class="col-md-6">
-                            <div ng-class="{'has-error': editstudent.Phone.$invalid, 'has-success': !editstudent.Phone.$invalid}" class="form-group">
-                              <label for="inputPhone" class="control-label">Phone </label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Phone.$dirty" ng-class="editstudent.Phone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputPhone" type="text" placeholder="" name="Phone" ng-model="vmstudent.students.Phone" ng-change="vmstudent.updateStudent()" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudent.Phone.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div ng-class="{'has-error': editstudent.AltPhone.$invalid, 'has-success': !editstudent.AltPhone.$invalid}" class="form-group">
-                              <label for="inputAltPhone" class="control-label">AltPhone </label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.AltPhone.$dirty" ng-class="editstudent.AltPhone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputAltPhone" type="text" placeholder="" name="AltPhone" ng-model="vmstudent.students.AltPhone" ng-change="vmstudent.updateStudent()" ui-mask="(999) 999-9999" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudent.AltPhone.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
-                            </div>
-                          </div>
-                          <!--  </div>
-                      <div class="row"> -->
-                          <div class="col-md-6">
-                            <div ng-class="{'has-error': editstudent.phoneExt.$invalid, 'has-success': !editstudent.phoneExt.$invalid}" class="form-group">
-                              <label for="inputphoneExt" class="control-label">PhoneExt </label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.phoneExt.$dirty" ng-class="editstudent.phoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputphoneExt" type="text" placeholder="9999" name="phoneExt" ng-model="vmstudent.students.phoneExt" ng-change="vmstudent.updateStudent()" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudent.phoneExt.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="col-md-6">
-                            <div ng-class="{'has-error': editstudent.altPhoneExt.$invalid, 'has-success': !editstudent.altPhoneExt.$invalid}" class="form-group">
-                              <label for="inputaltPhoneExt" class="control-label">AltPhoneExt </label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.altPhoneExt.$dirty" ng-class="editstudent.altPhoneExt.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputaltPhoneExt" type="text" placeholder="9999" name="altPhoneExt" ng-model="vmstudent.students.altPhoneExt" ng-change="vmstudent.updateStudent()" maxLength="5" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudent.altPhoneExt.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+<div class="col-md-3"></div>
+<div class="col-md-9">
                       <div class="row">
                         <div class="col-md-6">
                           <label for="inputBirthday" class="control-label">Birthday </label>
@@ -732,6 +637,9 @@
                           </div>
                         </div>
                       </div>
+</div>                      
+    </div>
+
                       <h3 class="block-heading">Address Information</h3>
                       <div class="row">
                         <div class="col-md-6">
