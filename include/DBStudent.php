@@ -41,7 +41,7 @@ class StudentDbHandler {
         } else {
             printf("Errormessage: %s\n", $this->conn->error);
         }
-        return $num_affected_rows > 0;
+        return $num_affected_rows >= 0;
     }
 
 

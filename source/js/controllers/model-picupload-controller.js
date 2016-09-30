@@ -14,7 +14,8 @@
       '$uibModal',
       '$document',
       '$window',
-      'StudentServices'
+      'StudentServices',
+      'Notification'
     ];
   ModalPicInstanceController.$inject = [
       '$scope',
@@ -36,7 +37,7 @@
     ];
 
 
-  function ModalPicUploadController($scope,  $log, $uibModal, $document, $window, StudentServices) {
+  function ModalPicUploadController($scope,  $log, $uibModal, $document, $window, StudentServices, Notification) {
     /* jshint validthis: true */
     var vmpicmodal = this;
 
@@ -47,6 +48,8 @@
     vmpicmodal.openCamera = openCamera;
     vmpicmodal.preview_snapshot = preview_snapshot;
     vmpicmodal.cancel_preview = cancel_preview;
+    vmpicmodal.cameraIsOn = 'off';
+    vmpicmodal.checkCameraIsOn = checkCameraIsOn;
     vmpicmodal.camera_on = camera_on;
     vmpicmodal.camera_off = camera_off;
     vmpicmodal.save_photo = save_photo;
@@ -57,6 +60,7 @@
 
 	    vmpicmodal.shutter = new Audio();
 		vmpicmodal.shutter.autoplay = false;
+		/*global navigator*/
 		vmpicmodal.shutter.src = navigator.userAgent.match(/Firefox/) ? '../images/shutter.ogg' : '../images/shutter.mp3';
 		vmpicmodal.pre_take_buttons;
         vmpicmodal.post_take_buttons;
@@ -69,6 +73,7 @@
         
     function openCamera() {
         console.log("openCamera");
+        /*global angular*/
         angular.forEach(angular.element(document).find('div'), function(node) {
             //console.log('finddiv',node);
 //          if(node.id == 'photowrapper'){
@@ -108,11 +113,16 @@
 			pretakon();
 		}
 		function camera_off() {
+		  vmpicmodal.cameraIsOn = 'off';
 			vmpicmodal.Webcam.reset();
 			
 			pretakon();
 		}
+		function checkCameraIsOn() {
+		  return vmpicmodal.cameraIsOn === 'on';
+		}
 		function camera_on() {
+		    vmpicmodal.cameraIsOn = 'on';
             vmpicmodal.Webcam.attach( '#my_camera' );
 			posttakeon();
 		}
@@ -138,6 +148,7 @@
 			
 			// shut down camera, stop capturing
 			    vmpicmodal.Webcam.reset();
+    		  vmpicmodal.cameraIsOn = 'off';
                 vmpicmodal.Webcam.upload( data_uri, ur, function(code, text) {
                     console.log("upload called",code,text);
                 });
@@ -167,8 +178,9 @@
                 } );
                 
 				// show results, hide photo booth
-			//	document.getElementById('results').style.display = '';
-			//	document.getElementById('my_photo_booth').style.display = 'none';
+				document.getElementById('results').style.display = '';
+	//			document.getElementById('my_photo_booth').style.display = 'none';
+				
 			} );
 		}
 

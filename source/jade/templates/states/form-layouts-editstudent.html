@@ -83,7 +83,10 @@
 -->                        
 <div id="my_photo_booth">
 <pre>firstname {{vmstudent.students.FirstName}}</pre>
-    <div id="my_camera" style="width:320px; height:240px;"></div>
+<pre>camcheck {{vmpicmodal.checkCameraIsOn()}}</pre>
+    <div id="my_camera" style="width:320px; "
+ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vmpickmodal.checkCameraIsOn() === false ) && {'height':'0px'}"
+></div>
 
         <form>
 <!--			<div id="pre_take_buttons" ng-show="vmpicmodal.pre_take_buttons"> -->
@@ -98,8 +101,11 @@
 				<input type=button value="Save Photo &gt;" ng-click="vmpicmodal.save_photo(vmstudent.students.FirstName + '.' 
 				+ vmstudent.students.LastName + '.'
 				+ vmstudent.students.ID + '.jpg',vmstudent.students
-				)" style="font-weight:bold;">
-				<input type=button value="Camera Off" ng-click="camera_off()">
+				); vmstudent.setStudentPIC(
+        vmstudent.students.FirstName + '.' 
+				+ vmstudent.students.LastName + '.'
+				+ vmstudent.students.ID + '.jpg'				)" style="font-weight:bold;">
+				<input type=button value="Camera Off" ng-click="vmpicmodal.camera_off()">
 			</div>
 		</form>
 
