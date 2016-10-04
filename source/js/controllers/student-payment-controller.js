@@ -30,6 +30,7 @@
         vmpayment.initclasslist = initclasslist;
 
         vmpayment.StudentPayment = [];
+        vmpayment.disabled = undefined;
         vmpayment.ClassPayList = [];
         vmpayment.FamilyList = [];
 

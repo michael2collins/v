@@ -2,22 +2,69 @@
  
     <div id="calEventDialog" style="display: none">
         <form novalidate class="simple-form">
-            <label for="eventTitle">Title</label>
-            <input type="text" name="eventTitle" id="eventTitle" /><br>
-            <label for="eventStart">Start Date</label>
-            <input type="text" name="eventStart" id="eventStart" /><br>
-            <label for="eventEnd">End Date</label>
-            <input type="text" name="eventEnd" id="eventEnd" /><br>
-            <input type="radio" id="allday" name="allday" value="1">Portion of Day
-            <input type="radio" id="allday" name="allday" value="2">All Day
-            <input id="reminderCheckbox" type="checkbox">&nbsp;
-            <label for="reminderCheckbox">Reminder</label>
-              <select id="reminderInterval" type="text" name="reminderInterval" 
-                ng-model="vm.reminderInterval" 
-                ng-options="r for r in vm.reminderOptions track by r"
-                class="form-control">
-              </select>
-            
+
+              <div class="select-box pal">
+      <!--                        on-select="vm.editStudentFromPick($item)"
+        -->          <ui-select  ng-model="vm.studentpick" 
+                              theme="bootstrap"
+                              reset-search-input="false"
+                              ng-disabled="vm.disabled"  
+                              style="width: 300px;" 
+                              title="Choose a student"
+                              append-to-body="true">
+                    <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
+                    <ui-select-choices 
+                    repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID"
+                    refresh="vm.refreshStudents($select.search)"
+                    refresh-delay="0">
+                  <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
+            </div>          
+            <div class="pal">
+              <div class="form-group">
+                <label for="eventTitle" class="control-label col-md-3">Title</label>
+                <div class="col-md-9">
+                  <input type="text" name="eventTitle" id="eventTitle" class="form-control" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="eventStart" class="control-label col-md-3">Start</label>
+                <div class="col-md-9">
+                  <input type="text" name="eventStart" id="eventStart" class="form-control"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="eventEnd" class="control-label col-md-3">End</label>
+                <div class="col-md-9">
+                  <input type="text" name="eventEnd" id="eventEnd" class="form-control"/>
+                </div>
+              </div>
+<!--    not helpful          <div class="radio-list col-md-10 form-group">
+                <label class="radio-inline">
+                </label>              
+                  <input type="radio" id="allday" name="allday" value="1">Portion of Day
+                <label class="radio-inline">
+                </label>              
+                  <input type="radio" id="allday" name="allday" value="2">All Day
+              </div>
+              -->
+              <div class="form-group">
+                
+                <label for="reminderCheckbox" class="control-label col-md-3">Reminder
+                <div class="col-md-3">
+                  <input id="reminderCheckbox" type="checkbox">&nbsp;
+                </div>                  
+                </label>
+                <div class="col-md-9">
+                  <select id="reminderInterval" type="text" name="reminderInterval" 
+                    ng-model="vm.reminderInterval" 
+                    ng-options="r for r in vm.reminderOptions track by r"
+                    class="form-control">
+                  </select>
+                  </div>                  
+                </div>
+            </div>
         </form>
     </div> 
 

@@ -80,6 +80,7 @@
           if(node.id == 'my_camera'){
             //do something   ]
                 console.log('mycam', node);
+                vmpicmodal.camera_on();                
                 vmpicmodal.Webcam.attach( node );
             }
         });
@@ -99,8 +100,8 @@
 		
 		function preview_snapshot() {
 			// play sound effect
-			try { vmpicmodal.shutter.currentTime = 0; } catch(e) {;} // fails in IE
-			vmpicmodal.shutter.play();
+//			try { vmpicmodal.shutter.currentTime = 0; } catch(e) {;} // fails in IE
+//			vmpicmodal.shutter.play();
 			
 			// freeze camera so user can preview current frame
 			vmpicmodal.Webcam.freeze();
@@ -115,7 +116,9 @@
 		function camera_off() {
 		  vmpicmodal.cameraIsOn = 'off';
 			vmpicmodal.Webcam.reset();
-			
+
+        console.log("Camera_off");
+
 			pretakon();
 		}
 		function checkCameraIsOn() {
@@ -123,6 +126,10 @@
 		}
 		function camera_on() {
 		    vmpicmodal.cameraIsOn = 'on';
+		    vmpicmodal.Webcam.set({
+        width: 320,
+        height: 240,
+    });
             vmpicmodal.Webcam.attach( '#my_camera' );
 			posttakeon();
 		}
@@ -152,6 +159,10 @@
                 vmpicmodal.Webcam.upload( data_uri, ur, function(code, text) {
                     console.log("upload called",code,text);
                 });
+                vmpicmodal.Webcam.on('error', function(err) {
+                  // an error occurred (see 'err')
+                  console.log('webcam err',err);
+                } );                
                 vmpicmodal.Webcam.on( 'uploadComplete', function(code, text) {
                     // Upload complete!
                     // 'code' will be the HTTP response code from the server, e.g. 200

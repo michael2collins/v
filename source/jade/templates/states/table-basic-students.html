@@ -172,25 +172,27 @@
                 </div>
               </div>
                 <div class="row">
+                        <div class="select-box">
                           <div class="col-md-2">
                                     <!--    on-select="vm.editStudentFromPick($item, $model)" -->
                             <ui-select  ng-model="vm.studentpick" 
-                                        theme="select2" 
-                                        ng-disabled="disabled" 
+                                        theme="bootstrap"
+                                        reset-search-input="false"
+                                        ng-disabled="vm.disabled"  
                                         on-select="vm.editStudentFromPick($item)"
                                         style="width: 300px;" 
-                                        title="Choose a student">
+                                        title="Choose a student"
+                                        append-to-body="true">
                               <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
                               <ui-select-choices 
                               repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID"
                               refresh="vm.refreshStudents($select.search)"
                               refresh-delay="0">
-                                <small>
-                            <span ng-bind-html="stu.FullName | highlight: $select.search"></span>
-                                </small>
+                            <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
                               </ui-select-choices>
                             </ui-select>
                           </div>
+                      </div>
                           <div class="col-md-2">
       <a ng-href="./#/form-layouts-editstudent/id/{{vm.eventResult.item.ID}}" ng-show="vm.eventResult.item.ID" class="btn btn-blue btn-default ">Edit {{vm.eventResult.item.FirstName}}</a>
                               

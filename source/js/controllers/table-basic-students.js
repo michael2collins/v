@@ -37,6 +37,7 @@
         vm.setStatus = setStatus;
         vm.refreshStudents = refreshStudents;
         vm.editStudentFromPick = editStudentFromPick;
+        vm.disable = undefined;
         vm.Rank = '';
         vm.limit = 20;
         vm.status = 'Active';

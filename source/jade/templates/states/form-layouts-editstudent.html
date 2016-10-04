@@ -1143,14 +1143,22 @@ ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vm
 
                         <div class="row">
                           <div class="col-md-6">
-                            <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp" theme="select2" ng-disabled="disabled" style="width: 300px;" title="Choose a payer">
+                            <ui-select 
+                            tagging tagging-label="('new')" 
+                            ng-model="vmpayment.StudentPayment.classpaynametmp" 
+                            theme="bootstrap"
+                            
+                            ng-disabled="vmpayment.disabled" 
+                            style="width: 300px;" 
+                            title="Choose a payer">
                               <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
-                              <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
-                                <small>
+                              <ui-select-choices 
+                              repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
+                                <div>
                                     <p>Name: {{paylist.firstname}} {{paylist.lastname}} </p>
                                     Payer: <span ng-bind-html="paylist.classpaynametmp | highlight: $select.search"></span>
                                     <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
-                                </small>
+                                </div>
                               </ui-select-choices>
                             </ui-select>
                           </div>

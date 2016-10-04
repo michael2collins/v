@@ -76,6 +76,13 @@
     vm.settextcolor = settextcolor;
     vm.textcolor = getColorByBgColor(vm.mycolor); // Set to complement of textColor.
 
+    vm.studentpick;
+    vm.disable = undefined;
+
+    vm.refreshStudents = refreshStudents;
+    vm.refreshstudentlist = [];
+
+
     islogin();
     //works but is annoying
     intervalChecker();
@@ -85,6 +92,17 @@
 //        $log.debug('isokf');
         vm.isok = UserServices.isapikey();
         return vm.isok;
+    }
+
+    function refreshStudents(theinput) {
+        return StudentServices.refreshStudents(theinput).then(function(data){
+                $log.debug('controller refreshStudents returned data');
+                $log.debug(data);
+                vm.refreshstudentlist = data;
+                $log.debug('controller refreshstudentlist service data',vm.refreshstudentlist);
+                return vm.refreshstudentlist;
+            });
+        
     }
 
     function getTimeSet() {
