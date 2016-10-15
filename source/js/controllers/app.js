@@ -83,6 +83,25 @@
     vm.refreshstudentlist = [];
 
 
+moment.tz.add([
+    'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0'
+]);
+
+    $('#eventStart').timepicker({
+        minuteStep: 15,
+        template: false,
+        showSeconds: false,
+        showMeridian: true,
+        defaultTime: false
+    });
+    $('#eventEnd').timepicker({
+        minuteStep: 15,
+        template: false,
+        showSeconds: false,
+        showMeridian: true,
+        defaultTime: false
+    });
+
     islogin();
     //works but is annoying
     intervalChecker();
@@ -417,10 +436,11 @@
                       });
     }
 
-    function calsave(screen,title,start,end,reminderCheckbox,reminderInterval,updateflag,theevent){
+    function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,updateflag,theevent){
         $log.debug('save cal',
             screen,
             title.val(),
+            startd.val(),
             start.val(),
             end.val(),
             reminderCheckbox.val(),
@@ -441,6 +461,7 @@
 		$log.debug('isTitle', title);
 		if (updateflag && theevent !== null) {
 				theevent.title = title.val();
+				theevent.startd = startd.val();
 				theevent.start = start.val();
 				theevent.end =  end.val();
                 theevent.reminderInterval =  reminderInterval.val();
@@ -453,6 +474,7 @@
 		if (updateflag !== true && title) {
 			eventData = {
 				title: title.val(),
+				startd: startd.val(),
 				start: start.val(),
 				end: end.val(),
                 reminderInterval: reminderInterval.val(),
@@ -482,6 +504,7 @@
             $('#calendar').fullCalendar('changeView', 'agendaDay'); 
             $('#calendar').fullCalendar('gotoDate', date); 
         } 
+        
     }
 
     // initialize the calendar
@@ -499,6 +522,9 @@
                 eventLimit: 3 // adjust to 6 only for agendaWeek/agendaDay
             }
         },        
+//        timezone: 'America/New_York',
+        timezone: 'local',
+        timeFormat: 'hh:mm A z', 
         selectable: true,
         selectHelper: true,
     //    viewRender : onCalendarViewRender,
@@ -506,7 +532,7 @@
         editable: true,
         droppable: true, // this allows things to be dropped onto the calendar !!!
         drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
-      //      $log.debug('drop entered',date, jsEvent, ui, resourceId);
+            $log.debug('drop entered',date, jsEvent, ui, resourceId);
      //       $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
  
             // retrieve the dropped element's stored Event Object
@@ -517,12 +543,14 @@
 
             // assign it the date that was reported
             if (date._ambigTime === true) {
-                copiedEventObject.start = moment(date).add(6,'hours');
+                copiedEventObject.start = moment(date).tz('America/New_York').add(11,'hours');
+                copiedEventObject.startd = moment(date).tz('America/New_York').add(11,'hours');
             } else {
-                copiedEventObject.start = moment(date);
+                copiedEventObject.start = moment(date).tz('America/New_York');
+                copiedEventObject.startd = moment(date).tz('America/New_York');
             }
             
-            copiedEventObject.end = moment(copiedEventObject.start).add(1,'hours');
+            copiedEventObject.end = moment(copiedEventObject.start).add(2,'hours');
             copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
             copiedEventObject.textColor = jsEvent.target.style.color;
             var inner = jsEvent.target.innerText;
@@ -532,7 +560,7 @@
                 innerJ = JSON.parse(inner);
                 desc = innerJ.details.name;
             } catch(e) {
-                $log.debug('json parse err',e);
+    //            $log.debug('json parse err',e);
                 innerJ = inner;   
                 desc = inner;
             }
@@ -573,15 +601,18 @@
  //       
         select: function(start, end) {
             $log.debug('select entered', start, end);
-            $("#eventStart").val(moment(start));
-            $("#eventEnd").val(moment(end));
+            $("#eventStartd").val(moment(start).tz('America/New_York').format('MM/DD/YYYY'));
+            $("#eventStart").val(moment(start).tz('America/New_York').format('hh:mm A z'));
+            $("#eventEnd").val(moment(start).tz('America/New_York').format('hh:mm A z'));
             $log.debug('start',$("#eventStart"),'end',$("#eventEnd"));
-            $('#calEventDialog').dialog('open');
+//            $('#calEventDialog').dialog('open');
 			},        
         eventClick: function(calEvent, jsEvent, view) {
             $log.debug('eventClick entered', calEvent, jsEvent, view);
-            $("#eventStart").val(moment(calEvent.start));
-            $("#eventEnd").val(moment(calEvent.end));
+            $("#eventStartd").val(moment(calEvent.start).tz('America/New_York').format('MM/DD/YYYY'));
+            
+            $("#eventStart").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('hh:mm A z'));
+            $("#eventEnd").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('hh:mm A z'));
             $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
             $("#reminderInterval").val(calEvent.reminderInterval);
             
@@ -595,12 +626,13 @@
                 click: function() {
                     $log.debug('save in edit. note need to update');
                     var title = $('#eventTitle');
+                    var startd = $('#eventStartd');
                     var start = $('#eventStart');
                     var end = $('#eventEnd');
                     var reminderInterval = $('#reminderInterval');
                     var reminderCheckbox = $('#reminderCheckbox');
                     var screen = $(this);
-                    calsave(screen,title,start,end,reminderCheckbox,reminderInterval,true,calEvent);
+                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,calEvent);
                     $('#calendar').fullCalendar('unselect');
 
                     $(this).dialog("close");
@@ -624,7 +656,7 @@
 
       eventDrop: function(event, delta, revertFunc) {
 
-            $log.debug('eventdrop',event, event.title + " was dropped on " + event.start.format());
+            $log.debug('eventdrop',event, event.title + " was dropped on " + event.startd);
     
             if (!confirm("Are you sure about this change?")) {
                 revertFunc();
@@ -633,12 +665,20 @@
     });
 
     var title = $('#eventTitle');
+    var startd = $('#eventStartd');
     var start = $('#eventStart');
     var end = $('#eventEnd');
     var reminderInterval = $('#reminderInterval');
     var reminderCheckbox = $('#reminderCheckbox');
     
-    
+/*    
+    $('#timepicker').timepicker().on('changeTime.timepicker', function(e) {
+    console.log('The time is ' + e.time.value);
+    console.log('The hour is ' + e.time.hours);
+    console.log('The minute is ' + e.time.minutes);
+    console.log('The meridian is ' + e.time.meridian);
+    });
+  */  
     
     var eventClass, color;
     $('#calEventDialog').dialog({
@@ -649,7 +689,7 @@
         buttons: {
             Save: function() {
                 var screen = $(this);
-                calsave(screen,title,start,end,reminderCheckbox,reminderInterval,false,null);
+                calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,false,null);
                 $('#calendar').fullCalendar('unselect');
                 $(this).dialog('close');
             },

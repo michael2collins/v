@@ -51,7 +51,7 @@
         vm.refreshstudentlist = [];
         vm.studentpick;
         vm.eventResult;
-
+        
          vm.isCollapsed = true;
 
         if (!vm.doneActivate) {
