@@ -50,11 +50,13 @@
               </div>
               <div class="form-group">
                 <label for="eventEnd" class="control-label col-md-3">End</label>
+                <div class="col-md-9">
                 <div class="input-group bootstrap-timepicker timepicker">
                     <input id="eventEnd" type="text" class="form-control input-small">
                     <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
+                </div>
                 </div>
               </div>
 <!--    not helpful          <div class="radio-list col-md-10 form-group">
@@ -107,7 +109,7 @@
                 </div>
             </div>
             <div class="col-md-6">
-                <p>Time is: {{vm.checktime}}</p>
+                <p>Time is: {{vm.displaytime(vm.checktimestr)}}</p>
                   <div class="row" ng-repeat="msg in vm.listOfTimes ">
                   {{msg.title}} at {{msg.time}}
               

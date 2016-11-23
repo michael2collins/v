@@ -55,6 +55,7 @@
     vm.loadSidebar = loadSidebar;
     vm.getStudentStats = getStudentStats;
     vm.getStudentStatsMonths = getStudentStatsMonths;
+    vm.displaytime = displaytime;
     vm.islogin = islogin;
     vm.isokf = isokf;
     vm.isok;
@@ -69,6 +70,7 @@
     
     vm.initTime = moment();
     vm.checktime;
+    vm.checktimestr;
     vm.okNotify=false;
     vm.okoptions=[true,false];
 //    vm.mycolor = Math.random() * 0xFFFFFF;
@@ -81,11 +83,14 @@
 
     vm.refreshStudents = refreshStudents;
     vm.refreshstudentlist = [];
+    
+    sampleset();
 
+//added dates in index.html
+//moment.tz.add([
+//    'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0'
+//]);
 
-moment.tz.add([
-    'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0'
-]);
 
     $('#eventStart').timepicker({
         minuteStep: 15,
@@ -124,24 +129,46 @@ moment.tz.add([
         
     }
 
-    function getTimeSet() {
-          var sample1 = moment(vm.initTime).add(15,'seconds');
-          var sample2 = moment(vm.initTime).add(20,'seconds');
-          var sample3 = moment(vm.initTime).add(20,'seconds');
-          var sample4 = moment(vm.initTime).add(45,'seconds');
-          var listOfTimes = [
+    function displaytime(thetime) {
+        var outtime;
+       if (typeof(thetime) !== 'undefined') {
+//        outtime = moment.parseZone(thetime).format('MM/DD/YYYY hh:mm A z'); 
+        outtime = moment(thetime).format('MM/DD/YYYY hh:mm A') + ' ' + moment(thetime).tz('America/New_York').format('Z z'); 
+  //      $log.debug('displaytime',thetime, outtime, moment(outtime).isDST());
+        return outtime;
+       }
+    }
+    
+    function sampleset() {
+          var sample1 = displaytime(moment(vm.initTime).add(15,'seconds'));
+          var sample2 = displaytime(moment(vm.initTime).add(20,'seconds'));
+          var sample3 = displaytime(moment(vm.initTime).add(20,'seconds'));
+          var sample4 = displaytime(moment(vm.initTime).add(45,'seconds'));
+          vm.listOfTimes = [
             {"title": "sample1","time": sample1},
             {"title": "sample2","time": sample2},
             {"title": "sample3","time": sample3},
             {"title": "sample4","time": sample4}
           ];
-        return listOfTimes;        
+        
     }
+    function getTimeSet() {
+        return vm.listOfTimes;        
+    }
+    function addListOfTimes(timevalues) {
+        $log.debug("add to time list", vm.listOfTimes, timevalues);
+        vm.listOfTimes.push(timevalues);
+    }
+    function removeListOfTimes(timevalues) {
+        $log.debug("remove from time list", vm.listOfTimes, timevalues);
+        intervalChecker();
+    }
+    
     function intervalChecker() {
         $log.debug('intervalChecker entered, using',vm.intervalValue, vm.initTime, vm.okNotify);
 
         //only get one set.  need another loop outside of this to fetch another set
-        vm.listOfTimes = getTimeSet();
+       // vm.listOfTimes = getTimeSet();
         
         $interval(function() {
 //          eedisplayService.getData(...)
@@ -149,6 +176,10 @@ moment.tz.add([
             // update the content in the view 
           //})
           vm.checktime = moment();
+//          vm.checktimestr = moment().tz('America/New_York').format('YYYY/MM/DD hh:mm A z');
+            vm.checktimestr = new Date();
+     //     $log.debug('checktime set:', vm.checktimestr, moment(vm.checktimestr).isDST());
+          
           for (var iter=0,len=vm.listOfTimes.length;iter<len;iter++) {
 /*                    $log.debug('intervalChecker: b4 if', 
                         vm.checktime, 
@@ -440,14 +471,16 @@ moment.tz.add([
         $log.debug('save cal',
             screen,
             title.val(),
-            startd.val(),
-            start.val(),
-            end.val(),
-            reminderCheckbox.val(),
+            startd,
+            start,
+            end,
+            reminderCheckbox,
             reminderInterval.val(),
             updateflag,
             theevent);
-            
+        var reminderCheck = $('input#reminderCheckbox:checked')[0].checked;
+        $log.debug('check reminderCheck', reminderCheck, $('input#reminderCheckbox:checked'));
+        
         if ($('input:radio[name=allday]:checked').val() == "1") {
             eventClass = "gbcs-partialday-event";
             color = "#9E6320";
@@ -461,22 +494,49 @@ moment.tz.add([
 		$log.debug('isTitle', title);
 		if (updateflag && theevent !== null) {
 				theevent.title = title.val();
-				theevent.startd = startd.val();
-				theevent.start = start.val();
-				theevent.end =  end.val();
+                theevent.startd = moment(startd, 'MM/DD/YYYY').tz('America/New_York').format('MM/DD/YYYY');
+                $log.debug('theevent startd set', theevent.startd);
+                //add the time to the date
+                var tststr = startd + ' ' + start.toString();
+                var tstd = moment(tststr, 'MM/DD/YYYY hh:mm A z' );
+                theevent.start = tstd;
+                $log.debug('theevent start set', tststr, tstd, theevent.start);
+                tststr = startd + ' ' + end.toString();
+                tstd = moment(tststr, 'MM/DD/YYYY hh:mm A z' );
+                theevent.end = tstd;
+                $log.debug('theevent end set', tststr, tstd, theevent.end);
+
+
                 theevent.reminderInterval =  reminderInterval.val();
-                theevent.reminderCheckbox = reminderCheckbox.val();
+                theevent.reminderCheckbox = reminderCheck;
 				theevent.className = eventClass;
 				theevent.color = color;
+				
+				//if reminderinterval is set, add/update it in the listoftimes
+				//todo
+				//            {"title": "sample1","time": sample1},
+                if ( reminderCheck === true ) {
+                    $log.debug('add reminder time to event list',reminderCheck, theevent);
+    				var atimetoadd = {
+    				    "title": theevent.title, 
+    				    "time": theevent.start
+    				    
+    				}
+    				addListOfTimes(atimetoadd);
+                } else {
+                    $log.debug('not adding reminder time to event list',reminderCheck, theevent);
+                    
+                }
+				
 		    $('#calendar').fullCalendar('updateEvent', theevent);
 		}
 		
 		if (updateflag !== true && title) {
 			eventData = {
 				title: title.val(),
-				startd: startd.val(),
-				start: start.val(),
-				end: end.val(),
+				startd: startd,
+				start: start,
+				end: end,
                 reminderInterval: reminderInterval.val(),
                 reminderCheckbox: reminderCheckbox.val(),
 				className: eventClass,
@@ -551,6 +611,7 @@ moment.tz.add([
             }
             
             copiedEventObject.end = moment(copiedEventObject.start).add(2,'hours');
+            $log.debug("copied end",copiedEventObject.end);
             copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
             copiedEventObject.textColor = jsEvent.target.style.color;
             var inner = jsEvent.target.innerText;
@@ -626,12 +687,15 @@ moment.tz.add([
                 click: function() {
                     $log.debug('save in edit. note need to update');
                     var title = $('#eventTitle');
-                    var startd = $('#eventStartd');
-                    var start = $('#eventStart');
-                    var end = $('#eventEnd');
+                    var startd = $('#eventStartd').val();
+                    var start = $('#eventStart').val();
+                    var end = $('#eventEnd').val();
+                    
                     var reminderInterval = $('#reminderInterval');
                     var reminderCheckbox = $('#reminderCheckbox');
                     var screen = $(this);
+                    $log.debug('before calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,calEvent);
+                    
                     calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,calEvent);
                     $('#calendar').fullCalendar('unselect');
 
@@ -641,6 +705,7 @@ moment.tz.add([
                 text: "Delete",
                 click: function() {
                     $log.debug('delete event entered',calEvent);
+                    removeListOfTimes(calEvent.start);
                     $('#calendar').fullCalendar('removeEvents', calEvent._id);                    
                     $(this).dialog("close");
                 }},
