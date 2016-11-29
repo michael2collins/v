@@ -84,6 +84,8 @@
     vm.refreshStudents = refreshStudents;
     vm.refreshstudentlist = [];
     
+    var uid = (function(){var id=0;return function(){if(arguments[0]===0)id=0;return id++;}})();
+    
     sampleset();
 
 //added dates in index.html
@@ -161,25 +163,25 @@
     }
     function removeListOfTimes(timevalues) {
         $log.debug("remove from time list", vm.listOfTimes, timevalues);
-        intervalChecker();
-    }
-    
-    function intervalChecker() {
-        $log.debug('intervalChecker entered, using',vm.intervalValue, vm.initTime, vm.okNotify);
+          for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
+           if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
+                //i think there is a transitional period where it is in 
+                // process of being cleared that the count is wrong
+                if(
+                    vm.listOfTimes[niter].id === timevalues.id
+                    ) {
+                        $log.debug('dropping deleted one',vm.listOfTimes[niter]);
+                        //remove if they were passed by in the loop above
+                          vm.listOfTimes.splice(niter,1);
+                }
+            }
+           }
 
-        //only get one set.  need another loop outside of this to fetch another set
-       // vm.listOfTimes = getTimeSet();
-        
-        $interval(function() {
-//          eedisplayService.getData(...)
- //         .then(function(response) {
-            // update the content in the view 
-          //})
+    }
+
+    function timeCleaner() {
           vm.checktime = moment();
-//          vm.checktimestr = moment().tz('America/New_York').format('YYYY/MM/DD hh:mm A z');
-            vm.checktimestr = new Date();
-     //     $log.debug('checktime set:', vm.checktimestr, moment(vm.checktimestr).isDST());
-          
+
           for (var iter=0,len=vm.listOfTimes.length;iter<len;iter++) {
 /*                    $log.debug('intervalChecker: b4 if', 
                         vm.checktime, 
@@ -202,6 +204,8 @@
                         }
                         vm.listOfTimes[iter].remove = true;
                   }
+                    $log.debug("checking deleted event from list", vm.listOfTimes[iter]);
+                  
               vm.listOfTimes[iter].remove = false;
           }
           for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
@@ -225,7 +229,20 @@
                 }
             }
            }
-          
+        
+    }    
+    function intervalChecker() {
+        $log.debug('intervalChecker entered, using',vm.intervalValue, vm.initTime, vm.okNotify);
+
+        //only get one set.  need another loop outside of this to fetch another set
+       // vm.listOfTimes = getTimeSet();
+        
+        $interval(function() {
+//          eedisplayService.getData(...)
+ //         .then(function(response) {
+            // update the content in the view 
+          //})
+            timeCleaner();          
         }, vm.intervalValue);
     }
 
@@ -360,7 +377,8 @@
         // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
         // it doesn't need to have a start or end
         var eventObject = {
-            title: $.trim(el.text()) // use the element's text as the event title
+            title: $.trim(el.text()), // use the element's text as the event title
+            id: uid()
         };
 
         // store the Event Object in the DOM element so we can get to it later
@@ -506,7 +524,6 @@
                 theevent.end = tstd;
                 $log.debug('theevent end set', tststr, tstd, theevent.end);
 
-
                 theevent.reminderInterval =  reminderInterval.val();
                 theevent.reminderCheckbox = reminderCheck;
 				theevent.className = eventClass;
@@ -519,12 +536,14 @@
                     $log.debug('add reminder time to event list',reminderCheck, theevent);
     				var atimetoadd = {
     				    "title": theevent.title, 
-    				    "time": theevent.start
-    				    
-    				}
+    				    "time": theevent.start,
+    				    "theevent": theevent,
+    				    "id": theevent.id
+    				};
+    				//todo the change in title is causing extra events
     				addListOfTimes(atimetoadd);
                 } else {
-                    $log.debug('not adding reminder time to event list',reminderCheck, theevent);
+                    $log.debug('not adding reminder time to event list',reminderCheck, theevent, theevent.id);
                     
                 }
 				
@@ -610,6 +629,7 @@
                 copiedEventObject.startd = moment(date).tz('America/New_York');
             }
             
+            copiedEventObject.id = uid();
             copiedEventObject.end = moment(copiedEventObject.start).add(2,'hours');
             $log.debug("copied end",copiedEventObject.end);
             copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
@@ -690,7 +710,7 @@
                     var startd = $('#eventStartd').val();
                     var start = $('#eventStart').val();
                     var end = $('#eventEnd').val();
-                    
+
                     var reminderInterval = $('#reminderInterval');
                     var reminderCheckbox = $('#reminderCheckbox');
                     var screen = $(this);
@@ -705,7 +725,20 @@
                 text: "Delete",
                 click: function() {
                     $log.debug('delete event entered',calEvent);
-                    removeListOfTimes(calEvent.start);
+
+                    if ( calEvent.reminderCheckbox === true ) {
+                        $log.debug('remove reminder time from event list',calEvent.reminderCheckbox, calEvent);
+        				var atimetoremove = {
+        				    "title": calEvent.title, 
+        				    "time": calEvent.start,
+        				    "id": calEvent.id
+        				}
+        				removeListOfTimes(atimetoremove);
+                    } else {
+                        $log.debug('do not neeed to remove reminder time from event list',calEvent.reminderCheckbox, calEvent);
+                        
+                    }
+
                     $('#calendar').fullCalendar('removeEvents', calEvent._id);                    
                     $(this).dialog("close");
                 }},
