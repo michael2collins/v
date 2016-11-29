@@ -159,7 +159,10 @@
     }
     function addListOfTimes(timevalues) {
         $log.debug("add to time list", vm.listOfTimes, timevalues);
+        //remove old one before adjusting the list
+        removeListOfTimes(timevalues);
         vm.listOfTimes.push(timevalues);
+        $log.debug("after add to time list", vm.listOfTimes, timevalues);
     }
     function removeListOfTimes(timevalues) {
         $log.debug("remove from time list", vm.listOfTimes, timevalues);
@@ -488,12 +491,12 @@
     function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,updateflag,theevent){
         $log.debug('save cal',
             screen,
-            title.val(),
+            title,
             startd,
             start,
             end,
             reminderCheckbox,
-            reminderInterval.val(),
+            reminderInterval,
             updateflag,
             theevent);
         var reminderCheck = $('input#reminderCheckbox:checked')[0].checked;
@@ -511,11 +514,12 @@
 		var eventData;
 		$log.debug('isTitle', title);
 		if (updateflag && theevent !== null) {
-				theevent.title = title.val();
+				theevent.title = title;
                 theevent.startd = moment(startd, 'MM/DD/YYYY').tz('America/New_York').format('MM/DD/YYYY');
                 $log.debug('theevent startd set', theevent.startd);
                 //add the time to the date
                 var tststr = startd + ' ' + start.toString();
+                $log.debug('theevent start and startd combine', start, tststr);
                 var tstd = moment(tststr, 'MM/DD/YYYY hh:mm A z' );
                 theevent.start = tstd;
                 $log.debug('theevent start set', tststr, tstd, theevent.start);
@@ -524,7 +528,7 @@
                 theevent.end = tstd;
                 $log.debug('theevent end set', tststr, tstd, theevent.end);
 
-                theevent.reminderInterval =  reminderInterval.val();
+                theevent.reminderInterval =  reminderInterval;
                 theevent.reminderCheckbox = reminderCheck;
 				theevent.className = eventClass;
 				theevent.color = color;
@@ -706,12 +710,12 @@
                 text: "Update",
                 click: function() {
                     $log.debug('save in edit. note need to update');
-                    var title = $('#eventTitle');
+                    var title = $('#eventTitle').val();
                     var startd = $('#eventStartd').val();
                     var start = $('#eventStart').val();
                     var end = $('#eventEnd').val();
 
-                    var reminderInterval = $('#reminderInterval');
+                    var reminderInterval = $('#reminderInterval').val();
                     var reminderCheckbox = $('#reminderCheckbox');
                     var screen = $(this);
                     $log.debug('before calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,calEvent);
@@ -754,11 +758,27 @@
 
       eventDrop: function(event, delta, revertFunc) {
 
-            $log.debug('eventdrop',event, event.title + " was dropped on " + event.startd);
+            $log.debug('eventdrop',event, event.title + " was dropped on " + event.startd, delta);
     
             if (!confirm("Are you sure about this change?")) {
                 revertFunc();
+            } else {
+
+                    $log.debug('save in evendrop');
+                    var title = event.title;
+                    var startd = moment(event.startd).tz('America/New_York').format('MM/DD/YYYY');
+                    var start = moment(event.start).tz('America/New_York').format('hh:mm A z');
+                    var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
+
+                    var reminderInterval = event.reminderInterval;
+                    var reminderCheckbox = event.reminderCheckbox;
+                    var screen = $(this);
+                    $log.debug('before eventdrop calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,event);
+                    
+                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,event);
+                
             }
+            
         }        
     });
 
@@ -787,7 +807,9 @@
         buttons: {
             Save: function() {
                 var screen = $(this);
-                calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,false,null);
+                var thetitle = title.val();
+                var remint = reminderInterval.val();
+                calsave(screen,thetitle,startd,start,end,reminderCheckbox,remint,false,null);
                 $('#calendar').fullCalendar('unselect');
                 $(this).dialog('close');
             },
