@@ -36,7 +36,7 @@
               </div>
 
 
-              <div class="form-group">
+              <div class="form-group" id="eventStartDiv">
                 <label for="eventStart" class="control-label col-md-3">Start</label>
                 <div class="col-md-9">
                 <div class="input-group bootstrap-timepicker timepicker">
@@ -44,11 +44,12 @@
                     <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
+                    <input id="eventStarttz" type="text" class="form-control" readonly style="border: 0px;" />
                 </div>
 
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" id="eventEndDiv">
                 <label for="eventEnd" class="control-label col-md-3">End</label>
                 <div class="col-md-9">
                 <div class="input-group bootstrap-timepicker timepicker">
@@ -56,6 +57,7 @@
                     <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
+                    <input id="eventEndtz" type="text" class="form-control" readonly style="border: 0px;" />
                 </div>
                 </div>
               </div>

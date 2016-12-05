@@ -96,14 +96,16 @@
 
     $('#eventStart').timepicker({
         minuteStep: 15,
-        template: false,
+        template: 'dropdown',
+        modalBackdrop: 'false',
         showSeconds: false,
         showMeridian: true,
         defaultTime: false
     });
     $('#eventEnd').timepicker({
         minuteStep: 15,
-        template: false,
+        template: 'dropdown',
+        modalBackdrop: 'false',
         showSeconds: false,
         showMeridian: true,
         defaultTime: false
@@ -655,7 +657,6 @@
             copiedEventObject.title = desc;
             copiedEventObject.description = innerJ;
             
-
 //            copiedEventObject.allDay = allDay;
    //         $log.debug('after set copiedEventObject',copiedEventObject);
 
@@ -697,7 +698,13 @@
             $("#eventStartd").val(moment(calEvent.start).tz('America/New_York').format('MM/DD/YYYY'));
             
             $("#eventStart").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('hh:mm A z'));
+            $("#eventStarttz").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('z'));
+            
             $("#eventEnd").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('hh:mm A z'));
+            $('#eventStart').timepicker('setTime',  new Date(calEvent.start.toString()) );
+            $('#eventEnd').timepicker('setTime',  new Date(calEvent.end.toString()) );
+            $("#eventEndtz").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('z'));
+
             $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
             $("#reminderInterval").val(calEvent.reminderInterval);
             
