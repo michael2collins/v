@@ -86,6 +86,7 @@
     
     var uid = (function(){var id=0;return function(){if(arguments[0]===0)id=0;return id++;}})();
     
+    todos();
     sampleset();
 
 //added dates in index.html
@@ -1100,11 +1101,8 @@ function hexToComplimentary(hex){
             
         }
 
-    function genGraph() {
+    function todos() {
     setTimeout(function(){
-        var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
-
-
         //BEGIN TODOS LIST
         $("#todos-list-sort").sortable();
         $("#todos-list-sort").disableSelection();
@@ -1112,8 +1110,15 @@ function hexToComplimentary(hex){
 
         $('#todos-list-add').click(function() {
             var index = $('#todos-list-sort > li').length;
-            $('ul#todos-list-sort').append('<li><input type="checkbox" id="task-item-' + index + '" /><label for="task-item-' + index + '" >' + $("#todos-list-input").val() + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="fa fa-trash-o"></span></a></li>');
+            var ht_txt = '<li><input type="checkbox" id="task-item-' + index
+                + '" /><label for="task-item-' 
+                + index + '" >' 
+                + $("#todos-list-input").val() 
+                + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="fa fa-trash-o"></span></a></li>';
+            $log.debug('todo add, index is:', index, ' and txt:', ht_txt);
+            $('ul#todos-list-sort').append(ht_txt);
             $("[data-hover='tooltip']").tooltip();
+            return false;
         });
         $( document ).on( 'click', '#todos-list-sort li a.delete', function() {
 //mlc         $('#todos-list-sort li a.delete').live('click', function() {
@@ -1121,7 +1126,13 @@ function hexToComplimentary(hex){
         });
         //END TODOS LIST
 
+    });
+    }
 
+    function genGraph() {
+        $log.debug('genGraph entered');
+    setTimeout(function(){
+        var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
         try {
 

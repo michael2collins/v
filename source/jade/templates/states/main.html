@@ -122,126 +122,132 @@
     </div>
  
 <div class="col-lg-12">
-    <div class="panel">
-      <div class="panel-body">
         <div class="row">
           <div class="col-md-3">
-            <div id="external-events">
-              <h4>Events</h4>
-              <div class="col-md-12 input-group" >
-                  <div class="col-md-2">
-                  <color-picker
-                    ng-model="vm.mycolor"
-                    color-picker-format="'hex'"
-                    color-picker-swatch="true"
-                    color-picker-swatch-pos="'right'"
-                    color-picker-swatch-only="true"
-                    color-picker-on-change="vm.settextcolor()">
-                        
-                  </color-picker>
-                  </div>
-                  <div class="col-md-9 input-group">
-                  <input id="event-name" 
-                    type="text"
-                    class="form-control"
-                    value="" 
-                    placeholder="Event name..." 
-                    style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
-                    >
-                    <span class="input-group-btn">
-                      <a id="event-add" 
-                        href="javascript:;" 
-                        class="btn btn-primary">Add</a>
-                    </span>
-                  </div>
+            <div class="panel">
+              <div class="panel-body">
+                    <div id="external-events">
+                      <h4>Events</h4>
+                      <div class="col-md-12 input-group" >
+                          <div class="col-md-2">
+                          <color-picker
+                            ng-model="vm.mycolor"
+                            color-picker-format="'hex'"
+                            color-picker-swatch="true"
+                            color-picker-swatch-pos="'right'"
+                            color-picker-swatch-only="true"
+                            color-picker-on-change="vm.settextcolor()">
+                                
+                          </color-picker>
+                          </div>
+                          <div class="col-md-9 input-group">
+                          <input id="event-name" 
+                            type="text"
+                            class="form-control"
+                            value="" 
+                            placeholder="Event name..." 
+                            style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
+                            >
+                            <span class="input-group-btn">
+                              <a id="event-add" 
+                                href="javascript:;" 
+                                class="btn btn-primary">Add</a>
+                            </span>
+                          </div>
+                      </div>
+                      <div class="col-md-12">
+                          <hr>
+                          <div class="external-event label label-default ui-draggable" 
+                            style="position: relative;background-color: red !important;">
+                                Karen Event 1</div>
+                          <div class="external-event label label-default ui-draggable " 
+                            style="position: relative;background-color: red !important;">
+                                Mark Event 2</div>
+                          <div class="external-event label label-default ui-draggable " 
+                            style="position: relative;background-color: blue !important;">
+                                Mike Event 3</div>
+                          <div class="external-event label label-default ui-draggable " 
+                            style="position: relative;background-color: yellow !important; color: black;">
+                                Roy Event 4</div>
+                          <div class="external-event label label-default ui-draggable " 
+                              style="position: relative;background-color: orange !important; color: black;">
+                                Matt Event 5</div>
+                      </div>
+                      <div id="event-block"></div>
+        <!--              <p>
+                        <input id="drop-remove" type="checkbox">&nbsp;
+                        <label for="drop-remove">Remove after drop</label>
+                      </p>
+        -->              
+                    </div>
               </div>
-              <div class="col-md-12">
-                  <hr>
-                  <div class="external-event label label-default ui-draggable" 
-                    style="position: relative;background-color: red !important;">
-                        Karen Event 1</div>
-                  <div class="external-event label label-default ui-draggable " 
-                    style="position: relative;background-color: red !important;">
-                        Mark Event 2</div>
-                  <div class="external-event label label-default ui-draggable " 
-                    style="position: relative;background-color: blue !important;">
-                        Mike Event 3</div>
-                  <div class="external-event label label-default ui-draggable " 
-                    style="position: relative;background-color: yellow !important; color: black;">
-                        Roy Event 4</div>
-                  <div class="external-event label label-default ui-draggable " 
-                      style="position: relative;background-color: orange !important; color: black;">
-                        Matt Event 5</div>
-              </div>
-              <div id="event-block"></div>
-<!--              <p>
-                <input id="drop-remove" type="checkbox">&nbsp;
-                <label for="drop-remove">Remove after drop</label>
-              </p>
--->              
             </div>
        
     
-    <div id="eventContent" title="Event Details" style="display: none">
-        Start: <span id="startTime"></span><br>
-        End: <span id="endTime"></span><br><br>
-        <div id="eventInfo"></div>
-        <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
-    </div>
-
-      <div class="panel">
-        <div class="panel-body">
-          <h4 class="block-heading"><i class="icon-directions mrs"></i>Todo List</h4>
-          <div id="todos-list">
-            <ul id="todos-list-sort" class="list-unstyled">
-              <li>
-                <div class="input-group">
-                  <input id="todos-list-input" type="text" placeholder="New task content" value="" class="form-control"/><span class="input-group-btn">
-                    <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
-                </div>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-1"/>
-                <label class="external-event" for="task-item-1">
-                Setup birthday party for Jack
-                {"details": ["date": "1/1/2012", "name": "karen"  }
-                <br/>
-                just text
-                <br/>
-                some more
-                </label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-2"/>
-                <label for="task-item-2">
-                {"details": {"duedate": "1/1/2012", "name": "karen", "task": "do something", "contact": "stu lastname"  }}
-                    
-                </label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-3"/>
-                <label for="task-item-3">Print the brochures</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-4"/>
-                <label for="task-item-4">Prepare/Send Belt Rank Congratulations Cards</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-              <li>
-                <input type="checkbox" id="task-item-5"/>
-                <label for="task-item-5">Capture leads from Movie Night</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-              </li>
-            </ul>
+            <div id="eventContent" title="Event Details" style="display: none">
+                Start: <span id="startTime"></span><br>
+                End: <span id="endTime"></span><br><br>
+                <div id="eventInfo"></div>
+                <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
+            </div>
+  
+          <div class="panel">
+            <div class="panel-body">
+              <h4 class="block-heading"><i class="icon-directions mrs"></i>Todo List</h4>
+              <div id="todos-list">
+                <ul id="todos-list-sort" class="list-unstyled">
+                <li>
+                    <div class="input-group">
+                      <input id="todos-list-input" type="text" placeholder="New task content" value="" class="form-control"/><span class="input-group-btn">
+                        <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
+                    </div>
+                </li>    
+    
+    <!--              <li>
+                    <input type="checkbox" id="task-item-1"/>
+                    <label class="external-event" for="task-item-1">
+                    Setup birthday party for Jack
+                    {"details": ["date": "1/1/2012", "name": "karen"  }
+                    <br/>
+                    just text
+                    <br/>
+                    some more
+                    </label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="task-item-2"/>
+                    <label for="task-item-2">
+                    {"details": {"duedate": "1/1/2012", "name": "karen", "task": "do something", "contact": "stu lastname"  }}
+                        
+                    </label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                  </li>
+                  -->
+                  <li>
+                    <input type="checkbox" id="task-item-3"/>
+                    <label for="task-item-3">Print the brochures</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="task-item-4"/>
+                    <label for="task-item-4">Prepare/Send Belt Rank Congratulations Cards</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="task-item-5"/>
+                    <label for="task-item-5">Capture leads from Movie Night</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
             
-          </div>
-          <div class="col-md-9">
-            <div id="calendar" ></div>
         </div>
+              <div class="col-md-9">
+                <div class="panel">
+                  <div class="panel-body">
+                        <div id="calendar" ></div>
+                  </div>
+                </div>
+              </div>
       </div>
-    </div>
-  </div>
   </div>
  
   <div class="row">
