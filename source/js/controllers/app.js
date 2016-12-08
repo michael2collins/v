@@ -59,6 +59,14 @@
     vm.islogin = islogin;
     vm.isokf = isokf;
     vm.isok;
+    vm.forUser;
+    vm.forUsers= { "userlist": [
+        {"user": "All"},
+        {"user": "mike"},
+        {"user": "mark"},
+        {"user": "karen"} 
+                        ]
+    };
     vm.studentstats;
     vm.studentstatsdetails;
     vm.listOfTimes=[];
@@ -187,7 +195,7 @@
 
     function timeCleaner() {
           vm.checktime = moment();
-
+        vm.checktimestr = displaytime(vm.checktime);
           for (var iter=0,len=vm.listOfTimes.length;iter<len;iter++) {
 /*                    $log.debug('intervalChecker: b4 if', 
                         vm.checktime, 
@@ -301,6 +309,21 @@
 
         return (pass);
     }
+    $scope.data = {};
+    $scope.header = {
+        layout_menu:'',
+        layout_topbar:'',
+        animation:'',
+        header_topbar:'static',
+        boxed:''
+    };
+   $.fn.Data.Portlet();
+
+    $('.portlet-scroll').slimScroll({
+        "height": "250",
+        "alwaysVisible": true
+    });
+    
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
         console.log('routechange in app for success');
         vm.header.animation = 'fadeInUp';
