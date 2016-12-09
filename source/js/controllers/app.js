@@ -9,6 +9,7 @@
     '$routeParams', 
     'UserServices',
     'AttendanceServices',
+    'CalendarServices',
     'EventServices',
     'StudentServices',
     'PaymentServices',
@@ -23,9 +24,11 @@
     '$interval'
     ];
  
-    function AppController( $scope, $routeParams, 
+    function AppController( $scope, 
+         $routeParams, 
          UserServices,
          AttendanceServices,
+         CalendarServices,
          EventServices, 
          StudentServices, 
          PaymentServices,
@@ -54,7 +57,15 @@
     vm.loadTopbar = loadTopbar;
     vm.loadSidebar = loadSidebar;
     vm.getStudentStats = getStudentStats;
+    vm.updateTasknamelist = updateTasknamelist;
+    vm.gettheTasknamelist = gettheTasknamelist;
     vm.getStudentStatsMonths = getStudentStatsMonths;
+    vm.thisTasknamelist=[];
+    vm.message;
+    vm.loading = false; 
+    vm.loadAttempted = false;
+    
+    
     vm.displaytime = displaytime;
     vm.islogin = islogin;
     vm.isokf = isokf;
@@ -62,9 +73,7 @@
     vm.forUser;
     vm.forUsers= { "userlist": [
         {"user": "All"},
-        {"user": "mike"},
-        {"user": "mark"},
-        {"user": "karen"} 
+        {"user": "MINE"}
                         ]
     };
     vm.studentstats;
@@ -95,6 +104,7 @@
     var uid = (function(){var id=0;return function(){if(arguments[0]===0)id=0;return id++;}})();
     
     todos();
+    gettheTasknamelist();
     sampleset();
 
 //added dates in index.html
@@ -130,6 +140,69 @@
         vm.isok = UserServices.isapikey();
         return vm.isok;
     }
+
+        
+    function updateTasknamelist(taskname) {
+        var updpath = "../v1/updatetasknamelist";
+        $log.debug('about updateTasknamelist ', taskname, updpath);
+        return CalendarServices.updateTasknamelist(updpath, taskname)
+            .then(function(data){
+                $log.debug('updateTasknamelist returned data');
+                $log.debug(data);
+                vm.thisTasknamelist = data;
+                $log.debug(vm.thisTasknamelist);
+                $log.debug(vm.thisTasknamelist.message);
+                vm.message = vm.thisTasknamelist.message;
+                gettheTasknamelist().then
+                    (function(zdata) {
+                     $log.debug('gettheTasknamelist returned', zdata);
+                 },
+                    function (error) {
+                        $log.debug('Caught an error gettheTasknamelist after update:', error); 
+                        vm.tasknamelist = [];
+                        vm.message = error;
+                        Notification.error({message: error, delay: 5000});
+                        return ($q.reject(error));
+                    });
+
+                return vm.thisTasknamelist;
+            }).catch(function(e) {
+                $log.debug('updateTasknamelist failure:');
+                $log.debug("error", e);
+                vm.message = e;
+                Notification.error({message: e, delay: 5000});
+                throw e;
+            });
+    }
+
+
+
+    function gettheTasknamelist() {
+        $log.debug('gettheTasknamelist entered');
+        var refreshpath = "../v1/tasknamelist";
+
+         return CalendarServices.gettasknamelist(refreshpath).then(function(data){
+                $log.debug('gettasknamelists returned data');
+                $log.debug(data);
+                vm.thisTasknamelist = data.tasknamelist; 
+                return vm.thisTasknamelist;
+            },
+            function (error) {
+                $log.debug('Caught an error gettheTasknamelist, going to notify:', error); 
+                vm.thisTasknamelist = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+
+    }
+
+
 
     function refreshStudents(theinput) {
         return StudentServices.refreshStudents(theinput).then(function(data){
@@ -268,7 +341,8 @@
         if (vm.isok) {
             $log.debug('setting apikey for services');
             var thekey = UserServices.getapikey();
-            AttendanceServices.setapikey(thekey);
+            CalendarServices.setapikey(thekey);
+            CalendarServices.setapikey(thekey);
             EventServices.setapikey(thekey);
             StudentServices.setapikey(thekey);
             PaymentServices.setapikey(thekey);
@@ -566,7 +640,7 @@
                     $log.debug('add reminder time to event list',reminderCheck, theevent);
     				var atimetoadd = {
     				    "title": theevent.title, 
-    				    "time": theevent.start,
+    				    "time": displaytime(theevent.start),
     				    "theevent": theevent,
     				    "id": theevent.id
     				};

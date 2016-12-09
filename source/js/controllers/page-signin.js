@@ -14,6 +14,7 @@
             'FlashService',
             'UserServices',
             'AttendanceServices',
+            'CalendarServices',
             'EventServices',
             'StudentServices',
             'PaymentServices',
@@ -22,7 +23,7 @@
             '$q'
             ];
         function PageSigninController($scope, $log, $routeParams, 
-                $location, FlashService, UserServices, AttendanceServices,
+                $location, FlashService, UserServices, AttendanceServices, CalendarServices,
                 EventServices, StudentServices, PaymentServices, ClassServices,
                 $q){
         /* jshint validthis: true */
@@ -60,6 +61,7 @@
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
 
                         AttendanceServices.setapikey(pagevm.apiKey);
+                        CalendarServices.setapikey(pagevm.apiKey);
                         EventServices.setapikey(pagevm.apiKey);
                         StudentServices.setapikey(pagevm.apiKey);
                         PaymentServices.setapikey(pagevm.apiKey);
@@ -78,6 +80,7 @@
                 //    Notification.error({message: error, delay: 5000});
                         UserServices.SetCredentials('','','');
                         AttendanceServices.setapikey('');
+                        CalendarServices.setapikey('');
                         EventServices.setapikey('');
                         StudentServices.setapikey('');
                         PaymentServices.setapikey('');

@@ -109,18 +109,7 @@
                 <div class="col-md-3" style="background-color: grey;">
                   <div class="panel">
                     <div class="panel-body">
-                      <div class="form-group col-md-12">
-                      <label for="inputokNotify" class="control-label col-md-3">Notify Me?</label>
-                      <div class="col-md-9">
-                        <select id="inputokNotify" type="text" name="okNotify" 
-                          ng-model="vm.okNotify" 
-                          required
-                          placeholder="select"
-                          ng-options="o for o in vm.okoptions track by o"
-                          class="form-control">
-                        </select>
-                        </div>
-                      </div>
+                      <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-exclamation icons mrs"></i>Filter</h4>
                       <div class="form-group col-md-12">
                         <label for="inputForUser" class="control-label col-md-3">User</label>
                         <div class="col-md-9">
@@ -139,7 +128,7 @@
                   <div class="panel">
                     <div class="panel-body">
                           <div id="external-events">
-                            <h4>Events</h4>
+                            <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-event icons mrs"></i>Event List</h4>
                             <div class="col-md-12 input-group" >
                                 <div class="col-md-2">
                                 <color-picker
@@ -157,7 +146,7 @@
                                   type="text"
                                   class="form-control"
                                   value="" 
-                                  placeholder="Event name..." 
+                                  placeholder="Create an Event..." 
                                   style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
                                   >
                                   <span class="input-group-btn">
@@ -195,7 +184,7 @@
                     </div>
                   </div>
              
-          
+           
                   <div id="eventContent" title="Event Details" style="display: none">
                       Start: <span id="startTime"></span><br>
                       End: <span id="endTime"></span><br><br>
@@ -205,7 +194,7 @@
         
                 <div class="panel">
                   <div class="panel-body">
-                    <h4 class="block-heading"><i class="icon-directions mrs"></i>Todo List</h4>
+                    <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-directions mrs"></i>Todo List</h4>
                     <div id="todos-list">
                       <ul id="todos-list-sort" class="list-unstyled">
                       <li>
@@ -246,14 +235,33 @@
                           <input type="checkbox" id="task-item-5"/>
                           <label for="task-item-5">Capture leads from Movie Night</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
                         </li>
+                          <li class="row"  ng-repeat="task in vm.thisTasknamelist ">
+                          <input type="checkbox" id="{{msg}}"/>
+                          <label for="{{task}}">{{task.taskname}}</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                          </li>
+                        
+                        <div>{{vm.thisTasknamelist}}</div>
                       </ul>
                     </div>
                   </div>
                 </div>
                 <div class="panel">
                   <div class="panel-body">
-                    <div class="col-md-12">
-                      <h4>Notification List</h4>
+                    <div>
+                      <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-exclamation icons mrs"></i>Notification List</h4>
+                      <div class="form-group col-md-12">
+                      <label for="inputokNotify" class="control-label col-md-3">Notify Me?</label>
+                      <div class="col-md-9">
+                        <select id="inputokNotify" type="text" name="okNotify" 
+                          ng-model="vm.okNotify" 
+                          required
+                          placeholder="select"
+                          ng-options="o for o in vm.okoptions track by o"
+                          class="form-control">
+                        </select>
+                        </div>
+                      </div>
+                      
                       <ul class="nav nav-pills pull-left">
                         <li>Time: {{vm.displaytime(vm.checktimestr)}}</li>
                           <li class="row"  ng-repeat="msg in vm.listOfTimes ">
