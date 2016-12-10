@@ -22,7 +22,7 @@ $app->post('/updatetasknamelist','authenticate',  function() use($app) {
     $tasknamelist_id = $db->updateTasknamelist( $taskname,
                                       $taskstatus
                                      );
-
+ 
     if ($tasknamelist_id > 1) {
         $response["error"] = false;
         $response["message"] = "tasknamelist created successfully";
@@ -74,11 +74,13 @@ $app->get('/tasknamelist', 'authenticate', function() use ($app) {
 
         if (count($slist) > 0) {
             $tmp["taskname"] = (empty($slist["taskname"]) ? "NULL" : $slist["taskname"]);
-            $tmp["taskstatus"] = (empty($slist["taskstatus"]) ? "NULL" : $slist["taskstatus"]);
+            $tmp["taskstatus"] = (empty($slist["taskstatus"]) ? "0" : $slist["taskstatus"]);
+            $tmp["taskid"] = (empty($slist["taskid"]) ? "NULL" : $slist["taskid"]);
 
         } else {
             $tmp["taskname"] = "NULL";
             $tmp["taskstatus"] = "NULL";
+            $tmp["taskid"] = "NULL";
 
         }
         array_push($response["tasknamelist"], $tmp);

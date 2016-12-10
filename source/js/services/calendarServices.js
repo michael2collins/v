@@ -15,7 +15,7 @@
         var service = {
   //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
-            updatetasknamelist: updatetasknamelist,
+            updateTasknamelist: updateTasknamelist,
             gettasknamelist: gettasknamelist
         };
         return service;
@@ -31,7 +31,7 @@
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
-        function updatetasknamelist(path, thedata ) {
+        function updateTasknamelist(path, thedata ) {
                     $log.debug('updatetasknamelist data before post :' , thedata);
                     var request = $http({
                         method: "POST",

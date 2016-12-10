@@ -24,7 +24,7 @@ class CalendarDbHandler {
 
         global $user_id;
 
-        $sql = "SELECT  taskname, taskstatus FROM tasknamelist ";
+        $sql = "SELECT  id as taskid, taskname, taskstatus FROM tasknamelist ";
         $sql .= " where userid = ? ";
         $sql .= " order by id";
 
@@ -71,7 +71,7 @@ class CalendarDbHandler {
         error_log( print_R("tasknamelist istasknamelistExists sql: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-
+ 
             $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
@@ -152,7 +152,7 @@ class CalendarDbHandler {
 
             // already existed in the db, update
             $updsql = " UPDATE tasknamelist  SET taskstatus = " . $taskstatus;
-            $updsql .= " where taskname = " . $taskname;
+            $updsql .= " where taskname = '" . $taskname . "'";
             $updsql .= " and userid =  " . $user_id;
 
             error_log( print_R("tasknamelist update sql: $updsql", TRUE), 3, LOG);

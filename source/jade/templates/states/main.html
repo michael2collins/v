@@ -203,41 +203,15 @@
                               <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
                           </div>
                       </li>    
-          
-          <!--              <li>
-                          <input type="checkbox" id="task-item-1"/>
-                          <label class="external-event" for="task-item-1">
-                          Setup birthday party for Jack
-                          {"details": ["date": "1/1/2012", "name": "karen"  }
-                          <br/>
-                          just text
-                          <br/>
-                          some more
-                          </label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                        </li>
-                        <li>
-                          <input type="checkbox" id="task-item-2"/>
-                          <label for="task-item-2">
-                          {"details": {"duedate": "1/1/2012", "name": "karen", "task": "do something", "contact": "stu lastname"  }}
-                              
-                          </label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                        </li>
-                        -->
-                        <li>
-                          <input type="checkbox" id="task-item-3"/>
-                          <label for="task-item-3">Print the brochures</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                        </li>
-                        <li>
-                          <input type="checkbox" id="task-item-4"/>
-                          <label for="task-item-4">Prepare/Send Belt Rank Congratulations Cards</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                        </li>
-                        <li>
-                          <input type="checkbox" id="task-item-5"/>
-                          <label for="task-item-5">Capture leads from Movie Night</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                        </li>
+                      </ul>
+                      <ul class="list-unstyled">          
                           <li class="row"  ng-repeat="task in vm.thisTasknamelist ">
-                          <input type="checkbox" id="{{msg}}"/>
-                          <label for="{{task}}">{{task.taskname}}</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                          <input type="checkbox" id="{{task.taskid}}" 
+                          ng-model="task.taskstatus" 
+                          ng-change="vm.updateTasknamelist(task.taskname, task.taskstatus)" 
+                          ng-true-value="1" ng-false-value="0"/>
+                          <label for="{{task.taskid}}">{{task.taskname}}</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                          {{task}}
                           </li>
                         
                         <div>{{vm.thisTasknamelist}}</div>

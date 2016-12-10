@@ -142,10 +142,14 @@
     }
 
         
-    function updateTasknamelist(taskname) {
+    function updateTasknamelist(taskname, taskstatus) {
         var updpath = "../v1/updatetasknamelist";
-        $log.debug('about updateTasknamelist ', taskname, updpath);
-        return CalendarServices.updateTasknamelist(updpath, taskname)
+        var thedata = {
+            taskname: taskname,
+            taskstatus: taskstatus
+        };
+        $log.debug('about updateTasknamelist ', thedata, updpath);
+        return CalendarServices.updateTasknamelist(updpath, thedata)
             .then(function(data){
                 $log.debug('updateTasknamelist returned data');
                 $log.debug(data);
@@ -1206,7 +1210,7 @@ function hexToComplimentary(hex){
 
 
         $('#todos-list-add').click(function() {
-            var index = $('#todos-list-sort > li').length;
+/*            var index = $('#todos-list-sort > li').length;
             var ht_txt = '<li><input type="checkbox" id="task-item-' + index
                 + '" /><label for="task-item-' 
                 + index + '" >' 
@@ -1214,6 +1218,7 @@ function hexToComplimentary(hex){
                 + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="fa fa-trash-o"></span></a></li>';
             $log.debug('todo add, index is:', index, ' and txt:', ht_txt);
             $('ul#todos-list-sort').append(ht_txt);
+  */          updateTasknamelist($("#todos-list-input").val() ,'0');
             $("[data-hover='tooltip']").tooltip();
             return false;
         });
