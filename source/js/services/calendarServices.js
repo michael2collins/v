@@ -16,6 +16,7 @@
   //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
             updateTasknamelist: updateTasknamelist,
+            removeTasknamelist: removeTasknamelist,
             gettasknamelist: gettasknamelist
         };
         return service;
@@ -33,6 +34,18 @@
 
         function updateTasknamelist(path, thedata ) {
                     $log.debug('updatetasknamelist data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function removeTasknamelist(path, thedata ) {
+                    $log.debug('removeTasknamelist data before delete :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,

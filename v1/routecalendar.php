@@ -1,6 +1,41 @@
 <?php
 
 
+$app->post('/removetasknamelist','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("tasknamelist post before remove\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+      
+    $taskname  = (isset($dataJsonDecode->thedata->taskname)         ? $dataJsonDecode->thedata->taskname : "");
+
+    $db = new CalendarDbHandler();
+    $response = array();
+
+    $result = $db->removeTasknamelist( $taskname
+                                     );
+    if ($result) {
+        // task removed successfully
+        $response["error"] = false;
+        $response["message"] = "Tasklist cleaned successfully";
+        echoRespnse(200, $response);
+    } else {
+        // task failed to update
+        $response["error"] = true;
+        $response["message"] = "Tasklist failed to remove record. Please try again!";
+        echoRespnse(404, $response);
+    }
+ 
+
+});
+
+
+
 $app->post('/updatetasknamelist','authenticate',  function() use($app) {
     $response = array();
 

@@ -58,6 +58,7 @@
     vm.loadSidebar = loadSidebar;
     vm.getStudentStats = getStudentStats;
     vm.updateTasknamelist = updateTasknamelist;
+    vm.removeTasknamelist = removeTasknamelist;
     vm.gettheTasknamelist = gettheTasknamelist;
     vm.getStudentStatsMonths = getStudentStatsMonths;
     vm.thisTasknamelist=[];
@@ -179,6 +180,40 @@
             });
     }
 
+    function removeTasknamelist(taskname) {
+        var updpath = "../v1/removetasknamelist";
+        var thedata = {
+            taskname: taskname
+        };
+        $log.debug('about removeTasknamelist ', thedata, updpath);
+        return CalendarServices.removeTasknamelist(updpath, thedata)
+            .then(function(data){
+                $log.debug('removeTasknamelist returned data');
+                $log.debug(data);
+//                vm.thisTasknamelist = data;
+                $log.debug(data);
+                vm.message = data.message;
+                gettheTasknamelist().then
+                    (function(zdata) {
+                     $log.debug('gettheTasknamelist returned', zdata);
+                 },
+                    function (error) {
+                        $log.debug('Caught an error gettheTasknamelist after update:', error); 
+                        vm.tasknamelist = [];
+                        vm.message = error;
+                        Notification.error({message: error, delay: 5000});
+                        return ($q.reject(error));
+                    });
+
+                return vm.thisTasknamelist;
+            }).catch(function(e) {
+                $log.debug('removeTasknamelist failure:');
+                $log.debug("error", e);
+                vm.message = e;
+                Notification.error({message: e, delay: 5000});
+                throw e;
+            });
+    }
 
 
     function gettheTasknamelist() {
@@ -1222,10 +1257,12 @@ function hexToComplimentary(hex){
             $("[data-hover='tooltip']").tooltip();
             return false;
         });
-        $( document ).on( 'click', '#todos-list-sort li a.delete', function() {
-//mlc         $('#todos-list-sort li a.delete').live('click', function() {
-            $(this).parent().remove();
-        });
+//        $( document ).on( 'click', '#todos-list-sort li a.delete', function() {
+//            $log.debug('todo list remove entered');
+//mlc         $('#todos-list-gen li a.delete').live('click', function() {
+//            $(this).parent().remove();
+//            removeTasknamelist($("#todos-list-input").val());
+//        });
         //END TODOS LIST
 
     });

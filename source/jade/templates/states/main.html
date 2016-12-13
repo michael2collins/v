@@ -204,17 +204,15 @@
                           </div>
                       </li>    
                       </ul>
-                      <ul class="list-unstyled">          
+                      <ul id="todos-list-gen" class="list-unstyled">          
                           <li class="row"  ng-repeat="task in vm.thisTasknamelist ">
                           <input type="checkbox" id="{{task.taskid}}" 
                           ng-model="task.taskstatus" 
                           ng-change="vm.updateTasknamelist(task.taskname, task.taskstatus)" 
                           ng-true-value="1" ng-false-value="0"/>
-                          <label for="{{task.taskid}}">{{task.taskname}}</label><a href="javascript:;" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                          {{task}}
+                          <label for="{{task.taskid}}">{{task.taskname}}</label><a href="" ng-click="vm.removeTasknamelist(task.taskname)" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
                           </li>
                         
-                        <div>{{vm.thisTasknamelist}}</div>
                       </ul>
                     </div>
                   </div>

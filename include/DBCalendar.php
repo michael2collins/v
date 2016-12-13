@@ -19,6 +19,39 @@ class CalendarDbHandler {
 
     }
 
+    public function removeTasknamelist($taskname) {
+
+        global $user_id;
+        $num_affected_rows = 0;
+        error_log( print_R("removeTasklist entered $user_id $taskname\n", TRUE ),3, LOG);
+
+        //cleanout old and replace with a new set
+        $cleansql = "Delete from tasknamelist where userid = ? and taskname = ?";
+        if ($stmt = $this->conn->prepare($cleansql) ) {
+            $stmt->bind_param("ss", $user_id, $taskname);
+
+/*            $result = $stmt->execute();
+
+            $stmt->close();
+            // Check for successful insertion
+            if ($result) {
+                return true;
+            } else {
+                // Failed 
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+  */          
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            return $num_affected_rows > 0;            
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+        
+    }
 
     public function getTasknamelist() {
 
