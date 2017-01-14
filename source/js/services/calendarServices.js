@@ -15,6 +15,9 @@
         var service = {
   //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
+             saveCalendarEvent: saveCalendarEvent,
+             getCalendarEvents: getCalendarEvents,
+             removeCalendarEvent: removeCalendarEvent,
             updateTasknamelist: updateTasknamelist,
             removeTasknamelist: removeTasknamelist,
             gettasknamelist: gettasknamelist
@@ -31,6 +34,40 @@
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
+
+
+
+        function getCalendarEvents(path) {
+            $log.debug('getCalendarEvents service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        //add or update
+        function saveCalendarEvent(path, thedata ) {
+                    $log.debug('saveCalendarEvent data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function removeCalendarEvent(path, thedata ) {
+                    $log.debug('removeCalendarEvent data before delete :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
 
         function updateTasknamelist(path, thedata ) {
                     $log.debug('updatetasknamelist data before post :' , thedata);

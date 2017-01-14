@@ -1,23 +1,24 @@
 <!DOCTYPE html>
  
-    <div id="calEventDialog" style="display: none">
+    <div id="calEventDialog" ng-controller="EventPopController as vm"  style="display: none">
         <form novalidate class="simple-form">
 
-              <div class="select-box pal">
-      <!--                        on-select="vm.editStudentFromPick($item)"
-        -->          <ui-select  ng-model="vm.studentpick" 
+              <div class="select-box pal" id="calEventDialogpick">
+                  <ui-select  ng-model="vm.studentpick" 
                               theme="bootstrap"
                               reset-search-input="false"
                               ng-disabled="vm.disabled"  
                               style="width: 300px;" 
+                              on-select="vm.setStudentFromPick($item)"
                               title="Choose a student"
                               append-to-body="true">
-                    <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
+                    <ui-select-match placeholder="Filter the student...">
+                      <div id="contactid" style="display: none;">{{$select.selected.ID}}</div>{{$select.selected.FullName}}</ui-select-match>
                     <ui-select-choices 
                     repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID"
                     refresh="vm.refreshStudents($select.search)"
                     refresh-delay="0">
-                  <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
+                  <div id="contactpicklist" ng-bind-html="stu.FullName | highlight: $select.search"></div>
                     </ui-select-choices>
                   </ui-select>
             </div>          
@@ -85,6 +86,8 @@
                   </select>
                   </div>                  
                 </div>
+                <input id="eventid" type="text">
+                <input id="eventpick" type="text">
             </div>
         </form>
     </div> 
@@ -205,7 +208,7 @@
                       </li>    
                       </ul>
                       <ul id="todos-list-gen" class="list-unstyled">          
-                          <li class="row"  ng-repeat="task in vm.thisTasknamelist ">
+                          <li class="row"  ng-repeat="task in vm.thisTasknamelist " style="padding: 0px 10px 0px 20px;">
                           <input type="checkbox" id="{{task.taskid}}" 
                           ng-model="task.taskstatus" 
                           ng-change="vm.updateTasknamelist(task.taskname, task.taskstatus)" 
