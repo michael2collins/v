@@ -53,7 +53,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     $startdate      = (isset($dataJsonDecode->thedata->start) ? $dataJsonDecode->thedata->start : "");
     $enddate      = (isset($dataJsonDecode->thedata->end) ? $dataJsonDecode->thedata->end : "");
     $contactid      = (isset($dataJsonDecode->thedata->contactid) ? $dataJsonDecode->thedata->contactid : "");
-    $reminder      = (isset($dataJsonDecode->thedata->reminderCheckbox) ? $dataJsonDecode->thedata->reminderCheckbox : "0");
+    $reminder      = (isset($dataJsonDecode->thedata->reminder) ? $dataJsonDecode->thedata->reminder : "0");
     $reminderInterval      = (isset($dataJsonDecode->thedata->reminderInterval) ? $dataJsonDecode->thedata->reminderInterval : "");
     $classname      = (isset($dataJsonDecode->thedata->className) ? $dataJsonDecode->thedata->className : "");
     $color      = (isset($dataJsonDecode->thedata->color) ? $dataJsonDecode->thedata->color : "");

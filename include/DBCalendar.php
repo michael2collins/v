@@ -210,7 +210,7 @@ class CalendarDbHandler {
             $updsql .=                " startdate = '" .     $hhmm . "',";
             $updsql .=                " enddate = '" .      $endhhmm . "',";
             $updsql .=                " contactid = '" .      $contactid . "',";
-            $updsql .=                " reminder = '"  .    $reminder . "'," ;
+            $updsql .=                " reminder = "  .    $reminder . "," ;
             $updsql .=                " reminderInterval = '" .     $reminderInterval . "'," ;
             $updsql .=                " classname = '" .      $classname . "'," ;
             $updsql .=                " color = '" .      $color . "',";

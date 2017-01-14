@@ -206,10 +206,12 @@
             color,
             textcolor);
             var reminderCheck;
-            if (reminderCheckbox == undefined) {
+            if (reminderCheckbox === undefined) {
                 reminderCheck = 0;
-            } else if (reminderCheckbox == 1) {
+            } else if (reminderCheckbox === 1) {
                 reminderCheck = 1;
+            } else if (reminderCheckbox === 0) {
+                reminderCheck = 0;
             } else {
                 reminderCheck = reminderCheckbox[0].checked ? 1 : 0;
             }
@@ -936,7 +938,7 @@
     }
 
     function eventopen(calEvent) {
-        $log.debug('eventopen enter', vm.studentpick, vm.studentpick.ID, $("#calEventDialogpick")[0]);
+        $log.debug('eventopen enter', vm.studentpick, vm.studentpick.ID, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
   //          if (vm.studentpick.ID !== null) {
   //              $log.debug("studentpick exists", vm.studentpick.ID, $("#focusser-0"));
                 $("#eventpick").val(vm.studentpick.FullName);
@@ -950,8 +952,12 @@
             $('#eventStart').timepicker('setTime',  new Date(calEvent.start.toString()) );
             $('#eventEnd').timepicker('setTime',  new Date(calEvent.end.toString()) );
             $("#eventEndtz").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('z'));
-
-            $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
+            
+            if (calEvent.reminderCheckbox === 1 || calEvent.reminderCheckbox === true) {
+                $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
+            } else {     
+                $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', false);
+            }
             $("#reminderInterval").val(calEvent.reminderInterval);
             
             $("#eventid").val(calEvent.eventid);
@@ -1123,7 +1129,7 @@
             $log.debug('eventClick entered', calEvent, jsEvent, view);
             
             //get stu name if contactid set
-            if (calEvent.contactid !== null) {
+            if (calEvent.contactid !== "" &&  calEvent.contactid !== "NULL") {
                     var path = '../v1/students/' + calEvent.contactid;
                     getStudent(path).then(function(data){
                         $log.debug("eventclick get studentname returned",data);
@@ -1142,25 +1148,26 @@
       eventDrop: function(event, delta, revertFunc) {
 
             $log.debug('eventdrop',event, event.title + " was dropped on " + event.startd, delta);
+
+            var title = event.title;
+            var startd = moment(event.startd).tz('America/New_York').format('MM/DD/YYYY');
+            var start = moment(event.start).tz('America/New_York').format('hh:mm A z');
+            var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
+
+            var reminderInterval = event.reminderInterval;
+            var reminderCheckbox = event.reminderCheckbox;
+            var contactid = event.contactid;
+            var eventid = event.eventid;
+            var eventclass = event.className;
+            var color = event.backgroundColor;
+            var textcolor = event.textColor;
+            var screen = $(this);
     
             if (!confirm("Are you sure about this change?")) {
                 revertFunc();
             } else {
 
-                    $log.debug('save in evendrop');
-                    var title = event.title;
-                    var startd = moment(event.startd).tz('America/New_York').format('MM/DD/YYYY');
-                    var start = moment(event.start).tz('America/New_York').format('hh:mm A z');
-                    var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
-
-                    var reminderInterval = event.reminderInterval;
-                    var reminderCheckbox = event.reminderCheckbox;
-                    var contactid = event.contactid;
-                    var eventid = event.eventid;
-                    var eventclass = event.className;
-                    var color = event.backgroundColor;
-                    var textcolor = event.textColor;
-                    var screen = $(this);
+                    $log.debug('save in eventdrop');
                     $log.debug('before eventdrop calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,event,contactid,eventid,eventclass,color, textcolor);
                     
                     calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,event,contactid,eventid,eventclass,color,textcolor);
@@ -2051,6 +2058,35 @@ function hexToComplimentary(hex){
     var color;
     var textcolor;
 
+    //initializes dialog
+    $('#calEventDialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        title: 'Add Event',
+        width: 400,
+        buttons: {
+/*            Save: function() {
+                $log.debug("caleventdiaglog save button entered", eventid.val());
+                var screen = $(this);
+         //       var thetitle = title.val();
+                var thetitle;
+                var remint = reminderInterval.val();
+                var theeventid = eventid.val();
+                var eventclass;
+                var color;
+                var textcolor;
+                vm.vmclass.calsave(screen,thetitle,startd,start,end,reminderCheckbox,remint,false,null,null,theeventid,eventclass,color,textcolor);
+                $('#calendar').fullCalendar('unselect');
+                $(this).dialog('close');
+            },
+            Cancel: function() {
+                $(this).dialog('close');
+            }
+*/        }
+        
+    });
+
+
     function setStudentFromPick(item) {
         $log.debug("setstudentfrompick", item);
         $("#eventpick").val(item);
@@ -2066,32 +2102,6 @@ function hexToComplimentary(hex){
             });
         
     }
-
-    $('#calEventDialog').dialog({
-        resizable: false,
-        autoOpen: false,
-        title: 'Add Event',
-        width: 400,
-        buttons: {
-            Save: function() {
-                $log.debug("caleventdiaglog save button entered", eventid.val());
-                var screen = $(this);
-                var thetitle = title.val();
-                var remint = reminderInterval.val();
-                var theeventid = eventid.val();
-                var eventclass;
-                var color;
-                var textcolor;
-                vm.vmclass.calsave(screen,thetitle,startd,start,end,reminderCheckbox,remint,false,null,null,theeventid,eventclass,color,textcolor);
-                $('#calendar').fullCalendar('unselect');
-                $(this).dialog('close');
-            },
-            Cancel: function() {
-                $(this).dialog('close');
-            }
-        }
-    });
-
         
 
     }
