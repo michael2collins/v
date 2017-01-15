@@ -12,6 +12,7 @@
         var thetasknamelist = '';
         var response;
         var code;
+        var currentCalendarEvent;
         var service = {
   //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
@@ -20,7 +21,9 @@
              removeCalendarEvent: removeCalendarEvent,
             updateTasknamelist: updateTasknamelist,
             removeTasknamelist: removeTasknamelist,
-            gettasknamelist: gettasknamelist
+            gettasknamelist: gettasknamelist,
+            setCurrentEvent: setCurrentEvent,
+            getCurrentEvent: getCurrentEvent
         };
         return service;
         
@@ -35,8 +38,13 @@
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
-
-
+        function getCurrentEvent() {
+            return currentCalendarEvent;            
+        }
+        function setCurrentEvent(event) {
+            $log.debug("setCurrentEvent", event);
+            currentCalendarEvent = event;
+        }
         function getCalendarEvents(path) {
             $log.debug('getCalendarEvents service entered');
             $log.debug('path',path);

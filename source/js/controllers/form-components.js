@@ -4,7 +4,7 @@
     angular
         .module('ng-admin')
 .controller('FormComponentsController', function($scope, $routeParams){
-    $.fn.Data.Portlet();
+    $.fn.Data.Portlet('form-components.js');
     setTimeout(function(){
         //BEGIN PLUGINS DATE RANGE PICKER
         $('input[name="daterangepicker-default"]').daterangepicker();

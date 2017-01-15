@@ -1,10 +1,15 @@
+var angular;
+var moment;
+var $;
+var studentpick = {};
+
 (function () {
     'use strict';
  
     angular
         .module('ng-admin')
-    .controller('AppController', AppController)
-    .controller('EventPopController', EventPopController);
+    .controller('AppController', AppController);
+//    .controller('EventPopController', EventPopController);
 
     AppController.$inject = ['$scope', 
     '$routeParams', 
@@ -23,7 +28,8 @@
     '$q',
     '$window',
     '$interval',
-    '$controller'
+    '$controller',
+    '$rootScope'
     ];
  
     function AppController( $scope, 
@@ -43,7 +49,8 @@
          $q,
          $window,
          $interval,
-         $controller
+         $controller,
+         $rootScope
     ){
         /* jshint validthis: true */
         var vm = this;
@@ -110,7 +117,7 @@
 
     vm.textcolor = getColorByBgColor(vm.mycolor); // Set to complement of textColor.
 
-    vm.studentpick = {};
+    vm.studentpick2 = {};
 //    vm.getStudentpick = getStudentpick;
 //    vm.disable = undefined;
 
@@ -122,6 +129,77 @@
     
 //    vm.vmevent = $controller('EventPopController as vmevent', {$scope: $scope});
 
+    $('#calEventDialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        title: 'Add Event',
+        width: 400,
+        buttons: {}
+    });
+
+   var adialog = $('#adialog').dialog({
+        resizable: false,
+        autoOpen: false,
+        title: 'Select Student',
+        width: 400,
+        modal: true,
+        buttons: {
+    /*            "Select": function() {
+                    $log.debug('save in edit. note need to update');
+                    var contactid = $('#contactid')[0].innerHTML;
+                    $(this).dialog("close");
+                }, */
+                "Close": function() {
+                    $log.debug("picked is", vm.studentpick2);
+          //          vm.studentpick = vm.studentpick2;
+                    $(this).dialog("close");
+                }
+        }
+    });
+    
+      $( "#eventPickDiv" ).button().on( "click", function() {
+          var somevlu = $("#eventpick").val();
+          $log.debug("click pick is",somevlu, vm.studentpick2, studentpick, $("#studentpick").val() );
+          vm.studentpick2 = studentpick;
+//          $('#ui-select-choices-0').val(somevlu).change();
+    //      $("#mike")[0].innerText = somevlu;
+      adialog.dialog( "open" );
+    });
+        vm.setStudentFromPick = setStudentFromPick; 
+        vm.disable = undefined;
+
+        vm.refreshStudents = refreshStudents;
+        vm.refreshstudentlist = [];
+
+        vm.reminderOptions=['15 min','1 hour','1 day'];
+    //    vm.thisevent = {}; 
+    //    $log.debug("EventPopController this event",vm.thisevent);
+        vm.popinit = popinit;
+        
+    var title = $('#eventTitle');
+    var startd = $('#eventStartd');
+    var start = $('#eventStart');
+    var end = $('#eventEnd');
+    var eventid = $('#eventid');
+    var reminderInterval = $('#reminderInterval');
+    var reminderCheckbox = $('#reminderCheckbox');
+    var contactid = $('#contactid');
+    var eventclass;
+    var color;
+    var textcolor;
+
+    function popinit() {
+        $log.debug("popinit entered");
+        vm.thisevent = CalendarServices.getCurrentEvent();
+        
+    }
+
+/*
+$( "#calEventDialog" ).on('shown', function(){
+    popinit();
+    alert("I want this to appear after the modal has opened!");
+});
+*/
 
     todos();
     gettheTasknamelist();
@@ -132,7 +210,8 @@
 //    'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0'
 //]);
 
-
+ 
+    
     $('#eventStart').timepicker({
         minuteStep: 15,
         template: 'dropdown',
@@ -160,15 +239,16 @@
           }
     );
     function setstudent(mystudent) {
-        $log.debug("set vm student", mystudent, vm.studentpick);
-        vm.studentpick = mystudent;
+        $log.debug("set vm student", mystudent, studentpick);
+        studentpick = mystudent;
     }    
-/*    function setStudentFromPick(item) {
+    function setStudentFromPick(item) {
         $log.debug("setstudentfrompick", item);
-        $("#eventpick").val(item);
+        $("#eventpick").val(item.FullName);
+        studentpick = item;
+        $("#studentpick").val(item);
     }
-    */
-
+    
     function removeListOfTimes(timevalues) {
         $log.debug("remove from time list", vm.listOfTimes, timevalues);
           for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
@@ -302,7 +382,7 @@
 
     
     function getStudentpick() {
-        return vm.studentpick;
+        return $rootScope.studentpick;
     }
     function isokf() {
 //        $log.debug('isokf');
@@ -723,7 +803,7 @@
         boxed:''
     };
     
-   $.fn.Data.Portlet();
+   $.fn.Data.Portlet('app.js');
 
     $('.portlet-scroll').slimScroll({
         "height": "250",
@@ -798,7 +878,7 @@
             });
 		}
 
- 
+    console.log('exit routechangesucess');
 
 
     });
@@ -938,11 +1018,13 @@
     }
 
     function eventopen(calEvent) {
-        $log.debug('eventopen enter', vm.studentpick, vm.studentpick.ID, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
+        $log.debug('eventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
   //          if (vm.studentpick.ID !== null) {
   //              $log.debug("studentpick exists", vm.studentpick.ID, $("#focusser-0"));
-                $("#eventpick").val(vm.studentpick.FullName);
+                $("#eventpick").val(studentpick.FullName);
 //            }
+
+            CalendarServices.setCurrentEvent(calEvent);
             $("#eventStartd").val(moment(calEvent.start).tz('America/New_York').format('MM/DD/YYYY'));
             
             $("#eventStart").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('hh:mm A z'));
@@ -970,16 +1052,16 @@
                 {
                 text: "Update",
                 click: function() {
-                    $log.debug('save in edit. note need to update', $('#contactid'),$('#contactpicklist'));
+                    $log.debug('save in edit. note need to update', $('#eventpick'),$('#contactpicklist'),studentpick,$('#studentpick'));
                     var title = $('#eventTitle').val();
                     var startd = $('#eventStartd').val();
                     var start = $('#eventStart').val();
                     var end = $('#eventEnd').val();
-                    var contactid = $('#contactid')[0].innerHTML;
+                    var contactid = studentpick.ID;
                     var eventid = $('#eventid').val();
                     var eventclass = calEvent.className;
                     var color = calEvent.backgroundColor;
-                    var textcolor = calEvent.textColor
+                    var textcolor = calEvent.textColor;
 
                     var reminderInterval = $('#reminderInterval').val();
                     var reminderCheckbox = $('#reminderCheckbox');
@@ -1029,7 +1111,7 @@
     // initialize the calendar
     // -----------------------------------------------------------------
   function initCalendar() {
-  $(document).ready(function() {
+//  $(document).ready(function() {
       $log.debug("callendar ready");
     $('#calendar').fullCalendar({
         header: {
@@ -1135,7 +1217,7 @@
                         $log.debug("eventclick get studentname returned",data);
                         var fullname = data.FirstName + " " +data.LastName;
                         setstudent( {ID: data.ID, FirstName: data.FirstName, LastName: data.LastName, FullName: fullname});
-                        $log.debug("student exit in eventclick",vm.studentpick);
+                        $log.debug("student exit in eventclick",studentpick);
                         eventopen(calEvent);
 
                     }) ;      
@@ -1194,7 +1276,7 @@
         addEvent(name);
         $log.debug('after addEvent click',name);
     });
-  });
+ // });
   }
   
     function settextcolor() {
@@ -2012,8 +2094,9 @@ function hexToComplimentary(hex){
             
         }
 
-  }
+ // }
 
+/*
     EventPopController.$inject = [
         'StudentServices',
         'CalendarServices',
@@ -2032,65 +2115,12 @@ function hexToComplimentary(hex){
         $controller,
         $scope
         ) {
-                /* jshint validthis: true */
-        var vm = this;
+*/                /* jshint validthis: true */
+ //       var vm = this;
         
-        vm.vmclass = $controller('AppController as vmclass', {$scope: $scope});
-
-        vm.studentpick = {};
-        vm.setStudentFromPick = setStudentFromPick; 
-        vm.disable = undefined;
-
-        vm.refreshStudents = refreshStudents;
-        vm.refreshstudentlist = [];
-
-        vm.reminderOptions=['15 min','1 hour','1 day'];
-
-    var title = $('#eventTitle');
-    var startd = $('#eventStartd');
-    var start = $('#eventStart');
-    var end = $('#eventEnd');
-    var eventid = $('#eventid');
-    var reminderInterval = $('#reminderInterval');
-    var reminderCheckbox = $('#reminderCheckbox');
-    var contactid = $('#contactid');
-    var eventclass;
-    var color;
-    var textcolor;
-
-    //initializes dialog
-    $('#calEventDialog').dialog({
-        resizable: false,
-        autoOpen: false,
-        title: 'Add Event',
-        width: 400,
-        buttons: {
-/*            Save: function() {
-                $log.debug("caleventdiaglog save button entered", eventid.val());
-                var screen = $(this);
-         //       var thetitle = title.val();
-                var thetitle;
-                var remint = reminderInterval.val();
-                var theeventid = eventid.val();
-                var eventclass;
-                var color;
-                var textcolor;
-                vm.vmclass.calsave(screen,thetitle,startd,start,end,reminderCheckbox,remint,false,null,null,theeventid,eventclass,color,textcolor);
-                $('#calendar').fullCalendar('unselect');
-                $(this).dialog('close');
-            },
-            Cancel: function() {
-                $(this).dialog('close');
-            }
-*/        }
-        
-    });
+//        vm.vmclass = $controller('AppController as vmclass', {$scope: $scope});
 
 
-    function setStudentFromPick(item) {
-        $log.debug("setstudentfrompick", item);
-        $("#eventpick").val(item);
-    }
     
     function refreshStudents(theinput) {
         return StudentServices.refreshStudents(theinput).then(function(data){

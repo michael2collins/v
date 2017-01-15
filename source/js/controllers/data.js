@@ -1,3 +1,4 @@
+var jQuery;
 ;(function($){
     $.fn.Data = function(){};
     var $this = $.fn.Data;
@@ -65,38 +66,48 @@
         }
     };
 
-    $.fn.Data.Portlet = function(){
+    $.fn.Data.Portlet = function(src){
         /*************************/
         /******** Portlet *******/
+        console.log("portlet entered", src);
         $(".portlet").each(function(index, element) {
             var me = $(this);
+            console.log('portlet: each',index, element);
             $(">.portlet-header>.tools>i", me).click(function(e){
+                    console.log('portlet: click entered', me, e);
                 if($(this).hasClass('fa-chevron-up')){
+                    console.log('portlet: chevron up');
                     $(">.portlet-body", me).slideUp('fast');
                     $(this).removeClass('fa-chevron-up').addClass('fa-chevron-down');
                 }
                 else if($(this).hasClass('fa-chevron-down')){
+                    console.log('portlet: chevron down');
                     $(">.portlet-body", me).slideDown('fast');
                     $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
                 else if($(this).hasClass('fa-cog')){
+                    console.log('portlet: cog');
                     //Show modal
                 }
                 else if($(this).hasClass('fa-refresh')){
+                    console.log('portlet: refresh');
                     //$(">.portlet-body", me).hide();
                     $(">.portlet-body", me).addClass('wait');
 
                     setTimeout(function(){
+                    console.log('portlet: refresh timeout');
                         //$(">.portlet-body>div", me).show();
                         $(">.portlet-body", me).removeClass('wait');
                     }, 1000);
                 }
                 else if($(this).hasClass('fa-times')){
+                    console.log('portlet: fa times');
                     me.remove();
                 }
             });
         });
         /******** Portlet *******/
         /***********************/
+        console.log("portlet exit", src);
     };
 })(jQuery);
