@@ -254,9 +254,10 @@
                       </div>
                       
                       <ul class="nav nav-pills pull-left">
-                        <li>Time: {{vm.displaytime(vm.checktimestr)}}</li>
-                          <li class="row"  ng-repeat="msg in vm.listOfTimes ">
-                          {{msg.title}} at {{msg.time}}
+             <!--         <p>  listoftimes: {{vm.notifylist}}</p> -->
+                        <li>Time: {{vm.displayTime() | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}</li>
+                          <li class="row"  ng-repeat="msg in vm.notifylist | filter:{reminderCheckbox:1 , reminderInterval: '!NULL'} ">
+                          {{msg.title}} at {{msg.start | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}
                           </li>
                           </ul>
                     </div>

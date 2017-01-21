@@ -1,4 +1,4 @@
-var angular;
+//var angular;
 var moment;
 var $;
 var studentpick = {};
@@ -29,7 +29,8 @@ var studentpick = {};
     '$window',
     '$interval',
     '$controller',
-    '$rootScope'
+    '$rootScope',
+    'moment'
     ];
  
     function AppController( $scope, 
@@ -50,7 +51,8 @@ var studentpick = {};
          $window,
          $interval,
          $controller,
-         $rootScope
+         $rootScope,
+         moment
     ){
         /* jshint validthis: true */
         var vm = this;
@@ -71,10 +73,10 @@ var studentpick = {};
     vm.removeTasknamelist = removeTasknamelist;
     vm.gettheTasknamelist = gettheTasknamelist;
     vm.getStudentStatsMonths = getStudentStatsMonths;
-    vm.mynotify = mynotify;
-    vm.displaytime = displaytime;
     vm.islogin = islogin;
     vm.isokf = isokf;
+    vm.notifylist =[];
+    vm.okNotify=true;
 
     vm.isok;
     vm.forUser;
@@ -103,13 +105,13 @@ var studentpick = {};
     vm.studentstatsdetails;
     vm.listOfTimes=[];
     vm.myj = {};
-    vm.intervalValue = 5000; //milli
     vm.reminderInterval;
     
     vm.initTime = moment();
     vm.checktime;
     vm.checktimestr;
-    vm.okNotify=false;
+    vm.displayTime = displayTime;
+    
     vm.okoptions=[true,false];
 //    vm.mycolor = Math.random() * 0xFFFFFF;
     vm.mycolor = '#'+Math.floor(Math.random()*16777215).toString(16);
@@ -203,7 +205,7 @@ $( "#calEventDialog" ).on('shown', function(){
 
     todos();
     gettheTasknamelist();
-   // sampleset();
+  //  sampleset();
 
 //added dates in index.html
 //moment.tz.add([
@@ -229,15 +231,18 @@ $( "#calEventDialog" ).on('shown', function(){
         defaultTime: false
     });
 
-    islogin();
+    islogin(); 
     //works but is annoying
-    intervalChecker();
     getEventList().then(function() {
         initCalendar();
+        intervalChecker();
     }).catch(function(e){
                 $log.debug("getEventList error in activate", e);
           }
     );
+    function displayTime() {
+        return CalendarServices.displaytime();   
+    }
     function setstudent(mystudent) {
         $log.debug("set vm student", mystudent, studentpick);
         studentpick = mystudent;
@@ -249,24 +254,6 @@ $( "#calEventDialog" ).on('shown', function(){
         $("#studentpick").val(item);
     }
     
-    function removeListOfTimes(timevalues) {
-        $log.debug("remove from time list", vm.listOfTimes, timevalues);
-          for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
-           if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
-                //i think there is a transitional period where it is in 
-                // process of being cleared that the count is wrong
-                if(
-                    vm.listOfTimes[niter].id === timevalues.id
-                    ) {
-                        $log.debug('dropping deleted one',vm.listOfTimes[niter]);
-                        //remove if they were passed by in the loop above
-                          vm.listOfTimes.splice(niter,1);
-                }
-            }
-           }
-
-    }
-
 
 
     function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,updateflag,theevent,contactid,eventid,eventclass,color,textcolor){
@@ -337,14 +324,14 @@ $( "#calEventDialog" ).on('shown', function(){
 				//if reminderinterval is set, add/update it in the listoftimes
 				//todo
 				//            {"title": "sample1","time": sample1},
-                if ( reminderCheck === true ) {
-                    $log.debug('add reminder time to event list',reminderCheck, theevent);
+/*                if ( reminderCheck === 1 ) {
     				var atimetoadd = {
     				    "title": theevent.title, 
     				    "time": displaytime(theevent.start),
     				    "theevent": theevent,
     				    "id": theevent.id
     				};
+                    $log.debug('add reminder time to event list',reminderCheck, theevent,atimetoadd);
     				//todo the change in title is causing extra events
     				addListOfTimes(atimetoadd);
     				
@@ -352,7 +339,7 @@ $( "#calEventDialog" ).on('shown', function(){
                     $log.debug('not adding reminder time to event list',reminderCheck, theevent, theevent.id);
                     
                 }
-				
+*/				
 		    $('#calendar').fullCalendar('updateEvent', theevent);
 		}
 		
@@ -539,7 +526,7 @@ $( "#calEventDialog" ).on('shown', function(){
 //                vm.thisTasknamelist = data;
                 $log.debug(data);
                 vm.message = data.message;
-                vm.vmclass.getEventList().then
+                getEventList().then
                     (function(zdata) {
                      $log.debug('removeCalendarEvent getEventList returned', zdata);
                  },
@@ -601,16 +588,38 @@ $( "#calEventDialog" ).on('shown', function(){
         
     }
 */
-    function displaytime(thetime) {
-        var outtime;
-       if (typeof(thetime) !== 'undefined') {
-//        outtime = moment.parseZone(thetime).format('MM/DD/YYYY hh:mm A z'); 
-        outtime = moment(thetime).format('MM/DD/YYYY hh:mm A') + ' ' + moment(thetime).tz('America/New_York').format('Z z'); 
-  //      $log.debug('displaytime',thetime, outtime, moment(outtime).isDST());
-        return outtime;
-       }
-    }
     
+        function convertToMoment(thetime) {
+            var testtime;
+            //it has DST on the end
+          if (typeof(thetime) !== 'undefined') {
+/*            if (thetime.slice(-1,thetime.length) === "T" ) {
+                testtime = new Date(thetime.slice(1,thetime.length - 4));
+            } else {
+                testtime = thetime;
+            }
+            */
+            var m = moment(thetime,"MM/DD/YYYY hh:mm A z");
+            $log.debug('convertToMoment: passed in: ',thetime,
+                'isvalid?' ,m.isValid(),
+                'where invalid', m.invalidAt());
+            return moment(thetime,"MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
+        //24 hr?    return moment(testtime).utc().format("YYYY-MM-DDThh:mm:ss.SSS[Z]");
+          }
+        }
+        function convertToMomentDST(thetime) {
+          if (typeof(thetime) === 'undefined') {
+              return;
+          }
+//          if (moment.isMoment(thetime) === true) {
+ //           return moment(thetime).tz('America/New_York').format('z');              
+ //         } else {
+      //      var testtime = thetime.slice(-3, thetime.length);
+   //         $log.debug('convertToMomentDST',thetime,testtime);
+    //        return testtime;
+            return moment(thetime).tz('America/New_York').format('z');
+   //         }
+        }
         function getEventList() {
                 $log.debug('getEventList entered');
         var refreshpath = "../v1/getEventList";
@@ -618,10 +627,38 @@ $( "#calEventDialog" ).on('shown', function(){
          return CalendarServices.getCalendarEvents(refreshpath).then(function(data){
                 $log.debug('getCalendarEvents returned data');
                 $log.debug(data);
-                vm.events = data.events; 
+                if (typeof(data.events) !== undefined ) {
+                    for (var i = 0; i < data.events.length; i++ ){
+    //                    data.events[i].end = moment(convertToMoment( data.events[i].end));
+     //                   data.events[i].endtz = convertToMomentDST(data.events[i].end);
+//                        data.events[i].start = moment(convertToMoment( data.events[i].start));
+     //                   data.events[i].start = moment(convertToMoment( data.events[i].start)).tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
+    //                    data.events[i].starttz = convertToMomentDST(data.events[i].start);
+    //                     data.events[i].startd = moment(data.events[i].startd,'YYYY-MM-DD');
+                        $log.debug('reformat dates',data.events[i]);
+        				var atimetoadd = {
+        				    "title": data.events[i].title, 
+        				    "time": data.events[i].start,
+        				    "theevent": data.events[i],
+        				    "id": data.events[i].id
+        				};
+                        data.events[i].end = moment(convertToMoment( data.events[i].end));
+                        data.events[i].start = moment(convertToMoment( data.events[i].start));
+                        data.events[i].startd = moment(data.events[i].startd,'YYYY-MM-DD');
+
+                //        addListOfTimes(atimetoadd);
+
+                    }
+
+                    vm.events = data.events; 
+                } else {
+                    vm.events = {};
+                }
                 //temp for testing
                // Array.prototype.push.apply(vm.events, getEventListold());
                 $log.debug(vm.events);
+                CalendarServices.setNotifyList(vm.events);
+                
     		    $('#calendar').fullCalendar('renderEvents', vm.events, true);
 
                 return vm.events;
@@ -640,7 +677,7 @@ $( "#calEventDialog" ).on('shown', function(){
             );
     }
 
-    function sampleset() {
+/*    function sampleset() {
           var sample1 = displaytime(moment(vm.initTime).add(15,'seconds'));
           var sample2 = displaytime(moment(vm.initTime).add(20,'seconds'));
           var sample3 = displaytime(moment(vm.initTime).add(20,'seconds'));
@@ -653,7 +690,8 @@ $( "#calEventDialog" ).on('shown', function(){
           ];
         
     }
-    function getEventListold() {
+    */
+/*    function getEventListold() {
         var someevents = [
           {title: 'First Event',
            start: displaytime(moment(vm.initTime).add(45,'hours')),
@@ -667,81 +705,42 @@ $( "#calEventDialog" ).on('shown', function(){
         return someevents;
         
     }
-    function getTimeSet() {
-        return vm.listOfTimes;        
-    }
-    function addListOfTimes(timevalues) {
+    */
+/*    function addListOfTimes(timevalues) {
         $log.debug("add to time list", vm.listOfTimes, timevalues);
         //remove old one before adjusting the list
         removeListOfTimes(timevalues);
         vm.listOfTimes.push(timevalues);
         $log.debug("after add to time list", vm.listOfTimes, timevalues);
     }
-    function timeCleaner() {
-          vm.checktime = moment();
-        vm.checktimestr = displaytime(vm.checktime);
-          for (var iter=0,len=vm.listOfTimes.length;iter<len;iter++) {
-/*                    $log.debug('intervalChecker: b4 if', 
-                        vm.checktime, 
-                        vm.okNotify, 
-                        vm.intervalValue,
-                        vm.listOfTimes[iter],
-                        iter, len);
-  */
-                if( moment(vm.checktime) <= moment(vm.listOfTimes[iter].time).
-                    add(  vm.intervalValue/1000, 'seconds')  &&
-                  moment(vm.checktime) > moment(vm.listOfTimes[iter].time) ) {
-            /*        $log.debug('intervalChecker: found in interval', 
-                        vm.checktime, 
-                        vm.okNotify, 
-                        vm.intervalValue,
-                        vm.listOfTimes[iter]);
-              */          if (vm.okNotify === true) {
-                            $log.debug('going to notify',vm.listOfTimes[iter]);
-                            mynotify(vm.listOfTimes[iter]);
-                        }
-                        vm.listOfTimes[iter].remove = true;
-                  }
-                    $log.debug("checking deleted event from list", vm.listOfTimes[iter]);
-                  
-              vm.listOfTimes[iter].remove = false;
-          }
+    */
+    /*
+    function removeListOfTimes(timevalues) {
+        $log.debug("remove from time list", vm.listOfTimes, timevalues);
           for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
-        /*            $log.debug('intervalChecker: b4 removal if', 
-                        vm.checktime, 
-                        vm.okNotify, 
-                        vm.intervalValue,
-                        vm.listOfTimes[niter],
-                        niter,nlen);
-         */   if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
+           if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
                 //i think there is a transitional period where it is in 
                 // process of being cleared that the count is wrong
                 if(
-                    moment(vm.checktime) > moment(vm.listOfTimes[niter].time).
-                    add(vm.intervalValue/1000, 'seconds') ||
-                    vm.listOfTimes[niter].remove === true
+                    vm.listOfTimes[niter].id === timevalues.id
                     ) {
-                        $log.debug('dropping too old ones',vm.listOfTimes[niter]);
+                        $log.debug('dropping deleted one',vm.listOfTimes[niter]);
                         //remove if they were passed by in the loop above
                           vm.listOfTimes.splice(niter,1);
                 }
             }
            }
-        
-    }    
-    function intervalChecker() {
-        $log.debug('intervalChecker entered, using',vm.intervalValue, vm.initTime, vm.okNotify);
 
-        //only get one set.  need another loop outside of this to fetch another set
-       // vm.listOfTimes = getTimeSet();
-        
+    }
+*/
+    function intervalChecker() {
+        $log.debug('intervalChecker entered, using', vm.initTime);
+
         $interval(function() {
-//          eedisplayService.getData(...)
- //         .then(function(response) {
-            // update the content in the view 
-          //})
-            timeCleaner();          
-        }, vm.intervalValue);
+
+    //        timeCleaner();          
+            vm.notifylist = CalendarServices.getNotifyList(vm.okNotify);
+        }, CalendarServices.getIntervalValue());
     }
 
     function islogin() {
@@ -921,85 +920,6 @@ $( "#calEventDialog" ).on('shown', function(){
         
     });
 
-    function sendNotification(title, options) {
-      // Memoize based on feature detection.
-      if ("Notification" in $window) {
-        sendNotification = function (title, options) {
-            console.log('in window');
-          try {
-              $window.Notification.requestPermission().then(function(permission) {
-                  console.log('requestPermission',permission);
-                  if (permission !== 'granted') {
-                      console.log('fallback notify from incognito');
-                      alert(title + ": " + options.body);
-                  } else {
-                      return new $window.Notification(title, options);
-                  }
-              });
-          } catch(e) {
-              console.log('notification requestPermission error',e);
-          }
-            
-        };
-      } else if ("mozNotification" in navigator) {
-        sendNotification = function (title, options) {
-          // Gecko < 22
-          console.log('in moz');
-          return navigator.mozNotification
-                   .createNotification(title, options.body, options.icon)
-                   .show();
-        };
-      } else {
-        sendNotification = function (title, options) {
-            console.log('fallback notify');
-          alert(title + ": " + options.body);
-        };
-      }
-      return sendNotification(title, options);
-    }
-
-      //
-      //  Generate a random four-digit hex value.
-      //
-      function s4() {
-          return Math.floor((1 + Math.random()) * 0x10000)
-              .toString(16).substring(1);
-      }
-
-
-      //
-      // *  Generate a random UUID string.
-      // *  @return {String} A randomly-generated UUID string.
-      //
-      function generateTag() {
-          return [s4() + s4(), s4(), s4(), s4(), s4() + s4() + s4()].join('-');
-      }
-      
-    function mynotify(msg){
-        $log.debug('notify entered');
-                      var title = msg.title;
-                      var body = 'This is a simple demo for the notification API Angular Service';
-     //                 NotifyMe.launch(title, {
-                      sendNotification(title, {
-                          body: body,
-          icon: 'http://us.cdn2.123rf.com/168nwm/dxinerz/dxinerz1506/'
-              + 'dxinerz150601488/41355464-bell-notification-call-icon-vector'
-              + '-image-can-also-be-used-for-education-academics-and-science'
-              + '-suitab.jpg',
-          lang: 'en-US',                         
-          tag: generateTag(),
-                          onclick:function(){
-                              console.log("On Click Triggered");
-                          },
-                          onerror:function(){
-                              console.log("On Error Triggered");
-                          },
-                          onclose:function(){
-                              console.log("On Close Triggered");
-                          }
-                      });
-    }
-
     function onCalendarDayClick(date, jsEvent, view) {
         // Check to see whether the mouse was hovering over our day corner overlay 
         // that is itself applied to the fullCalendar's selection overlay div.
@@ -1031,9 +951,10 @@ $( "#calEventDialog" ).on('shown', function(){
             $("#eventStarttz").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('z'));
             
             $("#eventEnd").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('hh:mm A z'));
+            $("#eventEndtz").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('z'));
+
             $('#eventStart').timepicker('setTime',  new Date(calEvent.start.toString()) );
             $('#eventEnd').timepicker('setTime',  new Date(calEvent.end.toString()) );
-            $("#eventEndtz").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('z'));
             
             if (calEvent.reminderCheckbox === 1 || calEvent.reminderCheckbox === true) {
                 $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
@@ -1078,18 +999,19 @@ $( "#calEventDialog" ).on('shown', function(){
                 click: function() {
                     $log.debug('delete event entered',calEvent);
 
-                    if ( calEvent.reminderCheckbox === true ) {
+                /*    if ( calEvent.reminderCheckbox === true ) {
                         $log.debug('remove reminder time from event list',calEvent.reminderCheckbox, calEvent);
         				var atimetoremove = {
         				    "title": calEvent.title, 
         				    "time": calEvent.start,
         				    "id": calEvent.id
         				}
-        				vm.vmclass.removeListOfTimes(atimetoremove);
+        				removeListOfTimes(atimetoremove);
                     } else {
                         $log.debug('do not neeed to remove reminder time from event list',calEvent.reminderCheckbox, calEvent);
                         
                     }
+                    */
 
                     removeCalendarEvent(calEvent.id);
                     $('#calendar').fullCalendar('removeEvents', calEvent._id);                    
@@ -1232,7 +1154,7 @@ $( "#calEventDialog" ).on('shown', function(){
             $log.debug('eventdrop',event, event.title + " was dropped on " + event.startd, delta);
 
             var title = event.title;
-            var startd = moment(event.startd).tz('America/New_York').format('MM/DD/YYYY');
+            var startd = moment(event.startd).add(delta, 'seconds').tz('America/New_York').format('MM/DD/YYYY');
             var start = moment(event.start).tz('America/New_York').format('hh:mm A z');
             var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
 

@@ -30,7 +30,8 @@
                 'ngSanitize',
     'angularFileUpload',
     'akoenig.deckgrid',
-    'color.picker'
+    'color.picker',
+    'angularMoment'
   //      'notifyme'
 
 //    'omr.directives'
@@ -106,6 +107,7 @@
       }
     });
     
+
 
     function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
         $log.debug('authrun entered');
