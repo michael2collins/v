@@ -245,7 +245,11 @@ $( "#calEventDialog" ).on('shown', function(){
     }
     function setstudent(mystudent) {
         $log.debug("set vm student", mystudent, studentpick);
-        studentpick = mystudent;
+        if (mystudent.ID === "NULL") {
+            studentpick =  {ID: "NULL", FirstName: "Not picked", LastName: "yet" , FullName: "Not picked yet"};
+        } else {
+            studentpick = mystudent;
+        }
     }    
     function setStudentFromPick(item) {
         $log.debug("setstudentfrompick", item);
@@ -1144,6 +1148,7 @@ $( "#calEventDialog" ).on('shown', function(){
 
                     }) ;      
             } else {
+                setstudent({});
                 eventopen(calEvent);
             }
             
