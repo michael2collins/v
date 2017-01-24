@@ -1,17 +1,19 @@
 <!DOCTYPE html>
 <div id="form-layouts-edittournament" class="row" 
         ng-controller="TournamentController as vmstudent"
-        ng-init="active[vmstudent.getActiveTab()]= true"
         >
-<div         ng-controller="EventController as vmevent">
+<div ng-controller="EventController as vmevent">
+  Number setup: {{vmevent.gridTournamentOptions.data.length}}
+  Number registered: {{vmevent.registeredStudents.length}}
+  Number ready to pay: {{vmevent.gridPaymentOptions.data.length}}
+    <uib-tabset active="active" type="pills" >
+  <!--          select="vmstudent.setActiveTab(1,'info');infotabShown = !infotabShown" deselect="infotabShown = !infotabShown" -->
 
-    <uib-tabset type="pills" >
       <uib-tab 
             id="tab-student" 
+            index="0"
             heading="Enter Participant -->"
             class="tournamentlarge"
-            active="active.info"
-            select="vmstudent.setActiveTab('info')"
         >
         <div class="row">
           <div> 
@@ -39,7 +41,7 @@
                         ng-click="vmmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; Register Another</button>
                         
 <!--                    <div ng-show="vmevent.isRegistered()">  -->
-                    <div >
+    <!--                <div >
                         You have {{vmevent.registeredStudents.length}} registered Participants</div>
                     <div ng-repeat="stu in vmevent.registeredStudents">
                         <div class="col-md-3"><span>
@@ -49,18 +51,31 @@
                             href="./#/tournament/id/{{stu.ContactID}}" >Edit {{stu.FirstName}} 
                             </a></span></div>
                     </div>
+    -->                
+                    <div >
+                        You have {{vmevent.gridTournamentOptions.data.length}} people setup</div>
+                    <div ng-repeat="stu in vmevent.gridTournamentOptions.data">
+                        <div class="col-md-3"><span>
+                            <a role="button" class="btn btn-blue" 
+                            style="padding:  0px 14px;" 
+                            ng-disabled="editstudent.$invalid"
+                            href="./#/tournament/id/{{stu.ContactID}}" >Edit {{stu.FirstName}} 
+                            </a></span></div>
                     </div>
-                  <div class="col-md-6">
+                    
+                    </div>
+<!--                  <div class="col-md-6">
                     <button ng-if="vmstudent.idpresent()"
                         type="button" class="btn btn-green mrs" 
                             ng-disabled="editstudent.$invalid"
-                        ng-click="active['tournament']= true" >Next &nbsp; <i class="fa fa-arrow-right"></i></button>
+                            ng-click="vmstudent.setActiveTab(2,'tournament');active = 2"
+                         >Next &nbsp; <i class="fa fa-arrow-right"></i></button>
                     </div>
+-->
                   </div>
 
                   
-
-                            <script id="newStudent.html" type="text/ng-template">
+                         <script id="newStudent.html" type="text/ng-template">
                                 <div class="modal-header">
                           <h3 class="modal-title">Create New Student</h3>
                         </div>
@@ -250,15 +265,16 @@
                                     ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
                                     class="glyphicon tooltips"></i>
                                 <input id="inputBirthday" 
-                                    type="text" placeholder="yyyy-mm-dd" 
+                                    type="text" 
+                                    placeholder="mm/dd/yyyy" 
                                     name="Birthday" 
+                                    required
                                     ng-model="vmstudent.students.Birthday" 
                                     ng-change="vmstudent.updateStudent()" 
                                     is-open="vmstudent.status.opened" 
                                     uib-datepicker-popup="{{vmstudent.bdateformat}}" 
-                                    ng-model-options=
-                                    "{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
-                                    class="form-control" required>
+                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+
                               </div>
                             </div>
                             <div class="col-md-1">
@@ -416,6 +432,7 @@
 
                     </div>
                   </form>
+          <!-- 
                   <div class="col-lg-12 mbs">
                     <div class="col-md-6">
                     </div>
@@ -423,25 +440,31 @@
                     <button ng-if="vmstudent.idpresent();" 
                         ng-disabled="editstudent.$invalid" 
                         type="button" class="btn btn-green mrs" 
-                        ng-click="active['tournament']= true" >Next &nbsp; 
+                            ng-click="vmstudent.setActiveTab(2,'tournament');active = 2"
+                         >Next &nbsp; 
                             <i class="fa fa-arrow-right"></i></button>
                     
                     </div>
                   </div>
-                  
+        -->          
                 </div>
               </div>
             </div>
           </div>
         </div>
       </uib-tab> 
+   <!--         select="vmevent.notify('Select students to register');vmstudent.setActiveTab(2,'tournament');vmstudent.activate();tournamenttabShown = !tournamenttabShown" deselect="tournamenttabShown = !tournamenttabShown" 
+            disable="editstudent.$invalid"
+-->
+
       <uib-tab 
-            id="tab-student" 
+            id="tab-student"
+            index="1"
             heading="Register for Tournament -->"
             class="tournamentlarge"
-            active="active.tournament"
-            disable="editstudent.$invalid"
-            select="vmevent.notify('Select students to register');vmstudent.setActiveTab('tournament');vmstudent.activate();tournamenttabShown = !tournamenttabShown" deselect="tournamenttabShown = !tournamenttabShown" >
+            select="vmevent.notify('Select students to register');vmstudent.activate();" 
+            disable="editstudent.$invalid "
+   >
         <div >
 
             <div class="col-lg-12">
@@ -512,22 +535,24 @@
                     <div class="panel panel-green">
                         <div class="panel-heading">Select the Participants</div>
                         <div class="panel-body pan">
-                  <div class="col-lg-12 mbs">
+  <!--                <div class="col-lg-12 mbs">
                       <div class="col-md-6">
                         <button ng-if="vmstudent.idpresent()" type="button" 
                             class="btn btn-blue mrs" 
-                            ng-click="active['info']= true" >
+                            ng-click="vmstudent.setActiveTab(1,'info');active = 1">
                             <i class="fa fa-arrow-left"></i> &nbsp; Back 
                             </button>
                         </div>
                       <div class="col-md-6">
                         <button ng-if="vmstudent.idpresent()" type="button" 
                             class="btn btn-orange mrs" 
-                            ng-click="active['payment']= true" >Next &nbsp; 
+                            ng-click="vmstudent.setActiveTab(3,'payment');active = 3"
+                             >Next &nbsp; 
                             <i class="fa fa-arrow-right"></i>
                             </button>
                         </div>
                   </div>
+                  -->
                   <div class="row">      
                     <div class="col-md-12">
                         <div ui-grid="vmevent.gridTournamentOptions" 
@@ -539,18 +564,22 @@
                         </div>
                     </div>
                   </div>
-                  <div class="col-lg-12 mbs">
+<!--                  <div class="col-lg-12 mbs">
                       <div class="col-md-6">
-                        <button  type="button" class="btn btn-blue mrs" ng-click="active['info']= true" ><i class="fa fa-arrow-left"></i> &nbsp; Go back to add more </button>
+                        <button  type="button" class="btn btn-blue mrs"
+                            ng-click="vmstudent.setActiveTab(1,'info');active = 1"
+                        ><i class="fa fa-arrow-left"></i> &nbsp; Go back to add more </button>
                         </div>
                       <div class="col-md-3">
                         </div>
                       <div class="col-md-3">
                         <button type="button" class="btn btn-orange mrs"
                         ng-if="vmevent.isRegistered()"
-                        ng-click="active['payment']= true" >Move forward to Pay &nbsp; <i class="fa fa-arrow-right"></i></button>
+                            ng-click="vmstudent.setActiveTab(3,'payment');active = 3"
+                        >Move forward to Pay &nbsp; <i class="fa fa-arrow-right"></i></button>
                         </div>
                   </div>
+                  -->
               </div>
                     </div>
                 </div>
@@ -558,13 +587,17 @@
             
         </div>                        
       </uib-tab>      
-      <uib-tab
-             id="tab-student" 
-             heading="Pay for Tournament"
+  <!--          select="vmevent.notify('Add to Cart and pay');vmstudent.setActiveTab(3,'payment');vmevent.getEventDetails();paymenttabShown = !paymenttabShown" deselect="paymenttabShown = !paymenttabShown" 
              disable="editstudent.$invalid"
+
+-->
+      <uib-tab
+             id="tab-student"
+             index="2"
+             heading="Pay for Tournament"
              class="tournamentlarge"
-             active="active.payment"
-             select="vmstudent.setActiveTab('payment');vmevent.getEventDetails()"
+             select="vmevent.notify('Add to Cart and pay');vmevent.getEventDetails()" 
+             disable="editstudent.$invalid || vmevent.registeredStudents.length === 0"
              >
         <div class="row" >
           <div class="col-lg-12">
@@ -606,13 +639,13 @@
                         <td>{{item.LastName}}</td>
                         <td>{{item.FirstName}}</td>
                         <td>
-                            <div ng-if="item.EventType == 'Kata:1:Sparring::Weapons:1'"> 
+                            <div ng-if="item.EventType == 'Kata:1:Sparring:NULL:Weapons:1'"> 
                             Two Events: Kata/Weapons
                             </div>
-                            <div ng-if="item.EventType == 'Kata::Sparring:1:Weapons:1'"> 
+                            <div ng-if="item.EventType == 'Kata:NULL:Sparring:1:Weapons:1'"> 
                             Two Events: Sparring/Weapons
                             </div>
-                            <div ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:'"> 
+                            <div ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:NULL'"> 
                             Two Events: Kata/Sparring
                             </div>
                             <div ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:1'"> 
@@ -622,14 +655,14 @@
                         <td>
                         
                         <div 
-                            ng-if="item.EventType == 'Kata:1:Sparring::Weapons:1'"
+                            ng-if="item.EventType == 'Kata:1:Sparring:NULL:Weapons:1'"
                             ng-hide="item.Paid == 1"
                         > 
 <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
     <input type="hidden" name="item_name"
-        value="Kata/Weapons Registration - Regular - for {{item.FirstName}}">
+        value="Kata/Weapons Registration - Regular - for {{item.FirstName}}{{item.LastName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
@@ -638,26 +671,26 @@
                         </div>
                         <div 
                             ng-hide="item.Paid == 1"
-                        ng-if="item.EventType == 'Kata::Sparring:1:Weapons:1'"
+                        ng-if="item.EventType == 'Kata:NULL:Sparring:1:Weapons:1'"
                         > 
 <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
     <input type="hidden" name="item_name"
-        value="Sparring/Weapons Registration - Regular - for {{item.FirstName}}">
+        value="Sparring/Weapons Registration - Regular - for {{item.FirstName}}{{item.LastName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
                         </div>
                         <div 
                             ng-hide="item.Paid == 1"
-                        ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:'"
+                        ng-if="item.EventType == 'Kata:1:Sparring:1:Weapons:NULL'"
                         > 
 <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(2)}}">
     <input type="hidden" name="item_name"
-        value="Kata/Sparring Registration - Regular - for {{item.FirstName}}">
+        value="Kata/Sparring Registration - Regular - for {{item.FirstName}}{{item.LastName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            
@@ -670,7 +703,7 @@
 <input type="hidden" name="cmd" value="_s-xclick">
 <input type="hidden" name="hosted_button_id" value="{{vmevent.getvalue(3)}}">
     <input type="hidden" name="item_name"
-        value="Kata/Sparring/Weapons Registration - Regular - for {{item.FirstName}}">
+        value="Kata/Sparring/Weapons Registration - Regular - for {{item.FirstName}}{{item.LastName}}">
     <input type="hidden" name="shopping_url"
         value="http://events.villaris.us/#/tournament">        
 <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!"><img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1"></form>                            

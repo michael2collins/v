@@ -8,7 +8,7 @@
     EventServices.$inject = ['$http', '$q', '$log'];
 
     function EventServices( $http, $q, $log ) {
-        var activeTab = 'Event Information'; //default
+        var activeTab = 1; //default
         var response;
         var service = {
   //          getAllEvents: getAllEvents,
@@ -30,7 +30,8 @@
         function getActiveTab() {
             return activeTab;
         }
-        function setActiveTab(thetab) {
+        function setActiveTab(thetab,thecaller) {
+            $log.debug('EventServices setActiveTab called', thetab, thecaller);
             activeTab = thetab;
         }
         

@@ -38,6 +38,42 @@ $app->get('/eventnames', 'authenticate',  function() use ($app) {
     
 });
 
+$app->post('/paid',   function() use($app, $ipn){
+    error_log( print_R("paid entered:\n ", TRUE), 3, LOG);
+
+
+
+//use PaypalIPN;
+
+
+// Use the sandbox endpoint during testing.
+//$ipn->useSandbox();
+    error_log( print_R("use sand:\n", TRUE), 3, LOG);
+$ipn->usePHPCerts();
+    error_log( print_R("use php certs:\n", TRUE), 3, LOG);
+
+$verified = $ipn->verifyIPN();
+    error_log( print_R("verify:\n $verified\n", TRUE), 3, LOG);
+
+    /*
+     * Process IPN
+     * A list of variables is available here:
+     * https://developer.paypal.com/webapps/developer/docs/classic/ipn/integration-guide/IPNandPDTVariables/
+     */
+
+if ($verified) {
+    error_log( print_R("verified\n", TRUE), 3, LOG);
+    error_log( print_R($ipn->getOutput(), TRUE), 3, LOG);
+    
+}     
+     
+// Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
+header("HTTP/1.1 200 OK");
+//        echoRespnse(200, $response);
+
+});
+
+
 /**
  * Listing event details for an event
  * method GET
@@ -149,31 +185,26 @@ $app->post('/eventregistration', 'authenticate', function() use ($app) {
     $eventgood=0;
     $eventbad=0;
     $eventexists=0;
-    
+     
     for($i = 0; $i < count($studentarr); $i++ ) {
 
         error_log( print_R($studentarr[$i]->ContactID, TRUE ), 3, LOG);
 
         $ContactID  = (isset($studentarr[$i]->ContactID) ? 
                         $studentarr[$i]->ContactID : "");
-        $EventTypeKata   = (isset($studentarr[$i]->EventType->Kata) ? 
-                    'Kata:' .   $studentarr[$i]->EventType->Kata  
-                        : "Kata: NULL");
         $EventTextKata =   (isset($studentarr[$i]->EventType->Kata) ? 
                              $studentarr[$i]->EventType->Kata  : "");
         $EventTextKata = $EventTextKata  ? 'Kata ' : ""; 
 
-        $EventTypeSparring   = (isset($studentarr[$i]->EventType->Sparring) ? 
-                    ':Sparring:' .   $studentarr[$i]->EventType->Sparring  
-                        : "Sparring: NULL");
         $EventTextSparring   = (isset($studentarr[$i]->EventType->Sparring) ? 
                               $studentarr[$i]->EventType->Sparring : "" ); 
         $EventTextSparring   = $EventTextSparring  ? 'Sparring ' : "";
 
-        $EventTypeWeapons   = (isset($studentarr[$i]->EventType->Weapons) ? 
-                    ':Weapons:' .   $studentarr[$i]->EventType->Weapons
-                        : "Weapons: NULL");
+        $EventTypeKata      = 'Kata:'       . ((isset($studentarr[$i]->EventType->Kata) && $studentarr[$i]->EventType->Kata == 1   )  ?  '1' : 'NULL') ;
+        $EventTypeSparring  = ':Sparring:'  . ((isset($studentarr[$i]->EventType->Sparring) && $studentarr[$i]->EventType->Sparring == 1 ) ?  '1' : 'NULL' );
+        $EventTypeWeapons   = ':Weapons:'   . ((isset($studentarr[$i]->EventType->Weapons) && $studentarr[$i]->EventType->Weapons == 1 )  ?  '1' : 'NULL' );
         $EventTextWeapons   = (isset($studentarr[$i]->EventType->Weapons) ? 
+        
                               $studentarr[$i]->EventType->Weapons : "" );
         $EventTextWeapons = $EventTextWeapons  ? 'Weapons' : "";
 

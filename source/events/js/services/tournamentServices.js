@@ -9,7 +9,7 @@
 
     function TournamentServices( $http, $q, $log ) {
         var apikey;
-        var activeTab = 'Event Information'; //default
+        var activeTab = 2; //default
         
         var service = {
             getAllStudents: getAllStudents,
@@ -30,7 +30,8 @@
         function getActiveTab() {
             return activeTab;
         }
-        function setActiveTab(thetab) {
+        function setActiveTab(thetab,thecaller) {
+            $log.debug('TournamentServices setActiveTab called', thetab, thecaller);
             activeTab = thetab;
         }
 

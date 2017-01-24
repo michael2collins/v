@@ -89,8 +89,8 @@
         vm.Location = '';
         vm.ContactID = '';
         vm.EventInfo = {};
-        vm.eventdefaultKata = true;
-        vm.eventdefaultSparring = true;
+        vm.eventdefaultKata = false;
+        vm.eventdefaultSparring = false;
         vm.eventdefaultWeapons = false;
         vm.eventfieldKata = 'EventTypeKata';
         vm.eventfieldSparring = 'EventTypeSparring';
@@ -103,9 +103,11 @@
           { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
         ];
 
-     //   vm.discount="earlybird";
+
+        vm.discount="test";
+//        vm.discount="earlybird";
      //   vm.discount="regular";
-        vm.discount="late";
+    //    vm.discount="late";
         vm.twoeventpay50="FK26Y8JHFF69W";
         vm.twoeventpay60="EGHLJJYUAW6JA";
         vm.twoeventpay70="PK7AC8ZRE835Q";
@@ -245,24 +247,26 @@
 //            refreshtheEvent();
 //        }
 
-        function setActiveTab( activeTab ){
-            $log.debug('set activetab as:', activeTab);
-            EventServices.setActiveTab(activeTab);
+
+        function setActiveTab( activeTab, thecaller ){
+            $log.debug('set activetab as:', activeTab, thecaller);
+            EventServices.setActiveTab(activeTab, thecaller);
         }
 
         function getActiveTab(){
-            return EventServices.getActiveTab();
+            var atab =  EventServices.getActiveTab();
+            $log.debug('get activetab is:', atab);
+            return atab;
         }
 
-
-        function activateorig() {
+/*        function activateorig() {
             setInitColDefs();
             $log.debug('activate setInitColDefs returned');
             getColDefList();
             setGridHistOptions();
 
         }
-        
+  */      
         function activate() {
             $log.debug('activate entered');
             setGridTournamentOptions();
@@ -286,6 +290,8 @@
                 return vm.twoeventpay65;
             } else if (vm.discount == "late" && numevents == 2) {
                 return vm.twoeventpay75;
+            } else if (vm.discount == "test" && numevents == 2) {
+                return vm.onedollar;
             } 
             if (vm.discount == "earlybird" && numevents == 3) {
                 return vm.threeeventpay65;
@@ -293,6 +299,8 @@
                 return vm.threeeventpay75;
             } else if (vm.discount == "late" && numevents == 3) {
                 return vm.threeeventpay85;
+            } else if (vm.discount == "test" && numevents == 3) {
+                return vm.onedollar;
             } 
             return "error";
         }
@@ -306,7 +314,7 @@
 
             return TournamentServices.getAllStudents(path).then(function(data){
                    $log.debug('getAllStudents returned data', data);
-                   if (data.length > 0 ) {
+                   if (data.EventsourceList.length > 0 ) {
                     addExtraData(data.EventsourceList); 
                    }
                 //   addExtraData(data.EventsourceList, vm.eventfieldSparring);
@@ -343,19 +351,21 @@
                     $log.debug('not def');
                      if (data[i].EventType.indexOf('Kata:1') > -1){
                          data[i].EventTypeKata = true;
-                     } else {
+                     }
+                     if (data[i].EventType.indexOf('Kata:NULL') > -1){
                          data[i].EventTypeKata = false;
-                         
                      }  
                      if (data[i].EventType.indexOf('Sparring:1') > -1){
                          data[i].EventTypeSparring = true;
-                     } else {
+                     }
+                     if (data[i].EventType.indexOf('Sparring:NULL') > -1){
                          data[i].EventTypeSparring = false;
                      }  
 
                      if (data[i].EventType.indexOf('Weapons:1') > -1){
                          data[i].EventTypeWeapons = true;
-                     } else {
+                     }
+                     if (data[i].EventType.indexOf('Weapons:NULL') > -1){
                          data[i].EventTypeWeapons = false;
                          
                      }
@@ -664,8 +674,11 @@
             rowEntity.EventTypeWeapons ? eventcnt += 1: eventcnt += 0;
             rowEntity.EventTypeKata ? eventcnt += 1: eventcnt += 0;
             rowEntity.EventTypeSparring ? eventcnt += 1: eventcnt += 0;
-
-            if (eventcnt < 2){
+            $log.debug("registerMe count", eventcnt);
+//knife
+//          if (eventcnt <= 1){
+//medway
+            if (Number(eventcnt) < Number(2)){
                 var msg="You only signed up for " + eventcnt + " events. Please add one more";                               notify(msg,"error");
             } else {
 

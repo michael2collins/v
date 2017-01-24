@@ -47,7 +47,7 @@
         });
     })
 
-    .run(authrun)
+//mlc check if needed    .run(authrun)
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {
             $rootScope._ = window._;
@@ -71,22 +71,89 @@
         console.log('$location setting in app');
         console.log($location);
 
-    }]);
+    }])
     
-    $(document).ready(function() {
-        console.log('fixing for drag-drop');
-        jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
-        console.log(jQuery.event.props);
-    });
+    .run(authrun);
     
     logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
 
-    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices'];
-    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices) {
-        $log.debug('authrun entered');
+//    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices'];
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','$window','$cookies'];
 
+/*    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices) {
+        $log.debug('authrun entered');
+ */
+    $(document).ready(function() {
+        console.log('fixing for drag-drop');
+        jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
+        console.log(jQuery.event.props);
+
+    // request permission on page load for Notification
+        console.log('onload permission check b4:',Notification.permission);
+      if (Notification.permission !== "granted") {
+        Notification.requestPermission();
+        console.log('perm',Notification.permission);
+      } else {
+            var notification = new Notification('Notification title', {
+              icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+              body: "Hey there! You've been notified!",
+            });
+      }
+        
+    });
+
+
+    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
+        $log.debug('authrun entered');
+        var loggedIn=false;
+        // keep user logged in after page refresh
+//        var huh2 = $rootScope.globals || {}; 
+//        var huh = $cookieStore.get('globals') || {};
+        var huh3 = $cookies.get('globals') || {};
+        $log.debug('authrun globals orig',  huh3) ;
+
+        if (! _.isEmpty(huh3.currentUser)) {
+//            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; // jshint ignore:line
+            $log.debug('in currentUser');
+        }
+
+        $rootScope.$on('$locationChangeStart', function (event, next, current) {
+            $log.debug('check login on location change',$location.path());
+
+            // keep user logged in after page refresh
+//add later            $rootScope.globals = $cookieStore.get('globals') || {};
+           // huh2 = $rootScope.globals || {};
+            var huh = $cookies.get('globals') || {};
+            huh3 = _.isEmpty(huh) ? null : JSON.parse(huh);
+            
+            $log.debug('authrun globals on $locationChangeStart', huh, huh3);
+
+            if (huh3 !== null ) {
+    //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
+                $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; // jshint ignore:line
+                $log.debug('in currentUser');
+                loggedIn = true;
+            }
+
+
+            // redirect to login page if not logged in and trying to access a restricted page
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/info','/terms','/page-lock-screen']) === -1;
+            var thekey = UserServices.isapikey();
+        $log.debug('check logn next', restrictedPage, loggedIn);
+        $log.debug('check userservices isapikey', thekey);
+            
+            if (restrictedPage && !loggedIn) {
+                $log.debug('restricted and not logged in');
+            //    alert('restricted page');
+                $location.path('/page-signin');
+            }
+        });
+    }
+
+/*
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
         $log.debug('authrun globals', $rootScope.globals);
@@ -112,7 +179,7 @@
             }
         });
     }
-
+*/
     function logConfig($logProvider) {
         $logProvider.debugEnabled(true);
     }

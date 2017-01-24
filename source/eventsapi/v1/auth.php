@@ -492,6 +492,39 @@ if (PassHash::check_password($user['token_hash'], $token)) {
 
 });
 
+$app->get('/userdetails', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("userdetails entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $username = '';
+
+    if(array_key_exists('usernm', $allGetVars)){
+        $username = $allGetVars['usernm'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "User missing";
+        echoRespnse(400, $response);
+        $app->stop();
+    }
+
+    $response = array();
+
+    $db = new DbHandler();
+
+    $user = $db->getUserByUsername($username);
+
+    $response["error"] = false;
+    $response['firstname'] = $user['name'];
+    $response['lastname'] = $user['lastname'];
+    $response['username'] = $user['username'];
+    $response['email'] = $user['email'];
+    echoRespnse(200, $response);
+
+});
+
+
 /**
  * Verifying required params posted or not
  */

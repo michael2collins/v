@@ -159,6 +159,12 @@ class StudentDbHandler {
     ) {
 
         error_log( print_R("createEvent entered\n", TRUE ),3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
                                       
         $response = array();
 

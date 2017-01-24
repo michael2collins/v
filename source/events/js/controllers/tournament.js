@@ -52,6 +52,9 @@
         vmstudent.sListPath = '../v1/studentlists';
         vmstudent.rankListPath = '../v1/ranklist';
 
+          vmstudent.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
+          vmstudent.bdateformat = vmstudent.formats[4];
+
         $log.debug('Routeparam is:');
         $log.debug($routeParams.id);
 
@@ -103,6 +106,13 @@
                 $log.debug(data.data);
                 //TournamentServices.setTheStudent(data.data);
                 vmstudent.students = data.data;
+                $log.debug('get Birthday:', vmstudent.students.Birthday);
+                if (_.isEmpty(vmstudent.students.Birthday)) {
+                    vmstudent.students.Birthday = getBirthday(new Date());
+                } else {
+                    vmstudent.students.Birthday = getBirthday(vmstudent.students.Birthday);
+                }
+                
                 return vmstudent.students;
             });
         }
@@ -169,14 +179,17 @@
            // vmstudent.genders = {id:'Female', id:'Male'};
         }
 
-        function setActiveTab( activeTab ){
-            $log.debug('set activetab as:', activeTab);
-            TournamentServices.setActiveTab(activeTab);
+        function setActiveTab( activeTab, thecaller ){
+            $log.debug('set activetab as:', activeTab, thecaller);
+            TournamentServices.setActiveTab(activeTab, thecaller);
         }
 
         function getActiveTab(){
-            return TournamentServices.getActiveTab();
+            var atab =  TournamentServices.getActiveTab();
+            $log.debug('get activetab is:', atab);
+            return atab;
         }
+
 
 
     }

@@ -5,9 +5,9 @@
         .module('ng-admin')
     .factory('UserServices', UserServices);
 
-    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookieStore','$cookies'];
+    UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookieStore','$cookies', 'Notification'];
 
-    function UserServices( $http, $q, $log, $rootScope, $cookieStore, $cookies ) {
+    function UserServices( $http, $q, $log, $rootScope, $cookieStore, $cookies, Notification ) {
         var response;
         var apikey;
         var userdetails={};
@@ -36,6 +36,30 @@
         }
 
         function isapikey(){
+
+//cookies isn't working
+            var cookiecheck = $cookies.getObject('globals');
+//            $log.debug('cookie is:',cookiecheck, $cookies.getAll());
+
+            if (typeof cookiecheck != 'undefined') {
+                if (typeof apikey != 'undefined') {
+                    return apikey.length > 0;
+                } else {
+                    //user refreshed page, but kept their browser session
+                    //todo add session timeout
+                    setapikey(cookiecheck.currentUser.authdata);
+                    $http.defaults.headers.common['Authorization'] = cookiecheck.currentUser.authdata; 
+                    return apikey.length > 0;
+                }
+            } else {
+                return false;
+                
+            }
+
+        }
+
+
+        function isapikeyorig(){
             if (typeof apikey != 'undefined') {
     //            $log.debug('UserServices isapikey', apikey);
                 return apikey.length > 0;
@@ -95,7 +119,7 @@
 
         }
 
-        function SetCredentials(username, password, apiKey) {
+        function SetCredentialsorig(username, password, apiKey) {
             //var authdata = username + ':' + password;
             $log.debug('SetCredentials entered', username,apiKey);
             setapikey(apiKey);
@@ -113,6 +137,45 @@
             $http.defaults.headers.common['Authorization'] = authdata; 
             $cookieStore.put('globals', $rootScope.globals);
         }
+
+        function SetCredentials(username, password, apiKey) {
+            //var authdata = username + ':' + password;
+            $log.debug('SetCredentials entered', username,apiKey);
+            setapikey(apiKey);
+            
+            var authdata = apiKey;
+
+            $rootScope.globals = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
+            var creds = {
+                currentUser: {
+                    username: username,
+                    authdata: authdata
+                }
+            };
+            
+            var expireDate = new Date();
+            expireDate.setDate(expireDate.getDate() + 1);            
+              
+        //    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
+            $http.defaults.headers.common['Authorization'] = authdata; 
+            //todo add expiration, secure, domain
+            $log.debug('SetCredentials globals', creds);
+            $cookies.putObject('globals', creds, {
+                    "path": "/", 
+                    "domain":  "villaris.us", 
+                    "secure": true, 
+                    "expires": expireDate
+            });
+            $log.debug('SetCredentials exit', $cookies.getObject('globals'));
+
+        }
+
+
 
         function ResetCredentials(username, apiKey) {
             //var authdata = username + ':' + password;
@@ -147,10 +210,41 @@
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
-        function getUserDetails() {
+        function getUserDetailsorig() {
             $log.debug('getUserDetails service entered');
 
             return(userdetails);
+        }
+
+        function getUserDetails() {
+            $log.debug('getUserDetails service entered',userdetails);
+            if (_.isEmpty(userdetails) && isapikey()) {
+                var cookiecheck = $cookies.getObject('globals');
+                var usernm = cookiecheck.currentUser.username;
+                $log.debug('getUserDetails service refresh user',usernm);
+
+                var path="../v1/userdetails?usernm=" + usernm;
+
+                getUserNames(path).then(function(data){
+                    $log.debug('getUserNames returned data');
+                    $log.debug(data);
+                    userdetails.username = data.username;
+                    userdetails.firstname = data.firstname;
+                    userdetails.lastname = data.lastname;
+                    userdetails.email = data.email;
+                        return userdetails;
+                },
+                function (error) {
+                    $log.debug('Caught an error getUserDetails refresh user , going to notify:', error); 
+                    
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }
+                );
+            } else {
+                return userdetails;
+            }
+            
         }
         
 

@@ -320,12 +320,15 @@ class CalendarDbHandler {
         }
 
         $cntsql = "select count(*) as tasknamelistcount from tasknamelist ";
-        $cntsql .= " where taskname = '" . $taskname . "'" ;
-        $cntsql .= " and userid =  '" . $user_id . "'";
+        $cntsql .= " where taskname = ? " ;
+        $cntsql .= " and userid =  ? ";
 
         error_log( print_R("tasknamelist istasknamelistExists sql: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("ss",
+                                  $taskname, $user_id
+                                     );
  
             $stmt->execute();
             if (! $stmt->execute() ){
@@ -406,13 +409,16 @@ class CalendarDbHandler {
         } else {
 
             // already existed in the db, update
-            $updsql = " UPDATE tasknamelist  SET taskstatus = " . $taskstatus;
-            $updsql .= " where taskname = '" . $taskname . "'";
-            $updsql .= " and userid =  " . $user_id;
+            $updsql = " UPDATE tasknamelist  SET taskstatus = ? ";
+            $updsql .= " where taskname = ? ";
+            $updsql .= " and userid =  ? ";
 
             error_log( print_R("tasknamelist update sql: $updsql", TRUE), 3, LOG);
-            
+
             if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sss",
+                                  $taskstatus, $taskname, $user_id
+                                     );
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();

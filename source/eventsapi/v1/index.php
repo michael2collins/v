@@ -7,6 +7,12 @@ require_once '../include/DBRegistrant.php';
 require_once '../include/PassHash.php';
 require '/home/michael2collins/Web/v/v/libs/Slim/Slim.php';
 
+require_once '../include/PaypalIPN.php';
+
+
+$ipn = new PaypalIPN();
+
+
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim();
