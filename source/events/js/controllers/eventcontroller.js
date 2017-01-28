@@ -89,6 +89,7 @@
         vm.Location = '';
         vm.ContactID = '';
         vm.EventInfo = {};
+        vm.thisEvent = {};
         vm.eventdefaultKata = false;
         vm.eventdefaultSparring = false;
         vm.eventdefaultWeapons = false;
@@ -427,7 +428,12 @@
             };
             $log.debug('register entered', thedata);
             createEvent(thedata).then(function(){
-                getAllStudents();
+                getAllStudents().then(function() {
+                    $log.debug('activate get all students');
+                    getEventDetails().then(function(){
+                        $log.debug('register eventdetails fetched');
+                    });
+                });
             });
         }
         
@@ -593,7 +599,8 @@
                 Notes: rowEntity.Notes,
                 Include: rowEntity.Include,
                 Attended: rowEntity.Attended,
-                ordered: rowEntity.Ordered
+                ordered: rowEntity.Ordered,
+                invoice: rowEntity.invoice
             };
             
             $log.debug('about updateEvent ', indata, path);
@@ -636,7 +643,8 @@
                         Notes: "",
                         Include: "1",
                         Attended: "",
-                        Ordered: ""
+                        Ordered: "",
+                        invoice: ""
                     };
                     vm.selectedStudents.push(info);
                 }

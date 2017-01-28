@@ -49,6 +49,7 @@ class PaypalIPN
     private                     $receipt_id = "";
     private                     $payment_gross = "";
     private                     $ipn_track_id ="";
+    private                     $custom ="";
     
     /** Production Postback URL */
     const VERIFY_URI = 'https://ipnpb.paypal.com/cgi-bin/webscr';
@@ -322,6 +323,9 @@ class PaypalIPN
                     }          
                     if ($key == "item_name5") {
                         $this->item_name5 = $value;          
+                    }          
+                    if ($key == "custom") {
+                        $this->custom = $value;          
                     }          
 
 

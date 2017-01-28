@@ -26,7 +26,7 @@ function echoRespnse($status_code, $response) {
     function emailnotify($to,$subject,$message){
 
         $from = 'From: <michael2collins@villaris.us>' ;
-        $replyto = 'mark@natickmartialarts.com' . "\r\n";
+        $replyto = 'michael2collins@villaris.us' . "\r\n";
       //  $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
         
         // Always set content-type when sending HTML email

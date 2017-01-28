@@ -47,13 +47,13 @@ $app->post('/paid',   function() use($app, $ipn){
 
 
 // Use the sandbox endpoint during testing.
-//$ipn->useSandbox();
+//    $ipn->useSandbox();
     error_log( print_R("use sand:\n", TRUE), 3, LOG);
-$ipn->usePHPCerts();
+    $ipn->usePHPCerts();
     error_log( print_R("use php certs:\n", TRUE), 3, LOG);
 
-$verified = $ipn->verifyIPN();
-    error_log( print_R("verify:\n $verified\n", TRUE), 3, LOG);
+    $verified = $ipn->verifyIPN();
+    error_log( print_R("after verify:\n $verified\n", TRUE), 3, LOG);
 
     /*
      * Process IPN
@@ -65,7 +65,129 @@ if ($verified) {
     error_log( print_R("verified\n", TRUE), 3, LOG);
     error_log( print_R($ipn->getOutput(), TRUE), 3, LOG);
     
-}     
+    $result = $ipn->getOutput();
+
+    if ($result) {
+        
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // creating payment
+        $paid = $db->createPayment( 
+    isset(                      $result['payment_type']) ? $result['payment_type'] : "" ,
+      isset(                    $result['payment_date']) ? $result['payment_date'] : "",          
+    isset(                      $result['payer_status']) ? $result['payer_status'] : "",          
+    isset(                      $result['first_name']) ? $result['first_name'] : "",          
+    isset(                      $result['last_name']) ? $result['last_name'] : "",          
+    isset(                      $result['payer_email']) ? $result['payer_email'] : "",          
+    isset(                      $result['address_name']) ? $result['address_name'] : "",          
+    isset(                      $result['address_country']) ? $result['address_country'] : "",          
+    isset(                      $result['address_country_code']) ? $result['address_country_code'] : "",          
+    isset(                      $result['address_zip']) ? $result['address_zip'] : "",          
+    isset(                      $result['address_state']) ? $result['address_state'] : "",          
+    isset(                      $result['address_city']) ?  $result['address_city']: "",          
+    isset(                      $result['address_street']) ? $result['address_street'] : "",          
+    isset(                       $result['payment_status']) ? $result['payment_status'] : "",          
+    isset(                      $result['mc_currency']) ? $result['mc_currency'] : "",          
+    isset(                      $result['mc_gross_1']) ?  $result['mc_gross_1']: "",          
+    isset(                      $result['item_name1']) ?  $result['item_name1']: "",          
+    isset(                      $result['txn_id']) ? $result['txn_id']  : "",          
+    isset(                      $result['reason_code']) ? $result['reason_code']: "",          
+    isset(                      $result['parent_txn_id']) ? $result['parent_txn_id'] : "",          
+    isset(                       $result['num_cart_items']) ? $result['num_cart_items'] : "",
+    isset(                       $result['quantity1']) ?   $result['quantity1'] : "",
+    isset(                       $result['quantity2']) ?  $result['quantity2'] : "",
+    isset(                       $result['quantity3']) ?  $result['quantity3'] : "",
+    isset(                       $result['quantity4']) ?  $result['quantity4'] : "",
+    isset(                       $result['quantity5']) ?  $result['quantity5'] : "",
+    isset(                      $result['item_name2']) ? $result['item_name2'] : "",          
+    isset(                      $result['item_name3']) ? $result['item_name3'] : "",          
+    isset(                      $result['item_name4']) ? $result['item_name4']: "",          
+    isset(                      $result['item_name5']) ? $result['item_name5']: "",          
+    isset(                      $result['mc_gross_2']) ? $result['mc_gross_2'] : "",          
+    isset(                      $result['mc_gross_3']) ? $result['mc_gross_3']: "",          
+    isset(                      $result['mc_gross_4']) ? $result['mc_gross_4'] : "",          
+    isset(                      $result['mc_gross_5']) ? $result['mc_gross_5'] : "",          
+    isset(                       $result['receipt_id']) ? $result['receipt_id'] : "",
+    isset(                       $result['payment_gross']) ? $result['payment_gross'] : "",
+    isset(                       $result['ipn_track_id']) ? $result['ipn_track_id'] : "",
+    isset(                       $result['custom']) ? $result['custom'] : ""
+            
+                                    );
+    
+            error_log( print_R("Payment created: $paid\n", TRUE ), 3, LOG);
+            $xn = $result['txn_id'];
+
+            $result = $db->getPayment($xn);
+
+            $row_cnt = $result->num_rows;
+
+            if ($row_cnt > 0) {
+
+                while ($slist = $result->fetch_assoc()) {
+                    $tmp = array();
+                    if (count($slist) > 0) {
+
+                        $tmp["LastName"] = (empty($slist["last_name"]) ? "NULL" : $slist["last_name"]);
+                        $tmp["FirstName"] = (empty($slist["first_name"]) ? "NULL" : $slist["first_name"]);
+                        $tmp["Email"] = (empty($slist["payer_email"]) ? "NULL" : $slist["payer_email"]);
+                        $tmp["Payment_gross"] = (empty($slist["payment_gross"]) ? "NULL" : $slist["payment_gross"]);
+                    } else {
+                        $tmp["LastName"] = "NULL";
+                        $tmp["FirstName"] = "NULL";
+                        $tmp["Email"] = "NULL";
+                        $tmp["Payment_gross"] = "NULL";
+                        
+                    }
+    
+                    $message = "
+                    <html>
+                    <head>
+                    <title>Medway Tournament Student Registered</title>
+                    </head>
+                    <body>
+                    <p>You have successfully paid.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
+                    <p>Email: " . $tmp["Email"] . "</p>
+                    <table>
+                    <tr>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Payment Total</th>
+                    </tr>
+                    <tr>
+                    <td>" . $tmp["FirstName"] . "</td>
+                    <td>" . $tmp["LastName"] . "</td>
+                    <td>" . $tmp["Payment_gross"] . "</td>
+                    </tr>
+                    </table>
+                    </body>
+                    </html>
+                    ";
+                    
+                    $subject = 'Medway Tournament Registration for ' . 
+                    $tmp["FirstName"] . ' ' . 
+                    $tmp["LastName"] . ' paid ';
+                    
+            //    emailnotify($response["Email"], $subject, $message);
+                emailnotify('villaris.us@gmail.com', $subject, $message);
+                error_log( print_R("email to send: $subject, $message\n", TRUE ), 3, LOG);
+    
+                }
+                
+                
+            }
+
+    } // if result
+    else {
+            error_log( print_R("after createPayment  result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $result, TRUE), 3, LOG);
+        
+    }    
+
+} // verified     
+// else {
+    //email about the problem
+//}
      
 // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
 header("HTTP/1.1 200 OK");
@@ -131,6 +253,7 @@ $app->get('/eventdetails', 'authenticate',  function() use($app){
                 $tmp["Email2"] =  (empty($slist["Email2"]) ? "NULL" : $slist["Email2"]);
                 $tmp["Parent"] =  (empty($slist["Parent"]) ? "NULL" : $slist["Parent"]);
                 $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
+                $tmp["invoice"] =  (empty($slist["invoice"]) ? "NULL" : $slist["invoice"]);
             array_push($response["eventdetails"], $tmp);
         }
     
@@ -223,6 +346,7 @@ $app->post('/eventregistration', 'authenticate', function() use ($app) {
                         $studentarr[$i]->Attended : "");
         $Ordered    = (isset($studentarr[$i]->Ordered)   ? 
                         $studentarr[$i]->Ordered : "");
+        $invoice    = uniqid("medway",true);                
 
         error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
 
@@ -232,7 +356,7 @@ $app->post('/eventregistration', 'authenticate', function() use ($app) {
         // creating events
         $event = $db->createEvent(
             $Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
-            $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location
+            $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location, $invoice
                                     );
     
 
@@ -260,7 +384,7 @@ $app->post('/eventregistration', 'authenticate', function() use ($app) {
 $message = "
 <html>
 <head>
-<title>XXXX Student Registered</title>
+<title>Medway Student Registered</title>
 </head>
 <body>
 <p>You have successfully registerd.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
@@ -290,7 +414,7 @@ $message = "
 </html>
 ";
 
-$subject = 'XXXX Registration for ' . 
+$subject = 'Medway Registration for ' . 
                 $response["FirstName"] . ' ' . 
                 $response["LastName"] . ' of '  . 
                 $response["StudentSchool"];
@@ -376,6 +500,8 @@ $app->put('/eventregistration', 'authenticate', function() use ($app) {
                     $dataJsonDecode->thedata->Attended : "");
     $Ordered    = (isset($dataJsonDecode->thedata->Ordered)   ? 
                     $dataJsonDecode->thedata->Ordered : "");
+    $invoice    = (isset($dataJsonDecode->thedata->invoice)   ? 
+                    $dataJsonDecode->thedata->invoice : "");
 
     error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
     error_log( print_R("EventDate: $EventDate\n", TRUE ), 3, LOG);
@@ -391,7 +517,7 @@ $app->put('/eventregistration', 'authenticate', function() use ($app) {
     // creating events
     $event = $db->updateEvent(
         $Event, $EventDate, $ContactID, 
-        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $invoice
                                 );
 
 
@@ -869,6 +995,7 @@ $app->get('/eventsource', 'authenticate',  function() use($app) {
                 $tmp["StudentSchool"] =  (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
                 $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
                 $tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
+                $tmp["invoice"] = (empty($slist["invoice"]) ? "NULL" : $slist["invoice"]);
     
             } else {
                 $tmp["contactID"] = "NULL";

@@ -19,18 +19,350 @@ class StudentDbHandler {
     }
 
 
+        /**
+     * Checking for duplicate payment by name, date, contact
+     * @return boolean
+     */
+    private function isPaymentExists($txnid) {
+
+    error_log( print_R("before isPaymentExists\n", TRUE ), 3, LOG);
+    error_log( print_R("txnid: $txnid\n", TRUE ), 3, LOG);
+
+        
+        $stmt = $this->conn->prepare("SELECT txn_id from payment WHERE txn_id = ?");
+        $stmt->bind_param("s", $txnid);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        $r = $num_rows > 0;
+        error_log( print_R("txnid exists: $r\n", TRUE ), 3, LOG);
+        return $r;
+    }
+
+    public function getPayment($txnid) {
+        $sql = "SELECT * FROM payment";
+        $sql .= " where txn_id = ?"; 
+        error_log( print_R("getPayment sql: $sql $txnid\n", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $txnid);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getPayment  returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getPayment list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getPayment sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+ /**
+     * Creating new payment
+     */
+    public function createPayment( $payment_type ,          
+                         $payment_date ,          
+                        $payer_status ,          
+                        $first_name ,          
+                        $last_name ,          
+                        $payer_email ,          
+                        $address_name ,          
+                        $address_country ,          
+                        $address_country_code ,          
+                        $address_zip ,          
+                        $address_state ,          
+                        $address_city ,          
+                        $address_street ,          
+                         $payment_status ,          
+                        $mc_currency ,          
+                        $mc_gross_1 ,          
+                        $item_name1 ,          
+                        $txn_id ,          
+                        $reason_code ,          
+                        $parent_txn_id ,          
+                         $num_cart_items ,
+                         $quantity1 ,
+                         $quantity2 ,
+                         $quantity3 ,
+                         $quantity4 ,
+                         $quantity5 ,
+                        $item_name2 ,          
+                        $item_name3 ,          
+                        $item_name4 ,          
+                        $item_name5 ,          
+                        $mc_gross_2 ,          
+                        $mc_gross_3 ,          
+                        $mc_gross_4 ,          
+                        $mc_gross_5 ,          
+                         $receipt_id ,
+                         $payment_gross ,
+                         $ipn_track_id,
+                         $custom
+        
+    ) {
+
+        error_log( print_R("createPayment entered\n", TRUE ),3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO payment ( ";
+        $sql .= " `txn_id`, `receipt_id`, `num_cart_items`, `ipn_track_id`, `payment_gross`,  `type`, `date`, `payer_status`, `first_name`, `last_name`, ";
+        $sql .= "`payer_email`, `status`, `mc_currency`, ";
+        $sql .= "`item_name1`, `mc_gross_1`, `quantity1`, ";
+        $sql .= "`item_name2`, `mc_gross_2`, `quantity2`, ";
+        $sql .= "`item_name3`, `mc_gross_3`, `quantity3`, ";
+        $sql .= "`item_name4`, `mc_gross_4`, `quantity4`, ";
+        $sql .= "`item_name5`, `mc_gross_5`, `quantity5`, ";
+        $sql .= " custom           ) VALUES (";
+
+        $sql .= "'" . $txn_id . "','" . $receipt_id . "','" . $num_cart_items . "','" . $ipn_track_id . "','" . $payment_gross . "'," ;
+        $sql .= "'" . $payment_type . "','" . $payment_date . "','" . $payer_status . "','" . $first_name . "','" . $last_name. "'," ; 
+        $sql .= "'" . $payer_email . "','" . $payment_status . "','" . $mc_currency . "',"  ;
+        $sql .= "'" . $item_name1 . "','" .  $mc_gross_1 . "','" . $quantity1 . "',"  ;
+        $sql .= "'" . $item_name2 . "','" . $mc_gross_2 . "','" . $quantity2 . "',"  ;
+        $sql .= "'" . $item_name3 . "','" . $mc_gross_3 . "','" . $quantity3 . "',"  ;
+        $sql .= "'" . $item_name4 . "','" . $mc_gross_4 . "','" . $quantity4 . "'," ; 
+        $sql .= "'" . $item_name5 . "','" . $mc_gross_5 . "','" . $quantity5 . "','" . $custom .  "'  )" ;
+
+//        $sql .= "  ( ?,?, ?,?,?,?, ?,?,?,?, ";
+//        $sql .= "    ?,?,?, ";
+//        $sql .= "    ?,?,?, ";
+//        $sql .= "    ?,?,?, ";
+//        $sql .= "    ?,?,?, ";
+//        $sql .= "    ?,?,?, ";
+//        $sql .= "    ?,?,?,? ";
+//        $sql .= "    )";
+
+        // First check if user already existed in db
+        if (!$this->isPaymentExists($txn_id)) {
+            error_log( print_R("proceed with create payment: $sql\n", TRUE ), 3, LOG);
+
+            if ($stmt = $this->conn->prepare($sql)) {
+/*                $stmt->bind_param("ssssssssssssssssssssssssssss",
+$txn_id, $receipt_id, $num_cart_items, $ipn_track_id, $payment_gross,  $type, $date, $payer_status, $first_name, $last_name, 
+$payer_email, $status, $mc_currency, 
+$item_name1, $mc_gross_1, $quantity1, 
+$item_name2, $mc_gross_2, $quantity2, 
+$item_name3, $mc_gross_3, $quantity3, 
+$item_name4, $mc_gross_4, $quantity4, 
+$item_name5, $mc_gross_5, $quantity5
+ 
+                                     );
+*/                                     
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same event existed
+
+        $this->updatePayment(  $payment_type ,          
+                         $payment_date ,          
+                        $payer_status ,          
+                        $first_name ,          
+                        $last_name ,          
+                        $payer_email ,          
+                        $address_name ,          
+                        $address_country ,          
+                        $address_country_code ,          
+                        $address_zip ,          
+                        $address_state ,          
+                        $address_city ,          
+                        $address_street ,          
+                         $payment_status ,          
+                        $mc_currency ,          
+                        $mc_gross_1 ,          
+                        $item_name1 ,          
+                        $txn_id ,          
+                        $reason_code ,          
+                        $parent_txn_id ,          
+                         $num_cart_items ,
+                         $quantity1 ,
+                         $quantity2 ,
+                         $quantity3 ,
+                         $quantity4 ,
+                         $quantity5 ,
+                        $item_name2 ,          
+                        $item_name3 ,          
+                        $item_name4 ,          
+                        $item_name5 ,          
+                        $mc_gross_2 ,          
+                        $mc_gross_3 ,          
+                        $mc_gross_4 ,          
+                        $mc_gross_5 ,          
+                         $receipt_id ,
+                         $payment_gross ,
+                         $ipn_track_id,
+                         $custom
+        );
+        }
+
+    }
+
+
+    /**
+     * Updating payment
+
+     */
+    public function updatePayment(  $payment_type ,          
+                         $payment_date ,          
+                        $payer_status ,          
+                        $first_name ,          
+                        $last_name ,          
+                        $payer_email ,          
+                        $address_name ,          
+                        $address_country ,          
+                        $address_country_code ,          
+                        $address_zip ,          
+                        $address_state ,          
+                        $address_city ,          
+                        $address_street ,          
+                         $payment_status ,          
+                        $mc_currency ,          
+                        $mc_gross_1 ,          
+                        $item_name1 ,          
+                        $txn_id ,          
+                        $reason_code ,          
+                        $parent_txn_id ,          
+                         $num_cart_items ,
+                         $quantity1 ,
+                         $quantity2 ,
+                         $quantity3 ,
+                         $quantity4 ,
+                         $quantity5 ,
+                        $item_name2 ,          
+                        $item_name3 ,          
+                        $item_name4 ,          
+                        $item_name5 ,          
+                        $mc_gross_2 ,          
+                        $mc_gross_3 ,          
+                        $mc_gross_4 ,          
+                        $mc_gross_5 ,          
+                         $receipt_id ,
+                         $payment_gross ,
+                         $ipn_track_id,
+                         $custom
+        ) {
+
+        $num_affected_rows = 0;
+
+        $sql = "UPDATE payment set ";
+        
+        $sql .= " txn_id = '" . $txn_id . "', receipt_id = '" . $receipt_id . "', num_cart_items = '" . $num_cart_items . "', ipn_track_id = '" . $ipn_track_id . "', payment_gross = '" . $payment_gross . "'," ;
+        $sql .= " type = '" . $payment_type . "', date = '" . $payment_date . "', payer_status = '" . $payer_status . "', first_name = '" . $first_name . "', last_name = '" . $last_name . "'," ; 
+        $sql .= " payer_email = '" . $payer_email . "', status = '" . $payment_status . "', mc_currency = '" . $mc_currency . "',"  ;
+        $sql .= " item_name1 = '" . $item_name1 . "', mc_gross_1 = '" .  $mc_gross_1 . "', quantity1 = '" . $quantity1 . "',"  ;
+        $sql .= " item_name2 = '" . $item_name2 . "', mc_gross_2 = '" .  $mc_gross_2 . "', quantity2 = '" . $quantity2 . "',"  ;
+        $sql .= " item_name3 = '" . $item_name3 . "', mc_gross_3 = '" .  $mc_gross_3 . "', quantity3 = '" . $quantity3 . "',"  ;
+        $sql .= " item_name4 = '" . $item_name4 . "', mc_gross_4 = '" .  $mc_gross_4 . "', quantity4 = '" . $quantity4 . "',"  ;
+        $sql .= " item_name5 = '" . $item_name5 . "', mc_gross_5 = '" .  $mc_gross_5 . "', quantity5 = '" . $quantity5 . "', custom = '" . $custonm . "'"  ;
+                $sql .= "  where               txn_id  = ? "          ;
+
+/*        $sql .= "                         type  = ?,";
+                $sql .= "                 date  = ?,";          
+                $sql .= "                 payer_status  = ?,"  ;        
+                $sql .= "                 first_name  = ?,"     ;     
+                $sql .= "                 last_name  = ?,"       ;   
+                $sql .= "                 payer_email  = ?,"      ;    
+                $sql .= "                 status  = ?,"         ; 
+                $sql .= "                 mc_currency  = ?,"          ;
+                $sql .= "                 item_name1  = ?,"          ;
+                $sql .= "                 mc_gross_1  = ?,"          ;
+                $sql .= "                  quantity1  = ?,";
+                $sql .= "                 item_name2  = ?," ;         
+                $sql .= "                 mc_gross_2  = ?,"     ;     
+                $sql .= "                  quantity2  = ?,";
+                $sql .= "                 item_name3  = ?,"  ;        
+                $sql .= "                 mc_gross_3  = ?,"      ;    
+                $sql .= "                  quantity3  = ?,";
+                $sql .= "                 item_name4  = ?,"   ;       
+                $sql .= "                 mc_gross_4  = ?,"       ;   
+                $sql .= "                  quantity4  = ?,";
+                $sql .= "                 item_name5  = ?,"    ;      
+                $sql .= "                 mc_gross_5  = ?,"        ;  
+                $sql .= "                  quantity5  = ?,";
+                $sql .= "                  receipt_id  = ?,";
+                $sql .= "                  payment_gross  = ?,";
+                $sql .= "                  ipn_track_id = ? ,";
+                $sql .= "                  num_cart_items  = ?";
+                $sql .= "  where               txn_id  = ? "          ;
+*/
+        error_log( print_R($sql, TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                                $txn_id
+                                     );
+            
+/*                $stmt->bind_param("ssssssssssssssssssssssssssss",
+ $payment_type, $payment_date, $payer_status, $first_name, $last_name, 
+$payer_email, $paymenet_status, $mc_currency, 
+$item_name1, $mc_gross_1, $quantity1, 
+$item_name2, $mc_gross_2, $quantity2, 
+$item_name3, $mc_gross_3, $quantity3, 
+$item_name4, $mc_gross_4, $quantity4, 
+$item_name5, $mc_gross_5, $quantity5,
+ $receipt_id, $payment_gross, $ipn_track_id, 
+ $num_cart_items,  
+$txn_id
+                                     );
+                                */     
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            error_log( print_R("affected rows: $num_affected_rows\n", TRUE ));
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+        //handled in common function
+        //echo json_encode($student);
+        //        }
+        //        catch(PDOException $e) {
+        //            echo '{"error":{"text":'. $e->getMessage() .'}}';
+        //       }
+        return $num_affected_rows;
+    }
+
+    
+
     /**
      * Updating event
 
      */
     public function updateEvent($Event, $EventDate,  $ContactID, 
-            $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered
+            $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $invoice
         ) {
 
         $num_affected_rows = 0;
 
         $sql = "UPDATE eventregistration set ";
-        $sql .= "  paid = ?, shirtSize = ?, Notes = ?, include = ?, attended = ?, ordered = ? ";
+        $sql .= "  paid = ?, shirtSize = ?, Notes = ?, include = ?, attended = ?, ordered = ?, invoice = ? ";
         $sql .= " where event = ? and eventdate = ? and  Contact = ? ";
 
 
@@ -38,8 +370,8 @@ class StudentDbHandler {
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sssssssss",
-                $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered,
+            $stmt->bind_param("ssssssssss",
+                $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $invoice,
                 $Event, $EventDate, $ContactID 
                                      );
             $stmt->execute();
@@ -96,7 +428,7 @@ class StudentDbHandler {
         }
         
         $sql = "select e.event, e.eventdate as EventDate, e.eventstart as EventStart, e.eventend as EventEnd ";
-        $sql .= ", e.eventType as EventType, e.paid as Paid, e.shirtSize as ShirtSize, e.notes as Notes, e.include as Include, e.attended as Attended";
+        $sql .= ", e.eventType as EventType, e.paid as Paid, e.shirtSize as ShirtSize, e.notes as Notes, e.include as Include, e.attended as Attended, e.invoice as invoice";
         $sql .= ", e.ordered as Ordered, e.location as Location ";
         $sql .= ", c.LastName, c.FirstName, c.Email, c.Email2, c.Parent,  c.StudentSchool , c.ID";
         $sql .= " from eventregistration e, ncontacts c ";
@@ -155,7 +487,7 @@ class StudentDbHandler {
      * Creating new event
      */
     public function createEvent($Event, $EventDate, $EventStart, $EventEnd, $ContactID, $EventType,
-        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location, $invoice
     ) {
 
         error_log( print_R("createEvent entered\n", TRUE ),3, LOG);
@@ -168,19 +500,19 @@ class StudentDbHandler {
                                       
         $response = array();
 
-        $sql = "INSERT INTO eventregistration (event, eventdate, eventstart, eventend, Contact, eventType, paid, shirtSize, Notes, include, attended, ordered, location) VALUES ";
+        $sql = "INSERT INTO eventregistration (event, eventdate, eventstart, eventend, Contact, eventType, paid, shirtSize, Notes, include, attended, ordered, location, invoice) VALUES ";
         $sql .= "  ( ?,?,?,?, ";
         $sql .= "    ?,?,?,?, ";
-        $sql .= "    ?,?,?,?,?)";
+        $sql .= "    ?,?,?,?,?,?)";
 
         // First check if user already existed in db
         if (!$this->isEventExists($Event, $EventDate, $ContactID)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssssssssssss",
+                $stmt->bind_param("ssssssssssssss",
                                   $Event, $EventDate, $EventStart, $EventEnd, 
                                   $ContactID, $EventType,
-        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location    
+        $Paid, $ShirtSize, $Notes, $Include, $Attended, $Ordered, $Location , $invoice   
                                      );
                     // Check for successful insertion
                 $stmt->execute();
