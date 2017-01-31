@@ -70,6 +70,7 @@
         vm.colsubkeys = [];
         vm.coldeflist = [];
         vm.eventtmp;
+        vm.discount = "notfound";
         vm.gcolumns =[];
         vm.loading = true; 
         vm.loadAttempted = false;
@@ -104,26 +105,81 @@
           { id: 'Three Events - Kata/Sparring/Weapons', EventType: 'Three Events - Kata/Sparring/Weapons' }
         ];
 
+function getmyFormattedDate(date) {
+    $log.debug("getmyformatted date",date);
+  var year = date.getFullYear();
+  var month = (1 + date.getMonth()).toString();
+  month = month.length > 1 ? month : '0' + month;
+  var day = date.getDate().toString();
+  day = day.length > 1 ? day : '0' + day;
+  return month + '/' + day + '/' + year;
+}
 
-        vm.discount="test";
-//        vm.discount="earlybird";
-     //   vm.discount="regular";
-    //    vm.discount="late";
+var earlydateFrom = "01/28/2017";
+var earlydateTo = "02/19/2017";
+var stddateFrom = "02/19/2017";
+var stddateTo = "03/10/2017";
+var latedateFrom = "03/10/2017";
+var latedateTo = "03/15/2017";
+var dateCheck = getmyFormattedDate(new Date());
+// to test
+//dateCheck = "03/16/2017";
+
+var earlyd1 = earlydateFrom.split("/");
+var earlyd2 = earlydateTo.split("/");
+var stdd1 = stddateFrom.split("/");
+var stdd2 = stddateTo.split("/");
+var lated1 = latedateFrom.split("/");
+var lated2 = latedateTo.split("/");
+
+
+var c = dateCheck.split("/");
+//year, month, day
+var earlyfrom = new Date(earlyd1[2], parseInt(earlyd1[0],10)-1, earlyd1[1]);  // -1 because months are from 0 to 11
+var earlyto   = new Date(earlyd2[2], parseInt(earlyd2[0],10)-1, earlyd2[1]);
+var stdfrom = new Date(stdd1[2], parseInt(stdd1[0],10)-1, stdd1[1]);  // -1 because months are from 0 to 11
+var stdto   = new Date(stdd2[2], parseInt(stdd2[0],10)-1, stdd2[1]);
+var latefrom = new Date(lated1[2], parseInt(lated1[0],10)-1, lated1[1]);  // -1 because months are from 0 to 11
+var lateto   = new Date(lated2[2], parseInt(lated2[0],10)-1, lated2[1]);
+
+
+var check = new Date(c[2], parseInt(c[0])-1, c[1]);
+
+ //       vm.discount="test";
+
+    if (check >= earlyfrom && check <= earlyto) {
+        $log.debug("inside the early range",check, earlyfrom, earlyto);
+        vm.discount="earlybird";
+
+    } else if(check > stdfrom && check <= stdto) {
+        $log.debug("inside the std range",check, stdfrom, stdto);
+        vm.discount="regular";        
+    } else if(check > latefrom && check <= lateto) {
+        $log.debug("inside the late range",check, latefrom, lateto);
+        vm.discount="late";
+    } else {
+        $log.debug("not inside  range",check, earlyfrom, lateto);
+        vm.discount="notfound";        
+    }
+    
+
         vm.twoeventpay50="FK26Y8JHFF69W";
         vm.twoeventpay60="EGHLJJYUAW6JA";
         vm.twoeventpay70="PK7AC8ZRE835Q";
+        vm.twoeventpay80="6TJMHCE4AZZ76";
 
-        vm.threeeventpay60="7PFKFJ7K8LHBU";
-        vm.threeeventpay75="2RTMGNSY5FTLE";
-        vm.threeeventpay90="7XWV5FXKAMFEN";
 
         vm.twoeventpay55="VFCXLKYZHE2UE";
         vm.twoeventpay65="YUM4T83Q96FKJ";
         vm.twoeventpay75="GXLJ6EXS9SSCU";
 
+        vm.threeeventpay60="7PFKFJ7K8LHBU";
+        vm.threeeventpay90="7XWV5FXKAMFEN";
+
         vm.threeeventpay65="UP8TNHE79WGXS";
         vm.threeeventpay75="NXTPDHU5WMXBA";
         vm.threeeventpay85="5G8DNQXFVHA78";
+        vm.threeeventpay95="9GS9758EJKV7A";
 
 
         vm.onedollar="H8LTYBEGHD6GJ";
@@ -286,20 +342,20 @@
 
         function getvalue(numevents) {
             if (vm.discount == "earlybird" && numevents == 2) {
-                return vm.twoeventpay55;                
+                return vm.twoeventpay60;                
             } else if (vm.discount == "regular" && numevents == 2) {
-                return vm.twoeventpay65;
+                return vm.twoeventpay70;
             } else if (vm.discount == "late" && numevents == 2) {
-                return vm.twoeventpay75;
+                return vm.twoeventpay80;
             } else if (vm.discount == "test" && numevents == 2) {
                 return vm.onedollar;
             } 
             if (vm.discount == "earlybird" && numevents == 3) {
-                return vm.threeeventpay65;
-            } else if (vm.discount == "regular" && numevents == 3) {
                 return vm.threeeventpay75;
-            } else if (vm.discount == "late" && numevents == 3) {
+            } else if (vm.discount == "regular" && numevents == 3) {
                 return vm.threeeventpay85;
+            } else if (vm.discount == "late" && numevents == 3) {
+                return vm.threeeventpay95;
             } else if (vm.discount == "test" && numevents == 3) {
                 return vm.onedollar;
             } 

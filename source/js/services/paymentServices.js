@@ -43,7 +43,7 @@
                 });
         }
         function updateStudentPayment(path, StudentPayment) {
-                    $log.debug('vm.data before put :' + StudentPayment);
+                    $log.debug('enter updateStudentPayment before put :' , StudentPayment);
             return $http({method: 'PUT', url: path, data: StudentPayment}).
                 success(function(data, status, headers, config) {
                     $log.debug('updateStudentPayment success:' + path);

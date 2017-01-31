@@ -242,7 +242,7 @@ $app->put('/studentclasspaylist/:id', 'authenticate', function($student_id) use(
     $result = $db->setStudentClassPay( $contactID,
                                       $classPayName
                                      );
-    if ($result) {
+    if ($result > 0 ) {
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Student ClassPayName updated successfully";

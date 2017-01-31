@@ -10,8 +10,9 @@
           </div>
         </div>
         <div class="portlet-body">
-
-          <div class="table-tools">
+<div class="panel">
+  <div class="panel-body">
+            <div class="table-tools">
             <div class="row">
               <div ng-controller="ModalNewStudentController as vmmodal">
 
@@ -66,7 +67,7 @@
                 </div>    
             </div>
           </div>
-    	<div uib-collapse="vm.isCollapsed">
+          	<div uib-collapse="vm.isCollapsed">
     		<div class="well well-lg">
                 <div class="container-fluid"> 
                     <div class="container" >
@@ -119,8 +120,8 @@
     		</div>
     	</div>
 
-            <div class="row">
-                <div class="col-md-3">
+            <div class="row col-md-12">
+                <div class="col-md-5">
                   <div  class="form-group">
                     <label for="inputcontacttype" class="control-label ">Student Type</label>
                     <div class="input-icon right">
@@ -145,7 +146,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <div class="form-group">
                     <label for="inputStatus" class="control-label ">Status </label>
                     <div class="input-icon right">
@@ -158,7 +159,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                   <div class="form-group">
                     <label for="inputlimit" class="control-label ">Limit</label>
                     <div class="input-icon right">
@@ -171,9 +172,14 @@
                   </div>
                 </div>
               </div>
-                <div class="row">
+            <div class="row col-md-12">
+                          <div class="col-md-4">
+                                  <button ng-click="vmDual.requery()" class="btn btn-blue btn-default ">Refresh List</button>
+
+                          </div>
+
                         <div class="select-box">
-                          <div class="col-md-2">
+                          <div class="col-md-4">
                                     <!--    on-select="vm.editStudentFromPick($item, $model)" -->
                             <ui-select  ng-model="vm.studentpick" 
                                         theme="bootstrap"
@@ -193,18 +199,19 @@
                             </ui-select>
                           </div>
                       </div>
-                          <div class="col-md-2">
+                          <div class="col-md-4">
       <a ng-href="./#/form-layouts-editstudent/id/{{vm.eventResult.item.ID}}" ng-show="vm.eventResult.item.ID" class="btn btn-blue btn-default ">Edit {{vm.eventResult.item.FirstName}}</a>
                               
                           </div>
               </div>    	
-      <button ng-click="vmDual.requery()" class="btn btn-blue btn-default ">Refresh List</button>
-<div class="row">      
+            <div class="row col-md-12">      
 
-<div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ng-style="{height: (30*10)+132+'px'}" class="mygrid" ></div>
-          </div>
+              <div ui-grid="vmDual.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ng-style="{height: (30*10)+132+'px'}" class="mygrid" ></div>
+            </div>
+  </div>
+</div>
         </div>
-      </div>
+      </div>      
     </div>
   </div>
 </div>

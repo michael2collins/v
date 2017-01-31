@@ -167,10 +167,11 @@ if ($verified) {
                     $subject = 'Medway Tournament Registration for ' . 
                     $tmp["FirstName"] . ' ' . 
                     $tmp["LastName"] . ' paid ';
-                    
-            //    emailnotify($response["Email"], $subject, $message);
-                emailnotify('villaris.us@gmail.com', $subject, $message);
-                error_log( print_R("email to send: $subject, $message\n", TRUE ), 3, LOG);
+
+                    $to = $tmp["Email"];
+                emailnotify($to , $subject, $message);
+            //    emailnotify('villaris.us@gmail.com', $subject, $message);
+                error_log( print_R("email to send: $to, $subject, $message\n", TRUE ), 3, LOG);
     
                 }
                 
@@ -387,7 +388,7 @@ $message = "
 <title>Medway Student Registered</title>
 </head>
 <body>
-<p>You have successfully registerd.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
+<p>You have successfully registered.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
 <p>Email: " . $response["Email"] . "</p>
 <p>Parent: " . $response["Parent"] . "</p>
 <p>Emergency Contact: " . $response["EmergencyContact"] . "</p>
@@ -418,10 +419,12 @@ $subject = 'Medway Registration for ' .
                 $response["FirstName"] . ' ' . 
                 $response["LastName"] . ' of '  . 
                 $response["StudentSchool"];
+
+                $to = $response["Email"];
                 
-        //    emailnotify($response["Email"], $subject, $message);
-            emailnotify('villaris.us@gmail.com', $subject, $message);
-            error_log( print_R("email to send: $subject, $message\n", TRUE ), 3, LOG);
+            emailnotify($to, $subject, $message);
+        //    emailnotify('villaris.us@gmail.com', $subject, $message);
+            error_log( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
 
             }
             

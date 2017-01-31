@@ -27,18 +27,21 @@ function echoRespnse($status_code, $response) {
 
         $from = 'From: <michael2collins@villaris.us>' ;
         $replyto = 'michael2collins@villaris.us' . "\r\n";
-      //  $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
+//        $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
+        $cc = 'Cc: villaris.us@gmail.com' . "\r\n";
         
         // Always set content-type when sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
         $headers .= "From: $from\r\nReply-to: $replyto";
-    //    $headers .= $cc;
+        $headers .= $cc;
 
         
         // More headers
         //$headers .= 'From: <webmaster@villaris.us>' . "\r\n";
-        $headers .= 'Cc: mark@natickmartialarts.com' . "\r\n";
+      //  $headers .= 'Cc: mark@natickmartialarts.com' . "\r\n";
+
+        error_log( print_R("emailnotify about to mail: $to $subject $message $headers", TRUE), 3, LOG);
         
         mail($to,$subject,$message,$headers);
     }

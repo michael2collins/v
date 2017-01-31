@@ -630,8 +630,8 @@ $( "#calEventDialog" ).on('shown', function(){
 
          return CalendarServices.getCalendarEvents(refreshpath).then(function(data){
                 $log.debug('getCalendarEvents returned data');
-                $log.debug(data);
-                if (typeof(data.events) !== undefined ) {
+                $log.debug(data, typeof(data.events));
+                if (typeof(data.events) !== "undefined" ) {
                     for (var i = 0; i < data.events.length; i++ ){
     //                    data.events[i].end = moment(convertToMoment( data.events[i].end));
      //                   data.events[i].endtz = convertToMomentDST(data.events[i].end);
