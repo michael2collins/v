@@ -143,7 +143,6 @@
                           <select id="inputForUser" type="text" name="forUser" 
                             ng-model="vm.forUser" 
                             required
-                            ng-change="vm.getEventList()"
                             placeholder="Schedule/Tasks for?"
                             class="form-control">
                             <option ng-repeat="iter in vm.forUsers.userlist" value="{{iter.user}}">{{iter.user}}</option>

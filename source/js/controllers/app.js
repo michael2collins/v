@@ -241,13 +241,33 @@ $( "#calEventDialog" ).on('shown', function(){
 
     islogin(); 
     //works but is annoying
-    getEventList().then(function() {
+    getEventList('ALL').then(function() {
         initCalendar();
         intervalChecker();
     }).catch(function(e){
                 $log.debug("getEventList error in activate", e);
           }
     );
+
+$(document).ready(function() {
+    $("select[name='forUser']").unbind('change').bind('change', function(){
+        var u = $(this).val();
+        $log.debug("reset cal", vm.forUser, u);
+        vm.forUser = u;
+//        $('#calendar').fullCalendar('removeEvents');
+        $('#calendar').fullCalendar('destroy');
+        getEventList(vm.forUser).then(function() {
+            $log.debug("refetch", vm.events);
+//            $('#calendar').fullCalendar( 'refetchEventSources', vm.events );
+            initCalendar();
+        }).catch(function(e){
+                    $log.debug("resetCalendar error in activate", e);
+              }
+        );
+    });
+});
+    
+    
     function displayTime() {
         return CalendarServices.displaytime();   
     }
@@ -425,7 +445,7 @@ $( "#calEventDialog" ).on('shown', function(){
                 $log.debug(vm.events);
                 $log.debug(data.message);
                 vm.message = data.message;
-                getEventList().then
+                getEventList(vm.forUser).then
                     (function(zdata) {
                      $log.debug('saveCalendarEvent getEventList returned', zdata);
                  },
@@ -546,7 +566,7 @@ $( "#calEventDialog" ).on('shown', function(){
 //                vm.thisTasknamelist = data;
                 $log.debug(data);
                 vm.message = data.message;
-                getEventList().then
+                getEventList(vm.forUser).then
                     (function(zdata) {
                      $log.debug('removeCalendarEvent getEventList returned', zdata);
                  },
@@ -687,8 +707,8 @@ $( "#calEventDialog" ).on('shown', function(){
             return moment(thetime).tz('America/New_York').format('z');
    //         }
         }
-        function getEventList() {
-                var qparm =  typeof(vm.forUser) !== 'undefined' ? vm.forUser : 'ALL' ;
+        function getEventList(qparm) {
+//                var qparm =  typeof(vm.forUser) !== 'undefined' ? vm.forUser : 'ALL' ;
         var refreshpath = "../v1/getEventList?username=" + qparm;
                 $log.debug('getEventList entered', qparm,refreshpath);
 
