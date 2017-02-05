@@ -58,6 +58,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     $classname      = (isset($dataJsonDecode->thedata->className) ? $dataJsonDecode->thedata->className : "");
     $color      = (isset($dataJsonDecode->thedata->color) ? $dataJsonDecode->thedata->color : "");
     $textcolor      = (isset($dataJsonDecode->thedata->textcolor) ? $dataJsonDecode->thedata->textcolor : "");
+    $userpick      = (isset($dataJsonDecode->thedata->userpick) ? $dataJsonDecode->thedata->userpick : "");
 
     $db = new CalendarDbHandler();
     $response = array();
@@ -65,7 +66,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     // updating task
     $new_eventid = $db->saveCalendarEvent( $eventID,
                                        $title, $startdated, $startdate, $enddate,
-                                       $contactid, $reminder, $reminderInterval, $classname, $color,$textcolor
+                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color,$textcolor
                                      );
  
     if ($new_eventid > 1) {
@@ -90,11 +91,10 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
 });
 
 
-
-$app->get('/getEventList', 'authenticate', function() use ($app) {
+$app->get('/getuserlist', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    $app->log->debug( print_R("getEventList entered: ", TRUE));
+    $app->log->debug( print_R("getUserList entered: ", TRUE));
     $app->log->debug( print_R($allGetVars, TRUE));
 
 
@@ -102,7 +102,73 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
     $db = new CalendarDbHandler();
 
     // fetch task
-    $result = $db->getCalendarEvents( );
+    $result = $db->getUsers( );
+    $response["error"] = false;
+    $response["users"] = array();
+
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+
+        if (count($slist) > 0) {
+            $tmp["user"] = (empty($slist["user"]) ? "NULL" :  $slist["user"] );
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "0" : $slist["lastname"]);
+            $tmp["email"] = (empty($slist["email"]) ? "NULL" : $slist["email"]);
+            $tmp["fullname"] = (empty($slist["fullname"]) ? "NULL" : $slist["fullname"]);
+
+        } else {
+            $tmp["user"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["email"] = "NULL";
+            $tmp["fullname"] = "NULL";
+
+        }
+        array_push($response["users"], $tmp);
+    }
+    $row_cnt = count($response["users"]);
+    $app->log->debug( print_R("users cnt: $row_cnt ", TRUE));
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        $app->log->debug( print_R("users fine with $row_cnt ", TRUE));
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in getUserList";
+        $app->log->debug( print_R("users bad ", TRUE));
+        $app->log->debug( print_R("rowcnt error: $row_cnt ", TRUE));
+        $app->log->debug( print_R("users error ", TRUE));
+        $app->log->debug( print_R($response, TRUE));
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+});
+
+
+
+$app->get('/getEventList', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    $app->log->debug( print_R("getEventList entered: ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
+
+    if(array_key_exists('username', $allGetVars)){
+        $username = $allGetVars['username'];
+    } else {
+        $username = '';
+    }
+
+
+    $response = array();
+    $db = new CalendarDbHandler();
+
+    // fetch task
+    $result = $db->getCalendarEvents($username );
     $response["error"] = false;
     $response["events"] = array();
 
@@ -123,6 +189,7 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
             $tmp["className"] = (empty($slist["classname"]) ? "NULL" : $slist["classname"]);
             $tmp["backgroundColor"] = (empty($slist["color"]) ? "NULL" : $slist["color"]);
             $tmp["textColor"] = (empty($slist["textcolor"]) ? "NULL" : $slist["textcolor"]);
+            $tmp["userpick"] = (empty($slist["userid"]) ? "NULL" : $slist["userid"]);
 
         } else {
             $tmp["id"] = "NULL";
@@ -137,6 +204,7 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
             $tmp["className"] = "NULL";
             $tmp["color"] = "NULL";
             $tmp["textcolor"] = "NULL";
+            $tmp["userpick"] = "NULL";
 
         }
         array_push($response["events"], $tmp);

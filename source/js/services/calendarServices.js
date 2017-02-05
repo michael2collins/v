@@ -23,6 +23,7 @@
              setapikey: setapikey,
              saveCalendarEvent: saveCalendarEvent,
              getCalendarEvents: getCalendarEvents,
+             getUsers: getUsers,
              removeCalendarEvent: removeCalendarEvent,
             updateTasknamelist: updateTasknamelist,
             removeTasknamelist: removeTasknamelist,
@@ -208,6 +209,13 @@
         }
         function getCalendarEvents(path) {
             $log.debug('getCalendarEvents service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        function getUsers(path) {
+            $log.debug('getUsers service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

@@ -69,6 +69,7 @@ var studentpick = {};
     vm.loadTopbar = loadTopbar;
     vm.loadSidebar = loadSidebar;
     vm.getStudentStats = getStudentStats;
+    vm.getEventList = getEventList;
     vm.updateTasknamelist = updateTasknamelist;
     vm.removeTasknamelist = removeTasknamelist;
     vm.gettheTasknamelist = gettheTasknamelist;
@@ -79,9 +80,10 @@ var studentpick = {};
     vm.okNotify=true;
 
     vm.isok;
-    vm.forUser;
+    vm.forUser = "ALL";
+    vm.myuser;
     vm.forUsers= { "userlist": [
-        {"user": "All"},
+        {"user": "ALL"},
         {"user": "MINE"}
                         ]
     };
@@ -106,6 +108,9 @@ var studentpick = {};
     vm.listOfTimes=[];
     vm.myj = {};
     vm.reminderInterval;
+    
+    vm.thisUserlist={};
+    vm.userpick;
     
     vm.initTime = moment();
     vm.checktime;
@@ -167,11 +172,13 @@ var studentpick = {};
     //      $("#mike")[0].innerText = somevlu;
       adialog.dialog( "open" );
     });
+
         vm.setStudentFromPick = setStudentFromPick; 
         vm.disable = undefined;
 
         vm.refreshStudents = refreshStudents;
         vm.refreshstudentlist = [];
+
 
         vm.reminderOptions=['15 min','1 hour','1 day'];
     //    vm.thisevent = {}; 
@@ -184,6 +191,7 @@ var studentpick = {};
     var end = $('#eventEnd');
     var eventid = $('#eventid');
     var reminderInterval = $('#reminderInterval');
+    var userpick = $('#userpick');
     var reminderCheckbox = $('#reminderCheckbox');
     var contactid = $('#contactid');
     var eventclass;
@@ -260,7 +268,7 @@ $( "#calEventDialog" ).on('shown', function(){
     
 
 
-    function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,updateflag,theevent,contactid,eventid,eventclass,color,textcolor){
+    function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,updateflag,theevent,contactid,eventid,eventclass,color,textcolor){
         $log.debug('save cal',
             screen,
             title,
@@ -269,6 +277,7 @@ $( "#calEventDialog" ).on('shown', function(){
             end,
             reminderCheckbox,
             reminderInterval,
+            userpick,
             updateflag,
             theevent,
             contactid,
@@ -316,6 +325,7 @@ $( "#calEventDialog" ).on('shown', function(){
                 $log.debug('theevent end set', tststr, tstd, theevent.end);
 
                 theevent.reminderInterval =  reminderInterval;
+                theevent.userpick =  userpick;
                 theevent.reminderCheckbox = reminderCheck;
 				theevent.className = eventclass;
 				theevent.color = color;
@@ -355,6 +365,8 @@ $( "#calEventDialog" ).on('shown', function(){
 				start: start,
 				end: end,
                 reminderInterval: reminderInterval.val(),
+//                userpick: "number:" + userpick.val(),
+                userpick: userpick.val(),
                 reminderCheckbox: reminderCheckbox.val(),
 				className: eventclass.val(),
 				color: color.val(),
@@ -384,6 +396,8 @@ $( "#calEventDialog" ).on('shown', function(){
     function saveCalendarEvent(theEvent) {
         var updpath = "../v1/saveCalendarEvent";
         $log.debug('about saveCalendarEvent ', theEvent, updpath);
+        var rep = (typeof( theEvent.userpick) !== 'undefined' && theEvent.userpick !== "") ? theEvent.userpick.replace("number:","") : vm.myuser;
+        
         var thedata = {
             title: theEvent.title,
             id: theEvent.id,
@@ -393,10 +407,12 @@ $( "#calEventDialog" ).on('shown', function(){
             contactid: theEvent.contactid,
             reminder: theEvent.reminderCheckbox,
             reminderInterval: theEvent.reminderInterval,
+            userpick: rep,
             color: theEvent.backgroundColor,
             textcolor: theEvent.textColor,
             classname: theEvent.className
         };
+
 
         $log.debug('about saveCalendarEvent data', thedata);
         return CalendarServices.saveCalendarEvent(updpath, thedata)
@@ -552,7 +568,54 @@ $( "#calEventDialog" ).on('shown', function(){
             });
     }
 
+    function getUserDetails(){
+        $log.debug('getUserDetails entered');
+           return UserServices.getUserDetails().then(function(data) {
+                $log.debug("getuserdetails returned:", data);
+                vm.userdta = data;
+                vm.myuser = data.userid;
+                return vm.userdta;
+                },
 
+            function (error) {
+                $log.debug('Caught an error getUserDetails, going to notify:', error); 
+                vm.userdta = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+        
+    }
+
+    function getUserList(){
+        $log.debug('getUserList entered');
+        var refreshpath = "../v1/getuserlist";
+
+         return CalendarServices.getUsers(refreshpath).then(function(data){
+                $log.debug('getUsers returned data');
+                $log.debug(data);
+                vm.thisUserlist = data.users; 
+                return vm.thisUserlist;
+            },
+            function (error) {
+                $log.debug('Caught an error getUserList, going to notify:', error); 
+                vm.thisUserlist = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+        
+    }
 
     function gettheTasknamelist() {
         $log.debug('gettheTasknamelist entered');
@@ -625,8 +688,9 @@ $( "#calEventDialog" ).on('shown', function(){
    //         }
         }
         function getEventList() {
-                $log.debug('getEventList entered');
-        var refreshpath = "../v1/getEventList";
+                var qparm =  typeof(vm.forUser) !== 'undefined' ? vm.forUser : 'ALL' ;
+        var refreshpath = "../v1/getEventList?username=" + qparm;
+                $log.debug('getEventList entered', qparm,refreshpath);
 
          return CalendarServices.getCalendarEvents(refreshpath).then(function(data){
                 $log.debug('getCalendarEvents returned data');
@@ -763,7 +827,6 @@ $( "#calEventDialog" ).on('shown', function(){
             ClassServices.setapikey(thekey);
             UserServices.setapikey(thekey);
             StatsServices.setapikey(thekey);
-            vm.userdta = UserServices.getUserDetails();
             loadSidebar();
             loadTopbar();
             vm.filterstat = filterstat;
@@ -771,6 +834,12 @@ $( "#calEventDialog" ).on('shown', function(){
             var getdatestr = 'startdate';
 
             $q.all([
+                    getUserDetails().then(function(){
+                       $log.debug('getUserDetails returned'); 
+                    }),
+                    getUserList().then(function(){
+                       $log.debug('getUserList returned'); 
+                    }),
                     getStudentStatsMonths(getdatestr).then(function() {
                         $log.debug('getStudentStatsMonths returned');
                      }),
@@ -820,8 +889,12 @@ $( "#calEventDialog" ).on('shown', function(){
             vm.header.animation = '';
         }, 100);
 
-        vm.userdta = UserServices.getUserDetails();
-        console.log('$routeChangeSuccess', vm.userdta);
+//        getUserDetails().then(function(){
+//           $log.debug('getUserDetails returned'); 
+//        });
+
+//        vm.userdta = UserServices.getUserDetails();
+//        console.log('$routeChangeSuccess', vm.userdta);
 
         vm.data = $.fn.Data.get(current.originalPath);
         console.log('data in $routeChangeSuccess',vm.data);
@@ -966,6 +1039,8 @@ $( "#calEventDialog" ).on('shown', function(){
                 $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', false);
             }
             $("#reminderInterval").val(calEvent.reminderInterval);
+//            $("#userpick").val("number:" + calEvent.userpick);
+            $("#userpick").val(calEvent.userpick);
             
             $("#eventid").val(calEvent.eventid);
             
@@ -989,11 +1064,12 @@ $( "#calEventDialog" ).on('shown', function(){
                     var textcolor = calEvent.textColor;
 
                     var reminderInterval = $('#reminderInterval').val();
+                    var userpick = $('#userpick').val();
                     var reminderCheckbox = $('#reminderCheckbox');
                     var screen = $(this);
-                    $log.debug('before calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,calEvent,contactid,eventid,eventclass,color,textcolor);
+                    $log.debug('before calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,calEvent,contactid,eventid,eventclass,color,textcolor);
                     
-                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,calEvent,contactid,eventid,eventclass,color,textcolor);
+                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,calEvent,contactid,eventid,eventclass,color,textcolor);
                     $('#calendar').fullCalendar('unselect');
 
                     $(this).dialog("close");
@@ -1053,6 +1129,7 @@ $( "#calEventDialog" ).on('shown', function(){
         },         
 //        timezone: 'America/New_York',
         events: vm.events,
+//        events: getEventList(),
         timezone: 'local',
         timeFormat: 'hh:mm A z', 
         selectable: true,
@@ -1061,6 +1138,7 @@ $( "#calEventDialog" ).on('shown', function(){
         dayClick   : onCalendarDayClick,
         editable: true,
         droppable: true, // this allows things to be dropped onto the calendar !!!
+        
         drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
             $log.debug('drop entered',date, jsEvent, ui, resourceId);
      //       $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
@@ -1106,7 +1184,7 @@ $( "#calEventDialog" ).on('shown', function(){
                 $log.debug("test looking for new eventid",vm.neweventid);
                 copiedEventObject.id = vm.neweventid;
                 copiedEventObject.eventid = vm.neweventid;
-               copiedEventObject.mike = "mikeisgreat";
+           //    copiedEventObject.mike = "mikeisgreat";
                 //copiedEventObject.id = uid();
                 
     //            copiedEventObject.allDay = allDay;
@@ -1164,6 +1242,7 @@ $( "#calEventDialog" ).on('shown', function(){
             var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
 
             var reminderInterval = event.reminderInterval;
+            var userpick = event.userpick;
             var reminderCheckbox = event.reminderCheckbox;
             var contactid = event.contactid;
             var eventid = event.eventid;
@@ -1177,9 +1256,9 @@ $( "#calEventDialog" ).on('shown', function(){
             } else {
 
                     $log.debug('save in eventdrop');
-                    $log.debug('before eventdrop calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,event,contactid,eventid,eventclass,color, textcolor);
+                    $log.debug('before eventdrop calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,event,contactid,eventid,eventclass,color, textcolor);
                     
-                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,true,event,contactid,eventid,eventclass,color,textcolor);
+                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,event,contactid,eventid,eventclass,color,textcolor);
                 
             }
             
@@ -2059,7 +2138,7 @@ function hexToComplimentary(hex){
             });
         
     }
-        
+
 
     }
 })();

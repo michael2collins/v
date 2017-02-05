@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<div id="adialog" title="Basic dialog" style="display: none" ng-controller="AppController as vm">
+<div id="adialog" title="Student Picker" style="display: none" ng-controller="AppController as vm">
         <form novalidate class="simple-form"> 
     <!--      <div id="contactid" style="display: none;">{{$select.selected.ID}}</div> -->
               <div class="select-box pal" id="calEventDialogpick">
@@ -46,10 +46,21 @@
                   </div>
                   </div>
                 </div>
+              <div class="form-group">
+                  <label for="userpick" class="control-label col-md-3">Assign</label>
+                <div class="col-md-9">
+                  <select id="userpick" type="text" name="userpick" 
+                    ng-model="vm.userpick" 
+                    ng-options="u.user as u.fullname for u in vm.thisUserlist track by u.user" 
+                    class="form-control">
+                     <option value="">-- Assign user --</option>
+                  </select>
+                  </div>                  
+                </div>
 
               
               <div class="form-group">
-                <label for="eventStartd" class="control-label col-md-3">Start</label>
+                <label for="eventStartd" class="control-label col-md-3">Date</label>
                 <div class="col-md-9">
                   <input type="text" name="eventStartd" id="eventStartd" class="form-control"/>
                 </div>
@@ -108,9 +119,6 @@
 
 <div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
 
-
-  
-  
 <!--    <button type="button" 
         data-ng-click="vm.mynotify()" 
         class="btn btn-default btn-sm">Notify Me
@@ -135,6 +143,7 @@
                           <select id="inputForUser" type="text" name="forUser" 
                             ng-model="vm.forUser" 
                             required
+                            ng-change="vm.getEventList()"
                             placeholder="Schedule/Tasks for?"
                             class="form-control">
                             <option ng-repeat="iter in vm.forUsers.userlist" value="{{iter.user}}">{{iter.user}}</option>
@@ -254,8 +263,8 @@
                       </div>
                       
                       <ul class="nav nav-pills pull-left">
-             <!--         <p>  listoftimes: {{vm.notifylist}}</p> -->
-                        <li>Time: {{vm.displayTime() | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}</li>
+<!--                      <p>  listoftimes: {{vm.notifylist}}</p> 
+-->                        <li>Time: {{vm.displayTime() | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}</li>
                           <li class="row"  ng-repeat="msg in vm.notifylist | filter:{reminderCheckbox:1 , reminderInterval: '!NULL'} ">
                           {{msg.title}} at {{msg.start | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}
                           </li>

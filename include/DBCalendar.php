@@ -19,6 +19,41 @@ class CalendarDbHandler {
 
     }
 
+
+    public function getUsers() {
+
+        global $user_id;
+        global $school;
+
+        $sql = "
+SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCAT(user.name ,' ', user.lastname) as fullname, user.email as email FROM users user, useraccessuser access 
+WHERE user.id = access.userid and access.granteduserid = ? and user.school = ?
+union all
+SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCAT(user.name ,' ', user.lastname) as fullname, user.email as email FROM users user WHERE user.id = ? and user.school = ?
+        ";
+
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ssss", $user_id, $school, $user_id, $school);
+            if ($stmt->execute()) {
+                $users = $stmt->get_result();
+                $stmt->close();
+                return $users;
+            } else {
+                error_log( print_R("getUsers  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getUsers sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+
+
     public function removeCalendarEvent($eventID) {
 
         global $user_id;
@@ -41,18 +76,36 @@ class CalendarDbHandler {
         
     }
 
-    public function getCalendarEvents() {
+    public function getCalendarEvents($auser) {
 
         global $user_id;
+        global $school;
 
-        $sql = "SELECT  id,  title, startdated, startdate, enddate,
-                                       contactid, reminder, reminderInterval, classname, color, textcolor        
-        FROM ncalendar ";
-        $sql .= " where userid = ? ";
-        $sql .= " order by startdated";
+/*
+SELECT  cal.id as id,  title, startdated, startdate, enddate,
+                                       contactid, reminder, reminderInterval, classname, color, textcolor, cal.userid as userid
+        FROM ncalendar cal
+        where cal.userid  in (select userid from useraccessuser where  granteduserid = 4)
+*/        
+        $sql = " SELECT  cal.id as id,  title, startdated, startdate, enddate,
+                                       contactid, reminder, reminderInterval, classname, color, textcolor, cal.userid as userid
+        FROM ncalendar cal
+        where cal.userid = " . $user_id ;
+
+        if ($auser == "ALL") {
+            $sql .= " UNION all ";
+
+            $sql .= "SELECT  cal.id as id,  title, startdated, startdate, enddate,
+                                           contactid, reminder, reminderInterval, classname, color, textcolor, cal.userid as userid
+            FROM ncalendar cal
+            where cal.userid  in (select userid from useraccessuser where  granteduserid = " . $user_id . " )";
+
+        }
+
+        error_log( print_R("getCalendarEvents sql: $sql", TRUE), 3, LOG);
+        
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $user_id);
             if ($stmt->execute()) {
                 $events = $stmt->get_result();
                 $stmt->close();
@@ -77,7 +130,7 @@ class CalendarDbHandler {
      */
     private function isCalendarEventExists($eventID) {
 
-        global $user_id;
+     //   global $user_id;
 
         error_log( print_R("isCalendarEventExists entered", TRUE), 3, LOG);
 
@@ -89,7 +142,7 @@ class CalendarDbHandler {
 
         $cntsql = "select count(*) as eventcount from ncalendar ";
         $cntsql .= " where id = '" . $eventID . "'" ;
-        $cntsql .= " and userid =  '" . $user_id . "'";
+    //    $cntsql .= " and userid =  '" . $user_id . "'";
 
         error_log( print_R("events isCalendarEventExists sql: $cntsql", TRUE), 3, LOG);
         
@@ -128,13 +181,13 @@ class CalendarDbHandler {
 
     public function saveCalendarEvent($eventID,
                                        $title, $startdated, $startdate, $enddate,
-                                       $contactid, $reminder, $reminderInterval, $classname, $color, $textcolor
+                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor
                                       ) {
 
-        global $user_id;
+//        global $user_id;
 
         $num_affected_rows = 0;
-        error_log( print_R("saveCalendarEvent  entered for $user_id" , TRUE), 3, LOG);
+ //       error_log( print_R("saveCalendarEvent  entered for $user_id" , TRUE), 3, LOG);
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
@@ -179,7 +232,7 @@ class CalendarDbHandler {
             if ($stmt = $this->conn->prepare($inssql)) {
                 $stmt->bind_param("sssssssssss",
                                   $title, $date , $hhmm, $endhhmm,
-                                       $contactid, $user_id, $reminder, $reminderInterval, $classname, $color, $textcolor
+                                       $contactid, $userpick, $reminder, $reminderInterval, $classname, $color, $textcolor
                                      );
                     $result = $stmt->execute();
 
@@ -214,10 +267,11 @@ class CalendarDbHandler {
             $updsql .=                " reminderInterval = '" .     $reminderInterval . "'," ;
             $updsql .=                " classname = '" .      $classname . "'," ;
             $updsql .=                " color = '" .      $color . "',";
-            $updsql .=                " textcolor = '" .      $textcolor . "'";
+            $updsql .=                " textcolor = '" .      $textcolor . "',";
+            $updsql .=                " userid = '" .      $userpick . "'";
             
             $updsql .= " where id = " . $eventID ;
-            $updsql .= " and userid =  " . $user_id;
+//            $updsql .= " and userid =  " . $user_id;
 
             error_log( print_R("saveCalendarEvent update sql: $updsql", TRUE), 3, LOG);
             

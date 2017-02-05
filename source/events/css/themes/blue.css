@@ -1848,7 +1848,7 @@ ul.users-online li .status.is-offline {
 #signin-page #signin-page-content {
   width: 360px;
   margin: 10% auto 0 auto;
-  background: #ffffff;
+/*  background: #ffffff;*/
   padding: 15px 20px;
 }
 #signin-page #signin-page-content h1 {

@@ -80,11 +80,18 @@
     //    flowConfig.$inject = ['flowFactoryProvider'];
 
 //    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices'];
-    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','$window','$cookies'];
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','$window','$cookies','Notification'];
 
 /*    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices) {
         $log.debug('authrun entered');
  */
+
+
+
+
+    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies,Notification) {
+        $log.debug('authrun entered');
+        
     $(document).ready(function() {
         console.log('fixing for drag-drop');
         jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
@@ -102,11 +109,8 @@
             });
       }
         
-    });
-
-
-    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
-        $log.debug('authrun entered');
+    });        
+        
         var loggedIn=false;
         // keep user logged in after page refresh
 //        var huh2 = $rootScope.globals || {}; 
@@ -140,7 +144,7 @@
 
 
             // redirect to login page if not logged in and trying to access a restricted page
-            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/info','/terms','/page-lock-screen']) === -1;
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/info','/terms','/page-lock-screen','/']) === -1;
             var thekey = UserServices.isapikey();
         $log.debug('check logn next', restrictedPage, loggedIn);
         $log.debug('check userservices isapikey', thekey);
@@ -148,7 +152,8 @@
             if (restrictedPage && !loggedIn) {
                 $log.debug('restricted and not logged in');
             //    alert('restricted page');
-                $location.path('/page-signin');
+            //    $location.path('/page-signin');
+                $location.path('/');
             }
         });
     }

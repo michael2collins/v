@@ -196,24 +196,26 @@
 
                 var path="../v1/userdetails?usernm=" + usernm;
 
-                getUserNames(path).then(function(data){
+                return getUserNames(path).then(function(data){
                     $log.debug('getUserNames returned data');
                     $log.debug(data);
                     userdetails.username = data.username;
                     userdetails.firstname = data.firstname;
                     userdetails.lastname = data.lastname;
+                    userdetails.userid = data.userid;
                     userdetails.email = data.email;
                         return userdetails;
                 },
                 function (error) {
                     $log.debug('Caught an error getUserDetails refresh user , going to notify:', error); 
                     
-                    Notification.error({message: error, delay: 5000});
+//                    Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
                 }
                 );
             } else {
-                return userdetails;
+                    return ($q.resolve(userdetails));
+//                return userdetails;
             }
             
         }
