@@ -89,28 +89,42 @@
 
     authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','$window','$cookies'];
     
-    $(document).ready(function() {
-        console.log('fixing for drag-drop');
-        jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
-        console.log(jQuery.event.props);
-
-    // request permission on page load for Notification
-        console.log('onload permission check b4:',Notification.permission);
-      if (Notification.permission !== "granted") {
-        Notification.requestPermission();
-        console.log('perm',Notification.permission);
-      } else {
-            var notification = new Notification('Notification title', {
-              icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-              body: "Hey there! You've been notified!",
-            });
-      }
-    });
     
 
 
     function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
         $log.debug('authrun entered');
+
+    $(document).ready(function() {
+        console.log('fixing for drag-drop');
+        window.jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
+        console.log(window.jQuery.event.props);
+
+    if ('Notification' in window) {
+    // request permission on page load for Notification
+        console.log('onload permission check b4:',$window.Notification.permission);
+        if ($window.Notification.permission !== 'denied') {
+            $window.Notification.requestPermission().then(function(result) {
+              if (result === 'denied') {
+                console.log('Permission wasn\'t granted. Allow a retry.');
+                return;
+              }
+              if (result === 'default') {
+                console.log('The permission request was dismissed.');
+                return;
+              }
+              // Do something with the granted permission.
+                var notification = new $window.Notification('Notification title', {
+                  icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+                  body: "Hey there! You've been notified!",
+                });
+            });        
+        }
+    }
+        
+    });
+
+
         var loggedIn=false;
         // keep user logged in after page refresh
 //        var huh2 = $rootScope.globals || {}; 

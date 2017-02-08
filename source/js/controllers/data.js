@@ -1,5 +1,5 @@
 var jQuery;
-;(function($){
+(function($){
     $.fn.Data = function(){};
     var $this = $.fn.Data;
 
@@ -73,7 +73,7 @@ var jQuery;
         $(".portlet").each(function(index, element) {
             var me = $(this);
             console.log('portlet: each',index, element);
-            $(">.portlet-header>.tools>i", me).click(function(e){
+            $(">.portlet-header>.tools>i", me).off('click').click(function(e){
                     console.log('portlet: click entered', me, e);
                 if($(this).hasClass('fa-chevron-up')){
                     console.log('portlet: chevron up');
