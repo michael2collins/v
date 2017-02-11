@@ -621,6 +621,7 @@ class StudentDbHandler {
                                   $ShirtSize,
                                   $BeltSize,
                                   $InstructorPaymentFree,
+                                  $ReadyForNextRank,
                                   $InstructorFlag,
                                   $instructorTitle,
                                   $CurrentRank,
@@ -655,6 +656,7 @@ class StudentDbHandler {
         $sql .= " t.ShirtSize = ?,";
         $sql .= " t.BeltSize = ?,";
         $sql .= " t.InstructorPaymentFree = ?,";
+        $sql .= " t.ReadyForNextRank = ?,";
         //$sql .= " t.InstructorFlag = ?,";
         $sql .= " t.instructorTitle = ?,";
         $sql .= " t.CurrentRank = ?,";
@@ -695,6 +697,7 @@ class StudentDbHandler {
         error_log( print_R($ShirtSize, TRUE ));
         error_log( print_R($BeltSize, TRUE ));
         error_log( print_R($InstructorPaymentFree, TRUE ));
+        error_log( print_R($ReadyForNextRank, TRUE ));
         error_log( print_R($InstructorFlag, TRUE ));
         error_log( print_R($instructorTitle, TRUE ));
         error_log( print_R($CurrentRank, TRUE ));
@@ -705,7 +708,7 @@ class StudentDbHandler {
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sssssssssssssssssssssssdisssssi",
+            $stmt->bind_param("sssssssssssssssssssssssdissssssi",
                               $LastName,
                               $FirstName    ,
                               $Email    ,
@@ -731,6 +734,7 @@ class StudentDbHandler {
                               $ShirtSize    ,
                               $BeltSize    ,
                               $InstructorPaymentFree    ,
+                              $ReadyForNextRank    ,
                               //            $InstructorFlag    ,
                               $instructorTitle    ,
                               $CurrentRank    ,

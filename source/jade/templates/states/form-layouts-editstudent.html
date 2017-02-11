@@ -888,6 +888,22 @@ ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vm
                             </div>
                           </div>
                         </div>
+                        <div class="col-md-6">
+                          <div ng-class="{'has-error': editstudent.ReadyForNextRank.$invalid, 'has-success': !editstudent.ReadyForNextRank.$invalid}" class="form-group">
+                            <label for="inputreadyForNextRank" class="control-label">Title </label>
+                            <div class="input-icon right">
+                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.readyForNextRank.$dirty" ng-class="editstudent.ReadyForNextRank.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <toggle-switch on-label="Test" off-label="NotReady" id="inputreadyForNextRank" type="checkbox" name="readyForNextRank" ng-model="vmstudent.students.ReadyForNextRank" ng-change="vmstudent.updateStudent()" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="switch-primary"></toggle-switch>
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudent.ReadyForNextRank.$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                              <div ng-message="minlength">Your field is too short</div>
+                              <div ng-message="maxlength">Your field is too long</div>
+                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                            </div>
+                          </div>
+                        </div>
+                        
                       </div>
                     </div>
                   </form>

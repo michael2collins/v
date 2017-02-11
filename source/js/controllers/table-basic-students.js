@@ -229,7 +229,8 @@
                     {id:27, colname:'bdayinclude', default:'false'},
                     {id:28, colname:'sex', default:'false'},
                     {id:29, colname:'medicalConcerns', default:'false'},
-                    {id:30, colname:'GuiSize', default:'false'}
+                    {id:30, colname:'GuiSize', default:'false'},
+                    {id:30, colname:'ReadyForNextRank', default:'false'}
                     ];
         vmDual.items = vmDual.userData;
           

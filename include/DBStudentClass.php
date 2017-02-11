@@ -329,7 +329,7 @@ class StudentClassDbHandler {
     error_log( print_R("pgmseq: $pgmseq\n", TRUE ), 3, LOG);
         
         
-        $sql = "SELECT * from nclasspays WHERE contactid = ? and classseq = ? and pgmseq = ? ";
+        $sql = "SELECT * from nclasspays WHERE contactid = ? ";
 
         $stmt = $this->conn->prepare($sql);
         
@@ -378,7 +378,7 @@ class StudentClassDbHandler {
                 error_log( print_R("student class status set execute", TRUE ), 3, LOG);
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
-                error_log( print_R("student class status set done", TRUE ), 3, LOG);
+                error_log( print_R("student class status set done: $num_affected_rows", TRUE ), 3, LOG);
     
             } else {
                 error_log( print_R("student class status update failed", TRUE ), 3, LOG);

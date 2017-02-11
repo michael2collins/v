@@ -234,29 +234,32 @@
         <div class="panel-body pan">
           <div class="col-lg-12">
               <div class="row">
-                <div class="col-md-7">
+                <div class="col-md-7" style="height: 70px;">
+                  <div class="select-box">
                   <div class="col-md-6">
                     <label for="query" class="control-label">Pick Event</label>
                     <ui-select  ng-model="vm.eventSelected" 
-                                theme="select2" 
-                                ng-disabled="disabled" 
+                                theme="bootstrap" 
+                                reset-search-input="false"
+                                ng-disabled="vm.disabled" 
                                 on-select="vm.getEventDetails($item)"
                                 style="width: 300px;" 
-                                title="Choose an event">
+                                title="Choose an event"
+                                append-to-body="false">
                       <ui-select-match placeholder="Filter the events...">{{$select.selected.event}}</ui-select-match>
                       <ui-select-choices 
                       repeat="event in vm.eventlist | filter: $select.search track by $index"
                       refresh="vm.getEventNames($select.search)"
                       refresh-delay="0">
-                        <small>
-                    <span ng-bind-html="event.event | highlight: $select.search"></span>
-                        </small>
+                        <div ng-bind-html="event.event | highlight: $select.search"></div>
                       </ui-select-choices>
                     </ui-select>
-
                   </div>
-                </div>              
+                  </div>
+                </div>     
+                <div class="col-md-5">
                 <button ng-click="vm.getEventDetails(vm.eventSelected)" class="btn btn-green btn-default EventCreation">Refresh List</button>
+                </div>
               </div>
  
               <div class="row" >

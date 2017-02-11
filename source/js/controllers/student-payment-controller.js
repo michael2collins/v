@@ -115,7 +115,7 @@
             });
         }
         function updateStudentPayment2() {
-            $log.debug('about updateStudentPayment2 ', vmpayment.StudentPayment);
+            $log.debug('about updateStudentPayment2 ', vmpayment.StudentPayment,vmpayment.updateclasspaylistpath);
             vmpayment.StudentPayment.classpaynametmp = vmpayment.StudentPayment.classPayName;
             return PaymentServices.updateStudentPayment(vmpayment.updateclasspaylistpath, vmpayment.StudentPayment).then(function (data) {
                 $log.debug('updateStudentPayment returned data: goto', vmpayment.path);

@@ -793,6 +793,7 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     $ShirtSize = $student->ShirtSize;
     $BeltSize = $student->BeltSize;
     $InstructorPaymentFree = $student->InstructorPaymentFree;
+    $ReadyForNextRank = $student->ReadyForNextRank;
     $InstructorFlag = $student->InstructorFlag;
     $instructorTitle = $student->instructorTitle;
     $CurrentRank = $student->CurrentRank;
@@ -839,6 +840,7 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
                                  $ShirtSize,
                                  $BeltSize,
                                  $InstructorPaymentFree,
+                                 $ReadyForNextRank,
                                  $InstructorFlag,
                                  $instructorTitle,
                                  $CurrentRank,
