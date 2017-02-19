@@ -58,6 +58,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     $classname      = (isset($dataJsonDecode->thedata->className) ? $dataJsonDecode->thedata->className : "");
     $color      = (isset($dataJsonDecode->thedata->color) ? $dataJsonDecode->thedata->color : "");
     $textcolor      = (isset($dataJsonDecode->thedata->textcolor) ? $dataJsonDecode->thedata->textcolor : "");
+    $eventtype      = (isset($dataJsonDecode->thedata->eventtype) ? $dataJsonDecode->thedata->eventtype : "");
     $userpick      = (isset($dataJsonDecode->thedata->userpick) ? $dataJsonDecode->thedata->userpick : "");
 
     $db = new CalendarDbHandler();
@@ -66,7 +67,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     // updating task
     $new_eventid = $db->saveCalendarEvent( $eventID,
                                        $title, $startdated, $startdate, $enddate,
-                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color,$textcolor
+                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color,$textcolor,$eventtype
                                      );
  
     if ($new_eventid > 1) {
@@ -189,6 +190,7 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
             $tmp["className"] = (empty($slist["classname"]) ? "NULL" : $slist["classname"]);
             $tmp["backgroundColor"] = (empty($slist["color"]) ? "NULL" : $slist["color"]);
             $tmp["textColor"] = (empty($slist["textcolor"]) ? "NULL" : $slist["textcolor"]);
+            $tmp["eventtype"] = (empty($slist["eventtype"]) ? "NULL" : $slist["eventtype"]);
             $tmp["userpick"] = (empty($slist["userid"]) ? "NULL" : $slist["userid"]);
 
         } else {
@@ -204,6 +206,7 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
             $tmp["className"] = "NULL";
             $tmp["color"] = "NULL";
             $tmp["textcolor"] = "NULL";
+            $tmp["eventtype"] = "NULL";
             $tmp["userpick"] = "NULL";
 
         }
@@ -310,6 +313,58 @@ $app->post('/updatetasknamelist','authenticate',  function() use($app) {
 
 });
 
+
+$app->get('/instructorlist', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    $app->log->debug( print_R("instructorlist entered: ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
+
+    $response = array();
+    $db = new CalendarDbHandler();
+
+    // fetch task
+    $result = $db->getInstructorList( );
+    $response["error"] = false;
+    $response["instructorlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+
+        if (count($slist) > 0) {
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "0" : $slist["lastname"]);
+            $tmp["instructortitle"] = (empty($slist["instructortitle"]) ? "NULL" : $slist["instructortitle"]);
+
+        } else {
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["instructortitle"] = "NULL";
+
+        }
+        array_push($response["instructorlist"], $tmp);
+    }
+    $row_cnt = count($response["instructorlist"]);
+    $app->log->debug( print_R("instructorlist cnt: $row_cnt ", TRUE));
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        $app->log->debug( print_R("instructorlist fine with $row_cnt ", TRUE));
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in instructorlist";
+        $app->log->debug( print_R("instructorlist bad ", TRUE));
+        $app->log->debug( print_R("rowcnt error: $row_cnt ", TRUE));
+        $app->log->debug( print_R("instructorlist error ", TRUE));
+        $app->log->debug( print_R($response, TRUE));
+        
+//note need to handle 404 data notfound
+        echoRespnse(404, $response);
+//        echoRespnse(200, $response);
+    }
+});
 
 
 $app->get('/tasknamelist', 'authenticate', function() use ($app) {

@@ -9,6 +9,7 @@ require_once '../include/DBStudent.php';
 require_once '../include/DBStudentClass.php';
 require_once '../include/DBAttendance.php';
 require_once '../include/DBCalendar.php';
+require_once '../include/DBTesting.php';
 require_once '../include/DBStats.php';
 require_once '../include/PassHash.php';
 require '.././libs/Slim/Slim.php';
@@ -70,8 +71,9 @@ $rolelist = array("admin","operator");
 
 
 require_once dirname(__FILE__) . '/auth.php';
-require_once dirname(__FILE__) . '/routecalendar.php';
 require_once dirname(__FILE__) . '/routestudent.php';
+require_once dirname(__FILE__) . '/routecalendar.php';
+require_once dirname(__FILE__) . '/routetesting.php';
 require_once dirname(__FILE__) . '/routestudentclass.php';
 require_once dirname(__FILE__) . '/routeattendance.php';
 require_once dirname(__FILE__) . '/routestats.php';

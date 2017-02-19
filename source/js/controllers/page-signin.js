@@ -19,12 +19,13 @@
             'StudentServices',
             'PaymentServices',
             'ClassServices',
+            'TestingServices',
             '$cookieStore',
             '$q'
             ];
         function PageSigninController($scope, $log, $routeParams, 
                 $location, FlashService, UserServices, AttendanceServices, CalendarServices,
-                EventServices, StudentServices, PaymentServices, ClassServices,
+                EventServices, StudentServices, PaymentServices, ClassServices, TestingServices,$cookieStore,
                 $q){
         /* jshint validthis: true */
 
@@ -67,6 +68,7 @@
                         PaymentServices.setapikey(pagevm.apiKey);
                         ClassServices.setapikey(pagevm.apiKey);
                         UserServices.setapikey(pagevm.apiKey);
+                        TestingServices.setapikey(pagevm.apiKey);
             $("body>.default-page").show();
             $("body>.extra-page").html($(".page-content").html()).hide();
             $('body').attr('id', '');
@@ -86,6 +88,7 @@
                         PaymentServices.setapikey('');
                         ClassServices.setapikey('');
                         UserServices.setapikey('');
+                        TestingServices.setapikey('');
                         FlashService.Err(error);
                     return ($q.reject(error));
                 }).

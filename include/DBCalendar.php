@@ -81,14 +81,9 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         global $user_id;
         global $school;
 
-/*
-SELECT  cal.id as id,  title, startdated, startdate, enddate,
-                                       contactid, reminder, reminderInterval, classname, color, textcolor, cal.userid as userid
-        FROM ncalendar cal
-        where cal.userid  in (select userid from useraccessuser where  granteduserid = 4)
-*/        
+       
         $sql = " SELECT  cal.id as id,  title, startdated, startdate, enddate,
-                                       contactid, reminder, reminderInterval, classname, color, textcolor, cal.userid as userid
+                                       contactid, reminder, reminderInterval, classname, color, textcolor, eventtype, cal.userid as userid
         FROM ncalendar cal
         where cal.userid = " . $user_id ;
 
@@ -96,7 +91,7 @@ SELECT  cal.id as id,  title, startdated, startdate, enddate,
             $sql .= " UNION all ";
 
             $sql .= "SELECT  cal.id as id,  title, startdated, startdate, enddate,
-                                           contactid, reminder, reminderInterval, classname, color, textcolor, cal.userid as userid
+                                           contactid, reminder, reminderInterval, classname, color, textcolor,eventtype, cal.userid as userid
             FROM ncalendar cal
             where cal.userid  in (select userid from useraccessuser where  granteduserid = " . $user_id . " )";
 
@@ -181,7 +176,7 @@ SELECT  cal.id as id,  title, startdated, startdate, enddate,
 
     public function saveCalendarEvent($eventID,
                                        $title, $startdated, $startdate, $enddate,
-                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor
+                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor, $eventtype
                                       ) {
 
 //        global $user_id;
@@ -225,14 +220,14 @@ SELECT  cal.id as id,  title, startdated, startdate, enddate,
         $enddatehhmmx->setTimezone(new DateTimeZone($tz));
         $endhhmm = $enddatehhmm->format('m/d/Y H:i A P ') . $enddatehhmmx->format('T');;
         
-        $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, `reminderinterval`, `classname`, `color`, textcolor) VALUES (?,?,?,?,?,?,?,?,?,?,?) ";
+        $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, `reminderinterval`, `classname`, `color`, textcolor, eventtype) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ";
         
         if ($this->isCalendarEventExists($eventID) == 0 || $eventID == "" ) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("sssssssssss",
+                $stmt->bind_param("ssssssssssss",
                                   $title, $date , $hhmm, $endhhmm,
-                                       $contactid, $userpick, $reminder, $reminderInterval, $classname, $color, $textcolor
+                                       $contactid, $userpick, $reminder, $reminderInterval, $classname, $color, $textcolor, $eventtype
                                      );
                     $result = $stmt->execute();
 
@@ -268,6 +263,7 @@ SELECT  cal.id as id,  title, startdated, startdate, enddate,
             $updsql .=                " classname = '" .      $classname . "'," ;
             $updsql .=                " color = '" .      $color . "',";
             $updsql .=                " textcolor = '" .      $textcolor . "',";
+            $updsql .=                " eventtype = '" .      $eventtype . "',";
             $updsql .=                " userid = '" .      $userpick . "'";
             
             $updsql .= " where id = " . $eventID ;
@@ -328,6 +324,35 @@ SELECT  cal.id as id,  title, startdated, startdate, enddate,
         }
         
     }
+
+
+    public function getInstructorList() {
+
+        global $school;
+
+        $sql = "SELECT firstname,lastname,instructortitle FROM ncontacts WHERE instructorflag = 1 and studentschool = ? ";
+        $sql .= " order by lastname";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
+            if ($stmt->execute()) {
+                $instructorlist = $stmt->get_result();
+                $stmt->close();
+                return $instructorlist;
+            } else {
+                error_log( print_R("getInstructorList  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getInstructorList  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+
 
     public function getTasknamelist() {
 

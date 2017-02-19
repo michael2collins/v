@@ -185,21 +185,21 @@
                             </div>
                             <div class="col-md-12">
                                 <hr>
-                                <div class="external-event label label-default ui-draggable" 
-                                  style="position: relative;background-color: red !important;">
-                                      Karen Event 1</div>
-                                <div class="external-event label label-default ui-draggable " 
-                                  style="position: relative;background-color: red !important;">
-                                      Mark Event 2</div>
-                                <div class="external-event label label-default ui-draggable " 
-                                  style="position: relative;background-color: blue !important;">
-                                      Mike Event 3</div>
-                                <div class="external-event label label-default ui-draggable " 
-                                  style="position: relative;background-color: yellow !important; color: black;">
-                                      Roy Event 4</div>
-                                <div class="external-event label label-default ui-draggable " 
-                                    style="position: relative;background-color: orange !important; color: black;">
-                                      Matt Event 5</div>
+                                <div  id="items" >
+                                  <span ng-repeat="item in vm.instructorlist"  items-drag  class="external-event label label-default" id="event"
+                                    style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important" >
+                                        {{item.firstname}} {{item.lastname}}</span>
+                                </div>      
+                                <hr>
+                                <div  id="testtype" >
+                                  <span ng-repeat="item in vm.testtypelist"  items-drag  class="external-event label label-default" id="{{item.testdescription}}"
+                                    style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important" >
+                                        {{item.testdescription}}</span>
+                                </div>      
+                                <hr>
+                                <div class="external-event label label-default ui-draggable " id="movie"
+                                    style="position: relative;background-color: cyan !important; color: black;">
+                                      Movie Night</div>
                             </div>
                             <div id="event-block"></div>
               <!--              <p>

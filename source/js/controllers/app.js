@@ -8,14 +8,52 @@ var studentpick = {};
  
     angular
         .module('ng-admin')
-    .controller('AppController', AppController);
+    .controller('AppController', AppController)
 //    .controller('EventPopController', EventPopController);
 
+    .directive('itemsDrag', function()
+    {
+       var uid = (function(){var id=0;return function(){if(arguments[0]===0)id=0;return id++;}})();
+
+       var eventDrag = function(el){
+            // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
+            // it doesn't need to have a start or end
+            var eventObject = {
+                title: $.trim(el.text()), // use the element's text as the event title
+                id: uid()
+            };
+    
+            // store the Event Object in the DOM element so we can get to it later
+            el.data('eventObject', eventObject);
+    
+            // make the event draggable using jQuery UI
+            el.draggable({
+                zIndex: 999,
+                revert: true,      // will cause the event to go back to its
+                revertDuration: 0  //  original position after the drag
+            });
+        };
+
+        return {
+            link: function(scope, element, attrs)
+            {
+                 element.draggable();
+                 eventDrag(element);
+
+                 scope.$on('$destroy', function()
+                 {
+                     element.off('**');
+                 });
+            }
+        };
+    });
+    
     AppController.$inject = ['$scope', 
     '$routeParams', 
     'UserServices',
     'AttendanceServices',
     'CalendarServices',
+    'TestingServices',
     'EventServices',
     'StudentServices',
     'PaymentServices',
@@ -38,6 +76,7 @@ var studentpick = {};
          UserServices,
          AttendanceServices,
          CalendarServices,
+         TestingServices,
          EventServices, 
          StudentServices, 
          PaymentServices,
@@ -73,6 +112,8 @@ var studentpick = {};
     vm.updateTasknamelist = updateTasknamelist;
     vm.removeTasknamelist = removeTasknamelist;
     vm.gettheTasknamelist = gettheTasknamelist;
+    vm.getInstructorList = getInstructorList();
+    vm.getTestTypes = getTestTypes;
     vm.getStudentStatsMonths = getStudentStatsMonths;
     vm.islogin = islogin;
     vm.isokf = isokf;
@@ -88,6 +129,8 @@ var studentpick = {};
                         ]
     };
     vm.thisTasknamelist=[];
+    vm.instructorlist=[];
+    vm.testtypelist=[];
     vm.message;
     vm.loading = false; 
     vm.loadAttempted = false;
@@ -131,7 +174,9 @@ var studentpick = {};
 //    vm.refreshStudents = refreshStudents;
 //    vm.refreshstudentlist = [];
     vm.events = [];
-    
+    vm.colorlist    = ['maroon','red'   ,'orange','yellow','olive','purple','fuchsia','lime','green','navy',  'blue','aqua',  'teal', 'silver','black']; 
+    vm.colorlisthex = [ '#fff' , '#000' , '#000'  ,'#000' , '#fff', '#fff'  , '#000' ,'#000', '#fff', '#fff', '#fff', '#000',  '#000',  '#fff', '#fff']; 
+
     var uid = (function(){var id=0;return function(){if(arguments[0]===0)id=0;return id++;}})();
     
 //    vm.vmevent = $controller('EventPopController as vmevent', {$scope: $scope});
@@ -197,6 +242,7 @@ var studentpick = {};
     var eventclass;
     var color;
     var textcolor;
+    var eventtype;
 
     function popinit() {
         $log.debug("popinit entered");
@@ -264,7 +310,21 @@ $(document).ready(function() {
                     $log.debug("resetCalendar error in activate", e);
               }
         );
+        
     });
+    getInstructorList().then(function() {
+        $log.debug("returned from getInstructorList");
+//        $('#external-events span.external-event').each(function() {
+//            eventDrag($(this));
+//            $log.debug('external-events after drag',$(this));
+        
+//        });
+
+    });
+    getTestTypes().then(function() {
+       $log.debug("returned from getTesttypes"); 
+    });
+    
 });
     
     
@@ -288,7 +348,7 @@ $(document).ready(function() {
     
 
 
-    function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,updateflag,theevent,contactid,eventid,eventclass,color,textcolor){
+    function calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,updateflag,theevent,contactid,eventid,eventclass,color,textcolor,eventtype){
         $log.debug('save cal',
             screen,
             title,
@@ -304,7 +364,7 @@ $(document).ready(function() {
             eventid,
             eventclass,
             color,
-            textcolor);
+            textcolor,eventtype);
             var reminderCheck;
             if (reminderCheckbox === undefined) {
                 reminderCheck = 0;
@@ -350,6 +410,7 @@ $(document).ready(function() {
 				theevent.className = eventclass;
 				theevent.color = color;
 				theevent.textcolor = textcolor;
+				theevent.eventtype = eventtype;
 				theevent.contactid = contactid;
 				theevent.eventid = eventid;
 
@@ -391,6 +452,7 @@ $(document).ready(function() {
 				className: eventclass.val(),
 				color: color.val(),
 				textcolor: textcolor.val(),
+				eventtype: eventtype.val(),
 				eventid: eventid.val(),
 				contactid: contactid.val()
 			};
@@ -430,6 +492,7 @@ $(document).ready(function() {
             userpick: rep,
             color: theEvent.backgroundColor,
             textcolor: theEvent.textColor,
+            eventtype: theEvent.eventtype,
             classname: theEvent.className
         };
 
@@ -662,6 +725,73 @@ $(document).ready(function() {
 
     }
 
+    function getInstructorList() {
+        $log.debug('getInstructorList entered');
+        var refreshpath = "../v1/instructorlist";
+
+         return CalendarServices.getinstructorlist(refreshpath).then(function(data){
+                $log.debug('getinstructorlist returned data');
+                $log.debug(data);
+                vm.instructorlist = data.instructorlist; 
+                for (var i=0;i<data.instructorlist.length;i++) {
+                    if (i > vm.colorlist.length) {
+                        vm.instructorlist[i].backgroundcolor = vm.colorlist[vm.colorlist.length];
+                        vm.instructorlist[i].textcolor = vm.colorlisthex[vm.colorlist.length];                        
+                    } else {
+                        vm.instructorlist[i].backgroundcolor = vm.colorlist[i];
+                        vm.instructorlist[i].textcolor = vm.colorlisthex[i];
+                    }
+                }
+                return vm.instructorlist;
+            },
+            function (error) {
+                $log.debug('Caught an error getinstructorlist, going to notify:', error); 
+                vm.thisTasknamelist = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+
+    }
+
+    function getTestTypes() {
+        $log.debug('getTestTypes entered');
+        var refreshpath = "../v1/testtypes";
+
+         return TestingServices.getTestTypes(refreshpath).then(function(data){
+                $log.debug('getTestTypes returned data');
+                $log.debug(data);
+                vm.testtypelist = data.testtypelist; 
+                for (var i=0;i<data.testtypelist.length;i++) {
+                    if (i > vm.colorlist.length) {
+                        vm.testtypelist[i].backgroundcolor = vm.colorlist[vm.colorlist.length];
+                        vm.testtypelist[i].textcolor = vm.colorlisthex[vm.colorlist.length];                        
+                    } else {
+                        vm.testtypelist[i].backgroundcolor = vm.colorlist[i];
+                        vm.testtypelist[i].textcolor = vm.colorlisthex[i];
+                    }
+                }
+                return vm.testtypelist;
+            },
+            function (error) {
+                $log.debug('Caught an error getTestTypes, going to notify:', error); 
+                vm.testtypelist = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+
+    }
 
 
 /*    function refreshStudents(theinput) {
@@ -840,7 +970,7 @@ $(document).ready(function() {
             $log.debug('setting apikey for services');
             var thekey = UserServices.getapikey();
             CalendarServices.setapikey(thekey);
-            CalendarServices.setapikey(thekey);
+            TestingServices.setapikey(thekey);
             EventServices.setapikey(thekey);
             StudentServices.setapikey(thekey);
             PaymentServices.setapikey(thekey);
@@ -985,6 +1115,7 @@ $(document).ready(function() {
     });
     
        var eventDrag = function(el){
+           $log.debug("eventdrag entered", el);
         // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
         // it doesn't need to have a start or end
         var eventObject = {
@@ -1003,6 +1134,7 @@ $(document).ready(function() {
             revertDuration: 0  //  original position after the drag
         });
     };
+
 
     $('#external-events div.external-event').each(function() {
         
@@ -1082,14 +1214,15 @@ $(document).ready(function() {
                     var eventclass = calEvent.className;
                     var color = calEvent.backgroundColor;
                     var textcolor = calEvent.textColor;
+                    var eventtype = calEvent.eventtype;
 
                     var reminderInterval = $('#reminderInterval').val();
                     var userpick = $('#userpick').val();
                     var reminderCheckbox = $('#reminderCheckbox');
                     var screen = $(this);
-                    $log.debug('before calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,calEvent,contactid,eventid,eventclass,color,textcolor);
+                    $log.debug('before calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,calEvent,contactid,eventid,eventclass,color,textcolor,eventtype);
                     
-                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,calEvent,contactid,eventid,eventclass,color,textcolor);
+                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,calEvent,contactid,eventid,eventclass,color,textcolor,eventtype);
                     $('#calendar').fullCalendar('unselect');
 
                     $(this).dialog("close");
@@ -1182,6 +1315,7 @@ $(document).ready(function() {
             $log.debug("copied end",copiedEventObject.end);
             copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
             copiedEventObject.textColor = jsEvent.target.style.color;
+            copiedEventObject.eventtype = jsEvent.target.id;
             var inner = jsEvent.target.innerText;
     //        $log.debug('drop parsing',inner);
             var innerJ,desc;
@@ -1269,6 +1403,7 @@ $(document).ready(function() {
             var eventclass = event.className;
             var color = event.backgroundColor;
             var textcolor = event.textColor;
+            var eventtype = event.eventtype;
             var screen = $(this);
     
             if (!confirm("Are you sure about this change?")) {
@@ -1276,9 +1411,9 @@ $(document).ready(function() {
             } else {
 
                     $log.debug('save in eventdrop');
-                    $log.debug('before eventdrop calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,event,contactid,eventid,eventclass,color, textcolor);
+                    $log.debug('before eventdrop calsave',screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,event,contactid,eventid,eventclass,color, textcolor,eventtype);
                     
-                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,event,contactid,eventid,eventclass,color,textcolor);
+                    calsave(screen,title,startd,start,end,reminderCheckbox,reminderInterval,userpick,true,event,contactid,eventid,eventclass,color,textcolor,eventtype);
                 
             }
             
@@ -1288,6 +1423,7 @@ $(document).ready(function() {
     var addEvent = function (name) {
         var thecolor = vm.mycolor;
         var thetextcolor = vm.textcolor;
+        
         name = name.length === 0 ? "Untitled Event" : name;
         var html = $('<div class="external-event label label-default" style="background-color: ' + 
             thecolor + '!important; color:' + thetextcolor + ' !important;">' + name + '</div>');

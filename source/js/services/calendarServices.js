@@ -28,6 +28,7 @@
             updateTasknamelist: updateTasknamelist,
             removeTasknamelist: removeTasknamelist,
             gettasknamelist: gettasknamelist,
+            getinstructorlist: getinstructorlist,
             setCurrentEvent: setCurrentEvent,
             getCurrentEvent: getCurrentEvent,
             setNotifyList: setNotifyList,
@@ -46,6 +47,12 @@
         }
         function gettasknamelist(path) {
             $log.debug('gettasknamelist service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getinstructorlist(path) {
+            $log.debug('getinstructorlist service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
