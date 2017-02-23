@@ -733,13 +733,15 @@ $(document).ready(function() {
                 $log.debug('getinstructorlist returned data');
                 $log.debug(data);
                 vm.instructorlist = data.instructorlist; 
-                for (var i=0;i<data.instructorlist.length;i++) {
-                    if (i > vm.colorlist.length) {
-                        vm.instructorlist[i].backgroundcolor = vm.colorlist[vm.colorlist.length];
-                        vm.instructorlist[i].textcolor = vm.colorlisthex[vm.colorlist.length];                        
-                    } else {
-                        vm.instructorlist[i].backgroundcolor = vm.colorlist[i];
-                        vm.instructorlist[i].textcolor = vm.colorlisthex[i];
+                if (typeof data.instructorlist !== 'undefined' ) {  
+                    for (var i=0;i<data.instructorlist.length;i++) {
+                        if (i > vm.colorlist.length) {
+                            vm.instructorlist[i].backgroundcolor = vm.colorlist[vm.colorlist.length];
+                            vm.instructorlist[i].textcolor = vm.colorlisthex[vm.colorlist.length];                        
+                        } else {
+                            vm.instructorlist[i].backgroundcolor = vm.colorlist[i];
+                            vm.instructorlist[i].textcolor = vm.colorlisthex[i];
+                        }
                     }
                 }
                 return vm.instructorlist;

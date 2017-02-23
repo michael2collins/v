@@ -62,15 +62,32 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         //cleanout old and replace with a new set
         $cleansql = "Delete from ncalendar where userid = ? and id = ?";
+        $cleanTestsql = "Delete from testing where calendarid = ?";
         if ($stmt = $this->conn->prepare($cleansql) ) {
             $stmt->bind_param("ss", $user_id, $eventID);
 
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
+            if ($num_affected_rows !== 0) {
+                if ($stmt = $this->conn->prepare($cleanTestsql) ) {
+                    $stmt->bind_param("s",  $eventID);
+        
+                    $stmt->execute();
+                    $num_affected_rows2 = $stmt->affected_rows;
+                    $stmt->close();
+                } else {
+                    printf("cal testing remove Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                }
+            } else {
+                printf("Remove cal issue Errormessage: %s should be nonzero\n", $num_affected_rows);
+                return -1;
+            }
+            //todo should combine the results of the two results
             return $num_affected_rows > 0;            
         } else {
-            printf("Errormessage: %s\n", $this->conn->error);
+            printf("remove cal event Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
         
@@ -235,16 +252,22 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                     // Check for successful insertion
                     if ($result) {
                         $new_event_id = $this->conn->insert_id;
+                        if ( strpos($eventtype, 'Test') !== false) {
+                            if ($this->createTest($new_event_id) == 0 ) {
+                                printf("Createtest 2 Errormessage: %s\n", $this->conn->error);
+                                return NULL;
+                            }
+                        }
                         // User successfully inserted
                         return $new_event_id;
                     } else {
                         // Failed to create ncal
-                        printf("Errormessage: %s\n", $this->conn->error);
+                        printf("Insert Cal2 Errormessage: %s\n", $this->conn->error);
                         return NULL;
                     }
 
                 } else {
-                    printf("Errormessage: %s\n", $this->conn->error);
+                    printf("Insert cal Errormessage: %s\n", $this->conn->error);
                         return NULL;
                 }
 
@@ -274,6 +297,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
+
                 $stmt->close();
                 return $num_affected_rows;
                 
@@ -289,7 +313,39 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
+    private function createTest($eventid) {
+        $num_affected_rows = 0;
 
+        $default_tester = ":Witness";        
+        $sql = "INSERT INTO `testing`( `Tester1`, `Tester2`, `Tester3`, `Tester4`, `calendarid`) VALUES (?,?,?,?,?)";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sssss",
+                            $default_tester, $default_tester, $default_tester, $default_tester,
+                              $eventid
+                                 );
+            $result = $stmt->execute();
+
+            $stmt->close();
+            // Check for successful insertion
+            if ($result) {
+                $new_cal_id = $this->conn->insert_id;
+                // User successfully inserted
+                return $new_cal_id;
+            } else {
+                // Failed to create ncal
+                printf("CreateTest Errormessage: %s\n", $this->conn->error);
+                return 0;
+            }
+
+        } else {
+            printf("CreateTEst2 Errormessage: %s\n", $this->conn->error);
+                return 0;
+        }
+
+        
+    }
+    
 
     public function removeTasknamelist($taskname) {
 
