@@ -21,7 +21,10 @@
         var service = {
   //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
-             getTestTypes: getTestTypes
+             getTestTypes: getTestTypes,
+             gettestcandidateDetails: gettestcandidateDetails,
+             gettestcandidateSource: gettestcandidateSource,
+             gettestcandidateNames: gettestcandidateNames
         };
         return service;
         
@@ -31,6 +34,26 @@
      }
         function getTestTypes(path) {
             $log.debug('getTestTypes service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        function gettestcandidateDetails(path) {
+            $log.debug('gettestcandidateDetails service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        function gettestcandidateNames(path) {
+            $log.debug('gettestcandidateNames service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function gettestcandidateSource(path) {
+            $log.debug('gettestcandidateSource service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

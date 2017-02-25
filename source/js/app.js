@@ -229,6 +229,9 @@
             .when('/table-basic-eventcreation', {
                 templateUrl: 'templates/states/table-basic-eventcreation.html'
             })
+            .when('/table-basic-testcandidates', {
+                templateUrl: 'templates/states/table-basic-testcandidates.html'
+            })
             .otherwise({
                 redirectTo: '/page-signin'
      //           redirectTo: '/'
