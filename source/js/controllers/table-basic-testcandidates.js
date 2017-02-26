@@ -9,6 +9,7 @@
     '$routeParams',
     '$log',
     'TestingServices',
+    'CalendarServices',
     '$location',
     '$window',
     '$q',
@@ -20,7 +21,7 @@
     '$timeout'
     ];
 
-    function TestCandidateTableBasicController($routeParams, $log, TestingServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
+    function TestCandidateTableBasicController($routeParams, $log, TestingServices,CalendarServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -30,6 +31,10 @@
         vm.gettestcandidateDetails = gettestcandidateDetails;
         vm.updatetestcandidate = updatetestcandidate;
         vm.gettestcandidateNames = gettestcandidateNames;
+        vm.getInstructorList = getInstructorList;
+        vm.getTestDates = getTestDates;
+        vm.updateTest = updateTest;
+        
 //        vm.getColDefList = getColDefList;
 //        vm.setColDef = setColDef;
 //        vm.dateopen = dateopen;
@@ -59,6 +64,7 @@
         vm.selectedStudents=[];
         vm.TestCandidateSelected = '';
         vm.testcandidatelist=[];
+        vm.instructorlist=[];
         vm.testcandidate = '';
         vm.ContactID = '';
 
@@ -93,6 +99,8 @@
  //           setInitColDefs();
  //           $log.debug('activate setInitColDefs returned');
 //            getColDefList();
+            getInstructorList();
+            getTestDates();
             setGridOptions();
 
         }
@@ -121,6 +129,80 @@
             return i;
         }
   */      
+    function updateTest(){
+        $log.debug('updateTest entered');
+    
+    }
+    function getInstructorList() {
+        $log.debug('getInstructorList entered');
+        var refreshpath = "../v1/instructorlist";
+        var witnessdefault = {
+            firstname: 'Witness',
+            lastname: '',
+            instructortitle: '',
+            name: 'Witness'
+        }
+         return CalendarServices.getinstructorlist(refreshpath).then(function(data){
+                $log.debug('getinstructorlist returned data');
+                $log.debug(data);
+                vm.instructorlist = data.instructorlist; 
+                if (typeof data.instructorlist !== 'undefined' ) {  
+                    for (var i=0;i<data.instructorlist.length;i++) {
+                        vm.instructorlist[i].name = data.instructorlist[i].firstname + ' ' + data.instructorlist[i].lastname;
+                    }
+                }
+                vm.instructorlist.unshift(witnessdefault);
+                return vm.instructorlist;
+            },
+            function (error) {
+                $log.debug('Caught an error getinstructorlist, going to notify:', error); 
+                vm.instructorlist = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+
+    }
+    function getTestDates(testname) {
+        if (typeof testname === 'undefined') {
+            return {};
+        }
+        $log.debug('getTestDates entered', testname);
+        var refreshpath = encodeURI("../v1/testdates?testname=" + testname.name);
+
+         return TestingServices.getTestDates(refreshpath).then(function(data){
+                $log.debug('getTestDates returned data');
+                $log.debug(data);
+                if (data.testdatelist.length > 1) {
+                    var error = "too many testdates found:" + data.testdatelist.length;
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    vm.testdatelist = [];
+                    return ($q.reject(error));
+                }
+                vm.testdatelist = data.testdatelist[0]; 
+                return vm.testdatelist;
+            },
+            function (error) {
+                $log.debug('Caught an error getTestDates, going to notify:', error); 
+                vm.testdatelist = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+
+    }
+  
         function createtestcandidate(testcandidate) {
             if (vm.selected === false) {
                 var error = "no rows selected for testcandidate";
@@ -274,7 +356,7 @@
                 },
                 function (error) {
                     $log.debug('Caught an error gettestcandidateDetails:', error); 
-                    vm.data = [];
+                    vm.data.testcandidatelist = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));

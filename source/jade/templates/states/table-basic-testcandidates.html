@@ -21,6 +21,7 @@
       <div class="panel panel-green">
         <div class="panel-heading">Filters</div>
         <div class="panel-body ">
+
           <div class="col-lg-12">
               <div class="row col-md-12" style="height: 70px;">
 
@@ -31,7 +32,7 @@
                     <ui-select  ng-model="vm.TestCandidateSelected" 
                                 theme="bootstrap" 
                                 reset-search-input="false"
-                                on-select="vm.gettestcandidateDetails($item)"
+                                on-select="vm.gettestcandidateDetails($item);vm.getTestDates($item)"
                                 style="width: 300px;" 
                                 title="Filter for a Test"
                                 append-to-body="false">
@@ -53,6 +54,39 @@
                   </div>
                 </div>     
               </div>
+
+          <div class="col-lg-12 row">
+          <form action="" novalidate name="edittest" class="form-horizontal">
+            <div class="form-body pal">
+{{vm.testdatelist.tester1}}
+              <div class="row">
+                <div class="col-md-6">
+                  <div ng-class="{'has-error': edittest.tester1.$invalid, 'has-success': !edittest.tester1.$invalid}" class="form-group">
+                    <label for="inputtester1" class="control-label">Tester </label>
+                    <div class="input-icon right">
+                      <i data-hover="tooltip" data-original-title="Correct" ng-show="edittest.tester1.$dirty" ng-class="edittest.tester1.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                      <select id="inputtester1" type="text" name="tester1" 
+                        ng-model="vm.testdatelist.tester1" 
+                        ng-change="vm.updateTest()" 
+                      required
+                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                        <option ng-repeat="instructor in vm.instructorlist" ng-selected="{{instructor.name==vm.testdatelist.tester1}}" placeholder="Select" value="{{instructor.name}}">{{instructor.name}}</option>
+                      </select>
+                    </div>
+                    <div style="color:maroon" role="alert" ng-messages="edittest.tester1.$error" class="has-error">
+                      <div ng-message="required">You did not enter a field</div>
+                      <div ng-message="minlength">Your field is too short</div>
+                      <div ng-message="maxlength">Your field is too long</div>
+                      <div ng-message="email">Your email is missing @ and/or a period</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+           </div>
+          </form>
+          </div>
+
 
           <div class="row col-lg-12">
                <div ui-grid="vm.gridOptions" ng-style="{height: (30*11)+140+'px'}"

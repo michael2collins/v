@@ -45,7 +45,9 @@ class TestingDbHandler {
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
+        $sql .= " order by startdated desc ";
         error_log( print_R("getTestcandidateNames sql after security: $sql", TRUE), 3, LOG);
+
 
         if ($stmt = $this->conn->prepare($sql)) {
             if ($stmt->execute()) {
@@ -67,23 +69,20 @@ class TestingDbHandler {
 
     }
 
-
-    public function getTestcandidateDetails($theinput) {
+    public function getTestcandidateDetails() {
         $sql = " select * from testcandidatesource ";
-        $sql .= " where testname = ? "; 
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getTestcandidateDetails sql after security: $sql", TRUE), 3, LOG);
 
 
-        $sql .= " order by testname, testdate, lastname, firstname ";
+        $sql .= " order by lastname, firstname ";
         
         error_log( print_R("getTestcandidateDetails sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $theinput);
-            
+
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getTestcandidateDetails list returns data", TRUE), 3, LOG);
@@ -102,8 +101,6 @@ class TestingDbHandler {
         }
 
     }
-
-
 
     public function getTestTypes() {
 
@@ -132,7 +129,36 @@ class TestingDbHandler {
 
     }
 
+    public function getTestDates($testname) {
 
+        global $school;
+
+        $sql = "SELECT a.id as testingid, tester1, tester2, tester3, tester4, startdated as testdate, concat(b.startdated,  ' ', b.eventtype) as testname ";
+        $sql .= " ,startdate,enddate, testtype, eventtype from testing a, ncalendar b, testtypes c WHERE b.id = a.calendarid and b.eventtype = c.testdescription ";
+        $sql .= " and b.studentschool = ? ";
+        $sql .= " and c.studentschool = ? ";
+        $sql .= " and concat(b.startdated,  ' ', b.eventtype) = ? ";
+        
+        $sql .= " order by startdated";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sss", $school, $school, $testname);
+            if ($stmt->execute()) {
+                $testdatelist = $stmt->get_result();
+                $stmt->close();
+                return $testdatelist;
+            } else {
+                error_log( print_R("getTestDates  execute failed, $sql", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getTestDates  sql failed, $sql", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
 
 }
 ?>

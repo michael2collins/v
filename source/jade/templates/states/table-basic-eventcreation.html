@@ -52,14 +52,16 @@
                 </div>
                 <div class="col-md-7">
                   <div class="col-md-6">
+
                     <label for="query" class="control-label">Previous Grid Query</label>
                     <ui-select tagging tagging-label="(custom 'new' label)" 
                         ng-model="vm.colsubkey" 
                         on-select="vm.changeColDef($item)"
-                        theme="select2" 
+                        theme="bootstrap" 
                         ng-disabled="disabled" 
                         class="col-md-12"
-                        title="Choose a query">
+                        title="Choose a query"
+                        append-to-body="false">
           <ui-select-match allow-clear placeholder="Select the columns...">{{$select.selected.col}}</ui-select-match>
                       <ui-select-choices 
         repeat="colkeyitem.col as colkeyitem in vm.colsubkeys| filter: $select.search ">

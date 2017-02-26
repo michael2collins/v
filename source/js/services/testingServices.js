@@ -24,7 +24,8 @@
              getTestTypes: getTestTypes,
              gettestcandidateDetails: gettestcandidateDetails,
              gettestcandidateSource: gettestcandidateSource,
-             gettestcandidateNames: gettestcandidateNames
+             gettestcandidateNames: gettestcandidateNames,
+             getTestDates: getTestDates
         };
         return service;
         
@@ -34,6 +35,12 @@
      }
         function getTestTypes(path) {
             $log.debug('getTestTypes service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getTestDates(path) {
+            $log.debug('getTestDates service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

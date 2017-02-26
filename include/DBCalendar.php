@@ -197,6 +197,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                                       ) {
 
 //        global $user_id;
+        global $school;
 
         $num_affected_rows = 0;
  //       error_log( print_R("saveCalendarEvent  entered for $user_id" , TRUE), 3, LOG);
@@ -237,14 +238,14 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         $enddatehhmmx->setTimezone(new DateTimeZone($tz));
         $endhhmm = $enddatehhmm->format('m/d/Y H:i A P ') . $enddatehhmmx->format('T');;
         
-        $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, `reminderinterval`, `classname`, `color`, textcolor, eventtype) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ";
+        $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, `reminderinterval`, `classname`, `color`, textcolor, eventtype, studentschool) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ";
         
         if ($this->isCalendarEventExists($eventID) == 0 || $eventID == "" ) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("ssssssssssss",
+                $stmt->bind_param("sssssssssssss",
                                   $title, $date , $hhmm, $endhhmm,
-                                       $contactid, $userpick, $reminder, $reminderInterval, $classname, $color, $textcolor, $eventtype
+                                       $contactid, $userpick, $reminder, $reminderInterval, $classname, $color, $textcolor, $eventtype, $school
                                      );
                     $result = $stmt->execute();
 
