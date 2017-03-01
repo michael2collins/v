@@ -3,8 +3,75 @@
 
     angular
         .module('ng-admin')
-        .controller('TestCandidateTableBasicController', TestCandidateTableBasicController);
+        .controller('TestCandidateTableBasicController', TestCandidateTableBasicController)
+        .directive('zoom', function($window) {
 
+	function link(scope, element, attrs) {
+
+		//SETUP
+		var frame, image, zoomlvl, fWidth, fHeight, rect, rootDoc, offsetL, offsetT, xPosition, yPosition, pan;
+		//Template has loaded, grab elements.
+        scope.$watch('$viewContentLoaded', function()
+        {
+           frame = angular.element(document.querySelector("#"+scope.frame))[0];
+           image = angular.element(document.querySelector("#"+scope.img))[0];
+           
+           zoomlvl = (scope.zoomlvl === undefined) ? "2.5" : scope.zoomlvl;
+        });
+
+
+
+		//MOUSE TRACKER OVER IMG
+		scope.trackMouse = function($event) {
+					
+			fWidth = frame.clientWidth;
+			fHeight = frame.clientHeight;
+			
+			rect = frame.getBoundingClientRect();
+			rootDoc = frame.ownerDocument.documentElement;
+			
+			//calculate the offset of the frame from the top and left of the document
+			offsetT = rect.top + $window.pageYOffset - rootDoc.clientTop;
+			offsetL = rect.left + $window.pageXOffset - rootDoc.clientLeft;
+
+			//calculate current cursor position inside the frame, as a percentage
+			xPosition = (($event.pageX - offsetL) / fWidth) * 100;
+			yPosition = (($event.pageY - offsetT) / fHeight) * 100;
+
+			pan = xPosition + "% " + yPosition + "% 0";
+			image.style.transformOrigin = pan;
+
+		};
+        
+		//MOUSE OVER | ZOOM-IN
+		element.on('mouseover', function(event) {
+			image.style.transform = 'scale('+zoomlvl+')';
+		});
+
+		//MOUSE OUT | ZOOM-OUT
+		element.on('mouseout', function(event) {
+			image.style.transform = 'scale(1)';
+		});
+
+
+	}
+
+	return {
+		restrict: 'EA',
+		scope: {
+			src: '@src',
+			frame: '@frame',
+			img: '@img',
+			zoomlvl: '@zoomlvl'
+		},
+		template: [
+			'<div id="{{ frame }}" class="zoomPanFrame" >',
+			'<img id="{{ img }}" class="zoomPanImage" ng-src= "{{ src }}" ng-mousemove="trackMouse($event)"></img>',
+			'</div>'
+		].join(''),
+		link: link
+	};
+});
     TestCandidateTableBasicController.$inject = [
     '$routeParams',
     '$log',
@@ -18,10 +85,12 @@
     'Notification',
     'uiGridConstants',
     'uiGridGroupingConstants',
-    '$timeout'
+    '$timeout',
+    'moment'
     ];
 
-    function TestCandidateTableBasicController($routeParams, $log, TestingServices,CalendarServices, $location, $window, $q, $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout) {
+    function TestCandidateTableBasicController($routeParams, $log, TestingServices,CalendarServices, $location, $window, $q,
+        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -168,6 +237,15 @@
             );
 
     }
+    function convertTime(thetime) {
+        if (typeof(thetime) !== 'undefined') {
+            var m = moment(thetime,"MM/DD/YYYY hh:mm A z");
+            $log.debug('convertTime: passed in: ',thetime,
+                'isvalid?' ,m.isValid(),
+                'where invalid', m.invalidAt());
+            return moment(thetime,"MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
+        }
+    }
     function getTestDates(testname) {
         if (typeof testname === 'undefined') {
             return {};
@@ -185,7 +263,16 @@
                     vm.testdatelist = [];
                     return ($q.reject(error));
                 }
-                vm.testdatelist = data.testdatelist[0]; 
+                if (data.testdatelist.length === 1) {
+                    vm.testdatelist = data.testdatelist[0]; 
+                    vm.testdatelist.starttime = convertTime(data.testdatelist[0].startdate);
+                    vm.testdatelist.endtime = convertTime(data.testdatelist[0].enddate);
+                    vm.gettestcandidateDetails(vm.testdatelist.testtype);
+                    
+                } else {
+                    vm.testdatelist = {};
+                    
+                }
                 return vm.testdatelist;
             },
             function (error) {
@@ -305,8 +392,8 @@
         }
 
         function gettestcandidateDetails(thetestcandidate) {
-            $log.debug('gettestcandidateDetails entered:', thetestcandidate.name);
-            var path = encodeURI('../v1/testcandidatedetails?testname=' + thetestcandidate.name);
+            $log.debug('gettestcandidateDetails entered:',thetestcandidate, thetestcandidate);
+            var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetestcandidate );
 
             $log.debug('gettestcandidateDetails path:', path);
             
@@ -688,60 +775,118 @@
         }
 */
         function setGridOptions() {
-
             vm.gridOptions = {
                 enableFiltering: true,
                 paginationPageSizes: vm.limits,
                 paginationPageSize: 10,
+                rowHeight: 100,
             columnDefs: [
                 // default
                 {
                     field: 'LastName',
+                    name: 'Last',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
                     field: 'FirstName',
+                    name: 'First',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
                 }, {
+                    //<zoom src="./imageURL.jpg" frame="example1" img="image1" zoomlvl="1.5"></zoom>
+//                    field: 'contactpictureurl',
+ //                   cellTemplate:"<img width=\"50px\" ng-src=\"./images/students/{{grid.getCellValue(row, col)}}\" lazy-src>",
+  //                  name: 'Picture',
+//                    headerCellClass: highlightFilteredHeader,
+ //                   enableCellEdit: false
+  //              }, {
+                    field: 'contactpictureurl',
+                    minWidth: 100,
+                    name: 'Picture',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    cellTemplate: '<zoom ng-src="{{grid.getCellValue(row, col)}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
+                }, {
                     field: 'ContactID',
+                    name: 'ID',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
                     visible: false
                 }, {
                     field: 'age',
+                    name: 'Age',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    visible: false
                 }, {
                     field: 'BeltSize',
+                    name: 'Belt size',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    visible: false
                 }, {
                     field: 'CurrentRank',
+                    name: 'Rank',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
                     field: 'LastPromoted',
+                    name: 'Last Promoted',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    visible: false
                 }, {
                     field: 'ContactType',
+                    name: 'Contact',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    filter: {term: "Student"},                    
+                    visible: true
                 }, {
                     field: 'CurrentReikiRank',
+                    name: 'Reiki Rank',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    visible: false
                 }, {
                     field: 'CurrentIARank',
+                    name: 'IA Rank',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    visible: false
                 }, {
                     field: 'ReadyForNextRank',
+                    name: 'Ready',
                     headerCellClass: highlightFilteredHeader,
+                    filter: {term: "1"},                    
                     enableCellEdit: false
                 }, {
+                    field: 'agecat',
+                    name: 'Age Group',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'classcat',
+                    name: 'Category',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'nclass',
+                    name: 'Class',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'pgrmcat',
+                    name: 'Program',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
                     field: 'testname',
+                    name: 'Test',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
                     visible: false

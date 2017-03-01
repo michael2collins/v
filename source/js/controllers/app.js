@@ -478,7 +478,7 @@ $(document).ready(function() {
     function saveCalendarEvent(theEvent) {
         var updpath = "../v1/saveCalendarEvent";
         $log.debug('about saveCalendarEvent ', theEvent, updpath);
-        var rep = (typeof( theEvent.userpick) !== 'undefined' && theEvent.userpick !== "") ? theEvent.userpick.replace("number:","") : vm.myuser;
+        var rep = (typeof( theEvent.userpick) !== 'undefined' && theEvent.userpick !== "") ? theEvent.userpick.toString().replace("number:","") : vm.myuser;
         
         var thedata = {
             title: theEvent.title,

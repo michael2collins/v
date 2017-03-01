@@ -225,11 +225,22 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
 
     error_log( print_R("testcandidatedetails entered:\n ", TRUE), 3, LOG);
 
+    $allGetVars = $app->request->get();
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $testtype = '';
+
+    if(array_key_exists('testtype', $allGetVars)){
+        $testtype = $allGetVars['testtype'];
+    }
+
+    $picroot = './images/students/';
+
     $response = array();
     $db = new TestingDBHandler();
 
     // fetch task
-    $result = $db->getTestcandidateDetails();
+    $result = $db->getTestcandidateDetails($testtype);
     $response["error"] = false;
     $response["testcandidatedetails"] = array();
 
@@ -245,7 +256,7 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
         $tmp["CurrentReikiRank"] = (empty($slist["CurrentReikiRank"]) ? "NULL" : $slist["CurrentReikiRank"]);
         $tmp["CurrentIARank"] = (empty($slist["CurrentIARank"]) ? "NULL" : $slist["CurrentIARank"]);
         $tmp["ReadyForNextRank"] = (empty($slist["ReadyForNextRank"]) ? "NULL" : $slist["ReadyForNextRank"]);
-        $tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $slist["contactpictureurl"]);
+        $tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $picroot . $slist["contactpictureurl"]);
         $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
         $tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
         $tmp["lastpromoted"] = (empty($slist["lastpromoted"]) ? "1900-01-01" : $slist["lastpromoted"]);

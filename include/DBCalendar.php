@@ -317,7 +317,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     private function createTest($eventid) {
         $num_affected_rows = 0;
 
-        $default_tester = ":Witness";        
+        $default_tester = "Witness";        
         $sql = "INSERT INTO `testing`( `Tester1`, `Tester2`, `Tester3`, `Tester4`, `calendarid`) VALUES (?,?,?,?,?)";
 
         if ($stmt = $this->conn->prepare($sql)) {

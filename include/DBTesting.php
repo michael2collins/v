@@ -69,8 +69,8 @@ class TestingDbHandler {
 
     }
 
-    public function getTestcandidateDetails() {
-        $sql = " select * from testcandidatesource ";
+    public function getTestcandidateDetails($testtype) {
+        $sql = " select * from testcandidatesource where testtype = ? ";
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
@@ -82,6 +82,7 @@ class TestingDbHandler {
         error_log( print_R("getTestcandidateDetails sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $testtype);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -140,6 +141,7 @@ class TestingDbHandler {
         $sql .= " and concat(b.startdated,  ' ', b.eventtype) = ? ";
         
         $sql .= " order by startdated";
+        error_log( print_R("getTestDates b4 execute, $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("sss", $school, $school, $testname);
