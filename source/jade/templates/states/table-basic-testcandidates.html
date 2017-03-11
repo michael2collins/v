@@ -38,7 +38,7 @@
                                 append-to-body="false">
                       <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
                       <ui-select-choices 
-                      repeat="TestCandidate in vm.testcandidatelist | filter: $select.search track by $index"
+                      repeat="TestCandidate in vm.testcandidatenames | filter: $select.search track by $index"
                       refresh="vm.gettestcandidateNames($select.search)"
                       refresh-delay="0">
                         <div id="candidatepicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
@@ -150,7 +150,7 @@
           </form>
           </div>
 
-          <div class="row col-lg-12">
+          <div class="row col-lg-6">
                <div ui-grid="vm.gridOptions" ng-style="{height: (100*11)+140+'px'}"
                     ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
                     ui-grid-resize-columns ui-grid-pinning ui-grid-edit
@@ -159,6 +159,17 @@
                     class="mygrid" >
                </div>
           </div>
+          <div class="row col-lg-6">
+               <div ui-grid="vm.resgridOptions" ng-style="{height: (100*11)+140+'px'}"
+                    ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                    ui-grid-resize-columns ui-grid-pinning ui-grid-edit
+                    ui-grid-selection ui-grid-move-columns  
+                    ui-grid-exporter
+                    class="mygrid" >
+               </div>
+            
+          </div>
+
           </div>
         </div>
         <div class="panel-footer"></div>

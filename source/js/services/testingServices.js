@@ -23,7 +23,7 @@
              setapikey: setapikey,
              getTestTypes: getTestTypes,
              gettestcandidateDetails: gettestcandidateDetails,
-             gettestcandidateSource: gettestcandidateSource,
+             gettestcandidateList: gettestcandidateList,
              gettestcandidateNames: gettestcandidateNames,
              getTestDates: getTestDates
         };
@@ -59,8 +59,8 @@
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
-        function gettestcandidateSource(path) {
-            $log.debug('gettestcandidateSource service entered');
+        function gettestcandidateList(path) {
+            $log.debug('gettestcandidateList service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

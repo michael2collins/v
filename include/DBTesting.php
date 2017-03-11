@@ -19,28 +19,44 @@ class TestingDbHandler {
 
     }
 
-    public function gettestcandidateSource($thelimit = NULL) {
+    public function gettestcandidateList($thelimit = NULL, $testname) {
 
-        $sql = "SELECT * FROM testcandidatesource ";
+        $sql = "SELECT * FROM testcandidatelist where testname = ? ";
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("gettestcandidateSource sql after security: $sql", TRUE), 3, LOG);
 
         
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
             $sql .= "  LIMIT " . $thelimit ;
         }
 
-        $stmt = $this->conn->prepare($sql);
-        $stmt->execute();
-        $slists = $stmt->get_result();
-        $stmt->close();
-        return $slists;
+        error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname :", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $testname);
+
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getTestcandidateDetails list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getTestcandidateDetails list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getTestcandidateDetails list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
     }
 
     public function getTestcandidateNames($theinput) {
-        $sql = "SELECT concat(`startdated` , ' ' , `eventtype`) as name FROM `ncalendar`  ";
+        $sql = "SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name FROM `ncalendar`  ";
         $sql .= " where concat(`startdated` , ' ' , `eventtype`) like '%" . $theinput . "%' "; 
 
         $schoolfield = "studentschool";
@@ -108,7 +124,7 @@ class TestingDbHandler {
         global $school;
 
 
-        $sql = "SELECT ID,testtype, testdescription FROM testtypes WHERE studentschool = ? ";
+        $sql = "SELECT  ID,testtype, testdescription FROM testtypes WHERE studentschool = ? ";
         $sql .= " order by testtype";
 
         if ($stmt = $this->conn->prepare($sql)) {
@@ -134,7 +150,7 @@ class TestingDbHandler {
 
         global $school;
 
-        $sql = "SELECT a.id as testingid, tester1, tester2, tester3, tester4, startdated as testdate, concat(b.startdated,  ' ', b.eventtype) as testname ";
+        $sql = "SELECT distinct  a.id as testingid, tester1, tester2, tester3, tester4, startdated as testdate, concat(b.startdated,  ' ', b.eventtype) as testname ";
         $sql .= " ,startdate,enddate, testtype, eventtype from testing a, ncalendar b, testtypes c WHERE b.id = a.calendarid and b.eventtype = c.testdescription ";
         $sql .= " and b.studentschool = ? ";
         $sql .= " and c.studentschool = ? ";

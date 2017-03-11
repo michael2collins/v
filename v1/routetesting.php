@@ -125,20 +125,20 @@ $app->get('/testcandidatenames', 'authenticate', function() use ($app) {
     // fetch task
     $result = $db->getTestcandidateNames($testcandidatepartial);
     $response["error"] = false;
-    $response["testcandidatelist"] = array();
+    $response["testcandidatenames"] = array();
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
             $tmp["name"] = (empty($slist["name"]) ? "NULL" : $slist["name"]);
-        array_push($response["testcandidatelist"], $tmp);
+        array_push($response["testcandidatenames"], $tmp);
     }
         //send no errors
         echoRespnse(200, $response);
     
 });
 
-$app->get('/testcandidatesource', 'authenticate', function() use($app) {
+$app->get('/testcandidatelist', 'authenticate', function() use($app) {
     //  global $user_id;
 
     $allGetVars = $app->request->get();
@@ -146,19 +146,23 @@ $app->get('/testcandidatesource', 'authenticate', function() use($app) {
     error_log( print_R($allGetVars, TRUE), 3, LOG);
 
     $limit = '';
+    $testname ='';
 
     if(array_key_exists('limit', $allGetVars)){
         $limit = $allGetVars['limit'];
+    }
+    if(array_key_exists('testname', $allGetVars)){
+        $testname = $allGetVars['testname'];
     }
 
 
     $response = array();
     $db = new TestingDBHandler();
 
-    $result = $db->gettestcandidateSource($limit);
+    $result = $db->gettestcandidateList($limit,$testname);
 
     $response["error"] = false;
-    $response["testcandidatesourceList"] = array();
+    $response["testcandidateList"] = array();
 
     if ($result != NULL) {
 
@@ -209,14 +213,14 @@ $app->get('/testcandidatesource', 'authenticate', function() use($app) {
         $tmp["classcat"] = "NULL";
         $tmp["agecat"] = "NULL";
         }
-                array_push($response["testcandidatesourceList"], $tmp);
+                array_push($response["testcandidateList"], $tmp);
             }
         $response["error"] = false;
         echoRespnse(200, $response);
 
     } else {
         $response["error"] = true;
-        $response["message"] = "testcandidatesource don't exist";
+        $response["message"] = "testcandidatelist don't exist";
         echoRespnse(404, $response);
     }
 });

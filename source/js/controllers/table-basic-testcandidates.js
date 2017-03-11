@@ -96,7 +96,7 @@
         var vm=this;
         
         vm.refreshthetestcandidate = refreshthetestcandidate;
-        vm.gettestcandidateSource = gettestcandidateSource;
+        vm.gettestcandidateList = gettestcandidateList;
         vm.gettestcandidateDetails = gettestcandidateDetails;
         vm.updatetestcandidate = updatetestcandidate;
         vm.gettestcandidateNames = gettestcandidateNames;
@@ -130,9 +130,10 @@
         vm.loading = true; 
         vm.loadAttempted = false;
         vm.gridOptions={};
+        vm.resgridOptions={};
         vm.selectedStudents=[];
         vm.TestCandidateSelected = '';
-        vm.testcandidatelist=[];
+        vm.testcandidatenames=[];
         vm.instructorlist=[];
         vm.testcandidate = '';
         vm.ContactID = '';
@@ -171,6 +172,7 @@
             getInstructorList();
             getTestDates();
             setGridOptions();
+            setResGridOptions();
 
         }
         
@@ -252,12 +254,13 @@
         }
         $log.debug('getTestDates entered', testname);
         var refreshpath = encodeURI("../v1/testdates?testname=" + testname.name);
+        var error;
 
          return TestingServices.getTestDates(refreshpath).then(function(data){
                 $log.debug('getTestDates returned data');
                 $log.debug(data);
                 if (data.testdatelist.length > 1) {
-                    var error = "too many testdates found:" + data.testdatelist.length;
+                    error = "too many testdates found:" + data.testdatelist.length;
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     vm.testdatelist = [];
@@ -268,10 +271,15 @@
                     vm.testdatelist.starttime = convertTime(data.testdatelist[0].startdate);
                     vm.testdatelist.endtime = convertTime(data.testdatelist[0].enddate);
                     vm.gettestcandidateDetails(vm.testdatelist.testtype);
+                    vm.gettestcandidateList(testname.name);
                     
                 } else {
-                    vm.testdatelist = {};
-                    
+                    error = "No testdates found in calendar for:" + testname.name;
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    vm.testdatelist = [];
+                    return ($q.reject(error));
+
                 }
                 return vm.testdatelist;
             },
@@ -339,15 +347,15 @@
         function refreshthetestcandidate() {
             $log.debug('refreshthetestcandidate entered ');
 
-            var refreshpath = encodeURI('../v1/testcandidatesource?thelimit=' + vm.limit );
+            var refreshpath = encodeURI('../v1/testcandidatelist?thelimit=' + vm.limit );
 
             $log.debug('refreshthetestcandidate path:', refreshpath);
             
-             return TestingServices.gettestcandidateSource(refreshpath).then(function(data){
+             return TestingServices.gettestcandidateList(refreshpath).then(function(data){
                     $log.debug('refreshtestcandidates returned data');
                     $log.debug(data);
-                    vm.gridOptions.data = data.testcandidatesourceList; 
-                    return vm.gridOptions.data;
+                    vm.resgridOptions.data = data.testcandidateList; 
+                    return vm.resgridOptions.data;
                 },
                 function (error) {
                     $log.debug('Caught an error refreshthetestcandidate, going to notify:', error); 
@@ -364,20 +372,20 @@
 
         }
 
-        function gettestcandidateSource() {
-            $log.debug('gettestcandidateSource entered');
-            var refreshpath = encodeURI('../v1/testcandidatesource');
+        function gettestcandidateList(thetestname) {
+            $log.debug('gettestcandidateList entered',thetestname);
+            var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname );
 
-            $log.debug('gettestcandidateSource path:', refreshpath);
+            $log.debug('gettestcandidateList path:', refreshpath);
             
-             return TestingServices.gettestcandidateSource(refreshpath).then(function(data){
-                    $log.debug('gettestcandidateSource returned data');
+             return TestingServices.gettestcandidateList(refreshpath).then(function(data){
+                    $log.debug('gettestcandidateList returned data');
                     $log.debug(data);
-                    vm.data = data; 
+                    vm.resgridOptions.data = data.testcandidateList; 
                     return vm.data;
                 },
                 function (error) {
-                    $log.debug('Caught an error testcandidatesource:', error); 
+                    $log.debug('Caught an error gettestcandidateList:', error); 
                     vm.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
@@ -392,6 +400,7 @@
         }
 
         function gettestcandidateDetails(thetestcandidate) {
+            //called by gettestdates
             $log.debug('gettestcandidateDetails entered:',thetestcandidate, thetestcandidate);
             var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetestcandidate );
 
@@ -435,7 +444,7 @@
              return TestingServices.gettestcandidateNames(path).then(function(data){
                     $log.debug('gettestcandidateNames returned data');
                     $log.debug(data);
-                    vm.testcandidatelist = data.testcandidatelist; 
+                    vm.testcandidatenames = data.testcandidatenames; 
                     //check for empty set and do message
                     //messagetxt = "testcandidateDetails obtained";
                     //Notification.success({message: messagetxt, delay: 5000});
@@ -963,6 +972,196 @@
             $log.debug('setGridOptions gridOptions', vm.gridOptions);
 
         }
+
+        function setResGridOptions() {
+            vm.resgridOptions = {
+                enableFiltering: true,
+                paginationPageSizes: vm.limits,
+                paginationPageSize: 10,
+                rowHeight: 100,
+            columnDefs: [
+                // default
+                {
+                    field: 'LastName',
+                    name: 'Last',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false
+                }, {
+                    field: 'FirstName',
+                    name: 'First',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false
+                }, {
+                    //<zoom src="./imageURL.jpg" frame="example1" img="image1" zoomlvl="1.5"></zoom>
+//                    field: 'contactpictureurl',
+ //                   cellTemplate:"<img width=\"50px\" ng-src=\"./images/students/{{grid.getCellValue(row, col)}}\" lazy-src>",
+  //                  name: 'Picture',
+//                    headerCellClass: highlightFilteredHeader,
+ //                   enableCellEdit: false
+  //              }, {
+                    field: 'contactpictureurl',
+                    minWidth: 100,
+                    name: 'Picture',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    cellTemplate: '<zoom ng-src="{{grid.getCellValue(row, col)}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
+                }, {
+                    field: 'ContactID',
+                    name: 'ID',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'age',
+                    name: 'Age',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true,
+                    visible: false
+                }, {
+                    field: 'BeltSize',
+                    name: 'Belt size',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true,
+                    visible: false
+                }, {
+                    field: 'CurrentRank',
+                    name: 'Rank',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true
+                }, {
+                    field: 'LastPromoted',
+                    name: 'Last Promoted',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true,
+                    visible: false
+                }, {
+                    field: 'ContactType',
+                    name: 'Contact',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true,
+                    filter: {term: "Student"},                    
+                    visible: true
+                }, {
+                    field: 'CurrentReikiRank',
+                    name: 'Reiki Rank',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true,
+                    visible: false
+                }, {
+                    field: 'CurrentIARank',
+                    name: 'IA Rank',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'ReadyForNextRank',
+                    name: 'Ready',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false
+                }, {
+                    field: 'agecat',
+                    name: 'Age Group',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'classcat',
+                    name: 'Category',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'nclass',
+                    name: 'Class',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'pgrmcat',
+                    name: 'Program',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
+                    field: 'testname',
+                    name: 'Test',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }],
+
+                //rowHeight: 15,
+                showGridFooter: true,
+                enableColumnResizing: true,
+                enableGridMenu: true,
+                showColumnFooter: true,
+                exporterCsvFilename: 'testcandidate.csv',
+                exporterPdfDefaultStyle: {fontSize: 9},
+                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+                exporterPdfFooter: function ( currentPage, pageCount ) {
+                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+                },
+                exporterPdfCustomFormatter: function ( docDefinition ) {
+                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
+                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
+                  return docDefinition;
+                },
+                exporterPdfOrientation: 'portrait',
+                exporterPdfPageSize: 'LETTER',
+                exporterPdfMaxGridWidth: 500,
+                
+                onRegisterApi: function(gridApi) {
+                    $log.debug('resgridapi onRegisterApi');
+//                     vm.resgridApi = gridApi;
+
+                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
+                        var msg = 'grid row selected ' + row.entity;
+                        $log.debug(msg);
+
+                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                 //       $log.debug('selected', selectedStudentarr);
+                 //       setSelectedArray(selectedStudentarr);
+                        
+                    });
+                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                        $log.debug("grid batch");  
+                        //note this will send the list of changed rows
+                    /*    var selectedContacts=[];
+                        for (var index=0, len=rows.length; index < len; index++) {
+                            $log.debug("selected?",rows[index].isSelected);
+                            if (rows[index].isSelected === true) {
+                                selectedContacts.push(rows[index].entity);
+                            }
+                        }
+                        $log.debug("batch", selectedContacts);
+                        setSelectedArray(selectedContacts);
+                        */
+                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                //        $log.debug('batch selected', selectedStudentarr);
+                //        setSelectedArray(selectedStudentarr);
+
+                    });
+                    gridApi.edit.on.afterCellEdit($scope, 
+                            function(rowEntity, colDef, newValue, oldValue) {
+                        $log.debug('rowEntity');
+                        $log.debug(rowEntity);
+                        //Alert to show what info about the edit is available
+                        $log.debug('Column: ' + colDef.name  + 
+                            ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
+                        if (newValue != oldValue) {
+                            updatetestcandidate(colDef,newValue,rowEntity);       
+                        }
+                    });
+
+                    }
+            };
+
+            $log.debug('setResGridOptions ', vm.resgridOptions);
+
+        }
+
         function updatetestcandidate(colDef, newValue,rowEntity) {
             var path = "../v1/testcandidateregistration";
             var indata = {
