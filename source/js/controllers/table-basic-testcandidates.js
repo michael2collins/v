@@ -95,7 +95,7 @@
 
         var vm=this;
         
-        vm.refreshthetestcandidate = refreshthetestcandidate;
+//        vm.refreshthetestcandidate = refreshthetestcandidate;
         vm.gettestcandidateList = gettestcandidateList;
         vm.gettestcandidateDetails = gettestcandidateDetails;
         vm.updatetestcandidate = updatetestcandidate;
@@ -103,7 +103,8 @@
         vm.getInstructorList = getInstructorList;
         vm.getTestDates = getTestDates;
         vm.updateTest = updateTest;
-        
+        vm.addToTest = addToTest;
+        vm.removeFromTest = removeFromTest;        
 //        vm.getColDefList = getColDefList;
 //        vm.setColDef = setColDef;
 //        vm.dateopen = dateopen;
@@ -137,38 +138,26 @@
         vm.instructorlist=[];
         vm.testcandidate = '';
         vm.ContactID = '';
-
-
-//       vm.status = {
- //           opened: false
- //       };
+        vm.selected;
+        vm.testname;
 
         activate();
-
-//        function dateopen($testcandidate) {
-//            vm.status.opened = true;
-//        }
 
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
             vm.limit = thelimit;
         }
 
-
-/*        function setActiveTab( activeTab ){
-            $log.debug('set activetab as:', activeTab);
-            TestingServices.setActiveTab(activeTab);
+        function addToTest(testingid) {
+            $log.debug('addToTest entered',testingid);
+            createtestcandidate(testingid);   
         }
-
-        function getActiveTab(){
-            return TestingServices.getActiveTab();
+        function removeFromTest() {
+            $log.debug('removeFromTest entered');
+            
         }
-
-*/
+        
         function activate() {
- //           setInitColDefs();
- //           $log.debug('activate setInitColDefs returned');
-//            getColDefList();
             getInstructorList();
             getTestDates();
             setGridOptions();
@@ -176,30 +165,6 @@
 
         }
         
-/*        function getFormattedDate(date) {
-            var d3 = new Date(date);
-          var year = d3.getFullYear();
-          var month = (1 + d3.getMonth()).toString();
-          month = month.length > 1 ? month : '0' + month;
-          var day = d3.getDate().toString();
-          day = day.length > 1 ? day : '0' + day;
-          return year + '-' + month + '-' + day;
-        }
-
-        function getFormattedTime(date) {
-            var d3 = new Date(date);
-          var hour = addZero(d3.getHours());
-          var min = addZero(d3.getMinutes());
-          return hour + ':' + min ;
-        }
-
-        function addZero(i) {
-            if (i < 10) {
-                i = "0" + i;
-            }
-            return i;
-        }
-  */      
     function updateTest(){
         $log.debug('updateTest entered');
     
@@ -212,7 +177,7 @@
             lastname: '',
             instructortitle: '',
             name: 'Witness'
-        }
+        };
          return CalendarServices.getinstructorlist(refreshpath).then(function(data){
                 $log.debug('getinstructorlist returned data');
                 $log.debug(data);
@@ -255,6 +220,7 @@
         $log.debug('getTestDates entered', testname);
         var refreshpath = encodeURI("../v1/testdates?testname=" + testname.name);
         var error;
+        vm.testname = testname.name;
 
          return TestingServices.getTestDates(refreshpath).then(function(data){
                 $log.debug('getTestDates returned data');
@@ -298,54 +264,53 @@
 
     }
   
-        function createtestcandidate(testcandidate) {
-            if (vm.selected === false) {
-                var error = "no rows selected for testcandidate";
-                Notification.error({message: error, delay: 5000});
-                return;                
-            }
-            
-            var path = "../v1/testcandidateregistration";
-
-            var thedata = {
-                testcandidate: testcandidate,
-                selectedStudents: vm.selectedStudents
-            };
-            $log.debug('about createtestcandidate ', path, thedata);
-            return TestingServices.createtestcandidate(path, thedata)
-                .then(function(data){
-                    $log.debug('createtestcandidate returned data');
-                    $log.debug(data);
-                    vm.thistestcandidate = data;
-                    $log.debug(vm.thistestcandidate);
-                    $log.debug(vm.thistestcandidate.message);
-                    vm.message = vm.thistestcandidate.message;
-                    Notification.success({message: vm.message, delay: 5000});
-                    refreshthetestcandidate().then
-                        (function(zdata) {
-                         $log.debug('refreshthetestcandidate returned', zdata);
-                     },
-                        function (error) {
-                            $log.debug('Caught an error refreshthetestcandidate after update:', error); 
-                            vm.data = [];
-                            vm.photos = [];
-                            vm.message = error;
-                            Notification.error({message: error, delay: 5000});
-                            return ($q.reject(error));
-                        });
-
-                    return vm.thistestcandidate;
-                }).catch(function(e) {
-                    $log.debug('createtestcandidate failure:');
-                    $log.debug("error", e);
-                    vm.message = e;
-                    Notification.error({message: e, delay: 5000});
-                    throw e;
-                });
+    function createtestcandidate(testingid) {
+        if (vm.selected === false) {
+            var error = "no rows selected for testcandidate";
+            Notification.error({message: error, delay: 5000});
+            return;                
         }
+        
+        var path = "../v1/testcandidateregistration";
 
-        function refreshthetestcandidate() {
-            $log.debug('refreshthetestcandidate entered ');
+        var thedata = {
+            testingid: testingid,
+            selectedStudents: vm.selectedStudents
+        };
+        $log.debug('about createtestcandidate ', path, thedata,vm.testname);
+        return TestingServices.createtestcandidate(path, thedata)
+            .then(function(data){
+                $log.debug('createtestcandidate returned data');
+                $log.debug(data);
+                vm.thistestcandidate = data;
+                $log.debug(vm.thistestcandidate);
+                $log.debug(vm.thistestcandidate.message);
+                vm.message = vm.thistestcandidate.message;
+                Notification.success({message: vm.message, delay: 5000});
+                gettestcandidateList(vm.testname).then
+                    (function(zdata) {
+                     $log.debug('gettestcandidateList returned', zdata);
+                 },
+                    function (error) {
+                        $log.debug('Caught an error gettestcandidateList after update:', error); 
+                        vm.data = [];
+                        vm.message = error;
+                        Notification.error({message: error, delay: 5000});
+                        return ($q.reject(error));
+                    });
+
+                return vm.thistestcandidate;
+            }).catch(function(e) {
+                $log.debug('createtestcandidate failure:');
+                $log.debug("error", e);
+                vm.message = e;
+                Notification.error({message: e, delay: 5000});
+                throw e;
+            });
+        }
+/*
+        function refreshthetestcandidate(testingid) {
+            $log.debug('refreshthetestcandidate entered ',testingid);
 
             var refreshpath = encodeURI('../v1/testcandidatelist?thelimit=' + vm.limit );
 
@@ -371,7 +336,7 @@
                 );
 
         }
-
+*/
         function gettestcandidateList(thetestname) {
             $log.debug('gettestcandidateList entered',thetestname);
             var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname );
@@ -399,10 +364,10 @@
 
         }
 
-        function gettestcandidateDetails(thetestcandidate) {
+        function gettestcandidateDetails(thetesttype) {
             //called by gettestdates
-            $log.debug('gettestcandidateDetails entered:',thetestcandidate, thetestcandidate);
-            var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetestcandidate );
+            $log.debug('gettestcandidateDetails entered:',thetesttype);
+            var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype );
 
             $log.debug('gettestcandidateDetails path:', path);
             
@@ -412,8 +377,7 @@
                     vm.gridOptions.data = data.testcandidatedetails; 
                     $log.debug("details",data.testcandidatedetails[0]);
                     
-                    vm.testcandidate = data.testcandidatedetails[0].testcandidate;
-                    vm.ContactID = data.testcandidatedetails[0].ContactID;
+                    vm.ContactID = data.testcandidatedetails[0].contactID;
                     
                     //check for empty set and do message
                     var messagetxt = "testcandidateDetails obtained";
@@ -864,6 +828,18 @@
                     enableCellEdit: false,
                     visible: false
                 }, {
+                    field: 'rankForNextClass',
+                    name: 'rankForNextClass',
+                    headerCellClass: highlightFilteredHeader,
+                    visible: false,
+                    enableCellEdit: false
+                }, {
+                    field: 'ageForNextClass',
+                    name: 'ageForNextClass',
+                    headerCellClass: highlightFilteredHeader,
+                    visible: false,
+                    enableCellEdit: false
+                }, {
                     field: 'ReadyForNextRank',
                     name: 'Ready',
                     headerCellClass: highlightFilteredHeader,
@@ -931,9 +907,9 @@
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
-                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                 //       $log.debug('selected', selectedStudentarr);
-                 //       setSelectedArray(selectedStudentarr);
+                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        $log.debug('selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
                         
                     });
                     gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
@@ -949,9 +925,9 @@
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
-                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                //        $log.debug('batch selected', selectedStudentarr);
-                //        setSelectedArray(selectedStudentarr);
+                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        $log.debug('batch selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
 
                     });
                     gridApi.edit.on.afterCellEdit($scope, 
@@ -1083,6 +1059,12 @@
                     enableCellEdit: false,
                     visible: false
                 }, {
+                    field: 'testingid',
+                    name: 'testingid',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: false
+                }, {
                     field: 'testname',
                     name: 'Test',
                     headerCellClass: highlightFilteredHeader,
@@ -1120,9 +1102,9 @@
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
-                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                 //       $log.debug('selected', selectedStudentarr);
-                 //       setSelectedArray(selectedStudentarr);
+                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        $log.debug('selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
                         
                     });
                     gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
@@ -1138,9 +1120,9 @@
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
-                //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                //        $log.debug('batch selected', selectedStudentarr);
-                //        setSelectedArray(selectedStudentarr);
+                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        $log.debug('batch selected', selectedStudentarr);
+                        setSelectedArray(selectedStudentarr);
 
                     });
                     gridApi.edit.on.afterCellEdit($scope, 
@@ -1200,7 +1182,8 @@
                 vm.selected = true;
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
-                        ContactID: inputArray[i].ContactID
+                        ContactID: inputArray[i].contactID,
+                        nextRank: inputArray[i].rankForNextClass
                     };
                     vm.selectedStudents.push(info);
                 }

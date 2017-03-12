@@ -25,6 +25,8 @@
              gettestcandidateDetails: gettestcandidateDetails,
              gettestcandidateList: gettestcandidateList,
              gettestcandidateNames: gettestcandidateNames,
+             createtestcandidate: createtestcandidate,
+             updatetestcandidate: updatetestcandidate,
              getTestDates: getTestDates
         };
         return service;
@@ -35,6 +37,26 @@
      }
         function getTestTypes(path) {
             $log.debug('getTestTypes service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+
+        function createtestcandidate(path, thedata ) {
+                    $log.debug('createtestcandidate data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        
+        
+        function updatetestcandidate(path) {
+            $log.debug('updatetestcandidate service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

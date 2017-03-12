@@ -149,26 +149,35 @@
            </div>
           </form>
           </div>
-
-          <div class="row col-lg-6">
-               <div ui-grid="vm.gridOptions" ng-style="{height: (100*11)+140+'px'}"
-                    ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
-                    ui-grid-resize-columns ui-grid-pinning ui-grid-edit
-                    ui-grid-selection ui-grid-move-columns  
-                    ui-grid-exporter
-                    class="mygrid" >
-               </div>
-          </div>
-          <div class="row col-lg-6">
-               <div ui-grid="vm.resgridOptions" ng-style="{height: (100*11)+140+'px'}"
-                    ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
-                    ui-grid-resize-columns ui-grid-pinning ui-grid-edit
-                    ui-grid-selection ui-grid-move-columns  
-                    ui-grid-exporter
-                    class="mygrid" >
-               </div>
-            
-          </div>
+          <div class="row">          
+            <div class="col-md-12 text-center"><h3>Test Candidate Pick List</h3></div>
+            <div class="row col-md-5">
+                 <div ui-grid="vm.gridOptions" ng-style="{height: (100*11)+140+'px'}"
+                      ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                      ui-grid-resize-columns ui-grid-pinning ui-grid-edit
+                      ui-grid-selection ui-grid-move-columns  
+                      ui-grid-exporter
+                      class="mygrid" >
+                 </div>
+            </div>
+            <div class="col-md-2 v-center text-center">
+              <div class="btn-group">
+                <button title="Drop from test" class="btn btn-default" ng-click="vm.removeFromTest()" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                <button title="Add to test" class="btn btn-default" ng-click="vm.addToTest(vm.testdatelist.testingid)" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
+              </div>
+              <h6 class="text-center">move from list-to-list</h6>
+            </div>          
+            <div class="row col-md-5">
+                 <div ui-grid="vm.resgridOptions" ng-style="{height: (100*11)+140+'px'}"
+                      ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                      ui-grid-resize-columns ui-grid-pinning ui-grid-edit
+                      ui-grid-selection ui-grid-move-columns  
+                      ui-grid-exporter
+                      class="mygrid" >
+                 </div>
+              
+            </div>
+          </div>  
 
           </div>
         </div>

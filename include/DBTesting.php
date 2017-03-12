@@ -19,6 +19,111 @@ class TestingDbHandler {
 
     }
 
+//INSERT INTO `testcandidates`( `TestID`, `contactID`, `RankAchievedInTest`, `selected`, `testStatus`) VALUES 
+
+    /**
+     * Checking for duplicate testcandidate by testid, contact
+     * @return boolean
+     */
+    private function istestcandidateExists($testid, $ContactID) {
+
+    error_log( print_R("before istestcandidateExists\n", TRUE ), 3, LOG);
+    error_log( print_R("contactid: $ContactID\n", TRUE ), 3, LOG);
+        
+        
+        $stmt = $this->conn->prepare("SELECT testid from testcandidates WHERE testid = ? and  contactID = ?");
+        $stmt->bind_param("ss", $testid, $ContactID);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+
+ /**
+     * Creating new testcandidate
+     */
+    public function createtestcandidate($testid, $ContactID, $nextRank
+    ) {
+
+        error_log( print_R("createtestcandidate entered\n", TRUE ),3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO testcandidates (testID, contactID, RankAchievedInTest) VALUES (?, ?, ? )";
+
+        // First check if user already existed in db
+        if (!$this->istestcandidateExists($testid,  $ContactID, $nextRank)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sss",
+                                  $testid ,
+                                  $ContactID ,
+                                  $nextRank
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same testcandidate existed
+                //update the rank
+            $this->updatetestcandidate($testid,  $ContactID, $nextRank);
+            
+        }
+
+        return $response;
+    }
+    
+    /**
+     * Updating testcandidate
+
+     */
+    public function updatetestcandidate($testid,  $ContactID, 
+            $nextRank
+        ) {
+
+        $num_affected_rows = 0;
+
+        $sql = "UPDATE testcandidates set ";
+        $sql .= "  RankAchievedInTest = ? ";
+        $sql .= " where testid = ? and  ContactID = ? ";
+
+        error_log( print_R($sql, TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sss",
+                $nextRank,  $testid, $ContactID 
+                                     );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+        return $num_affected_rows;
+    }
+
+
+
     public function gettestcandidateList($thelimit = NULL, $testname) {
 
         $sql = "SELECT * FROM testcandidatelist where testname = ? ";

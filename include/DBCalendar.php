@@ -63,6 +63,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         //cleanout old and replace with a new set
         $cleansql = "Delete from ncalendar where userid = ? and id = ?";
         $cleanTestsql = "Delete from testing where calendarid = ?";
+        $cleanTestcandidatesql = "Delete from testcandidates where testid in ( select t.id from testing t where t.calendarid = ?)?";
         if ($stmt = $this->conn->prepare($cleansql) ) {
             $stmt->bind_param("ss", $user_id, $eventID);
 
@@ -70,6 +71,16 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
             if ($num_affected_rows !== 0) {
+                if ($stmt = $this->conn->prepare($cleanTestcandidatesql) ) {
+                    $stmt->bind_param("s",  $eventID);
+        
+                    $stmt->execute();
+                    $num_affected_rows2 = $stmt->affected_rows;
+                    $stmt->close();
+                } else {
+                    printf("cal testing remove Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                }
                 if ($stmt = $this->conn->prepare($cleanTestsql) ) {
                     $stmt->bind_param("s",  $eventID);
         
