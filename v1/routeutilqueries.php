@@ -40,6 +40,7 @@ $app->get('/ranklist', 'authenticate', function() {
     // looping through result and preparing zips array
     while ($rlist = $result->fetch_assoc()) {
         $tmp = array();
+        $tmp["ranktype"] = $rlist["ranktype"];
         $tmp["ranklist"] = $rlist["ranklist"];
         array_push($response["rankList"], $tmp);
     }

@@ -18,6 +18,93 @@ class StudentDbHandler {
         $this->conn = $db->connect();
     }
 
+    private function isStudenrankExists($contactid, $ranktype) {
+
+    error_log( print_R("before isStudenrankExists\n", TRUE ), 3, LOG);
+    error_log( print_R("contactid: $contactid\n", TRUE ), 3, LOG);
+    error_log( print_R("ranktype  ate: $ranktype\n", TRUE ), 3, LOG);
+
+        
+        $sql = "SELECT id from ncontactrank WHERE contactid = ? ";
+        $sql .= " and ranktype = ? " ;
+        
+        $stmt = $this->conn->prepare($sql);
+
+        
+        $stmt->bind_param("ss", $contactid, $ranktype);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+    public function createStudentRank($contactid, $ranktype, $currentrank
+    ) {
+
+        error_log( print_R("createStudentRank entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO ncontactrank (ContactID, ranktype, currentrank) VALUES ";
+        $sql .= "  ( ?,?,? )";
+
+        // First check if user already existed in db
+        if (!$this->isStudenrankExists($contactid, $ranktype)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sss",
+                                  $contactid, $ranktype, $currentrank   
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same event existed
+            return RECORD_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
+
+    public function updateStudentRank($contactid, $ranktype, $currentrank
+    ) {
+
+        error_log( print_R("updateStudentRank entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "update ncontactrank set currentrank = ? where ContactID = ? and ranktype = ? ";
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sss",$currentrank,
+                                  $contactid, $ranktype    
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+    }
+
+
     public function savepic($studentid, $picnm) {
 
         $num_affected_rows = 0;
@@ -277,6 +364,146 @@ class StudentDbHandler {
 
         } else {
             error_log( print_R("getStudentNames list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getRank($ranktype) {
+
+
+        $sql = "SELECT t.* FROM ranklist t  ";
+        $sql .= " where t.ranktype = ?  " ; 
+
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getRankList sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by t.sortkey";
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $ranktype);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getRank list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getRank list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRank list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getRankPartial($theinput,$ranktype) {
+
+        $inp = '%' . $theinput . '%';
+        
+        $sql = "SELECT t.* FROM ranklist t  ";
+        $sql .= " where t.ranktype = ?  " ; 
+        $sql .= " and LOWER(t.ranklist) like LOWER( ? ) ";
+
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getRankList sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by t.sortkey";
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss", $ranktype, $inp);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getRankPartial list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getRankPartial list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRankPartial list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getStudentRank($student_id) {
+        
+        
+        $sql = "SELECT c.ID as id, ContactID, r.currentrank as currentrank, r.ranktype as ranktype FROM ncontactrank r, ncontacts c ";
+        $sql .= " where c.ID = r.ContactID " ; 
+        $sql .= " and c.ID = ? " ; 
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= " order by ranktype";
+
+        error_log( print_R("getStudentRanks sql after security: $sql for $student_id\n", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $student_id);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getStudentRanks list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getStudentRanks list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getStudentRanks list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getStudentRanktypeExcluded($student_id) {
+        
+        $sql = "select listvalue as ranktype from studentlist s where listtype = 'ranktypelist' ";
+        $schoolfield = "s.school";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " and listvalue not in (";
+        $sql .= "SELECT  r.ranktype as ranktype FROM ncontactrank r, ncontacts c ";
+        $sql .= " where c.ID = r.ContactID " ; 
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " and c.ID = ? ) " ; 
+        $sql .= " order by ranktype";
+
+        error_log( print_R("getStudentRanktypeExcluded sql after security: $sql for $student_id\n", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $student_id);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getStudentRanktypeExcluded list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getStudentRanktypeExcluded list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getStudentRanktypeExcluded list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }

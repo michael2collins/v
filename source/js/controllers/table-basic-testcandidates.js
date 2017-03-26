@@ -152,9 +152,10 @@
             $log.debug('addToTest entered',testingid);
             createtestcandidate(testingid);   
         }
-        function removeFromTest() {
+
+        function removeFromTest(testingid) {
             $log.debug('removeFromTest entered');
-            
+            removetestcandidate(testingid);            
         }
         
         function activate() {
@@ -167,8 +168,32 @@
         
     function updateTest(){
         $log.debug('updateTest entered');
-    
+        var path = "../v1/testing";
+        var indata = {
+            ID: vm.testdatelist.testingid,
+            Tester1: vm.testdatelist.tester1,
+            Tester2: vm.testdatelist.tester2,
+            Tester3: vm.testdatelist.tester3,
+            Tester4: vm.testdatelist.tester4
+        };
+        
+        $log.debug('about updateTesting ', indata, path);
+        
+        return TestingServices.updateTesting(path, indata)
+            .then(function(data){
+                $log.debug('updateTesting returned data');
+                $log.debug(data);
+                vm.message = data.message;
+              
+            }).catch(function(e) {
+                $log.debug('updateTesting failure:');
+                $log.debug("error", e);
+                vm.message = e;
+                Notification.error({message: e, delay: 5000});
+                throw e;
+            });
     }
+    
     function getInstructorList() {
         $log.debug('getInstructorList entered');
         var refreshpath = "../v1/instructorlist";
@@ -263,6 +288,52 @@
             );
 
     }
+
+    function removetestcandidate(testingid) {
+        if (vm.selected === false) {
+            var error = "no rows selected for testcandidate";
+            Notification.error({message: error, delay: 5000});
+            return;                
+        }
+        
+        var path = "../v1/testcandidateregistration";
+
+        var thedata = {
+            testingid: testingid,
+            selectedStudents: vm.selectedStudents
+        };
+        $log.debug('about removetestcandidate ', path, thedata,vm.testname);
+        return TestingServices.removetestcandidate(path, thedata)
+            .then(function(data){
+                $log.debug('removetestcandidate returned data');
+                $log.debug(data);
+                vm.thistestcandidate = data;
+                $log.debug(vm.thistestcandidate);
+                $log.debug(vm.thistestcandidate.message);
+                vm.message = vm.thistestcandidate.message;
+                Notification.success({message: vm.message, delay: 5000});
+                gettestcandidateList(vm.testname).then
+                    (function(zdata) {
+                     $log.debug('gettestcandidateList returned', zdata);
+                 },
+                    function (error) {
+                        $log.debug('Caught an error gettestcandidateList after update:', error); 
+                        vm.data = [];
+                        vm.message = error;
+                        Notification.error({message: error, delay: 5000});
+                        return ($q.reject(error));
+                    });
+
+                return vm.thistestcandidate;
+            }).catch(function(e) {
+                $log.debug('removetestcandidate failure:');
+                $log.debug("error", e);
+                vm.message = e;
+                Notification.error({message: e, delay: 5000});
+                throw e;
+            });
+        }
+
   
     function createtestcandidate(testingid) {
         if (vm.selected === false) {
@@ -282,11 +353,15 @@
             .then(function(data){
                 $log.debug('createtestcandidate returned data');
                 $log.debug(data);
-                vm.thistestcandidate = data;
-                $log.debug(vm.thistestcandidate);
-                $log.debug(vm.thistestcandidate.message);
-                vm.message = vm.thistestcandidate.message;
-                Notification.success({message: vm.message, delay: 5000});
+                if (typeof(data) !== 'undefined') {
+                    vm.thistestcandidate = data;
+                    $log.debug(vm.thistestcandidate);
+                    $log.debug(vm.thistestcandidate.message);
+                    vm.message = vm.thistestcandidate.message;
+                    Notification.success({message: vm.message, delay: 5000});
+                } else {
+                    Notification.success({message: "Not created", delay: 5000});
+                }
                 gettestcandidateList(vm.testname).then
                     (function(zdata) {
                      $log.debug('gettestcandidateList returned', zdata);
@@ -298,7 +373,6 @@
                         Notification.error({message: error, delay: 5000});
                         return ($q.reject(error));
                     });
-
                 return vm.thistestcandidate;
             }).catch(function(e) {
                 $log.debug('createtestcandidate failure:');
@@ -340,7 +414,7 @@
         function gettestcandidateList(thetestname) {
             $log.debug('gettestcandidateList entered',thetestname);
             var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname );
-
+//view testcandidatelist
             $log.debug('gettestcandidateList path:', refreshpath);
             
              return TestingServices.gettestcandidateList(refreshpath).then(function(data){
@@ -368,7 +442,7 @@
             //called by gettestdates
             $log.debug('gettestcandidateDetails entered:',thetesttype);
             var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype );
-
+//view testcandidatesource
             $log.debug('gettestcandidateDetails path:', path);
             
              return TestingServices.gettestcandidateDetails(path).then(function(data){
@@ -780,7 +854,7 @@
                     enableCellEdit: false,
                     cellTemplate: '<zoom ng-src="{{grid.getCellValue(row, col)}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
                 }, {
-                    field: 'ContactID',
+                    field: 'contactID',
                     name: 'ID',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
@@ -800,6 +874,11 @@
                 }, {
                     field: 'CurrentRank',
                     name: 'Rank',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true
+                }, {
+                    field: 'nextrank',
+                    name: 'Next Rank',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
@@ -982,18 +1061,18 @@
                     enableCellEdit: false,
                     cellTemplate: '<zoom ng-src="{{grid.getCellValue(row, col)}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
                 }, {
-                    field: 'ContactID',
+                    field: 'contactID',
                     name: 'ID',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
                     visible: false
-                }, {
+/*                }, {
                     field: 'age',
                     name: 'Age',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true,
                     visible: false
-                }, {
+ */               }, {
                     field: 'BeltSize',
                     name: 'Belt size',
                     headerCellClass: highlightFilteredHeader,
@@ -1002,6 +1081,11 @@
                 }, {
                     field: 'CurrentRank',
                     name: 'Rank',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: true
+                }, {
+                    field: 'RankAchievedInTest',
+                    name: 'Next Rank',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
                 }, {
@@ -1034,7 +1118,7 @@
                     name: 'Ready',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
-                }, {
+  /*              }, {
                     field: 'agecat',
                     name: 'Age Group',
                     headerCellClass: highlightFilteredHeader,
@@ -1058,7 +1142,7 @@
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
                     visible: false
-                }, {
+    */            }, {
                     field: 'testingid',
                     name: 'testingid',
                     headerCellClass: highlightFilteredHeader,
@@ -1096,13 +1180,13 @@
                 
                 onRegisterApi: function(gridApi) {
                     $log.debug('resgridapi onRegisterApi');
-//                     vm.resgridApi = gridApi;
+                     vm.resgridApi = gridApi;
 
                     gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
                         $log.debug('selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
                         
@@ -1120,7 +1204,7 @@
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
                         $log.debug('batch selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
 
@@ -1183,7 +1267,7 @@
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
                         ContactID: inputArray[i].contactID,
-                        nextRank: inputArray[i].rankForNextClass
+                        nextRank: inputArray[i].nextrank
                     };
                     vm.selectedStudents.push(info);
                 }

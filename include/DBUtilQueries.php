@@ -33,7 +33,16 @@ class UtilDbHandler {
      * Fetching rank lists for students
      */
     public function getRankList() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM ranklist t where ymcaUse = 0 and rankgroup in ('beginner','intermediate','advanced','black') order by t.sortkey");
+
+        $sql = "SELECT t.* FROM ranklist t ";
+
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getRankList sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by t.sortkey";
+        
+        $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $ranklst = $stmt->get_result();
         $stmt->close();

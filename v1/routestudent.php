@@ -479,6 +479,261 @@ $app->get('/studentnames', 'authenticate', function() use ($app) {
     
 });
 
+$app->get('/rankpartial', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("rankpartial entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $theinput = '';
+    $ranktype = '';
+
+    if(array_key_exists('input', $allGetVars)){
+        $theinput = $allGetVars['input'];
+    }
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    }
+
+    error_log( print_R("rankpartial params: theinput: $theinput \n ", TRUE), 3, LOG);
+    error_log( print_R("rankpartial params: ranktype: $ranktype \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getRankPartial($theinput,$ranktype);
+    $response["error"] = false;
+    $response["ranklist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
+            $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
+            $tmp["childAttendPromoteTarget"] = $slist["childAttendPromoteTarget"] . " " . $slist["childAttendPromoteTarget"];
+            $tmp["childDurationPromoteTarget"] = $slist["childDurationPromoteTarget"] . " " . $slist["childDurationPromoteTarget"];
+            $tmp["adultAttendPromoteTarget"] = $slist["adultAttendPromoteTarget"] . " " . $slist["adultAttendPromoteTarget"];
+            $tmp["adultDurationPromoteTarget"] = $slist["adultDurationPromoteTarget"] . " " . $slist["adultDurationPromoteTarget"];
+        array_push($response["ranklist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+$app->get('/rank', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("rank entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $ranktype = '';
+
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    }
+
+    error_log( print_R("rank params: ranktype: $ranktype \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getRank($ranktype);
+    $response["error"] = false;
+    $response["ranklist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
+            $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
+            $tmp["childAttendPromoteTarget"] = $slist["childAttendPromoteTarget"] . " " . $slist["childAttendPromoteTarget"];
+            $tmp["childDurationPromoteTarget"] = $slist["childDurationPromoteTarget"] . " " . $slist["childDurationPromoteTarget"];
+            $tmp["adultAttendPromoteTarget"] = $slist["adultAttendPromoteTarget"] . " " . $slist["adultAttendPromoteTarget"];
+            $tmp["adultDurationPromoteTarget"] = $slist["adultDurationPromoteTarget"] . " " . $slist["adultDurationPromoteTarget"];
+        array_push($response["ranklist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+$app->get('/ranktypeexcluded', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("ranktypeexcluded entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $ContactID = '';
+    
+    if(array_key_exists('ContactID', $allGetVars)){
+        $ContactID = $allGetVars['ContactID'];
+    }
+
+    error_log( print_R("rank params: ranktype contact: $ContactID \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getStudentRanktypeExcluded($ContactID);
+    $response["error"] = false;
+    $response["ranktypelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+        array_push($response["ranktypelist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+$app->get('/studentrank', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("studentranks entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $ContactID = '';
+    
+    if(array_key_exists('ContactID', $allGetVars)){
+        $ContactID = $allGetVars['ContactID'];
+    }
+
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getStudentRank($ContactID);
+    $response["error"] = false;
+    $response["studentranklist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["ContactID"] = (empty($slist["ContactID"]) ? "NULL" : $slist["ContactID"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["currentrank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
+        array_push($response["studentranklist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+$app->post('/studentrank', 'authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+
+    $ContactID = (isset($dataJsonDecode->thedata->ContactID) ? $dataJsonDecode->thedata->ContactID : "");
+    $currentrank = (isset($dataJsonDecode->thedata->currentrank) ? $dataJsonDecode->thedata->currentrank : "");
+    $ranktype = (isset($dataJsonDecode->thedata->ranktype) ? $dataJsonDecode->thedata->ranktype : "");
+
+    error_log( print_R("ContactID: $ContactID\n", TRUE ), 3, LOG);
+    error_log( print_R("currentrank: $currentrank\n", TRUE ), 3, LOG);
+    error_log( print_R("ranktype: $ranktype\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $studentrank_id = $db->createStudentRank($ContactID, 
+                                 $ranktype,$currentrank
+                                );
+
+    if ($studentrank_id > 0) {
+        $response["error"] = false;
+        $response["message"] = "studentranks created successfully";
+        $response["studentrank_id"] = $studentrank_id;
+        error_log( print_R("Student created: $studentrank_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($studentrank_id == RECORD_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this already existed";
+        error_log( print_R("studentranks already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
+    } else {
+        error_log( print_R("after studentranks result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $studentrank_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create studentranks. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+$app->put('/studentrank','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("studentrank before update\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ranktype      = (isset($test->thedata->ranktype)     ? 
+                    $test->thedata->ranktype : "");
+    $currentrank      = (isset($test->thedata->currentrank)     ? 
+                    $test->thedata->currentrank : "");
+    $ContactID    = (isset($test->thedata->ContactID) ? 
+                    $test->thedata->ContactID : "");
+
+    error_log( print_R("ranktype: $ranktype\n", TRUE ), 3, LOG);
+    error_log( print_R("currentrank: $currentrank\n", TRUE ), 3, LOG);
+    error_log( print_R("ContactID: $ContactID\n", TRUE ), 3, LOG);
+
+
+    $studenrankgood=0;
+    $studenrankbad=0;
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // creating studenranks
+    $studenrank = $db->updateStudentRank(
+        $ContactID, $ranktype, $currentrank
+                                );
+
+    if ($studenrank > 0) {
+        error_log( print_R("studenrank updated: $studenrank\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "studenrank updated successfully";
+        $studenrankgood = 1;
+        $response["studenrank"] = $studenrankgood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after updatestudenrank result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $studenrank, TRUE), 3, LOG);
+        $studenrankbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to update studenrank. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
 
 /**
  * Listing all tasks of particual user
@@ -880,6 +1135,7 @@ $app->get('/studentlists', 'authenticate', function() {
     $response["GuiSizeList"] = array();
     $response["ShirtSizeList"] = array();
     $response["BeltSizeList"] = array();
+    $response["RankTypeList"] = array();
     $response["instructorTitleList"] = array();
 
     // looping through result and preparing  arrays
@@ -902,6 +1158,9 @@ $app->get('/studentlists', 'authenticate', function() {
         }
         if ($tmp["listtype"] == "Instructor Title") {
             array_push($response["instructorTitleList"], $tmp);
+        }
+        if ($tmp["listtype"] == "ranktypelist") {
+            array_push($response["RankTypeList"], $tmp);
         }
         if ($tmp["listtype"] == "shirtsize") {
             array_push($response["ShirtSizeList"], $tmp);

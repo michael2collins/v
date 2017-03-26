@@ -1,6 +1,6 @@
 //var angular;
-var moment;
-var $;
+//var moment;
+//var $;
 var studentpick = {};
 
 (function () {
@@ -95,7 +95,7 @@ var studentpick = {};
     ){
         /* jshint validthis: true */
         var vm = this;
-
+        var $ = angular.element;
     vm.data = {};
     vm.userdta={};
     vm.header = {
@@ -769,13 +769,15 @@ $(document).ready(function() {
                 $log.debug('getTestTypes returned data');
                 $log.debug(data);
                 vm.testtypelist = data.testtypelist; 
-                for (var i=0;i<data.testtypelist.length;i++) {
-                    if (i > vm.colorlist.length) {
-                        vm.testtypelist[i].backgroundcolor = vm.colorlist[vm.colorlist.length];
-                        vm.testtypelist[i].textcolor = vm.colorlisthex[vm.colorlist.length];                        
-                    } else {
-                        vm.testtypelist[i].backgroundcolor = vm.colorlist[i];
-                        vm.testtypelist[i].textcolor = vm.colorlisthex[i];
+                if (typeof data.testtypelist !== 'undefined') {
+                    for (var i=0;i<data.testtypelist.length;i++) {
+                        if (i > vm.colorlist.length) {
+                            vm.testtypelist[i].backgroundcolor = vm.colorlist[vm.colorlist.length];
+                            vm.testtypelist[i].textcolor = vm.colorlisthex[vm.colorlist.length];                        
+                        } else {
+                            vm.testtypelist[i].backgroundcolor = vm.colorlist[i];
+                            vm.testtypelist[i].textcolor = vm.colorlisthex[i];
+                        }
                     }
                 }
                 return vm.testtypelist;

@@ -57,7 +57,21 @@
 
                  return UserServices.Login(pagevm.username, pagevm.password).then(function(data){
                     $log.debug('UserServices login returned data');
-                    $log.debug(data);
+                    $log.debug(data, data.error);
+                    if (data.error === true) {
+                        $log.debug('UserServices error returned', data.error);
+                        UserServices.SetCredentials('','','');
+                        AttendanceServices.setapikey('');
+                        CalendarServices.setapikey('');
+                        EventServices.setapikey('');
+                        StudentServices.setapikey('');
+                        PaymentServices.setapikey('');
+                        ClassServices.setapikey('');
+                        UserServices.setapikey('');
+                        TestingServices.setapikey('');
+                        FlashService.Err(data.message);
+                        return ($q.reject(data));                        
+                    }
                     pagevm.apiKey = data.apiKey;
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
 

@@ -11,19 +11,33 @@
     '$routeParams',
     '$log',
     '$location',
-    'Notification'
+    'Notification',
+    '_'
     ];
 
-    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location,Notification) {
+    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location,Notification,_) {
         /* jshint validthis: true */
         var vmstudent = this;
+        var $ = angular.element;
 
         vmstudent.getStudent = getStudent;
         vmstudent.getAllZips = getAllZips;
         vmstudent.getStudentLists = getStudentLists;
         vmstudent.getRankList = getRankList;
         vmstudent.updateStudent = updateStudent;
+        vmstudent.updateStudentRank = updateStudentRank;
+        vmstudent.addStudentRank = addStudentRank;
         vmstudent.setStudentPIC = setStudentPIC;
+        vmstudent.rankremove = rankremove;
+        vmstudent.getRankPartial = getRankPartial;
+        vmstudent.getStudentRankTypes = getStudentRankTypes;
+        vmstudent.RankTypeList =[];
+        vmstudent.getRank = getRank;
+        vmstudent.ranklist=[];
+        vmstudent.rankpick;
+        vmstudent.ranktypepick;
+        vmstudent.disabled;
+        vmstudent.studentrank ={};
         vmstudent.students = [];
         vmstudent.genders = [];
         vmstudent.zipList = [];
@@ -32,6 +46,7 @@
         vmstudent.CurrentRankList = [];
         vmstudent.CurrentReikiRankList = [];
         vmstudent.StudentSchoolList = [];
+        vmstudent.studentranks =[];
         vmstudent.GuiSizeList = [];
         vmstudent.ShirtSizeList = [];
         vmstudent.BeltSizeList = [];
@@ -76,6 +91,9 @@
           vmstudent.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
           vmstudent.bdateformat = vmstudent.formats[4];
          
+        function rankremove(theindex) {
+            $log.debug('rankremove entered', theindex);
+        }
 
         function activate() {
             $log.debug('about activate editstudent ');
@@ -87,11 +105,39 @@
                 $log.debug('activate the active tab', thetab);
             //    vmstudent.active[thetab] = true;
                 vmstudent.active = thetab;
+                if (typeof(vmstudent.students.ID) !== 'undefined') {
+                    getStudentRanks(vmstudent.students.ID);
+                    getStudentRankTypes(vmstudent.students.ID);
+                }
             },function(error) {
                     $log.debug('activate editstudent',error);
                     Notification.error({message: error, delay: 5000});
                     return (error);
             });
+        }
+
+        function getRankPartial(theinput) {
+            
+            return StudentServices.getRankPartial(theinput,vmstudent.ranktypepick).then(function(data){
+                    $log.debug('controller getRankPartial returned data',theinput,vmstudent.ranktypepick);
+                    $log.debug(data);
+                    vmstudent.ranklist = data;
+                    $log.debug('controller getRankPartial service data',vmstudent.ranklist);
+                    return vmstudent.ranklist;
+                });
+            
+        }
+
+        function getRank(theinput) {
+            
+            return StudentServices.getRank(vmstudent.ranktypepick).then(function(data){
+                    $log.debug('controller getRank returned data',theinput,vmstudent.ranktypepick);
+                    $log.debug(data);
+                    vmstudent.ranklist = data;
+                    $log.debug('controller getRank service data',vmstudent.ranklist);
+                    return vmstudent.ranklist;
+                });
+            
         }
 
         function getBirthday(bday) {
@@ -128,6 +174,106 @@
                 return vmstudent.students;
             },function(error) {
                     $log.debug('getStudent',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
+            });
+        }
+
+        function getStudentRanks(studentid) {
+            if (typeof studentid === 'undefined') {
+                return {};
+            }
+            $log.debug('getStudentRanks entered', studentid);
+            var thepath = encodeURI("../v1/studentrank?ContactID=" + studentid);
+
+            return StudentServices.getStudentRanks(thepath).then(function (data) {
+                $log.debug('getStudentRanks returned data');
+                $log.debug(data, data.data.studentranklist);
+                if (typeof(data.data.studentranklist) !== 'undefined' && data.data.error === false) {
+                    $log.debug('studentranklist', data.data.studentranklist);
+                    vmstudent.studentranks = data.data.studentranklist;
+                } else {
+                    vmstudent.studentranks={};
+                    if (typeof(data.data.studentranklist) !== 'undefined') {
+                        Notification.error({message: typeof(data.data.message) !== 'undefined' ? data.data.message : 'error getstudentranks', delay: 5000});
+                    } //else ok to have no ranklist
+                }
+                return vmstudent.studentranks;
+            },function(error) {
+                    $log.debug('getStudentRanks',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
+            });
+        }
+        function getStudentRankTypes(studentid) {
+            if (typeof studentid === 'undefined') {
+                return {};
+            }
+            $log.debug('getStudentRankTypes entered', studentid);
+            var thepath = encodeURI("../v1/ranktypeexcluded?ContactID=" + studentid);
+
+            return StudentServices.getStudentRankTypes(thepath).then(function (data) {
+                $log.debug('getStudentRankTypes returned data');
+                $log.debug(data, data.data.ranktypelist);
+                if (typeof(data.data.ranktypelist) !== 'undefined' && data.data.error === false) {
+                    $log.debug('studentranktypelist', data.data.ranktypelist);
+                    vmstudent.RankTypeList = data.data.ranktypelist;
+                } else {
+                    vmstudent.RankTypeList={};
+                    if (typeof(data.data.ranktypelist) !== 'undefined') {
+                        Notification.error({message: typeof(data.data.message) !== 'undefined' ? data.data.message : 'error ranktypelist', delay: 5000});
+                    } //else ok to have no ranklist
+                }
+                return vmstudent.RankTypeList;
+            },function(error) {
+                    $log.debug('getStudentRankTypes',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
+            });
+        }
+
+        function updateStudentRank(vlu) {
+            $log.debug('updateStudentRank entered',vlu);
+        }
+
+        function addStudentRank() {
+            $log.debug('addStudentRank entered',vmstudent.rankpick,vmstudent.ranktypepick);
+            var thedata = {
+                ContactID: vmstudent.students.ID,
+                currentrank: vmstudent.rankpick,
+                ranktype: vmstudent.ranktypepick
+            };
+            return StudentServices.addStudentRank( thedata)
+                .then(function(data){
+                    $log.debug('addStudentRank returned data');
+                    $log.debug(data);
+                    getStudentRanks(vmstudent.students.ID);
+                    return data;
+                }).catch(function(e) {
+                    $log.debug('addStudentRank failure:');
+                    $log.debug("error", e);
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+            
+        }
+        
+        function updateStudentRankx(ContactID,ranktype,currentrank) {
+            $log.debug('about updateStudentRank ', ContactID,ranktype,currentrank);
+            
+            var thepath = "../v1/studentrank";
+            var thedata = {
+                ContactID: ContactID,
+                ranktype: ranktype,
+                currentrank: currentrank
+            };
+
+            return StudentServices.updateStudentRank(thepath, thedata).then(function (data) {
+                $log.debug('updateStudentRank returned data:');
+                $log.debug(data.data);
+                getStudent();
+            },function(error) {
+                    $log.debug('updateStudent',error);
                     Notification.error({message: error, delay: 5000});
                     return (error);
             });

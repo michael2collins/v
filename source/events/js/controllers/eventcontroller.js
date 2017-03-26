@@ -120,7 +120,7 @@ var earlydateTo = "02/19/2017";
 var stddateFrom = "02/19/2017";
 var stddateTo = "03/10/2017";
 var latedateFrom = "03/10/2017";
-var latedateTo = "03/15/2017";
+var latedateTo = "03/19/2017";
 var dateCheck = getmyFormattedDate(new Date());
 // to test
 //dateCheck = "03/16/2017";

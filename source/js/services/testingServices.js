@@ -26,7 +26,9 @@
              gettestcandidateList: gettestcandidateList,
              gettestcandidateNames: gettestcandidateNames,
              createtestcandidate: createtestcandidate,
+             removetestcandidate: removetestcandidate,
              updatetestcandidate: updatetestcandidate,
+             updateTesting: updateTesting,
              getTestDates: getTestDates
         };
         return service;
@@ -53,7 +55,30 @@
                     });
                     return( request.then( handleSuccess, handleError ) );
         }        
-        
+
+        function removetestcandidate(path, thedata ) {
+                    $log.debug('removetestcandidate data before delete :' , thedata);
+                    var request = $http({
+                        method: "DELETE",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function updateTesting(path, thedata ) {
+                    $log.debug('updateTesting data before put :' , thedata);
+                    var request = $http({
+                        method: "PUT",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
         
         function updatetestcandidate(path) {
             $log.debug('updatetestcandidate service entered');

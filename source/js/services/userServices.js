@@ -47,8 +47,8 @@
             var cookiecheck = $cookies.getObject('globals');
 //            $log.debug('cookie is:',cookiecheck, $cookies.getAll());
 
-            if (typeof cookiecheck != 'undefined') {
-                if (typeof apikey != 'undefined') {
+            if (typeof cookiecheck !== 'undefined') {
+                if (typeof apikey !== 'undefined') {
                     return apikey.length > 0;
                 } else {
                     //user refreshed page, but kept their browser session

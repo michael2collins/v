@@ -1,6 +1,146 @@
 <?php
 
- 
+$app->put('/testing','authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+//        $data               = file_get_contents("php://input");
+//        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("testingregistration before update\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $tester1      = (isset($test->thedata->Tester1)     ? 
+                    $test->thedata->Tester1 : "");
+    $tester2      = (isset($test->thedata->Tester2)     ? 
+                    $test->thedata->Tester2 : "");
+    $tester3      = (isset($test->thedata->Tester3)     ? 
+                    $test->thedata->Tester3 : "");
+    $tester4      = (isset($test->thedata->Tester4)     ? 
+                    $test->thedata->Tester4 : "");
+    $ID           = (isset($test->thedata->ID) ? 
+                    $test->thedata->ID : "");
+
+    error_log( print_R("testingid: $ID\n", TRUE ), 3, LOG);
+    error_log( print_R("testing1: $tester1\n", TRUE ), 3, LOG);
+    error_log( print_R("testing2: $tester2\n", TRUE ), 3, LOG);
+    error_log( print_R("testing3: $tester3\n", TRUE ), 3, LOG);
+    error_log( print_R("testing4: $tester4\n", TRUE ), 3, LOG);
+
+
+    $testinggood=0;
+    $testingbad=0;
+
+    $db = new TestingDBHandler();
+    $response = array();
+
+    // creating testings
+    $testing = $db->updateTesting(
+        $ID, $tester1, $tester2, $tester3, $tester4
+                                );
+
+    if ($testing > 0) {
+        error_log( print_R("testing updated: $testing\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "testing updated successfully";
+        $testinggood = 1;
+        $response["testing"] = $testinggood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after updatetesting result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $testing, TRUE), 3, LOG);
+        $testingbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to update testing. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->delete('/testcandidateregistration', 'authenticate', function() use ($app) {
+    // check for required params
+//    verifyRequiredParams(array('name', 'email', 'password'));
+
+    $response = array();
+
+    // reading post params
+    //    $data               = file_get_contents("php://input");
+    //    $dataJsonDecode     = json_decode($data);
+
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $dataJsonDecode = json_decode($body);
+
+    error_log( print_R("testcandidateregistration before delete\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $testingid      = (isset($dataJsonDecode->thedata->testingid)     ? $dataJsonDecode->thedata->testingid : "");
+
+    error_log( print_R("testingid: $testingid\n", TRUE ), 3, LOG);
+
+    $testcandidategood=0;
+    $testcandidatebad=0;
+    $testcandidateexists=0;
+     
+    for($i = 0; $i < count($studentarr); $i++ ) {
+
+        error_log( print_R($studentarr[$i]->ContactID, TRUE ), 3, LOG);
+
+        $ContactID  = (isset($studentarr[$i]->ContactID) ? 
+                        $studentarr[$i]->ContactID : "");
+
+        error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+
+        $db = new TestingDBHandler();
+        $response = array();
+    
+        // creating testcandidates
+        $testcandidate = $db->removetestcandidate(
+            $testingid, $ContactID
+                                    );
+    
+        if ($testcandidate > 0) {
+            error_log( print_R("testcandidate removed: $testcandidate\n", TRUE ), 3, LOG);
+            $testcandidategood += 1;
+        } else {
+            error_log( print_R("after removetestcandidate result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $testcandidate, TRUE), 3, LOG);
+            $testcandidatebad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($testcandidategood > 0) {
+            $response["error"] = false;
+            $response["message"] = "testcandidate $testcandidategood removed successfully";
+            $response["testcandidate"] = $testcandidategood;
+            error_log( print_R("testcandidate created: $testcandidategood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after createtestcandidate result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $testcandidatebad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove $testcandidatebad testcandidate. Please try again";
+            echoRespnse(400, $response);
+        }
+
+});
+
+
 $app->post('/testcandidateregistration', 'authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
@@ -263,6 +403,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
 
     $limit = '';
     $testname ='';
+    $picroot = './images/students/';
 
     if(array_key_exists('limit', $allGetVars)){
         $limit = $allGetVars['limit'];
@@ -286,7 +427,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
             while ($slist = $result->fetch_assoc()) {
                 $tmp = array();
                 if (count($slist) > 0) {
-        $tmp["contactID"] = (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
+        $tmp["contactID"] = (empty($slist["ContactID"]) ? "NULL" : $slist["ContactID"]);
         $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
         $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
         $tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
@@ -295,10 +436,11 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["CurrentReikiRank"] = (empty($slist["CurrentReikiRank"]) ? "NULL" : $slist["CurrentReikiRank"]);
         $tmp["CurrentIARank"] = (empty($slist["CurrentIARank"]) ? "NULL" : $slist["CurrentIARank"]);
         $tmp["ReadyForNextRank"] = (empty($slist["ReadyForNextRank"]) ? "NULL" : $slist["ReadyForNextRank"]);
-        $tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $slist["contactpictureurl"]);
+        $tmp["contactpictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $picroot . $slist["pictureurl"]);
+        $tmp["birthday"] = (empty($slist["Birthday"]) ? "1900-01-01" : $slist["Birthday"]);
+        $tmp["lastpromoted"] = (empty($slist["LastPromoted"]) ? "1900-01-01" : $slist["LastPromoted"]);
+
         $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
-        $tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
-        $tmp["lastpromoted"] = (empty($slist["lastpromoted"]) ? "1900-01-01" : $slist["lastpromoted"]);
         $tmp["nclassid"] = (empty($slist["nclassid"]) ? "NULL" : $slist["nclassid"]);
         $tmp["nclass"] = (empty($slist["nclass"]) ? "NULL" : $slist["nclass"]);
         $tmp["nclasssort"] = (empty($slist["nclasssort"]) ? "NULL" : $slist["nclasssort"]);
@@ -306,6 +448,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["pgrmcat"] = (empty($slist["pgrmcat"]) ? "NULL" : $slist["pgrmcat"]);
         $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
         $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
+
         $tmp["testingid"] = (empty($slist["testingid"]) ? "NULL" : $slist["testingid"]);
 
                 } else {

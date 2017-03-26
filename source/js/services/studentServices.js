@@ -21,12 +21,17 @@
             getFamily: getFamily,
             getStudentHistory: getStudentHistory,
             getRankList: getRankList,
+            getStudentRanks: getStudentRanks,
+            addStudentRank: addStudentRank,
+            getStudentRankTypes: getStudentRankTypes,
             updateStudent: updateStudent,
             getStudent: getStudent,
             getstudentPicFile: getstudentPicFile,
             getstudentPicFiles: getstudentPicFiles,
             setstudentPicFile: setstudentPicFile,
             renameStudentPicFile: renameStudentPicFile,
+            getRankPartial: getRankPartial,
+            getRank: getRank,
             setTheStudent: setTheStudent,
             getTheStudent: getTheStudent,
             setActiveTab: setActiveTab,
@@ -74,6 +79,36 @@
           {params: params}
         ).then(function(response) {
                     $log.debug('refreshStudents service success:');
+                    $log.debug(response.data);
+          return response.data;
+        });
+      }
+
+     function getRankPartial(input,ranktype) {
+                    $log.debug('getRankPartial service entered:',input,ranktype);
+        var params = {
+            input: input,
+            ranktype: ranktype
+        };
+        return $http.get(
+          '../v1/rankpartial',
+          {params: params}
+        ).then(function(response) {
+                    $log.debug('getRankPartial service success:');
+                    $log.debug(response.data);
+          return response.data;
+        });
+      }
+     function getRank(ranktype) {
+                    $log.debug('getRank service entered:',ranktype);
+        var params = {
+            ranktype: ranktype
+        };
+        return $http.get(
+          '../v1/rank',
+          {params: params}
+        ).then(function(response) {
+                    $log.debug('getRank service success:');
                     $log.debug(response.data);
           return response.data;
         });
@@ -269,6 +304,19 @@
                     });
                     return( request.then( handleSuccess, handleError ) );
         }        
+
+        function addStudentRank( thedata ) {
+            $log.debug('addStudentRank data before post :' , thedata);
+            var path = "../v1/studentrank";
+            var request = $http({
+                method: "POST",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
         
 /*            function getFriends() {
                     var request = $http({
@@ -415,6 +463,28 @@
                     $log.debug('getRankList failure:' + path);
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
+                });
+        }
+        function getStudentRanks(path) {
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentRanks success:' + path);
+                    $log.debug(data);
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentRanks failure:' + path);
+                });
+        }
+        function getStudentRankTypes(path) {
+            return $http({method: 'GET', url: path}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentRankTypes success:' + path);
+                    $log.debug(data);
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentRankTypes failure:' + path);
                 });
         }
 

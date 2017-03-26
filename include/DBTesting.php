@@ -19,8 +19,6 @@ class TestingDbHandler {
 
     }
 
-//INSERT INTO `testcandidates`( `TestID`, `contactID`, `RankAchievedInTest`, `selected`, `testStatus`) VALUES 
-
     /**
      * Checking for duplicate testcandidate by testid, contact
      * @return boolean
@@ -39,6 +37,7 @@ class TestingDbHandler {
         $stmt->close();
         return $num_rows > 0;
     }
+
 
 
  /**
@@ -84,8 +83,46 @@ class TestingDbHandler {
         } else {
             // User with same testcandidate existed
                 //update the rank
-            $this->updatetestcandidate($testid,  $ContactID, $nextRank);
-            
+            return $this->updatetestcandidate($testid,  $ContactID, $nextRank);
+
+        }
+
+    }
+
+    /**
+     * Removing new testcandidate
+     */
+    public function removetestcandidate($testid, $ContactID
+    ) {
+
+        error_log( print_R("removetestcandidate entered\n", TRUE ),3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+                                      
+        $response = array();
+
+        $sql = "Delete from testcandidates  where testID = ? and contactID = ?";
+
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $testid ,
+                              $ContactID 
+                                 );
+                // Check for successful insertion
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
         }
 
         return $response;
@@ -122,6 +159,34 @@ class TestingDbHandler {
         return $num_affected_rows;
     }
 
+    public function updateTesting($ID,  $tester1, $tester2, $tester3, $tester4 
+        ) {
+
+        $num_affected_rows = 0;
+
+        $sql = "UPDATE testing set ";
+        $sql .= "  Tester1 = ?,  ";
+        $sql .= "  Tester2 = ?,  ";
+        $sql .= "  Tester3 = ?,  ";
+        $sql .= "  Tester4 = ?  ";
+        $sql .= " where ID = ?  ";
+
+        error_log( print_R($sql, TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sssss",
+                  $tester1, $tester2, $tester3, $tester4,
+                $ID                     );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+        return $num_affected_rows;
+    }
 
 
     public function gettestcandidateList($thelimit = NULL, $testname) {

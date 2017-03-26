@@ -154,6 +154,7 @@
                 });
             
         }
+
         
 //         function editStudentFromPick(item,model){
          function editStudentFromPick(item){
@@ -411,7 +412,7 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span><a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/form-layouts-editstudent/id/{{COL_FIELD}}" >Edit</button></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a role="button" class="btn btn-blue" style="padding:  0px 14px;" href="./#/form-layouts-editstudent/id/{{COL_FIELD}}" ><i class="fa fa-edit"></i>&nbsp; Edit</a></span></div>'
                 });
 
 
