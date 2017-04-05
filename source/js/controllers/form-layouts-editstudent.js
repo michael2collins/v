@@ -27,6 +27,7 @@
         vmstudent.updateStudent = updateStudent;
         vmstudent.updateStudentRank = updateStudentRank;
         vmstudent.addStudentRank = addStudentRank;
+        vmstudent.removeStudentRank = removeStudentRank;
         vmstudent.setStudentPIC = setStudentPIC;
         vmstudent.rankremove = rankremove;
         vmstudent.getRankPartial = getRankPartial;
@@ -91,8 +92,9 @@
           vmstudent.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
           vmstudent.bdateformat = vmstudent.formats[4];
          
-        function rankremove(theindex) {
-            $log.debug('rankremove entered', theindex);
+        function rankremove(ranktype) {
+            $log.debug('rankremove entered', ranktype);
+            removeStudentRank(ranktype);
         }
 
         function activate() {
@@ -251,6 +253,27 @@
                     return data;
                 }).catch(function(e) {
                     $log.debug('addStudentRank failure:');
+                    $log.debug("error", e);
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+            
+        }
+
+        function removeStudentRank(ranktype) {
+            $log.debug('removeStudentRank entered',vmstudent.students.ID,ranktype);
+            var thedata = {
+                ContactID: vmstudent.students.ID,
+                ranktype: ranktype
+            };
+            return StudentServices.removeStudentRank( thedata)
+                .then(function(data){
+                    $log.debug('removeStudentRank returned data');
+                    $log.debug(data);
+                    getStudentRanks(vmstudent.students.ID);
+                    return data;
+                }).catch(function(e) {
+                    $log.debug('removeStudentRank failure:');
                     $log.debug("error", e);
                     Notification.error({message: e, delay: 5000});
                     throw e;

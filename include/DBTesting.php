@@ -256,10 +256,21 @@ class TestingDbHandler {
     }
 
     public function getTestcandidateDetails($testtype) {
-        $sql = " select * from testcandidatesource where testtype = ? ";
+        $sql = " Select nr.ranklist as nextrank, r.ranklist, r.ranktype, r.rankid AS rankid, ";
+        $sql .= " r.sortkey AS ranksortkey,r.rankGroup AS rankGroup,r.alphasortkey AS rankalphasortkey, t.* ";
+        $sql .= " From ((( ";
+        $sql .= " testcandidatesource t ";
+        $sql .= " left join ncontactrank cr ";
+        $sql .= "  on cr.contactid = t.contactid) ";
+        $sql .= "     left join ranklist r ";
+        $sql .= " On r.ranklist = cr.currentrank and r.ranktype = cr.ranktype and r.school = t.studentschool)   ";
+        $sql .= " inner join ranklist nr ";
+        $sql .= " 	On nr.sortkey = r.nextsortkey and nr.school = r.school)  ";
+        $sql .= "         where t.testtype = ? ";
 
-        $schoolfield = "studentschool";
+        $schoolfield = "t.studentschool";
         $sql = addSecurity($sql, $schoolfield);
+
         error_log( print_R("getTestcandidateDetails sql after security: $sql", TRUE), 3, LOG);
 
 

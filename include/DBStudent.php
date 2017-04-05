@@ -104,6 +104,30 @@ class StudentDbHandler {
 
     }
 
+    public function removeStudentRank($contactid, $ranktype
+    ) {
+
+        error_log( print_R("removeStudentRank entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from ncontactrank  where ContactID = ? and ranktype = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $contactid, $ranktype 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
 
     public function savepic($studentid, $picnm) {
 

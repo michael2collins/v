@@ -173,6 +173,7 @@ $app->post('/testcandidateregistration', 'authenticate', function() use ($app) {
 
         $ContactID  = (isset($studentarr[$i]->ContactID) ? 
                         $studentarr[$i]->ContactID : "");
+                        //if next rank is not entered on the resgrid, then calculate it
         $nextRank  = (isset($studentarr[$i]->nextRank) ? 
                         $studentarr[$i]->nextRank : "");
 
@@ -431,10 +432,10 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
         $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
         $tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
-        $tmp["CurrentRank"] = (empty($slist["CurrentRank"]) ? "NULL" : $slist["CurrentRank"]);
+        $tmp["CurrentRank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
+        $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+        $tmp["RankAchievedInTest"] = (empty($slist["RankAchievedInTest"]) ? "NULL" : $slist["RankAchievedInTest"]);
         $tmp["ContactType"] = (empty($slist["ContactType"]) ? "NULL" : $slist["ContactType"]);
-        $tmp["CurrentReikiRank"] = (empty($slist["CurrentReikiRank"]) ? "NULL" : $slist["CurrentReikiRank"]);
-        $tmp["CurrentIARank"] = (empty($slist["CurrentIARank"]) ? "NULL" : $slist["CurrentIARank"]);
         $tmp["ReadyForNextRank"] = (empty($slist["ReadyForNextRank"]) ? "NULL" : $slist["ReadyForNextRank"]);
         $tmp["contactpictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $picroot . $slist["pictureurl"]);
         $tmp["birthday"] = (empty($slist["Birthday"]) ? "1900-01-01" : $slist["Birthday"]);
@@ -457,9 +458,8 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["FirstName"] = "NULL";
         $tmp["BeltSize"] = "NULL";
         $tmp["CurrentRank"] = "NULL";
+        $tmp["ranktype"] = "NULL";
         $tmp["ContactType"] = "NULL";
-        $tmp["CurrentReikiRank"] = "NULL";
-        $tmp["CurrentIARank"] = "NULL";
         $tmp["ReadyForNextRank"] = "NULL";
         $tmp["contactpictureurl"] = "NULL";
         $tmp["age"] = "NULL";
@@ -516,10 +516,7 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
         $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
         $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
         $tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
-        $tmp["CurrentRank"] = (empty($slist["CurrentRank"]) ? "NULL" : $slist["CurrentRank"]);
         $tmp["ContactType"] = (empty($slist["ContactType"]) ? "NULL" : $slist["ContactType"]);
-        $tmp["CurrentReikiRank"] = (empty($slist["CurrentReikiRank"]) ? "NULL" : $slist["CurrentReikiRank"]);
-        $tmp["CurrentIARank"] = (empty($slist["CurrentIARank"]) ? "NULL" : $slist["CurrentIARank"]);
         $tmp["ReadyForNextRank"] = (empty($slist["ReadyForNextRank"]) ? "NULL" : $slist["ReadyForNextRank"]);
         $tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $picroot . $slist["contactpictureurl"]);
         $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
@@ -534,7 +531,13 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
         $tmp["pgrmcat"] = (empty($slist["pgrmcat"]) ? "NULL" : $slist["pgrmcat"]);
         $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
         $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
-        
+        $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+        $tmp["ranksortkey"] = (empty($slist["ranksortkey"]) ? "NULL" : $slist["ranksortkey"]);
+        $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
+        $tmp["rankalphasortkey"] = (empty($slist["rankalphasortkey"]) ? "NULL" : $slist["rankalphasortkey"]);
+        $tmp["nextrank"] = (empty($slist["nextrank"]) ? "NULL" : $slist["nextrank"]);
+        $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
+        $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
         array_push($response["testcandidatedetails"], $tmp);
     }
 

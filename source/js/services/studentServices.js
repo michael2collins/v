@@ -23,6 +23,7 @@
             getRankList: getRankList,
             getStudentRanks: getStudentRanks,
             addStudentRank: addStudentRank,
+            removeStudentRank: removeStudentRank,
             getStudentRankTypes: getStudentRankTypes,
             updateStudent: updateStudent,
             getStudent: getStudent,
@@ -310,6 +311,19 @@
             var path = "../v1/studentrank";
             var request = $http({
                 method: "POST",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function removeStudentRank( thedata ) {
+            $log.debug('removeStudentRank data before post :' , thedata);
+            var path = "../v1/studentrank";
+            var request = $http({
+                method: "DELETE",
                 url: path,
                 data: {
                     thedata: thedata

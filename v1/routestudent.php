@@ -734,6 +734,56 @@ $app->put('/studentrank','authenticate', function() use ($app) {
 
 });
 
+$app->delete('/studentrank','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("studentrank before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ranktype      = (isset($test->thedata->ranktype)     ? 
+                    $test->thedata->ranktype : "");
+    $ContactID    = (isset($test->thedata->ContactID) ? 
+                    $test->thedata->ContactID : "");
+
+    error_log( print_R("ranktype: $ranktype\n", TRUE ), 3, LOG);
+    error_log( print_R("ContactID: $ContactID\n", TRUE ), 3, LOG);
+
+
+    $studenrankgood=0;
+    $studenrankbad=0;
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // creating studenranks
+    $studenrank = $db->removeStudentRank(
+        $ContactID, $ranktype
+                                );
+
+    if ($studenrank > 0) {
+        error_log( print_R("studenrank removed: $studenrank\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "studenrank removed successfully";
+        $studenrankgood = 1;
+        $response["studenrank"] = $studenrankgood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after deleteStudentRank result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $studenrank, TRUE), 3, LOG);
+        $studenrankbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove studenrank. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
 
 /**
  * Listing all tasks of particual user

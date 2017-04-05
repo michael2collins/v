@@ -872,7 +872,7 @@
                     enableCellEdit: true,
                     visible: false
                 }, {
-                    field: 'CurrentRank',
+                    field: 'ranklist',
                     name: 'Rank',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true
@@ -894,18 +894,6 @@
                     enableCellEdit: true,
                     filter: {term: "Student"},                    
                     visible: true
-                }, {
-                    field: 'CurrentReikiRank',
-                    name: 'Reiki Rank',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true,
-                    visible: false
-                }, {
-                    field: 'CurrentIARank',
-                    name: 'IA Rank',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
                 }, {
                     field: 'rankForNextClass',
                     name: 'rankForNextClass',
@@ -1101,18 +1089,6 @@
                     enableCellEdit: true,
                     filter: {term: "Student"},                    
                     visible: true
-                }, {
-                    field: 'CurrentReikiRank',
-                    name: 'Reiki Rank',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true,
-                    visible: false
-                }, {
-                    field: 'CurrentIARank',
-                    name: 'IA Rank',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
                 }, {
                     field: 'ReadyForNextRank',
                     name: 'Ready',
