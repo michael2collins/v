@@ -388,6 +388,7 @@ $app->get('/testcandidatenames', 'authenticate', function() use ($app) {
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
             $tmp["name"] = (empty($slist["name"]) ? "NULL" : $slist["name"]);
+            $tmp["eventtype"] = (empty($slist["eventtype"]) ? "NULL" : $slist["eventtype"]);
         array_push($response["testcandidatenames"], $tmp);
     }
         //send no errors
@@ -412,12 +413,15 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
     if(array_key_exists('testname', $allGetVars)){
         $testname = $allGetVars['testname'];
     }
+    if(array_key_exists('testtype', $allGetVars)){
+        $testtype = $allGetVars['testtype'];
+    }
 
 
     $response = array();
     $db = new TestingDBHandler();
 
-    $result = $db->gettestcandidateList($limit,$testname);
+    $result = $db->gettestcandidateList($limit,$testname,$testtype);
 
     $response["error"] = false;
     $response["testcandidateList"] = array();

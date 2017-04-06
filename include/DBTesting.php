@@ -189,9 +189,9 @@ class TestingDbHandler {
     }
 
 
-    public function gettestcandidateList($thelimit = NULL, $testname) {
+    public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
 
-        $sql = "SELECT * FROM testcandidatelist where testname = ? ";
+        $sql = "SELECT * FROM testcandidatelist where testname = ? and testdescription = ?";
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
@@ -201,10 +201,10 @@ class TestingDbHandler {
             $sql .= "  LIMIT " . $thelimit ;
         }
 
-        error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname :", TRUE), 3, LOG);
+        error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $testname);
+            $stmt->bind_param("ss", $testname, $testtype);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -226,7 +226,7 @@ class TestingDbHandler {
     }
 
     public function getTestcandidateNames($theinput) {
-        $sql = "SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name FROM `ncalendar`  ";
+        $sql = "SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name, eventtype FROM `ncalendar`  ";
         $sql .= " where concat(`startdated` , ' ' , `eventtype`) like '%" . $theinput . "%' "; 
 
         $schoolfield = "studentschool";

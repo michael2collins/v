@@ -140,6 +140,7 @@
         vm.ContactID = '';
         vm.selected;
         vm.testname;
+        vm.testtype;
 
         activate();
 
@@ -246,6 +247,7 @@
         var refreshpath = encodeURI("../v1/testdates?testname=" + testname.name);
         var error;
         vm.testname = testname.name;
+        vm.testtype = testname.eventtype;
 
          return TestingServices.getTestDates(refreshpath).then(function(data){
                 $log.debug('getTestDates returned data');
@@ -262,7 +264,7 @@
                     vm.testdatelist.starttime = convertTime(data.testdatelist[0].startdate);
                     vm.testdatelist.endtime = convertTime(data.testdatelist[0].enddate);
                     vm.gettestcandidateDetails(vm.testdatelist.testtype);
-                    vm.gettestcandidateList(testname.name);
+                    vm.gettestcandidateList(testname.name,testname.eventtype);
                     
                 } else {
                     error = "No testdates found in calendar for:" + testname.name;
@@ -312,7 +314,7 @@
                 $log.debug(vm.thistestcandidate.message);
                 vm.message = vm.thistestcandidate.message;
                 Notification.success({message: vm.message, delay: 5000});
-                gettestcandidateList(vm.testname).then
+                gettestcandidateList(vm.testname, vm.testtype).then
                     (function(zdata) {
                      $log.debug('gettestcandidateList returned', zdata);
                  },
@@ -362,7 +364,7 @@
                 } else {
                     Notification.success({message: "Not created", delay: 5000});
                 }
-                gettestcandidateList(vm.testname).then
+                gettestcandidateList(vm.testname,vm.testtype).then
                     (function(zdata) {
                      $log.debug('gettestcandidateList returned', zdata);
                  },
@@ -411,9 +413,9 @@
 
         }
 */
-        function gettestcandidateList(thetestname) {
-            $log.debug('gettestcandidateList entered',thetestname);
-            var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname );
+        function gettestcandidateList(thetestname,thetesttype) {
+            $log.debug('gettestcandidateList entered',thetestname,thetesttype);
+            var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype );
 //view testcandidatelist
             $log.debug('gettestcandidateList path:', refreshpath);
             
