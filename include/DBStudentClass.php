@@ -164,6 +164,32 @@ class StudentClassDbHandler {
         }
     }
 
+    public function getStudentClassPictureList($student_id) {
+        $sql = "SELECT t.pictureurl, t.id FROM nclass t, studentregistration sr where t.id = sr.classid and sr.studentid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $student_id);
+
+            if ($stmt->execute()) {
+                error_log( print_R("getStudentClassPictureList  stmt", TRUE ), 3, LOG);
+                error_log( print_R($stmt, TRUE ), 3, LOG);
+                $piclist = $stmt->get_result();
+                error_log( print_R("getStudentClassPictureList  returns data", TRUE ), 3, LOG);
+                error_log( print_R($piclist, TRUE ), 3, LOG);
+                $stmt->close();
+                return $piclist;
+            } else {
+                error_log( print_R("getStudentClassPictureList  execute failed", TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getStudentClassPictureList  sql failed", TRUE ), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+    }
+
     /**
      * Fetching class for student
      * @param String $student_id id of the student
@@ -171,17 +197,27 @@ class StudentClassDbHandler {
     public function getClassStudent($student_id) {
         error_log( print_R("get class student for id", TRUE ), 3, LOG);
         error_log( print_R($student_id, TRUE ), 3, LOG);
-        $stmt = $this->conn->prepare("SELECT
-                   t.ID,
-                    t.contactid,
-                    p.class as pgmclass,
-                    t.classPayName,
-                    c.class,
-                    t.isTestFeeWaived,
-                    t.classseq,
-                    t.pgmseq,
-                    t.studentclassstatus
-                   from nclasspays t, nclass c, nclasslist p WHERE t.classseq = c.id and t.pgmseq = p.id and t.contactid = ? ");
+        $stmt = $this->conn->prepare("Select
+           t.ID,
+            t.contactid,
+            p.class as pgmclass,
+            t.classPayName,
+            c.class,
+            t.isTestFeeWaived,
+            c.id,
+            p.id,
+            t.studentclassstatus,
+            c.registrationtype 
+    from (((
+    studentregistration sr  
+    Inner join nclass c 
+        on c.id = sr.classid)
+    Left join nclasspays t 
+        on sr.studentid = t.contactid)
+    left join nclasslist p
+    	On p.id = t.pgmseq)
+    Where sr.studentid = ?    
+        ");
         $stmt->bind_param("i", $student_id);
         error_log( print_R("get class student", TRUE ), 3, LOG);
         if ($stmt->execute()) {
@@ -195,8 +231,8 @@ class StudentClassDbHandler {
                 $sc_isTestFeeWaived,
                 $sc_classseq,
                 $sc_pgmseq,
-                $sc_studentclassstatus
-
+                $sc_studentclassstatus,
+                $sc_registrationtype
             );
             $stmt->fetch();
             $res["ID"] = $sc_ID;
@@ -208,11 +244,107 @@ class StudentClassDbHandler {
             $res["classseq"] = $sc_classseq;
             $res["pgmseq"] = $sc_pgmseq;
             $res["studentclassstatus"] = $sc_studentclassstatus;
+            $res["registrationtype"] = $sc_registrationtype;
+            
             $stmt->close();
             error_log( print_R($res, TRUE ), 3, LOG);
             return $res;
         } else {
             error_log( print_R("get class student failed", TRUE ), 3, LOG);
+            return NULL;
+        }
+    }
+
+    public function getClassPgm($classseq, $pgmseq) {
+        error_log( print_R("get class pgm for class pgm", TRUE ), 3, LOG);
+        error_log( print_R("classseq: $classseq pgmseq $pgmseq", TRUE ), 3, LOG);
+        $stmt = $this->conn->prepare("Select
+            p.class as pgmclass,
+            c.class,
+            c.id,
+            p.id,
+            c.pictureurl
+        from nclass c, nclasslist p, nclasspgm t
+            where t.classid = c.id and t.pgmid = p.id
+            and c.id = ? and p.id = ?    
+        ");
+        $stmt->bind_param("ss", $classseq, $pgmseq);
+        error_log( print_R("get class pgm for class pgm", TRUE ), 3, LOG);
+        if ($stmt->execute()) {
+            $res = array();
+            $stmt->bind_result(
+                $sc_pgmclass,
+                $sc_class,
+                $sc_classseq,
+                $sc_pgmseq,
+                $sc_pictureurl
+            );
+            $stmt->fetch();
+            $res["pgmclass"] = $sc_pgmclass;
+            $res["class"] = $sc_class;
+            $res["classseq"] = $sc_classseq;
+            $res["pgmseq"] = $sc_pgmseq;
+            $res["pictureurl"] = $sc_pictureurl;
+
+            $stmt->close();
+            error_log( print_R($res, TRUE ), 3, LOG);
+            return $res;
+        } else {
+            error_log( print_R("get class student failed", TRUE ), 3, LOG);
+            return NULL;
+        }
+    }
+
+    public function getClassStudentlist($student_id) {
+        error_log( print_R("get class student list for id", TRUE ), 3, LOG);
+        error_log( print_R($student_id, TRUE ), 3, LOG);
+
+        $sql = "Select
+           t.ID,
+            t.contactid,
+            p.class as pgmclass,
+            t.classPayName,
+            c.class,
+            t.isTestFeeWaived,
+            c.id classseq,
+            p.id pgmseq,
+            t.studentclassstatus,
+            c.registrationtype,
+            c.pictureurl
+                from (((
+                studentregistration sr  
+                Inner join nclass c 
+                    on c.id = sr.classid)
+                Left join nclasspays t 
+                    on sr.studentid = t.contactid)
+                left join nclasslist p
+                	On p.id = t.pgmseq)
+                Where sr.studentid = ?    
+                    ";
+
+        if ($stmt = $this->conn->prepare($sql) ) {
+            $stmt->bind_param("s",
+                              $student_id
+                             );
+            if ($stmt->execute() ) {
+                error_log( print_R("getClassStudentlist list stmt", TRUE ), 3, LOG);
+                error_log( print_R($sql, TRUE ), 3, LOG);
+                $slists = $stmt->get_result();
+
+                if (empty($slists)) {
+                    return array();
+                }
+                $stmt->close();
+                return $slists;
+
+            } else {
+                error_log( print_R("getClassStudentlist list execute failed", TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassStudentlist list sql failed", TRUE ), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
     }
@@ -318,6 +450,89 @@ class StudentClassDbHandler {
         return $num_affected_rows;
     }
 
+    private function isStudentRegExists($studentid, $classid) {
+
+    error_log( print_R("before isStudentRegExists\n", TRUE ), 3, LOG);
+    error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
+    error_log( print_R("classid  ate: $classid\n", TRUE ), 3, LOG);
+
+        
+        $sql = "SELECT registrationid from studentregistration WHERE studentid = ? and classid = ? ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        
+        $stmt->bind_param("ss", $studentid, $classid);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+    public function addStudentRegistration($studentid, $classid
+    ) {
+
+        error_log( print_R("addStudentRegistration entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO studentregistration (studentid, classid) VALUES ";
+        $sql .= "  ( ?,? )";
+
+        // First check if  already existed in db
+        if (!$this->isStudentRegExists($studentid, $classid)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ss",
+                                  $studentid, $classid
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same  existed
+            return RECORD_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
+
+    public function removeStudentReg($studentid, $classid
+    ) {
+
+        error_log( print_R("removeStudentReg entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from studentregistration  where studentid = ? and classid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $studentid, $classid 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
         /**
      * Checking for studentclass existing
      * @return boolean
@@ -333,7 +548,8 @@ class StudentClassDbHandler {
 
         $stmt = $this->conn->prepare($sql);
         
-        $stmt->bind_param("sss", $contactid, $classseq, $pgmseq);
+//        $stmt->bind_param("sss", $contactid, $classseq, $pgmseq);
+        $stmt->bind_param("s", $contactid);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;

@@ -13,7 +13,8 @@
       '$controller',
       '$scope',
       '$window',
-      '$route'
+      '$route',
+      'ClassServices'
     ];
   ModalInstanceController.$inject = [
       '$log',
@@ -26,7 +27,7 @@
     ];
 
 
-  function ModalSetStudentClassController( $log, $uibModal, $controller, $scope, $window, $route) {
+  function ModalSetStudentClassController( $log, $uibModal, $controller, $scope, $window, $route,ClassServices) {
     /* jshint validthis: true */
     var vmsetclassmodal = this;
 
@@ -50,14 +51,20 @@
         size: 'lg',
         resolve: {
           classname: function () {
+            console.log("modal resolve", vmsetclassmodal.classname);
             return vmsetclassmodal.classname;
           }
         }
+        
       });
-      vmsetclassmodal.modalInstance.result.then(function (classname) {
-          console.log('search modalInstance result class:', classname);
-        vmsetclassmodal.classname = classname;
-          $route.reload();
+
+      vmsetclassmodal.modalInstance.result.then(function (result) {
+          console.log('search modalInstance result class:', result, $scope);
+//        ClassServices.setClassSearchResult(result);
+//        vmsetclassmodal.classname = result;
+//        vmsetclassmodal.vmclass.studentclass2 = result;
+        $scope.$parent.vmclass.studentclass = result;
+      //    $route.reload();
 
    //   $window.location.href = '/#/form-layouts-editstudent/id/' + vmsetclassmodal.vmclass.studentclass.contactID;
       }, function () {
@@ -78,27 +85,18 @@
     $log.debug(vmsearch.vmclass);
 
 
-//    vmsearch.ok = ok;
-//    vmsearch.cancel = cancel;
     vmsearch.closemodal = closemodal;
-    vmsearch.classname = vmsearch.vmclass.studentclass;
-
- /*   function ok() {
-      console.log('hit ok');
-      console.log('got classname for ok:', vmsearch.classname);
-      $uibModalInstance.close(vmsearch.classname);
-    }*/
 
     function closemodal(contactid, classid, pgmid) {
       $log.debug('hit close', contactid, classid, pgmid);
       $log.debug('got classname for close:', vmsearch.vmclass.studentclass);
-//      StudentServices.setActiveTab(2,'Modal studentclass controller');
-      $log.debug('got class for close:', vmsearch.vmclass);
 
-        vmsearch.vmclass.setStudentClass(contactid, classid, pgmid).then(function(data){
-              $log.debug('modal setStudentClass returns', data);
-            
-        });
+      vmsearch.vmclass.studentclass = vmsearch.vmclass.getClassPgm(classid,pgmid);      
+//      vmsearch.vmclass.studentclass.classid=classid;
+//      vmsearch.vmclass.studentclass.contactid=contactid;
+//      vmsearch.vmclass.studentclass.pgmid=pgmid;
+      $log.debug('got class for close:', vmsearch.vmclass.studentclass);
+
       $uibModalInstance.close(vmsearch.vmclass.studentclass);
 
     }

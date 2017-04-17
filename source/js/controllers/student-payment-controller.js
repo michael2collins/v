@@ -74,6 +74,7 @@
         }
 
         function getStudentPayment() {
+            //mlc todo fix this, why grab studentclass?
             return ClassServices.getStudentClass(vmpayment.path).then(function (data) {
                 $log.debug('getStudentPayment returned data');
                 $log.debug(data.data);
@@ -82,6 +83,7 @@
                 getFamily();
                 return vmpayment.StudentPayment;
             });
+            
         }
 
         function getFamily() {

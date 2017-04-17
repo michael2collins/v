@@ -11,6 +11,7 @@
     var apikey;
 
     var xlistnew = [];
+    var searchResult = {};
     
     var service = {
              setapikey: setapikey,
@@ -22,10 +23,16 @@
             getcat2: getcat2,
             getStudentClassList: getStudentClassList,
             getStudentClassPicture: getStudentClassPicture,
+            getStudentClassPictureList: getStudentClassPictureList,
             getStudentClassStatuses: getStudentClassStatuses,
             updateStudentClass: updateStudentClass,
             getStudentClass: getStudentClass,            
-            setStudentClass: setStudentClass            
+            getClassPgm: getClassPgm,
+            addStudentRegistration: addStudentRegistration,
+            removeStudentRegistration: removeStudentRegistration,
+            setStudentClass: setStudentClass,
+            setClassSearchResult: setClassSearchResult,
+            getClassSearchResult: getClassSearchResult
         };
         return service;
 
@@ -39,6 +46,14 @@
             $log.debug('setxlist', xlistnew);
         }
         
+        function setClassSearchResult(result){
+            $log.debug('ClassServices.setClassSearchResult entered', result);
+            searchResult = result;
+        }
+        function getClassSearchResult(){
+            $log.debug('ClassServices.getClassSearchResult entered', searchResult);
+            return searchResult;
+        }
         function distinctAge() {
             var request = $http({
                 method: "get",
@@ -73,43 +88,51 @@
         }        
 
       function getcat2(catquery) {
-          console.log("querying for");
-          console.log(catquery);
+       //   console.log("querying for");
+    //      console.log(catquery);
           var results=[];
-          console.log(xlistnew.studentclasslist.length);
+     //     console.log(xlistnew.studentclasslist.length);
            for (var i=0; i < xlistnew.studentclasslist.length; i++) {
-               console.log(xlistnew.studentclasslist[i].classcat);
+      //         console.log(xlistnew.studentclasslist[i].classcat);
                if (xlistnew.studentclasslist[i].classcat === catquery) {
                    results.push(xlistnew.studentclasslist[i]);
                }
            }
-          console.log("the getcat query result");
-          console.log(results);
+//          console.log("the getcat query result");
+ //         console.log(results);
           return results;
       }
 
       function getclass2(catquery) {
-          console.log("querying for");
-          console.log(catquery);
+   //       console.log("querying for");
+    //      console.log(catquery);
           var results=[];
-          console.log(xlistnew.studentclasslist.length);
+    //      console.log(xlistnew.studentclasslist.length);
            for (var i=0; i < xlistnew.studentclasslist.length; i++) {
-               console.log(xlistnew.studentclasslist[i].class);
+     //          console.log(xlistnew.studentclasslist[i].class);
                if (xlistnew.studentclasslist[i].class === catquery) {
                    results.push(xlistnew.studentclasslist[i]);
                }
            }
-          console.log("the getclass2 query result");
-          console.log(results);
+      //    console.log("the getclass2 query result");
+    //      console.log(results);
           return results;
       }
 
+        function getClassPgm(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        
         function getStudentClass(path) {
             return $http({method: 'GET', url: path}).
                 success(function(data, status, headers, config) {
                     $log.debug('getStudentClass success:' + path);
                     $log.debug(data);
-                    getStudentClassPicture(path);
+                    //mlc do i need this? getStudentClassPicture(path);
                     // this callback will be called asynchronously
                     // when the response is available
                     return data;
@@ -172,6 +195,17 @@
                     // or server returns response with an error status.
                 });
         }        
+        function getStudentClassPictureList(classpicturepath) {
+            return $http({method: 'GET', url: classpicturepath}).
+                success(function(data, status, headers, config) {
+                    $log.debug('getStudentClassPictureList success:' + classpicturepath);
+                    $log.debug(data);
+                    return data;
+                }).
+                error(function(data, status, headers, config) {
+                    $log.debug('getStudentClassPictureList failure:' + classpicturepath);
+                });
+        }        
         function getStudentClassList(classlistpath) {
             return $http({method: 'GET', url: classlistpath}).
                 success(function(data, status, headers, config) {
@@ -202,7 +236,29 @@
                     // or server returns response with an error status.
                 });
         }
-        
+        function addStudentRegistration(path, thedata ) {
+                    $log.debug('addStudentRegistration data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        function removeStudentRegistration(path, thedata ) {
+            $log.debug('removeStudentRegistration data before post :', path, thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+
         function handleError( response ) {
             $log.debug('failure:');
     

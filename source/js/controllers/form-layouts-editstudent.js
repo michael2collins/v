@@ -12,10 +12,11 @@
     '$log',
     '$location',
     'Notification',
+    'ClassServices',
     '_'
     ];
 
-    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location,Notification,_) {
+    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location,Notification,ClassServices,_) {
         /* jshint validthis: true */
         var vmstudent = this;
         var $ = angular.element;
@@ -52,6 +53,7 @@
         vmstudent.ShirtSizeList = [];
         vmstudent.BeltSizeList = [];
         vmstudent.instructorTitleList = [];
+        vmstudent.studentclass = {};
         vmstudent.getBirthday = getBirthday;
         vmstudent.dateopen = dateopen;
         vmstudent.students.pictureurldecache = undefined;
@@ -398,6 +400,7 @@
         function setActiveTab( activeTab, thecaller ){
             $log.debug('set activetab as:', activeTab, thecaller);
             StudentServices.setActiveTab(activeTab, thecaller);
+
         }
 
         function getActiveTab(){
