@@ -892,6 +892,7 @@
                                       <input id="inputsc_Class" type="text" placeholder="Student Class" name="sc_Class" 
                                       ng-model="vmclass.studentclass.class" 
                                       ng-disabled="true"
+                                      required
                                         class="form-control">
                                     </div>
                                   </div>
@@ -903,6 +904,7 @@
                                     <input id="inputsc_pgmclass" type="text" placeholder="Student Program" name="pgmclass" 
                                       ng-model="vmclass.studentclass.pgmclass" 
                                       ng-disabled="true"
+                                      required
                                         class="form-control">
                                     </div>
                                   </div>
@@ -947,7 +949,7 @@
                               </div>
                               <div class="btn">
                                   <label for="rankbtn" class="control-label">&nbsp; </label>
-                                <a role="button" ng-disabled="editstudentclass.pRankType.$invalid || editstudentclass.pRank.$invalid" 
+                                <a role="button" ng-disabled="editstudentclass.studentclassstatus.$invalid || editstudentclass.pgmclass.$invalid" 
                                 class="btn btn-green form-control" ng-click="vmclass.addStudentRegistration()" ><i class="fa fa-plus"></i>&nbsp; Add</a>
                               
                                 <div>
@@ -1051,7 +1053,29 @@
                                       <tr  ng-repeat="classlist in vmclass.studentclazzlist track by $index">
                                       <td class="col-md-2">{{classlist.class}}</td>
                                       <td class="col-md-2">{{classlist.pgmclass}}</td>
-                                      <td class="col-md-2">{{classlist.studentclassstatus}}</td>
+                                      <td class="col-md-2" >
+                                        <div ng-class="{'has-error': editstudentclass.lstudentclassstatus.$invalid, 'has-success': !editstudentclass.lstudentclassstatus.$invalid}" class="form-group">
+                                          <label for="inputsc_Classstatus" class="control-label">Student Status</label>
+                                          <div class="input-icon right">
+                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.lstudentclassstatus.$dirty" ng-class="editstudentclass.lstudentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                            <select id="inputsc_lClassstatus" type="text" name="lstudentclassstatus" 
+                                            ng-model="classlist.studentclassstatus" 
+                                            ng-change="vmclass.changeStudentStatus(classlist)" minLength="2" maxLength="30" 
+                                            required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                              class="form-control">
+                                                <option ng-repeat="iter in vmclass.classstatuses.studentclassstatuses" 
+                                                ng-selected="{{iter.status==classlist.studentclassstatus}}" 
+                                                placeholder="Select" value="{{iter.status}}">{{iter.status}}</option>
+                                              </select>
+                                          </div>
+                                          <div style="color:maroon" role="alert" ng-messages="editstudentclass.lstudentclassstatus.$error" class="has-error">
+                                            <div ng-message="required">You did not enter a field</div>
+                                            <div ng-message="minlength">Your field is too short</div>
+                                            <div ng-message="maxlength">Your field is too long</div>
+                                            <div ng-message="email">Your email is missing @ and/or a period</div>
+                                          </div>
+                                        </div>
+                                      </td>                                      
                                       <td class="col-md-2">
                                         <div class="gallery-pages">
                                           <div class="mix-grid">

@@ -206,7 +206,7 @@ class StudentClassDbHandler {
             t.isTestFeeWaived,
             c.id,
             p.id,
-            t.studentclassstatus,
+            sr.studentclassstatus,
             c.registrationtype 
     from (((
     studentregistration sr  
@@ -308,7 +308,7 @@ class StudentClassDbHandler {
             t.isTestFeeWaived,
             c.id classseq,
             p.id pgmseq,
-            t.studentclassstatus,
+            sr.studentclassstatus,
             c.registrationtype,
             c.pictureurl
                 from (((
@@ -356,48 +356,27 @@ class StudentClassDbHandler {
      */
 
     public function updateStudentClass($sc_ContactId,
-                                       //   $sc_ClassId,
-                                       $sc_classPayName,
-                                       //   $sc_Class,
-                                       $sc_isTestFeeWaved,
                                        $sc_classseq,
-                                       $sc_pgmseq,
                                        $sc_studentclassstatus
                                       ) {
         $num_affected_rows = 0;
 
-        $sql = "UPDATE nclasspays t set ";
-        //        $sql .= " t.classid = ?, ";
-        $sql .= " t.classPayName = ?, ";
-        //    $sql .= " t.class = ?, ";
-        $sql .= " t.isTestFeeWaived = ?, ";
-        $sql .= " t.classseq = ?, ";
-        $sql .= " t.pgmseq = ?, ";
+        $sql = "UPDATE studentregistration t set ";
         $sql .= " t.studentclassstatus = ? ";
 
-        $sql .= " where contactID = ? ";
+        $sql .= " where studentid = ? and classid = ?";
 
         error_log( print_R($sql, TRUE ), 3, LOG);
         error_log( print_R($sc_ContactId, TRUE ), 3, LOG);
-        //    error_log( print_R($sc_ClassId, TRUE ), 3, LOG);
-        error_log( print_R($sc_classPayName, TRUE ), 3, LOG);
-        //    error_log( print_R($sc_Class, TRUE ), 3, LOG);
-        error_log( print_R($sc_isTestFeeWaved, TRUE ), 3, LOG);
         error_log( print_R($sc_classseq, TRUE ), 3, LOG);
-        error_log( print_R($sc_pgmseq, TRUE ), 3, LOG);
         error_log( print_R($sc_studentclassstatus, TRUE ), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
             error_log( print_R("student class status update prepared", TRUE ), 3, LOG);
-            $stmt->bind_param("siiisi",
-                              //      $sc_ClassId    ,
-                              $sc_classPayName    ,
-                              //     $sc_Class ,
-                              $sc_isTestFeeWaved,
-                              $sc_classseq,
-                              $sc_pgmseq,
+            $stmt->bind_param("sss",
                               $sc_studentclassstatus,
-                              $sc_ContactId
+                              $sc_ContactId,
+                              $sc_classseq
                              );
             error_log( print_R("student class status update bind", TRUE ), 3, LOG);
             $stmt->execute();
@@ -470,22 +449,22 @@ class StudentClassDbHandler {
         return $num_rows > 0;
     }
 
-    public function addStudentRegistration($studentid, $classid
+    public function addStudentRegistration($studentid, $classid, $studentclassstatus
     ) {
 
         error_log( print_R("addStudentRegistration entered\n", TRUE ),3, LOG);
                                       
         $response = array();
 
-        $sql = "INSERT INTO studentregistration (studentid, classid) VALUES ";
-        $sql .= "  ( ?,? )";
+        $sql = "INSERT INTO studentregistration (studentid, classid, studentclassstatus) VALUES ";
+        $sql .= "  ( ?, ?, ? )";
 
         // First check if  already existed in db
         if (!$this->isStudentRegExists($studentid, $classid)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("ss",
-                                  $studentid, $classid
+                $stmt->bind_param("sss",
+                                  $studentid, $classid, $studentclassstatus
                                      );
                     // Check for successful insertion
                 $stmt->execute();

@@ -158,6 +158,7 @@
                       ui-grid-selection ui-grid-move-columns  
                       ui-grid-exporter
                       class="mygrid" >
+                    <div class="watermark" ng-show="!vm.gridOptions.data.length">No data available</div>
                  </div>
             </div>
             <div class="col-md-2 v-center text-center">
@@ -174,6 +175,7 @@
                       ui-grid-selection ui-grid-move-columns  
                       ui-grid-exporter
                       class="mygrid" >
+                      <div class="watermark" ng-show="!vm.resgridOptions.data.length">No data available</div>
                  </div>
               
             </div>

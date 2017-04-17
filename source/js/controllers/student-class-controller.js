@@ -338,17 +338,19 @@
             });
         }
 
-        function changeStudentStatus() {
+        function changeStudentStatus(clazzitem) {
             $log.debug('about changeStudentStatus ', vmclass.changestatus);
             vmclass.changestatus = true;
-            updateStudentClass();
+            updateStudentClass(clazzitem);
         }
-        function updateStudentClass() {
-            vmclass.studentclass.changestatus = vmclass.changestatus;
-            $log.debug('about updateStudentClass ', vmclass.studentclass);
+        function updateStudentClass(clazzitem) {
+             var path = '../v1/studentclass/' + $routeParams.id;
+            clazzitem.contactID = $routeParams.id;
+            clazzitem.changestatus = vmclass.changestatus;
+            $log.debug('about updateStudentClass ', clazzitem);
             return ClassServices.updateStudentClass(
-                vmclass.path, vmclass.studentclass).then(function (data) {
-                $log.debug('updateStudentClass returned data: goto', vmclass.path);
+                path, clazzitem).then(function (data) {
+                $log.debug('updateStudentClass returned data');
                 $log.debug(data.data);
                 vmclass.studentclass = data.data;
             },function(error) {
@@ -363,7 +365,8 @@
             var path = "../v1/studentregistration";
             var thedata = {
                 studentid: $routeParams.id,
-                classseq: vmclass.studentclass.classseq
+                classseq: vmclass.studentclass.classseq,
+                studentclassstatus: vmclass.studentclass.studentclassstatus
             };
             $log.debug('about addStudentRegistration ', path, thedata);
             return ClassServices.addStudentRegistration( path, thedata ).then(function (data) {

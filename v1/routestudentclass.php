@@ -221,37 +221,17 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
 
     //global $user_id;
     $contactID = $student_id;
-    //    $classid = $studentclass->classid;
-    $classPayName = $studentclass->classPayName;
-    //    $class = $studentclass->class;
-    $isTestFeeWaived = $studentclass->isTestFeeWaived;
     $classseq = $studentclass->classseq;
-    $pgmseq = $studentclass->pgmseq;
     $studentclassstatus = $studentclass->studentclassstatus;
     $changestatus = $studentclass->changestatus;
 
-    //error_log( print_R("before update", TRUE ));
-
-    //error_log( print_R($contactID, TRUE ));
-    //    //error_log( print_R($classid, TRUE ));
-    //error_log( print_R($classPayName, TRUE ));
-    //    //error_log( print_R($class, TRUE ));
-    //error_log( print_R($isTestFeeWaived, TRUE ));
-    //error_log( print_R($classseq, TRUE ));
-    //error_log( print_R($pgmseq, TRUE ));
-    //error_log( print_R($studentclassstatus, TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
 
     // updating task
     $result = $db->updateStudentClass( $contactID,
-                                      //                    $classid,
-                                      $classPayName,
-                                      //                    $class,
-                                      $isTestFeeWaived,
                                       $classseq,
-                                      $pgmseq,
                                       $studentclassstatus
                                      );
     if ($result) {
@@ -265,6 +245,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
         echoRespnse(400, $response);
     }
 
+ 
     if ($changestatus == true) {
         $db2 = new StudentDbHandler();
         $dt1=date("Y-m-d");
@@ -287,6 +268,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
             echoRespnse(400, $response);
         }
     }
+    
     
     echoRespnse(200, $response);
 });
@@ -541,16 +523,19 @@ $app->post('/studentregistration', 'authenticate', function() use ($app) {
 
     $student_id = (isset($dataJsonDecode->thedata->studentid) ? $dataJsonDecode->thedata->studentid : "");
     $classid = (isset($dataJsonDecode->thedata->classseq) ? $dataJsonDecode->thedata->classseq : "");
+    $studentclassstatus = (isset($dataJsonDecode->thedata->studentclassstatus) ? $dataJsonDecode->thedata->studentclassstatus : "");
 
     error_log( print_R("student_id: $student_id\n", TRUE ), 3, LOG);
     error_log( print_R("classid: $classid\n", TRUE ), 3, LOG);
+    error_log( print_R("studentclassstatus: $studentclassstatus\n", TRUE ), 3, LOG);
 
     $db = new StudentClassDbHandler();
     $response = array();
 
     // updating task
     $studentreg_id = $db->addStudentRegistration($student_id, 
-                                 $classid
+                                 $classid,
+                                 $studentclassstatus
                                 );
 
     if ($studentreg_id > 0) {

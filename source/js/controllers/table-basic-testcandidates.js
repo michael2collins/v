@@ -444,20 +444,27 @@
             //called by gettestdates
             $log.debug('gettestcandidateDetails entered:',thetesttype);
             var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype );
+            var messagetxt;
 //view testcandidatesource
             $log.debug('gettestcandidateDetails path:', path);
             
              return TestingServices.gettestcandidateDetails(path).then(function(data){
                     $log.debug('gettestcandidateDetails returned data');
                     $log.debug(data);
-                    vm.gridOptions.data = data.testcandidatedetails; 
-                    $log.debug("details",data.testcandidatedetails[0]);
-                    
-                    vm.ContactID = data.testcandidatedetails[0].contactID;
-                    
-                    //check for empty set and do message
-                    var messagetxt = "testcandidateDetails obtained";
-                    Notification.success({message: messagetxt, delay: 5000});
+                    if (typeof(data.testcandidatedetails) !== 'undefined' && data.testcandidatedetails.length > 0) {
+                        vm.gridOptions.data = data.testcandidatedetails; 
+                        $log.debug("details",data.testcandidatedetails[0]);
+                        
+                        vm.ContactID = data.testcandidatedetails[0].contactID;
+                        
+                        //check for empty set and do message
+                        messagetxt = "testcandidateDetails obtained";
+                        Notification.success({message: messagetxt, delay: 5000});
+                        
+                    } else {
+                        messagetxt = "No test candidates found";
+                        Notification.warning({message: messagetxt, delay: 5000});
+                    }
                     return;
                 },
                 function (error) {
