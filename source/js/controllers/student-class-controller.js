@@ -325,7 +325,7 @@
                     Notification.error({message: error, delay: 5000});
                     return (error);
             });
-        }
+            }
 
         function getStudentClassStatuses() {
             return ClassServices.getStudentClassStatuses(
@@ -366,6 +366,7 @@
             var thedata = {
                 studentid: $routeParams.id,
                 classseq: vmclass.studentclass.classseq,
+                pgmseq: vmclass.studentclass.pgmseq,
                 studentclassstatus: vmclass.studentclass.studentclassstatus
             };
             $log.debug('about addStudentRegistration ', path, thedata);
@@ -381,12 +382,13 @@
             });
         }
 
-        function removeStudentRegistration(classid) {
+        function removeStudentRegistration(classid, pgmid) {
             $log.debug('removeStudentRegistration entered');
             var path = "../v1/studentregistration";
             var thedata = {
                 studentid: $routeParams.id,
-                classseq: classid
+                classseq: classid,
+                pgmseq: pgmid
             };
             return ClassServices.removeStudentRegistration(path, thedata)
                 .then(function(data){

@@ -299,7 +299,7 @@ class StudentClassDbHandler {
         error_log( print_R("get class student list for id", TRUE ), 3, LOG);
         error_log( print_R($student_id, TRUE ), 3, LOG);
 
-        $sql = "Select
+/*        $sql = "Select
            t.ID,
             t.contactid,
             p.class as pgmclass,
@@ -321,6 +321,34 @@ class StudentClassDbHandler {
                 	On p.id = t.pgmseq)
                 Where sr.studentid = ?    
                     ";
+*/
+        $sql = "select sr.studentid as contactid,
+        sr.studentClassStatus, 
+        l.class as pgmclass, 
+        l.classtype, 
+        cp.classid as classid, 
+        cp.pgmid as pgmid, 
+        cp.pgmcat, 
+        cp.classcat, 
+        cp.agecat, 
+        cl.class as classclass, 
+        cl.sort, 
+        cl.nextclass, 
+        cl.rankfornextclass, 
+        cl.agefornextclass, 
+        cl.pictureurl, 
+        cl.registrationtype from 
+        (((nclasspgm cp 
+        left outer join nclass cl on cp.classid = cl.id) 
+        left outer join nclasslist l on l.id = cp.pgmid) 
+        left join studentregistration sr on sr.classid = cl.id and sr.pgmid = cp.pgmid )
+                Where sr.studentid = ?    and
+                cl.school = cp.school and cl.school = l.school
+                    ";
+
+        $schoolfield = "cl.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getClassStudentlist sql after security: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql) ) {
             $stmt->bind_param("s",
@@ -357,6 +385,7 @@ class StudentClassDbHandler {
 
     public function updateStudentClass($sc_ContactId,
                                        $sc_classseq,
+                                       $sc_pgmseq,
                                        $sc_studentclassstatus
                                       ) {
         $num_affected_rows = 0;
@@ -364,11 +393,12 @@ class StudentClassDbHandler {
         $sql = "UPDATE studentregistration t set ";
         $sql .= " t.studentclassstatus = ? ";
 
-        $sql .= " where studentid = ? and classid = ?";
+        $sql .= " where studentid = ? and classid = ? and pgmid = ?";
 
         error_log( print_R($sql, TRUE ), 3, LOG);
         error_log( print_R($sc_ContactId, TRUE ), 3, LOG);
         error_log( print_R($sc_classseq, TRUE ), 3, LOG);
+        error_log( print_R($sc_pgmseq, TRUE ), 3, LOG);
         error_log( print_R($sc_studentclassstatus, TRUE ), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
@@ -376,7 +406,8 @@ class StudentClassDbHandler {
             $stmt->bind_param("sss",
                               $sc_studentclassstatus,
                               $sc_ContactId,
-                              $sc_classseq
+                              $sc_classseq,
+                              $sc_pgmseq
                              );
             error_log( print_R("student class status update bind", TRUE ), 3, LOG);
             $stmt->execute();
@@ -429,19 +460,20 @@ class StudentClassDbHandler {
         return $num_affected_rows;
     }
 
-    private function isStudentRegExists($studentid, $classid) {
+    private function isStudentRegExists($studentid, $classid, $pgmid) {
 
     error_log( print_R("before isStudentRegExists\n", TRUE ), 3, LOG);
     error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
     error_log( print_R("classid  ate: $classid\n", TRUE ), 3, LOG);
+    error_log( print_R("pgmid  ate: $pgmid\n", TRUE ), 3, LOG);
 
         
-        $sql = "SELECT registrationid from studentregistration WHERE studentid = ? and classid = ? ";
+        $sql = "SELECT registrationid from studentregistration WHERE studentid = ? and classid = ? and pgmid = ? ";
 
         $stmt = $this->conn->prepare($sql);
 
         
-        $stmt->bind_param("ss", $studentid, $classid);
+        $stmt->bind_param("sss", $studentid, $classid, $pgmid);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
@@ -449,22 +481,22 @@ class StudentClassDbHandler {
         return $num_rows > 0;
     }
 
-    public function addStudentRegistration($studentid, $classid, $studentclassstatus
+    public function addStudentRegistration($studentid, $classid, $pgmid, $studentclassstatus
     ) {
 
         error_log( print_R("addStudentRegistration entered\n", TRUE ),3, LOG);
                                       
         $response = array();
 
-        $sql = "INSERT INTO studentregistration (studentid, classid, studentclassstatus) VALUES ";
-        $sql .= "  ( ?, ?, ? )";
+        $sql = "INSERT INTO studentregistration (studentid, classid, pgmid, studentclassstatus) VALUES ";
+        $sql .= "  ( ?, ?, ?, ? )";
 
         // First check if  already existed in db
-        if (!$this->isStudentRegExists($studentid, $classid)) {
+        if (!$this->isStudentRegExists($studentid, $classid, $pgmid)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sss",
-                                  $studentid, $classid, $studentclassstatus
+                $stmt->bind_param("ssss",
+                                  $studentid, $classid, $pgmid, $studentclassstatus
                                      );
                     // Check for successful insertion
                 $stmt->execute();
@@ -487,16 +519,16 @@ class StudentClassDbHandler {
         return $response;
     }
 
-    public function removeStudentReg($studentid, $classid
+    public function removeStudentReg($studentid, $classid, $pgmid
     ) {
 
         error_log( print_R("removeStudentReg entered\n", TRUE ),3, LOG);
                                       
-        $sql = "DELETE from studentregistration  where studentid = ? and classid = ? ";
+        $sql = "DELETE from studentregistration  where studentid = ? and classid = ? and pgmid = ?";
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("ss",
-                              $studentid, $classid 
+            $stmt->bind_param("sss",
+                              $studentid, $classid , $pgmid
                                  );
                 // Check for success
             $stmt->execute();

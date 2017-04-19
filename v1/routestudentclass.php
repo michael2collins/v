@@ -69,22 +69,19 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
         if (count($slist) > 0) {
-            $tmp["contactID"] = (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
+            $tmp["contactID"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
             $tmp["pgmclass"] = (empty($slist["pgmclass"]) ? "NULL" : $slist["pgmclass"]);
-            $tmp["classPayName"] = (empty($slist["classPayName"]) ? "NULL" : $slist["classPayName"]);
-            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
-            $tmp["isTestFeeWaived"] = (empty($slist["isTestFeeWaived"]) ? "NULL" : $slist["isTestFeeWaived"]);
-            $tmp["classseq"] =(empty($slist["classseq"]) ? "NULL" : $slist["classseq"]);
-            $tmp["pgmseq"] = (empty($slist["pgmseq"]) ? "NULL" : $slist["pgmseq"]);
-            $tmp["studentclassstatus"] = (empty($slist["studentclassstatus"]) ? "NULL" : $slist["studentclassstatus"]);
+            $tmp["class"] = (empty($slist["classclass"]) ? "NULL" : $slist["classclass"]);
+            $tmp["classseq"] =(empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["pgmseq"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+            $tmp["studentclassstatus"] = (empty($slist["studentClassStatus"]) ? "NULL" : $slist["studentClassStatus"]);
             $tmp["registrationtype"] = (empty($slist["registrationtype"]) ? "NULL" : $slist["registrationtype"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $slist["pictureurl"]);
+            
         } else {
             $tmp["contactID"] = "NULL";
             $tmp["pgmclass"] = "NULL";
-            $tmp["classPayName"] = "NULL";
             $tmp["class"] = "NULL";
-            $tmp["isTestFeeWaived"] = "NULL";
             $tmp["classseq"] = "NULL";
             $tmp["pgmseq"] = "NULL";
             $tmp["studentclassstatus"] = "NULL";
@@ -222,6 +219,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     //global $user_id;
     $contactID = $student_id;
     $classseq = $studentclass->classseq;
+    $pgmseq = $studentclass->pgmseq;
     $studentclassstatus = $studentclass->studentclassstatus;
     $changestatus = $studentclass->changestatus;
 
@@ -232,6 +230,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     // updating task
     $result = $db->updateStudentClass( $contactID,
                                       $classseq,
+                                      $pgmseq,
                                       $studentclassstatus
                                      );
     if ($result) {
@@ -523,10 +522,12 @@ $app->post('/studentregistration', 'authenticate', function() use ($app) {
 
     $student_id = (isset($dataJsonDecode->thedata->studentid) ? $dataJsonDecode->thedata->studentid : "");
     $classid = (isset($dataJsonDecode->thedata->classseq) ? $dataJsonDecode->thedata->classseq : "");
+    $pgmid = (isset($dataJsonDecode->thedata->pgmseq) ? $dataJsonDecode->thedata->pgmseq : "");
     $studentclassstatus = (isset($dataJsonDecode->thedata->studentclassstatus) ? $dataJsonDecode->thedata->studentclassstatus : "");
 
     error_log( print_R("student_id: $student_id\n", TRUE ), 3, LOG);
     error_log( print_R("classid: $classid\n", TRUE ), 3, LOG);
+    error_log( print_R("pgmid: $pgmid\n", TRUE ), 3, LOG);
     error_log( print_R("studentclassstatus: $studentclassstatus\n", TRUE ), 3, LOG);
 
     $db = new StudentClassDbHandler();
@@ -535,6 +536,7 @@ $app->post('/studentregistration', 'authenticate', function() use ($app) {
     // updating task
     $studentreg_id = $db->addStudentRegistration($student_id, 
                                  $classid,
+                                 $pgmid,
                                  $studentclassstatus
                                 );
 
@@ -573,9 +575,11 @@ $app->delete('/studentregistration','authenticate', function() use ($app) {
 
     $studentid = (isset($test->thedata->studentid) ? $test->thedata->studentid : "");
     $classid = (isset($test->thedata->classseq) ? $test->thedata->classseq : "");
+    $pgmid = (isset($test->thedata->pgmseq) ? $test->thedata->pgmseq : "");
 
 
     error_log( print_R("classid: $classid\n", TRUE ), 3, LOG);
+    error_log( print_R("pgmid: $pgmid\n", TRUE ), 3, LOG);
     error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
 
 
@@ -587,11 +591,11 @@ $app->delete('/studentregistration','authenticate', function() use ($app) {
 
     // creating studenranks
     $studenreg = $db->removeStudentReg(
-        $studentid, $classid
+        $studentid, $classid, $pgmid
                                 );
 
     if ($studenreg > 0) {
-        error_log( print_R("studentregistration removed: $classid \n", TRUE ), 3, LOG);
+        error_log( print_R("studentregistration removed class: $classid pgm: $pgmid \n", TRUE ), 3, LOG);
         $response["error"] = false;
         $response["message"] = "studentregistration removed successfully";
         $studentregistration_good = 1;

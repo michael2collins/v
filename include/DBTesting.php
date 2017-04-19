@@ -266,7 +266,7 @@ class TestingDbHandler {
         $sql .= " On r.ranklist = cr.currentrank and r.ranktype = cr.ranktype and r.school = t.studentschool)   ";
         $sql .= " inner join ranklist nr ";
         $sql .= " 	On nr.sortkey = r.nextsortkey and nr.school = r.school)  ";
-        $sql .= "         where t.testtype = ? ";
+        $sql .= "         where t.testtype = ?  ";
 
         $schoolfield = "t.studentschool";
         $sql = addSecurity($sql, $schoolfield);
