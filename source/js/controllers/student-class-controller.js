@@ -26,9 +26,12 @@
         vmclass.getStudentClass = getStudentClass;
         vmclass.updateStudentClass = updateStudentClass;
         vmclass.changeStudentStatus = changeStudentStatus;
+        vmclass.changetestfee = changetestfee;
+        vmclass.changeStudentPayer = changeStudentPayer;
         vmclass.getClassPgm = getClassPgm;
         vmclass.addStudentRegistration = addStudentRegistration;
         vmclass.removeStudentRegistration = removeStudentRegistration;
+        vmclass.getPayersPartial = getPayersPartial;
         vmclass.activate = activate;
         vmclass.setStudentClass = setStudentClass;
         
@@ -53,6 +56,7 @@
         vmclass.classpictureurl = [];
         vmclass.classpictureurllist = [];
         vmclass.classstatuses = [];
+        vmclass.payers = [];
         vmclass.xlistnew = [];
         vmclass.changestatus = false;
         vmclass.getClassSearchResult = getClassSearchResult;
@@ -281,8 +285,14 @@
             var path = '../v1/studentclasslist/' + $routeParams.id;
             return ClassServices.getStudentClassList(path).then(function (data) {
                 vmclass.studentclazzlist = data.data.studentclasslist;
+                for (var iter=0,len=vmclass.studentclazzlist.length;iter<len;iter++) {
+                    vmclass.studentclazzlist[iter].payerList = {
+                        payerName: vmclass.studentclazzlist[iter].payerName,
+                        payerid: vmclass.studentclazzlist[iter].payerid
+                    };
+                }
                 $log.debug('studentclazzlist returned data', vmclass.studentclazzlist);
-                return vmclass.studentclass;
+                return vmclass.studentclazzlist;
             },function(error) {
                     $log.debug('getStudentClass ',error);
                     Notification.error({message: error, delay: 5000});
@@ -290,6 +300,18 @@
             });
 
         }
+        function getPayersPartial(theinput) {
+            $log.debug('getPayers entered');
+            
+            return ClassServices.getPayersPartial(theinput).then(function(data){
+                    $log.debug('controller getPayersPartial returned data',theinput);
+                    $log.debug(data.payerlist);
+                    vmclass.payers = data.payerlist;
+                    return vmclass.payers;
+                });
+            
+        }
+        
 
         function getStudentClassPicture() {
             return ClassServices.getStudentClassPicture(
@@ -339,14 +361,29 @@
         }
 
         function changeStudentStatus(clazzitem) {
-            $log.debug('about changeStudentStatus ', vmclass.changestatus);
-            vmclass.changestatus = true;
+            $log.debug('about changeStudentStatus ', clazzitem);
+            vmclass.changestatus = "status";
             updateStudentClass(clazzitem);
         }
+        function changetestfee(clazzitem) {
+            $log.debug('about changetestfee ',clazzitem);
+            vmclass.changestatus = "testfee";
+            updateStudentClass(clazzitem);
+        }
+        function changeStudentPayer(clazzitem) {
+            $log.debug('about changeStudentPayer ',clazzitem);
+            vmclass.changestatus = "payer";
+            updateStudentClass(clazzitem);
+        }
+        
         function updateStudentClass(clazzitem) {
              var path = '../v1/studentclass/' + $routeParams.id;
             clazzitem.contactID = $routeParams.id;
             clazzitem.changestatus = vmclass.changestatus;
+            clazzitem.payerid = clazzitem.payerList.payerid;
+            clazzitem.payerName = clazzitem.payerList.payerName;
+            
+
             $log.debug('about updateStudentClass ', clazzitem);
             return ClassServices.updateStudentClass(
                 path, clazzitem).then(function (data) {
@@ -367,9 +404,11 @@
                 studentid: $routeParams.id,
                 classseq: vmclass.studentclass.classseq,
                 pgmseq: vmclass.studentclass.pgmseq,
+                payerName: vmclass.studentclass.payerName.payerName,
+                payerid: vmclass.studentclass.payerName.payerid,
                 studentclassstatus: vmclass.studentclass.studentclassstatus
             };
-            $log.debug('about addStudentRegistration ', path, thedata);
+            $log.debug('about addStudentRegistration ', path, thedata, vmclass.studentclass);
             return ClassServices.addStudentRegistration( path, thedata ).then(function (data) {
                 $log.debug('addStudentRegistration returned data: ');
                 $log.debug(data);

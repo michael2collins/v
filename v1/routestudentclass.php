@@ -15,7 +15,6 @@ $app->get('/studentclass/:id', 'authenticate', function($student_id) {
         $response["contactID"] = $result["contactID"];
         //                $response["classid"] = $result["classid"];
         $response["pgmclass"] = $result["pgmclass"];
-        $response["classPayName"] = $result["classPayName"];
         $response["class"] = $result["class"];
         $response["isTestFeeWaived"] = $result["isTestFeeWaived"];
         $response["classseq"] = $result["classseq"];
@@ -77,6 +76,9 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
             $tmp["studentclassstatus"] = (empty($slist["studentClassStatus"]) ? "NULL" : $slist["studentClassStatus"]);
             $tmp["registrationtype"] = (empty($slist["registrationtype"]) ? "NULL" : $slist["registrationtype"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $slist["pictureurl"]);
+            $tmp["isTestfeewaived"] = $slist["isTestfeewaived"];
+            $tmp["payerName"] = $slist["payerName"];
+            $tmp["payerid"] = $slist["payerid"];
             
         } else {
             $tmp["contactID"] = "NULL";
@@ -87,6 +89,9 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
             $tmp["studentclassstatus"] = "NULL";
             $tmp["registrationtype"] = "NULL";
             $tmp["pictureurl"] = "NULL";
+            $tmp["isTestfeewaived"] = "NULL";
+            $tmp["payerName"] = "NULL";
+            $tmp["payerid"] = "NULL";
         }
         array_push($response["studentclasslist"], $tmp);
     }
@@ -104,6 +109,39 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
     
 });
 
+$app->get('/payerpartial', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("payerpartial entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $theinput = '';
+
+    if(array_key_exists('input', $allGetVars)){
+        $theinput = $allGetVars['input'];
+    }
+
+    error_log( print_R("payerpartial params: theinput: $theinput \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getPayerPartial($theinput);
+    $response["error"] = false;
+    $response["payerlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["payerName"] = (empty($slist["payerName"]) ? "NULL" : $slist["payerName"]);
+            $tmp["payerid"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+        array_push($response["payerlist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
 
 $app->get('/classages', 'authenticate', function() {
 
@@ -205,34 +243,45 @@ $app->get('/classcats', 'authenticate', function() {
 });
 
 $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
-    // check for required params
-    //verifyRequiredParams(array('task', 'status'));
-    //error_log( print_R("before put student class request", TRUE ));
-
 
     $request = $app->request();
     $body = $request->getBody();
     $studentclass = json_decode($body);
 
-    //error_log( print_R($studentclass, TRUE ));
-
-    //global $user_id;
     $contactID = $student_id;
     $classseq = $studentclass->classseq;
     $pgmseq = $studentclass->pgmseq;
     $studentclassstatus = $studentclass->studentclassstatus;
     $changestatus = $studentclass->changestatus;
+    $testfee = $studentclass->isTestfeewaived   ;
+    $payer = $studentclass->payerid   ;
 
+    error_log( print_R("student_id: $contactID\n", TRUE ), 3, LOG);
+    error_log( print_R("classid: $classseq\n", TRUE ), 3, LOG);
+    error_log( print_R("pgmid: $pgmseq\n", TRUE ), 3, LOG);
+    error_log( print_R("studentclassstatus: $studentclassstatus\n", TRUE ), 3, LOG);
+    error_log( print_R("payer: $payer\n", TRUE ), 3, LOG);
+    error_log( print_R("changestatus: $changestatus\n", TRUE ), 3, LOG);
+    error_log( print_R("testfee: $testfee\n", TRUE ), 3, LOG);
+    
 
     $db = new StudentClassDbHandler();
     $response = array();
 
-    // updating task
-    $result = $db->updateStudentClass( $contactID,
+    if ($changestatus == "status") {
+        $result = $db->updateStudentClass( $contactID,
                                       $classseq,
                                       $pgmseq,
                                       $studentclassstatus
                                      );
+    } else {
+        $result = $db->setStudentClass($contactID,
+                                    $classseq,
+                                    $pgmseq,
+                                    $payer,
+                                    $testfee);
+    }
+    
     if ($result) {
         // task updated successfully
         $response["error"] = false;
@@ -524,11 +573,15 @@ $app->post('/studentregistration', 'authenticate', function() use ($app) {
     $classid = (isset($dataJsonDecode->thedata->classseq) ? $dataJsonDecode->thedata->classseq : "");
     $pgmid = (isset($dataJsonDecode->thedata->pgmseq) ? $dataJsonDecode->thedata->pgmseq : "");
     $studentclassstatus = (isset($dataJsonDecode->thedata->studentclassstatus) ? $dataJsonDecode->thedata->studentclassstatus : "");
+    $payerName = (isset($dataJsonDecode->thedata->payerName) ? $dataJsonDecode->thedata->payerName : "");
+    $payerid = (isset($dataJsonDecode->thedata->payerid) ? $dataJsonDecode->thedata->payerid : "");
 
     error_log( print_R("student_id: $student_id\n", TRUE ), 3, LOG);
     error_log( print_R("classid: $classid\n", TRUE ), 3, LOG);
     error_log( print_R("pgmid: $pgmid\n", TRUE ), 3, LOG);
     error_log( print_R("studentclassstatus: $studentclassstatus\n", TRUE ), 3, LOG);
+    error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
+    error_log( print_R("payerid: $payerid\n", TRUE ), 3, LOG);
 
     $db = new StudentClassDbHandler();
     $response = array();
@@ -537,7 +590,9 @@ $app->post('/studentregistration', 'authenticate', function() use ($app) {
     $studentreg_id = $db->addStudentRegistration($student_id, 
                                  $classid,
                                  $pgmid,
-                                 $studentclassstatus
+                                 $studentclassstatus,
+                                 $payerName,
+                                 $payerid
                                 );
 
     if ($studentreg_id > 0) {

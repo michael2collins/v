@@ -930,6 +930,38 @@
                                   </div>
                                 </div>
                             </div>
+                                      <div class="col-md-2" >
+                                        <div ng-class="{'has-error': editstudentclass.payerName.$invalid, 'has-success': !editstudentclass.payerName.$invalid}" class="form-group">
+                                          <label for="inputsc_payerName" class="control-label">Payer Name</label>
+                                          <div class="input-icon right">
+                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.payerName.$dirty" ng-class="editstudentclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                            <ui-select  ng-model="vmclass.studentclass.payerName" 
+                                                        theme="bootstrap" 
+                                                        reset-search-input="false"
+                                                
+                                                        style="width: 300px;" 
+                                                        title="Pick Payer"
+                                                        append-to-body="false">
+                                              <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
+                                              <ui-select-choices 
+                                              repeat="item in vmclass.payers | filter: $select.search track by $index"
+                                              refresh="vmclass.getPayersPartial($select.search)"
+                                              refresh-delay="0">
+                                                <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
+                                              </ui-select-choices>
+                                              <ui-select-no-choice>
+                                                Dang!  We couldn't find any choices...
+                                              </ui-select-no-choice>                    
+                                            </ui-select>
+                                          </div>
+                                          <div style="color:maroon" role="alert" ng-messages="editstudentclass.payerName.$error" class="has-error">
+                                            <div ng-message="required">You did not enter a field</div>
+                                            <div ng-message="minlength">Your field is too short</div>
+                                            <div ng-message="maxlength">Your field is too long</div>
+                                            <div ng-message="email">Your email is missing @ and/or a period</div>
+                                          </div>
+                                        </div>
+                                        </div>
                             
                               <div class="col-md-2">
                                 <div class="gallery-pages">
@@ -1045,6 +1077,8 @@
                                       <th>Class</th>
                                       <th>Program</th>
                                       <th>Status</th>
+                                      <th>Payer</th>
+                                      <th>Waive Test Fee?</th>
                                       <th>Picture</th>
                                       <th>Action</th>
                                     </tr>
@@ -1055,7 +1089,6 @@
                                       <td class="col-md-2">{{classlist.pgmclass}}</td>
                                       <td class="col-md-2" >
                                         <div ng-class="{'has-error': editstudentclass.lstudentclassstatus.$invalid, 'has-success': !editstudentclass.lstudentclassstatus.$invalid}" class="form-group">
-                                          <label for="inputsc_Classstatus" class="control-label">Student Status</label>
                                           <div class="input-icon right">
                                             <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.lstudentclassstatus.$dirty" ng-class="editstudentclass.lstudentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                             <select id="inputsc_lClassstatus" type="text" name="lstudentclassstatus" 
@@ -1075,7 +1108,53 @@
                                             <div ng-message="email">Your email is missing @ and/or a period</div>
                                           </div>
                                         </div>
-                                      </td>                                      
+                                        </td>
+                                      <td class="col-md-2" style="position: relative; top:-17px;">
+                                          <div  class="form-group">
+                                            <div class="select-box">
+                                              <ui-select  ng-model="classlist.payerList" 
+                                                          theme="bootstrap" 
+                                                          reset-search-input="false"
+                                                          on-select="vmclass.changeStudentPayer(classlist)"
+                                                          style="width: 180px; " 
+                                                          title="Pick Payer"
+                                                          append-to-body="false">
+                                                <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
+                                                <ui-select-choices
+                                                repeat="item in vmclass.payers | filter: $select.search"
+                                                refresh="vmclass.getPayersPartial($select.search)"
+                                                refresh-delay="0">
+                                                  <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                                <ui-select-no-choice>
+                                                  Dang!  We couldn't find any choices...
+                                                </ui-select-no-choice>                    
+                                              </ui-select>
+                                            </div>
+                                          </div>
+                                        </td>
+                                        <td class="col-md-2" >
+                                        <div>
+                                        <div ng-class="{'has-error': editstudentclass.isTestfeewaived.$invalid, 'has-success': !editstudentclass.isTestfeewaived.$invalid}" class="form-group">
+                                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.isTestfeewaived.$dirty" 
+                                            ng-class="editstudentclass.isTestfeewaived.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+
+                                <toggle-switch on-label="Waive" off-label="Charge" id="isTestfeewaived" type="checkbox" name="isTestfeewaived" 
+                                ng-model="classlist.isTestfeewaived" 
+                                ng-change="vmclass.changetestfee(classlist)" 
+                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                  class="switch-primary"></toggle-switch>
+                                                
+                                            </div>
+                                          <div style="color:maroon" role="alert" ng-messages="editstudentclass.isTestfeewaived.$error" class="has-error">
+                                              <div ng-message="required">You did not enter a field</div>
+                                              <div ng-message="minlength">Your field is too short</div>
+                                              <div ng-message="maxlength">Your field is too long</div>
+                                              <div ng-message="email">Your email is missing @ and/or a period</div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
                                       <td class="col-md-2">
                                         <div class="gallery-pages">
                                           <div class="mix-grid">
@@ -1142,7 +1221,8 @@
 
                       <div class="row">
                         <div class="col-md-6">
-                          <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp" theme="bootstrap" ng-disabled="vmpayment.disabled" style="width: 300px;" title="Choose a payer">
+                          classpayname
+<!--                          <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp" theme="bootstrap" ng-disabled="vmpayment.disabled" style="width: 300px;" title="Choose a payer">
                             <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
                             <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
                               <div>
@@ -1152,7 +1232,7 @@
                               </div>
                             </ui-select-choices>
                           </ui-select>
-                        </div>
+  -->                      </div>
                         <div class="col-md-6">
                           <button type="button" ng-click="vmpayment.updateStudentPayment()" class="btn btn-default btn-sm mix-link">Set as {{vmpayment.StudentPayment.classpaynametmp}}</button>
                         </div>

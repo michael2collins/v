@@ -32,6 +32,7 @@
             removeStudentRegistration: removeStudentRegistration,
             setStudentClass: setStudentClass,
             setClassSearchResult: setClassSearchResult,
+            getPayersPartial: getPayersPartial,
             getClassSearchResult: getClassSearchResult
         };
         return service;
@@ -258,6 +259,20 @@
             });
             return( request.then( handleSuccess, handleError ) );
         }        
+        function getPayersPartial(input) {
+            $log.debug('getPayersPartial service entered:',input);
+            var params = {
+                input: input
+            };
+            return $http.get(
+              '../v1/payerpartial',
+              {params: params}
+            ).then(function(response) {
+                        $log.debug('getPayersPartial service success:');
+                        $log.debug(response.data);
+              return response.data;
+            });
+        }
 
         function handleError( response ) {
             $log.debug('failure:');

@@ -61,7 +61,7 @@
         function activate() {
             console.log('payment activate');
 
-            getStudentPayment();
+           // getStudentPayment();
         }
 
         function xtagTransform(newTag) {
@@ -79,8 +79,8 @@
                 $log.debug('getStudentPayment returned data');
                 $log.debug(data.data);
                 vmpayment.StudentPayment = data.data;
-                getStudentClassPayList();
-                getFamily();
+//                getStudentClassPayList();
+//                getFamily();
                 return vmpayment.StudentPayment;
             });
             

@@ -545,11 +545,11 @@ class StudentDbHandler {
         error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank user: $user_id \n ", TRUE), 3, LOG);
 
 
-        $sql = "SELECT c.*, pays.studentclassstatus from ncontacts  c ";
-        $sql .= " LEFT JOIN nclasspays pays ON c.id = pays.contactid ";
+        $sql = "SELECT c.*, sr.studentclassstatus from ncontacts  c ";
+        $sql .= " LEFT JOIN studentregistration sr ON c.id = sr.studentid ";
         $sql .= " where (1 = 1)  ";
         if (strlen($status) > 0 && $status != 'ALL') {
-            $sql .= " and ( pays.studentclassstatus is null or pays.studentclassstatus = '" . $status . "') ";
+            $sql .= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
         } 
 
         if (strlen($contacttype) > 0 && $contacttype != 'All') {
@@ -566,7 +566,7 @@ class StudentDbHandler {
 
         $sql .= "   order by CurrentRank, LastName, FirstName ";
         
-        if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
+        if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') { 
             $sql .= "  LIMIT " . $thelimit ;
         }
         

@@ -327,11 +327,11 @@ mlc some problems with mobile
 <!--     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script> -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.10/angular-sanitize.min.js"></script>
 
- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.4/select.css"/> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css"/>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script>
 
 <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.14.2/select.min.js"/> -->
- 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.19.4/select.js"></script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
@@ -344,11 +344,15 @@ mlc some problems with mobile
 <!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/3.5.2/select2.min.css"/> -->
 
 <!--    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.8.5/css/selectize.default.css">  -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.3/css/selectize.default.min.css"/>
-
-    <style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.3/css/selectize.default.min.css"/> 
+   <style>
     body {
       padding: 15px;
+    }
+    .ui-select-bootstrap > .ui-select-match > .btn {
+/*      max-width: 205px;*/
+      background-color:white;
+      color:black;
     }
     .select2 > .select2-choice.ui-select-match {
       /* Because of the inclusion of Bootstrap */
@@ -357,7 +361,6 @@ mlc some problems with mobile
     .selectize-control > .selectize-dropdown {
       top: 36px;
     }
-     /* Some additional styling to demonstrate that append-to-body helps achieve the proper z-index layering. */
         .select-box {
           background: #fff;
           position: relative;

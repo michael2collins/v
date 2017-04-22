@@ -979,14 +979,14 @@ $app->get('/family/:id', 'authenticate', function($student_id) {
         ////error_log( print_R("student classpay list results", TRUE ));
         $tmp = array();
         if (count($slist) > 0) {
-            $tmp["classpayname"] = (empty($slist["classpayname"]) ? "NULL" : $slist["classpayname"]);
+//            $tmp["classpayname"] = (empty($slist["classpayname"]) ? "NULL" : $slist["classpayname"]);
             $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
             $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
             $tmp["parent"] = (empty($slist["parent"])  ? "NULL" : $slist["parent"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"])  ? "NULL" : $slist["pictureurl"]);
         } else {
-            $tmp["classpayname"] = "NULL";
+  //          $tmp["classpayname"] = "NULL";
             $tmp["firstname"] = "NULL";
             $tmp["lastname"] = "NULL";
             $tmp["contactid"] = "NULL";

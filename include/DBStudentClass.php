@@ -201,7 +201,6 @@ class StudentClassDbHandler {
            t.ID,
             t.contactid,
             p.class as pgmclass,
-            t.classPayName,
             c.class,
             t.isTestFeeWaived,
             c.id,
@@ -226,7 +225,6 @@ class StudentClassDbHandler {
                 $sc_ID,
                 $sc_contactID,
                 $sc_pgmclass,
-                $sc_classPayName,
                 $sc_class,
                 $sc_isTestFeeWaived,
                 $sc_classseq,
@@ -238,7 +236,6 @@ class StudentClassDbHandler {
             $res["ID"] = $sc_ID;
             $res["contactID"] = $sc_contactID;
             $res["pgmclass"] = $sc_pgmclass;
-            $res["classPayName"] = $sc_classPayName;
             $res["class"] = $sc_class;
             $res["isTestFeeWaived"] = $sc_isTestFeeWaived;
             $res["classseq"] = $sc_classseq;
@@ -295,33 +292,44 @@ class StudentClassDbHandler {
         }
     }
 
+    public function getPayerPartial($theinput) {
+
+        $inp = '%' . $theinput . '%';
+        
+        $sql = "SELECT t.* FROM payer t  ";
+        $sql .= " where LOWER(t.payerName) like LOWER( ? ) ";
+
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getPayerPartial sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by t.payerName";
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $inp);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getPayerPartial list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getPayerPartial list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getPayerPartial list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
     public function getClassStudentlist($student_id) {
         error_log( print_R("get class student list for id", TRUE ), 3, LOG);
         error_log( print_R($student_id, TRUE ), 3, LOG);
 
-/*        $sql = "Select
-           t.ID,
-            t.contactid,
-            p.class as pgmclass,
-            t.classPayName,
-            c.class,
-            t.isTestFeeWaived,
-            c.id classseq,
-            p.id pgmseq,
-            sr.studentclassstatus,
-            c.registrationtype,
-            c.pictureurl
-                from (((
-                studentregistration sr  
-                Inner join nclass c 
-                    on c.id = sr.classid)
-                Left join nclasspays t 
-                    on sr.studentid = t.contactid)
-                left join nclasslist p
-                	On p.id = t.pgmseq)
-                Where sr.studentid = ?    
-                    ";
-*/
         $sql = "select sr.studentid as contactid,
         sr.studentClassStatus, 
         l.class as pgmclass, 
@@ -337,13 +345,20 @@ class StudentClassDbHandler {
         cl.rankfornextclass, 
         cl.agefornextclass, 
         cl.pictureurl, 
-        cl.registrationtype from 
-        (((nclasspgm cp 
+        cl.registrationtype ,
+        cpa.isTestfeewaived,
+        pp.payerName,
+        pp.id as payerid
+        from 
+        (((((nclasspgm cp 
         left outer join nclass cl on cp.classid = cl.id) 
         left outer join nclasslist l on l.id = cp.pgmid) 
-        left join studentregistration sr on sr.classid = cl.id and sr.pgmid = cp.pgmid )
-                Where sr.studentid = ?    and
+        left outer join studentregistration sr on sr.classid = cl.id and sr.pgmid = cp.pgmid )
+        Left outer join nclasspays cpa on cpa.classseq = sr.classid and cpa.pgmseq = sr.pgmid and cpa.contactid = sr.studentid)
+        Left outer join payer pp on pp.id = cpa.payerid)
+                Where sr.studentid = ?   and
                 cl.school = cp.school and cl.school = l.school
+
                     ";
 
         $schoolfield = "cl.school";
@@ -395,15 +410,14 @@ class StudentClassDbHandler {
 
         $sql .= " where studentid = ? and classid = ? and pgmid = ?";
 
-        error_log( print_R($sql, TRUE ), 3, LOG);
-        error_log( print_R($sc_ContactId, TRUE ), 3, LOG);
-        error_log( print_R($sc_classseq, TRUE ), 3, LOG);
-        error_log( print_R($sc_pgmseq, TRUE ), 3, LOG);
-        error_log( print_R($sc_studentclassstatus, TRUE ), 3, LOG);
+        error_log( print_R("$sql\n", TRUE ), 3, LOG);
+        error_log( print_R("contact: $sc_ContactId\n", TRUE ), 3, LOG);
+        error_log( print_R("class: $sc_classseq\n", TRUE ), 3, LOG);
+        error_log( print_R("pgm: $sc_pgmseq\n", TRUE ), 3, LOG);
+        error_log( print_R("status: $sc_studentclassstatus\n", TRUE ), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            error_log( print_R("student class status update prepared", TRUE ), 3, LOG);
-            $stmt->bind_param("sss",
+            $stmt->bind_param("ssss",
                               $sc_studentclassstatus,
                               $sc_ContactId,
                               $sc_classseq,
@@ -481,12 +495,13 @@ class StudentClassDbHandler {
         return $num_rows > 0;
     }
 
-    public function addStudentRegistration($studentid, $classid, $pgmid, $studentclassstatus
+    public function addStudentRegistration($studentid, $classid, $pgmid, $studentclassstatus, $payerName, $payerid
     ) {
 
         error_log( print_R("addStudentRegistration entered\n", TRUE ),3, LOG);
                                       
         $response = array();
+        $testfeedefault = 0;
 
         $sql = "INSERT INTO studentregistration (studentid, classid, pgmid, studentclassstatus) VALUES ";
         $sql .= "  ( ?, ?, ?, ? )";
@@ -503,6 +518,13 @@ class StudentClassDbHandler {
                 $num_affected_rows = $stmt->affected_rows;
 
                 $stmt->close();
+
+                $this->setStudentClass($studentid,
+                                    $classid,
+                                    $pgmid,
+                                    $payerid,
+                                    $testfeedefault);
+
                 return $num_affected_rows >= 0;
 
             } else {
@@ -555,12 +577,11 @@ class StudentClassDbHandler {
     error_log( print_R("pgmseq: $pgmseq\n", TRUE ), 3, LOG);
         
         
-        $sql = "SELECT * from nclasspays WHERE contactid = ? ";
+        $sql = "SELECT id from nclasspays WHERE contactid = ? and classseq = ? and pgmseq = ? ";
 
         $stmt = $this->conn->prepare($sql);
         
-//        $stmt->bind_param("sss", $contactid, $classseq, $pgmseq);
-        $stmt->bind_param("s", $contactid);
+        $stmt->bind_param("sss", $contactid, $classseq, $pgmseq);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
@@ -573,68 +594,68 @@ class StudentClassDbHandler {
      */
     public function setStudentClass($sc_ContactId,
                                     $sc_classseq,
-                                    $sc_pgmseq
+                                    $sc_pgmseq,
+                                    $payer,
+                                    $testfee
                                    ) {
         $num_affected_rows = 0;
 
-        $sql = "UPDATE nclasspays t set ";
-        $sql .= " t.classseq = ? ,";
-        $sql .= " t.pgmseq = ? ";
 
-        $sql .= " where contactID = ? ";
+        $updsql = "UPDATE nclasspays  set ";
+        $updsql .= " isTestFeeWaived = ?, payerid = ? ";
+        $updsql .= " where contactID = ?  and classseq = ? and pgmseq = ? ";
 
-        $inssql = "INSERT into nclasspays ( `contactid`,`classseq`,  `pgmseq`) VALUES ";
-        $inssql .= " ( ?, ?, ? ) ";
+        $inssql = "INSERT INTO `nclasspays`( `contactid`, `isTestFeeWaived`, `classseq`, `pgmseq`, `payerid`)  VALUES ";
+        $inssql .= " ( ?, ?, ?, ?,? ) ";
 
-        error_log( print_R($sql, TRUE ), 3, LOG);
-        error_log( print_R($sc_ContactId, TRUE ), 3, LOG);
-        error_log( print_R($sc_classseq, TRUE ), 3, LOG);
-        error_log( print_R($sc_pgmseq, TRUE ), 3, LOG);
 
-        // First check if studentclass already existed in db
-        if ($this->isStudentClassExists($sc_ContactId, $sc_classseq, $sc_pgmseq)) {
-            if ($stmt = $this->conn->prepare($sql)) {
-                error_log( print_R("student class status set prepared", TRUE ), 3, LOG);
-                $stmt->bind_param("iii",
-                                  $sc_classseq,
-                                  $sc_pgmseq,
-                                  $sc_ContactId
-                                 );
-                error_log( print_R("student class status set bind", TRUE ), 3, LOG);
-                $stmt->execute();
-                error_log( print_R("student class status set execute", TRUE ), 3, LOG);
-                $num_affected_rows = $stmt->affected_rows;
-                $stmt->close();
-                error_log( print_R("student class status set done: $num_affected_rows", TRUE ), 3, LOG);
-    
-            } else {
-                error_log( print_R("student class status update failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
-                printf("Errormessage: %s\n", $this->conn->error);
-            }
-        } else {
-            if ($stmt = $this->conn->prepare($inssql)) {
-                error_log( print_R("student class status insert set prepared", TRUE ), 3, LOG);
-                $stmt->bind_param("iii",
+        error_log( print_R($inssql, TRUE ), 3, LOG);
+        error_log( print_R("contact $sc_ContactId\n", TRUE ), 3, LOG);
+        error_log( print_R("class $sc_classseq\n", TRUE ), 3, LOG);
+        error_log( print_R("pgm $sc_pgmseq\n", TRUE ), 3, LOG);
+        error_log( print_R("fee $testfee\n", TRUE ), 3, LOG);
+        error_log( print_R("payer $payer\n", TRUE ), 3, LOG);
+
+        if ($this->isStudentClassExists(
+                              $sc_ContactId,
+                              $sc_classseq,
+                              $sc_pgmseq)) {
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssss",
+                                  $testfee, $payer, 
                                   $sc_ContactId,
                                   $sc_classseq,
                                   $sc_pgmseq
                                  );
-                error_log( print_R("student class status insert set bind", TRUE ), 3, LOG);
+                    $stmt->execute();
+                    $num_affected_rows = $stmt->affected_rows;
+                    $stmt->close();
+            } else {
+                error_log( print_R("student class status delete failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+            }
+        } else {
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("sssss", 
+                                    $sc_ContactId,
+                                    $testfee,
+                                    $sc_classseq,
+                                    $sc_pgmseq, 
+                                    $payer                                  
+                                 );
                 $stmt->execute();
-                error_log( print_R("student class status insert set execute", TRUE ), 3, LOG);
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
-                error_log( print_R("student class status insert set done", TRUE ), 3, LOG);
     
             } else {
                 error_log( print_R("student class status insert failed", TRUE ), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE ), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
+                return -2;
             }
-            
         }
-
         return $num_affected_rows > 0;
     }
 
