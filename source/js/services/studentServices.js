@@ -18,7 +18,6 @@
             getAllStudents: getAllStudents,
             getAllZips: getAllZips,
             getStudentLists: getStudentLists,
-            getFamily: getFamily,
             getStudentHistory: getStudentHistory,
             getRankList: getRankList,
             getStudentRanks: getStudentRanks,
@@ -228,22 +227,6 @@
                     return( request.then( handleSuccess, handleError ) );
         }        
 
-        
-        function getFamily(path) {
-            return $http({method: 'GET', url: path}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getFamily success:' + path);
-                    $log.debug(data);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getFamily failure:' + path);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
-        }
 
         function getStudentHistory(path) {
             return $http({method: 'GET', url: path}).

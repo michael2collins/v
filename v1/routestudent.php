@@ -959,55 +959,6 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
     }
 });
 
-/** family members related to student and setup as payers
- * 
-*/
-$app->get('/family/:id', 'authenticate', function($student_id) {
-    //  global $user_id;
-    $response = array();
-    $db = new StudentDbHandler();
-
-    // fetch task
-    $result = $db->getFamily($student_id);
-
-    $response["error"] = false;
-    $response["FamilyList"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-//    while ($slist = $result->fetch_array(MYSQLI_ASSOC)) {
-        ////error_log( print_R("student classpay list results", TRUE ));
-        $tmp = array();
-        if (count($slist) > 0) {
-//            $tmp["classpayname"] = (empty($slist["classpayname"]) ? "NULL" : $slist["classpayname"]);
-            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
-            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
-            $tmp["parent"] = (empty($slist["parent"])  ? "NULL" : $slist["parent"]);
-            $tmp["pictureurl"] = (empty($slist["pictureurl"])  ? "NULL" : $slist["pictureurl"]);
-        } else {
-  //          $tmp["classpayname"] = "NULL";
-            $tmp["firstname"] = "NULL";
-            $tmp["lastname"] = "NULL";
-            $tmp["contactid"] = "NULL";
-            $tmp["parent"] = "NULL";
-            $tmp["pictureurl"] = "NULL";
-        }
-        array_push($response["FamilyList"], $tmp);
-    }
-    
-    $row_cnt = $result->num_rows;
-    //error_log( print_R("route Result set has $r
-
-    if ($result != NULL) {
-        $response["error"] = false;
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "The requested resource doesn't exists";
-        echoRespnse(404, $response);
-    }
-});
 
 /**
  * get student contact history

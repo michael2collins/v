@@ -326,6 +326,38 @@ class StudentClassDbHandler {
 
     }
 
+   public function getPayerDistinct($student_id) {
+
+
+        $sql = "Select distinct payerName, payerid from payerPayments where contactid = ? ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getPayerDistinct sql after security: $sql", TRUE), 3, LOG);
+
+        $sql .= " order by payerName";
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $student_id);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getPayerPartial list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getPayerDistinct list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getPayerDistinct list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
     public function getClassStudentlist($student_id) {
         error_log( print_R("get class student list for id", TRUE ), 3, LOG);
         error_log( print_R($student_id, TRUE ), 3, LOG);
@@ -514,9 +546,11 @@ class StudentClassDbHandler {
                                   $studentid, $classid, $pgmid, $studentclassstatus
                                      );
                     // Check for successful insertion
-                $stmt->execute();
-                $num_affected_rows = $stmt->affected_rows;
-
+                    $result = $stmt->execute();
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                    }    
                 $stmt->close();
 
                 $this->setStudentClass($studentid,
@@ -525,7 +559,7 @@ class StudentClassDbHandler {
                                     $payerid,
                                     $testfeedefault);
 
-                return $num_affected_rows >= 0;
+                return $new_id;
 
             } else {
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -657,6 +691,146 @@ class StudentClassDbHandler {
             }
         }
         return $num_affected_rows > 0;
+    }
+
+    private function isPayerExists($payerName) {
+        error_log( print_R("before isPayerExists\n", TRUE ), 3, LOG);
+        error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
+
+        
+        $sql = "SELECT id from payer WHERE payerName = ? ";
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("isPayerExists sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+        
+        $stmt->bind_param("s", $payerName);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+    public function addPayer($payerName
+    ) {
+
+        error_log( print_R("addPayer entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+        $testfeedefault = 0;
+
+        global $school;
+
+        $sql = "INSERT INTO payer (payerName, school) VALUES ";
+        $sql .= "  ( ?, ?)";
+        
+        // First check if  already existed in db
+        if (!$this->isPayerExists($payerName)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ss",
+                                  $payerName, $school
+                                     );
+                    // Check for successful insertion
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_id;
+                    } else {
+                        // Failed to create 
+                        printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                    }
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same  existed
+            return RECORD_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
+
+    /**
+     * Fetching family for  student
+     * @param String $student_id id of the student
+     */
+    public function getFamily($payerid) {
+        
+        error_log( print_R("student for getfamily is: " . $payerid . "\n", TRUE ),3, LOG);
+        
+        $sql = "SELECT distinct 
+             t.ID as contactid, 
+              t.LastName as lastname, 
+              t.FirstName as firstname , 
+             t.Parent as parent , 
+             t.pictureurl as pictureurl, 
+             pp.payername
+             FROM ncontacts t, payerPayments pp 
+             WHERE t.ID = pp.contactid 
+            and t.studentschool = pp.school
+            and pp.payerid = ?";
+
+        $schoolfield = "t.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
+        
+        $sql = $sql . " ORDER BY t.firstname ";
+
+        error_log( print_R("sql for getfamily is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+            
+        $stmt->bind_param("s", $payerid);
+        
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    public function getListPrices($payerid) {
+        
+        error_log( print_R("student for getListPrices is: " . $payerid . "\n", TRUE ),3, LOG);
+        
+        $sql = "select pp.classname, pp.payerName, c.firstname, c.lastname, 
+        ncl.id as classlistpricid, ncl.class as classlistclass, classType, 
+        12MonthPrice, 6MonthPrice, MonthlyPrice, WeeklyPrice, 2ndPersonDiscount, 3rdPersonDiscount, 4thPersonDiscount, SpecialPrice
+                from nclasslist ncl, payerPayments pp, ncontacts c 
+                where pp.pgmseq = ncl.id 
+                and c.studentschool = pp.school
+                and pp.contactid = c.id
+                and pp.payerid = ?
+                ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getListPrices sql after security: $sql", TRUE), 3, LOG);
+        
+        $sql = $sql . " ORDER BY sortKey ";
+
+        error_log( print_R("sql for getListPrices is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+            
+        $stmt->bind_param("s", $payerid);
+        
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
     }
 
 }

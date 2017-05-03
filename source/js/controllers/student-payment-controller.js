@@ -14,11 +14,13 @@
     '$timeout',
     'ClassServices',
     'StudentServices',
-    'PaymentServices'
+    'PaymentServices',
+    '$q',
+    'Notification'
     ];
 
     function StudentPaymentController($scope, $rootScope, $routeParams,
-            $log, $http, $location, $timeout, ClassServices, StudentServices, PaymentServices) {
+            $log, $http, $location, $timeout, ClassServices, StudentServices, PaymentServices, $q, Notification) {
         /* jshint validthis: true */
         var vmpayment = this;
 
@@ -27,12 +29,15 @@
         vmpayment.updateStudentPayment = updateStudentPayment;
         vmpayment.updateStudentPayment2 = updateStudentPayment2;
         vmpayment.getFamily = getFamily;
-        vmpayment.initclasslist = initclasslist;
+        vmpayment.getListPrices = getListPrices;
 
         vmpayment.StudentPayment = [];
         vmpayment.disabled = undefined;
         vmpayment.ClassPayList = [];
         vmpayment.FamilyList = [];
+        vmpayment.PriceList = [];
+        vmpayment.payerlist = [];
+        vmpayment.studentpayer;
 
         vmpayment.path = '../v1/studentclass/' + $routeParams.id;
         $log.debug('studentid: ' + $routeParams.id);
@@ -45,22 +50,24 @@
         $log.debug('StudentPayment: ' + $routeParams.myclass);
         vmpayment.StudentPayment.contactID = $routeParams.id;
         
-        vmpayment.familypath = '../v1/family/' + $routeParams.id;
 
         vmpayment.xtagTransform = xtagTransform;
 
-        initclasslist();
-
-        function initclasslist() {
-            $timeout(function () {
-                activate();
-
-            }, 2000);
-        }
+        activate();
 
         function activate() {
             console.log('payment activate');
-
+            $q.all([
+                  getPayerList().then(function(){
+                      $log.debug('getPayerList ready');
+        
+                  }).catch(function(e){
+                        $log.debug("getPayerList error in activate", e);
+                  })
+                ])
+                .then(function() {
+                    $log.debug('student-payment activation done');
+            });
            // getStudentPayment();
         }
 
@@ -86,16 +93,92 @@
             
         }
 
-        function getFamily() {
-            return StudentServices.getFamily(vmpayment.familypath).then(function(data){
-                    $log.debug('getFamily returned data');
-                    $log.debug(data.data);
-                    vmpayment.FamilyList = data.data;
+    function getPayerList() {
+            var path = '../v1/payers/' +  $routeParams.id;
+        $log.debug('getPayerList entered',path);
+         return ClassServices.getPayerList(path).then(function(data){
+                $log.debug('getPayerList returned data');
+                $log.debug(data);
+                vmpayment.payerlist = data.payerlist; 
+                if ((typeof data.payerlist === 'undefined' || data.payerlist.error === true)  && typeof data !== 'undefined') {  
+                    vmpayment.payerlist = [];
+                    Notification.error({message: data, delay: 5000});
+                    $q.reject(data);
+                }
+                return vmpayment.payerlist;
+            },
+            function (error) {
+                $log.debug('Caught an error getPayerList, going to notify:', error); 
+                vmpayment.payerlist = [];
+                vmpayment.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vmpayment.loading = false; 
+                vmpayment.loadAttempted = true;
+            }
+            );
 
-                    return vmpayment.FamilyList;
-                });
-        }
+    }
 
+    function getFamily() {
+        var familypath = '../v1/family/' + vmpayment.studentpayer;
+        $log.debug('getPayerList entered',familypath);
+         return ClassServices.getFamily(familypath).then(function(data){
+                $log.debug('getFamily returned data');
+                $log.debug(data);
+                vmpayment.FamilyList = data.FamilyList;
+                if ((typeof data.FamilyList === 'undefined' || data.FamilyList.error === true)  && typeof data !== 'undefined') {  
+                    vmpayment.FamilyList = [];
+                    Notification.error({message: data, delay: 5000});
+                    $q.reject(data);
+                }
+                return vmpayment.FamilyList;
+            },
+            function (error) {
+                $log.debug('Caught an error getFamily, going to notify:', error); 
+                vmpayment.FamilyList = [];
+                vmpayment.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vmpayment.loading = false; 
+                vmpayment.loadAttempted = true;
+            }
+            );
+
+    }
+
+    function getListPrices() {
+        var path = '../v1/listprices/' + vmpayment.studentpayer;
+        $log.debug('getListPrices entered',path);
+         return ClassServices.getListPrices(path).then(function(data){
+                $log.debug('getListPrices returned data');
+                $log.debug(data);
+                vmpayment.PriceList = data.PriceList;
+                if ((typeof data.PriceList === 'undefined' || data.PriceList.error === true)  && typeof data !== 'undefined') {  
+                    vmpayment.PriceList = [];
+                    Notification.error({message: data, delay: 5000});
+                    $q.reject(data);
+                }
+                return vmpayment.PriceList;
+            },
+            function (error) {
+                $log.debug('Caught an error getListPrices, going to notify:', error); 
+                vmpayment.PriceList = [];
+                vmpayment.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vmpayment.loading = false; 
+                vmpayment.loadAttempted = true;
+            }
+            );
+
+    }
 
         function getStudentClassPayList() {
             return PaymentServices.getClassPayList(vmpayment.classpaylistpath).then(function(data){

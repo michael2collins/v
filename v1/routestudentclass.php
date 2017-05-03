@@ -668,4 +668,190 @@ $app->delete('/studentregistration','authenticate', function() use ($app) {
 
 });
 
+$app->post('/payer', 'authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("payer before insert\n", TRUE ), 3, LOG);
+
+    $payerName = (isset($dataJsonDecode->thedata->payerName) ? $dataJsonDecode->thedata->payerName : "");
+
+    error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // updating task
+    $payer_id = $db->addPayer(
+                                 $payerName
+                                );
+
+    if ($payer_id > 0) {
+        $response["error"] = false;
+        $response["message"] = "payer created successfully";
+        $response["payer_id"] = $payer_id;
+        error_log( print_R("Payer created: $payer_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($payer_id == RECORD_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this already existed";
+        error_log( print_R("payer already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
+    } else {
+        error_log( print_R("after payer create result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $payer_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create Payer. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+$app->get('/payers/:id', 'authenticate', function($student_id) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getPayerDistinct($student_id);
+
+    $response["error"] = false;
+    $response["payerlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["payername"] = (empty($slist["payerName"]) ? "NULL" : $slist["payerName"]);
+            $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+        } else {
+            $tmp["payername"] = "NULL";
+            $tmp["payerid"] = "NULL";
+        }
+        array_push($response["payerlist"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested payers do not exist";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/family/:id', 'authenticate', function($payerid) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getFamily($payerid);
+
+    $response["error"] = false;
+    $response["FamilyList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
+            $tmp["parent"] = (empty($slist["parent"])  ? "NULL" : $slist["parent"]);
+            $tmp["pictureurl"] = (empty($slist["pictureurl"])  ? "NULL" : $slist["pictureurl"]);
+        } else {
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["contactid"] = "NULL";
+            $tmp["parent"] = "NULL";
+            $tmp["pictureurl"] = "NULL";
+        }
+        array_push($response["FamilyList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+    //error_log( print_R("route Result set has $r
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/listprices/:id', 'authenticate', function($payerid) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getListPrices($payerid);
+
+    $response["error"] = false;
+    $response["PriceList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["classname"] = (empty($slist["classname"]) ? "NULL" : $slist["classname"]);
+            $tmp["payerName"] = (empty($slist["payerName"]) ? "NULL" : $slist["payerName"]);
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["classlistpricid"] = (empty($slist["classlistpricid"]) ? "NULL" : $slist["classlistpricid"]);
+            $tmp["classlistclass"] = (empty($slist["classlistclass"]) ? "NULL" : $slist["classlistclass"]);
+            $tmp["classType"] = (empty($slist["classType"]) ? "NULL" : $slist["classType"]);
+            $tmp["p12MonthPrice"] = (empty($slist["12MonthPrice"]) ? "NULL" : $slist["12MonthPrice"]);
+            $tmp["p6MonthPrice"] = (empty($slist["6MonthPrice"]) ? "NULL" : $slist["6MonthPrice"]);
+            $tmp["pMonthlyPrice"] = (empty($slist["MonthlyPrice"]) ? "NULL" : $slist["MonthlyPrice"]);
+            $tmp["pWeeklyPrice"] = (empty($slist["WeeklyPrice"]) ? "NULL" : $slist["WeeklyPrice"]);
+            $tmp["pSpecialPrice"] = (empty($slist["SpecialPrice"]) ? "NULL" : $slist["SpecialPrice"]);
+            $tmp["d2ndPersonDiscount"] = (empty($slist["2ndPersonDiscount"]) ? "NULL" : $slist["2ndPersonDiscount"]);
+            $tmp["d3rdPersonDiscount"] = (empty($slist["3rdPersonDiscount"]) ? "NULL" : $slist["3rdPersonDiscount"]);
+            $tmp["d4thPersonDiscount"] = (empty($slist["4thPersonDiscount"]) ? "NULL" : $slist["4thPersonDiscount"]);
+        } else {
+            $tmp["classname"] = "NULL";
+            $tmp["payerName"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["classlistpricid"] = "NULL";
+            $tmp["classlistclass"] = "NULL";
+            $tmp["classType"] = "NULL";
+            $tmp["p12MonthPrice"] = "NULL";
+            $tmp["p6MonthPrice"] = "NULL";
+            $tmp["pMonthlyPrice"] = "NULL";
+            $tmp["pWeeklyPrice"] = "NULL";
+            $tmp["pSpecialPrice"] = "NULL";
+            $tmp["d2ndPersonDiscount"] = "NULL";
+            $tmp["d3rdPersonDiscount"] = "NULL";
+            $tmp["d4thPersonDiscount"] = "NULL";
+        }
+        array_push($response["PriceList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+    //error_log( print_R("route Result set has $r
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+
 ?>

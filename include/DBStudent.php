@@ -766,43 +766,6 @@ class StudentDbHandler {
     }
 
 
-    /**
-     * Fetching family for  student
-     * @param String $student_id id of the student
-     */
-    public function getFamily($student_id) {
-        
-        error_log( print_R("student for getfamily is: " . $student_id . "\n", TRUE ),3, LOG);
-        
-        $sql = " SELECT distinct " ;
-        $sql = $sql . " t.ID as contactid, ";
-        $sql = $sql . "  t.LastName as lastname, ";
-        $sql = $sql . "  t.FirstName as firstname , ";
-        $sql = $sql . " t.Parent as parent , ";
-        $sql = $sql . " t.pictureurl as pictureurl, ";
-        $sql = $sql . " c.classpayname as classpayname ";
-        $sql = $sql . " FROM ncontacts t, nclasspays c ";
-        $sql = $sql . " WHERE t.ID = c.contactid ";
-        $sql = $sql . " AND c.classpayname in ( select p.classpayname from nclasspays p where p.contactID = ? )  ";
-        
-        $schoolfield = "t.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
-        
-        $sql = $sql . " ORDER BY c.classPayName ";
-
-        error_log( print_R("sql for getfamily is: " . $sql . "\n", TRUE ),3, LOG);
-
-        $stmt = $this->conn->prepare($sql);
-            
-        $stmt->bind_param("i", $student_id);
-        
-
-        $stmt->execute();
-        $res = $stmt->get_result();
-        $stmt->close();
-        return $res;
-    }
 
     /**
      * Fetching history for  student

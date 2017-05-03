@@ -5,9 +5,9 @@
         .module('ng-admin')    
     .factory('PaymentServices', PaymentServices);
     
-    PaymentServices.$inject = ['_', '$http', '$log'];
+    PaymentServices.$inject = ['_', '$http', '$log', "$q"];
 
-    function PaymentServices( _ , $http, $log ) {
+    function PaymentServices( _ , $http, $log, $q ) {
         var apikey;
  
 
@@ -15,6 +15,7 @@
              setapikey: setapikey,
 			getStudentPaymentList: getStudentPaymentList,
             updateStudentPayment: updateStudentPayment,
+            createPayer: createPayer,
             getStudentPayment: getStudentPayment,			
             setStudentPayment: setStudentPayment,
 			getClassPayList: getClassPayList			
@@ -108,6 +109,49 @@
                     // called asynchronously if an error occurs
                     // or server returns response with an error status.
                 });
-        }        
+        }
+        
+        function createPayer(path, thedata ) {
+                    $log.debug('createPayer data before :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }          
+       // ---
+        // PRIVATE METHODS.
+        // ---
+        function handleError( response ) {
+            $log.debug('failure:');
+            $log.debug(response);
+            $log.debug('status',response.status);
+            $log.debug('config',response.config);
+            //debugger;
+            if (
+                ! angular.isObject( response.data ) ||
+                ! response.data.message
+                ) {
+              //  return( $q.reject( "An unknown error occurred." ) );
+              return(null);
+            }
+            // Otherwise, use expected error message.
+            return( $q.reject( response.data.message ) );
+        }
+        // I transform the successful response, unwrapping the application data
+        // from the API response payload.
+        function handleSuccess( response ) {
+            $log.debug(' success:');
+            $log.debug(response);
+            if (response.data.error === true) {
+                return( $q.reject( response.data.message ) ); 
+            }
+            return( response.data );
+        }
+        
+        
         }
  })();  

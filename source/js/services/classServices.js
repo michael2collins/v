@@ -33,6 +33,9 @@
             setStudentClass: setStudentClass,
             setClassSearchResult: setClassSearchResult,
             getPayersPartial: getPayersPartial,
+            getPayerList: getPayerList,
+            getFamily: getFamily,
+            getListPrices: getListPrices,
             getClassSearchResult: getClassSearchResult
         };
         return service;
@@ -273,7 +276,22 @@
               return response.data;
             });
         }
+        function getPayerList(path) {
+            $log.debug('getPayerList service entered',path);
 
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        
+        
+        function getFamily(path) {
+            $log.debug('getFamily service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getListPrices(path) {
+            $log.debug('getListPrices service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        
         function handleError( response ) {
             $log.debug('failure:');
     

@@ -985,6 +985,43 @@
                                 class="btn btn-green form-control" ng-click="vmclass.addStudentRegistration()" ><i class="fa fa-plus"></i>&nbsp; Add</a>
                               
                                 <div>
+
+            <div class="table-tools">
+            <div class="row">
+              <div ng-controller="ModalNewPayerController as vmpmodal">
+
+                  <div class="col-lg-12 mbs">
+                    <button type="button" class="btn btn-green mrs" ng-click="vmpmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; New Payer</button>
+                  </div>
+                    <script id="newPayer.html" type="text/ng-template">
+                        <div class="modal-header">
+                          <h3 class="modal-title">Create New Payer</h3>
+                        </div>
+                        <div class="modal-body">
+                            <pre>{{vmnew.message}}</pre>
+                            <form action="" novalidate name="newPayer" class="form-horizontal">
+                              <div class="form-body pal">
+                               <div class="row">
+                                 <div class="col-md-6">
+                                  <div  class="form-group">
+                                    <label for="inputPayerName" class="control-label">Payer Name </label>
+                                      <input id="inputPayerName" type="text" placeholder="Payer Name" name="PayerName" 
+                                      ng-model="vmnew.payerName" 
+                                      minLength="2" maxLength="30"  class="form-control">
+                                  </div>
+                                 </div>
+                               </div>
+                             </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                          <button class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
+                          <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
+                        </div>
+                    </script>
+                </div>    
+            </div>
+          </div>                      
       
                                 <div class="">
                                   <div ng-controller="ModalSetStudentClassController as vmsetclassmodal">
@@ -1195,71 +1232,83 @@
             <div class="panel panel-blue">
               <div class="panel-heading">Payment</div>
               <div class="panel-body pan">
-                <div class="col-md-6">
-                  <form action="" novalidate name="editstudentpayment" class="form-horizontal">
-                    <div class="form-body pal">
-                      <h3 class="block-heading">Payment Information</h3>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div class="col-md-12">
-                            <div ng-class="{'has-error': editstudentpayment.sc_ClassPayName.$invalid, 'has-success': !editstudentpayment.sc_ClassPayName.$invalid}" class="form-group">
-                              <label for="inputsc_ClassPayName" class="control-label">Student Payment</label>
-                              <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentpayment.sc_ClassPayName.$dirty" ng-class="editstudentpayment.sc_ClassPayName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                <input id="inputsc_ClassPayName" type="text" placeholder="Student Payment" name="sc_ClassPayName" ng-model="vmpayment.StudentPayment.classPayName" ng-change="vmpayment.updateStudentPayment2()" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                  class="form-control">
+                <div class="col-md-12 form-body pal">
+                  <div class="row" >
+                  <div class="col-md-3" >
+                  <h3 class="block-heading">Payer</h3>
+                    <div class="form-group">
+                      <label for="inputsc_payer" class="control-label">Name</label>
+                      <div class="input-icon right">
+                        <select id="inputsc_payer" type="text" name="studentpayer" 
+                            ng-model="vmpayment.studentpayer" 
+                            ng-change="vmpayment.getFamily();vmpayment.getListPrices();" 
+                            class="form-control"
+                            >
+                            <option value="">---Please select---</option> <!-- not selected / blank option -->
+                            <option ng-repeat="iter in vmpayment.payerlist" ng-selected="{{iter.payername==vmpayment.studentpayer}}" 
+                             value="{{iter.payerid}}">{{iter.payername}}</option>
+                          </select>
+                      </div>
+                    </div>
+                    </div>
+                    <div class="col-md-9">&nbsp;</div>
+                </div>
+                  <div class="row">
+                    <div class="col-md-6" >
+                      <div class="panel panel-blue">
+                        <div class="panel-body pan">
+                          <div class="col-md-12 form-body pal">
+                          <h3 class="block-heading">Family Members</h3>
+                            <div ng-repeat="family in vmpayment.FamilyList">
+                              <div class="col-md-2">Name: {{ family.firstname }} {{family.lastname}}</div>
+                              <div class="col-md-2">
+                                <div class="fixheight100" ng-show="family.pictureurl">
+                                  <img height="100px" ng-src="{{ './images/students/' + family.pictureurl || '' }}">
+                                </div>
                               </div>
-                              <div style="color:maroon" role="alert" ng-messages="editstudentpayment.sc_ClassPayName.$error" class="has-error">
-                                <div ng-message="required">You did not enter a field</div>
-                                <div ng-message="minlength">Your field is too short</div>
-                                <div ng-message="maxlength">Your field is too long</div>
-                                <div ng-message="email">Your email is missing @ and/or a period</div>
-                              </div>
+                            </div>
+                    </div></div></div>
+                   </div>
+                    <div class="col-md-6">
+                      <div class="panel panel-blue">
+                        <div class="panel-body pan">
+                          <div class="col-md-12 form-body pal">
+                            <h3 class="block-heading">List Prices</h3>
+                                <table class="col-md-10 table=responsive table-striped table-hover table-bordered">
+                                      <thead>
+                                        <tr>
+                                        <th>Name</th>
+                                        <th>Class/Program/Type</th>
+                                        <th>12/6/1 Month</th>
+                                        <th>Weekly</th>
+                                        <th>Special</th>
+                                        <th>Discount 2nd/3rd/4th</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                        <tr  ng-repeat="item in vmpayment.PriceList track by $index">
+                                        <td class="col-md-3">{{ item.firstname }} {{item.lastname}} </td>
+                                        <td class="col-md-3">{{ item.classname}} <br/>{{ item.classlistclass}} <br/> {{ item.classType}}</td>
+                                        <td class="col-md-2">{{ item.p12MonthPrice}} <br/> {{ item.p6MonthPrice}} <br/> {{ item.pMonthlyPrice}}</td>
+                                        <td class="col-md-1">{{ item.pWeeklyPrice}}</td>
+                                        <td class="col-md-1">{{ item.pSpecialPrice}}</td>
+                                        <td class="col-md-2">{{ item.d2ndPersonDiscount}} <br/> {{ item.d3rdPersonDiscount}} <br/> {{ item.d4thPersonDiscount}}</td>
+          
+                                      </tr>  
+                                      </tbody>
+                                  </table>
                             </div>
                           </div>
                         </div>
                       </div>
-
-                      <div class="row">
-                        <div class="col-md-6">
-                          classpayname
-<!--                          <ui-select tagging tagging-label="('new')" ng-model="vmpayment.StudentPayment.classpaynametmp" theme="bootstrap" ng-disabled="vmpayment.disabled" style="width: 300px;" title="Choose a payer">
-                            <ui-select-match allow-clear placeholder="Select or add the payer for the student...">{{$select.selected.classpaynametmp}}</ui-select-match>
-                            <ui-select-choices repeat="paylist.classpaynametmp as paylist in vmpayment.ClassPayList.studentclasspaylist | filter: $select.search ">
-                              <div>
-                                <p>Name: {{paylist.firstname}} {{paylist.lastname}} </p>
-                                Payer: <span ng-bind-html="paylist.classpaynametmp | highlight: $select.search"></span>
-                                <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00" />
-                              </div>
-                            </ui-select-choices>
-                          </ui-select>
-  -->                      </div>
-                        <div class="col-md-6">
-                          <button type="button" ng-click="vmpayment.updateStudentPayment()" class="btn btn-default btn-sm mix-link">Set as {{vmpayment.StudentPayment.classpaynametmp}}</button>
-                        </div>
-                      </div>
-
-                    </div>
-                  </form>
-
-                </div>
-                <div class="col-md-6 form-body pal">
-                  <h3 class="block-heading">Family Members</h3>
-                  <div ng-repeat="family in vmpayment.FamilyList.FamilyList">
-                    <!--                  <pre>{{family | json}}</pre>  -->
-                    <div class="col-md-3">Name: {{ family.firstname }} {{family.lastname}}</div>
-                    <div class="col-md-9">
-                      <div class="thumbnail" ng-show="family.pictureurl">
-                        <img height="200px" ng-src="{{ './images/students/' + family.pictureurl || '' }}">
-                      </div>
-                    </div>
+                  </div>
+                    
                   </div>
                 </div>
-                <!--                  <pre>{{vmpayment.FamilyList | json}}</pre>  -->
-
               </div>
             </div>
           </div>
-        </div>
+
       </uib-tab>
       <uib-tab index="4" id="tab-studenthist" heading="Student History" select="vmstudent.setActiveTab(4,'studenthistselect'); histtabShown = !histtabShown" deselect="histtabShown = !histtabShown">
         <div class="row" ng-controller="StudentHistoryController as vmhistory">
