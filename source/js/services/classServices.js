@@ -36,6 +36,11 @@
             getPayerList: getPayerList,
             getFamily: getFamily,
             getListPrices: getListPrices,
+            getPaymentplan: getPaymentplan,
+            getPaymentplans: getPaymentplans,
+            getPaymenttypes: getPaymenttypes,
+            updatePaymentPlan: updatePaymentPlan,
+            removePaymentPlan: removePaymentPlan,
             getClassSearchResult: getClassSearchResult
         };
         return service;
@@ -281,8 +286,6 @@
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
-        
-        
         function getFamily(path) {
             $log.debug('getFamily service entered',path);
             return($http.get(path).then( handleSuccess, handleError) );
@@ -291,7 +294,40 @@
             $log.debug('getListPrices service entered',path);
             return($http.get(path).then( handleSuccess, handleError) );
         }
-        
+        function getPaymentplan(path) {
+            $log.debug('getPaymentplan service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getPaymentplans(path) {
+            $log.debug('getPaymentplans service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getPaymenttypes(path) {
+            $log.debug('getPaymenttypes service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function updatePaymentPlan(path, thedata ) {
+                    $log.debug('updatePaymentPlan data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }         
+        function removePaymentPlan(path, thedata ) {
+            $log.debug('removePaymentPlan data before post :', path, thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
         function handleError( response ) {
             $log.debug('failure:');
     

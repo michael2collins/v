@@ -540,7 +540,13 @@ $txn_id
      * Fetching lookup lists for students
      */
     public function getStudentLists() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM studentlist t order by t.listtype, t.listorder");
+        $sql = "SELECT t.* FROM studentlist t ";
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= " order by t.listtype, t.listorder";
+        
+        $stmt = $this->conn->prepare($sql);
+
         $stmt->execute();
         $slists = $stmt->get_result();
         $stmt->close();

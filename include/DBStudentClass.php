@@ -23,7 +23,15 @@ class StudentClassDbHandler {
      * Fetching lookup lists for students class
      */
     public function getStudentClassStatus() {
-        $stmt = $this->conn->prepare("SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' order by t.listtype, t.listorder");
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' " ;
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " order by t.listtype, t.listorder";
+        error_log( print_R("getStudentClassStatus sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
         $stmt->execute();
         $slists = $stmt->get_result();
         $stmt->close();
@@ -831,6 +839,167 @@ class StudentClassDbHandler {
         $res = $stmt->get_result();
         $stmt->close();
         return $res;
+    }
+    public function getPaymentplan($payerid) {
+        
+        error_log( print_R("student for getPaymentplan is: " . $payerid . "\n", TRUE ),3, LOG);
+        
+        $sql = "SELECT paymentid, payerid,
+            `paymenttype`, `PaymentNotes`, `PaymentPlan`, `PaymentAmount`, `PriceSetby`,
+            DATE_FORMAT(Pricesetdate, '%Y-%m-%d') as Pricesetdate,
+             `payOnDayOfMonth`
+            FROM `npayments` 
+            WHERE payerid = ?
+                ";
+
+        error_log( print_R("sql for getPaymentplan is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+            
+        $stmt->bind_param("s", $payerid);
+        
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    public function getPaymentplans() {
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentPlan' " ;
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " order by t.listtype, t.listorder";
+        error_log( print_R("getPaymentplans sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute();
+        $slists = $stmt->get_result();
+        $stmt->close();
+        return $slists;
+    }
+    public function getPaymenttypes() {
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentType' " ;
+        $schoolfield = "t.school";
+        $sql = addSecurity($sql, $schoolfield);
+
+        $sql .= " order by t.listtype, t.listorder";
+        error_log( print_R("getPaymentplans sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->execute();
+        $slists = $stmt->get_result();
+        $stmt->close();
+        return $slists;
+    }
+
+    private function isPaymentPlanExists($studentid, $paymenttype, $PaymentPlan) {
+
+    error_log( print_R("before isPaymentPlanExists\n", TRUE ), 3, LOG);
+    error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
+    error_log( print_R("paymenttype  ate: $paymenttype\n", TRUE ), 3, LOG);
+    error_log( print_R("PaymentPlan  ate: $PaymentPlan\n", TRUE ), 3, LOG);
+
+        
+        $sql = "SELECT 
+            paymentid
+            FROM `npayments` 
+            WHERE payerid = ? and paymenttype = ? and PaymentPlan = ?
+        ";
+
+        $stmt = $this->conn->prepare($sql);
+
+        
+        $stmt->bind_param("sss", $studentid, $paymenttype, $PaymentPlan);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+    public function updatePaymentPlan(
+        $paymentid, $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount,$Pricesetdate ,$payOnDayOfMonth, $PriceSetby, $mode
+    ) {
+        error_log( print_R("updatePaymentPlan entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $Pricesetdate, new DateTimeZone('Etc/Zulu'));
+//        $dt = DateTime::createFromFormat(DateTime::ISO8601, $Pricesetdate);
+        if ($dt === false) {
+            error_log( print_R("updatePaymentPlan  bad date $Pricesetdate" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $thedate = $dt->format('Y-m-d');
+
+        $sql = "INSERT INTO npayments( payerid, paymenttype, PaymentNotes, 
+        PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby) VALUES ";
+        $sql .= "  ( ?, ?, ?, ?, ?, ?, ?, ? )";
+
+        // First check if  already existed in db
+        if ($mode == "insert") {
+            error_log( print_R("updatePaymentPlan do insert\n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ssssssss",
+        $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount, $thedate ,$payOnDayOfMonth, $PriceSetby
+                                     );
+                    // Check for successful insertion
+                    $result = $stmt->execute();
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                    }    
+                $stmt->close();
+
+                return $new_id;
+
+            } else {
+                error_log( print_R("insert npayment failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+            }
+
+
+        } else {
+            //  with same  existed
+                $updsql = "UPDATE npayments SET 
+                PaymentNotes= ?, PaymentAmount= ?, PriceSetby= ?,
+                Pricesetdate= ?, payOnDayOfMonth= ?, PaymentPlan = ?, 
+                paymenttype = ?
+                WHERE paymentid = ? and payerid = ? ";
+            error_log( print_R("updatePaymentPlan do update: $updsql                     $PaymentNotes, $PaymentAmount,$PriceSetby, 
+                    $thedate ,$payOnDayOfMonth, $PaymentPlan,
+                    $paymenttype ,
+                    $paymentid,
+                    $payerid
+                \n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssssssss",
+                    $PaymentNotes, $PaymentAmount,$PriceSetby, 
+                    $thedate ,$payOnDayOfMonth, $PaymentPlan,
+                    $paymenttype ,
+                    $paymentid,
+                    $payerid
+                                 );
+                    $stmt->execute();
+                    $num_affected_rows = $stmt->affected_rows;
+                    $stmt->close();
+            } else {
+                error_log( print_R("update npayments failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -2;
+            }
+            
+            return $num_affected_rows;
+        }
+
     }
 
 }

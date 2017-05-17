@@ -453,19 +453,26 @@
                               <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
                                 <div class="col-md-11" style="padding-right: 0px;">
                                   <div class="input-icon right" >
-                                    <i ng-click="vmstudent.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                    <input id="inputBirthday" type="text" placeholder="mm/dd/yyyy" name="Birthday" required ng-model="vmstudent.students.Birthday" ng-change="vmstudent.updateStudent()" is-open="vmstudent.status.opened" uib-datepicker-popup="{{vmstudent.bdateformat}}" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                    <i ng-click="vmstudent.dateopen($event)" data-hover="tooltip" data-original-title="Correct" 
+                                    ng-show="editstudent.Birthday.$dirty" 
+                                    ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                    <input id="inputBirthday" type="text" placeholder="mm/dd/yyyy" 
+                                    name="Birthday" required ng-model="vmstudent.students.Birthday" 
+                                    ng-change="vmstudent.updateStudent()" 
+                                    is-open="vmstudent.status.opened" 
+                                    uib-datepicker-popup="{{vmstudent.bdateformat}}" 
+                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                       class="form-control">
                                   </div>
+                                </div>
+                                <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+                                  <button type="button" class="btn btn-default" ng-click="vmstudent.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </div>
                                 <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">
                                   <div ng-message="required">You did not enter a field</div>
                                   <div ng-message="minlength">Your field is too short</div>
                                   <div ng-message="maxlength">Your field is too long</div>
                                   <div ng-message="email">Your email is missing @ and/or a period</div>
-                                </div>
-                                <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
-                                  <button type="button" class="btn btn-default" ng-click="vmstudent.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </div>
                               </div>
                             </div>
@@ -881,8 +888,6 @@
                           <div class="portlet-header">
                             <div class="caption">Student Class Registration</div> 
                           </div>
-                                                    studentclass is: {{vmclass.studentclass}}
-                          
                           <div class="portlet-body">
                             <div class="row col-md-12">
                               <div class="col-md-2">
@@ -897,7 +902,7 @@
                                     </div>
                                   </div>
                               </div>
-                              <div class="col-md-2" >
+                              <div class="col-md-2">
                                   <div  class="form-group">
                                     <label for="inputsc_pgmclass" class="control-label">Student Program</label>
                                     <div> 
@@ -909,7 +914,7 @@
                                     </div>
                                   </div>
                               </div>
-                              <div class="col-md-2" >
+                              <div class="col-md-2">
                                 <div ng-class="{'has-error': editstudentclass.studentclassstatus.$invalid, 'has-success': !editstudentclass.studentclassstatus.$invalid}" class="form-group">
                                   <label for="inputsc_Classstatus" class="control-label">Student Status</label>
                                   <div class="input-icon right">
@@ -930,39 +935,38 @@
                                   </div>
                                 </div>
                             </div>
-                                      <div class="col-md-2" >
-                                        <div ng-class="{'has-error': editstudentclass.payerName.$invalid, 'has-success': !editstudentclass.payerName.$invalid}" class="form-group">
-                                          <label for="inputsc_payerName" class="control-label">Payer Name</label>
-                                          <div class="input-icon right">
-                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.payerName.$dirty" ng-class="editstudentclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                            <ui-select  ng-model="vmclass.studentclass.payerName" 
-                                                        theme="bootstrap" 
-                                                        reset-search-input="false"
-                                                
-                                                        style="width: 300px;" 
-                                                        title="Pick Payer"
-                                                        append-to-body="false">
-                                              <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
-                                              <ui-select-choices 
-                                              repeat="item in vmclass.payers | filter: $select.search track by $index"
-                                              refresh="vmclass.getPayersPartial($select.search)"
-                                              refresh-delay="0">
-                                                <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
-                                              </ui-select-choices>
-                                              <ui-select-no-choice>
-                                                Dang!  We couldn't find any choices...
-                                              </ui-select-no-choice>                    
-                                            </ui-select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudentclass.payerName.$error" class="has-error">
-                                            <div ng-message="required">You did not enter a field</div>
-                                            <div ng-message="minlength">Your field is too short</div>
-                                            <div ng-message="maxlength">Your field is too long</div>
-                                            <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                        </div>
-                                        </div>
-                            
+                              <div class="col-md-2">
+                                <div ng-class="{'has-error': editstudentclass.payerName.$invalid, 'has-success': !editstudentclass.payerName.$invalid}" class="form-group">
+                                  <label for="inputsc_payerName" class="control-label">Payer Name</label>
+                                  <div class="input-icon right">
+                                    <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.payerName.$dirty" ng-class="editstudentclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                    <ui-select  ng-model="vmclass.studentclass.payerName" 
+                                                theme="bootstrap" 
+                                                reset-search-input="false"
+                                        
+                                                style="width: 300px;" 
+                                                title="Pick Payer"
+                                                append-to-body="false">
+                                      <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
+                                      <ui-select-choices 
+                                      repeat="item in vmclass.payers | filter: $select.search track by $index"
+                                      refresh="vmclass.getPayersPartial($select.search)"
+                                      refresh-delay="0">
+                                        <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
+                                      </ui-select-choices>
+                                      <ui-select-no-choice>
+                                        Dang!  We couldn't find any choices...
+                                      </ui-select-no-choice>                    
+                                    </ui-select>
+                                  </div>
+                                  <div style="color:maroon" role="alert" ng-messages="editstudentclass.payerName.$error" class="has-error">
+                                    <div ng-message="required">You did not enter a field</div>
+                                    <div ng-message="minlength">Your field is too short</div>
+                                    <div ng-message="maxlength">Your field is too long</div>
+                                    <div ng-message="email">Your email is missing @ and/or a period</div>
+                                  </div>
+                                </div>
+                                </div>
                               <div class="col-md-2">
                                 <div class="gallery-pages">
                                   <div class="mix-grid">
@@ -980,50 +984,48 @@
                                 </div>                                
                               </div>
                               <div class="btn">
-                                  <label for="rankbtn" class="control-label">&nbsp; </label>
+                                <label for="rankbtn" class="control-label">&nbsp; </label>
                                 <a role="button" ng-disabled="editstudentclass.studentclassstatus.$invalid || editstudentclass.pgmclass.$invalid" 
                                 class="btn btn-green form-control" ng-click="vmclass.addStudentRegistration()" ><i class="fa fa-plus"></i>&nbsp; Add</a>
-                              
                                 <div>
-
-            <div class="table-tools">
-            <div class="row">
-              <div ng-controller="ModalNewPayerController as vmpmodal">
-
-                  <div class="col-lg-12 mbs">
-                    <button type="button" class="btn btn-green mrs" ng-click="vmpmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; New Payer</button>
-                  </div>
-                    <script id="newPayer.html" type="text/ng-template">
-                        <div class="modal-header">
-                          <h3 class="modal-title">Create New Payer</h3>
-                        </div>
-                        <div class="modal-body">
-                            <pre>{{vmnew.message}}</pre>
-                            <form action="" novalidate name="newPayer" class="form-horizontal">
-                              <div class="form-body pal">
-                               <div class="row">
-                                 <div class="col-md-6">
-                                  <div  class="form-group">
-                                    <label for="inputPayerName" class="control-label">Payer Name </label>
-                                      <input id="inputPayerName" type="text" placeholder="Payer Name" name="PayerName" 
-                                      ng-model="vmnew.payerName" 
-                                      minLength="2" maxLength="30"  class="form-control">
-                                  </div>
-                                 </div>
-                               </div>
-                             </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                          <button class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
-                          <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
-                        </div>
-                    </script>
-                </div>    
-            </div>
-          </div>                      
-      
-                                <div class="">
+                                  <div class="table-tools">
+                                    <div class="row">
+                                      <div ng-controller="ModalNewPayerController as vmpmodal">
+                        
+                                          <div class="col-lg-12 mbs">
+                                            <button type="button" class="btn btn-green mrs" ng-click="vmpmodal.openmodal()" ><i class="fa fa-plus"></i>&nbsp; New Payer</button>
+                                          </div>
+                                            <script id="newPayer.html" type="text/ng-template">
+                                                <div class="modal-header">
+                                                  <h3 class="modal-title">Create New Payer</h3>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <pre>{{vmnew.message}}</pre>
+                                                    <form action="" novalidate name="newPayer" class="form-horizontal">
+                                                      <div class="form-body pal">
+                                                       <div class="row">
+                                                         <div class="col-md-6">
+                                                          <div  class="form-group">
+                                                            <label for="inputPayerName" class="control-label">Payer Name </label>
+                                                              <input id="inputPayerName" type="text" placeholder="Payer Name" name="PayerName" 
+                                                              ng-model="vmnew.payerName" 
+                                                              minLength="2" maxLength="30"  class="form-control">
+                                                          </div>
+                                                         </div>
+                                                       </div>
+                                                     </div>
+                                                    </form>
+                                                </div>
+                                                <div class="modal-footer">
+                                                  <button class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
+                                                  <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
+                                                </div>
+                                            </script>
+                                        </div>    
+                                    
+                                    </div>
+                                  </div>                      
+                                  <div class="">
                                   <div ng-controller="ModalSetStudentClassController as vmsetclassmodal">
                                     <script id="myClasssearch.html" type="text/ng-template">
                                       <div class="modal-header">
@@ -1104,11 +1106,10 @@
                                     </div>
                                   </div>
                                 </div>
-      
+                                </div>
                               </div>
-                              </div>
-                              </div>
-                              <table class="col-md-10 table=responsive table-striped table-hover table-bordered">
+                            </div>
+                            <table class="col-md-10 table=responsive table-striped table-hover table-bordered">
                                     <thead>
                                       <tr>
                                       <th>Class</th>
@@ -1214,7 +1215,6 @@
                                 </table>
                           </div>
                         </div>
-
                       </div>
                     </div>
                   </form>
@@ -1234,14 +1234,14 @@
               <div class="panel-body pan">
                 <div class="col-md-12 form-body pal">
                   <div class="row" >
-                  <div class="col-md-3" >
-                  <h3 class="block-heading">Payer</h3>
+                  <div class="col-md-2" >
+                    <h3 class="block-heading">Payer</h3>
                     <div class="form-group">
                       <label for="inputsc_payer" class="control-label">Name</label>
                       <div class="input-icon right">
                         <select id="inputsc_payer" type="text" name="studentpayer" 
                             ng-model="vmpayment.studentpayer" 
-                            ng-change="vmpayment.getFamily();vmpayment.getListPrices();" 
+                            ng-change="vmpayment.payerSet();" 
                             class="form-control"
                             >
                             <option value="">---Please select---</option> <!-- not selected / blank option -->
@@ -1250,8 +1250,366 @@
                           </select>
                       </div>
                     </div>
+                  </div>
+                    <div class="col-md-10">
+                     <form action="" novalidate name="editPaymentPlan" class="form-horizontal">
+                        <div class="form-body pal">
+                          <div class="row">
+                            <div class="portlet portlet-primary col-md-12"> 
+                              <div class="portlet-header">
+                                <div class="caption">Payment Plan</div> 
+                              </div>
+                              <div class="portlet-body">
+                                <div class="row">
+                                  <div class="col-md-2">
+                                    <div ng-class="{'has-error': editPaymentPlan['PaymentPlanHead'].$invalid, 
+                                                    'has-success': !editPaymentPlan['PaymentPlanHead'].$invalid}" class="form-group">
+                                      <label for="PaymentPlanHead" class="control-label">Plan</label>
+                                      <div class="input-icon right">
+                                        <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentPlanHead'].$dirty" 
+                                        ng-class="editPaymentPlan['PaymentPlanHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <select id="PaymentPlanHead" type="text" name="PaymentPlanHead" 
+                                            ng-model="vmpayment.head.PaymentPlan" 
+                                            ng-change="" 
+                                            minLength="2" maxLength="30" 
+                                            required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                          class="form-control">
+                                            <option ng-repeat="iter in vmpayment.PaymentPlans" ng-selected="{{iter.paymentplan==vmpayment.head.PaymentPlan}}" 
+                                            placeholder="Select" value="{{iter.paymentplan}}">{{iter.paymentplan}}</option>
+                                          </select>
+                                      </div>
+                                    </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentPlanHead'].$error" class="has-error">
+                                        <div ng-message="required">You did not enter a field</div>
+                                        <div ng-message="minlength">Your field is too short</div>
+                                        <div ng-message="maxlength">Your field is too long</div>
+                                      </div>
+                                  </div>
+                                  <div class="col-md-2" >
+                                    <div ng-class="{'has-error': editPaymentPlan['PaymentTypeHead'].$invalid, 
+                                    'has-success': !editPaymentPlan['PaymentTypeHead'].$invalid}" class="form-group">
+                                      <label for="PaymentTypeHead" class="control-label">Type</label>
+                                      <div class="input-icon right">
+                                        <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentTypeHead'].$dirty" 
+                                        ng-class="editPaymentPlan['PaymentTypeHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <select id="PaymentTypeHead" type="text" name="PaymentTypeHead" 
+                                        ng-model="vmpayment.head.paymenttype" 
+                                        ng-change="" minLength="2" maxLength="30" 
+                                        required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                          class="form-control">
+                                            <option ng-repeat="iter in vmpayment.PaymentTypes" ng-selected="{{iter.paymenttype==vmpayment.head.paymenttype}}" 
+                                            placeholder="Select" value="{{iter.paymenttype}}">{{iter.paymenttype}}</option>
+                                          </select>
+                                      </div>
+                                    </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentTypeHead'].$error" class="has-error">
+                                        <div ng-message="required">You did not enter a field</div>
+                                        <div ng-message="minlength">Your field is too short</div>
+                                        <div ng-message="maxlength">Your field is too long</div>
+                                      </div>
+                                  </div>
+                                  <div class="col-md-2" >
+                                      <label for="PricesetdateHead" class="control-label">Date Set</label>
+                                    <div ng-class="{'has-error': editPaymentPlan['PricesetdateHead'].$invalid, 
+                                    'has-success': !editPaymentPlan['PricesetdateHead'].$invalid}" class="form-group">
+                                      <div class="col-md-9" style="padding-right: 0px;">
+                                        <div class="input-icon right" >
+                                          <i ng-click="vmpayment.dateopen($event, 'head')" data-hover="tooltip" data-original-title="Correct" 
+                                          ng-show="editPaymentPlan['PricesetdateHead'].$dirty" 
+                                          ng-class="editPaymentPlan['PricesetdateHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                          <input id="PricesetdateHead" type="text" placeholder="mm/dd/yyyy" name="PricesetdateHead" 
+                                              required ng-model="vmpayment.head.Pricesetdate" 
+                                              ng-change="" 
+                                              is-open="vmpayment.statushead.opened" 
+                                              uib-datepicker-popup="{{vmpayment.bdateformat}}" 
+                                              ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                            class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+                                        <button type="button" class="btn btn-default" ng-click="vmpayment.dateheadopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                      </div>
+                                    </div>
+                                    <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PricesetdateHead'].$error" class=" has-error">
+                                      <div ng-message="required">You did not enter a field</div>
+                                      <div ng-message="minlength">Your field is too short</div>
+                                      <div ng-message="maxlength">Your field is too long</div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-1" >
+                                    <div class="form-group" ng-class="{'has-error': editPaymentPlan['PaymentAmountHead'].$invalid, 
+                                                                      'has-success': !editPaymentPlan['PaymentAmountHead'].$invalid}">
+                                      <label for="PaymentAmountHead" class="control-label">Amount</label>
+                                    <div class="input-icon right">
+                                      <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" 
+                                      ng-class="editPaymentPlan['PaymentAmountHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" 
+                                      ng-show="editPaymentPlan['PaymentAmountHead'].$dirty"></i> 
+                                      <input class="form-control"
+                                        id="PaymentAmountHead"
+                                         maxlength="20" name="PaymentAmountHead" 
+                                        ng-change=""
+                                        min="0"
+                                        ng-model="vmpayment.head.PaymentAmount" 
+                                        ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                                        placeholder="99"
+                                        type="number">
+                                    </div>
+                                    </div>
+                                      <div class="has-error" ng-messages="editPaymentPlan['PaymentAmountHead'].$error" role="alert" style="color:maroon">
+                                      <div ng-message="required">
+                                        You did not enter a field
+                                      </div>
+                                      <div ng-message="maxlength">
+                                        Your field is too long
+                                      </div>
+                                      <div ng-message="min">Your field value is less than minimum value 1</div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-1" >
+                                    <div class="form-group" ng-class="{'has-error': editPaymentPlan['payOnDayOfMonthHead'].$invalid, 
+                                    'has-success': !editPaymentPlan['payOnDayOfMonthHead'].$invalid}">
+                                      <label for="payOnDayOfMonthHead" class="control-label">Pay on</label>
+                                    <div class="input-icon right">
+                                      <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" 
+                                      ng-class="editPaymentPlan['payOnDayOfMonthHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" 
+                                      ng-show="editPaymentPlan['payOnDayOfMonthHead'].$dirty"></i> <input class="form-control"
+                                        id="payOnDayOfMonthHead" 
+                                        minlength="1" maxlength="2" name="payOnDayOfMonthHead" 
+                                        min="1" max="31"
+                                        ng-model="vmpayment.head.payOnDayOfMonth" 
+                                        ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                                        placeholder="99"
+                                        type="number">
+                                    </div>
+                                    </div>
+                                      <div class="has-error" ng-messages="editPaymentPlan['payOnDayOfMonthHead'].$error" role="alert" style="color:maroon">
+                                      <div ng-message="required">
+                                        You did not enter a field
+                                      </div>
+                                      <div ng-message="minlength">
+                                        Your field is too short
+                                      </div>
+                                      <div ng-message="maxlength">
+                                        Your field is too long
+                                      </div>
+                                      <div ng-message="min">Your field value is less than minimum value 1</div>
+                                      <div ng-message="max">Your field value is greater than max value 31</div>
+                                    </div>                                  </div>
+                                  <div class="col-md-2" >
+                                    <div ng-class="{'has-error': editPaymentPlan['PaymentNotesHead'].$invalid, 
+                                    'has-success': !editPaymentPlan['PaymentNotesHead'].$invalid}" class="form-group">
+                                      <label for="PaymentNotesHead" class="control-label">Notes</label>
+                                      <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" 
+                                          ng-show="editPaymentPlan['PaymentNotesHead'].$dirty" 
+                                          ng-class="editPaymentPlan['PaymentNotesHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <textarea id="PaymentNotesHead" type="text" 
+                                            placeholder="Enter Payment Notes" name="PaymentNotesHead" 
+                                            ng-model="vmpayment.head.PaymentNotes" 
+                                            ng-change="" 
+                                            ng-keyup="vmpayment.autoExpand($event)"
+                                            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                            class="form-control">
+                                        </textarea>
+                                      </div>
+                                      </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentNotesHead'].$error" class="has-error">
+                                    </div>
+                                  </div>
+                                  <div class="col-md-1 btn">
+                                    <div class="row">
+                                      <label for="PaymentBtnHead" class="control-label">Action</label>
+                                    </div>
+                                    <div class="row">
+                                      <a role="button" 
+                                      class="btn btn-green form-control" ng-click="vmpayment.updatePaymentPlan(vmpayment.head,'insert')" ><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                      
+                                    </div>
+                                  </div>
+                                  
+                                </div>
+                                <table class="col-md-10 table=responsive table-striped table-hover table-bordered">
+                                  <thead>
+                                    <tr>
+                                    <th>Plan</th>
+                                    <th>Type</th>
+                                    <th>Date Set</th>
+                                    <th>Set by?</th>
+                                    <th>Amount</th>
+                                    <th>Pay on<br/>DayOfMonth</th>
+                                    <th>Notes</th>
+                                    <th>Action</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody>
+    
+                                <tr  ng-repeat="rowiter in vmpayment.PaymentPlanList track by $index">
+                                  <td class="col-md-1">
+                                    <div ng-class="{'has-error': editPaymentPlan['PaymentPlan' + $index].$invalid, 
+                                                    'has-success': !editPaymentPlan['PaymentPlan' + $index].$invalid}" class="form-group">
+                                      <div class="input-icon right">
+                                        <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentPlan' + $index].$dirty" 
+                                        ng-class="editPaymentPlan['PaymentPlan' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <select id="PaymentPlan{{$index}}" type="text" name="PaymentPlan{{$index}}" 
+                                            ng-model="rowiter.PaymentPlan" 
+                                            ng-change="vmpayment.updatePaymentPlan(rowiter,'update')" 
+                                            minLength="2" maxLength="30" 
+                                            required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                          class="form-control">
+                                            <option ng-repeat="iter in vmpayment.PaymentPlans" ng-selected="{{iter.paymentplan==rowiter.PaymentPlan}}" 
+                                            placeholder="Select" value="{{iter.paymentplan}}">{{iter.paymentplan}}</option>
+                                          </select>
+                                      </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentPlan' + $index].$error" class="has-error">
+                                        <div ng-message="required">You did not enter a field</div>
+                                        <div ng-message="minlength">Your field is too short</div>
+                                        <div ng-message="maxlength">Your field is too long</div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td class="col-md-1" >
+                                    <div ng-class="{'has-error': editPaymentPlan['PaymentType' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['PaymentType' + $index].$invalid}" class="form-group">
+                                      <div class="input-icon right">
+                                        <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentType' + $index].$dirty" 
+                                        ng-class="editPaymentPlan['PaymentType' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <select id="PaymentType{{$index}}" type="text" name="PaymentType{{$index}}" 
+                                        ng-model="rowiter.paymenttype" 
+                                            ng-change="vmpayment.updatePaymentPlan(rowiter,'update')" 
+                                        minLength="2" maxLength="30" 
+                                        required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                          class="form-control">
+                                            <option ng-repeat="iter in vmpayment.PaymentTypes" ng-selected="{{iter.paymenttype==rowiter.paymenttype}}" 
+                                            placeholder="Select" value="{{iter.paymenttype}}">{{iter.paymenttype}}</option>
+                                          </select>
+                                      </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentType' + $index].$error" class="has-error">
+                                        <div ng-message="required">You did not enter a field</div>
+                                        <div ng-message="minlength">Your field is too short</div>
+                                        <div ng-message="maxlength">Your field is too long</div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td class="col-md-2" >
+                                    <div ng-class="{'has-error': editPaymentPlan['Pricesetdate' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['Pricesetdate' + $index].$invalid}" class="form-group">
+                                      <div class="col-md-9" style="padding-right: 0px;">
+                                        <div class="input-icon right" >
+                                          <i ng-click="vmpayment.dateopen($event, $index)" data-hover="tooltip" data-original-title="Correct" 
+                                          ng-show="editPaymentPlan['Pricesetdate' + $index].$dirty" 
+                                          ng-class="editPaymentPlan['Pricesetdate' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                          <input id="Pricesetdate{{$index}}" type="text" placeholder="mm/dd/yyyy" name="Pricesetdate{{$index}}" 
+                                              required ng-model="rowiter.Pricesetdate" 
+                                            ng-change="vmpayment.updatePaymentPlan(rowiter,'update')" 
+                                              is-open="vmpayment.status[$index].opened" 
+                                              uib-datepicker-popup="{{vmpayment.bdateformat}}" 
+                                              ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                            class="form-control">
+                                        </div>
+                                      </div>
+                                      <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+                                        <button type="button" class="btn btn-default" ng-click="vmpayment.dateopen($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                      </div>
+                                    </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['Pricesetdate' + $index].$error" class="has-error">
+                                        <div ng-message="required">You did not enter a field</div>
+                                        <div ng-message="minlength">Your field is too short</div>
+                                        <div ng-message="maxlength">Your field is too long</div>
+                                      </div>
+                                  </td>
+                                  <td class="col-md-1" >
+                                    {{rowiter.PriceSetby}}
+                                  </td>
+                                  <td class="col-md-1" >
+                                    <div class="form-group" ng-class="{'has-error': editPaymentPlan['PaymentAmount' + $index].$invalid, 
+                                                                      'has-success': !editPaymentPlan['PaymentAmount' + $index].$invalid}">
+                                    <div class="input-icon right">
+                                      <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" 
+                                      ng-class="editPaymentPlan['PaymentAmount' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" 
+                                      ng-show="editPaymentPlan['PaymentAmount' + $index].$dirty"></i> 
+                                      <input class="form-control"
+                                        id="PaymentAmount{{$index}}"
+                                         maxlength="20" name="PaymentAmount{{$index}}" 
+                                            ng-change="vmpayment.updatePaymentPlan(rowiter,'update')" 
+                                        min="0"
+                                        ng-model="rowiter.PaymentAmount" 
+                                        ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                                        placeholder="99"
+                                        type="number">
+                                    </div>
+                                      <div class="has-error" ng-messages="editPaymentPlan['PaymentAmount' + $index].$error" role="alert" style="color:maroon">
+                                      <div ng-message="required">
+                                        You did not enter a field
+                                      </div>
+                                      <div ng-message="maxlength">
+                                        Your field is too long
+                                      </div>
+                                      <div ng-message="min">Your field value is less than minimum value 1</div>
+                                    </div>
+                                    </div>
+                                  </td>
+                                  <td class="col-md-1" >
+                                    <div class="form-group" ng-class="{'has-error': editPaymentPlan['payOnDayOfMonth' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['payOnDayOfMonth' + $index].$invalid}">
+                                    <div class="input-icon right">
+                                      <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" 
+                                      ng-class="editPaymentPlan['payOnDayOfMonth' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" 
+                                      ng-show="editPaymentPlan['payOnDayOfMonth' + $index].$dirty"></i> <input class="form-control"
+                                        id="payOnDayOfMonth{{$index}}" 
+                                        minlength="1" maxlength="2" name="payOnDayOfMonth{{$index}}" 
+                                        min="1" max="31"
+                                            ng-change="vmpayment.updatePaymentPlan(rowiter,'update')" 
+                                        ng-model="rowiter.payOnDayOfMonth" 
+                                        ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                                        placeholder="99"
+                                        type="number">
+                                    </div>
+                                      <div class="has-error" ng-messages="editPaymentPlan['payOnDayOfMonth' + $index].$error" role="alert" style="color:maroon">
+                                      <div ng-message="required">
+                                        You did not enter a field
+                                      </div>
+                                      <div ng-message="minlength">
+                                        Your field is too short
+                                      </div>
+                                      <div ng-message="maxlength">
+                                        Your field is too long
+                                      </div>
+                                      <div ng-message="min">Your field value is less than minimum value 1</div>
+                                      <div ng-message="max">Your field value is greater than max value 31</div>
+                                    </div>
+                                    </div>
+                                  </td>
+                                  <td class="col-md-2" >
+                                    <div ng-class="{'has-error': editPaymentPlan['PaymentNotes' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['PaymentNotes' + $index].$invalid}" class="form-group">
+                                      <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" 
+                                          ng-show="editPaymentPlan['PaymentNotes' + $index].$dirty" 
+                                          ng-class="editPaymentPlan['PaymentNotes' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <textarea id="PaymentNotes{{$index}}" type="text" 
+                                            placeholder="Enter Payment Notes" name="PaymentNotes{{$index}}" 
+                                            ng-model="rowiter.PaymentNotes" 
+                                            ng-change="vmpayment.updatePaymentPlan(rowiter,'update')" 
+                                            ng-keyup="vmpayment.autoExpand($event)"
+                                            ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                            class="form-control">
+                                        </textarea>
+                                      </div>
+                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentNotes' + $index].$error" class="has-error">
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td class="col-md-1">
+                                    <span> <a ng-click="vmpayment.removePaymentPlan(rowiter)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a>
+                                    </span>
+                                  </td>
+                                </tr>
+                                </tbody>
+                              </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
                     </div>
-                    <div class="col-md-9">&nbsp;</div>
                 </div>
                   <div class="row">
                     <div class="col-md-6" >
@@ -1289,10 +1647,10 @@
                                         <tr  ng-repeat="item in vmpayment.PriceList track by $index">
                                         <td class="col-md-3">{{ item.firstname }} {{item.lastname}} </td>
                                         <td class="col-md-3">{{ item.classname}} <br/>{{ item.classlistclass}} <br/> {{ item.classType}}</td>
-                                        <td class="col-md-2">{{ item.p12MonthPrice}} <br/> {{ item.p6MonthPrice}} <br/> {{ item.pMonthlyPrice}}</td>
-                                        <td class="col-md-1">{{ item.pWeeklyPrice}}</td>
-                                        <td class="col-md-1">{{ item.pSpecialPrice}}</td>
-                                        <td class="col-md-2">{{ item.d2ndPersonDiscount}} <br/> {{ item.d3rdPersonDiscount}} <br/> {{ item.d4thPersonDiscount}}</td>
+                                        <td class="col-md-2 text-center">{{ item.p12MonthPrice}} <br/> {{ item.p6MonthPrice}} <br/> {{ item.pMonthlyPrice}}</td>
+                                        <td class="col-md-1 text-center">{{ item.pWeeklyPrice}}</td>
+                                        <td class="col-md-1 text-center">{{ item.pSpecialPrice}}</td>
+                                        <td class="col-md-2 text-center">{{ item.d2ndPersonDiscount}} <br/> {{ item.d3rdPersonDiscount}} <br/> {{ item.d4thPersonDiscount}}</td>
           
                                       </tr>  
                                       </tbody>

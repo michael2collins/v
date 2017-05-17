@@ -813,14 +813,19 @@ $app->get('/listprices/:id', 'authenticate', function($payerid) {
             $tmp["classlistpricid"] = (empty($slist["classlistpricid"]) ? "NULL" : $slist["classlistpricid"]);
             $tmp["classlistclass"] = (empty($slist["classlistclass"]) ? "NULL" : $slist["classlistclass"]);
             $tmp["classType"] = (empty($slist["classType"]) ? "NULL" : $slist["classType"]);
-            $tmp["p12MonthPrice"] = (empty($slist["12MonthPrice"]) ? "NULL" : $slist["12MonthPrice"]);
-            $tmp["p6MonthPrice"] = (empty($slist["6MonthPrice"]) ? "NULL" : $slist["6MonthPrice"]);
-            $tmp["pMonthlyPrice"] = (empty($slist["MonthlyPrice"]) ? "NULL" : $slist["MonthlyPrice"]);
-            $tmp["pWeeklyPrice"] = (empty($slist["WeeklyPrice"]) ? "NULL" : $slist["WeeklyPrice"]);
-            $tmp["pSpecialPrice"] = (empty($slist["SpecialPrice"]) ? "NULL" : $slist["SpecialPrice"]);
-            $tmp["d2ndPersonDiscount"] = (empty($slist["2ndPersonDiscount"]) ? "NULL" : $slist["2ndPersonDiscount"]);
-            $tmp["d3rdPersonDiscount"] = (empty($slist["3rdPersonDiscount"]) ? "NULL" : $slist["3rdPersonDiscount"]);
-            $tmp["d4thPersonDiscount"] = (empty($slist["4thPersonDiscount"]) ? "NULL" : $slist["4thPersonDiscount"]);
+            $tmp["p12MonthPrice"] = (empty($slist["12MonthPrice"]) ? "N/A" : round($slist["12MonthPrice"] * 12 * $slist["MonthlyPrice"]));
+            $tmp["p6MonthPrice"] = (empty($slist["6MonthPrice"]) ? "N/A" : round($slist["6MonthPrice"] * 6 * $slist["MonthlyPrice"]));
+            $tmp["pMonthlyPrice"] = (empty($slist["MonthlyPrice"]) ? "N/A" : $slist["MonthlyPrice"]);
+            $tmp["pWeeklyPrice"] = (empty($slist["WeeklyPrice"]) ? "N/A" : $slist["WeeklyPrice"]);
+            $tmp["pSpecialPrice"] = (empty($slist["SpecialPrice"]) ? "N/A" : $slist["SpecialPrice"]);
+            $tmp["d2ndPersonDiscount"] = (empty($slist["2ndPersonDiscount"]) ? "0%" : round((float) $slist["2ndPersonDiscount"] * 100 ) . '%');
+            $tmp["d3rdPersonDiscount"] = (empty($slist["3rdPersonDiscount"]) ? "0%" : round((float) $slist["3rdPersonDiscount"] * 100 ) . '%');
+            $tmp["d4thPersonDiscount"] = (empty($slist["4thPersonDiscount"]) ? "0%" : round((float) $slist["4thPersonDiscount"] * 100 ) . '%');
+            $tmp["d2ndPersonDiscountrate"] = (empty($slist["2ndPersonDiscount"]) ? "0" : $slist["2ndPersonDiscount"] );
+            $tmp["d3rdPersonDiscountrate"] = (empty($slist["3rdPersonDiscount"]) ? "0" : $slist["3rdPersonDiscount"] );
+            $tmp["d4thPersonDiscountrate"] = (empty($slist["4thPersonDiscount"]) ? "0" : $slist["4thPersonDiscount"] );
+            $tmp["p12MonthPricerate"] = (empty($slist["12MonthPrice"]) ? "0" : ($slist["12MonthPrice"]) );
+            $tmp["p6MonthPricerate"] = (empty($slist["6MonthPrice"]) ? "0"   : ($slist["6MonthPrice"]) );
         } else {
             $tmp["classname"] = "NULL";
             $tmp["payerName"] = "NULL";
@@ -837,6 +842,11 @@ $app->get('/listprices/:id', 'authenticate', function($payerid) {
             $tmp["d2ndPersonDiscount"] = "NULL";
             $tmp["d3rdPersonDiscount"] = "NULL";
             $tmp["d4thPersonDiscount"] = "NULL";
+            $tmp["d2ndPersonDiscountrate"] = "NULL";
+            $tmp["d3rdPersonDiscountrate"] = "NULL";
+            $tmp["d4thPersonDiscountrate"] = "NULL";
+            $tmp["p12MonthPricerate"] = "NULL";
+            $tmp["p6MonthPricerate"] = "NULL";
         }
         array_push($response["PriceList"], $tmp);
     }
@@ -852,6 +862,205 @@ $app->get('/listprices/:id', 'authenticate', function($payerid) {
         $response["message"] = "The requested resource doesn't exists";
         echoRespnse(404, $response);
     }
+});
+
+$app->get('/paymentplan/:id', 'authenticate', function($payerid) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getPaymentplan($payerid);
+
+    $response["error"] = false;
+    $response["PaymentPlanList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["paymenttype"] = (empty($slist["paymenttype"]) ? "NULL" : $slist["paymenttype"]);
+            $tmp["paymentid"] = (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
+            $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+            $tmp["PaymentNotes"] = (empty($slist["PaymentNotes"]) ? "" : $slist["PaymentNotes"]);
+            $tmp["PaymentPlan"] = (empty($slist["PaymentPlan"]) ? "NULL" : $slist["PaymentPlan"]);
+            $tmp["PaymentAmount"] = (empty($slist["PaymentAmount"]) ? "NULL" : $slist["PaymentAmount"]);
+            if (is_numeric($tmp["PaymentAmount"])) {
+                $tmp["PaymentAmount"] = $tmp["PaymentAmount"] + 0;            
+            }
+            $tmp["PriceSetby"] = (empty($slist["PriceSetby"]) ? "NULL" : $slist["PriceSetby"]);
+            $tmp["Pricesetdate"] = (empty($slist["Pricesetdate"]) ? "01/01/1900" : $slist["Pricesetdate"]);
+            $tmp["payOnDayOfMonth"] = (int) (empty($slist["payOnDayOfMonth"]) ? 0 : $slist["payOnDayOfMonth"]);
+        }
+        array_push($response["PaymentPlanList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exist";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->post('/paymentplan', 'authenticate', function() use ($app) {
+
+    $response = array();
+    global $user_name;
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("paymentplan before insert\n", TRUE ), 3, LOG);
+
+    $paymentid = (isset($dataJsonDecode->thedata->paymentid) ? $dataJsonDecode->thedata->paymentid : "");
+    $payerid = (isset($dataJsonDecode->thedata->payerid) ? $dataJsonDecode->thedata->payerid : "");
+    $student_id = (isset($dataJsonDecode->thedata->studentid) ? $dataJsonDecode->thedata->studentid : "");
+    $paymenttype = (isset($dataJsonDecode->thedata->paymenttype) ? $dataJsonDecode->thedata->paymenttype : "");
+    $PaymentNotes = (isset($dataJsonDecode->thedata->PaymentNotes) ? $dataJsonDecode->thedata->PaymentNotes : "");
+    $PaymentPlan = (isset($dataJsonDecode->thedata->PaymentPlan) ? $dataJsonDecode->thedata->PaymentPlan : "");
+    $PaymentAmount = (isset($dataJsonDecode->thedata->PaymentAmount) ? $dataJsonDecode->thedata->PaymentAmount : "");
+    $Pricesetdate = (isset($dataJsonDecode->thedata->Pricesetdate) ? $dataJsonDecode->thedata->Pricesetdate : "");
+    $payOnDayOfMonth = (isset($dataJsonDecode->thedata->payOnDayOfMonth) ? $dataJsonDecode->thedata->payOnDayOfMonth : "");
+    $mode = (isset($dataJsonDecode->thedata->mode) ? $dataJsonDecode->thedata->mode : "");
+    $PriceSetby = $user_name;
+    
+    error_log( print_R("paymentid: $paymentid\n", TRUE ), 3, LOG);
+    error_log( print_R("payerid: $payerid\n", TRUE ), 3, LOG);
+    error_log( print_R("student_id: $student_id\n", TRUE ), 3, LOG);
+    error_log( print_R("paymenttype: $paymenttype\n", TRUE ), 3, LOG);
+    error_log( print_R("PaymentNotes: $PaymentNotes\n", TRUE ), 3, LOG);
+    error_log( print_R("PaymentPlan: $PaymentPlan\n", TRUE ), 3, LOG);
+    error_log( print_R("PaymentAmount: $PaymentAmount\n", TRUE ), 3, LOG);
+    error_log( print_R("Pricesetdate: $Pricesetdate\n", TRUE ), 3, LOG);
+    error_log( print_R("payOnDayOfMonth: $payOnDayOfMonth\n", TRUE ), 3, LOG);
+    error_log( print_R("PriceSetby: $PriceSetby\n", TRUE ), 3, LOG);
+    error_log( print_R("mode: $mode\n", TRUE ), 3, LOG);
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // updating task
+    $result = $db->updatePaymentPlan($paymentid, $payerid, 
+                $paymenttype ,
+                $PaymentNotes,
+                $PaymentPlan,
+                $PaymentAmount,
+                $Pricesetdate ,
+                $payOnDayOfMonth, 
+                $PriceSetby,
+                $mode
+                                );
+
+    if ($result > -1) {
+        $response["error"] = false;
+        $response["message"] = "PaymentPlan created successfully";
+        $response["result"] = $result;
+        error_log( print_R("PaymentPlan created: $result\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after PaymentPlan result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create PaymentPlan. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+$app->delete('/paymentplan','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("paymentplan before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+    $studentid = (isset($test->thedata->studentid) ? $test->thedata->studentid : "");
+    $paymenttype = (isset($test->thedata->paymenttype) ? $test->thedata->paymenttype : "");
+    $PaymentPlan = (isset($test->thedata->PaymentPlan) ? $test->thedata->PaymentPlan : "");
+
+
+    error_log( print_R("paymenttype: $paymenttype\n", TRUE ), 3, LOG);
+    error_log( print_R("PaymentPlan: $PaymentPlan\n", TRUE ), 3, LOG);
+    error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
+
+
+    $paymentplan_good=0;
+    $paymentplan_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // removing paymentplan
+    $payplanid = $db->removePaymentPlan(
+        $studentid, $paymenttype, $PaymentPlan
+                                );
+
+    if ($payplanid > 0) {
+        error_log( print_R("paymentplan removed class: $classid pgm: $pgmid \n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "paymentplan removed successfully";
+        $paymentplan_good = 1;
+        $response["paymentplan"] = $paymentplan_good;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete paymentplan result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $payplanid, TRUE), 3, LOG);
+        $paymentplan_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove paymentplan. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->get('/paymentplans', 'authenticate', function() {
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getPaymentplans();
+
+    $response["error"] = false;
+    $response["paymentplans"] = array();
+
+    while ($statuses = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["paymentplan"] = $statuses["listvalue"];
+        array_push($response["paymentplans"], $tmp);
+    }
+
+
+    echoRespnse(200, $response);
+});
+$app->get('/paymenttypes', 'authenticate', function() {
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getPaymenttypes();
+
+    $response["error"] = false;
+    $response["paymenttypes"] = array();
+
+    while ($statuses = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["paymenttype"] = $statuses["listvalue"];
+        array_push($response["paymenttypes"], $tmp);
+    }
+
+
+    echoRespnse(200, $response);
 });
 
 ?>
