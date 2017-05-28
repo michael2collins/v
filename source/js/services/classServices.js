@@ -41,7 +41,11 @@
             getPaymenttypes: getPaymenttypes,
             updatePaymentPlan: updatePaymentPlan,
             removePaymentPlan: removePaymentPlan,
-            getClassSearchResult: getClassSearchResult
+            getClassSearchResult: getClassSearchResult,
+            getPaymentpays: getPaymentpays,
+            getPayerpayments: getPayerpayments,
+            updatePaymentPay: updatePaymentPay,
+            removePaymentPay: removePaymentPay
         };
         return service;
 
@@ -328,6 +332,38 @@
             });
             return( request.then( handleSuccess, handleError ) );
         }        
+
+        function getPaymentpays(path) {
+            $log.debug('getPaymentpays service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getPayerpayments(path) {
+            $log.debug('getPayerpayments service entered',path);
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function updatePaymentPay(path, thedata ) {
+                    $log.debug('updatePaymentPay data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }         
+        function removePaymentPay(path, thedata ) {
+            $log.debug('removePaymentPay data before post :', path, thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        
         function handleError( response ) {
             $log.debug('failure:');
     

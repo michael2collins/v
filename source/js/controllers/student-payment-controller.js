@@ -40,6 +40,8 @@
         vmpayment.PaymentPlanList=[];
         vmpayment.PaymentPlans=[];
         vmpayment.PaymentTypes=[];
+        vmpayment.PaymentPaysList=[];
+        vmpayment.PayerPaymentList=[];
 
         vmpayment.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
         vmpayment.bdateformat = vmpayment.formats[4];
@@ -47,9 +49,13 @@
         vmpayment.dateheadopen = dateheadopen;
         vmpayment.updatePaymentPlan = updatePaymentPlan;
         vmpayment.removePaymentPlan = removePaymentPlan;
+        vmpayment.removePaymentPay = removePaymentPay;
+        vmpayment.updatePaymentPay = updatePaymentPay;
         vmpayment.payerSet = payerSet;
         vmpayment.autoExpand = autoExpand;
         vmpayment.head = {};
+        vmpayment.headcoverage = {};
+        vmpayment.PriceListcovered = {};
 
         vmpayment.status = {};
         vmpayment.statushead = {
@@ -76,6 +82,7 @@
         function payerSet() {
             $log.debug('payerSet entered');
             vmpayment.head.payerid = vmpayment.studentpayer;
+            vmpayment.headcoverage.payerid = vmpayment.studentpayer;
             $q.all([
                   getFamily().then(function(){
                       $log.debug('getPayerList ready');
@@ -94,6 +101,18 @@
         
                   }).catch(function(e){
                         $log.debug("getPaymentplan error in payerSet", e);
+                  }),
+                  getPaymentpays().then(function(){
+                      $log.debug('getPaymentpays ready');
+        
+                  }).catch(function(e){
+                        $log.debug("getPaymentpays error in payerSet", e);
+                  }),
+                  getPayerpayments().then(function(){
+                      $log.debug('getPayerpayments ready');
+        
+                  }).catch(function(e){
+                        $log.debug("getPayerpayments error in payerSet", e);
                   })
                 ])
                 .then(function() {
@@ -246,6 +265,8 @@
                             vmpayment.status[iter] = {
                                 opened: false
                                 };
+                            vmpayment.PaymentPlanList[iter].paymentidstr = vmpayment.PaymentPlanList[iter].paymentid.toString();
+
                         }
                     }
                     return vmpayment.PaymentPlanList;
@@ -325,9 +346,8 @@
             $log.debug('removePaymentPlan entered',input);
             var path = "../v1/paymentplan";
             var thedata = {
-                studentid: $routeParams.id,
-                paymenttype: input.paymenttype,
-                PaymentPlan: input.PaymentPlan
+                paymentid: input.paymentid,
+                payerid: input.payerid
             };
             return ClassServices.removePaymentPlan(path, thedata)
                 .then(function(data){
@@ -377,6 +397,124 @@
                     return (error);
             });
         }        
+
+        function getPaymentpays() {
+            var path = '../v1/paymentpays/' + vmpayment.studentpayer;
+            $log.debug('getPaymentpays entered',path);
+             return ClassServices.getPaymentpays(path).then(function(data){
+                    $log.debug('getPaymentpays returned data');
+                    $log.debug(data);
+                    vmpayment.PaymentPaysList = data.PaymentPaysList;
+                    if ((typeof data.PaymentPaysList === 'undefined' || data.PaymentPaysList.error === true)  && typeof data !== 'undefined') {  
+                        vmpayment.PaymentPaysList = [];
+                        Notification.error({message: data, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        for (var iter=0,len=vmpayment.PaymentPaysList.length;iter<len;iter++) {
+                            vmpayment.PaymentPaysList[iter].paymentidstr = vmpayment.PaymentPaysList[iter].paymentid.toString();
+                            vmpayment.PaymentPaysList[iter].classpayidstr = vmpayment.PaymentPaysList[iter].classpayid.toString();
+                        }
+                    }
+
+                    return vmpayment.PaymentPaysList;
+                },
+                function (error) {
+                    $log.debug('Caught an error getPaymentpays, going to notify:', error); 
+                    vmpayment.PaymentPaysList = [];
+                    vmpayment.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }).
+                finally(function () { 
+                    vmpayment.loading = false; 
+                    vmpayment.loadAttempted = true;
+                }
+                );
+    
+        }
+        function getPayerpayments() {
+            var path = '../v1/payerpayments/' + vmpayment.studentpayer;
+            $log.debug('getPayerpayments entered',path);
+             return ClassServices.getPaymentpays(path).then(function(data){
+                    $log.debug('getPayerpayments returned data');
+                    $log.debug(data);
+                    vmpayment.PayerPaymentList = data.PayerPaymentList;
+                    if ((typeof data.PayerPaymentList === 'undefined' || data.PayerPaymentList.error === true)  && typeof data !== 'undefined') {  
+                        vmpayment.PayerPaymentList = [];
+                        Notification.error({message: data, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        for (var iter=0,len=vmpayment.PayerPaymentList.length;iter<len;iter++) {
+                            vmpayment.PayerPaymentList[iter].classpayidstr = vmpayment.PayerPaymentList[iter].classpayid.toString();
+                        }
+                    }
+                    return vmpayment.PayerPaymentList;
+                },
+                function (error) {
+                    $log.debug('Caught an error getPayerpayments, going to notify:', error); 
+                    vmpayment.PayerPaymentList = [];
+                    vmpayment.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }).
+                finally(function () { 
+                    vmpayment.loading = false; 
+                    vmpayment.loadAttempted = true;
+                }
+                );
+    
+        }
+
+        function removePaymentPay(input) {
+            $log.debug('removePaymentPay entered',input);
+            var path = "../v1/paymentpay";
+            var thedata = {
+                pcpid: input.pcpid
+            };
+            return ClassServices.removePaymentPay(path, thedata)
+                .then(function(data){
+                    $log.debug('removePaymentPay returned data');
+                    $log.debug(data);
+                    getPaymentpays();
+                    getListPrices();
+                    return data;
+                }).catch(function(e) {
+                    $log.debug('removePaymentPay failure:');
+                    $log.debug("error", e);
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+            
+        }
+
+        function updatePaymentPay(input,mode) {
+            
+            var path = "../v1/paymentpay";
+            var thedata = {
+                paymentid: input.paymentid,
+                classpayid: input.classpayid,
+                pcpid: input.pcpid,
+                mode: mode
+            };
+            $log.debug('about updatePaymentPay ', path, thedata, input);
+            return ClassServices.updatePaymentPay( path, thedata ).then(function (data) {
+                $log.debug('updatePaymentPay returned data: ');
+                $log.debug(data);
+                if ( data.error === true  || typeof data === 'undefined') {  
+                    Notification.error({message: data.error === true ? data.error : "data error", delay: 5000});
+                    $q.reject(data);
+                }
+
+                getPaymentpays();
+                getListPrices();
+                
+            },function(error) {
+                    $log.debug('updatePaymentPay ',error);
+                    Notification.error({message: error, delay: 5000});
+                    return (error);
+            });
+        }        
+
     }
 
 })();

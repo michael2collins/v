@@ -987,11 +987,13 @@ class StudentDbHandler {
         if ($histtype == 'dateInactive' || 
             $histtype == 'dateActive'  ||
             $histtype == 'dateInjured' ) {
-            if ($this->isStatusExists($contactid,$histdate)) {
+            if ($this->isStatusExists($contactid,$histdate,$histtype)) {
+                $app->log->info( print_R("createStudenthistory status exists, do update", TRUE));
                 $sql = "UPDATE ncontactmgmt  set contactmgmttype = ? ";
                 $sql .= " where contactid = ? and ";
                 $sql .= " contactDate = ?  ";
 
+                $app->log->info( print_R("createStudenthistory sql : $sql", TRUE));
                 if ($stmt = $this->conn->prepare($sql)) {
                     $stmt->bind_param("sss",
                                       $histtype    ,
@@ -1025,6 +1027,7 @@ class StudentDbHandler {
         $sql .= " values ( ?, ?, ?) ";
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $app->log->info( print_R("createStudenthistory status not exists, do insert", TRUE));
             $stmt->bind_param("sss",
                               $contactid,
                               $histtype    ,
@@ -1134,14 +1137,14 @@ class StudentDbHandler {
         return $num_rows > 0;
     }
 
-    private function isStatusExists($contactid, $histdate) {
+    private function isStatusExists($contactid, $histdate, $histtype) {
 
         $sql = "SELECT contactid from ncontactmgmt WHERE contactid = ? ";
         $sql .= " and contactdate = ? ";
-        $sql .= " and contactmgmttype in ('dateInactive','dateActive' ) ";
+        $sql .= " and contactmgmttype = ? ";
 
         $stmt = $this->conn->prepare($sql);
-        $stmt->bind_param("ss", $contactid, $histdate);
+        $stmt->bind_param("sss", $contactid, $histdate, $histtype);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;

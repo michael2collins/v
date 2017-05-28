@@ -1618,6 +1618,7 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();
+    $app->log->info( print_R("createStudentHistory entered: $contactid, $histtype, $histdate", TRUE));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -1628,7 +1629,7 @@ function createStudentHistory($contactid,$histtype,$histdate) {
     if ($histid > 0) {
         $response["error"] = false;
         $response["message"] = "histcontent created successfully";
-        $response["$histid"] = $histid;
+        $response["histid"] = $histid;
         $app->log->info( print_R("createStudentHistory created: $histid", TRUE));
 
         return 201;

@@ -255,7 +255,10 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     $changestatus = $studentclass->changestatus;
     $testfee = $studentclass->isTestfeewaived   ;
     $payer = $studentclass->payerid   ;
+    $class = $studentclass->class   ;
+    $pgmclass = $studentclass->pgmclass   ;
 
+    error_log( print_R("studentclass and history update\n", TRUE ), 3, LOG);
     error_log( print_R("student_id: $contactID\n", TRUE ), 3, LOG);
     error_log( print_R("classid: $classseq\n", TRUE ), 3, LOG);
     error_log( print_R("pgmid: $pgmseq\n", TRUE ), 3, LOG);
@@ -263,12 +266,16 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     error_log( print_R("payer: $payer\n", TRUE ), 3, LOG);
     error_log( print_R("changestatus: $changestatus\n", TRUE ), 3, LOG);
     error_log( print_R("testfee: $testfee\n", TRUE ), 3, LOG);
+    error_log( print_R("class: $class\n", TRUE ), 3, LOG);
+    error_log( print_R("pgmclass: $pgmclass\n", TRUE ), 3, LOG);
     
 
     $db = new StudentClassDbHandler();
     $response = array();
 
     if ($changestatus == "status") {
+        error_log( print_R("studentclass update changestatus = status\n", TRUE ), 3, LOG);
+        
         $result = $db->updateStudentClass( $contactID,
                                       $classseq,
                                       $pgmseq,
@@ -282,43 +289,54 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
                                     $testfee);
     }
     
-    if ($result) {
-        // task updated successfully
-        $response["error"] = false;
-        $response["message"] = "Student Class updated successfully";
-    } else {
+    if ( $result < 0) {
+        error_log( print_R("studentclass update failed: $result\n", TRUE ), 3, LOG);
         // task failed to update
         $response["error"] = true;
-        $response["message"] = "Student failed to update. Please try again!";
+        $response["message"] = "Student failed to update. Please try again! $result";
         echoRespnse(400, $response);
     }
 
  
-    if ($changestatus == true) {
+    if ($changestatus != false) {
+        error_log( print_R("studentclass changestatus: $changestatus not false, do history creation\n", TRUE ), 3, LOG);
         $db2 = new StudentDbHandler();
         $dt1=date("Y-m-d");
+        error_log( print_R("dt1: $dt1\n", TRUE ), 3, LOG);
+        error_log( print_R("student_id: $contactID\n", TRUE ), 3, LOG);
+        error_log( print_R("studentclassstatus: $studentclassstatus\n", TRUE ), 3, LOG);
+
+        if ($changestatus == 'Inactive' || 
+            $changestatus == 'Active'  ||
+            $changestatus == 'Injured' ) {
+
+                $historytype='date' . $studentclassstatus;
+        } else {
+                $historytype= 'changed: ' . $changestatus . ' for pgm: ' . $pgmclass . ' class: ' . $class  ;
+        }    
+        error_log( print_R("studentclass changestatus: $changestatus historytype is $historytype\n", TRUE ), 3, LOG);
         $response = array();
     
         // updating task
-        $result2 = $db2->createStudentHistory( $contactID,
-                                                'date' . $studentclassstatus,
-                                                $dt1 , 
-                                                $app                                      
-                                         );
-        if ($result2) {
+        $result2 = createStudentHistory($contactID,$historytype,$dt1);
+        
+/*        if ($result2) {
             // task updated successfully
             $response["error"] = false;
             $response["message"] = " Student class updated successfully and history";
+            echoRespnse(200, $response);
         } else {
             // task failed to update
             $response["error"] = true;
             $response["message"] = " Student class successful but Student history failed to update. Please try again!";
             echoRespnse(400, $response);
         }
+        */
     }
     
+    echoRespnse(201, $response);
     
-    echoRespnse(200, $response);
+    
 });
 
 $app->put('/studentclasspaylist/:id', 'authenticate', function($student_id) use($app) {
@@ -826,6 +844,7 @@ $app->get('/listprices/:id', 'authenticate', function($payerid) {
             $tmp["d4thPersonDiscountrate"] = (empty($slist["4thPersonDiscount"]) ? "0" : $slist["4thPersonDiscount"] );
             $tmp["p12MonthPricerate"] = (empty($slist["12MonthPrice"]) ? "0" : ($slist["12MonthPrice"]) );
             $tmp["p6MonthPricerate"] = (empty($slist["6MonthPrice"]) ? "0"   : ($slist["6MonthPrice"]) );
+            $tmp["covered"] = (empty($slist["covered"]) ? "0"   : ($slist["covered"]) );
         } else {
             $tmp["classname"] = "NULL";
             $tmp["payerName"] = "NULL";
@@ -847,6 +866,7 @@ $app->get('/listprices/:id', 'authenticate', function($payerid) {
             $tmp["d4thPersonDiscountrate"] = "NULL";
             $tmp["p12MonthPricerate"] = "NULL";
             $tmp["p6MonthPricerate"] = "NULL";
+            $tmp["covered"] = "NULL";
         }
         array_push($response["PriceList"], $tmp);
     }
@@ -984,15 +1004,11 @@ $app->delete('/paymentplan','authenticate', function() use ($app) {
     $test = json_decode($body);
     error_log( print_R($test, TRUE ), 3, LOG);
 
-    $studentid = (isset($test->thedata->studentid) ? $test->thedata->studentid : "");
-    $paymenttype = (isset($test->thedata->paymenttype) ? $test->thedata->paymenttype : "");
-    $PaymentPlan = (isset($test->thedata->PaymentPlan) ? $test->thedata->PaymentPlan : "");
+    $payerid = (isset($test->thedata->payerid) ? $test->thedata->payerid : "");
+    $paymentid = (isset($test->thedata->paymentid) ? $test->thedata->paymentid : "");
 
-
-    error_log( print_R("paymenttype: $paymenttype\n", TRUE ), 3, LOG);
-    error_log( print_R("PaymentPlan: $PaymentPlan\n", TRUE ), 3, LOG);
-    error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
-
+    error_log( print_R("payerid: $payerid\n", TRUE ), 3, LOG);
+    error_log( print_R("paymentid: $paymentid\n", TRUE ), 3, LOG);
 
     $paymentplan_good=0;
     $paymentplan_bad=0;
@@ -1002,11 +1018,11 @@ $app->delete('/paymentplan','authenticate', function() use ($app) {
 
     // removing paymentplan
     $payplanid = $db->removePaymentPlan(
-        $studentid, $paymenttype, $PaymentPlan
+        $payerid, $paymentid
                                 );
 
     if ($payplanid > 0) {
-        error_log( print_R("paymentplan removed class: $classid pgm: $pgmid \n", TRUE ), 3, LOG);
+        error_log( print_R("paymentplan removed for: $payerid paymentid: $paymentid \n", TRUE ), 3, LOG);
         $response["error"] = false;
         $response["message"] = "paymentplan removed successfully";
         $paymentplan_good = 1;
@@ -1062,5 +1078,179 @@ $app->get('/paymenttypes', 'authenticate', function() {
 
     echoRespnse(200, $response);
 });
+
+$app->get('/paymentpays/:id', 'authenticate', function($payerid) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getPaymentPays($payerid);
+
+    $response["error"] = false;
+    $response["PaymentPaysList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["paymentid"] = (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
+            $tmp["classpayid"] = (empty($slist["classpayid"]) ? "NULL" : $slist["classpayid"]);
+            $tmp["pcpid"] = (empty($slist["pcpid"])  ? "NULL" : $slist["pcpid"]);
+        } else {
+            $tmp["paymentid"] = "NULL";
+            $tmp["classpayid"] = "NULL";
+            $tmp["pcpid"] = "NULL";
+        }
+        array_push($response["PaymentPaysList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+$app->get('/payerpayments/:id', 'authenticate', function($payerid) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getPayerPayments($payerid);
+
+    $response["error"] = false;
+    $response["PayerPaymentList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["classpayid"] = (empty($slist["classpayid"]) ? "NULL" : $slist["classpayid"]);
+            $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
+            $tmp["classseq"] = (empty($slist["classseq"])  ? "NULL" : $slist["classseq"]);
+            $tmp["pgmseq"] = (empty($slist["pgmseq"])  ? "NULL" : $slist["pgmseq"]);
+            $tmp["payerid"] = (empty($slist["payerid"])  ? "NULL" : $slist["payerid"]);
+            $tmp["classname"] = (empty($slist["classname"])  ? "NULL" : $slist["classname"]);
+            $tmp["studentClassStatus"] = (empty($slist["studentClassStatus"])  ? "NULL" : $slist["studentClassStatus"]);
+            $tmp["pgmclass"] = (empty($slist["pgmclass"])  ? "NULL" : $slist["pgmclass"]);
+        } else {
+            $tmp["classpayid"] = "NULL";
+            $tmp["contactid"] = "NULL";
+            $tmp["classseq"] = "NULL";
+            $tmp["pgmseq"] = "NULL";
+            $tmp["payerid"] = "NULL";
+            $tmp["classname"] = "NULL";
+            $tmp["studentClassStatus"] = "NULL";
+            $tmp["pgmclass"] = "NULL";
+        }
+        array_push($response["PayerPaymentList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/paymentpay', 'authenticate', function() use ($app) {
+
+    $response = array();
+    global $user_name;
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("paymentpay before insert\n", TRUE ), 3, LOG);
+
+    $paymentid = (isset($dataJsonDecode->thedata->paymentid) ? $dataJsonDecode->thedata->paymentid : "");
+    $classpayid = (isset($dataJsonDecode->thedata->classpayid) ? $dataJsonDecode->thedata->classpayid : "");
+    $pcpid = (isset($dataJsonDecode->thedata->pcpid) ? $dataJsonDecode->thedata->pcpid : "");
+    $mode = (isset($dataJsonDecode->thedata->mode) ? $dataJsonDecode->thedata->mode : "");
+
+    error_log( print_R("paymentid: $paymentid\n", TRUE ), 3, LOG);
+    error_log( print_R("classpayid: $classpayid\n", TRUE ), 3, LOG);
+    error_log( print_R("pcpid: $pcpid\n", TRUE ), 3, LOG);
+    error_log( print_R("mode: $mode\n", TRUE ), 3, LOG);
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // updating task
+    $result = $db->updatePaymentPay($paymentid, $classpayid, $pcpid, $mode
+                                );
+
+    if ($result > -1) {
+        $response["error"] = false;
+        $response["message"] = "paymentpay created successfully";
+        $response["result"] = $result;
+        error_log( print_R("paymentpay created: $result\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after paymentpay result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create paymentpay. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+$app->delete('/paymentpay','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("paymentpay before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+    $pcpid = (isset($test->thedata->pcpid) ? $test->thedata->pcpid : "");
+
+    error_log( print_R("pcpid: $pcpid\n", TRUE ), 3, LOG);
+
+    $paymentplan_good=0;
+    $paymentplan_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // removing paymentplan
+    $payplanid = $db->removePaymentPay(
+        $pcpid
+                                );
+
+    if ($payplanid > 0) {
+        error_log( print_R("paymentpay removed for: $pcpid \n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "paymentpay removed successfully";
+        $paymentplan_good = 1;
+        $response["paymentplan"] = $paymentplan_good;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete paymentpay result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $payplanid, TRUE), 3, LOG);
+        $paymentplan_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove paymentpay. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
 
 ?>

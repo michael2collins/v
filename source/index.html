@@ -364,13 +364,20 @@ mlc some problems with mobile
         .select-box {
           background: #fff;
           position: relative;
-          z-index: 10001;
+    /*      z-index: 10001; causing problems on student class tab payer box*/
         }
         .alert-info.positioned {
           margin-top: 1em;
           position: relative;
           z-index: 10000; /* The select2 dropdown has a z-index of 9999 */
         }    
+        .ui-select-choices {
+        position: fixed;
+        top: auto;
+        left: auto;
+        width: auto !important; 
+        z-index: 10002;
+      }
   </style>
 
 

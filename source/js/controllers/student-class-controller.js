@@ -382,14 +382,13 @@
             clazzitem.changestatus = vmclass.changestatus;
             clazzitem.payerid = clazzitem.payerList.payerid;
             clazzitem.payerName = clazzitem.payerList.payerName;
-            
 
             $log.debug('about updateStudentClass ', clazzitem);
             return ClassServices.updateStudentClass(
                 path, clazzitem).then(function (data) {
                 $log.debug('updateStudentClass returned data');
                 $log.debug(data.data);
-                vmclass.studentclass = data.data;
+                getStudentClazzList();                
             },function(error) {
                     $log.debug('updateStudentClass ',error);
                     Notification.error({message: error, delay: 5000});

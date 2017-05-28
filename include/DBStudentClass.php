@@ -615,7 +615,7 @@ class StudentClassDbHandler {
     private function isStudentClassExists($contactid, $classseq, $pgmseq) {
     error_log( print_R("before isStudentClassExists\n", TRUE ), 3, LOG);
     error_log( print_R("contactid: $contactid\n", TRUE ), 3, LOG);
-    error_log( print_R("classseq  ate: $classseq\n", TRUE ), 3, LOG);
+    error_log( print_R("classseq: $classseq\n", TRUE ), 3, LOG);
     error_log( print_R("pgmseq: $pgmseq\n", TRUE ), 3, LOG);
         
         
@@ -651,7 +651,6 @@ class StudentClassDbHandler {
         $inssql .= " ( ?, ?, ?, ?,? ) ";
 
 
-        error_log( print_R($inssql, TRUE ), 3, LOG);
         error_log( print_R("contact $sc_ContactId\n", TRUE ), 3, LOG);
         error_log( print_R("class $sc_classseq\n", TRUE ), 3, LOG);
         error_log( print_R("pgm $sc_pgmseq\n", TRUE ), 3, LOG);
@@ -662,6 +661,7 @@ class StudentClassDbHandler {
                               $sc_ContactId,
                               $sc_classseq,
                               $sc_pgmseq)) {
+            error_log( print_R($updsql, TRUE ), 3, LOG);
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssss",
                                   $testfee, $payer, 
@@ -673,12 +673,13 @@ class StudentClassDbHandler {
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {
-                error_log( print_R("student class status delete failed", TRUE ), 3, LOG);
+                error_log( print_R("student class status update failed", TRUE ), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE ), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -1;
             }
         } else {
+            error_log( print_R($inssql, TRUE ), 3, LOG);
             if ($stmt = $this->conn->prepare($inssql)) {
                 $stmt->bind_param("sssss", 
                                     $sc_ContactId,
@@ -698,7 +699,7 @@ class StudentClassDbHandler {
                 return -2;
             }
         }
-        return $num_affected_rows > 0;
+        return $num_affected_rows;
     }
 
     private function isPayerExists($payerName) {
@@ -812,7 +813,7 @@ class StudentClassDbHandler {
         
         error_log( print_R("student for getListPrices is: " . $payerid . "\n", TRUE ),3, LOG);
         
-        $sql = "select pp.classname, pp.payerName, c.firstname, c.lastname, 
+/*        $sql = "select pp.classname, pp.payerName, c.firstname, c.lastname, 
         ncl.id as classlistpricid, ncl.class as classlistclass, classType, 
         12MonthPrice, 6MonthPrice, MonthlyPrice, WeeklyPrice, 2ndPersonDiscount, 3rdPersonDiscount, 4thPersonDiscount, SpecialPrice
                 from nclasslist ncl, payerPayments pp, ncontacts c 
@@ -821,6 +822,20 @@ class StudentClassDbHandler {
                 and pp.contactid = c.id
                 and pp.payerid = ?
                 ";
+*/
+        $sql = "select pp.classname, pp.payerName, c.firstname, c.lastname, 
+        ncl.id as classlistpricid, ncl.class as classlistclass, classType, 
+        12MonthPrice, 6MonthPrice, MonthlyPrice, WeeklyPrice, 2ndPersonDiscount, 3rdPersonDiscount, 4thPersonDiscount, SpecialPrice, pcp.pcpid as covered, pp.payerid
+                from 
+                (((
+                nclasslist ncl
+                    join payerPayments pp on pp.pgmseq = ncl.id )
+                    join ncontacts c on c.id = pp.contactid )
+                    left outer join paymentclasspay pcp on pcp.classpayid = pp.classpayid  )
+                                where c.studentschool = pp.school
+                                and pp.payerid = ?
+                ";
+
 
         $schoolfield = "c.studentschool";
         $sql = addSecurity($sql, $schoolfield);
@@ -894,32 +909,6 @@ class StudentClassDbHandler {
         $stmt->close();
         return $slists;
     }
-
-    private function isPaymentPlanExists($studentid, $paymenttype, $PaymentPlan) {
-
-    error_log( print_R("before isPaymentPlanExists\n", TRUE ), 3, LOG);
-    error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
-    error_log( print_R("paymenttype  ate: $paymenttype\n", TRUE ), 3, LOG);
-    error_log( print_R("PaymentPlan  ate: $PaymentPlan\n", TRUE ), 3, LOG);
-
-        
-        $sql = "SELECT 
-            paymentid
-            FROM `npayments` 
-            WHERE payerid = ? and paymenttype = ? and PaymentPlan = ?
-        ";
-
-        $stmt = $this->conn->prepare($sql);
-
-        
-        $stmt->bind_param("sss", $studentid, $paymenttype, $PaymentPlan);
-        $stmt->execute();
-        $stmt->store_result();
-        $num_rows = $stmt->num_rows;
-        $stmt->close();
-        return $num_rows > 0;
-    }
-
     public function updatePaymentPlan(
         $paymentid, $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount,$Pricesetdate ,$payOnDayOfMonth, $PriceSetby, $mode
     ) {
@@ -1001,6 +990,156 @@ class StudentClassDbHandler {
         }
 
     }
+    public function removePaymentPlan($payerid, $paymentid
+    ) {
 
+        error_log( print_R("removePaymentPlan entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from npayments  where payerid = ? and paymentid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $payerid, $paymentid
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    public function getPayerPayments($payerid) {
+        
+        error_log( print_R("student for getPayerPayments is: " . $payerid . "\n", TRUE ),3, LOG);
+        
+        $sql = " SELECT  classpayid ,  contactid ,  classseq ,  pgmseq ,  payerid ,  classname ,  studentClassStatus ,  pgmclass 
+            FROM  payerPayments
+            WHERE payerid = ?
+                ";
+
+        error_log( print_R("sql for getPayerPayments is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("s", $payerid);
+        
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    public function getPaymentPays($payerid) {
+        
+        error_log( print_R("student for getPaymentPays is: " . $payerid . "\n", TRUE ),3, LOG);
+        
+        $sql = " SELECT pcp.paymentid, classpayid, pcpid
+            FROM paymentclasspay pcp
+            WHERE pcp.paymentid in (select p.paymentid from npayments p where p.payerid = ? )
+                ";
+
+        error_log( print_R("sql for getPaymentPays is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("s", $payerid);
+        
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    public function updatePaymentPay(
+        $paymentid, $classpayid, $pcpid, $mode
+    ) {
+        error_log( print_R("updatePaymentPays entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO paymentclasspay( paymentid, classpayid) VALUES ";
+        $sql .= "  ( ?, ? )";
+
+        // First check if  already existed in db
+        if ($mode == "insert") {
+            error_log( print_R("updatePaymentPays do insert\n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ss",
+                        $paymentid, $classpayid
+                        );
+                    // Check for successful insertion
+                    $result = $stmt->execute();
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                    }    
+                $stmt->close();
+
+                return $new_id;
+
+            } else {
+                error_log( print_R("insert npayment failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+            }
+
+
+        } else {
+            //  with same  existed
+                $updsql = "UPDATE paymentclasspay SET 
+                paymentid= ?, classpayid= ?
+                WHERE pcpid = ?  ";
+            error_log( print_R("updatePaymentPlan do update: $updsql, $paymentid, $classpayid, $pcpid, $mode
+                \n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sss",
+                    $paymentid, $classpayid, $pcpid
+                                 );
+                    $stmt->execute();
+                    $num_affected_rows = $stmt->affected_rows;
+                    $stmt->close();
+            } else {
+                error_log( print_R("update paymentclasspay failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -2;
+            }
+            
+            return $num_affected_rows;
+        }
+
+    }    
+    public function removePaymentPay($pcpid
+    ) {
+
+        error_log( print_R("removePaymentPays entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from paymentclasspay  where pcpid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $pcpid
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    
 }
 ?>
