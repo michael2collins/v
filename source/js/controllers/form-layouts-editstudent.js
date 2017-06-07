@@ -36,6 +36,7 @@
         vmstudent.RankTypeList =[];
         vmstudent.getRank = getRank;
         vmstudent.ranklist=[];
+        vmstudent.Rankslist=[];
         vmstudent.rankpick;
         vmstudent.ranktypepick;
         vmstudent.disabled;
@@ -236,10 +237,6 @@
             });
         }
 
-        function updateStudentRank(vlu) {
-            $log.debug('updateStudentRank entered',vlu);
-        }
-
         function addStudentRank() {
             $log.debug('addStudentRank entered',vmstudent.rankpick,vmstudent.ranktypepick);
             var thedata = {
@@ -283,20 +280,20 @@
             
         }
         
-        function updateStudentRankx(ContactID,ranktype,currentrank) {
-            $log.debug('about updateStudentRank ', ContactID,ranktype,currentrank);
+        function updateStudentRank(item) {
+            $log.debug('about updateStudentRank ', item);
             
             var thepath = "../v1/studentrank";
             var thedata = {
-                ContactID: ContactID,
-                ranktype: ranktype,
-                currentrank: currentrank
+                ContactID: item.ContactID,
+                ranktype: item.ranktype,
+                currentrank: item.currentrank
             };
 
             return StudentServices.updateStudentRank(thepath, thedata).then(function (data) {
                 $log.debug('updateStudentRank returned data:');
                 $log.debug(data.data);
-                getStudent();
+                getStudentRanks(item.ContactID);
             },function(error) {
                     $log.debug('updateStudent',error);
                     Notification.error({message: error, delay: 5000});
@@ -372,9 +369,9 @@
             return StudentServices.getRankList(vmstudent.rankListPath).then(function (data) {
                 $log.debug('getRankList returned data');
                 $log.debug(data.data);
-                vmstudent.RankList = data.data;
+                vmstudent.RanksList = data.data;
 
-                return vmstudent.RankList;
+                return vmstudent.RanksList;
             },function(error) {
                     $log.debug('getRankList ',error);
                     Notification.error({message: error, delay: 5000});

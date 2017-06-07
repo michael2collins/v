@@ -204,6 +204,7 @@
                     userdetails.lastname = data.lastname;
                     userdetails.userid = data.userid;
                     userdetails.email = data.email;
+                    userdetails.school = data.school;
                         return userdetails;
                 },
                 function (error) {

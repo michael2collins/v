@@ -86,11 +86,12 @@
     'uiGridConstants',
     'uiGridGroupingConstants',
     '$timeout',
-    'moment'
+    'moment',
+    'UserServices'
     ];
 
     function TestCandidateTableBasicController($routeParams, $log, TestingServices,CalendarServices, $location, $window, $q,
-        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment) {
+        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment, UserServices) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -117,6 +118,7 @@
 //        vm.getActiveTab = getActiveTab;
 //        vm.setActiveTab = setActiveTab;
         vm.highlightFilteredHeader = highlightFilteredHeader;
+        vm.createCertificate = createCertificate;
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500,5000];
         vm.data = [];
@@ -141,6 +143,7 @@
         vm.selected;
         vm.testname;
         vm.testtype;
+        vm.userdta;
 
         activate();
 
@@ -164,8 +167,31 @@
             getTestDates();
             setGridOptions();
             setResGridOptions();
-
+            getUserDetails();
         }
+
+    function getUserDetails(){
+        $log.debug('getUserDetails entered');
+           return UserServices.getUserDetails().then(function(data) {
+                $log.debug("getuserdetails returned:", data);
+                vm.userdta = data;
+                return vm.userdta;
+                },
+
+            function (error) {
+                $log.debug('Caught an error getUserDetails, going to notify:', error); 
+                vm.userdta = [];
+                vm.message = error;
+                Notification.error({message: error, delay: 5000});
+                return ($q.reject(error));
+            }).
+            finally(function () { 
+                vm.loading = false; 
+                vm.loadAttempted = true;
+            }
+            );
+        
+    }
         
     function updateTest(){
         $log.debug('updateTest entered');
@@ -1252,7 +1278,8 @@
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
                         ContactID: inputArray[i].contactID,
-                        nextRank: inputArray[i].nextrank
+                        nextRank: inputArray[i].RankAchievedInTest,
+                        studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName
                     };
                     vm.selectedStudents.push(info);
                 }
@@ -1274,6 +1301,194 @@
             }
         }
 
+        function getBase64Image(img) {
+                // Create an empty canvas element
+                var canvas = document.createElement("canvas");
+        
+                // Copy the image contents to the canvas
+                var ctx = canvas.getContext("2d");
+                var image = new Image();
+                image.src = img;
+                canvas.width = image.width;
+                canvas.height = image.height;
+        
+                ctx.drawImage(image, 0, 0);
+        
+                // Get the data-URL formatted image
+                // Firefox supports PNG and JPEG. You could check img.src to
+                // guess the original format, but be aware the using "image/jpg"
+                // will re-encode the image.
+                var dataURL = canvas.toDataURL("image/png");
+        
+                return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
+            }
+        
+        function getContent(students,certdata) {
+          $log.debug('getContent entered',students,certdata);
+          var contentdtl=[];
+          var pagebreak;
+          for (var i=0; i<students.length; i++) {       
+            if (i < students.length -1  ) {
+                pagebreak = {pageBreak: 'before', text: ''}; 
+            } else {
+                pagebreak = {};
+            }
+            contentdtl.push(
+             [
+              {text: '',        style: ['topfiller']},
+              {text: 'This is to certify that\n',        style: ['smalllines','spread']},
+              {text: students[i].studentname + '\n', style: ['mediumlines','botfiller']},
+              {text: 'Has successfully demonstrated the required level of ability and\nknowledge in the art of Shaolin Kempo Karate and Jiu-Jitsu and\n' + certdata.program + '\n', style: ['smalllines','spread']},
+              {text: students[i].nextRank + '\n', style: ['biglines','bigtop'] },
+              {text: 'Dated this ' + certdata.certDate + ' at ' + certdata.school + '\n', style: ['smalllines','spread']},
+          		{
+              columns: [
+                  { width: 70, text: ''},
+                  { stack: [
+                     {text: '', marginTop: 57},
+                     {text:  certdata.instructor1 + '\n', marginLeft: 40 - certdata.instructor1.length*1.5/2, style: 'signature'},
+                     {text:  certdata.title1 , marginLeft: 40 - certdata.title1.length*1.5/2, style: 'signature'},
+                     {text: '', marginTop: 38},
+                     {text:  certdata.instructor2 + '\n', marginLeft: 40 - certdata.instructor2.length*1.5/2  , style: 'signature'},
+                     {text:  certdata.title2, marginLeft: 40 - certdata.title2.length*1.5/2 , style: 'signature'},
+                     ]
+                  },
+                  { width: 190, text: ''},
+                  { stack: [
+                    {text: '', marginTop: 57},
+                     {text:  certdata.instructor3 + '\n', marginLeft: 50 - certdata.instructor3.length*1.5/2 + certdata.instructor1.length*1.5/2, style: 'signature'},
+                     {text:  certdata.title3 , marginLeft: 50 - certdata.title3.length*1.5/2 + certdata.title1.length*1.5/2, style: 'signature'},
+                    {text: '', marginTop: 38},
+                     {text:  certdata.instructor4 + '\n', marginLeft: 50 - certdata.instructor4.length*1.5/2 + certdata.instructor2.length*1.5/2, style: 'signature'},
+                     {text:  certdata.title4 , marginLeft: 50 - certdata.title4.length*1.5/2 + certdata.title2.length*1.5/2, style: 'signature'},
+                     ]
+                  }
+                  ]
+          		}, 
+          		  pagebreak 
+            ]);
+          }
+          return contentdtl;
+        }
+        function createCertificate() {
+        
+        var rptwidth = 792;
+        var rptheight = 600;
+        var sigwidth = 150;
+
+        var testImageDataUrl ='data:image/png;base64,'+ getBase64Image("images/logos/StudioDiplomaTemplate.png");
+        //var testImageDataUrl ='data:image/png;base64,'+ this.getBase64Image("images/reports/dragon.jpg");
+        //var logoImageDataUrl ='data:image/png;base64,'+ this.getBase64Image("images/logos/vlogo.gif");
+        var program = "and is therefore awarded the rank of";
+
+$log.debug('testers',vm.testdatelist);
+$log.debug('titles',vm.instructorlist);
+$log.debug('title1',_.findWhere(vm.instructorlist, {name: vm.testdatelist.tester1}));
+$log.debug('school', vm.userdta);
+        var students = vm.selectedStudents;
+        var certdata={
+          certDate: vm.testdatelist.testdate,
+          school: vm.userdta.school,
+          program: program,
+          instructor1: vm.testdatelist.tester1,
+          instructor2: vm.testdatelist.tester2,
+          instructor3: vm.testdatelist.tester3,
+          instructor4: vm.testdatelist.tester4,
+          title1: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester1}).instructortitle,
+          title2: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester2}).instructortitle,
+          title3: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester3}).instructortitle,
+          title4: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester4}).instructortitle
+        };
+        
+        var thecontent = getContent(students,certdata);
+        $log.debug('thecontent', thecontent);
+        
+        var docDefinition = {
+          pageOrientation: 'landscape',
+          // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+          pageMargins: [ 40, 60, 40, 0 ],
+          pageSize: 'LETTER',
+          background: [
+           {
+         			image: testImageDataUrl,
+               width: rptwidth,
+               height: rptheight
+           }],
+           content: thecontent ,
+        		styles: {
+        		  bigtop: {
+        		    margin: [0,0,0,0]
+        		  },
+        		  topfiller: {
+        		    margin: [0,40]
+        		  },
+        		  botfiller: {
+        		    margin: [0,5]
+        		  },
+        		  spread: {
+        		    margin: [0,5]
+        		  },
+        		  signature: {
+        		    width: sigwidth,
+        		    fontSize: 12
+        		  },
+        		  smalllines: {
+        		    fontSize: 18,
+        		    alignment: 'center',
+        		    width: rptwidth,
+        		    lineHeight: 1.5
+        		  },
+        		  extrasmalllines: {
+        		    fontSize: 10,
+        		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		  mediumlines: {
+        		    fontSize: 35,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		  biglines: {
+        		    fontSize: 23,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		header: {
+        			fontSize: 18,
+        			bold: true,
+        			margin: [0, 0, 0, 10]
+        		},
+        		subheader: {
+        			fontSize: 16,
+        			bold: true,
+        			margin: [0, 10, 0, 5]
+        		},
+        		tableExample: {
+        //			margin: [0, 5, 0, 15]
+            alignment: 'center'
+        		},
+        		tableHeader: {
+        			bold: true,
+        			fontSize: 13,
+        			color: 'black'
+        		}
+        	},
+        	defaultStyle: {
+        		// alignment: 'justify'
+        	}
+        };
+        
+        
+        var now = new Date();
+        //var pdfDoc = printer.createPdfKitDocument(docDefinition);
+        //pdfDoc.pipe(fs.createWriteStream('pdfs/images.pdf'));
+        //pdfDoc.end();
+        
+        // pdfMake.createPdf(docDefinition).download('Report.pdf');
+         pdfMake.createPdf(docDefinition).open();
+        }
 
     }
 

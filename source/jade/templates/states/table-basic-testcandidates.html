@@ -5,10 +5,6 @@
 
       <div class="panel panel-orange">
         <div class="panel-heading">Test Candidates</div>
-<!--        <div class="panel-body pan">
-        </div>
-        <div class="panel-footer"></div>
--->
       </div>
 
     <uib-tabset type="pills" >
@@ -23,37 +19,34 @@
         <div class="panel-body ">
 
           <div class="col-lg-12">
-              <div class="row col-md-12" style="height: 70px;">
-
-                  <div class="select-box ">
-                    <div class="col-md-7">
-<!--                    <label for="query" class="control-label">Pick Test Candidate</label>
--->
-                    <ui-select  ng-model="vm.TestCandidateSelected" 
-                                theme="bootstrap" 
-                                reset-search-input="false"
-                                on-select="vm.getTestDates($item);"
-                                style="width: 300px;" 
-                                title="Filter for a Test"
-                                append-to-body="false">
-                      <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
-                      <ui-select-choices 
-                      repeat="TestCandidate in vm.testcandidatenames | filter: $select.search track by $index"
-                      refresh="vm.gettestcandidateNames($select.search)"
-                      refresh-delay="0">
-                        <div id="candidatepicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
-                      </ui-select-choices>
-                      <ui-select-no-choice>
-                        Dang!  We couldn't find any choices...
-                      </ui-select-no-choice>                    
-                    </ui-select>
-                    </div>
+            <div class="row col-md-12" style="height: 70px;">
+                <div class="select-box ">
+                  <div class="col-md-7">
+                  <ui-select  ng-model="vm.TestCandidateSelected" 
+                              theme="bootstrap" 
+                              reset-search-input="false"
+                              on-select="vm.getTestDates($item);"
+                              style="width: 300px;" 
+                              title="Filter for a Test"
+                              append-to-body="false">
+                    <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices 
+                    repeat="TestCandidate in vm.testcandidatenames | filter: $select.search track by $index"
+                    refresh="vm.gettestcandidateNames($select.search)"
+                    refresh-delay="0">
+                      <div id="candidatepicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
+                    </ui-select-choices>
+                    <ui-select-no-choice>
+                      Dang!  We couldn't find any choices...
+                    </ui-select-no-choice>                    
+                  </ui-select>
                   </div>
-                  <div class="col-md-5">
-                    <button ng-click="vm.gettestcandidateDetails(vm.TestCandidateSelected)" class="btn btn-green btn-default TestCandidateCreation">Refresh List</button>
-                  </div>
-                </div>     
-              </div>
+                </div>
+                <div class="col-md-5">
+                  <button ng-click="vm.gettestcandidateDetails(vm.TestCandidateSelected)" class="btn btn-green btn-default TestCandidateCreation">Refresh List</button>
+                </div>
+              </div>     
+          </div>
 
           <div class="col-lg-12 row">
           <form action="" novalidate name="edittest" class="form-horizontal">
@@ -182,11 +175,80 @@
           </div>  
 
           </div>
-        </div>
         <div class="panel-footer"></div>
       </div>
 
 
       </uib-tab>
+      <uib-tab 
+            id="tab-testmanage" 
+            heading="Manage Test"
+            active="active.ManageTest"
+      >
+      <div class="panel panel-green">
+        <div class="panel-heading">Test Attendees</div>
+        <div class="panel-body ">
+<button type="button" ng-click="vm.createCertificate()">Click Me!</button>
+          <div class="col-lg-12">
+            <div class="row col-md-12" style="height: 70px;">
+                <div class="select-box ">
+                  <div class="col-md-3">
+                  <ui-select  ng-model="vm.TestCandidateSelected" 
+                              theme="bootstrap" 
+                              reset-search-input="false"
+                              on-select="vm.getTestDates($item);"
+                              style="width: 300px;" 
+                              title="Filter for a Test"
+                              append-to-body="false">
+                    <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
+                    <ui-select-choices 
+                    repeat="TestCandidate in vm.testcandidatenames | filter: $select.search track by $index"
+                    refresh="vm.gettestcandidateNames($select.search)"
+                    refresh-delay="0">
+                      <div id="testerpicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
+                    </ui-select-choices>
+                    <ui-select-no-choice>
+                      Dang!  We couldn't find any choices...
+                    </ui-select-no-choice>                    
+                  </ui-select>
+                  </div>
+                  <div class="col-md-8">
+                    before test-> Checklist, Intent Promote, e-Reminder, Certificate, Belt Labels <br/>
+                    after test-> To Test history, Promote, PostCard List <br/>
+                    Remove Candidate
+                    
+                    open contact, contact name, rank Ach'd Test, Test status, Testdate/time, Testers, TestType, Promodate, Attendence, Test name
+                    
+                  </div>
+                </div>
+              </div>     
+          </div>          
+            <div class="row col-md-12">
+                 <div ui-grid="vm.resgridOptions" ng-style="{height: (100*11)+140+'px'}"
+                      ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                      ui-grid-resize-columns ui-grid-pinning ui-grid-edit
+                      ui-grid-selection ui-grid-move-columns  
+                      ui-grid-exporter
+                      class="mygrid" >
+                      <div class="watermark" ng-show="!vm.resgridOptions.data.length">No data available</div>
+                 </div>
+            </div>
+            <div>
+<!--              
+<div class="item" ng-show="false"><img src="images/reports/dragon.jpg" alt="" class="img-responsive"/></div>
+<div class="item" ng-show="false"><img src="images/logos/vlogo.gif" alt="" class="img-responsive"/></div>
+<div class="item" ng-show="false"><img src="images/logos/dragonlogo.png" alt="" class="img-responsive"/></div>
+<div class="item" ng-show="false"><img src="images/classes/adult.jpg" alt="" class="img-responsive"/></div>
+-->
+<div class="item" ng-show="false"><img src="images/logos/StudioDiplomaTemplate.png" alt="" class="img-responsive"/></div>
+
+
+            </div>
+        </div>
+      </div>
+      <div class="panel-footer"></div>
+
+      </uib-tab>
+        
     </uib-tabset>
 </div>

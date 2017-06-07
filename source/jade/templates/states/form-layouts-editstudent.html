@@ -696,7 +696,7 @@
                                     minLength="3" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                       class="form-control">
                                     <option 
-                                      ng-repeat="r in vmstudent.ranklist.ranklist track by r.rankid" 
+                                      ng-repeat="r in vmstudent.RanksList.ranklist track by r.rankid" 
                                       placeholder="Select" 
                                       value="{{r.ranklist}}">{{r.ranklist}}</option>
                     
@@ -717,7 +717,7 @@
                               </div>
 
                               <div class="row col-md-12">
-                                <table class="table table-hover table-striped">
+                                <table class="col-md-10 table=responsive table-striped table-hover table-bordered">
                                   <thead>
                                     <tr>
                                       <th>Type</th>
@@ -727,9 +727,11 @@
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="item in vmstudent.studentranks track by $index">
-                                      <td>{{item.ranktype}}</td>
-                                      <td>{{item.currentrank}}</td>
-                                      <td><span> <a ng-click="vmstudent.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></td>
+                                      <td class="col-md-4">{{item.ranktype}}
+                                      </td>
+                                      <td class="col-md-4">{{item.currentrank}}
+                                      </td>
+                                      <td class="col-md-4"><span> <a ng-click="vmstudent.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></td>
                                     </tr>
                                   </tbody>
                                 </table>
