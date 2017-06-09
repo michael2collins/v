@@ -927,7 +927,7 @@
                     name: 'Contact',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true,
-                    filter: {term: "Student"},                    
+ //                   filter: {term: "Student"},                    
                     visible: true
                 }, {
                     field: 'rankForNextClass',
@@ -1122,7 +1122,7 @@
                     name: 'Contact',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true,
-                    filter: {term: "Student"},                    
+//                    filter: {term: "Student"},                    
                     visible: true
                 }, {
                     field: 'ReadyForNextRank',
@@ -1279,7 +1279,8 @@
                     var info = {
                         ContactID: inputArray[i].contactID,
                         nextRank: inputArray[i].RankAchievedInTest,
-                        studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName
+                        studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName,
+                        rankType: inputArray[i].ranktype
                     };
                     vm.selectedStudents.push(info);
                 }
@@ -1322,50 +1323,81 @@
         
                 return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
             }
-        
-        function getContent(students,certdata) {
-          $log.debug('getContent entered',students,certdata);
-          var contentdtl=[];
-          var pagebreak;
-          for (var i=0; i<students.length; i++) {       
-            if (i < students.length -1  ) {
-                pagebreak = {pageBreak: 'before', text: ''}; 
-            } else {
-                pagebreak = {};
+        function getCertificateText( certdata, students) {
+            //get from db
+//Studio
+//Reiki
+            var textout = [];
+            if (students.rankType == "YMCA") {
+                textout = [
+                    {text: 'YMCA Program',        style: ['ymcaheader']},
+                    {text: 'This is to certify that\n',        style: ['smalllines','spread']},
+                    {text: students.studentname + '\n', style: ['mediumlines','ymcabotfiller']},
+                    {text: 'Has successfully completed an eight week Martial Arts Program in the\nart of Shaolin Kempo Karate and Jiu-Jitsu.\n\n', style: ['smalllines','spread']},
+                    {text: 'Dated this ' + certdata.certDate + ' at the MetroWest YMCA\n', style: ['smalllines','spread']}
+                    ];
             }
-            contentdtl.push(
-             [
-              {text: '',        style: ['topfiller']},
-              {text: 'This is to certify that\n',        style: ['smalllines','spread']},
-              {text: students[i].studentname + '\n', style: ['mediumlines','botfiller']},
-              {text: 'Has successfully demonstrated the required level of ability and\nknowledge in the art of Shaolin Kempo Karate and Jiu-Jitsu and\n' + certdata.program + '\n', style: ['smalllines','spread']},
-              {text: students[i].nextRank + '\n', style: ['biglines','bigtop'] },
-              {text: 'Dated this ' + certdata.certDate + ' at ' + certdata.school + '\n', style: ['smalllines','spread']},
-          		{
-              columns: [
+            if (students.rankType == "AdultKarate" || students.rankType == "ChildrenKarate" || students.rankType == "BlackBelt" ) {
+                textout = [
+                    {text: '',        style: ['topfiller']},
+                    {text: 'This is to certify that\n',        style: ['smalllines','spread']},
+                    {text: students.studentname + '\n', style: ['mediumlines','botfiller']},
+                    {text: 'Has successfully demonstrated the required level of ability and\nknowledge in the art of Shaolin Kempo Karate and Jiu-Jitsu and\n' + certdata.program + '\n', style: ['smalllines','spread']},
+                    {text: students.nextRank + '\n', style: ['biglines','bigtop'] },
+                    {text: 'Dated this ' + certdata.certDate + ' at ' + certdata.school + '\n', style: ['smalllines','spread']}
+                ];
+            }
+            return textout;
+        }
+        function getCertificateSignatures( certdata, students) {
+            var textout =[];
+            textout = [
                   { width: 70, text: ''},
                   { stack: [
                      {text: '', marginTop: 57},
                      {text:  certdata.instructor1 + '\n', marginLeft: 40 - certdata.instructor1.length*1.5/2, style: 'signature'},
-                     {text:  certdata.title1 , marginLeft: 40 - certdata.title1.length*1.5/2, style: 'signature'},
+                     {text:  certdata.title1.length > 0 ? certdata.title1 : " " , marginLeft: 40 - certdata.title1.length*1.5/2, style: 'signature'},
                      {text: '', marginTop: 38},
                      {text:  certdata.instructor2 + '\n', marginLeft: 40 - certdata.instructor2.length*1.5/2  , style: 'signature'},
-                     {text:  certdata.title2, marginLeft: 40 - certdata.title2.length*1.5/2 , style: 'signature'},
+                     {text:  certdata.title2.length > 0 ? certdata.title2 : " ", marginLeft: 40 - certdata.title2.length*1.5/2 , style: 'signature'},
                      ]
                   },
                   { width: 190, text: ''},
                   { stack: [
                     {text: '', marginTop: 57},
                      {text:  certdata.instructor3 + '\n', marginLeft: 50 - certdata.instructor3.length*1.5/2 + certdata.instructor1.length*1.5/2, style: 'signature'},
-                     {text:  certdata.title3 , marginLeft: 50 - certdata.title3.length*1.5/2 + certdata.title1.length*1.5/2, style: 'signature'},
+                     {text:  certdata.title3.length > 0 ? certdata.title3 : " " , marginLeft: 50 - certdata.title3.length*1.5/2 + certdata.title1.length*1.5/2, style: 'signature'},
                     {text: '', marginTop: 38},
                      {text:  certdata.instructor4 + '\n', marginLeft: 50 - certdata.instructor4.length*1.5/2 + certdata.instructor2.length*1.5/2, style: 'signature'},
-                     {text:  certdata.title4 , marginLeft: 50 - certdata.title4.length*1.5/2 + certdata.title2.length*1.5/2, style: 'signature'},
+                     {text:  certdata.title4.length > 0 ? certdata.title4 : " " , marginLeft: 50 - certdata.title4.length*1.5/2 + certdata.title2.length*1.5/2, style: 'signature'},
                      ]
                   }
-                  ]
-          		}, 
-          		  pagebreak 
+                  ];
+
+            return textout;
+        }
+        function getContent(students,certdata) {
+            $log.debug('getContent entered',students,certdata);
+            var contentdtl=[];
+            var pagebreak;
+            var certtext=[];
+            var columns=[];
+
+            for (var i=0; i<students.length; i++) {       
+                certtext = getCertificateText(certdata, students[i]);
+                columns = getCertificateSignatures(certdata, students[i]);
+                if (i < students.length -1  ) {
+                    pagebreak = {pageBreak: 'before', text: ''}; 
+                } else {
+                    pagebreak = {};
+                }
+            contentdtl.push(
+             [
+                certtext,
+              	{
+              	    columns
+              	}, 
+              	  pagebreak 
             ]);
           }
           return contentdtl;
@@ -1425,6 +1457,9 @@ $log.debug('school', vm.userdta);
         		  botfiller: {
         		    margin: [0,5]
         		  },
+        		  ymcabotfiller: {
+        		    margin: [0,12]
+        		  },
         		  spread: {
         		    margin: [0,5]
         		  },
@@ -1447,6 +1482,12 @@ $log.debug('school', vm.userdta);
         		    fontSize: 35,
         		    bold: true,
         		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		  ymcaheader: {
+        		    fontSize: 25,
+        		    bold: true,
+        		    margin: [270,45,0,20],
         		    width: rptwidth
         		  },
         		  biglines: {
