@@ -337,7 +337,8 @@ module.exports = function (grunt) {
           "app/css/themes/orange.css" : "source/less/themes/orange.less",
           "app/css/themes/red.css" : "source/less/themes/red.less",
           "app/css/themes/violet.css" : "source/less/themes/violet.less",
-          "app/css/themes/white.css" : "source/less/themes/white.less"
+          "app/css/themes/white.css" : "source/less/themes/white.less",
+          "app/css/wysiwyg.css" : "source/less/wysiwyg.less",
         }
       }
     },

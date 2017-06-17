@@ -31,7 +31,8 @@
     'angularFileUpload',
     'akoenig.deckgrid',
     'color.picker',
-    'angularMoment'
+    'angularMoment',
+    'textAngular'
   //      'notifyme'
 
 //    'omr.directives'

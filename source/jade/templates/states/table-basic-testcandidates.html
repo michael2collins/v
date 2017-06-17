@@ -218,7 +218,6 @@
                     Remove Candidate
                     
                     open contact, contact name, rank Ach'd Test, Test status, Testdate/time, Testers, TestType, Promodate, Attendence, Test name
-                    
                   </div>
                 </div>
               </div>     
@@ -248,6 +247,77 @@
       </div>
       <div class="panel-footer"></div>
 
+      </uib-tab>
+      <uib-tab 
+            id="tab-testmaterial" 
+            heading="Test Document Setup"
+            active="active.ManageTestmaterial"
+      >
+      <div class="panel panel-green">
+        <div class="panel-heading">Test Documents</div>
+        <div class="panel-body ">
+
+            <div class="col-md-12">
+              <h1>Editor</h1>
+              <div text-angular-toolbar name="htmlcontenttools"></div>
+              <button ng-click="vm.htmlcontentcanEdit = !vm.htmlcontentcanEdit">Can Edit</button>
+              <button type="button" ta-button ng-click="vm.htmlcontentreset()">Reset</button>
+              <button type="button" ta-button ng-click="vm.htmlcontentclear()">clear</button>
+              <button type="button" ta-button ng-click="vm.doPDF()">Download PDF</button>
+              <form name="validationForm" ng-submit="vm.htmlcontentsubmit()">
+                  <label for="name">Name:</label>
+                  <input type="text" tabindex="1" id="name" ng-model="vm.htmlcontentname">
+                  <label for="website">Website:</label>
+                  <input type="url" tabindex="2" id="website" ng-model="vm.htmlcontentwebsite"> 
+                      formValid: pristine {{validationForm.testValidation.$pristine}} 
+                      valid {{validationForm.testValidation.$valid}} 
+                      dirty {{validationForm.testValidation.$dirty}} 
+                      invalid {{validationForm.testValidation.$invalid}} Bio:
+                  <text-angular name="testValidation" 
+                    ta-paste="vm.testPaste($html)" 
+                    ng-if="vm.htmlcontentcanEdit" 
+                    ng-model="vm.htmlcontentdata.htmlcontent" 
+                    tabindex="3" 
+                    placeholder="test placeholder" 
+                    required 
+                    ta-default-wrap="p" 
+                    ta-target-toolbars='htmlcontenttools' 
+                    ng-model-options="{debounce: 1000}">
+                  </text-angular>
+                  <div id="convertthis" ta-bind name="testValidation" ng-model="vm.htmlcontentdata.htmlcontent" placeholder="test placeholder" required ng-model-options="{debounce: 1000}"></div>
+                      </text-angular>
+              </form>
+              
+              <input id="inputFileToLoad" type="file" onchange="encodeImageFileAsURL();" />
+              <div id="imgTest"></div>
+              <script type='text/javascript'>
+                function encodeImageFileAsURL() {
+              
+                  var filesSelected = document.getElementById("inputFileToLoad").files;
+                  if (filesSelected.length > 0) {
+                    var fileToLoad = filesSelected[0];
+              
+                    var fileReader = new FileReader();
+              
+                    fileReader.onload = function(fileLoadedEvent) {
+                      var srcData = fileLoadedEvent.target.result; // <--- data: base64
+              
+                      var newImage = document.createElement('img');
+                      newImage.src = srcData;
+              
+                      document.getElementById("imgTest").innerHTML = newImage.outerHTML;
+                      alert("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+                      console.log("Converted Base64 version is " + document.getElementById("imgTest").innerHTML);
+                    }
+                    fileReader.readAsDataURL(fileToLoad);
+                  }
+                }
+              </script>                    
+              
+            </div>
+        </div>
+        <div class="panel-footer"></div>
+        
       </uib-tab>
         
     </uib-tabset>

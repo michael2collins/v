@@ -1,9 +1,176 @@
+
 (function() {
     'use strict';
 
     angular
         .module('ng-admin')
         .controller('TestCandidateTableBasicController', TestCandidateTableBasicController)
+        
+            .config(function($provide) {
+                // this demonstrates how to register a new tool and add it to the default toolbar
+//                $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) { // $delegate is the taOptions we are decorating
+
+                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$delegate',
+                                                 function(taRegisterTool, taToolFunctions, $uibModal, taOptions){
+            
+                    function createTable(tableParams) {
+                        if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)
+                                && tableParams.row > 0 && tableParams.col > 0){
+                            var table = "<table class='table no-border " 
+                                + (tableParams.style ? "table-" + tableParams.style : '')  
+                                + "'>";
+            
+                            var colWidth = 100/tableParams.col;
+                            for (var idxRow = 0; idxRow < tableParams.row; idxRow++) {
+                                var row = "<tr>";
+                                for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
+                                    row += "<td" 
+                                        + (idxRow == 0 ? ' style="width: ' + colWidth + '%;"' : '')
+                                        +">Sample Cell</td>";
+                                }
+                                table += row + "</tr>";
+                            }
+                            return table + "</table>";
+                        }
+                    }
+
+                    taRegisterTool('insertTable', {
+                        iconclass: 'fa fa-table',
+                        tooltiptext: 'Insert table',
+                        action: function(deferred){
+                            var textAngular=this;
+                            var savedSelection = rangy.saveSelection();
+                            
+                            $uibModal.open({
+                                templateUrl: 'templates/states/textblocktable.html',
+                                windowClass: 'modal-window-sm',
+                                backdrop: 'static',
+                                keyboard: false,
+                                controller: ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+                                    $scope.newtable ={};
+                                    $scope.tablestyles = [
+                                                          { name: 'Bordered', value: 'bordered' },
+                                                          { name: 'Condensed', value: 'condensed' },
+                                                          { name: 'Striped', value: 'striped' },
+                                                          { name: 'Borderd Striped', value: 'striped table-bordered' },
+                                                          { name: 'Responsive', value: 'responsive' }];
+            
+                                    $scope.tblInsert = function () {
+                                        $uibModalInstance.close($scope.newtable);
+                                    };
+            
+                                    $scope.tblCancel = function () {
+                                        $uibModalInstance.dismiss("cancel");
+                                    };
+                                }],
+                                size: 'sm'
+                            
+                            //define result modal , when user complete result information 
+                            }).result.then(function(result){
+                                    rangy.restoreSelection(savedSelection)
+                                    textAngular.$editor().wrapSelection('insertHTML', createTable(result));
+                                    deferred.resolve();
+                                },
+                            function () {
+                                rangy.restoreSelection(savedSelection)
+                                deferred.resolve();
+                                }
+                            );                            
+                            return false;
+                        }/*,
+                          onElementSelect: {
+                            element: 'table',
+                            action: taToolFunctions.tableOnSelectAction
+                          }
+                          */
+                    });
+                    taOptions.toolbar[1].push('insertTable');
+
+                    taRegisterTool('test', {
+                        buttontext: 'Test',
+                        action: function() {
+                            alert('Test Pressed');
+                        }
+                    });
+                    taOptions.toolbar[1].push('test');
+                    taRegisterTool('colourRed', {
+                        iconclass: "fa fa-square red",
+                        action: function() {
+                            this.$editor().wrapSelection('forecolor', 'red');
+                        }
+                    });
+                    // add the button to the default toolbar definition
+                    taOptions.toolbar[1].push('colourRed');
+                    
+/*                    taRegisterTool('fontSize', {
+            			display: "<span class='bar-btn-dropdown dropdown'>" +
+            					"<button class='btn btn-default dropdown-toggle' type='button' ng-disabled='showHtml()'><i class='fa fa-font'></i><i class='fa fa-caret-down'></i></button>" +
+            					"<ul class='dropdown-menu'><li ng-repeat='o in options'><button class='checked-dropdown' style='font-size: {{o.css}}' type='button' ng-click='action(o.value)'><i ng-if='o.active' class='fa fa-check'></i> {{o.name}}</button></li></ul>" +
+            					"</span>",
+            			buttontext: 'FontSize',
+                        iconclass: "fa fa-font",
+            			action: function(sizedeferred) {
+            			    return false;
+            	//		    var x = this;
+            	//			if (size !== '') {
+            	//				return this.$editor().wrapSelection('fontSize', size);
+            	//			}
+            			},
+            			activeState: function(something){
+            			    console.log('something',something);
+            			  return this.$editor().queryCommandState('fontSize');  
+            			},
+            			options: [
+            				{name: 'Extra Small', css: 'xx-small', value: '1'},
+            				{name: 'Small', css: 'x-small', value: '2'},
+            				{name: 'Medium', css: 'small', value: '3'},
+            				{name: 'Large', css: 'medium', value: '4'},
+            				{name: 'Extra Large', css: 'large', value: '5'},
+            				{name: 'Huge', css: 'x-large', value: '6'}
+            			],
+            			setActive: function(font) {
+            				// Convert to string if not already
+            				if (typeof font !== 'string') { font = String(font) }
+            
+            				angular.forEach(this.options, function(option) {
+            					option['active'] = font === option.value ? true : false;
+            				});
+            			},
+            			getActive: function() {
+            				var font = document.queryCommandValue('fontSize');
+            				if (font === '') {
+            					return 3;
+            				} else {
+            					return font;
+            				}
+            			}
+            		});
+                    taOptions.toolbar[1].push('fontSize');
+            		taRegisterTool('fontColor', {
+            			display: "<span class='bar-btn-dropdown'><button type='button' colorpicker colorpicker-text-editor='true' colorpicker-parent='true' class='btn btn-default' ng-disabled='isDisabled()'> <i class='fa fa-magic'></i><i class='fa fa-caret-down'></i></button></span>",
+            			action: function(color) {
+            				if (color !== '') {
+            				    var x = this;
+            //					return this.$editor().wrapSelection('foreColor', color);
+            					 this.$editor().wrapSelection('foreColor', color);
+            				}
+            			}
+            		});
+                    taOptions.toolbar[1].push('fontColor');
+            		taRegisterTool('backgroundColor', {
+            			display: "<span class='bar-btn-dropdown'><button type='button' colorpicker colorpicker-text-editor='true' colorpicker-parent='true' class='btn btn-default' ng-disabled='showHtml()'> <i class='fa fa-magic'></i><i class='fa fa-caret-down'></i></button></span>",
+            			action: function(color) {
+            				if (color !== '') {
+            					return this.$editor().wrapSelection('backColor', color);
+            				}
+            			}
+            		});                    
+                    taOptions.toolbar[1].push('backgroundColor');
+*/                    
+                    return taOptions;
+                }]);
+            })        
+          
         .directive('zoom', function($window) {
 
 	function link(scope, element, attrs) {
@@ -106,6 +273,7 @@
         vm.updateTest = updateTest;
         vm.addToTest = addToTest;
         vm.removeFromTest = removeFromTest;        
+        vm.doPDF = doPDF;
 //        vm.getColDefList = getColDefList;
 //        vm.setColDef = setColDef;
 //        vm.dateopen = dateopen;
@@ -144,12 +312,56 @@
         vm.testname;
         vm.testtype;
         vm.userdta;
+        vm.htmlcontentdisabled = false;
+        vm.htmlcontentcanEdit = true;
+        vm.htmlcontentsubmit = htmlcontentsubmit;
+        vm.htmlcontentreset = htmlcontentreset;
+        vm.htmlcontentclear = htmlcontentclear;
+        vm.htmlcontenttestPaste = htmlcontenttestPaste;
+        vm.htmlcontentname;
+        vm.htmlcontentwebsite;
 
         activate();
 
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
             vm.limit = thelimit;
+        }
+
+        vm.htmlcontentdata = {
+            orightml: ' \
+            <h2>Try me!</h2> \
+            <p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p>\
+            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> \
+            <p><b>Features:</b></p> \
+            <ol> \
+            <li>Automatic Seamless Two-Way-Binding</li> \
+            <li>Super Easy <b>Theming</b> Options</li> \
+            <li style="color: green;">Simple Editor Instance Creation</li> \
+            <li>Safely Parses Html for Custom Toolbar Icons</li> \
+            <li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol> \
+            '
+        };
+        vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
+                //$scope.$watch('data.htmlcontent', function(val){console.log('htmlcontent changed to:', val);});
+
+        function htmlcontentsubmit() {
+            $log.debug('Submit triggered');
+        }
+        function htmlcontentclear() {
+            $log.debug('clear');
+            vm.htmlcontentdata = {
+                orightml: '<h2>Try me!</h2><p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p><p><b>Features:</b></p><ol><li>Automatic Seamless Two-Way-Binding</li><li>Super Easy <b>Theming</b> Options</li><li style="color: green;">Simple Editor Instance Creation</li><li>Safely Parses Html for Custom Toolbar Icons</li><li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol><p><b>Code at GitHub:</b> <a href="https://github.com/fraywing/textAngular">Here</a> </p>'
+            };
+        }
+        function htmlcontentreset() {
+            $log.debug('reset');
+            
+            vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
+        }
+        function htmlcontenttestPaste($html) {
+            $log.debug('Hit Paste', arguments);
+            return '<p>Jackpot</p>';
         }
 
         function addToTest(testingid) {
@@ -1530,6 +1742,324 @@ $log.debug('school', vm.userdta);
         // pdfMake.createPdf(docDefinition).download('Report.pdf');
          pdfMake.createPdf(docDefinition).open();
         }
+
+function doPDF() {
+    pdfForElement('convertthis').open();
+}
+
+function pdfForElement(id) {
+  function ParseContainer(cnt, e, p, styles) {
+    var elements = [];
+    var children = e.childNodes;
+    if (children.length != 0) {
+      for (var i = 0; i < children.length; i++) {
+          p = ParseElement(elements, children[i], p, styles);
+      }
+    }
+    if (elements.length != 0) {
+      for (var i = 0; i < elements.length; i++) {
+          cnt.push(elements[i]);
+      }
+    }
+    return p;
+  }
+
+  function ComputeStyle(o, styles) {
+    for (var i = 0; i < styles.length; i++) {
+      var st = styles[i].trim().toLowerCase().split(":");
+      $log.debug('computestyle', st);
+      if (st.length == 2) {
+        switch (st[0]) {
+          case "font-size":
+            {
+              o.fontSize = parseInt(st[1]);
+              break;
+            }
+          case "text-align":
+            {
+              switch (st[1]) {
+                case "right":
+                  o.alignment = 'right';
+                  break;
+                case "center":
+                  o.alignment = 'center';
+                  break;
+              }
+              break;
+            }
+          case "font-weight":
+            {
+              switch (st[1]) {
+                case "bold":
+                  o.bold = true;
+                  break;
+              }
+              break;
+            }
+          case "text-decoration":
+            {
+              switch (st[1]) {
+                case "underline":
+                  o.decoration = "underline";
+                  break;
+              }
+              break;
+            }
+          case "font-style":
+            {
+              switch (st[1]) {
+                case "italic":
+                  o.italics = true;
+                  break;
+              }
+              break;
+            }
+        }
+      }
+    }
+  }
+
+  function ParseElement(cnt, e, p, styles) {
+    if (!styles) styles = [];
+    if (e.getAttribute) {
+      var nodeStyle = e.getAttribute("style");
+      if (nodeStyle) {
+        var ns = nodeStyle.split(";");
+        for (var k = 0; k < ns.length; k++) styles.push(ns[k]);
+      }
+    }
+
+    var st ={};
+    $log.debug("parseelement",e, e.nodename);
+    switch (e.nodeName.toLowerCase()) {
+      case "#text":
+        {
+            $log.debug('in text',e.textContent);
+          st = {
+            text: e.textContent.replace(/\n/g, "")
+          };
+          if (styles) ComputeStyle(st, styles);
+          p.text.push(st);
+          break;
+        }
+      case "b":
+      case "strong":
+        {
+          //styles.push("font-weight:bold");
+          ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
+          break;
+        }
+      case "h1":
+        {
+            $log.debug('h1',cnt, e, p);
+          p = CreateParagraph();
+           st = {
+            stack: []
+          };
+          st.stack.push(p);
+          ComputeStyle(st, styles);
+          ParseContainer(st.stack, e, p, styles.concat(["font-size:24"]));
+
+          cnt.push(st);
+
+          break;
+        }
+      case "u":
+        {
+          //styles.push("text-decoration:underline");
+          ParseContainer(cnt, e, p, styles.concat(["text-decoration:underline"]));
+          break;
+        }
+      case "i":
+        {
+          //styles.push("font-style:italic");
+            $log.debug('i',cnt, e, p);
+          ParseContainer(cnt, e, p, styles.concat(["font-style:italic"]));
+          //styles.pop();
+          break;
+          //cnt.push({ text: e.innerText, bold: false });
+        }
+      case "span":
+        {
+          ParseContainer(cnt, e, p, styles);
+          break;
+        }
+      case "br":
+        {
+          p = CreateParagraph();
+          cnt.push(p);
+          break;
+        }
+      case "li":
+        {
+          $log.debug("li found");
+          
+          p = CreateParagraph();
+           st = {
+            stack: []
+          };
+          st.stack.push(p);
+          ComputeStyle(st, styles);
+          ParseContainer(st.stack, e, p);
+
+          cnt.push(st);
+          break;
+        }
+      case "table":
+        {
+          var t = {
+            table: {
+              widths: [],
+              body: []
+            }
+          }
+          var border = e.getAttribute("border");
+          var isBorder = false;
+          if (border)
+            if (parseInt(border) == 1) isBorder = true;
+          if (!isBorder) t.layout = 'noBorders';
+          ParseContainer(t.table.body, e, p, styles);
+
+          var widths = e.getAttribute("widths");
+          if (!widths) {
+            if (t.table.body.length != 0) {
+              if (t.table.body[0].length != 0)
+                for (var k = 0; k < t.table.body[0].length; k++) t.table.widths.push("*");
+            }
+          } else {
+            var w = widths.split(",");
+            for (var k = 0; k < w.length; k++) t.table.widths.push(w[k]);
+          }
+          cnt.push(t);
+          break;
+        }
+      case "tbody":
+        {
+          ParseContainer(cnt, e, p, styles);
+          //p = CreateParagraph();
+          break;
+        }
+      case "tr":
+        {
+          var row = [];
+          ParseContainer(row, e, p, styles);
+          cnt.push(row);
+          break;
+        }
+      case "td":
+        {
+          p = CreateParagraph();
+           st = {
+            stack: []
+          };
+          st.stack.push(p);
+
+          var rspan = e.getAttribute("rowspan");
+          if (rspan) st.rowSpan = parseInt(rspan);
+          var cspan = e.getAttribute("colspan");
+          if (cspan) st.colSpan = parseInt(cspan);
+
+          ParseContainer(st.stack, e, p, styles);
+          cnt.push(st);
+          break;
+        }
+      case "div":
+          $log.debug("div found");
+          
+          
+      case "ol":
+          $log.debug("ol found");
+          p = CreateParagraph();
+          var ol = {
+              ol: []
+          };
+          ol.ol.push(p);
+          ComputeStyle(ol, styles);
+          ParseContainer(ol.ol, e, p);
+          cnt.push(ol);
+          break;
+
+      case "ul":
+            $log.debug('ul',cnt, e, p);
+          p = CreateParagraph();
+          var ul = {
+              ul: []
+          };
+          ul.ul.push(p);
+          ComputeStyle(ul, styles);
+          ParseContainer(ul.ul, e, p);
+          cnt.push(ul);
+          break;
+          
+      case "p":
+        {
+          $log.debug("p found");
+          p = CreateParagraph();
+           st = {
+            stack: []
+          };
+          st.stack.push(p);
+          ComputeStyle(st, styles);
+          ParseContainer(st.stack, e, p);
+
+          cnt.push(st);
+          break;
+        }
+      default:
+        {
+          $log.debug("Parsing for node " + e.nodeName + " not found");
+          break;
+        }
+    }
+    return p;
+  }
+
+  function ParseHtml(cnt, htmlText) {
+    var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+    var p = CreateParagraph();
+    for (var i = 0; i < html.length; i++){
+        ParseElement(cnt, html.get(i), p);
+    }
+  }
+
+  function CreateParagraph() {
+    var p = {
+      text: []
+    };
+    return p;
+  }
+  function CreateLI() {
+    var p = {};
+    return p;
+  }
+
+  var content = [];
+//  ParseHtml(content, document.getElementById(id).outerHTML);
+  ParseHtml(content, document.getElementById(id).innerHTML);
+        var rptwidth = 792;
+        var rptheight = 600;
+
+  //      var testImageDataUrl ='data:image/png;base64,'+ getBase64Image("images/logos/StudioDiplomaTemplate.png");
+  
+          var docDefinition = {
+          pageOrientation: 'landscape',
+          // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+          pageMargins: [ 40, 60, 40, 0 ],
+          pageSize: 'LETTER',
+//          background: [
+ //          {
+ //        			image: testImageDataUrl,
+  //             width: rptwidth,
+//               height: rptheight
+ //          }],
+           content: content 
+        };
+    return     pdfMake.createPdf(docDefinition);
+
+  //return pdfMake.createPdf({
+    //content: content
+  //});
+}
 
     }
 
