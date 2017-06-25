@@ -5,18 +5,17 @@
     angular
         .module('ng-admin')
         .controller('TestCandidateTableBasicController', TestCandidateTableBasicController)
-        
             .config(function($provide) {
                 // this demonstrates how to register a new tool and add it to the default toolbar
 //                $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) { // $delegate is the taOptions we are decorating
 
-                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$delegate',
-                                                 function(taRegisterTool, taToolFunctions, $uibModal, taOptions){
+                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$log', '$delegate' ,
+                                                 function(taRegisterTool, taToolFunctions, $uibModal, $log,  taOptions ){
             
                     function createTable(tableParams) {
                         if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)
                                 && tableParams.row > 0 && tableParams.col > 0){
-                            var table = "<table class='table no-border " 
+                            var table = "<table class='table  " 
                                 + (tableParams.style ? "table-" + tableParams.style : '')  
                                 + "'>";
             
@@ -33,7 +32,12 @@
                             return table + "</table>";
                         }
                     }
-
+                    taOptions.toolbar = [
+                    				['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
+                    				['bold', 'italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear'],
+                    				['justifyLeft','justifyCenter','justifyRight', 'justifyFull'],
+                    				['html', 'insertImage', 'insertLink', 'charcount']
+                    			];
                     taRegisterTool('insertTable', {
                         iconclass: 'fa fa-table',
                         tooltiptext: 'Insert table',
@@ -50,11 +54,11 @@
                                     $scope.newtable ={};
                                     $scope.tablestyles = [
                                                           { name: 'Bordered', value: 'bordered' },
-                                                          { name: 'Condensed', value: 'condensed' },
                                                           { name: 'Striped', value: 'striped' },
-                                                          { name: 'Borderd Striped', value: 'striped table-bordered' },
-                                                          { name: 'Responsive', value: 'responsive' }];
-            
+                                                          { name: 'HeaderlineOnly', value: 'HeaderlineOnly' },
+                                                          { name: 'LightHorizontalLines', value: 'LightHorizontalLines' },
+                                                          { name: 'Striped', value: 'striped' },
+                                                          { name: 'Borderd Striped', value: 'striped table-bordered' }];
                                     $scope.tblInsert = function () {
                                         $uibModalInstance.close($scope.newtable);
                                     };
@@ -93,6 +97,7 @@
                         }
                     });
                     taOptions.toolbar[1].push('test');
+                    
                     taRegisterTool('colourRed', {
                         iconclass: "fa fa-square red",
                         action: function() {
@@ -101,6 +106,58 @@
                     });
                     // add the button to the default toolbar definition
                     taOptions.toolbar[1].push('colourRed');
+
+                    var displaystuff2 = ' <div class="c-drop-down" dropdown="true" auto-close="outsideClick"> ' +
+                        '<a class="c-drop-down__title" dropdown-toggle="true"> text </a> ' +
+                        '<ul class="c-drop-down__menu c-drop-down__menu--left dropdown-menu"> ' +
+                        '<!--  <li ng-repeat="o in options"> ' +
+                        '    <button type="button" ng-class="displayActiveToolClass(active)" ng-click="action($event, o.value)"> {{ o.name }} </button> ' +
+                        '  </li> -->' +
+                        '  <li > ' +
+                        "    <button type='button' ng-class='displayActiveToolClass(active)' ng-click='action($event, \"H1\")'> h1</button> " +
+                        '  </li> ' +
+                        '</ul>' +
+                        '</div> ';
+            
+
+
+                    taRegisterTool('dropdownTest', {
+                        display: "<div class='btn-group' uib-dropdown> <button id='single-button' type='button' class='btn btn-primary' uib-dropdown-toggle auto-close='outsideClick'>Select Option <span class='caret'></span>       </button>       <ul class='dropdown-menu' uib-dropdown-menu role='menu' aria-labelledby='single-button'>           <li role='menuitem' ng-repeat='o in options'>             <button type='button' ng-class='displayActiveToolClass(active)' ng-click='action($event, o.value)'> {{ o.name }} </button></li></ul></div>",
+                        action: function(deferred, value) {
+
+                            $log.debug('dropdowntest deferred:',deferred);
+                            $log.debug('dropdowntest value:', value);
+
+                   //       if (!!event.stopPropagation) {
+                //              $log.debug('stop');
+                 //           event.stopPropagation();
+                  //          $('body').trigger('click');
+                //          }
+                          if( value === 'H1' || value === 'H2' || value === 'H3' || value === 'blockquote' ) {
+                              //  deferred.resolve();
+                            return this.$editor().wrapSelection('formatBlock', "<" + value + ">");
+                          }
+                          else if( value === 'ul' ) {
+                            //    deferred.resolve();
+                            return this.$editor().wrapSelection('insertUnorderedList', null);
+                          }
+                          else if ( value === 'ol' ) {
+                              //  deferred.resolve();
+                            return this.$editor().wrapSelection('insertOrderedList', null);
+                          }
+                          return false;
+                        },
+                        options: [
+                              { name: 'h1',  value: 'H1' },
+                              { name: 'h2', css: 'H2', value: 'H2' },
+                              { name: 'h3', css: 'H3', value: 'H3' },
+                              { name: 'quote', css: 'blockquote', value: 'blockquote' },
+                              { name: 'ul', css: 'list-ul', value: 'ul' },
+                              { name: 'ol', css: 'list-ol', value: 'ol' }
+                            ]
+                        });
+                    // add the button to the default toolbar definition
+                    taOptions.toolbar[1].push('dropdownTest');
                     
 /*                    taRegisterTool('fontSize', {
             			display: "<span class='bar-btn-dropdown dropdown'>" +
@@ -254,11 +311,12 @@
     'uiGridGroupingConstants',
     '$timeout',
     'moment',
-    'UserServices'
+    'UserServices',
+    'textAngularManager'
     ];
 
     function TestCandidateTableBasicController($routeParams, $log, TestingServices,CalendarServices, $location, $window, $q,
-        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment, UserServices) {
+        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment, UserServices, textAngularManager) {
         /* jshint validthis: true */
 
         var vm=this;
@@ -320,6 +378,8 @@
         vm.htmlcontenttestPaste = htmlcontenttestPaste;
         vm.htmlcontentname;
         vm.htmlcontentwebsite;
+        vm.encodeImageFileAsURL = encodeImageFileAsURL;
+        vm.images;
 
         activate();
 
@@ -328,19 +388,21 @@
             vm.limit = thelimit;
         }
 
+//            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> 
+
         vm.htmlcontentdata = {
             orightml: ' \
             <h2>Try me!</h2> \
-            <p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p>\
-            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> \
-            <p><b>Features:</b></p> \
+            <p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p>'
++ textAngularManager.getVersion().substring(1) +
+            '<p><b>Features:</b></p> \
             <ol> \
             <li>Automatic Seamless Two-Way-Binding</li> \
             <li>Super Easy <b>Theming</b> Options</li> \
             <li style="color: green;">Simple Editor Instance Creation</li> \
             <li>Safely Parses Html for Custom Toolbar Icons</li> \
             <li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol> \
-            '
+            ' 
         };
         vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
                 //$scope.$watch('data.htmlcontent', function(val){console.log('htmlcontent changed to:', val);});
@@ -1645,8 +1707,9 @@ $log.debug('school', vm.userdta);
         };
         
         var thecontent = getContent(students,certdata);
-        $log.debug('thecontent', thecontent);
+        $log.debug('thecontent', thecontent, 'json', JSON.stringify(thecontent));
         
+
         var docDefinition = {
           pageOrientation: 'landscape',
           // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
@@ -1733,6 +1796,8 @@ $log.debug('school', vm.userdta);
         	}
         };
         
+        var myJsonString = JSON.stringify(docDefinition);
+            $log.debug('doc json',myJsonString);
         
         var now = new Date();
         //var pdfDoc = printer.createPdfKitDocument(docDefinition);
@@ -1743,323 +1808,696 @@ $log.debug('school', vm.userdta);
          pdfMake.createPdf(docDefinition).open();
         }
 
-function doPDF() {
-    pdfForElement('convertthis').open();
-}
+        function doPDF() {
+         //debug   var tb = textAngularManager.getToolbarScopes();
+            pdfForElement('convertthis').open();
+        }
 
-function pdfForElement(id) {
-  function ParseContainer(cnt, e, p, styles) {
-    var elements = [];
-    var children = e.childNodes;
-    if (children.length != 0) {
-      for (var i = 0; i < children.length; i++) {
-          p = ParseElement(elements, children[i], p, styles);
-      }
-    }
-    if (elements.length != 0) {
-      for (var i = 0; i < elements.length; i++) {
-          cnt.push(elements[i]);
-      }
-    }
-    return p;
-  }
-
-  function ComputeStyle(o, styles) {
-    for (var i = 0; i < styles.length; i++) {
-      var st = styles[i].trim().toLowerCase().split(":");
-      $log.debug('computestyle', st);
-      if (st.length == 2) {
-        switch (st[0]) {
-          case "font-size":
-            {
-              o.fontSize = parseInt(st[1]);
-              break;
-            }
-          case "text-align":
-            {
-              switch (st[1]) {
-                case "right":
-                  o.alignment = 'right';
-                  break;
-                case "center":
-                  o.alignment = 'center';
-                  break;
+        function pdfForElement(id) {
+            var students = vm.selectedStudents;
+            var sl;
+            var elementStyles = {
+                "b": ["font-weight:bold"],
+                "strong": ["font-weight:bold"],
+                "u": ["text-decoration:underline"],
+                "em": ["font-style:italic"],
+                "i": ["font-style:italic"],
+                "h1": ["font-size:36", "font-weight:bold"],
+                "h2": ["font-size:30", "font-weight:bold"],
+                "h3": ["font-size:24", "font-weight:bold"],
+                "h4": ["font-size:18"],
+                "h5": ["font-size:14"],
+                "h6": ["font-size:12"],
+                "a": ["color:blue", "text-decoration:underline"],
+                "strike": ["text-decoration:line-through"],
+                "del": ["color:red", "text-decoration:line-through"],
+                "ins": ["color:green", "text-decoration:underline"]
+            };
+            var classStyles = {
+                            "delete": ["color:red", "text-decoration:line-through"],
+                            "insert": ["color:green", "text-decoration:underline"]
+                        };
+            var regBoarder = '	{ ' +
+    			'	hLineWidth: function (i, node) { ' +
+    			'		return (i === 0 || i === node.table.body.length) ? 2 : 1; ' +
+    			'	}, ' +
+    			'	vLineWidth: function (i, node) { ' +
+    			'		return (i === 0 || i === node.table.widths.length) ? 2 : 1; ' +
+    			'	}, ' +
+    			'	hLineColor: function (i, node) { ' +
+    			'		return (i === 0 || i === node.table.body.length) ? "black" : "gray"; ' +
+    			'	}, ' +
+    			'	vLineColor: function (i, node) { ' +
+    			'		return (i === 0 || i === node.table.widths.length) ? "black" : "gray"; ' +
+    			'	} }';
+            var zebra = {  fillColor: function (i, node) { return (i % 2 === 0) ?  "#CCCCCC" : null; } } ;
+            var borderclassStyles = {
+                            "table-noborders": ["noBorders"],
+                            "table-bordered": [regBoarder],
+                            "table-striped": [zebra],
+                            "table-headerlineonly": ["headerLineOnly"],
+                            "table-lighthorizontallines": ["lightHorizontalLines"]
+                        };
+              function ParseContainer(cnt, e, p, styles) {
+                var elements = [];
+                var children = e.childNodes;
+                if (children.length !== 0) {
+                  for (var i = 0; i < children.length; i++) {
+                      p = ParseElement(elements, children[i], p, styles);
+                  }
+                }
+                if (elements.length !== 0) {
+                  for (var i = 0; i < elements.length; i++) {
+                      cnt.push(elements[i]);
+                  }
+                }
+                return p;
               }
-              break;
-            }
-          case "font-weight":
-            {
-              switch (st[1]) {
-                case "bold":
-                  o.bold = true;
-                  break;
+              function parseColor(color) {
+                    var hexRegex = new RegExp('^#([0-9a-f]{3}|[0-9a-f]{6})$');
+                    // e.g. #fff or #ff0048
+                    var rgbRegex = new RegExp('^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$');
+                    // e.g. rgb(0,255,34) or rgb(22, 0, 0)
+                    var nameRegex = new RegExp('^[a-z]+$');
+                    // matches just text like 'red', 'black', 'green'
+
+                    if (hexRegex.test(color)) {
+                        return color;
+                    } else if (rgbRegex.test(color)) {
+                        var decimalColors = rgbRegex.exec(color).slice(1);
+                        for (var i = 0; i < 3; i++) {
+                            var decimalValue = parseInt(decimalColors[i]);
+                            if (decimalValue > 255) {
+                                decimalValue = 255;
+                            }
+                            var hexString = '0' + decimalValue.toString(16);
+                            hexString = hexString.slice(-2);
+                            decimalColors[i] = hexString;
+                        }
+                        return '#' + decimalColors.join('');
+                    } else if (nameRegex.test(color)) {
+                        return color;
+                    } else {
+                        console.error('Could not parse color "' + color + '"');
+                        return color;
+                        }
               }
-              break;
-            }
-          case "text-decoration":
-            {
-              switch (st[1]) {
-                case "underline":
-                  o.decoration = "underline";
-                  break;
+              function ComputeStyle(o, styles) {
+                  $log.debug('computestyle in', styles, o);
+//                  if (o.stack !== undefined) {
+                    for (var i = 0; i < styles.length; i++) {
+                      var st = styles[i].trim().toLowerCase().split(":");
+                      if (st.length === 2) {
+                          st[1] = st[1].trim();
+                          $log.debug("has a style", st[1],st[2], o);
+                        switch (st[0]) {
+                          case "padding-left": 
+                            {
+                                o.margin = [parseInt(st[1]), 0, 0, 0];
+                                break;
+                            }
+                          case "font-size":
+                            {
+                              o.fontSize = parseInt(st[1]);
+                              break;
+                            }
+                          case "style":
+                            {
+                              o.style = st[1];
+                              break;
+                            }
+                          case "text-align":
+                            {
+                              switch (st[1]) {
+                                case "right":
+                                  o.alignment = 'right';
+                                  break;
+                                case "center":
+                                  o.alignment = 'center';
+                                  break;
+                                case "justify":
+                                  o.alignment = 'justify';
+                                  break;
+                              }
+                              break;
+                            }
+                          case "font-weight":
+                            {
+                              switch (st[1]) {
+                                case "bold":
+                                  o.bold = true;
+                                  break;
+                              }
+                              break;
+                            }
+                          case "text-decoration":
+                            {
+                              switch (st[1]) {
+                                case "underline":
+                                  o.decoration = "underline";
+                                  break;
+                                case "line-through":
+                                    o.decoration = "lineThrough";
+                                    break;
+                              }
+                              break;
+                            }
+                          case "font-style":
+                            {
+                              switch (st[1]) {
+                                case "italic":
+                                  o.italics = true;
+                                  break;
+                              }
+                              break;
+                            }
+                        case "color":
+                            o.color = parseColor(st[1]);
+                            break;
+                        case "background-color":
+                            o.background = parseColor(st[1]);
+                            break;                            
+                        }
+                      }
+                    }
+//                  }
+                  $log.debug('computestyle done', o);
+                
               }
-              break;
-            }
-          case "font-style":
-            {
-              switch (st[1]) {
-                case "italic":
-                  o.italics = true;
-                  break;
+            
+              function ParseElement(cnt, e, p, styles) {
+                var classes = [];
+                if (!styles) styles = [];
+                if (e.getAttribute) {
+                    var nodeStyle = e.getAttribute("style");
+                    if (nodeStyle) {
+                        nodeStyle.split(";").forEach(function(nodeStyle) {
+                            var tmp = nodeStyle.replace(/\s/g, '');
+                            styles.push(tmp);
+                        });
+                    }
+                    var nodeColor = e.getAttribute("color");
+                    if (nodeColor) {
+                        styles.push("color: " + nodeColor);
+                    }    
+                    var nodeClass = e.getAttribute("class");
+                    if (nodeClass) {
+                        classes = nodeClass.toLowerCase().split(" ");
+                        classes.forEach(function(nodeClass) {
+                            if (typeof(classStyles[nodeClass]) != 'undefined') {
+                                classStyles[nodeClass].forEach(function(style) {
+                                    styles.push(style);
+                                });
+                            }
+/*                            if (nodeClass == 'insert') {
+                                diff_mode = DIFF_MODE_INSERT;
+                            }
+                            if (nodeClass == 'delete') {
+                                diff_mode = DIFF_MODE_DELETE;
+                            }
+                    */        
+                        });
+                    }
+                }
+            
+                $log.debug("parseelement",e, e.nodename);
+                switch (e.nodeName.toLowerCase()) {
+                  case "#text":
+                    {
+                       sl =  e.textContent.replace(/\n/g, "");
+                          $log.debug('in text',sl, 'len', sl.length);
+                        if (sl.length > 0) {
+                          var t = {
+                            text: e.textContent.replace(/\n/g, "")
+                          };
+                          if (styles) ComputeStyle(t, styles);
+                          if (Array.isArray(p.text)) {
+                              p.text.push(t);
+                          } else {
+                              $log.debug("skipping text", p);
+                          }
+                          $log.debug('in text',e.textContent, p);
+                        }
+                      break;
+                    }
+        
+                                case "a":
+                                case "b":
+                                case "u":
+                                case "em":
+                                case "i":
+                                case "ins":
+                                case "del":
+                                case "strike":
+                  case "strong":
+                    {
+                      //styles.push("font-weight:bold");
+                    //  ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
+                        p = ParseContainer(cnt, e, p, styles.concat(elementStyles[e.nodeName.toLowerCase()]));
+                      break;
+                    }
+                     case "h1":
+                                case "h2":
+                                case "h3":
+                                case "h4":
+                                case "h5":
+                  case "h6":
+                    {
+/*                        $log.debug('h1',cnt, e, p);
+                  //    p = CreateParagraph();
+                //       st = {
+                 //       stack: []
+                  //    };
+                //      st.stack.push(p);
+                //      ComputeStyle(st, styles);
+                  //    ParseContainer(st.stack, e, p, styles.concat(["font-size:24"]));
+                    //  cnt.push(st);
+                      var st = {
+                        text: e.textContent.replace(/\n/g, "")
+                      };
+                      ComputeStyle(st, styles.concat(["font-size:24","style:topfiller"]));
+//                      ComputeStyle(st, styles.concat(["style:topfiller"]));
+//                      p.text.push(st);
+                      cnt.push(st);
+*/
+                    p = CreateParagraph();
+                    p.marginBottom = 4;
+                    p.marginTop = 10;
+                    p = ParseContainer(cnt, e, p, styles.concat(elementStyles[e.nodeName.toLowerCase()]));
+                        cnt.push(p);          
+                      break;
+                    }
+                  case "span":
+                    {
+                      p = ParseContainer(cnt, e, p, styles);
+                      break;
+                    }
+                  case "br":
+                    {
+                      p = CreateParagraph();
+                      cnt.push(p);
+                      break;
+                    }
+                  case "table":
+                    {
+                      var t = create("table", {
+                                        headerRows: 1,
+                                        style: 'tableExample',
+                                        widths: [],
+                                        body: []
+                                    });
+                      var border = e.getAttribute("border");
+                      var isBorder = false;
+                      var borderclass = "";
+                      var borderclasses =[];
+                      var mlayouts=[];
+                      if (border) {
+                        if (parseInt(border) == 1) isBorder = true;
+                      } else {
+                          borderclass = e.getAttribute("class");
+                          if (borderclass.length > 0) {
+                                borderclasses = borderclass.toLowerCase().split(" ");
+//                                borderclasses.forEach(function(borderclass) {
+                                    for(var i=0,len=borderclasses.length;i < len;i++){
+                                        if (typeof(borderclassStyles[borderclasses[i]]) !== 'undefined') {
+                                            
+                                            borderclassStyles[borderclasses[i]].forEach(function(layout) {
+                                                mlayouts.push(layout);
+                                            });
+                                        }
+                                    }
+                                if (mlayouts.length > 0) {
+                                    t.layout =  mlayouts[0] ;
+                                } else {t.layout = 'noBorders';}
+                            } else {              
+                                t.layout = 'noBorders';
+                            }
+                      }
+                      
+                      p = ParseContainer(t.table.body, e, p, styles);
+            
+                      var widths = e.getAttribute("widths");
+                      if (!widths) {
+                        if (t.table.body.length !== 0) {
+                          if (t.table.body[0].length !== 0)
+                            for (var k = 0; k < t.table.body[0].length; k++) 
+                                t.table.widths.push("*");
+                        }
+                      } else {
+                        var w = widths.split(",");
+                        for (var k = 0; k < w.length; k++) 
+                            t.table.widths.push(w[k]);
+                      }
+                      cnt.push(t);
+                      break;
+                    }
+                  case "tbody":
+                    {
+                      p = ParseContainer(cnt, e, p, styles);
+                      //p = CreateParagraph();
+                      break;
+                    }
+                  case "tr":
+                    {
+                      var row = [];
+                      p = ParseContainer(row, e, p, styles);
+                      cnt.push(row);
+                      break;
+                    }
+                  case "td":
+                    {
+                        p = create("text");
+                        var st = create("stack");
+                        st.stack.push(p);
+                        var rspan = e.getAttribute("rowspan");
+                        if (rspan)
+                            st.rowSpan = parseInt(rspan,10);
+                        var cspan = e.getAttribute("colspan");
+                        if (cspan)
+                            st.colSpan = parseInt(cspan,10);
+                        p = ParseContainer(row, e, p, styles);
+                        cnt.push(st);
+                        break;
+                    }
+                    case "div":
+                  case "li":
+                    {
+                      $log.debug("li found");
+                      
+                      p = CreateParagraph();
+                      p.lineHeight = 1.25;
+                      var st = {
+                        stack: []
+                      };
+                      st.stack.push(p);
+                      ComputeStyle(st.stack, styles);
+                      st.stack.styles = styles;
+                      p = ParseContainer(st.stack, e, p, styles);
+            
+                      cnt.push(st);
+                      break;
+                    }
+                    
+                  case "ol":
+                  case "ul":
+                      {
+                        $log.debug(e.nodeName,cnt, e, p);
+                          var list = create(e.nodeName.toLowerCase());
+                          ComputeStyle(list, styles);
+                          p = ParseContainer(list[e.nodeName.toLowerCase()], e, p, styles);
+                          list.margin = [20, 0, 0, 0];
+                          cnt.push(list);
+                          break;
+                      }                          
+                  case "font":
+                      {
+                          $log.debug("font found");
+                          p = CreateParagraph();
+                          var st = {
+                            stack: []
+                          };
+                          st.stack.push(p);
+                          ComputeStyle(st, styles);
+                          p = ParseContainer(st.stack, e, p, styles);
+                          cnt.push(st);
+    
+                      break;
+                      }
+                  case "p": 
+                    {
+                      $log.debug("p found");
+                      p = create("text");
+                      p.lineHeight = 1.25;
+//                      p.margin = [20, 0, 0, 0];                      
+//                      if (classes.indexOf("merge-before") === -1) {
+//                         p.margin[1] = 8;
+//                      }                      
+                      var stackP = create("stack");
+                      stackP.stack.push(p);
+                      ComputeStyle(stackP, styles);
+                      p = ParseContainer(stackP.stack, e, p, []);
+
+                      cnt.push(stackP);
+                      break;
+                    }
+                  case "img":
+                    {
+                        var regex = /([\w-]*)\s*:\s*([^;]*)/g;
+                        var match; //helper variable for the refegex
+                        var imageSize={};
+                        var maxResolution = {
+                            width: 435,
+                            height: 830
+                        };
+
+                        if (e.getAttribute("style")) {
+                            while ((match = regex.exec(e.getAttribute("style"))) !== null) {
+                                imageSize[match[1]] = parseInt(match[2].trim());
+                            }
+                        } else {
+                            imageSize = {
+                                height: images[element.getAttribute("src")].height,
+                                width: images[element.getAttribute("src")].width
+                            };
+                        }
+
+                        if (imageSize.width > maxResolution.width) {
+                            var scaleByWidth = maxResolution.width/imageSize.width;
+                            imageSize.width *= scaleByWidth;
+                            imageSize.height *= scaleByWidth;
+                        }
+                        if (imageSize.height > maxResolution.height) {
+                            var scaleByHeight = maxResolution.height/imageSize.height;
+                            imageSize.width *= scaleByHeight;
+                            imageSize.height *= scaleByHeight;
+                        }
+                        cnt.push({
+                            image: images[e.getAttribute("src")].data,
+                            width: imageSize.width,
+                            height: imageSize.height
+                        });
+                        break;
+                    }
+                  default:
+                    {
+                      $log.debug("Parsing for node " + e.nodeName + " not found");
+                        var defaultText = create("text", e.textContent.replace(/\n/g, ""));
+                        ComputeStyle(defaultText, styles);
+                        if (!p) {
+                            p = {};
+                            p.text = [];
+                        }
+                        p.text.push(defaultText);
+                        break;                      
+                    }
+                }
+                return p;
               }
-              break;
+            
+              function ParseHtml(cnt, htmlText) {
+                var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+                var p = CreateParagraph();
+                for (var i = 0; i < html.length; i++){
+                    ParseElement(cnt, html.get(i), p);
+                }
+                $log.debug('parsehmtl', p, cnt);
+                return cnt;
+              }
+            
+              function CreateParagraph() {
+                var p = {
+                  text: []
+                };
+                return p;
+              }
+
+               /**
+                 * Creates containerelements for pdfMake
+                 * e.g create("text":"MyText") result in { text: "MyText" }
+                 * or complex objects create("stack", [{text:"MyText"}, {text:"MyText2"}])
+                 *for units / paragraphs of text
+                 *
+                 * @function
+                 * @param {string} name      - name of the attribute holding content
+                 * @param {object} content   - the actual content (maybe empty)
+                 */
+                function create(name, content) {
+                    var o = {};
+                    content = content || [];
+                    o[name] = content;
+                    return o;
+                };
+                
+            var content=[];
+            //  ParseHtml(content, document.getElementById(id).outerHTML);
+//            var mycontent = ParseHtml(content, document.getElementById(id).innerHTML);
+            var mycontent = ParseHtml(content,vm.htmlcontentdata.htmlcontent);
+            $log.debug('after parsehmtl',mycontent,students, typeof(students), students.length);
+            var contentdtl = [];
+            var tmp;
+            var obj;
+            var pagebreak;
+            if (typeof(students) !== 'undefined' && students.length > 0 ) {
+                for (var i=0; i<students.length; i++) {       
+                    $log.debug('process student:',students[i]);
+                    if (i < students.length -1  ) {
+                        pagebreak = {pageBreak: 'before', text: ''}; 
+                    } else {
+                        pagebreak = {};
+                    }
+                    $log.debug("types", mycontent.length, typeof(pagebreak));
+                    tmp=JSON.stringify(mycontent[0]);
+                    for (var j=1; j<mycontent.length; j++ ) {
+                        $log.debug("mycon j", JSON.stringify(mycontent[j]) );
+                        tmp = tmp + ',' + JSON.stringify(mycontent[j]);
+                    }
+                    obj = JSON.parse('[' + tmp + ']');
+                    contentdtl.push([
+                        obj,
+                    {text:  students[i].studentname, style: ['mediumlines','botfiller']},
+                    pagebreak
+                        ]);
+
+                }
+
+            } else {
+                contentdtl = [mycontent];
             }
-        }
-      }
-    }
-  }
-
-  function ParseElement(cnt, e, p, styles) {
-    if (!styles) styles = [];
-    if (e.getAttribute) {
-      var nodeStyle = e.getAttribute("style");
-      if (nodeStyle) {
-        var ns = nodeStyle.split(";");
-        for (var k = 0; k < ns.length; k++) styles.push(ns[k]);
-      }
-    }
-
-    var st ={};
-    $log.debug("parseelement",e, e.nodename);
-    switch (e.nodeName.toLowerCase()) {
-      case "#text":
-        {
-            $log.debug('in text',e.textContent);
-          st = {
-            text: e.textContent.replace(/\n/g, "")
-          };
-          if (styles) ComputeStyle(st, styles);
-          p.text.push(st);
-          break;
-        }
-      case "b":
-      case "strong":
-        {
-          //styles.push("font-weight:bold");
-          ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
-          break;
-        }
-      case "h1":
-        {
-            $log.debug('h1',cnt, e, p);
-          p = CreateParagraph();
-           st = {
-            stack: []
-          };
-          st.stack.push(p);
-          ComputeStyle(st, styles);
-          ParseContainer(st.stack, e, p, styles.concat(["font-size:24"]));
-
-          cnt.push(st);
-
-          break;
-        }
-      case "u":
-        {
-          //styles.push("text-decoration:underline");
-          ParseContainer(cnt, e, p, styles.concat(["text-decoration:underline"]));
-          break;
-        }
-      case "i":
-        {
-          //styles.push("font-style:italic");
-            $log.debug('i',cnt, e, p);
-          ParseContainer(cnt, e, p, styles.concat(["font-style:italic"]));
-          //styles.pop();
-          break;
-          //cnt.push({ text: e.innerText, bold: false });
-        }
-      case "span":
-        {
-          ParseContainer(cnt, e, p, styles);
-          break;
-        }
-      case "br":
-        {
-          p = CreateParagraph();
-          cnt.push(p);
-          break;
-        }
-      case "li":
-        {
-          $log.debug("li found");
+                var rptwidth = 792;
+                var rptheight = 600;
+                var testImageDataUrl ='data:image/png;base64,'+ getBase64Image("images/logos/StudioDiplomaTemplate.png");
           
-          p = CreateParagraph();
-           st = {
-            stack: []
-          };
-          st.stack.push(p);
-          ComputeStyle(st, styles);
-          ParseContainer(st.stack, e, p);
-
-          cnt.push(st);
-          break;
+                  var docDefinition = {
+/*                  pageOrientation: 'landscape',
+                  // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
+                  pageMargins: [ 40, 60, 40, 0 ],
+                  pageSize: 'LETTER',
+ */ /*                background: [
+                   {
+               			image: testImageDataUrl,
+                       width: rptwidth,
+                       height: rptheight
+                   }],
+    */               content: contentdtl,
+                styles: {
+            		header: {
+            			fontSize: 18,
+            			bold: true,
+            			margin: [0, 0, 0, 10]
+            		},
+            		subheader: {
+            			fontSize: 16,
+            			bold: true,
+            			margin: [0, 10, 0, 5]
+            		},
+            		tableExample: {
+            			margin: [0, 5, 0, 15]
+            		},
+            		tableHeader: {
+            			bold: true,
+            			fontSize: 13,
+            			color: 'black'
+            		}
+            	}
+    /*    		styles: {
+        		  bigtop: {
+        		    margin: [0,0,0,0]
+        		  },
+        		  topfiller: {
+        		    margin: [0,40]
+        		  },
+        		  botfiller: {
+        		    margin: [0,5]
+        		  },
+        		  ymcabotfiller: {
+        		    margin: [0,12]
+        		  },
+        		  spread: {
+        		    margin: [0,5]
+        		  },
+        		  smalllines: {
+        		    fontSize: 18,
+        		    alignment: 'center',
+        		    width: rptwidth,
+        		    lineHeight: 1.5
+        		  },
+        		  extrasmalllines: {
+        		    fontSize: 10,
+        		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		  mediumlines: {
+        		    fontSize: 35,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		  ymcaheader: {
+        		    fontSize: 25,
+        		    bold: true,
+        		    margin: [270,45,0,20],
+        		    width: rptwidth
+        		  },
+        		  biglines: {
+        		    fontSize: 23,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: rptwidth
+        		  },
+        		header: {
+        			fontSize: 18,
+        			bold: true,
+        			margin: [0, 0, 0, 10]
+        		},
+        		subheader: {
+        			fontSize: 16,
+        			bold: true,
+        			margin: [0, 10, 0, 5]
+        		},
+        		tableExample: {
+        //			margin: [0, 5, 0, 15]
+            alignment: 'center'
+        		},
+        		tableHeader: {
+        			bold: true,
+        			fontSize: 13,
+        			color: 'black'
+        		}
+        	},
+        	defaultStyle: {
+        		// alignment: 'justify'
+        	}
+    */
+                };
+            var myJsonString = JSON.stringify(docDefinition);
+            $log.debug('doc json',myJsonString);
+                
+            return     pdfMake.createPdf(docDefinition);
+        
         }
-      case "table":
-        {
-          var t = {
-            table: {
-              widths: [],
-              body: []
-            }
+
+        function encodeImageFileAsURL(fileid,fileoutid) {
+      
+          var filesSelected = document.getElementById(fileid).files;
+          if (filesSelected.length > 0) {
+            var fileToLoad = filesSelected[0];
+      
+            var fileReader = new FileReader();
+      
+            fileReader.onload = function(fileLoadedEvent) {
+              var srcData = fileLoadedEvent.target.result; // <--- data: base64
+      
+              var newImage = document.createElement('img');
+              newImage.src = srcData;
+      
+              document.getElementById(fileoutid).innerHTML = newImage.outerHTML;
+              alert("Converted Base64 version is " + document.getElementById(fileoutid).innerHTML);
+             // $log.debug("Converted Base64 version is " + document.getElementById(fileoutid).innerHTML);
+            };
+            fileReader.readAsDataURL(fileToLoad);
           }
-          var border = e.getAttribute("border");
-          var isBorder = false;
-          if (border)
-            if (parseInt(border) == 1) isBorder = true;
-          if (!isBorder) t.layout = 'noBorders';
-          ParseContainer(t.table.body, e, p, styles);
-
-          var widths = e.getAttribute("widths");
-          if (!widths) {
-            if (t.table.body.length != 0) {
-              if (t.table.body[0].length != 0)
-                for (var k = 0; k < t.table.body[0].length; k++) t.table.widths.push("*");
-            }
-          } else {
-            var w = widths.split(",");
-            for (var k = 0; k < w.length; k++) t.table.widths.push(w[k]);
-          }
-          cnt.push(t);
-          break;
         }
-      case "tbody":
-        {
-          ParseContainer(cnt, e, p, styles);
-          //p = CreateParagraph();
-          break;
-        }
-      case "tr":
-        {
-          var row = [];
-          ParseContainer(row, e, p, styles);
-          cnt.push(row);
-          break;
-        }
-      case "td":
-        {
-          p = CreateParagraph();
-           st = {
-            stack: []
-          };
-          st.stack.push(p);
 
-          var rspan = e.getAttribute("rowspan");
-          if (rspan) st.rowSpan = parseInt(rspan);
-          var cspan = e.getAttribute("colspan");
-          if (cspan) st.colSpan = parseInt(cspan);
-
-          ParseContainer(st.stack, e, p, styles);
-          cnt.push(st);
-          break;
-        }
-      case "div":
-          $log.debug("div found");
-          
-          
-      case "ol":
-          $log.debug("ol found");
-          p = CreateParagraph();
-          var ol = {
-              ol: []
-          };
-          ol.ol.push(p);
-          ComputeStyle(ol, styles);
-          ParseContainer(ol.ol, e, p);
-          cnt.push(ol);
-          break;
-
-      case "ul":
-            $log.debug('ul',cnt, e, p);
-          p = CreateParagraph();
-          var ul = {
-              ul: []
-          };
-          ul.ul.push(p);
-          ComputeStyle(ul, styles);
-          ParseContainer(ul.ul, e, p);
-          cnt.push(ul);
-          break;
-          
-      case "p":
-        {
-          $log.debug("p found");
-          p = CreateParagraph();
-           st = {
-            stack: []
-          };
-          st.stack.push(p);
-          ComputeStyle(st, styles);
-          ParseContainer(st.stack, e, p);
-
-          cnt.push(st);
-          break;
-        }
-      default:
-        {
-          $log.debug("Parsing for node " + e.nodeName + " not found");
-          break;
-        }
-    }
-    return p;
-  }
-
-  function ParseHtml(cnt, htmlText) {
-    var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
-    var p = CreateParagraph();
-    for (var i = 0; i < html.length; i++){
-        ParseElement(cnt, html.get(i), p);
-    }
-  }
-
-  function CreateParagraph() {
-    var p = {
-      text: []
-    };
-    return p;
-  }
-  function CreateLI() {
-    var p = {};
-    return p;
-  }
-
-  var content = [];
-//  ParseHtml(content, document.getElementById(id).outerHTML);
-  ParseHtml(content, document.getElementById(id).innerHTML);
-        var rptwidth = 792;
-        var rptheight = 600;
-
-  //      var testImageDataUrl ='data:image/png;base64,'+ getBase64Image("images/logos/StudioDiplomaTemplate.png");
-  
-          var docDefinition = {
-          pageOrientation: 'landscape',
-          // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-          pageMargins: [ 40, 60, 40, 0 ],
-          pageSize: 'LETTER',
-//          background: [
- //          {
- //        			image: testImageDataUrl,
-  //             width: rptwidth,
-//               height: rptheight
- //          }],
-           content: content 
-        };
-    return     pdfMake.createPdf(docDefinition);
-
-  //return pdfMake.createPdf({
-    //content: content
-  //});
-}
 
     }
 

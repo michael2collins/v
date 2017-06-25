@@ -32,7 +32,8 @@
     'akoenig.deckgrid',
     'color.picker',
     'angularMoment',
-    'textAngular'
+    'textAngular',
+    'appFilereader'
   //      'notifyme'
 
 //    'omr.directives'
