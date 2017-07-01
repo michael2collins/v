@@ -259,12 +259,43 @@
 
             <div class="col-md-12">
               <h1>Editor</h1>
+              <h2>Header Logo</h2>
+              <form novalidate>
+                Pick an image-file: <input type="file" ng-model="vm.headerimages" accept="image/*" multiple app-filereader /><br />
+                <img ng-repeat="image in vm.headerimages" ng-src="{{image}}" width="300" /><br />
+                <button ng-click="vm.headerimages = null" ng-show="!!vm.headerimages">Remove {{vm.headerimages.length}} images</button><br />
+                <button ng-click="vm.setHeaderLogo();" ng-show="!!vm.headerimages">Add to Header</button><br />
+              </form>
+              <h2>Footer Logo</h2>
+              <form novalidate>
+                Pick an image-file: <input type="file" ng-model="vm.footerimages" accept="image/*" multiple app-filereader /><br />
+                <img ng-repeat="image in vm.footerimages" ng-src="{{image}}" width="300" /><br />
+                <button ng-click="vm.footerimages = null" ng-show="!!vm.footerimages">Remove {{vm.footerimages.length}} images</button><br />
+              </form>
+              <h2>Body Images</h2>
+              <form novalidate>
+                Pick an image-file: <input type="file" ng-model="vm.bodyimages" accept="image/*" multiple app-filereader /><br />
+                <img ng-repeat="image in vm.bodyimages" ng-src="{{image}}" width="300" /><br />
+                <button ng-click="vm.bodyimages = null" ng-show="!!vm.bodyimages">Remove {{vm.bodyimages.length}} images</button><br />
+              </form>
+              <h2>Background Images</h2>
+              <form novalidate>
+                Pick an image-file: <input type="file" ng-model="vm.backgroundimages" accept="image/*" multiple app-filereader /><br />
+                <img ng-repeat="image in vm.backgroundimages" ng-src="{{image}}" width="300" /><br />
+                <button ng-click="vm.backgroundimages = null" ng-show="!!vm.backgroundimages">Remove {{vm.backgroundimages.length}} images</button><br />
+              </form>
               <div text-angular-toolbar name="htmlcontenttools"></div>
               <button ng-click="vm.htmlcontentcanEdit = !vm.htmlcontentcanEdit">Can Edit</button>
               <button type="button" ta-button ng-click="vm.htmlcontentreset()">Reset</button>
               <button type="button" ta-button ng-click="vm.htmlcontentclear()">clear</button>
               <button type="button" ta-button ng-click="vm.doPDF()">Download PDF</button>
-                   
+              
+<!--
+        vm.pageMarginL=0;
+        vm.pageMarginT=0;
+        vm.pageMarginR=0;
+        vm.pageMarginB=0;
+-->
               <form name="validationForm" ng-submit="vm.htmlcontentsubmit()">
                   <label for="name">Name:</label>
                   <input type="text" tabindex="1" id="name" ng-model="vm.htmlcontentname">
@@ -274,36 +305,77 @@
                       valid {{validationForm.testValidation.$valid}} 
                       dirty {{validationForm.testValidation.$dirty}} 
                       invalid {{validationForm.testValidation.$invalid}} Bio:
+                    <label for="pagesize">Pagesize</label>
+                    <div class="input-icon right">
+                      <select id="pagesize" type="text" name="pagesize" 
+                        ng-model="vm.pageSize" 
+                        required
+                        class="form-control">
+                        <option ng-repeat="iter in vm.pageSizes" ng-selected="{{iter==vm.pageSize}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                      </select>
+                    </div>                      
+                    <label for="orientation">Orientation</label>
+                    <div class="input-icon right">
+                      <select id="orientation" type="text" name="orientation" 
+                        ng-model="vm.pageOrientation" 
+                        required
+                        class="form-control">
+                        <option ng-repeat="iter in vm.pageOrientations" ng-selected="{{iter==vm.pageOrientation}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                      </select>
+                    </div>                      
+<!--              <pre>
+              {{ vm.headerimages }}
+              </pre>              
+      -->               
+      <div id="testValidationHeader">
+                  <text-angular  class="convert" name="testValidationHeader" 
+                    ng-if="vm.htmlcontentcanEdit" 
+                    ng-model="vm.htmlcontentdata.htmlcontentheader" 
+                    tabindex="3" 
+                    placeholder="header placeholder" 
+                    required 
+                    ta-default-wrap="p" 
+                    ta-text-editor-class="form-control validationFormHeader-height" 
+                    ta-html-editor-class="form-control validationFormHeader-height"
+                    ta-target-toolbars='htmlcontenttools' 
+                    ng-model-options="{debounce: 10}">
+                  </text-angular>
+</div>                  
                   <text-angular  class="convert" name="testValidation" 
                     ta-paste="vm.testPaste($html)" 
                     ng-if="vm.htmlcontentcanEdit" 
                     ng-model="vm.htmlcontentdata.htmlcontent" 
                     tabindex="3" 
-                    placeholder="test placeholder" 
+                    placeholder="Body placeholder" 
                     required 
                     ta-default-wrap="p" 
+                    ta-text-editor-class="form-control validationFormBody-height" 
+                    ta-html-editor-class="form-control validationFormBody-height"
                     ta-target-toolbars='htmlcontenttools' 
                     ng-model-options="{debounce: 10}">
                   </text-angular>
-                  <div id="convertthis" class="convert" ta-bind name="testValidation" ng-model="vm.htmlcontentdata.htmlcontent" placeholder="test placeholder" required ng-model-options="{debounce: 10}"></div>
+                  <text-angular  class="convert" name="testValidationFooter" 
+                    ng-if="vm.htmlcontentcanEdit" 
+                    ng-model="vm.htmlcontentdata.htmlcontentfooter" 
+                    tabindex="3" 
+                    placeholder="footer placeholder" 
+                    required 
+                    ta-default-wrap="p" 
+                    ta-text-editor-class="form-control validationFormFooter-height" 
+                    ta-html-editor-class="form-control validationFormFooter-height"
+                    ta-target-toolbars='htmlcontenttools' 
+                    ng-model-options="{debounce: 10}">
+                  </text-angular>
+                  <div id="convertthis" class="convert" ta-bind name="testValidation" ng-model="vm.htmlcontentdata.htmlcontentall" placeholder="test placeholder" required ng-model-options="{debounce: 10}"></div>
                       </text-angular>
               </form>
               
 <!--              <input id="inputFileToLoad" type="file" ng-change="vm.encodeImageFileAsURL('inputFileToLoad','imgTest');" />
               <div id="imgTest"></div>
 -->              
-  <form novalidate>
-    Pick an image-file: <input type="file" ng-model="vm.images" accept="image/*" multiple app-filereader /><br />
-    <img ng-repeat="image in vm.images" ng-src="{{image}}" width="300" /><br />
-    <button ng-click="vm.images = null" ng-show="!!vm.images">Remove {{vm.images.length}} images</button><br />
-  </form>
-  
-  <pre>
-  {{ vm.images }}
-  </pre>              
             </div>
         </div>
-        <div class="panel-footer"></div>
+        <div class="panel-footer" id="iframeContainer"></div>
         
       </uib-tab>
         

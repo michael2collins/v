@@ -375,12 +375,25 @@
         vm.htmlcontentsubmit = htmlcontentsubmit;
         vm.htmlcontentreset = htmlcontentreset;
         vm.htmlcontentclear = htmlcontentclear;
+        vm.setHeaderLogo = setHeaderLogo;
         vm.htmlcontenttestPaste = htmlcontenttestPaste;
         vm.htmlcontentname;
         vm.htmlcontentwebsite;
         vm.encodeImageFileAsURL = encodeImageFileAsURL;
-        vm.images;
-
+        vm.refreshHtml = refresHtml;
+        vm.bodyimages;
+        vm.headerimages;
+        vm.footerimages;
+        vm.backgroundimages;
+        vm.pageSizes=['EXECUTIVE', 'FOLIO', 'LEGAL', 'LETTER', 'TABLOID'];
+        vm.pageSize="LETTER";
+        vm.pageOrientations=['landscape','portrait'];
+        vm.pageOrientation="portrait";
+        vm.pageMarginL=10;
+        vm.pageMarginT=0;
+        vm.pageMarginR=0;
+        vm.pageMarginB=0;
+        vm.pageMargins=[vm.pageMarginL,vm.pageMarginT,vm.pageMarginR,vm.pageMarginB];
         activate();
 
         function setLimit(thelimit) {
@@ -390,9 +403,18 @@
 
 //            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> 
 
+        vm.htmlcontentheader = {
+            orightml: ' \
+            <h2>Header</h2> \
+            ' 
+            };
+        vm.htmlcontentfooter = {
+            orightml: ' \
+            <h4>Footer</h4> \
+            ' 
+            };
         vm.htmlcontentdata = {
             orightml: ' \
-            <h2>Try me!</h2> \
             <p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p>'
 + textAngularManager.getVersion().substring(1) +
             '<p><b>Features:</b></p> \
@@ -404,18 +426,48 @@
             <li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol> \
             ' 
         };
+        vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
         vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
+        vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
+            vm.refreshHtml();
+        
                 //$scope.$watch('data.htmlcontent', function(val){console.log('htmlcontent changed to:', val);});
+        function refresHtml() {
+            $log.debug('refresHtml called');
+                    vm.htmlcontentdata.htmlcontentall = vm.htmlcontentdata.htmlcontentheader + vm.htmlcontentdata.htmlcontent + vm.htmlcontentdata.htmlcontentfooter;
 
+        }
         function htmlcontentsubmit() {
             $log.debug('Submit triggered');
         }
         function htmlcontentclear() {
             $log.debug('clear');
             vm.htmlcontentdata = {
-                orightml: '<h2>Try me!</h2><p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p><p><b>Features:</b></p><ol><li>Automatic Seamless Two-Way-Binding</li><li>Super Easy <b>Theming</b> Options</li><li style="color: green;">Simple Editor Instance Creation</li><li>Safely Parses Html for Custom Toolbar Icons</li><li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol><p><b>Code at GitHub:</b> <a href="https://github.com/fraywing/textAngular">Here</a> </p>'
+                orightml: ' <h2>Try me!</h2><p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p><p><b>Features:</b></p><ol><li>Automatic Seamless Two-Way-Binding</li><li>Super Easy <b>Theming</b> Options</li><li style="color: green;">Simple Editor Instance Creation</li><li>Safely Parses Html for Custom Toolbar Icons</li><li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol><p><b>Code at GitHub:</b> <a href="https://github.com/fraywing/textAngular">Here</a> </p>'
             };
+            vm.refreshHtml();
+
         }
+        function setHeaderLogo() {
+        vm.htmlcontentheader = {
+            orightml: ' <table class="noborders"><thead> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;">Center</td><td style="width: 33.3%;">Right</td></tr></thead><tbody> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;"> <img src="' 
+            + vm.headerimages[0] + 
+            '"/></td><td style="width: 33.3%;">Right</td></tr></tbody></table>' 
+            };            
+            vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
+            $log.debug("setheaderlogo entered",vm.htmlcontentheader.orightml);
+            vm.refreshHtml();
+        }
+
+
+/*        vm.htmlcontentheader = {
+            orightml: ' <img src="' + vm.headerimages[0] + '"/>'
+            };            
+            vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
+            $log.debug("setheaderlogo entered",vm.htmlcontentheader.orightml);
+
+        }
+  */      
         function htmlcontentreset() {
             $log.debug('reset');
             
@@ -1811,11 +1863,13 @@ $log.debug('school', vm.userdta);
         function doPDF() {
          //debug   var tb = textAngularManager.getToolbarScopes();
             pdfForElement('convertthis').open();
+ // pdfForElement('convertthis');
         }
 
         function pdfForElement(id) {
             var students = vm.selectedStudents;
             var sl;
+            var parseType;
             var elementStyles = {
                 "b": ["font-weight:bold"],
                 "strong": ["font-weight:bold"],
@@ -1858,480 +1912,481 @@ $log.debug('school', vm.userdta);
                             "table-headerlineonly": ["headerLineOnly"],
                             "table-lighthorizontallines": ["lightHorizontalLines"]
                         };
-              function ParseContainer(cnt, e, p, styles) {
-                var elements = [];
-                var children = e.childNodes;
-                if (children.length !== 0) {
-                  for (var i = 0; i < children.length; i++) {
-                      p = ParseElement(elements, children[i], p, styles);
-                  }
-                }
-                if (elements.length !== 0) {
-                  for (var i = 0; i < elements.length; i++) {
-                      cnt.push(elements[i]);
-                  }
-                }
-                return p;
+            function ParseContainer(cnt, e, p, styles, parseType) {
+            var elements = [];
+            var children = e.childNodes;
+            if (children.length !== 0) {
+              for (var i = 0; i < children.length; i++) {
+                  p = ParseElement(elements, children[i], p, parseType, styles);
               }
-              function parseColor(color) {
-                    var hexRegex = new RegExp('^#([0-9a-f]{3}|[0-9a-f]{6})$');
-                    // e.g. #fff or #ff0048
-                    var rgbRegex = new RegExp('^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$');
-                    // e.g. rgb(0,255,34) or rgb(22, 0, 0)
-                    var nameRegex = new RegExp('^[a-z]+$');
-                    // matches just text like 'red', 'black', 'green'
-
-                    if (hexRegex.test(color)) {
-                        return color;
-                    } else if (rgbRegex.test(color)) {
-                        var decimalColors = rgbRegex.exec(color).slice(1);
-                        for (var i = 0; i < 3; i++) {
-                            var decimalValue = parseInt(decimalColors[i]);
-                            if (decimalValue > 255) {
-                                decimalValue = 255;
-                            }
-                            var hexString = '0' + decimalValue.toString(16);
-                            hexString = hexString.slice(-2);
-                            decimalColors[i] = hexString;
-                        }
-                        return '#' + decimalColors.join('');
-                    } else if (nameRegex.test(color)) {
-                        return color;
-                    } else {
-                        console.error('Could not parse color "' + color + '"');
-                        return color;
-                        }
+            }
+            if (elements.length !== 0) {
+              for (var i = 0; i < elements.length; i++) {
+                  cnt.push(elements[i]);
               }
-              function ComputeStyle(o, styles) {
-                  $log.debug('computestyle in', styles, o);
-//                  if (o.stack !== undefined) {
-                    for (var i = 0; i < styles.length; i++) {
-                      var st = styles[i].trim().toLowerCase().split(":");
-                      if (st.length === 2) {
-                          st[1] = st[1].trim();
-                          $log.debug("has a style", st[1],st[2], o);
-                        switch (st[0]) {
-                          case "padding-left": 
-                            {
-                                o.margin = [parseInt(st[1]), 0, 0, 0];
-                                break;
-                            }
-                          case "font-size":
-                            {
-                              o.fontSize = parseInt(st[1]);
-                              break;
-                            }
-                          case "style":
-                            {
-                              o.style = st[1];
-                              break;
-                            }
-                          case "text-align":
-                            {
-                              switch (st[1]) {
-                                case "right":
-                                  o.alignment = 'right';
-                                  break;
-                                case "center":
-                                  o.alignment = 'center';
-                                  break;
-                                case "justify":
-                                  o.alignment = 'justify';
-                                  break;
-                              }
-                              break;
-                            }
-                          case "font-weight":
-                            {
-                              switch (st[1]) {
-                                case "bold":
-                                  o.bold = true;
-                                  break;
-                              }
-                              break;
-                            }
-                          case "text-decoration":
-                            {
-                              switch (st[1]) {
-                                case "underline":
-                                  o.decoration = "underline";
-                                  break;
-                                case "line-through":
-                                    o.decoration = "lineThrough";
-                                    break;
-                              }
-                              break;
-                            }
-                          case "font-style":
-                            {
-                              switch (st[1]) {
-                                case "italic":
-                                  o.italics = true;
-                                  break;
-                              }
-                              break;
-                            }
-                        case "color":
-                            o.color = parseColor(st[1]);
+            }
+            return p;
+            }
+            function parseColor(color) {
+                var hexRegex = new RegExp('^#([0-9a-f]{3}|[0-9a-f]{6})$');
+                // e.g. #fff or #ff0048
+                var rgbRegex = new RegExp('^rgb\\((\\d+),\\s*(\\d+),\\s*(\\d+)\\)$');
+                // e.g. rgb(0,255,34) or rgb(22, 0, 0)
+                var nameRegex = new RegExp('^[a-z]+$');
+                // matches just text like 'red', 'black', 'green'
+            
+                if (hexRegex.test(color)) {
+                    return color;
+                } else if (rgbRegex.test(color)) {
+                    var decimalColors = rgbRegex.exec(color).slice(1);
+                    for (var i = 0; i < 3; i++) {
+                        var decimalValue = parseInt(decimalColors[i]);
+                        if (decimalValue > 255) {
+                            decimalValue = 255;
+                        }
+                        var hexString = '0' + decimalValue.toString(16);
+                        hexString = hexString.slice(-2);
+                        decimalColors[i] = hexString;
+                    }
+                    return '#' + decimalColors.join('');
+                } else if (nameRegex.test(color)) {
+                    return color;
+                } else {
+                    console.error('Could not parse color "' + color + '"');
+                    return color;
+                    }
+            }
+            function ComputeStyle(o, styles) {
+              $log.debug('computestyle in', styles, o);
+            //                  if (o.stack !== undefined) {
+                for (var i = 0; i < styles.length; i++) {
+                  var st = styles[i].trim().toLowerCase().split(":");
+                  if (st.length === 2) {
+                      st[1] = st[1].trim();
+                      $log.debug("has a style", st[0],st[1], o);
+                    switch (st[0]) {
+                      case "padding-left": 
+                        {
+                            o.margin = [parseInt(st[1]), 0, 0, 0];
                             break;
-                        case "background-color":
-                            o.background = parseColor(st[1]);
-                            break;                            
                         }
-                      }
-                    }
-//                  }
-                  $log.debug('computestyle done', o);
-                
-              }
-            
-              function ParseElement(cnt, e, p, styles) {
-                var classes = [];
-                if (!styles) styles = [];
-                if (e.getAttribute) {
-                    var nodeStyle = e.getAttribute("style");
-                    if (nodeStyle) {
-                        nodeStyle.split(";").forEach(function(nodeStyle) {
-                            var tmp = nodeStyle.replace(/\s/g, '');
-                            styles.push(tmp);
-                        });
-                    }
-                    var nodeColor = e.getAttribute("color");
-                    if (nodeColor) {
-                        styles.push("color: " + nodeColor);
-                    }    
-                    var nodeClass = e.getAttribute("class");
-                    if (nodeClass) {
-                        classes = nodeClass.toLowerCase().split(" ");
-                        classes.forEach(function(nodeClass) {
-                            if (typeof(classStyles[nodeClass]) != 'undefined') {
-                                classStyles[nodeClass].forEach(function(style) {
-                                    styles.push(style);
-                                });
-                            }
-/*                            if (nodeClass == 'insert') {
-                                diff_mode = DIFF_MODE_INSERT;
-                            }
-                            if (nodeClass == 'delete') {
-                                diff_mode = DIFF_MODE_DELETE;
-                            }
-                    */        
-                        });
-                    }
-                }
-            
-                $log.debug("parseelement",e, e.nodename);
-                switch (e.nodeName.toLowerCase()) {
-                  case "#text":
-                    {
-                       sl =  e.textContent.replace(/\n/g, "");
-                          $log.debug('in text',sl, 'len', sl.length);
-                        if (sl.length > 0) {
-                          var t = {
-                            text: e.textContent.replace(/\n/g, "")
-                          };
-                          if (styles) ComputeStyle(t, styles);
-                          if (Array.isArray(p.text)) {
-                              p.text.push(t);
-                          } else {
-                              $log.debug("skipping text", p);
+                      case "font-size":
+                        {
+                          o.fontSize = parseInt(st[1]);
+                          break;
+                        }
+                      case "style":
+                        {
+                          o.style = st[1];
+                          break;
+                        }
+                      case "text-align":
+                        {
+                          switch (st[1]) {
+                            case "right":
+                              o.alignment = 'right';
+                              break;
+                            case "center":
+                              o.alignment = 'center';
+                              break;
+                            case "justify":
+                              o.alignment = 'justify';
+                              break;
                           }
-                          $log.debug('in text',e.textContent, p);
+                          break;
                         }
-                      break;
+                      case "font-weight":
+                        {
+                          switch (st[1]) {
+                            case "bold":
+                              o.bold = true;
+                              break;
+                          }
+                          break;
+                        }
+                      case "text-decoration":
+                        {
+                          switch (st[1]) {
+                            case "underline":
+                              o.decoration = "underline";
+                              break;
+                            case "line-through":
+                                o.decoration = "lineThrough";
+                                break;
+                          }
+                          break;
+                        }
+                      case "font-style":
+                        {
+                          switch (st[1]) {
+                            case "italic":
+                              o.italics = true;
+                              break;
+                          }
+                          break;
+                        }
+                    case "color":
+                        o.color = parseColor(st[1]);
+                        break;
+                    case "background-color":
+                        o.background = parseColor(st[1]);
+                        break;                            
                     }
-        
-                                case "a":
-                                case "b":
-                                case "u":
-                                case "em":
-                                case "i":
-                                case "ins":
-                                case "del":
-                                case "strike":
-                  case "strong":
-                    {
-                      //styles.push("font-weight:bold");
-                    //  ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
-                        p = ParseContainer(cnt, e, p, styles.concat(elementStyles[e.nodeName.toLowerCase()]));
-                      break;
-                    }
-                     case "h1":
-                                case "h2":
-                                case "h3":
-                                case "h4":
-                                case "h5":
-                  case "h6":
-                    {
-/*                        $log.debug('h1',cnt, e, p);
-                  //    p = CreateParagraph();
-                //       st = {
-                 //       stack: []
-                  //    };
-                //      st.stack.push(p);
-                //      ComputeStyle(st, styles);
-                  //    ParseContainer(st.stack, e, p, styles.concat(["font-size:24"]));
-                    //  cnt.push(st);
-                      var st = {
+                  }
+                  if (st.length === 1) {
+                      $log.debug("has a class", st[0], o);
+                          o.style = st[0];
+                  }
+                }
+            //                  }
+              $log.debug('computestyle done', o);
+            
+            }
+            function ParseElement(cnt, e, p, parseType, styles ) {
+            var classes = [];
+            if (!styles) styles = [];
+            if (e.getAttribute) {
+                var nodeStyle = e.getAttribute("style");
+                if (nodeStyle) {
+                    nodeStyle.split(";").forEach(function(nodeStyle) {
+                        var tmp = nodeStyle.replace(/\s/g, '');
+                        styles.push(tmp);
+                    });
+                }
+                var nodeColor = e.getAttribute("color");
+                if (nodeColor) {
+                    styles.push("color: " + nodeColor);
+                }    
+                var nodeClass = e.getAttribute("class");
+                if (nodeClass) {
+                    classes = nodeClass.toLowerCase().split(" ");
+                    classes.forEach(function(nodeClass) {
+                        if (typeof(classStyles[nodeClass]) != 'undefined') {
+                            classStyles[nodeClass].forEach(function(style) {
+                                styles.push(style);
+                            });
+                        } else {
+                            styles.push(nodeClass);
+                        }
+                        
+                    });
+                }
+            }
+            
+            $log.debug("parseelement",e, e.nodename);
+            switch (e.nodeName.toLowerCase()) {
+              case "#text":
+                {
+                   sl =  e.textContent.replace(/\n/g, "");
+                      $log.debug('in text',sl, 'len', sl.length);
+                    if (sl.length > 0) {
+                      var t = {
                         text: e.textContent.replace(/\n/g, "")
                       };
-                      ComputeStyle(st, styles.concat(["font-size:24","style:topfiller"]));
-//                      ComputeStyle(st, styles.concat(["style:topfiller"]));
-//                      p.text.push(st);
-                      cnt.push(st);
-*/
-                    p = CreateParagraph();
+                      if (styles) ComputeStyle(t, styles);
+                      if (Array.isArray(p.text)) {
+                          p.text.push(t);
+                      } else {
+                          $log.debug("skipping text", p);
+                      }
+                      $log.debug('in text',e.textContent, p);
+                    }
+                  break;
+                }
+            
+                            case "a":
+                            case "b":
+                            case "u":
+                            case "em":
+                            case "i":
+                            case "ins":
+                            case "del":
+                            case "strike":
+              case "strong":
+                {
+                  //styles.push("font-weight:bold");
+                //  ParseContainer(cnt, e, p, styles.concat(["font-weight:bold"]));
+                    p = ParseContainer(cnt, e, p, styles.concat(elementStyles[e.nodeName.toLowerCase()]),parseType);
+                  break;
+                }
+                 case "h1":
+                            case "h2":
+                            case "h3":
+                            case "h4":
+                            case "h5":
+              case "h6":
+                {
+            /*                        $log.debug('h1',cnt, e, p);
+              //    p = CreateParagraph();
+            //       st = {
+             //       stack: []
+              //    };
+            //      st.stack.push(p);
+            //      ComputeStyle(st, styles);
+              //    ParseContainer(st.stack, e, p, styles.concat(["font-size:24"]));
+                //  cnt.push(st);
+                  var st = {
+                    text: e.textContent.replace(/\n/g, "")
+                  };
+                  ComputeStyle(st, styles.concat(["font-size:24","style:topfiller"]));
+            //                      ComputeStyle(st, styles.concat(["style:topfiller"]));
+            //                      p.text.push(st);
+                  cnt.push(st);
+            */
+                p = CreateParagraph();
+                if (parseType !== "header") {
                     p.marginBottom = 4;
                     p.marginTop = 10;
-                    p = ParseContainer(cnt, e, p, styles.concat(elementStyles[e.nodeName.toLowerCase()]));
-                        cnt.push(p);          
-                      break;
-                    }
-                  case "span":
-                    {
-                      p = ParseContainer(cnt, e, p, styles);
-                      break;
-                    }
-                  case "br":
-                    {
-                      p = CreateParagraph();
-                      cnt.push(p);
-                      break;
-                    }
-                  case "table":
-                    {
-                      var t = create("table", {
-                                        headerRows: 1,
-                                        style: 'tableExample',
-                                        widths: [],
-                                        body: []
-                                    });
-                      var border = e.getAttribute("border");
-                      var isBorder = false;
-                      var borderclass = "";
-                      var borderclasses =[];
-                      var mlayouts=[];
-                      if (border) {
-                        if (parseInt(border) == 1) isBorder = true;
-                      } else {
-                          borderclass = e.getAttribute("class");
-                          if (borderclass.length > 0) {
-                                borderclasses = borderclass.toLowerCase().split(" ");
-//                                borderclasses.forEach(function(borderclass) {
-                                    for(var i=0,len=borderclasses.length;i < len;i++){
-                                        if (typeof(borderclassStyles[borderclasses[i]]) !== 'undefined') {
-                                            
-                                            borderclassStyles[borderclasses[i]].forEach(function(layout) {
-                                                mlayouts.push(layout);
-                                            });
-                                        }
+                }
+                p = ParseContainer(cnt, e, p, styles.concat(elementStyles[e.nodeName.toLowerCase()]),parseType);
+                    cnt.push(p);          
+                  break;
+                }
+              case "span":
+                {
+                  p = ParseContainer(cnt, e, p, styles,parseType);
+                  break;
+                }
+              case "br":
+                {
+                  p = CreateParagraph();
+                  cnt.push(p);
+                  break;
+                }
+              case "table":
+                {
+                  var t = create("table", {
+                                    headerRows: 1,
+                                    style: 'tableExample',
+                                    widths: [],
+                                    body: []
+                                });
+                  var border = e.getAttribute("border");
+                  var isBorder = false;
+                  var borderclass = "";
+                  var borderclasses =[];
+                  var mlayouts=[];
+                  if (border) {
+                    if (parseInt(border) == 1) isBorder = true;
+                  } else {
+                      borderclass = e.getAttribute("class");
+                      if (borderclass.length > 0) {
+                            borderclasses = borderclass.toLowerCase().split(" ");
+            //                                borderclasses.forEach(function(borderclass) {
+                                for(var i=0,len=borderclasses.length;i < len;i++){
+                                    if (typeof(borderclassStyles[borderclasses[i]]) !== 'undefined') {
+                                        
+                                        borderclassStyles[borderclasses[i]].forEach(function(layout) {
+                                            mlayouts.push(layout);
+                                        });
                                     }
-                                if (mlayouts.length > 0) {
-                                    t.layout =  mlayouts[0] ;
-                                } else {t.layout = 'noBorders';}
-                            } else {              
-                                t.layout = 'noBorders';
-                            }
-                      }
-                      
-                      p = ParseContainer(t.table.body, e, p, styles);
-            
-                      var widths = e.getAttribute("widths");
-                      if (!widths) {
-                        if (t.table.body.length !== 0) {
-                          if (t.table.body[0].length !== 0)
-                            for (var k = 0; k < t.table.body[0].length; k++) 
-                                t.table.widths.push("*");
+                                }
+                            if (mlayouts.length > 0) {
+                                t.layout =  mlayouts[0] ;
+                            } else {t.layout = 'noBorders';}
+                        } else {              
+                            t.layout = 'noBorders';
                         }
-                      } else {
-                        var w = widths.split(",");
-                        for (var k = 0; k < w.length; k++) 
-                            t.table.widths.push(w[k]);
-                      }
-                      cnt.push(t);
+                  }
+                  
+                  p = ParseContainer(t.table.body, e, p, styles,parseType);
+            
+                  var widths = e.getAttribute("widths");
+                  if (!widths) {
+                    if (t.table.body.length !== 0) {
+                      if (t.table.body[0].length !== 0)
+                        for (var k = 0; k < t.table.body[0].length; k++) 
+                            t.table.widths.push("*");
+                    }
+                  } else {
+                    var w = widths.split(",");
+                    for (var k = 0; k < w.length; k++) 
+                        t.table.widths.push(w[k]);
+                  }
+                  cnt.push(t);
+                  break;
+                }
+              case "tbody":
+                {
+                  p = ParseContainer(cnt, e, p, styles,parseType);
+                  //p = CreateParagraph();
+                  break;
+                }
+              case "tr":
+                {
+                  var row = [];
+                  p = ParseContainer(row, e, p, styles,parseType);
+                  cnt.push(row);
+                  break;
+                }
+              case "td":
+                {
+                    p = create("text");
+                    var st = create("stack");
+                    st.stack.push(p);
+                    var rspan = e.getAttribute("rowspan");
+                    if (rspan)
+                        st.rowSpan = parseInt(rspan,10);
+                    var cspan = e.getAttribute("colspan");
+                    if (cspan)
+                        st.colSpan = parseInt(cspan,10);
+                    p = ParseContainer(st.stack, e, p, styles, parseType);
+                    cnt.push(st);
+                    break;
+                }
+                case "div":
+              case "li":
+                {
+                  $log.debug("li found");
+                  
+                  p = CreateParagraph();
+                  p.lineHeight = 1.25;
+                  var st = {
+                    stack: []
+                  };
+                  st.stack.push(p);
+                  ComputeStyle(st.stack, styles);
+                  st.stack.styles = styles;
+                  p = ParseContainer(st.stack, e, p, styles,parseType);
+            
+                  cnt.push(st);
+                  break;
+                }
+                
+              case "ol":
+              case "ul":
+                  {
+                    $log.debug(e.nodeName,cnt, e, p);
+                      var list = create(e.nodeName.toLowerCase());
+                      ComputeStyle(list, styles);
+                      p = ParseContainer(list[e.nodeName.toLowerCase()], e, p, styles,parseType);
+                      list.margin = [20, 0, 0, 0];
+                      cnt.push(list);
                       break;
-                    }
-                  case "tbody":
-                    {
-                      p = ParseContainer(cnt, e, p, styles);
-                      //p = CreateParagraph();
-                      break;
-                    }
-                  case "tr":
-                    {
-                      var row = [];
-                      p = ParseContainer(row, e, p, styles);
-                      cnt.push(row);
-                      break;
-                    }
-                  case "td":
-                    {
-                        p = create("text");
-                        var st = create("stack");
-                        st.stack.push(p);
-                        var rspan = e.getAttribute("rowspan");
-                        if (rspan)
-                            st.rowSpan = parseInt(rspan,10);
-                        var cspan = e.getAttribute("colspan");
-                        if (cspan)
-                            st.colSpan = parseInt(cspan,10);
-                        p = ParseContainer(row, e, p, styles);
-                        cnt.push(st);
-                        break;
-                    }
-                    case "div":
-                  case "li":
-                    {
-                      $log.debug("li found");
-                      
+                  }                          
+              case "font":
+                  {
+                      $log.debug("font found");
                       p = CreateParagraph();
-                      p.lineHeight = 1.25;
                       var st = {
                         stack: []
                       };
                       st.stack.push(p);
-                      ComputeStyle(st.stack, styles);
-                      st.stack.styles = styles;
-                      p = ParseContainer(st.stack, e, p, styles);
-            
+                      ComputeStyle(st, styles);
+                      p = ParseContainer(st.stack, e, p, styles,parseType);
                       cnt.push(st);
-                      break;
-                    }
-                    
-                  case "ol":
-                  case "ul":
-                      {
-                        $log.debug(e.nodeName,cnt, e, p);
-                          var list = create(e.nodeName.toLowerCase());
-                          ComputeStyle(list, styles);
-                          p = ParseContainer(list[e.nodeName.toLowerCase()], e, p, styles);
-                          list.margin = [20, 0, 0, 0];
-                          cnt.push(list);
-                          break;
-                      }                          
-                  case "font":
-                      {
-                          $log.debug("font found");
-                          p = CreateParagraph();
-                          var st = {
-                            stack: []
-                          };
-                          st.stack.push(p);
-                          ComputeStyle(st, styles);
-                          p = ParseContainer(st.stack, e, p, styles);
-                          cnt.push(st);
-    
-                      break;
-                      }
-                  case "p": 
-                    {
-                      $log.debug("p found");
-                      p = create("text");
-                      p.lineHeight = 1.25;
-//                      p.margin = [20, 0, 0, 0];                      
-//                      if (classes.indexOf("merge-before") === -1) {
-//                         p.margin[1] = 8;
-//                      }                      
-                      var stackP = create("stack");
-                      stackP.stack.push(p);
-                      ComputeStyle(stackP, styles);
-                      p = ParseContainer(stackP.stack, e, p, []);
-
-                      cnt.push(stackP);
-                      break;
-                    }
-                  case "img":
-                    {
-                        var regex = /([\w-]*)\s*:\s*([^;]*)/g;
-                        var match; //helper variable for the refegex
-                        var imageSize={};
-                        var maxResolution = {
-                            width: 435,
-                            height: 830
+            
+                  break;
+                  }
+              case "p": 
+                {
+                  $log.debug("p found");
+                  p = create("text");
+                  p.lineHeight = 1.25;
+            //                      p.margin = [20, 0, 0, 0];                      
+            //                      if (classes.indexOf("merge-before") === -1) {
+            //                         p.margin[1] = 8;
+            //                      }                      
+                  var stackP = create("stack");
+                  stackP.stack.push(p);
+                  ComputeStyle(stackP, styles);
+                  p = ParseContainer(stackP.stack, e, p, [], parseType);
+            
+                  cnt.push(stackP);
+                  break;
+                }
+              case "img":
+                {
+                    var regex = /([\w-]*)\s*:\s*([^;]*)/g;
+                    var match; //helper variable for the refegex
+                    var imageSize={};
+                    var maxResolution = {
+                        width: 435,
+                        height: 830
+                    };
+            
+                    if (e.getAttribute("style")) {
+                        while ((match = regex.exec(e.getAttribute("style"))) !== null) {
+                            imageSize[match[1]] = parseInt(match[2].trim());
+                        }
+                    } else {
+                        imageSize = {
+//                            height: images[element.getAttribute("src")].height,
+//                            width: images[element.getAttribute("src")].width
+                            width: "100"
                         };
-
-                        if (e.getAttribute("style")) {
-                            while ((match = regex.exec(e.getAttribute("style"))) !== null) {
-                                imageSize[match[1]] = parseInt(match[2].trim());
-                            }
-                        } else {
-                            imageSize = {
-                                height: images[element.getAttribute("src")].height,
-                                width: images[element.getAttribute("src")].width
-                            };
-                        }
-
-                        if (imageSize.width > maxResolution.width) {
-                            var scaleByWidth = maxResolution.width/imageSize.width;
-                            imageSize.width *= scaleByWidth;
-                            imageSize.height *= scaleByWidth;
-                        }
-                        if (imageSize.height > maxResolution.height) {
-                            var scaleByHeight = maxResolution.height/imageSize.height;
-                            imageSize.width *= scaleByHeight;
-                            imageSize.height *= scaleByHeight;
-                        }
-                        cnt.push({
-                            image: images[e.getAttribute("src")].data,
-                            width: imageSize.width,
-                            height: imageSize.height
-                        });
-                        break;
                     }
-                  default:
-                    {
-                      $log.debug("Parsing for node " + e.nodeName + " not found");
-                        var defaultText = create("text", e.textContent.replace(/\n/g, ""));
-                        ComputeStyle(defaultText, styles);
-                        if (!p) {
-                            p = {};
-                            p.text = [];
-                        }
-                        p.text.push(defaultText);
-                        break;                      
+            
+                    if (imageSize.width > maxResolution.width) {
+                        var scaleByWidth = maxResolution.width/imageSize.width;
+                        imageSize.width *= scaleByWidth;
+                        imageSize.height *= scaleByWidth;
                     }
+                    if (imageSize.height > maxResolution.height) {
+                        var scaleByHeight = maxResolution.height/imageSize.height;
+                        imageSize.width *= scaleByHeight;
+                        imageSize.height *= scaleByHeight;
+                    }
+                    cnt.push({
+//                        image: images[e.getAttribute("src")].data,
+                        image: e.getAttribute("src"),
+                        width: imageSize.width,
+//                        height: imageSize.height
+                        height: 75
+                    });
+                    break;
                 }
-                return p;
-              }
-            
-              function ParseHtml(cnt, htmlText) {
-                var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
-                var p = CreateParagraph();
-                for (var i = 0; i < html.length; i++){
-                    ParseElement(cnt, html.get(i), p);
+              default:
+                {
+                  $log.debug("Parsing for node " + e.nodeName + " not found");
+                    var defaultText = create("text", e.textContent.replace(/\n/g, ""));
+                    ComputeStyle(defaultText, styles);
+                    if (!p) {
+                        p = {};
+                        p.text = [];
+                    }
+                    p.text.push(defaultText);
+                    break;                      
                 }
-                $log.debug('parsehmtl', p, cnt);
-                return cnt;
-              }
-            
-              function CreateParagraph() {
-                var p = {
-                  text: []
-                };
-                return p;
-              }
-
-               /**
-                 * Creates containerelements for pdfMake
-                 * e.g create("text":"MyText") result in { text: "MyText" }
-                 * or complex objects create("stack", [{text:"MyText"}, {text:"MyText2"}])
-                 *for units / paragraphs of text
-                 *
-                 * @function
-                 * @param {string} name      - name of the attribute holding content
-                 * @param {object} content   - the actual content (maybe empty)
-                 */
-                function create(name, content) {
-                    var o = {};
-                    content = content || [];
-                    o[name] = content;
-                    return o;
-                };
+            }
+            return p;
+            }
+            function ParseHtml(cnt, htmlText, parseType) {
+            var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+            var p = CreateParagraph();
+            for (var i = 0; i < html.length; i++){
+                ParseElement(cnt, html.get(i), p, parseType, []);
+            }
+            $log.debug('parsehmtl', p, cnt);
+            return cnt;
+            }
+            function CreateParagraph() {
+            var p = {
+              text: []
+            };
+            return p;
+            }
+            function create(name, content) {
+                var o = {};
+                content = content || [];
+                o[name] = content;
+                return o;
+            }
                 
             var content=[];
+            var headercontent=[];
+            var footercontent=[];
             //  ParseHtml(content, document.getElementById(id).outerHTML);
 //            var mycontent = ParseHtml(content, document.getElementById(id).innerHTML);
-            var mycontent = ParseHtml(content,vm.htmlcontentdata.htmlcontent);
+            parseType="body";
+            var mycontent = ParseHtml(content,vm.htmlcontentdata.htmlcontent,parseType);
+            parseType="header";
+            var mycontentheader = ParseHtml(headercontent,vm.htmlcontentdata.htmlcontentheader,parseType);
+            parseType="footer";
+            var mycontentfooter = ParseHtml(footercontent,vm.htmlcontentdata.htmlcontentfooter,parseType);
+            $log.debug('header',mycontentheader);
+            $log.debug('footer',mycontentfooter);
+            
             $log.debug('after parsehmtl',mycontent,students, typeof(students), students.length);
             var contentdtl = [];
             var tmp;
@@ -2363,33 +2418,35 @@ $log.debug('school', vm.userdta);
             } else {
                 contentdtl = [mycontent];
             }
+
+var helement = document.getElementById('testValidationHeader');
+var hpositionInfo = helement.getBoundingClientRect();
+var hheight = hpositionInfo.height;
+var hwidth = hpositionInfo.width;
+
+            $log.debug('header height, width',hheight,hwidth);
                 var rptwidth = 792;
                 var rptheight = 600;
                 var testImageDataUrl ='data:image/png;base64,'+ getBase64Image("images/logos/StudioDiplomaTemplate.png");
           
                   var docDefinition = {
-/*                  pageOrientation: 'landscape',
+                  pageOrientation: vm.pageOrientation,
                   // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-                  pageMargins: [ 40, 60, 40, 0 ],
-                  pageSize: 'LETTER',
- */ /*                background: [
+//                  pageMargins: vm.pageMargins,
+                  pageMargins: [10,hheight,10,10],
+                  pageSize: vm.pageSize,
+  /*                background: [
                    {
                			image: testImageDataUrl,
                        width: rptwidth,
                        height: rptheight
                    }],
-    */               content: contentdtl,
+    */               
+    //note the page margin needs enough height to fit the header, and the first set of content should deal with the height topMargin
+                    header: mycontentheader,
+                    content: contentdtl,
+                    footer: mycontentfooter,    
                 styles: {
-            		header: {
-            			fontSize: 18,
-            			bold: true,
-            			margin: [0, 0, 0, 10]
-            		},
-            		subheader: {
-            			fontSize: 16,
-            			bold: true,
-            			margin: [0, 10, 0, 5]
-            		},
             		tableExample: {
             			margin: [0, 5, 0, 15]
             		},
@@ -2399,79 +2456,20 @@ $log.debug('school', vm.userdta);
             			color: 'black'
             		}
             	}
-    /*    		styles: {
-        		  bigtop: {
-        		    margin: [0,0,0,0]
-        		  },
-        		  topfiller: {
-        		    margin: [0,40]
-        		  },
-        		  botfiller: {
-        		    margin: [0,5]
-        		  },
-        		  ymcabotfiller: {
-        		    margin: [0,12]
-        		  },
-        		  spread: {
-        		    margin: [0,5]
-        		  },
-        		  smalllines: {
-        		    fontSize: 18,
-        		    alignment: 'center',
-        		    width: rptwidth,
-        		    lineHeight: 1.5
-        		  },
-        		  extrasmalllines: {
-        		    fontSize: 10,
-        		    alignment: 'center',
-        		    width: rptwidth
-        		  },
-        		  mediumlines: {
-        		    fontSize: 35,
-        		    bold: true,
-        		    alignment: 'center',
-        		    width: rptwidth
-        		  },
-        		  ymcaheader: {
-        		    fontSize: 25,
-        		    bold: true,
-        		    margin: [270,45,0,20],
-        		    width: rptwidth
-        		  },
-        		  biglines: {
-        		    fontSize: 23,
-        		    bold: true,
-        		    alignment: 'center',
-        		    width: rptwidth
-        		  },
-        		header: {
-        			fontSize: 18,
-        			bold: true,
-        			margin: [0, 0, 0, 10]
-        		},
-        		subheader: {
-        			fontSize: 16,
-        			bold: true,
-        			margin: [0, 10, 0, 5]
-        		},
-        		tableExample: {
-        //			margin: [0, 5, 0, 15]
-            alignment: 'center'
-        		},
-        		tableHeader: {
-        			bold: true,
-        			fontSize: 13,
-        			color: 'black'
-        		}
-        	},
-        	defaultStyle: {
-        		// alignment: 'justify'
-        	}
-    */
-                };
+            
+                  };
+                  
             var myJsonString = JSON.stringify(docDefinition);
             $log.debug('doc json',myJsonString);
-                
+
+/*const pdfDocGenerator = pdfMake.createPdf(docDefinition);
+pdfDocGenerator.getDataUrl((dataUrl) => {
+	const targetElement = document.querySelector('#iframeContainer');
+	const iframe = document.createElement('iframe');
+	iframe.src = dataUrl;
+	targetElement.appendChild(iframe);
+});
+*/
             return     pdfMake.createPdf(docDefinition);
         
         }

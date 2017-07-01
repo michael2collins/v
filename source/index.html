@@ -427,7 +427,7 @@ mlc some problems with mobile
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.3.0/tinycolor.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/1.1.6/angularjs-color-picker.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.30/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.30/pdfmake.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.30/vfs_fonts.js"></script>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.css" />
@@ -438,10 +438,49 @@ mlc some problems with mobile
 <script src="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngularSetup.js" integrity="sha256-mJKVOahzQ8GKgYsIKRNmoYuD9Auu31dgxVSgX842VCs=" crossorigin="anonymous"></script>
 
     <style>
-    .ta-editor,
-    .ta-editor > .ta-bind {
-        min-height: 600px;
+    .ta-editor.form-control.validationFormHeader-height,
+    .ta-scroll-window.form-control.validationFormHeader-height  {
+        min-height: 150px;
+        height: auto;
+        overflow: auto;
+        font-family: inherit;
+        font-size: 100%;
     }
+    
+    .form-control.validationFormHeader-height > .ta-bind {
+        height: auto;
+        min-height: 150px;
+        padding: 6px 12px;
+    }
+    .ta-editor.form-control.validationFormFooter-height,
+    .ta-scroll-window.form-control.validationFormFooter-height  {
+        min-height: 150px;
+        height: auto;
+        overflow: auto;
+        font-family: inherit;
+        font-size: 100%;
+    }
+    
+    .form-control.validationFormFooter-height > .ta-bind {
+        height: auto;
+        min-height: 150px;
+        padding: 6px 12px;
+    }
+    .ta-editor.form-control.validationFormBody-height,
+    .ta-scroll-window.form-control.validationFormBody-height  {
+        min-height: 300px;
+        height: auto;
+        overflow: auto;
+        font-family: inherit;
+        font-size: 100%;
+    }
+    
+    .form-control.validationFormBody-height > .ta-bind {
+        height: auto;
+        min-height: 300px;
+        padding: 6px 12px;
+    }
+    
     .red {
         color: red;
     }
