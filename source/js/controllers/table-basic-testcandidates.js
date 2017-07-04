@@ -32,12 +32,23 @@
                             return table + "</table>";
                         }
                     }
+                    
+                    function createImage(imageParams) {
+                        $log.debug("createImage entered", imageParams);
+                        var images=[];
+                        for (var iter=0;iter < imageParams.bodyimages.length;iter++) {
+                            images[iter]=' <img height="' + imageParams.height + '"  width="' + imageParams.width + '" src="' + imageParams.bodyimages[iter] + '"/>';
+                        }
+                        return images;
+                    }
                     taOptions.toolbar = [
                     				['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
                     				['bold', 'italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear'],
                     				['justifyLeft','justifyCenter','justifyRight', 'justifyFull'],
-                    				['html', 'insertImage', 'insertLink', 'charcount']
+                    				['html', 'charcount']
                     			];
+//                    				['html', 'insertImage', 'insertLink', 'charcount']
+                    			
                     taRegisterTool('insertTable', {
                         iconclass: 'fa fa-table',
                         tooltiptext: 'Insert table',
@@ -89,6 +100,62 @@
                           */
                     });
                     taOptions.toolbar[1].push('insertTable');
+
+                    taRegisterTool('VInsertImage', {
+                        iconclass: 'fa fa-picture-o',
+                        tooltiptext: 'Insert Image',
+                        action: function(deferred){
+                            var textAngular=this;
+                            var savedSelection = rangy.saveSelection();
+                            
+                            $uibModal.open({
+                                templateUrl: 'templates/states/textblockimage.html',
+                                windowClass: 'modal-window-sm',
+                                backdrop: 'static',
+                                keyboard: false,
+                                controller: ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
+                                    $scope.vm ={};
+                                    $scope.vm.height = 100;
+                                    $scope.vm.width = 100;
+                                    $scope.vm.imagelist =[];
+                                    $scope.vm.bodyimages = [];
+                                    $scope.imgLoadedCallback = function(event) {
+                                      $log.debug("imgLoadedCallback entered",event);
+                                      $scope.vm.imagelist.push( {
+                                          data: event.target.currentSrc,
+                                          naturalHeight: event.target.naturalHeight,
+                                          naturalWidth: event.target.naturalWidth
+                                      });
+                                    };                                     
+                                    $scope.tblInsert = function () {
+                                        $uibModalInstance.close($scope.vm);
+                                    };
+            
+                                    $scope.tblCancel = function () {
+                                        $uibModalInstance.dismiss("cancel");
+                                    };
+                                }],
+                                size: 'lg'
+                            
+                            //define result modal , when user complete result information 
+                            }).result.then(function(result){
+                                    rangy.restoreSelection(savedSelection)
+                                    textAngular.$editor().wrapSelection('insertHTML', createImage(result));
+                                    deferred.resolve();
+                                },
+                            function () {
+                                rangy.restoreSelection(savedSelection)
+                                deferred.resolve();
+                                }
+                            );                            
+                            return false;
+                        }
+                    });
+
+
+                // Now add the button to the default toolbar definition
+                // Note: It'll be the last button
+                taOptions.toolbar[1].push('VInsertImage');
 
                     taRegisterTool('test', {
                         buttontext: 'Test',
@@ -159,71 +226,44 @@
                     // add the button to the default toolbar definition
                     taOptions.toolbar[1].push('dropdownTest');
                     
-/*                    taRegisterTool('fontSize', {
-            			display: "<span class='bar-btn-dropdown dropdown'>" +
-            					"<button class='btn btn-default dropdown-toggle' type='button' ng-disabled='showHtml()'><i class='fa fa-font'></i><i class='fa fa-caret-down'></i></button>" +
-            					"<ul class='dropdown-menu'><li ng-repeat='o in options'><button class='checked-dropdown' style='font-size: {{o.css}}' type='button' ng-click='action(o.value)'><i ng-if='o.active' class='fa fa-check'></i> {{o.name}}</button></li></ul>" +
-            					"</span>",
-            			buttontext: 'FontSize',
-                        iconclass: "fa fa-font",
-            			action: function(sizedeferred) {
-            			    return false;
-            	//		    var x = this;
-            	//			if (size !== '') {
-            	//				return this.$editor().wrapSelection('fontSize', size);
-            	//			}
-            			},
-            			activeState: function(something){
-            			    console.log('something',something);
-            			  return this.$editor().queryCommandState('fontSize');  
-            			},
-            			options: [
-            				{name: 'Extra Small', css: 'xx-small', value: '1'},
-            				{name: 'Small', css: 'x-small', value: '2'},
-            				{name: 'Medium', css: 'small', value: '3'},
-            				{name: 'Large', css: 'medium', value: '4'},
-            				{name: 'Extra Large', css: 'large', value: '5'},
-            				{name: 'Huge', css: 'x-large', value: '6'}
-            			],
-            			setActive: function(font) {
-            				// Convert to string if not already
-            				if (typeof font !== 'string') { font = String(font) }
-            
-            				angular.forEach(this.options, function(option) {
-            					option['active'] = font === option.value ? true : false;
-            				});
-            			},
-            			getActive: function() {
-            				var font = document.queryCommandValue('fontSize');
-            				if (font === '') {
-            					return 3;
-            				} else {
-            					return font;
-            				}
-            			}
-            		});
-                    taOptions.toolbar[1].push('fontSize');
-            		taRegisterTool('fontColor', {
-            			display: "<span class='bar-btn-dropdown'><button type='button' colorpicker colorpicker-text-editor='true' colorpicker-parent='true' class='btn btn-default' ng-disabled='isDisabled()'> <i class='fa fa-magic'></i><i class='fa fa-caret-down'></i></button></span>",
-            			action: function(color) {
-            				if (color !== '') {
-            				    var x = this;
-            //					return this.$editor().wrapSelection('foreColor', color);
-            					 this.$editor().wrapSelection('foreColor', color);
-            				}
-            			}
-            		});
-                    taOptions.toolbar[1].push('fontColor');
-            		taRegisterTool('backgroundColor', {
-            			display: "<span class='bar-btn-dropdown'><button type='button' colorpicker colorpicker-text-editor='true' colorpicker-parent='true' class='btn btn-default' ng-disabled='showHtml()'> <i class='fa fa-magic'></i><i class='fa fa-caret-down'></i></button></span>",
-            			action: function(color) {
-            				if (color !== '') {
-            					return this.$editor().wrapSelection('backColor', color);
-            				}
-            			}
-            		});                    
+                    taRegisterTool('backgroundColor', {
+                        display: "<div spectrum-colorpicker ng-model='color' on-change='!!color && action(color)' format='\"hex\"' options='options'></div>",
+                        action: function (color) {
+                            var me = this;
+                            if (!this.$editor().wrapSelection) {
+                                setTimeout(function () {
+                                    me.action(color);
+                                }, 100)
+                            } else {
+                                return this.$editor().wrapSelection('backColor', color);
+                            }
+                        },
+                        options: {
+                            replacerClassName: 'fa fa-paint-brush', showButtons: false
+                        },
+                        color: "#fff"
+                    });
                     taOptions.toolbar[1].push('backgroundColor');
-*/                    
+                    
+                    taRegisterTool('fontColor', {
+                        display:"<spectrum-colorpicker trigger-id='{{trigger}}' ng-model='color' on-change='!!color && action(color)' format='\"hex\"' options='options'></spectrum-colorpicker>",
+                        action: function (color) {
+                            var me = this;
+                            if (!this.$editor().wrapSelection) {
+                                setTimeout(function () {
+                                    me.action(color);
+                                }, 100)
+                            } else {
+                                return this.$editor().wrapSelection('foreColor', color);
+                            }
+                        },
+                        options: {
+                            replacerClassName: 'fa fa-font', showButtons: false
+                        },
+                        color: "#000"
+                    });
+                    taOptions.toolbar[1].push('fontColor');
+                  
                     return taOptions;
                 }]);
             })        
@@ -295,7 +335,20 @@
 		].join(''),
 		link: link
 	};
-});
+})
+        .directive('sbLoad', ['$parse', function ($parse) {
+            return {
+              restrict: 'A',
+              link: function (scope, elem, attrs) {
+                var fn = $parse(attrs.sbLoad);
+                elem.on('load', function (event) {
+                  scope.$apply(function() {
+                    fn(scope, { $event: event });
+                  });
+                });
+              }
+            };
+        }]);
     TestCandidateTableBasicController.$inject = [
     '$routeParams',
     '$log',
@@ -376,30 +429,34 @@
         vm.htmlcontentreset = htmlcontentreset;
         vm.htmlcontentclear = htmlcontentclear;
         vm.setHeaderLogo = setHeaderLogo;
+        vm.setFooterLogo = setFooterLogo;
+        vm.setBodyImage = setBodyImage;
+        vm.setBackgroundImage = setBackgroundImage;
         vm.htmlcontenttestPaste = htmlcontenttestPaste;
         vm.htmlcontentname;
         vm.htmlcontentwebsite;
         vm.encodeImageFileAsURL = encodeImageFileAsURL;
-        vm.refreshHtml = refresHtml;
+        vm.refresHtml = refresHtml;
         vm.bodyimages;
         vm.headerimages;
         vm.footerimages;
         vm.backgroundimages;
+        vm.htmlbackground=[];
         vm.pageSizes=['EXECUTIVE', 'FOLIO', 'LEGAL', 'LETTER', 'TABLOID'];
         vm.pageSize="LETTER";
         vm.pageOrientations=['landscape','portrait'];
         vm.pageOrientation="portrait";
         vm.pageMarginL=10;
-        vm.pageMarginT=0;
-        vm.pageMarginR=0;
-        vm.pageMarginB=0;
+        vm.pageMarginT=10;
+        vm.pageMarginR=10;
+        vm.pageMarginB=10;
         vm.pageMargins=[vm.pageMarginL,vm.pageMarginT,vm.pageMarginR,vm.pageMarginB];
-        activate();
+        vm.pagewidthpx;
+        vm.pageheightpx;
+        vm.dpi = 72;
+        vm.maxHeaderHeight = 200;
+        vm.calcsizes = calcsizes;
 
-        function setLimit(thelimit) {
-            $log.debug('setLimit',thelimit);
-            vm.limit = thelimit;
-        }
 
 //            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> 
 
@@ -429,9 +486,68 @@
         vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
         vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
         vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
-            vm.refreshHtml();
+
+        activate();
+        calcsizes();
+        refresHtml();
         
                 //$scope.$watch('data.htmlcontent', function(val){console.log('htmlcontent changed to:', val);});
+        function calcsizes() {
+            var shortside,longside;
+            vm.pagewidthpx = 0;
+            vm.pageheightpx = 0
+            switch (vm.pageSize) {
+              case "LETTER": 
+                {
+                    shortside = 8.5 * vm.dpi;                    
+                    longside = 11 * vm.dpi;                    
+                    break;
+                }
+              case "EXECUTIVE": 
+                {
+                    shortside = 7.25 * vm.dpi;                    
+                    longside = 10.5 * vm.dpi;                    
+                    break;
+                }
+              case "FOLIO": 
+                {
+                    shortside = 8 * vm.dpi;                    
+                    longside = 13 * vm.dpi;                    
+                    break;
+                }
+              case "LEGAL": 
+                {
+                    shortside = 8.5 * vm.dpi;                    
+                    longside = 14 * vm.dpi;                    
+                    break;
+                }
+              case "TABLOID": 
+                {
+                    shortside = 11 * vm.dpi;                    
+                    longside = 17 * vm.dpi;                    
+                    break;
+                }
+            }
+            switch (vm.pageOrientation) {
+                case "landscape":
+                    {
+                        vm.pagewidthpx = longside;
+                        vm.pageheightpx = shortside;
+                        break;
+                    }
+                case "portrait":
+                    {
+                        vm.pagewidthpx = shortside;
+                        vm.pageheightpx = longside;
+                        break;
+                    }
+            }
+        }
+        function setLimit(thelimit) {
+            $log.debug('setLimit',thelimit);
+            vm.limit = thelimit;
+        }
+                
         function refresHtml() {
             $log.debug('refresHtml called');
                     vm.htmlcontentdata.htmlcontentall = vm.htmlcontentdata.htmlcontentheader + vm.htmlcontentdata.htmlcontent + vm.htmlcontentdata.htmlcontentfooter;
@@ -445,29 +561,55 @@
             vm.htmlcontentdata = {
                 orightml: ' <h2>Try me!</h2><p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p><p><b>Features:</b></p><ol><li>Automatic Seamless Two-Way-Binding</li><li>Super Easy <b>Theming</b> Options</li><li style="color: green;">Simple Editor Instance Creation</li><li>Safely Parses Html for Custom Toolbar Icons</li><li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol><p><b>Code at GitHub:</b> <a href="https://github.com/fraywing/textAngular">Here</a> </p>'
             };
-            vm.refreshHtml();
+            vm.refresHtml();
 
         }
         function setHeaderLogo() {
-        vm.htmlcontentheader = {
-            orightml: ' <table class="noborders"><thead> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;">Center</td><td style="width: 33.3%;">Right</td></tr></thead><tbody> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;"> <img src="' 
-            + vm.headerimages[0] + 
-            '"/></td><td style="width: 33.3%;">Right</td></tr></tbody></table>' 
-            };            
+            vm.htmlcontentheader = {
+                orightml: ' <table class="noborders"><thead> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;">Center</td><td style="width: 33.3%;">Right</td></tr></thead><tbody> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;"> <img src="' 
+                + vm.headerimages[0] + 
+                '"/></td><td style="width: 33.3%;">Right</td></tr></tbody></table>' 
+                };            
             vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
             $log.debug("setheaderlogo entered",vm.htmlcontentheader.orightml);
-            vm.refreshHtml();
+            vm.refresHtml();
         }
-
-
-/*        vm.htmlcontentheader = {
-            orightml: ' <img src="' + vm.headerimages[0] + '"/>'
-            };            
-            vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
-            $log.debug("setheaderlogo entered",vm.htmlcontentheader.orightml);
-
+        function setFooterLogo() {
+            vm.htmlcontentfooter = {
+                orightml: ' <table class="noborders"><thead> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;">Center</td><td style="width: 33.3%;">Right</td></tr></thead><tbody> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;"> <img src="' 
+                + vm.footerimages[0] + 
+                '"/></td><td style="width: 33.3%;">Right</td></tr></tbody></table>' 
+                };            
+            vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
+            $log.debug("setfooterlogo entered",vm.htmlcontentfooter.orightml);
+            vm.refresHtml();
         }
-  */      
+        function setBodyImage() {
+            vm.htmlcontentbody = {
+                orightml: ' <img src="' + vm.bodyimages[0] + '"/>'
+                };            
+            //todo figure out how to loop and insert content to existing pointer location
+            vm.htmlcontentdata.htmlcontentbody = vm.htmlcontentbody.orightml;
+            $log.debug("setBodyImage entered",vm.htmlcontentbody.orightml);
+            vm.refresHtml();
+        }
+        function setBackgroundImage() {
+            var rptwidth = 792;
+            var rptheight = 600;
+            var rptwidth = vm.pagewidthpx;
+            var rptheight = vm.pageheightpx;
+
+            vm.htmlbackground = {      
+                background: [{
+               			image: vm.backgroundimages[0],
+                       width: rptwidth,
+                       height: rptheight
+                   }],
+            };
+            $log.debug("setBackgroundImage entered",vm.htmlbackground);
+            vm.refresHtml();
+        }
+     
         function htmlcontentreset() {
             $log.debug('reset');
             
@@ -2134,7 +2276,7 @@ $log.debug('school', vm.userdta);
                   cnt.push(st);
             */
                 p = CreateParagraph();
-                if (parseType !== "header") {
+                if (parseType !== "header" && parseType !== "footer") {
                     p.marginBottom = 4;
                     p.marginTop = 10;
                 }
@@ -2300,20 +2442,37 @@ $log.debug('school', vm.userdta);
                     var regex = /([\w-]*)\s*:\s*([^;]*)/g;
                     var match; //helper variable for the refegex
                     var imageSize={};
-                    var maxResolution = {
-                        width: 435,
-                        height: 830
-                    };
-            
+                    var maxResolution={};
+                    if(parseType === "header" || parseType === "footer" ) {
+//                        width: 435,
+//                        height: 830
+                        maxResolution = {
+                            width: vm.pagewidthpx*0.333,
+                            height: vm.maxHeaderHeight
+                        };
+                        
+                    } else {
+                        
+                    }
+                    $log.debug('img settings', 
+                    e.width, 
+                    e.height, 
+                    e.clientWidth, 
+                    e.clientHeight, 
+                    e.naturalWidth, 
+                    e.naturalHeight
+                    );
                     if (e.getAttribute("style")) {
                         while ((match = regex.exec(e.getAttribute("style"))) !== null) {
-                            imageSize[match[1]] = parseInt(match[2].trim());
+                            imageSize[match[1]] = parseInt(match[2].trim(),10);
                         }
                     } else {
                         imageSize = {
-//                            height: images[element.getAttribute("src")].height,
-//                            width: images[element.getAttribute("src")].width
-                            width: "100"
+//                            height: e.getAttribute("src").height,
+//                            width: e.getAttribute("src").width
+//                            width: "100"
+                            width: e.width,
+                            height: e.height
                         };
                     }
             
@@ -2327,12 +2486,15 @@ $log.debug('school', vm.userdta);
                         imageSize.width *= scaleByHeight;
                         imageSize.height *= scaleByHeight;
                     }
+                    $log.debug('img settings if scaled', imageSize);
+                    
                     cnt.push({
 //                        image: images[e.getAttribute("src")].data,
-                        image: e.getAttribute("src"),
-                        width: imageSize.width,
-//                        height: imageSize.height
-                        height: 75
+                        image: e.src,
+                         width: imageSize.width,
+                        //causes prob with pdfmake for header
+                        height: imageSize.height
+//                        height: 75
                     });
                     break;
                 }
@@ -2419,29 +2581,36 @@ $log.debug('school', vm.userdta);
                 contentdtl = [mycontent];
             }
 
-var helement = document.getElementById('testValidationHeader');
-var hpositionInfo = helement.getBoundingClientRect();
-var hheight = hpositionInfo.height;
-var hwidth = hpositionInfo.width;
+            var helement = document.getElementById('testValidationHeader');
+            var hpositionInfo = helement.getBoundingClientRect();
+            var hheight = hpositionInfo.height;
+            var hwidth = hpositionInfo.width;
+            
+            var felement = document.getElementById('testValidationFooter');
+            var fpositionInfo = felement.getBoundingClientRect();
+            var fheight = fpositionInfo.height;
+            var fwidth = fpositionInfo.width;
 
             $log.debug('header height, width',hheight,hwidth);
-                var rptwidth = 792;
-                var rptheight = 600;
-                var testImageDataUrl ='data:image/png;base64,'+ getBase64Image("images/logos/StudioDiplomaTemplate.png");
-          
+                var background;
+                if (typeof(vm.htmlbackground.background) !== undefined) {
+                    background = vm.htmlbackground.background;
+                } else {
+                    background = '';
+                }
+
                   var docDefinition = {
                   pageOrientation: vm.pageOrientation,
                   // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
 //                  pageMargins: vm.pageMargins,
-                  pageMargins: [10,hheight,10,10],
+                  pageMargins: [
+                      vm.pageMarginL,
+                      hheight > vm.pageMarginT ? hheight : vm.pageMarginT,
+                      vm.pageMarginR,
+                      fheight > vm.pageMarginB ? fheight : vm.pageMarginB
+                    ],
                   pageSize: vm.pageSize,
-  /*                background: [
-                   {
-               			image: testImageDataUrl,
-                       width: rptwidth,
-                       height: rptheight
-                   }],
-    */               
+                  background,
     //note the page margin needs enough height to fit the header, and the first set of content should deal with the height topMargin
                     header: mycontentheader,
                     content: contentdtl,

@@ -1,0 +1,37 @@
+ <div class="modal-content" >
+    <div class="modal-header">
+    <b>Insert Image</b>
+    </div>
+    <form name="form" novalidate >
+    <div class="modal-body">
+        Pick an image-file: <input type="file" ng-model="vm.bodyimages" accept="image/*" multiple app-filereader /><br />
+        <div ng-repeat="image in vm.bodyimages">
+            <img
+                sb-load="imgLoadedCallback($event)"
+                ng-style="{ 'height' : vm.height , 'width' : vm.width }"  ng-src="{{image}}"  /><br />
+        </div>
+          <div class="form-group"  show-errors>
+                <label for="height">Height</label> 
+                <input type="number" class="form-control" ng-model="vm.height"  name="height" required="" id="height" />
+                <p class="help-block delete-red" ng-show="form.row.$error.number">Invalid number</p>
+          </div>       
+          <div class="form-group"  show-errors>
+                <label for="width">Width</label> 
+                <input type="number" class="form-control" ng-model="vm.width"  name="width" required="" id="width" />
+                <p class="help-block delete-red" ng-show="form.row.$error.number">Invalid number</p>
+          </div>       
+
+      </form>
+        <div ng-repeat="image in vm.imagelist">
+            <img style="max-height:300px;" ng-src="{{image.data}}"  /><br />
+            Natural height: {{image.naturalHeight}}
+            Natural width: {{image.naturalWidth}}
+            <div ng-show='image.naturalHeight > 300'>Natural &gt; Max: 300</div>
+        </div
+    </div>    
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-click="tblInsert()" ng-disabled="form.$invalid" ng-show="!!vm.bodyimages">Insert</button>
+        <button type="button" class="btn btn-default" ng-click="tblCancel()">Cancel</button>
+    </div>
+    </form>
+</div>

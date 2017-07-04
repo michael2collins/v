@@ -33,7 +33,8 @@
     'color.picker',
     'angularMoment',
     'textAngular',
-    'appFilereader'
+    'appFilereader',
+    'angularSpectrumColorpicker','ui.bootstrap.dropdownToggle'
   //      'notifyme'
 
 //    'omr.directives'

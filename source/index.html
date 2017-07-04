@@ -436,6 +436,8 @@ mlc some problems with mobile
 <script src='https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.js'></script> 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngularSetup.js" integrity="sha256-mJKVOahzQ8GKgYsIKRNmoYuD9Auu31dgxVSgX842VCs=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js"></script>
 
     <style>
     .ta-editor.form-control.validationFormHeader-height,
@@ -492,6 +494,54 @@ mlc some problems with mobile
         right: 0;
     }
 
+    .btn-blue {
+    	background-color: #6acaff;
+    	color:#fff;
+    	border-color: #4c7889;
+    }
+    
+    .btn-blue:hover,
+    .btn-blue:focus,
+    .btn-blue.focus,
+    .btn-blue:active,
+    .btn-blue.active,
+    .open > .dropdown-toggle.btn-blue {
+    	border-color: #33505b;
+    }
+    
+    .btn-blue:active,
+    .btn-blue.active,
+    .open > .dropdown-toggle.btn-blue {
+    	background-image: none;
+    }
+    
+    .btn-blue.disabled,
+    .btn-blue[disabled],
+    fieldset[disabled] .btn-blue,
+    .btn-blue.disabled:hover,
+    .btn-blue[disabled]:hover,
+    fieldset[disabled] .btn-blue:hover,
+    .btn-blue.disabled:focus,
+    .btn-blue[disabled]:focus,
+    fieldset[disabled] .btn-blue:focus,
+    .btn-blue.disabled.focus,
+    .btn-blue[disabled].focus,
+    fieldset[disabled] .btn-blue.focus,
+    .btn-blue.disabled:active,
+    .btn-blue[disabled]:active,
+    fieldset[disabled] .btn-blue:active,
+    .btn-blue.disabled.active,
+    .btn-blue[disabled].active,
+    fieldset[disabled] .btn-blue.active {
+    	border-color: #4c7889;
+    }
+    
+
+[ta-button] {
+	height: 44px;
+	margin-bottom: 5px;
+}
+
 </style>
 
 <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
@@ -502,6 +552,8 @@ mlc some problems with mobile
   <script type="text/javascript" src="js/controllers/app.js"></script>
 <!--  <script type="text/javascript" src="js/factories/textAngular.js"></script> -->
   <script type="text/javascript" src="js/factories/textAngularExtra.js"></script> -
+  <script type="text/javascript" src="js/factories/textAngular-dropdownToggle.js"></script> -
+  <script type="text/javascript" src="js/factories/angular-spectrum-colorpicker.min.js"></script> -
   <script type="text/javascript" src="js/controllers/dashboard-blog.js"></script>
   <script type="text/javascript" src="js/controllers/dashboard-shopping.js"></script>
   <script type="text/javascript" src="js/controllers/data.js"></script>
