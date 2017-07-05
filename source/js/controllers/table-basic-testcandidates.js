@@ -9,8 +9,8 @@
                 // this demonstrates how to register a new tool and add it to the default toolbar
 //                $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) { // $delegate is the taOptions we are decorating
 
-                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$log', '$delegate' ,
-                                                 function(taRegisterTool, taToolFunctions, $uibModal, $log,  taOptions ){
+                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$log', '$window', '$delegate' ,
+                                                 function(taRegisterTool, taToolFunctions, $uibModal, $log, $window, taOptions ){
             
                     function createTable(tableParams) {
                         if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)
@@ -18,13 +18,16 @@
                             var table = "<table class='table  " 
                                 + (tableParams.style ? "table-" + tableParams.style : '')  
                                 + "'>";
-            
                             var colWidth = 100/tableParams.col;
+                            var col = '<col width="' + colWidth + '%" >';
+                            for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
+                                table += col;
+                            }
                             for (var idxRow = 0; idxRow < tableParams.row; idxRow++) {
                                 var row = "<tr>";
                                 for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
                                     row += "<td" 
-                                        + (idxRow == 0 ? ' style="width: ' + colWidth + '%;"' : '')
+//                                        + (idxRow == 0 ? ' style="width: ' + colWidth + '%;"' : '')
                                         +">Sample Cell</td>";
                                 }
                                 table += row + "</tr>";
@@ -41,6 +44,7 @@
                         }
                         return images;
                     }
+
                     taOptions.toolbar = [
                     				['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
                     				['bold', 'italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear'],
@@ -92,12 +96,7 @@
                                 }
                             );                            
                             return false;
-                        }/*,
-                          onElementSelect: {
-                            element: 'table',
-                            action: taToolFunctions.tableOnSelectAction
-                          }
-                          */
+                        }
                     });
                     taOptions.toolbar[1].push('insertTable');
 
@@ -151,28 +150,29 @@
                             return false;
                         }
                     });
+                    taOptions.toolbar[1].push('VInsertImage');
 
-
-                // Now add the button to the default toolbar definition
-                // Note: It'll be the last button
-                taOptions.toolbar[1].push('VInsertImage');
-
-                    taRegisterTool('test', {
-                        buttontext: 'Test',
-                        action: function() {
-                            alert('Test Pressed');
-                        }
+                    taRegisterTool('insertHRdashed', {
+                        iconclass: 'ti-line-dashed',
+                        tooltiptext: 'Insert Dashed Line',
+                            action: function () {                
+//                         this.$editor().wrapSelection('insertHtml', '<hr style="border: 1px dashed black;" />',true);             
+                         this.$editor().wrapSelection('insertHtml', '<div><hr class="dashed" /></div>','true');             
+                            }
                     });
-                    taOptions.toolbar[1].push('test');
+                    taOptions.toolbar[1].push('insertHRdashed');
                     
-                    taRegisterTool('colourRed', {
-                        iconclass: "fa fa-square red",
+
+                    taRegisterTool('insertHRsolid', {
+                        iconclass: "ti-arrows-horizontal",
+                        tooltiptext: 'Insert Solid Line',
                         action: function() {
-                            this.$editor().wrapSelection('forecolor', 'red');
+                            this.$editor().wrapSelection('inserthorizontalrule', 'false', null);
                         }
                     });
                     // add the button to the default toolbar definition
-                    taOptions.toolbar[1].push('colourRed');
+                    taOptions.toolbar[1].push('insertHRsolid');
+
 
                     var displaystuff2 = ' <div class="c-drop-down" dropdown="true" auto-close="outsideClick"> ' +
                         '<a class="c-drop-down__title" dropdown-toggle="true"> text </a> ' +
@@ -233,7 +233,7 @@
                             if (!this.$editor().wrapSelection) {
                                 setTimeout(function () {
                                     me.action(color);
-                                }, 100)
+                                }, 100);
                             } else {
                                 return this.$editor().wrapSelection('backColor', color);
                             }
@@ -252,7 +252,7 @@
                             if (!this.$editor().wrapSelection) {
                                 setTimeout(function () {
                                     me.action(color);
-                                }, 100)
+                                }, 100);
                             } else {
                                 return this.$editor().wrapSelection('foreColor', color);
                             }
@@ -550,7 +550,10 @@
                 
         function refresHtml() {
             $log.debug('refresHtml called');
-                    vm.htmlcontentdata.htmlcontentall = vm.htmlcontentdata.htmlcontentheader + vm.htmlcontentdata.htmlcontent + vm.htmlcontentdata.htmlcontentfooter;
+            vm.htmlcontentdata.htmlcontentall = '';
+            vm.htmlcontentdata.htmlcontentall += (typeof(vm.htmlcontentdata.htmlcontentheader) !== "undefined" ) ? vm.htmlcontentdata.htmlcontentheader : '';
+            vm.htmlcontentdata.htmlcontentall += (typeof(vm.htmlcontentdata.htmlcontent) !== "undefined" ) ? vm.htmlcontentdata.htmlcontent : '';
+            vm.htmlcontentdata.htmlcontentall += (typeof(vm.htmlcontentdata.htmlcontentfooter ) !== "undefined" )  ? vm.htmlcontentdata.htmlcontentfooter : '';
 
         }
         function htmlcontentsubmit() {
@@ -2064,7 +2067,9 @@ $log.debug('school', vm.userdta);
             }
             if (elements.length !== 0) {
               for (var i = 0; i < elements.length; i++) {
-                  cnt.push(elements[i]);
+//                  if (elements[i].length > 0) {
+                      cnt.push(elements[i]);
+ //                 }
               }
             }
             return p;
@@ -2201,7 +2206,7 @@ $log.debug('school', vm.userdta);
                 }    
                 var nodeClass = e.getAttribute("class");
                 if (nodeClass) {
-                    classes = nodeClass.toLowerCase().split(" ");
+                    classes = nodeClass.toLowerCase().trim().split(" ");
                     classes.forEach(function(nodeClass) {
                         if (typeof(classStyles[nodeClass]) != 'undefined') {
                             classStyles[nodeClass].forEach(function(style) {
@@ -2289,6 +2294,59 @@ $log.debug('school', vm.userdta);
                   p = ParseContainer(cnt, e, p, styles,parseType);
                   break;
                 }
+/* hr                
+                canvas: [
+				{
+					type: 'line',
+					x1: 0, y1: 60,
+					x2: 500, y2: 60,
+//					r: 5,
+					dash: {length: 5},
+					 lineWidth: 3,
+				},
+				{
+					type: 'line',
+					x1: 0, y1: 70,
+					x2: 500, y2: 70,
+					lineWidth: 2
+				},
+			]
+*/
+              case "hr":
+                {
+                  $log.debug("hr found", e.className);
+                  var c;
+                  if (e.className === "dashed") {
+                    c = {"margin": [0,10,0,0],
+                        "canvas": [ 
+                        {
+                            "type": 'line',
+                            "x1": 0, "y1": 10,
+                            "x2": 500, "y2": 10,
+        					"dash": {length: 5},
+                            "lineWidth": 2
+                        }
+                    ]
+                  };
+                      
+                  } else {
+                    c = {"margin": [0,10,0,0],
+                        "canvas": [ 
+                        {
+                            "type": 'line',
+                            "x1": 0, "y1": 10,
+                            "x2": 500, "y2": 10,
+                            "lineWidth": 2
+                        }
+                    ]
+                  };
+                      
+                  }
+
+                  cnt.push(c);
+                  break;
+                }
+
               case "br":
                 {
                   p = CreateParagraph();
@@ -2296,13 +2354,14 @@ $log.debug('school', vm.userdta);
                   break;
                 }
               case "table":
-                {
+            {
                   var t = create("table", {
                                     headerRows: 1,
                                     style: 'tableExample',
                                     widths: [],
-                                    body: []
-                                });
+                                    body: [] ,
+                                    col: []
+                                    });
                   var border = e.getAttribute("border");
                   var isBorder = false;
                   var borderclass = "";
@@ -2313,7 +2372,7 @@ $log.debug('school', vm.userdta);
                   } else {
                       borderclass = e.getAttribute("class");
                       if (borderclass.length > 0) {
-                            borderclasses = borderclass.toLowerCase().split(" ");
+                            borderclasses = borderclass.trim().toLowerCase().split(" ");
             //                                borderclasses.forEach(function(borderclass) {
                                 for(var i=0,len=borderclasses.length;i < len;i++){
                                     if (typeof(borderclassStyles[borderclasses[i]]) !== 'undefined') {
@@ -2331,20 +2390,35 @@ $log.debug('school', vm.userdta);
                         }
                   }
                   
-                  p = ParseContainer(t.table.body, e, p, styles,parseType);
+                  p = ParseContainer(t.table.col, e, p, styles,parseType);
             
-                  var widths = e.getAttribute("widths");
-                  if (!widths) {
-                    if (t.table.body.length !== 0) {
-                      if (t.table.body[0].length !== 0)
-                        for (var k = 0; k < t.table.body[0].length; k++) 
-                            t.table.widths.push("*");
-                    }
-                  } else {
-                    var w = widths.split(",");
-                    for (var k = 0; k < w.length; k++) 
-                        t.table.widths.push(w[k]);
+                  var colwcalc = e.getElementsByTagName("col");
+                  if (colwcalc) {
+                      for (var iter=0;iter<colwcalc.length;iter++) {
+                          var tmp = colwcalc[iter].width.replace(/\%/g, '')*(vm.pagewidthpx-vm.pageMarginL-vm.pageMarginR)/100;
+                          t.table.widths.push(tmp);
+                      }
                   }
+                  //only need it for the widths, as the col is not supported in pdfmake
+                  delete t.table.col;
+
+                  p = ParseContainer(t.table.body, e, p, styles,parseType);
+
+                  if (!colwcalc) {
+                      var widths = e.getAttribute("widths");
+                      if (!widths) {
+                        if (t.table.body.length !== 0) {
+                          if (t.table.body[0].length !== 0)
+                            for (var k = 0; k < t.table.body[0].length; k++) 
+                                t.table.widths.push("*");
+                        }
+                      } else {
+                        var w = widths.split(",");
+                        for (var k = 0; k < w.length; k++) 
+                            t.table.widths.push(w[k]);
+                      }
+                  }
+                  
                   cnt.push(t);
                   break;
                 }
@@ -2354,7 +2428,21 @@ $log.debug('school', vm.userdta);
                   //p = CreateParagraph();
                   break;
                 }
-              case "tr":
+/*              case "colgroup":
+                {
+                  p = ParseContainer(cnt, e, p, styles,parseType);
+                  //p = CreateParagraph();
+                  break;
+                }
+              case "col":
+                {
+                  var col = [];
+                  p = ParseContainer(cnt, e, p, styles,parseType);
+                  //p = CreateParagraph();
+                  cnt.push(col);
+                  break;
+                }
+  */            case "tr":
                 {
                   var row = [];
                   p = ParseContainer(row, e, p, styles,parseType);
@@ -2514,13 +2602,17 @@ $log.debug('school', vm.userdta);
             return p;
             }
             function ParseHtml(cnt, htmlText, parseType) {
-            var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
-            var p = CreateParagraph();
-            for (var i = 0; i < html.length; i++){
-                ParseElement(cnt, html.get(i), p, parseType, []);
-            }
-            $log.debug('parsehmtl', p, cnt);
-            return cnt;
+                if ($(htmlText).length > 0) {
+                    var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+                    var p = CreateParagraph();
+                    for (var i = 0; i < html.length; i++){
+                        ParseElement(cnt, html.get(i), p, parseType, []);
+                    }
+                    $log.debug('parsehmtl', p, cnt);
+                    return cnt;
+                } else {
+                    return cnt;
+                }
             }
             function CreateParagraph() {
             var p = {
@@ -2623,6 +2715,9 @@ $log.debug('school', vm.userdta);
             			bold: true,
             			fontSize: 13,
             			color: 'black'
+            		},
+            		dashed: {
+            		    dash: {length: 5}
             		}
             	}
             
