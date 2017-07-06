@@ -260,7 +260,7 @@
             <div class="col-md-12">
               <h1>Editor</h1>
               <div  class="col-md-12 row">
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <h2>Header Logo</h2>
                   <form novalidate>
                     Pick an image-file: <input type="file" ng-model="vm.headerimages" accept="image/*" multiple app-filereader /><br />
@@ -269,7 +269,7 @@
                     <button ng-click="vm.setHeaderLogo();" ng-show="!!vm.headerimages">Add to Header</button><br />
                   </form>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <h2>Footer Logo</h2>
                   <form novalidate>
                     Pick an image-file: <input type="file" ng-model="vm.footerimages" accept="image/*" multiple app-filereader /><br />
@@ -278,18 +278,7 @@
                     <button ng-click="vm.setFooterLogo();" ng-show="!!vm.footerimages">Add to Footer</button><br />
                   </form>
                 </div>
-              </div>
-              <div  class="col-md-12 row">
-                <div class="col-md-6">
-                  <h2>Body Images</h2>
-                  <form novalidate>
-                    Pick an image-file: <input type="file" ng-model="vm.bodyimages" accept="image/*" multiple app-filereader /><br />
-                    <img style="max-width:300px;" ng-repeat="image in vm.bodyimages" ng-src="{{image}}"  /><br />
-                    <button ng-click="vm.bodyimages = null" ng-show="!!vm.bodyimages">Remove {{vm.bodyimages.length}} images</button><br />
-                    <button ng-click="vm.setBodyImage();" ng-show="!!vm.bodyimages">Add to Body</button><br />
-                  </form>
-                </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                   <h2>Background Images</h2>
                   <form novalidate>
                     Pick an image-file: <input type="file" ng-model="vm.backgroundimages" accept="image/*" multiple app-filereader /><br />
@@ -304,7 +293,15 @@
                     <label for="maxHeaderHeight">Max Header Height</label>
                       <input id="maxHeaderHeight" type="number" name="maxHeaderHeight" 
                         ng-model="vm.maxHeaderHeight" 
-                        required
+                        
+                        class="form-control">
+                      </input>
+                    </div>
+                    <div class="input-icon right col-md-2">
+                    <label for="maxFooterHeight">Max Footer Height</label>
+                      <input id="maxFooterHeight" type="number" name="maxFooterHeight" 
+                        ng-model="vm.maxFooterHeight" 
+                        
                         class="form-control">
                       </input>
                     </div>
@@ -312,7 +309,7 @@
                     <label for="pageMarginL">Page Margin Left</label>
                       <input id="pageMarginL" type="number" name="pageMarginL" 
                         ng-model="vm.pageMarginL" 
-                        required
+                        
                         class="form-control">
                       </input>
                     </div>
@@ -320,7 +317,7 @@
                     <label for="pageMarginT"> Top</label>
                       <input id="pageMarginT" type="number" name="pageMarginT" 
                         ng-model="vm.pageMarginT" 
-                        required
+                        
                         class="form-control">
                       </input>
                     </div>
@@ -328,7 +325,7 @@
                     <label for="pageMarginR"> Right</label>
                       <input id="pageMarginR" type="number" name="pageMarginR" 
                         ng-model="vm.pageMarginR" 
-                        required
+                        
                         class="form-control">
                       </input>
                     </div>
@@ -336,7 +333,7 @@
                     <label for="pageMarginB"> Bottom</label>
                       <input id="pageMarginB" type="number" name="pageMarginB" 
                         ng-model="vm.pageMarginB" 
-                        required
+                        
                         class="form-control">
                       </input>
                     </div>
@@ -421,7 +418,7 @@
                     ta-target-toolbars='htmlcontenttools' 
                     ng-model-options="{debounce: 10}">
                   </text-angular>
-              <div id="testValidationFooter" ng-style="{ 'maxHeight' : vm.maxHeaderHeight + 35 }">
+              <div id="testValidationFooter" ng-style="{ 'maxHeight' : vm.maxFooterHeight + 35 }">
                   
                   <text-angular  class="convert" name="testValidationFooter" 
                     ng-if="vm.htmlcontentcanEdit" 

@@ -135,6 +135,7 @@ video {
   border: 1px dashed black;
 }
 
+
 .convert  img {
   border-style: none;
 }
@@ -144,3 +145,17 @@ video {
   overflow: hidden;
 }
 
+.convert table { display: table; }
+.convert caption { display: table-caption; }
+.convert colgroup, colgroup[hidden] { display: table-column-group; }
+.convert col, col[hidden] { display: table-column; }
+.convert thead, thead[hidden] { display: table-header-group; }
+.convert tbody, tbody[hidden] { display: table-row-group; }
+.convert tfoot, tfoot[hidden] { display: table-footer-group; }
+.convert tr, tr[hidden] { display: table-row; }
+.convert td, th, td[hidden], th[hidden] { display: table-cell; }
+
+.convert colgroup[hidden], col[hidden], thead[hidden], tbody[hidden],
+.convert tfoot[hidden], tr[hidden], td[hidden], th[hidden] {
+  visibility: collapse;
+}

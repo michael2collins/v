@@ -9,7 +9,7 @@
                 // this demonstrates how to register a new tool and add it to the default toolbar
 //                $provide.decorator('taOptions', ['taRegisterTool', '$delegate', function(taRegisterTool, taOptions) { // $delegate is the taOptions we are decorating
 
-                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$log', '$window', '$delegate' ,
+                $provide.decorator('taOptions', ['taRegisterTool', 'taToolFunctions', '$uibModal', '$log', '$window',  '$delegate' ,
                                                  function(taRegisterTool, taToolFunctions, $uibModal, $log, $window, taOptions ){
             
                     function createTable(tableParams) {
@@ -48,7 +48,7 @@
                     taOptions.toolbar = [
                     				['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'pre', 'quote'],
                     				['bold', 'italics', 'underline', 'ul', 'ol', 'redo', 'undo', 'clear'],
-                    				['justifyLeft','justifyCenter','justifyRight', 'justifyFull'],
+                    				['justifyLeft','justifyCenter','justifyRight', 'justifyFull', 'indent', 'outdent'],
                     				['html', 'charcount']
                     			];
 //                    				['html', 'insertImage', 'insertLink', 'charcount']
@@ -152,6 +152,85 @@
                     });
                     taOptions.toolbar[1].push('VInsertImage');
 
+                    taRegisterTool('fontSize', {
+                        display: "<span class='bar-btn-dropdown dropdown'>" +
+                        "<button class='btn btn-dark btn-plugin dropdown-toggle' style='margin-top: 5px;' type='button' ng-disabled='showHtml()'><i class='fa fa-text-height'></i><i class='fa fa-caret-down'></i></button>" +
+                        "<ul class='dropdown-menu plugin-dropdown-menu'><li ng-repeat='o in options'><button class='btn btn-blue checked-dropdown' style='font-size: {{o.css}};' type='button' ng-click='action($event, o.value)'><i ng-if='o.active' class='fa fa-check'></i> {{o.name}}</button></li></ul>" +
+                        "</span>",
+                        action: function (event, size) {
+                            if (!!event.stopPropagation) {
+                                event.stopPropagation();
+                                $("body").trigger("click");
+                            }
+                            return this.$editor().wrapSelection('fontSize', parseInt(size));
+                        },
+                        options: [
+                            { name: 'xx-small', css: 'xx-small', value: 1 },
+                            { name: 'x-small', css: 'x-small', value: 2 },
+                            { name: 'small', css: 'small', value: 3 },
+                            { name: 'medium', css: 'medium', value: 4 },
+                            { name: 'large', css: 'large', value: 5 },
+                            { name: 'x-large', css: 'x-large', value: 6 },
+                            { name: 'xx-large', css: 'xx-large', value: 7 }
+        
+                        ]
+                    });
+                    taOptions.toolbar[1].push('fontSize');
+            
+                     taRegisterTool('fontName', {
+                            display: "<span class='bar-btn-dropdown dropdown'>" +
+                            "<button class='btn btn-dark btn-plugin dropdown-toggle' style='margin-top: 5px;' type='button' ng-disabled='showHtml()'><i class='fa fa-font'></i><i class='fa fa-caret-down'></i></button>" +
+                            "<ul class='dropdown-menu plugin-dropdown-menu'><li ng-repeat='o in options'><button class='checked-dropdown' style='font-family: {{o.css}};' type='button' ng-click='action($event, o.css)'><i ng-if='o.active' class='fa fa-check'></i>{{o.name}}</button></li></ul></span>",
+                            action: function (event, font) {
+                                if (!!event.stopPropagation) {
+                                    event.stopPropagation();
+                                    $("body").trigger("click");
+                                }
+                                return this.$editor().wrapSelection('fontName', font);
+                            },
+                            options: [
+                                { name: 'Sans-Serif', css: 'Arial, Helvetica, sans-serif' },
+                                { name: 'Serif', css: "'times new roman', serif" },
+                                { name: 'Wide', css: "'arial black', sans-serif" },
+                                { name: 'Garamond', css: 'garamond, serif' },
+                                { name: 'Georgia', css: 'georgia, serif' },
+                                { name: 'Tahoma', css: 'tahoma, sans-serif' },
+                                { name: 'Trebuchet MS', css: "'trebuchet ms', sans-serif" },
+                                { name: "Helvetica", css: "'Helvetica Neue', Helvetica, Arial, sans-serif" },
+                                { name: 'Verdana', css: 'verdana, sans-serif' },
+                                { name: 'Proxima Nova', css: 'proxima_nova_rgregular' }
+                            ]
+                        });
+                    taOptions.toolbar[1].push('fontName');
+
+                    taRegisterTool('vars', {
+                        display: "<span class='bar-btn-dropdown dropdown'>" +
+                        "<button class='btn btn-dark btn-plugin dropdown-toggle' style='margin-top: 5px;' type='button' ng-disabled='showHtml()'>Vars {} <i class='fa fa-caret-down'></i></button>" +
+                        "<ul class='dropdown-menu plugin-dropdown-menu'><li ng-repeat='o in options'><button class='btn  checked-dropdown' type='button' ng-click='action($event, false, o.value)'><i ng-if='o.active' class='fa fa-check'></i> {{o.name}}</button></li></ul>" +
+                        "</span>",
+                        action: function (event, restoreSelection, size) {
+                            if (!!event.stopPropagation) {
+                                event.stopPropagation();
+                                //Then click in the body to close the dropdown.
+                                $("body").trigger("click");
+                                this.$editor().wrapSelection('inserthtml', '{'+size+'}');
+                            }
+                            return false;
+                        },
+                        options: [
+                            { name: 'First name', value: 'FirstName' },
+                            { name: 'Last name',  value: 'Last name' },
+                            { name: 'Title',      value: 'Email' },
+                            { name: 'Company',    value: 'Company' },
+                            { name: 'Title',      value: 'Title' },
+                            { name: 'City',       value: 'City' },
+                            { name: 'State',      value: 'State' },
+                            { name: 'Country',    value: 'Country' },
+                            { name: 'Reference',  value: 'Reference' },
+                        ]
+                    });
+                    taOptions.toolbar[1].push('vars');
+
                     taRegisterTool('insertHRdashed', {
                         iconclass: 'ti-line-dashed',
                         tooltiptext: 'Insert Dashed Line',
@@ -162,7 +241,6 @@
                     });
                     taOptions.toolbar[1].push('insertHRdashed');
                     
-
                     taRegisterTool('insertHRsolid', {
                         iconclass: "ti-arrows-horizontal",
                         tooltiptext: 'Insert Solid Line',
@@ -170,24 +248,8 @@
                             this.$editor().wrapSelection('inserthorizontalrule', 'false', null);
                         }
                     });
-                    // add the button to the default toolbar definition
                     taOptions.toolbar[1].push('insertHRsolid');
-
-
-                    var displaystuff2 = ' <div class="c-drop-down" dropdown="true" auto-close="outsideClick"> ' +
-                        '<a class="c-drop-down__title" dropdown-toggle="true"> text </a> ' +
-                        '<ul class="c-drop-down__menu c-drop-down__menu--left dropdown-menu"> ' +
-                        '<!--  <li ng-repeat="o in options"> ' +
-                        '    <button type="button" ng-class="displayActiveToolClass(active)" ng-click="action($event, o.value)"> {{ o.name }} </button> ' +
-                        '  </li> -->' +
-                        '  <li > ' +
-                        "    <button type='button' ng-class='displayActiveToolClass(active)' ng-click='action($event, \"H1\")'> h1</button> " +
-                        '  </li> ' +
-                        '</ul>' +
-                        '</div> ';
-            
-
-
+/*
                     taRegisterTool('dropdownTest', {
                         display: "<div class='btn-group' uib-dropdown> <button id='single-button' type='button' class='btn btn-primary' uib-dropdown-toggle auto-close='outsideClick'>Select Option <span class='caret'></span>       </button>       <ul class='dropdown-menu' uib-dropdown-menu role='menu' aria-labelledby='single-button'>           <li role='menuitem' ng-repeat='o in options'>             <button type='button' ng-class='displayActiveToolClass(active)' ng-click='action($event, o.value)'> {{ o.name }} </button></li></ul></div>",
                         action: function(deferred, value) {
@@ -225,7 +287,7 @@
                         });
                     // add the button to the default toolbar definition
                     taOptions.toolbar[1].push('dropdownTest');
-                    
+  */                  
                     taRegisterTool('backgroundColor', {
                         display: "<div spectrum-colorpicker ng-model='color' on-change='!!color && action(color)' format='\"hex\"' options='options'></div>",
                         action: function (color) {
@@ -455,6 +517,7 @@
         vm.pageheightpx;
         vm.dpi = 72;
         vm.maxHeaderHeight = 200;
+        vm.maxFooterHeight = 200;
         vm.calcsizes = calcsizes;
 
 
@@ -491,7 +554,7 @@
         calcsizes();
         refresHtml();
         
-                //$scope.$watch('data.htmlcontent', function(val){console.log('htmlcontent changed to:', val);});
+                //$scope.$watch('data.htmlcontent', function(val){$log.debug('htmlcontent changed to:', val);});
         function calcsizes() {
             var shortside,longside;
             vm.pagewidthpx = 0;
@@ -569,9 +632,9 @@
         }
         function setHeaderLogo() {
             vm.htmlcontentheader = {
-                orightml: ' <table class="noborders"><thead> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;">Center</td><td style="width: 33.3%;">Right</td></tr></thead><tbody> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;"> <img src="' 
+                orightml: ' <table class="noborders"><colgroup><col width="33.3%"><col width="33.3%"><col width="33.3%"></colgroup><tbody> <tr><td >Left</td><td>Center</td><td>Right</td></tr> <tr><td>Left</td><td> <img src="' 
                 + vm.headerimages[0] + 
-                '"/></td><td style="width: 33.3%;">Right</td></tr></tbody></table>' 
+                '"/></td><td>Right</td></tr></tbody></table>' 
                 };            
             vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
             $log.debug("setheaderlogo entered",vm.htmlcontentheader.orightml);
@@ -579,9 +642,9 @@
         }
         function setFooterLogo() {
             vm.htmlcontentfooter = {
-                orightml: ' <table class="noborders"><thead> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;">Center</td><td style="width: 33.3%;">Right</td></tr></thead><tbody> <tr><td style="width: 33.3%;">Left</td><td style="width: 33.3%;"> <img src="' 
+                orightml: ' <table class="noborders"><colgroup><col width="33.3%"><col width="33.3%"><col width="33.3%"></colgroup><tbody> <tr><td >Left</td><td>Center</td><td>Right</td></tr> <tr><td>Left</td><td> <img src="' 
                 + vm.footerimages[0] + 
-                '"/></td><td style="width: 33.3%;">Right</td></tr></tbody></table>' 
+                '"/></td><td>Right</td></tr></tbody></table>' 
                 };            
             vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
             $log.debug("setfooterlogo entered",vm.htmlcontentfooter.orightml);
@@ -1936,7 +1999,7 @@ $log.debug('school', vm.userdta);
         		    margin: [0,5]
         		  },
         		  signature: {
-        		    width: sigwidth,
+        		    width: 150,
         		    fontSize: 12
         		  },
         		  smalllines: {
@@ -2204,6 +2267,22 @@ $log.debug('school', vm.userdta);
                 if (nodeColor) {
                     styles.push("color: " + nodeColor);
                 }    
+                var nodeSize = e.getAttribute("size");
+                if (nodeSize) {
+                    //https://websemantics.uk/articles/font-size-conversion/
+                    var fs=13; //default
+                    switch  (nodeSize) {
+                    case "1": { fs=8; break; }
+                    case "2": { fs=10; break; }
+                    case "3": { fs=13; break; }
+                    case "4": { fs=16; break; }
+                    case "5": { fs=18; break; }
+                    case "6": { fs=24; break; }
+                    case "7": { fs=32; break; }
+                    }
+                        
+                    styles.push("font-size: " + fs);
+                }    
                 var nodeClass = e.getAttribute("class");
                 if (nodeClass) {
                     classes = nodeClass.toLowerCase().trim().split(" ");
@@ -2263,23 +2342,6 @@ $log.debug('school', vm.userdta);
                             case "h5":
               case "h6":
                 {
-            /*                        $log.debug('h1',cnt, e, p);
-              //    p = CreateParagraph();
-            //       st = {
-             //       stack: []
-              //    };
-            //      st.stack.push(p);
-            //      ComputeStyle(st, styles);
-              //    ParseContainer(st.stack, e, p, styles.concat(["font-size:24"]));
-                //  cnt.push(st);
-                  var st = {
-                    text: e.textContent.replace(/\n/g, "")
-                  };
-                  ComputeStyle(st, styles.concat(["font-size:24","style:topfiller"]));
-            //                      ComputeStyle(st, styles.concat(["style:topfiller"]));
-            //                      p.text.push(st);
-                  cnt.push(st);
-            */
                 p = CreateParagraph();
                 if (parseType !== "header" && parseType !== "footer") {
                     p.marginBottom = 4;
@@ -2289,29 +2351,21 @@ $log.debug('school', vm.userdta);
                     cnt.push(p);          
                   break;
                 }
+              case "blockquote":
+                {
+//                    p = create("text");
+                    var st = create("stack");
+                    st.margin = [20, 0, 0, 0];
+                    p = ParseContainer(st.stack, e, p, styles, parseType);
+                    cnt.push(st);
+                    
+                  break;
+                }
               case "span":
                 {
                   p = ParseContainer(cnt, e, p, styles,parseType);
                   break;
                 }
-/* hr                
-                canvas: [
-				{
-					type: 'line',
-					x1: 0, y1: 60,
-					x2: 500, y2: 60,
-//					r: 5,
-					dash: {length: 5},
-					 lineWidth: 3,
-				},
-				{
-					type: 'line',
-					x1: 0, y1: 70,
-					x2: 500, y2: 70,
-					lineWidth: 2
-				},
-			]
-*/
               case "hr":
                 {
                   $log.debug("hr found", e.className);
@@ -2531,7 +2585,7 @@ $log.debug('school', vm.userdta);
                     var match; //helper variable for the refegex
                     var imageSize={};
                     var maxResolution={};
-                    if(parseType === "header" || parseType === "footer" ) {
+                    if(parseType === "header" ) {
 //                        width: 435,
 //                        height: 830
                         maxResolution = {
@@ -2539,8 +2593,16 @@ $log.debug('school', vm.userdta);
                             height: vm.maxHeaderHeight
                         };
                         
-                    } else {
+                    } else if(parseType === "footer" ) {
+//                        width: 435,
+//                        height: 830
+                        maxResolution = {
+                            width: vm.pagewidthpx*0.333,
+                            height: vm.maxFooterHeight
+                        };
                         
+                    } else {
+
                     }
                     $log.debug('img settings', 
                     e.width, 
@@ -2626,7 +2688,7 @@ $log.debug('school', vm.userdta);
                 o[name] = content;
                 return o;
             }
-                
+
             var content=[];
             var headercontent=[];
             var footercontent=[];
@@ -2660,10 +2722,21 @@ $log.debug('school', vm.userdta);
                         $log.debug("mycon j", JSON.stringify(mycontent[j]) );
                         tmp = tmp + ',' + JSON.stringify(mycontent[j]);
                     }
-                    obj = JSON.parse('[' + tmp + ']');
+                    tmp = tmp.replace(/{FirstName}/g,students[i].studentname);
+                    try {
+                        obj = JSON.parse('[' + tmp + ']');
+                    } catch (e) {
+                      $log.debug(e instanceof SyntaxError); // true
+                      $log.debug(e.message);                // "missing ; before statement"
+                      $log.debug(e.name);                   // "SyntaxError"
+                      $log.debug(e.fileName);               // "Scratchpad/1"
+                      $log.debug(e.lineNumber);             // 1
+                      $log.debug(e.columnNumber);           // 4
+                      $log.debug(e.stack);                  // "@Scratchpad/1:2:3\n"
+                    }
                     contentdtl.push([
                         obj,
-                    {text:  students[i].studentname, style: ['mediumlines','botfiller']},
+//                    {text:  students[i].studentname, style: ['mediumlines','botfiller']},
                     pagebreak
                         ]);
 
@@ -2718,7 +2791,68 @@ $log.debug('school', vm.userdta);
             		},
             		dashed: {
             		    dash: {length: 5}
-            		}
+            		},
+
+        		  bigtop: {
+        		    margin: [0,0,0,0]
+        		  },
+        		  topfiller: {
+        		    margin: [0,40]
+        		  },
+        		  botfiller: {
+        		    margin: [0,5]
+        		  },
+        		  ymcabotfiller: {
+        		    margin: [0,12]
+        		  },
+        		  spread: {
+        		    margin: [0,5]
+        		  },
+        		  signature: {
+        		    width: 150,
+        		    fontSize: 12
+        		  },
+        		  smalllines: {
+        		    fontSize: 18,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx,
+        		    lineHeight: 1.5
+        		  },
+        		  extrasmalllines: {
+        		    fontSize: 10,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx
+        		  },
+        		  mediumlines: {
+        		    fontSize: 35,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx
+        		  },
+        		  ymcaheader: {
+        		    fontSize: 25,
+        		    bold: true,
+        		    margin: [270,45,0,20],
+        		    width: vm.pagewidthpx
+        		  },
+        		  biglines: {
+        		    fontSize: 23,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx
+        		  },
+        		header: {
+        			fontSize: 18,
+        			bold: true,
+        			margin: [0, 0, 0, 10]
+        		},
+        		subheader: {
+        			fontSize: 16,
+        			bold: true,
+        			margin: [0, 10, 0, 5]
+        		},
+
+            		
             	}
             
                   };
