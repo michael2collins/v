@@ -17,9 +17,15 @@
                                 && tableParams.row > 0 && tableParams.col > 0){
                             var table = "<table class='table  " 
                                 + (tableParams.style ? "table-" + tableParams.style : '')  
-                                + "'>";
+                                + "'" +
+                                " style='"
+                                +"margin-bottom: " + tableParams.tblMarginB 
+                                +"px; margin-top: " + tableParams.tblMarginT
+                                +"px; margin-left: " + tableParams.tblMarginL
+                                +"px; margin-right: " + tableParams.tblMarginR
+                                +"px; '>";
                             var colWidth = 100/tableParams.col;
-                            var col = '<col width="' + colWidth + '%" >';
+                            var col = "<col width='" + colWidth + "%' >";
                             for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
                                 table += col;
                             }
@@ -27,7 +33,7 @@
                                 var row = "<tr>";
                                 for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
                                     row += "<td" 
-//                                        + (idxRow == 0 ? ' style="width: ' + colWidth + '%;"' : '')
+//                                        + (idxRow == 0 ? " style='width: " + "colWidth" + "%;'" : "")
                                         +">Sample Cell</td>";
                                 }
                                 table += row + "</tr>";
@@ -52,7 +58,9 @@
                     				['html', 'charcount']
                     			];
 //                    				['html', 'insertImage', 'insertLink', 'charcount']
-                    			
+
+                    taOptions.disableSanitizer = true;
+                    
                     taRegisterTool('insertTable', {
                         iconclass: 'fa fa-table',
                         tooltiptext: 'Insert table',
@@ -67,6 +75,10 @@
                                 keyboard: false,
                                 controller: ['$scope', '$uibModalInstance', function($scope, $uibModalInstance) {
                                     $scope.newtable ={};
+                                    $scope.newtable.tblMarginL = 25;
+                                    $scope.newtable.tblMarginR = 25;
+                                    $scope.newtable.tblMarginT = 5;
+                                    $scope.newtable.tblMarginB = 5;
                                     $scope.tablestyles = [
                                                           { name: 'Bordered', value: 'bordered' },
                                                           { name: 'Striped', value: 'striped' },
@@ -2120,6 +2132,12 @@ $log.debug('school', vm.userdta);
                             "table-headerlineonly": ["headerLineOnly"],
                             "table-lighthorizontallines": ["lightHorizontalLines"]
                         };
+            var marginConversion = {
+                "margin-left": "marginLeft",
+                "margin-right": "marginRight",
+                "margin-top": "marginTop",
+                "margin-bottom": "marginBottom"
+            };
             function ParseContainer(cnt, e, p, styles, parseType) {
             var elements = [];
             var children = e.childNodes;
@@ -2180,6 +2198,11 @@ $log.debug('school', vm.userdta);
                             o.margin = [parseInt(st[1]), 0, 0, 0];
                             break;
                         }
+                      case "padding-right": 
+                        {
+                            o.margin = [0, 0, parseInt(st[1]), 0];
+                            break;
+                        }
                       case "font-size":
                         {
                           o.fontSize = parseInt(st[1]);
@@ -2235,6 +2258,18 @@ $log.debug('school', vm.userdta);
                           }
                           break;
                         }
+                    case "margin-bottom":
+                        o.marginBottom = parseInt(st[1]);
+                        break;
+                    case "margin-top":
+                        o.marginTop = parseInt(st[1]);
+                        break;
+                    case "margin-left":
+                        o.marginLeft = parseInt(st[1]);
+                        break;
+                    case "margin-right":
+                        o.marginRight = parseInt(st[1]);
+                        break;
                     case "color":
                         o.color = parseColor(st[1]);
                         break;
@@ -2411,10 +2446,10 @@ $log.debug('school', vm.userdta);
             {
                   var t = create("table", {
                                     headerRows: 1,
-                                    style: 'tableExample',
+//                                    style: 'tableExample',
                                     widths: [],
-                                    body: [] ,
-                                    col: []
+                                    body: [] 
+//                                    col: []
                                     });
                   var border = e.getAttribute("border");
                   var isBorder = false;
@@ -2444,17 +2479,17 @@ $log.debug('school', vm.userdta);
                         }
                   }
                   
-                  p = ParseContainer(t.table.col, e, p, styles,parseType);
+  //                p = ParseContainer(t.table.col, e, p, styles,parseType);
             
                   var colwcalc = e.getElementsByTagName("col");
                   if (colwcalc) {
                       for (var iter=0;iter<colwcalc.length;iter++) {
-                          var tmp = colwcalc[iter].width.replace(/\%/g, '')*(vm.pagewidthpx-vm.pageMarginL-vm.pageMarginR)/100;
-                          t.table.widths.push(tmp);
+                          var tmp = colwcalc[iter].width.replace(/\%/g, '')*(vm.pagewidthpx-vm.pageMarginL-vm.pageMarginR)/vm.pagewidthpx;
+                          t.table.widths.push(tmp + '%');
                       }
                   }
                   //only need it for the widths, as the col is not supported in pdfmake
-                  delete t.table.col;
+    //              delete t.table.col;
 
                   p = ParseContainer(t.table.body, e, p, styles,parseType);
 
@@ -2472,8 +2507,32 @@ $log.debug('school', vm.userdta);
                             t.table.widths.push(w[k]);
                       }
                   }
-                  
-                  cnt.push(t);
+
+                  ComputeStyle(t.table, styles);
+                  typeof(t.table.marginLeft) !== 'undefined' ?  delete t.table.marginLeft : '';
+                  typeof(t.table.marginRight) !== 'undefined' ?  delete t.table.marginRight : '';
+                  typeof(t.table.marginTop) !== 'undefined' ?  delete t.table.marginTop : '';
+                  typeof(t.table.marginBottom) !== 'undefined' ?  delete t.table.marginBottom : '';
+                  var margins = [];
+                  var marg=[];
+                  var mlen;
+                  if (styles.length > 0) {
+                       var st = create("stack");
+                      st.stack.push(t);
+                      for (var iter=0;iter < styles.length;iter++){
+                          marg = styles[iter].split(":");
+                          if (marg[0].includes("margin")) {
+                            if (typeof(marginConversion[marg[0]]) !== 'undefined') {
+                                mlen = parseInt(marg[1],10);
+                                st[marginConversion[marg[0]]] = mlen;
+                            }
+                          }
+                      }
+                      cnt.push(st);
+                  } else {
+                      cnt.push(t);
+                  }
+
                   break;
                 }
               case "tbody":
@@ -2514,7 +2573,9 @@ $log.debug('school', vm.userdta);
                     var cspan = e.getAttribute("colspan");
                     if (cspan)
                         st.colSpan = parseInt(cspan,10);
-                    p = ParseContainer(st.stack, e, p, styles, parseType);
+                        //table style drifting down
+//                    p = ParseContainer(st.stack, e, p, styles, parseType);
+                    p = ParseContainer(st.stack, e, p, [], parseType);
                     cnt.push(st);
                     break;
                 }

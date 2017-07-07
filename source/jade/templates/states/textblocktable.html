@@ -24,6 +24,42 @@
                     <option value="">No border</option>
                 </select>
           </div>
+          <div class="form-group">
+            <label for="tblMarginL"> Margin Left</label>
+              <input id="tblMarginL" type="number" name="tblMarginL" 
+                ng-model="newtable.tblMarginL" 
+                required
+                class="form-control">
+              </input>
+                <p class="help-block delete-red" ng-show="form.tblMarginL.$error.number">Invalid number</p>
+          </div>
+          <div class="form-group">
+            <label for="tblMarginT"> Top</label>
+              <input id="tblMarginT" type="number" name="tblMarginT" 
+                ng-model="newtable.tblMarginT" 
+                required
+                class="form-control">
+              </input>
+                <p class="help-block delete-red" ng-show="form.tblMarginT.$error.number">Invalid number</p>
+          </div>
+          <div class="form-group">
+            <label for="tblMarginR"> Right</label>
+              <input id="tblMarginR" type="number" name="tblMarginR" 
+                ng-model="newtable.tblMarginR" 
+                required
+                class="form-control">
+              </input>
+                <p class="help-block delete-red" ng-show="form.tblMarginR.$error.number">Invalid number</p>
+          </div>
+          <div class="form-group">
+            <label for="tblMarginB"> Bottom</label>
+              <input id="tblMarginB" type="number" name="tblMarginB" 
+                ng-model="newtable.tblMarginB" 
+                required
+                class="form-control">
+              </input>
+                <p class="help-block delete-red" ng-show="form.tblMarginB.$error.number">Invalid number</p>
+          </div>
     </div>
     <div class="modal-footer">
         <button type="submit" class="btn btn-primary" ng-click="tblInsert()" ng-disabled="form.$invalid">Insert</button>
