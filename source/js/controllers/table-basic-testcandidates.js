@@ -1520,7 +1520,8 @@
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
-                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
+//                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
+                        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                         $log.debug('batch selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
 
@@ -1583,7 +1584,7 @@
                 for(var i=0,len=inputArray.length;i < len;i++){
                     var info = {
                         ContactID: inputArray[i].contactID,
-                        nextRank: inputArray[i].RankAchievedInTest,
+                        nextRank: inputArray[i].nextrank,
                         studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName,
                         FirstName: inputArray[i].FirstName ,
                         LastName: inputArray[i].LastName,
