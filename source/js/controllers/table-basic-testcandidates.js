@@ -15,7 +15,8 @@
                     function createTable(tableParams) {
                         if(angular.isNumber(tableParams.row) && angular.isNumber(tableParams.col)
                                 && tableParams.row > 0 && tableParams.col > 0){
-                            var table = "<table class='table  " 
+/*
+                                var table = "<table class='table  " 
                                 + (tableParams.style ? "table-" + tableParams.style : '')  
                                 + "'" +
                                 " style='"
@@ -24,6 +25,18 @@
                                 +"px; margin-left: " + tableParams.tblMarginL
                                 +"px; margin-right: " + tableParams.tblMarginR
                                 +"px; '>";
+*/
+                                var table = "<div "
+                                + " style='"
+                                +"margin-bottom: " + tableParams.tblMarginB 
+                                +"px; margin-top: " + tableParams.tblMarginT
+                                +"px; margin-left: " + tableParams.tblMarginL
+                                +"px; margin-right: " + tableParams.tblMarginR
+                                +"px; '>"
+                                + "<table class='table " 
+                                + (tableParams.style ? "table-" + tableParams.style : '')  
+                                + "'>" ;
+
                             var colWidth = 100/tableParams.col;
                             var col = "<col width='" + colWidth + "%' >";
                             for (var idxCol = 0; idxCol < tableParams.col; idxCol++) {
@@ -230,15 +243,36 @@
                             return false;
                         },
                         options: [
-                            { name: 'First name', value: 'FirstName' },
-                            { name: 'Last name',  value: 'Last name' },
-                            { name: 'Title',      value: 'Email' },
-                            { name: 'Company',    value: 'Company' },
-                            { name: 'Title',      value: 'Title' },
-                            { name: 'City',       value: 'City' },
-                            { name: 'State',      value: 'State' },
-                            { name: 'Country',    value: 'Country' },
-                            { name: 'Reference',  value: 'Reference' },
+                            { name: 'Student Name', value: 'studentname' },
+                            { name: 'First Name', value: 'FirstName' },
+                            { name: 'Last Name',  value: 'LastName' },
+                            { name: 'Certificate Date',  value: 'certDate' },
+                            { name: 'Next Rank',  value: 'nextRank' },
+                            { name: 'Test Start Time',  value: 'teststarttime' },
+                            { name: 'Test Fee',  value: 'testfee' },
+                            { name: 'Belt Size',  value: 'beltsize' },
+                            { name: 'Class Was',  value: 'classwas' },
+                            { name: 'Program Was',  value: 'pgmwas' },
+                            { name: 'daysAttended',  value: 'daysAttended' },
+                            { name: 'daysSinceLastTest',  value: 'daysSinceLastTest' },
+                            { name: 'lastPromoted',  value: 'lastPromoted' },
+                            { name: 'email',  value: 'email' },
+                            { name: 'address',  value: 'address' },
+                            { name: 'state',  value: 'state' },
+                            { name: 'city',  value: 'city' },
+                            { name: 'zip',  value: 'zip' },
+                            { name: 'parent',  value: 'parent' },
+                            { name: 'phone',  value: 'phone' },
+                            { name: 'birthday',  value: 'birthday' },
+                            { name: 'age',  value: 'age' },
+                            { name: 'Instructor 1',  value: 'instructor1' },
+                            { name: 'Instructor 2',  value: 'instructor2' },
+                            { name: 'Instructor 3',  value: 'instructor3' },
+                            { name: 'Instructor 4',  value: 'instructor4' },
+                            { name: 'Instructor Title1',  value: 'title1' },
+                            { name: 'Instructor Title2',  value: 'title2' },
+                            { name: 'Instructor Title3',  value: 'title3' },
+                            { name: 'Instructor Title4',  value: 'title4' }
                         ]
                     });
                     taOptions.toolbar[1].push('vars');
@@ -439,16 +473,17 @@
     '$timeout',
     'moment',
     'UserServices',
+    'TemplateServices',
+    'AttendanceServices',
     'textAngularManager'
     ];
 
     function TestCandidateTableBasicController($routeParams, $log, TestingServices,CalendarServices, $location, $window, $q,
-        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment, UserServices, textAngularManager) {
+        $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment, UserServices, TemplateServices, AttendanceServices, textAngularManager) {
         /* jshint validthis: true */
 
         var vm=this;
         
-//        vm.refreshthetestcandidate = refreshthetestcandidate;
         vm.gettestcandidateList = gettestcandidateList;
         vm.gettestcandidateDetails = gettestcandidateDetails;
         vm.updatetestcandidate = updatetestcandidate;
@@ -459,19 +494,11 @@
         vm.addToTest = addToTest;
         vm.removeFromTest = removeFromTest;        
         vm.doPDF = doPDF;
-//        vm.getColDefList = getColDefList;
-//        vm.setColDef = setColDef;
-//        vm.dateopen = dateopen;
-//        vm.getColDefs = getColDefs;
-//        vm.changeColDef = changeColDef;
-//        vm.saveState = saveState;
-//        vm.restoreState = restoreState;
         vm.setLimit = setLimit;
         vm.createtestcandidate = createtestcandidate;
-//        vm.getActiveTab = getActiveTab;
-//        vm.setActiveTab = setActiveTab;
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.createCertificate = createCertificate;
+        vm.genPDF = genPDF;
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500,5000];
         vm.data = [];
@@ -502,19 +529,28 @@
         vm.htmlcontentsubmit = htmlcontentsubmit;
         vm.htmlcontentreset = htmlcontentreset;
         vm.htmlcontentclear = htmlcontentclear;
+        vm.getTemplateNames = getTemplateNames;
+        vm.gettemplateDetails = gettemplateDetails;
+        vm.updatetemplate = updatetemplate;
+        vm.removetemplate = removetemplate;
+        vm.createtemplate = createtemplate;
         vm.setHeaderLogo = setHeaderLogo;
         vm.setFooterLogo = setFooterLogo;
         vm.setBodyImage = setBodyImage;
         vm.setBackgroundImage = setBackgroundImage;
         vm.htmlcontenttestPaste = htmlcontenttestPaste;
-        vm.htmlcontentname;
-        vm.htmlcontentwebsite;
+        vm.changeTab = changeTab;
+        vm.templatedetails="";
+        vm.templatename="";
+        vm.templatelist=[];
+        vm.htmlcontentname="";
+        vm.htmlcontentwebsite="";
         vm.encodeImageFileAsURL = encodeImageFileAsURL;
         vm.refresHtml = refresHtml;
-        vm.bodyimages;
-        vm.headerimages;
-        vm.footerimages;
-        vm.backgroundimages;
+        vm.bodyimages=[];
+        vm.headerimages=[];
+        vm.footerimages=[];
+        vm.backgroundimages=[];
         vm.htmlbackground=[];
         vm.pageSizes=['EXECUTIVE', 'FOLIO', 'LEGAL', 'LETTER', 'TABLOID'];
         vm.pageSize="LETTER";
@@ -525,12 +561,15 @@
         vm.pageMarginR=10;
         vm.pageMarginB=10;
         vm.pageMargins=[vm.pageMarginL,vm.pageMarginT,vm.pageMarginR,vm.pageMarginB];
-        vm.pagewidthpx;
-        vm.pageheightpx;
+        vm.pagewidthpx=0;
+        vm.pageheightpx=0;
         vm.dpi = 72;
         vm.maxHeaderHeight = 200;
         vm.maxFooterHeight = 200;
         vm.calcsizes = calcsizes;
+        vm.mycontentheader;
+        vm.mycontent;
+        vm.mycontentfooter;
 
 
 //            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> 
@@ -674,8 +713,8 @@
         function setBackgroundImage() {
             var rptwidth = 792;
             var rptheight = 600;
-            var rptwidth = vm.pagewidthpx;
-            var rptheight = vm.pageheightpx;
+             rptwidth = vm.pagewidthpx;
+             rptheight = vm.pageheightpx;
 
             vm.htmlbackground = {      
                 background: [{
@@ -714,8 +753,23 @@
             setGridOptions();
             setResGridOptions();
             getUserDetails();
-        }
+            getTemplateNames('').then(function() {
+                $log.debug('activate eventdetails fetched');
+            });
 
+        }
+    function changeTab(tabname) {
+        if (tabname === 'tab-test') {
+//            setGridOptions();
+//            setResGridOptions();
+            
+        } else if (tabname === 'tab-testmanage') {
+ //           setResGridOptions();
+        } else if (tabname === 'tab-testmaterial') {
+        } else {
+            $log.debug('dont know tab', tabname);
+        }
+    }
     function getUserDetails(){
         $log.debug('getUserDetails entered');
            return UserServices.getUserDetails().then(function(data) {
@@ -956,50 +1010,30 @@
                 throw e;
             });
         }
-/*
-        function refreshthetestcandidate(testingid) {
-            $log.debug('refreshthetestcandidate entered ',testingid);
 
-            var refreshpath = encodeURI('../v1/testcandidatelist?thelimit=' + vm.limit );
-
-            $log.debug('refreshthetestcandidate path:', refreshpath);
-            
-             return TestingServices.gettestcandidateList(refreshpath).then(function(data){
-                    $log.debug('refreshtestcandidates returned data');
-                    $log.debug(data);
-                    vm.resgridOptions.data = data.testcandidateList; 
-                    return vm.resgridOptions.data;
-                },
-                function (error) {
-                    $log.debug('Caught an error refreshthetestcandidate, going to notify:', error); 
-                    vm.data = [];
-                    vm.message = error;
-                    Notification.error({message: error, delay: 5000});
-                    return ($q.reject(error));
-                }).
-                finally(function () { 
-                    vm.loading = false; 
-                    vm.loadAttempted = true;
-                }
-                );
-
-        }
-*/
         function gettestcandidateList(thetestname,thetesttype) {
             $log.debug('gettestcandidateList entered',thetestname,thetesttype);
             var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype );
-//view testcandidatelist
+            var mom;
+            var now = moment();
+
             $log.debug('gettestcandidateList path:', refreshpath);
             
              return TestingServices.gettestcandidateList(refreshpath).then(function(data){
                     $log.debug('gettestcandidateList returned data');
                     $log.debug(data);
-                    vm.resgridOptions.data = data.testcandidateList; 
-                    return vm.data;
+                    if (typeof(data) !== 'undefined' && data.testcandidateList.error !== false) {
+                        for (var iter=0;iter < data.testcandidateList.length;iter++) {
+                            mom = moment(data.testcandidateList[iter].lastpromoted);
+                            data.testcandidateList[iter].daysSinceLastTest = now.diff(mom, 'days');
+                        }
+                        vm.resgridOptions.data = data.testcandidateList; 
+                    }
+                    return;
                 },
                 function (error) {
                     $log.debug('Caught an error gettestcandidateList:', error); 
-                    vm.data = [];
+                    vm.resgridOptions.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -1084,324 +1118,6 @@
 
         }
 
-/*
-        function setColDef(indata) {
-            var path = "../v1/coldef";
-            $log.debug('about setColDefs ', indata, path);
-            return TestingServices.setColDefs(path, indata)
-                .then(function(data){
-                    $log.debug('setColDefs returned data');
-                    $log.debug(data);
-                    vm.thiscoldef = data;
-                    $log.debug(vm.thiscoldef);
-                    $log.debug(vm.thiscoldef.message);
-                    vm.message = vm.thiscoldef.message;
-                    getColDefList();
-
-                  
-                }).catch(function(e) {
-                    $log.debug('setColDefs failure:');
-                    $log.debug("error", e);
-                    vm.message = e;
-                    Notification.error({message: e, delay: 5000});
-                    throw e;
-                });
-        }
-
-        function changeColDef(colsubkey){
-            $log.debug('changeColDef entered');
-            if (isNewColDef(colsubkey)) {
-                saveState();
-            }
-            getColDefs(vm.colsubkey).then(function(data) {
-                //vm.gcolumns is filled
-                $log.debug(" controller changeColDef returned with:",data, vm.colsubkey);
-                $log.debug(" controller changeColDef vmstate is:", vm.state);
-
-                 if (vm.state != {}) {
-                     restoreState(vm.state);
-                 }
-
-             },function(error) {
-                $log.debug('cols not stored:', error);
-             });
-
-             
-        }
-        
-        function getColDefs(colsubkey) {
-            $log.debug('getColDefs entered');
-            var refreshpath = encodeURI('../v1/coldefs?colkey=' + 
-                vm.colkey + "&colsubkey=" + colsubkey);
-            var holdgcol = vm.gcolumns;
-            
-            $log.debug('getColDefs path:', refreshpath);
-
-            if (colsubkey === null ) {
-                error = "Nothing selected";
-                return ($q.reject(error));
-            }
-
-             return TestingServices.getColDefs(refreshpath).then(function(data){
-                    $log.debug('TestingServices in controller getColDefs returned data');
-                    $log.debug(data);
-                 //   vm.gcolumns = data.gcolumns[0][0]; 
-                 //   $log.debug('TestingServices in controller set gcolumns',vm.gcolumns);
-                    vm.state = JSON.parse(data.gcolumns[0][0]);
-                    $log.debug('TestingServices in controller set vm.state',vm.state);
-                    return vm.state;
-                },
-                function (error) {
-                    $log.debug('Caught an error getColDefs:', error); 
-                    vm.gcolumns = holdgcol;
-                    vm.message = error;
-                    Notification.error({message: error, delay: 5000});
-                    return ($q.reject(error));
-                }).
-                finally(function () { 
-                    vm.loading = false; 
-                    vm.loadAttempted = true;
-                }
-                );
-
-        }
-        
-        function getColDefList() {
-            $log.debug('getColDefList entered');
-            var refreshpath = encodeURI('../v1/coldeflist?colkey=' + 
-                vm.colkey );
-
-            $log.debug('getColDefList path:', refreshpath);
-            
-             return TestingServices.getColDefList(refreshpath).then(function(data){
-                    $log.debug('getColDefList returned data');
-                    $log.debug(data);
-                    vm.colsubkeys = data.colsubkeys; 
-                    return vm.data;
-                },
-                function (error) {
-                    $log.debug('Caught an error getColDefList:', error); 
-                    vm.colsubkeys = [];
-                    vm.message = error;
-                    Notification.error({message: error, delay: 5000});
-                    return ($q.reject(error));
-                }).
-                finally(function () { 
-                    vm.loading = false; 
-                    vm.loadAttempted = true;
-                }
-                );
-
-        }
-        
-
-
-
-        function setInitColDefs() {
-            vm.gcolumns = [];
-            vm.colsubkey="Default";
-
-            //if they are saved, then get those, otherwise default 
-            getColDefs(vm.colsubkey).then(function(data) {
-                //vm.gcolumns is filled
-                $log.debug(" controller getColDefs returned with:",data, vm.colsubkey);
-                $log.debug(" controller getColDefs vmstate is:", vm.state);
-
-        //         setGridOptions();
-
-
-             },function(error) {
-                $log.debug('cols not stored:', error);
-    
-
-             });
-
-                var coldef ={};
-                $log.debug('setGridOptions col count', vm.listA.length);
-
-                var defnumfilter = 
-                    [
-                        {
-                          condition: uiGridConstants.filter.GREATER_THAN,
-                          placeholder: '> than'
-                        },
-                        {
-                          condition: uiGridConstants.filter.LESS_THAN,
-                          placeholder: '< than'
-                        }
-                      ];
-                var filt=[];
-                for (var i=0, len = vm.listA.length; i < len; i += 3) {
-                    //$log.debug('vis', vm.listA[i+2]);
-                    var val = (vm.listA[i+2].toLowerCase() === "true");
-                    //$log.debug('vis', val);
-                    var agg = (
-                        vm.listA[i+1] === "number" ? uiGridConstants.aggregationTypes.avg :
-                        vm.listA[i+1] === "string" ? uiGridConstants.aggregationTypes.count :
-                        vm.listA[i+1] === "date" ? uiGridConstants.aggregationTypes.min :
-                        vm.listA[i+1] === "boolean" ? uiGridConstants.aggregationTypes.count :
-                         uiGridConstants.aggregationTypes.count
-                        );
-                    //$log.debug('agg', agg);
-                    if (vm.listA[i+1] === "number" ) {
-                        filt =   [
-                            {
-                              condition: uiGridConstants.filter.GREATER_THAN,
-                              placeholder: '> than'
-                            },
-                            {
-                              condition: uiGridConstants.filter.LESS_THAN,
-                              placeholder: '< than'
-                            }
-                          ];
-                    } else if (vm.listA[i+1] === "string" ) {
-
-                        filt =   [
-                            {
-                              condition: uiGridConstants.filter.STARTS_WITH,
-                              placeholder: 'Starts with'
-                            },
-                            {
-                              condition: uiGridConstants.filter.ENDS_WITH,
-                              placeholder: 'Ends with'
-                            },
-                            {
-                              condition: uiGridConstants.filter.CONTAINS,
-                              placeholder: 'Contains'
-                            },
-                            {
-                              condition: uiGridConstants.filter.EXACT,
-                              placeholder: 'Exactly'
-                            }
-                          ];
-
-                    } else if (vm.listA[i+1] === "date" ) {
-                         filt = "";
-                    } else {
-                        filt = "";
-                    }
-                    
-                  //  $log.debug('filt', filt);
-
-                    coldef = {
-                              field: vm.listA[i], 
-                               type: vm.listA[i+1],
-                            visible: val,
-                    enableFiltering: true, 
-                    aggregationType: agg,
-                            filters: filt,
-                    headerCellClass: vm.highlightFilteredHeader, 
-                     enableCellEdit: false };
-                    
-                    vm.gcolumns.push(coldef);
-                    
-                }
-                $log.debug('gcolumns in coldefs', vm.gcolumns);
-
-             setGridOptions();
-
-            refreshthetestcandidate().then(function(zdata) {
-                 $log.debug('refreshthetestcandidate returned', zdata);
-             if (vm.state != {}) {
-                 restoreState(vm.state);
-             }
-             });
-             
-
-        }
- 
-        function isNewColDef(thetestcandidate){
-            $log.debug('isNewColDef', thetestcandidate);
-            var isnew = true;
-            for (var i=0, len=vm.colsubkeys.length; i < len; i++) {
-              //  $log.debug('isNewColDef colsubkey:', vm.colsubkeys[i]);
-                if (vm.colsubkeys[i] == thetestcandidate) {
-                    $log.debug('isfound');
-                    isnew = false;
-                    break;
-                }
-            }
-            return isnew;
-        }
-        
-        function saveState() {
-            vm.state = vm.gridApi.saveState.save();
-            $log.debug('state', vm.state);
-            var thedata={
-                colkey: vm.colkey,
-                colsubkey: vm.colsubkey,
-                colcontent: vm.state
-            };
-            
-            setColDef(thedata);
-        }
- 
-        function restoreState(thestate) {
-            vm.gridApi.saveState.restore( $scope, thestate );
-            $log.debug('state', thestate);
-        }
-        
-        function setGridOptions() {
-
-            vm.gridOptions = {
-                enableFiltering: true,
-                paginationPageSizes: vm.limits,
-                paginationPageSize: 10,
-                columnDefs: vm.gcolumns,
-                //rowHeight: 15,
-                showGridFooter: true,
-                enableColumnResizing: true,
-                enableGridMenu: true,
-                showColumnFooter: true,
-                exporterCsvFilename: 'testcandidates.csv',
-                exporterPdfDefaultStyle: {fontSize: 9},
-                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
-                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
-                exporterPdfFooter: function ( currentPage, pageCount ) {
-                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
-                },
-                exporterPdfCustomFormatter: function ( docDefinition ) {
-                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
-                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
-                  return docDefinition;
-                },
-                exporterPdfOrientation: 'portrait',
-                exporterPdfPageSize: 'LETTER',
-                exporterPdfMaxGridWidth: 500,
-                
-                onRegisterApi: function(gridApi) {
-                    $log.debug('vm gridapi onRegisterApi');
-                     vm.gridApi = gridApi;
-
-                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'row selected ' + row.entity.ContactID;
-                        $log.debug(msg);
-
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                        $log.debug('selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
-                        
-                    });
-                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                        $log.debug("batch");  
-                        //note this will send the list of changed rows
-
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                        $log.debug('batch selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
-
-                    });
-
-
-                    }
-            };
-
-            $log.debug('setGridOptions gcolumns', vm.gcolumns);
-            $log.debug('setGridOptions gridOptions', vm.gridOptions);
-
-        }
-*/
         function setGridOptions() {
             vm.gridOptions = {
                 enableFiltering: true,
@@ -1555,7 +1271,8 @@
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+//                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                         $log.debug('selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
                         
@@ -1573,7 +1290,8 @@
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+//                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                         $log.debug('batch selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
 
@@ -1609,20 +1327,15 @@
                     field: 'LastName',
                     name: 'Last',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    visible: false
                 }, {
                     field: 'FirstName',
                     name: 'First',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    visible: true
                 }, {
-                    //<zoom src="./imageURL.jpg" frame="example1" img="image1" zoomlvl="1.5"></zoom>
-//                    field: 'contactpictureurl',
- //                   cellTemplate:"<img width=\"50px\" ng-src=\"./images/students/{{grid.getCellValue(row, col)}}\" lazy-src>",
-  //                  name: 'Picture',
-//                    headerCellClass: highlightFilteredHeader,
- //                   enableCellEdit: false
-  //              }, {
                     field: 'contactpictureurl',
                     minWidth: 100,
                     name: 'Picture',
@@ -1645,29 +1358,43 @@
                     field: 'BeltSize',
                     name: 'Belt size',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true,
+                    enableCellEdit: false,
                     visible: false
                 }, {
                     field: 'CurrentRank',
                     name: 'Rank',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: false,
+                    visible: true
                 }, {
                     field: 'RankAchievedInTest',
                     name: 'Next Rank',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    visible: true
                 }, {
-                    field: 'LastPromoted',
+                    field: 'lastpromoted',
                     name: 'Last Promoted',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true,
-                    visible: false
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'daysAttended',
+                    name: 'Attendance',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'daysSinceLastTest',
+                    name: 'Last Test',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
                 }, {
                     field: 'ContactType',
                     name: 'Contact',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: true,
+                    enableCellEdit: false,
 //                    filter: {term: "Student"},                    
                     visible: true
                 }, {
@@ -1675,36 +1402,66 @@
                     name: 'Ready',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false
-  /*              }, {
-                    field: 'agecat',
-                    name: 'Age Group',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
                 }, {
-                    field: 'classcat',
-                    name: 'Category',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'nclass',
-                    name: 'Class',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-                }, {
-                    field: 'pgrmcat',
-                    name: 'Program',
-                    headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false,
-                    visible: false
-    */            }, {
                     field: 'testingid',
                     name: 'testingid',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
                     visible: false
+                }, {
+                    field: 'address',
+                    name: 'address',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'city',
+                    name: 'city',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'state',
+                    name: 'state',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'zip',
+                    name: 'zip',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'phone',
+                    name: 'phone',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'parent',
+                    name: 'parent',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'email',
+                    name: 'email',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'classWas',
+                    name: 'classWas',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
+                }, {
+                    field: 'pgmWas',
+                    name: 'pgmWas',
+                    headerCellClass: highlightFilteredHeader,
+                    enableCellEdit: false,
+                    visible: true
                 }, {
                     field: 'testname',
                     name: 'Test',
@@ -1743,7 +1500,9 @@
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
-                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
+//                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
+                        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+
                         $log.debug('selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
                         
@@ -1826,7 +1585,18 @@
                         ContactID: inputArray[i].contactID,
                         nextRank: inputArray[i].RankAchievedInTest,
                         studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName,
-                        rankType: inputArray[i].ranktype
+                        FirstName: inputArray[i].FirstName ,
+                        LastName: inputArray[i].LastName,
+                        rankType: inputArray[i].ranktype,
+                        pgrmcat: inputArray[i].pgrmcat,
+                        nextClass: inputArray[i].nextClass,
+                        nclassid: inputArray[i].nclassid,
+                        nclass: inputArray[i].nclass,
+                        classcat: inputArray[i].classcat,
+                        agecat: inputArray[i].agecat,
+                        pgmWas: inputArray[i].pgmid,
+                        classWas: inputArray[i].classid
+                        
                     };
                     vm.selectedStudents.push(info);
                 }
@@ -2080,12 +1850,454 @@ $log.debug('school', vm.userdta);
          pdfMake.createPdf(docDefinition).open();
         }
 
+        function getTemplateNames(templatepartial) {
+            $log.debug('getTemplateNames entered');
+            var path = encodeURI('../v1/templatenames?templatepartial=' + templatepartial);
+
+            $log.debug('gettemplateNames path:', path);
+            
+             return TemplateServices.gettemplateNames(path).then(function(data){
+                    $log.debug('gettemplateNames returned data');
+                    $log.debug(data);
+                    vm.templatelist = data.templatelist; 
+                    return;
+                },
+                function (error) {
+                    $log.debug('Caught an error getTemplateNames:', error); 
+                    vm.templatelist = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }).
+                finally(function () { 
+                    vm.loading = false; 
+                    vm.loadAttempted = true;
+                }
+                );
+
+        }
+
+        function gettemplateDetails(templateSelected) {
+            //called by gettestdates
+            $log.debug('gettemplateDetails entered:',templateSelected.templatename);
+            var path = encodeURI('../v1/templatedetails?templatename=' + templateSelected.templatename );
+            var messagetxt;
+//view templatesource
+            $log.debug('gettemplateDetails path:', path);
+            
+             return TemplateServices.gettemplateDetails(path).then(function(data){
+                    $log.debug('gettemplateDetails returned data');
+                    $log.debug(data);
+                    if (typeof(data.templatedetails) !== 'undefined' && data.templatedetails.length > 0) {
+                        vm.templatedetails = data.templatedetails[0]; 
+                        $log.debug("details",data.templatedetails[0]);
+                 
+                        vm.htmlcontentdata.htmlcontentheader = vm.templatedetails.htmlheader === "NULL" ? '' : vm.templatedetails.htmlheader; 
+                        vm.htmlcontentdata.htmlcontent          = vm.templatedetails.htmlbody === "NULL" ? '' : vm.templatedetails.htmlbody; 
+                        vm.htmlcontentdata.htmlcontentfooter= vm.templatedetails.htmlfooter === "NULL" ? '' : vm.templatedetails.htmlfooter;
+                        vm.mycontentheader= vm.templatedetails.parsedheader ;
+                        vm.mycontent=  vm.templatedetails.parsedbody ;
+                        vm.mycontentfooter = vm.templatedetails.parsedfooter ;
+                        vm.headerimages[0]= vm.templatedetails.headerimage === "NULL" ? '' : vm.templatedetails.headerimage;
+                        vm.footerimages[0]= vm.templatedetails.footerimage === "NULL" ? '' : vm.templatedetails.footerimage; 
+                        vm.backgroundimages[0]= vm.templatedetails.backgroundimage === "NULL" ? '' : vm.templatedetails.backgroundimage; 
+                        vm.maxHeaderHeight= vm.templatedetails.maxHeaderHeight ; 
+                        vm.maxFooterHeight= vm.templatedetails.maxFooterHeight ; 
+                        vm.pageMarginL= vm.templatedetails.pageMarginLeft ; 
+                        vm.pageMarginR= vm.templatedetails.pageMarginRight ; 
+                        vm.pageMarginT= vm.templatedetails.pageMarginTop ; 
+                        vm.pageMarginB= vm.templatedetails.pageMarginBottom ; 
+                        vm.pageSize= vm.templatedetails.pageSize ; 
+                        vm.pageOrientation= vm.templatedetails.pageOrientation ; 
+                        vm.templatename = vm.templatedetails.templatename     ;                     
+                        //check for empty set and do message
+                        messagetxt = "templateDetails obtained";
+                        Notification.success({message: messagetxt, delay: 5000});
+                        
+                    } else {
+                        messagetxt = "No templates found";
+                        Notification.warning({message: messagetxt, delay: 5000});
+                    }
+                    return;
+                },
+                function (error) {
+                    $log.debug('Caught an error gettemplateDetails:', error); 
+                    vm.templatedetails = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }).
+                finally(function () { 
+                    vm.loading = false; 
+                    vm.loadAttempted = true;
+                }
+                );
+
+        }
+
+        function removetemplate(templatename) {
+
+            var path = "../v1/template";
+    
+            var thedata = {
+                templatename: templatename
+            };
+            $log.debug('about removetemplate ', path, thedata,vm.templatename);
+            return TemplateServices.removetemplate(path, thedata)
+                .then(function(data){
+                    $log.debug('removetemplate returned data');
+                    $log.debug(data, data.error);
+                    if (data.error === true) {
+                        $log.debug('removetemplate error returned', data.error);
+                        return ($q.reject(data));                        
+                    }
+                    
+                    vm.templatedetails = data;
+                    $log.debug(vm.templatedetails);
+                    $log.debug(vm.templatedetails.message);
+                    vm.message = vm.templatedetails.message;
+                    Notification.success({message: vm.message, delay: 5000});
+                    getTemplateNames('').then(function(zdata) {
+                        $log.debug('activate gettemplateNames fetched', zdata);
+                    },                     
+                        function (error) {
+                            $log.debug('Caught an error gettemplateDetails after update:', error); 
+                            vm.data = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
+    
+                    return;
+                }).catch(function(e) {
+                    $log.debug('removetemplate failure:');
+                    $log.debug("error", e);
+                    vm.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+        }
+
+        function updatetemplate(templatename) {
+            var saveSelectedStudents = vm.selectedStudents;
+            vm.selectedStudents = [];
+            pdfForElement('convertthis');
+            vm.selectedStudents = saveSelectedStudents;
+            
+            var path = "../v1/templateupdate"; // put wasn't working?
+            var thedata = setPDFdata(templatename);
+            $log.debug('about updatetemplate ', thedata, path);
+            
+            return TemplateServices.updateTemplate(path, thedata)
+                .then(function(data){
+                    $log.debug('updatetemplate returned data');
+                    $log.debug(data, data.error);
+                    if (data.error === true) {
+                        $log.debug('updateTemplate error returned', data.error);
+                        return ($q.reject(data));                        
+                    }
+                    vm.templatedetails = data;
+                    $log.debug(vm.templatedetails);
+                    $log.debug(vm.templatedetails.message);
+                    vm.message = vm.templatedetails.message;
+                  
+                }).catch(function(e) {
+                    $log.debug('updatetemplate failure:');
+                    $log.debug("error", e);
+                    vm.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+
+        }
+        function setPDFdata(templatename) {
+            var thedata = {
+                htmlheader : vm.htmlcontentdata.htmlcontentheader === undefined ? '' :  vm.htmlcontentdata.htmlcontentheader  , 
+                htmlbody : vm.htmlcontentdata.htmlcontent === undefined ? '' :   vm.htmlcontentdata.htmlcontent      , 
+                htmlfooter : vm.htmlcontentdata.htmlcontentfooter === undefined ? '' : vm.htmlcontentdata.htmlcontentfooter, 
+                parsedheader : vm.mycontentheader === undefined ? '' : vm.mycontentheader, 
+                parsedbody : vm.mycontent === undefined ? '' : vm.mycontent, 
+                parsedfooter : vm.mycontentfooter === undefined ? '' : vm.mycontentfooter , 
+                headerimage : vm.headerimages === null ? '' : vm.headerimages[0], 
+                footerimage : vm.footerimages === null ? '' : vm.footerimages[0],
+                backgroundimage : vm.backgroundimages === null ? '' : vm.backgroundimages[0],
+                maxHeaderHeight : vm.maxHeaderHeight === undefined ? 0 : vm.maxHeaderHeight, 
+                maxFooterHeight : vm.maxFooterHeight === undefined ? 0 : vm.maxFooterHeight, 
+                pageMarginLeft : vm.pageMarginL === undefined ? 0 : vm.pageMarginL, 
+                pageMarginRight : vm.pageMarginR === undefined ? 0 : vm.pageMarginR,
+                pageMarginTop : vm.pageMarginT === undefined ? 0 : vm.pageMarginT, 
+                pageMarginBottom : vm.pageMarginB === undefined ? 0 : vm.pageMarginB, 
+                pageSize : vm.pageSize === undefined ? 'LETTER' : vm.pageSize, 
+                pageOrientation : vm.pageOrientation === undefined ? 'portrait' : vm.pageOrientation, 
+                templateName : templatename                
+            };
+            return thedata;
+        }
+        function createtemplate(templatename) {
+            if (vm.selected === false) {
+                var error = "no rows selected for template";
+                Notification.error({message: error, delay: 5000});
+                return;                
+            }
+
+            var saveSelectedStudents = vm.selectedStudents;
+            vm.selectedStudents = [];
+            pdfForElement('convertthis');
+            vm.selectedStudents = saveSelectedStudents;
+
+            
+            var path = "../v1/template";
+
+            var thedata = setPDFdata(templatename);
+    
+            $log.debug('about createtemplate ', path, thedata,vm.templateName);
+            return TemplateServices.createtemplate(path, thedata)
+                .then(function(data){
+                    $log.debug('createtemplate returned data');
+                    $log.debug(data);
+                    if (typeof(data) !== 'undefined') {
+                        vm.templatedetails = data;
+                        $log.debug(vm.templatedetails);
+                        $log.debug(vm.templatedetails.message);
+                        vm.message = vm.templatedetails.message;
+                        Notification.success({message: vm.message, delay: 5000});
+                    } else {
+                        Notification.success({message: "Not created", delay: 5000});
+                    }
+                    getTemplateNames(templatename).then(function(zdata) {
+                        $log.debug('activate gettemplateNames fetched', zdata);
+                    },                     
+                        function (error) {
+                            $log.debug('Caught an error gettemplateNames after update:', error); 
+                            vm.data = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
+                    return vm.templatedetails;
+                }).catch(function(e) {
+                    $log.debug('createtemplate failure:');
+                    $log.debug("error", e);
+                    vm.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+        }
+
+        function getStyles() {
+            var styles = {
+            		tableExample: {
+            			margin: [0, 5, 0, 15]
+            		},
+            		tableHeader: {
+            			bold: true,
+            			fontSize: 13,
+            			color: 'black'
+            		},
+            		dashed: {
+            		    dash: {length: 5}
+            		},
+
+        		  bigtop: {
+        		    margin: [0,0,0,0]
+        		  },
+        		  topfiller: {
+        		    margin: [0,40]
+        		  },
+        		  botfiller: {
+        		    margin: [0,5]
+        		  },
+        		  ymcabotfiller: {
+        		    margin: [0,12]
+        		  },
+        		  spread: {
+        		    margin: [0,5]
+        		  },
+        		  signature: {
+        		    width: 150,
+        		    fontSize: 12
+        		  },
+        		  smalllines: {
+        		    fontSize: 18,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx,
+        		    lineHeight: 1.5
+        		  },
+        		  extrasmalllines: {
+        		    fontSize: 10,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx
+        		  },
+        		  mediumlines: {
+        		    fontSize: 35,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx
+        		  },
+        		  ymcaheader: {
+        		    fontSize: 25,
+        		    bold: true,
+        		    margin: [270,45,0,20],
+        		    width: vm.pagewidthpx
+        		  },
+        		  biglines: {
+        		    fontSize: 23,
+        		    bold: true,
+        		    alignment: 'center',
+        		    width: vm.pagewidthpx
+        		  },
+        		header: {
+        			fontSize: 18,
+        			bold: true,
+        			margin: [0, 0, 0, 10]
+        		},
+        		subheader: {
+        			fontSize: 16,
+        			bold: true,
+        			margin: [0, 10, 0, 5]
+        		},
+
+            		
+            	};
+            	return styles;
+            
+        }
         function doPDF() {
          //debug   var tb = textAngularManager.getToolbarScopes();
             pdfForElement('convertthis').open();
  // pdfForElement('convertthis');
         }
+        function genPDF(templatename) {
+            var mycontent = vm.mycontent;
+            var mycontentheader = vm.mycontentheader;
+            var mycontentfooter = vm.mycontentfooter;
+            var students = vm.selectedStudents;
+        var program = "and is therefore awarded the rank of";
+        var testfee = 25;
+            
+        var certdata={
+          certDate: vm.testdatelist.testdate,
+          teststarttime: vm.testdatelist.starttime,
+          testendtime: vm.testdatelist.endtime,
+          school: vm.userdta.school,
+          program: program,
+          testfee: testfee,
+          instructor1: vm.testdatelist.tester1,
+          instructor2: vm.testdatelist.tester2,
+          instructor3: vm.testdatelist.tester3,
+          instructor4: vm.testdatelist.tester4,
+          title1: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester1}).instructortitle,
+          title2: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester2}).instructortitle,
+          title3: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester3}).instructortitle,
+          title4: _.findWhere(vm.instructorlist, {name: vm.testdatelist.tester4}).instructortitle
+        };
 
+            $log.debug('after parsehmtl',mycontent,students, typeof(students), students.length);
+            var contentdtl = [];
+            var tmp;
+            var obj;
+            var pagebreak;
+            if (typeof(students) !== 'undefined' && students.length > 0 ) {
+                for (var i=0; i<students.length; i++) {       
+                    $log.debug('process student:',students[i]);
+                    if (i < students.length -1  ) {
+                        pagebreak = {pageBreak: 'before', text: ''}; 
+                    } else {
+                        pagebreak = {};
+                    }
+                    $log.debug("types", mycontent.length, typeof(pagebreak));
+                    tmp=mycontent;
+                    tmp = tmp.replace(/{studentname}/g,students[i].studentname);
+                    tmp = tmp.replace(/{nextRank}/g,students[i].nextRank);
+                    tmp = tmp.replace(/{certDate}/g,moment(certdata.certDate).format("MMM DD, YYYY"));
+                    tmp = tmp.replace(/{teststarttime}/g,moment(certdata.teststarttime).format("hh:mm A"));
+                    tmp = tmp.replace(/{testfee}/g,certdata.testfee);
+                    tmp = tmp.replace(/{school}/g,certdata.school);
+                    tmp = tmp.replace(/{program}/g,certdata.program);
+                    tmp = tmp.replace(/{instructor1}/g,certdata.instructor1);
+                    tmp = tmp.replace(/{instructor2}/g,certdata.instructor2);
+                    tmp = tmp.replace(/{instructor3}/g,certdata.instructor3);
+                    tmp = tmp.replace(/{instructor4}/g,certdata.instructor4);
+                    tmp = tmp.replace(/{title1}/g,certdata.title1);
+                    tmp = tmp.replace(/{title2}/g,certdata.title2);
+                    tmp = tmp.replace(/{title3}/g,certdata.title3);
+                    tmp = tmp.replace(/{title4}/g,certdata.title4);
+                    try {
+                        obj = JSON.parse('[' + tmp + ']');
+                    } catch (e) {
+                      $log.debug(e instanceof SyntaxError); // true
+                      $log.debug(e.message);                // "missing ; before statement"
+                      $log.debug(e.name);                   // "SyntaxError"
+                      $log.debug(e.fileName);               // "Scratchpad/1"
+                      $log.debug(e.lineNumber);             // 1
+                      $log.debug(e.columnNumber);           // 4
+                      $log.debug(e.stack);                  // "@Scratchpad/1:2:3\n"
+                    }
+                    contentdtl.push([
+                        obj,
+//                    {text:  students[i].studentname, style: ['mediumlines','botfiller']},
+                    pagebreak
+                        ]);
+
+                }
+
+            } else {
+                contentdtl = [mycontent];
+            }
+
+            try {
+                tmp = mycontentheader;
+                obj = JSON.parse('[' + tmp + ']');
+                mycontentheader = obj;
+                tmp = mycontentfooter;
+                obj = JSON.parse('[' + tmp + ']');
+                mycontentfooter = obj;
+            } catch (e) {
+              $log.debug(e instanceof SyntaxError); // true
+              $log.debug(e.message);                // "missing ; before statement"
+              $log.debug(e.name);                   // "SyntaxError"
+              $log.debug(e.fileName);               // "Scratchpad/1"
+              $log.debug(e.lineNumber);             // 1
+              $log.debug(e.columnNumber);           // 4
+              $log.debug(e.stack);                  // "@Scratchpad/1:2:3\n"
+            }
+
+            var background;
+            if (typeof(vm.backgroundimages[0]) !== undefined && vm.backgroundimages[0] !== "") {
+                calcsizes();
+                var rptwidth = vm.pagewidthpx;
+                var rptheight = vm.pageheightpx;
+                background = {      
+           			image: vm.backgroundimages[0],
+                   width: rptwidth,
+                   height: rptheight
+                };
+            } else {
+                background = '';
+            }
+
+            var docDefinition = {
+                  pageOrientation: vm.pageOrientation,
+                  pageMargins: [
+                      vm.pageMarginL,
+                      vm.pageMarginT,
+                      vm.pageMarginR,
+                      vm.pageMarginB
+                    ],
+                  pageSize: vm.pageSize,
+                  background,
+                    header: mycontentheader,
+                    content: contentdtl,
+                    footer: mycontentfooter,    
+                    styles: getStyles()
+                  };
+                  
+            var myJsonString = JSON.stringify(docDefinition);
+            $log.debug('doc json',myJsonString);
+            
+            
+            pdfMake.createPdf(docDefinition).open();
+        }
         function pdfForElement(id) {
             var students = vm.selectedStudents;
             var sl;
@@ -2405,13 +2617,19 @@ $log.debug('school', vm.userdta);
                 {
                   $log.debug("hr found", e.className);
                   var c;
+                  var xlen;
+                  if (pctlen) {
+                      xlen = vm.pagewidthpx*pctlen/100 - vm.pageMarginR - vm.pageMarginL;
+                  } else {
+                      xlen = vm.pagewidthpx - vm.pageMarginR - vm.pageMarginL;
+                  }
                   if (e.className === "dashed") {
-                    c = {"margin": [0,10,0,0],
+                    c = {"marginTop": 10,
                         "canvas": [ 
                         {
                             "type": 'line',
-                            "x1": 0, "y1": 10,
-                            "x2": 500, "y2": 10,
+                            "x1": 0 + vm.pageMarginL, "y1": 10,
+                            "x2": xlen, "y2": 10,
         					"dash": {length: 5},
                             "lineWidth": 2
                         }
@@ -2419,12 +2637,12 @@ $log.debug('school', vm.userdta);
                   };
                       
                   } else {
-                    c = {"margin": [0,10,0,0],
+                    c = {"marginTop": 10,
                         "canvas": [ 
                         {
                             "type": 'line',
-                            "x1": 0, "y1": 10,
-                            "x2": 500, "y2": 10,
+                            "x1": 0 + vm.pageMarinL, "y1": 10,
+                            "x2": xlen, "y2": 10,
                             "lineWidth": 2
                         }
                     ]
@@ -2508,7 +2726,7 @@ $log.debug('school', vm.userdta);
                       }
                   }
 
-                  ComputeStyle(t.table, styles);
+//                  ComputeStyle(t.table, styles);
                   typeof(t.table.marginLeft) !== 'undefined' ?  delete t.table.marginLeft : '';
                   typeof(t.table.marginRight) !== 'undefined' ?  delete t.table.marginRight : '';
                   typeof(t.table.marginTop) !== 'undefined' ?  delete t.table.marginTop : '';
@@ -2580,6 +2798,36 @@ $log.debug('school', vm.userdta);
                     break;
                 }
                 case "div":
+                {
+                  $log.debug("div found");
+                  
+                //    p = create("text");
+                    var st = create("stack");
+                //    st.stack.push(p);
+
+                  var margins = [];
+                  var marg=[];
+                  var mlen;
+                  if (styles.length > 0) {
+                      for (var iter=0;iter < styles.length;iter++){
+                          marg = styles[iter].split(":");
+                          if (marg[0].includes("margin")) {
+                            if (typeof(marginConversion[marg[0]]) !== 'undefined') {
+                                mlen = parseInt(marg[1],10);
+                                st[marginConversion[marg[0]]] = mlen;
+                            }
+                          }
+                          if (marg[0] === "width" && marg[1].includes("%") ) {
+                                pctlen = parseInt(marg[1],10);
+                          }
+                      }
+                  }                  
+                  p = ParseContainer(st.stack, e, p, [],parseType);
+//                  st.stack.push(p);
+            
+                  cnt.push(st);
+                  break;
+                }
               case "li":
                 {
                   $log.debug("li found");
@@ -2725,8 +2973,12 @@ $log.debug('school', vm.userdta);
             return p;
             }
             function ParseHtml(cnt, htmlText, parseType) {
+                //temp hack to remove junk
+                var rsb1 = new RegExp(/<span id="selectionBoundary_\d+_\d+" class="rangySelectionBoundary">[^<>]+?<\/span>/ig);
+            	var rsb2 = new RegExp(/<span class="rangySelectionBoundary" id="selectionBoundary_\d+_\d+">[^<>]+?<\/span>/ig);
+            	var rsb3 = new RegExp(/<span id="selectionBoundary_\d+_\d+" class="rangySelectionBoundary">[^<>]+?<\/span>/ig);                
                 if ($(htmlText).length > 0) {
-                    var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, ""));
+                    var html = $(htmlText.replace(/\t/g, "").replace(/\n/g, "").replace(rsb1,'').replace(rsb2,'').replace(rsb3,''));
                     var p = CreateParagraph();
                     for (var i = 0; i < html.length; i++){
                         ParseElement(cnt, html.get(i), p, parseType, []);
@@ -2753,14 +3005,16 @@ $log.debug('school', vm.userdta);
             var content=[];
             var headercontent=[];
             var footercontent=[];
-            //  ParseHtml(content, document.getElementById(id).outerHTML);
-//            var mycontent = ParseHtml(content, document.getElementById(id).innerHTML);
+
             parseType="body";
             var mycontent = ParseHtml(content,vm.htmlcontentdata.htmlcontent,parseType);
+            vm.mycontent = JSON.stringify(mycontent);
             parseType="header";
             var mycontentheader = ParseHtml(headercontent,vm.htmlcontentdata.htmlcontentheader,parseType);
+            vm.mycontentheader = JSON.stringify(mycontentheader);
             parseType="footer";
             var mycontentfooter = ParseHtml(footercontent,vm.htmlcontentdata.htmlcontentfooter,parseType);
+            vm.mycontentfooter = JSON.stringify(mycontentfooter);
             $log.debug('header',mycontentheader);
             $log.debug('footer',mycontentfooter);
             
@@ -2806,7 +3060,8 @@ $log.debug('school', vm.userdta);
             } else {
                 contentdtl = [mycontent];
             }
-
+            var pctlen;
+/*
             var helement = document.getElementById('testValidationHeader');
             var hpositionInfo = helement.getBoundingClientRect();
             var hheight = hpositionInfo.height;
@@ -2816,11 +3071,18 @@ $log.debug('school', vm.userdta);
             var fpositionInfo = felement.getBoundingClientRect();
             var fheight = fpositionInfo.height;
             var fwidth = fpositionInfo.width;
-
             $log.debug('header height, width',hheight,hwidth);
+*/
                 var background;
-                if (typeof(vm.htmlbackground.background) !== undefined) {
-                    background = vm.htmlbackground.background;
+                if (typeof(vm.backgroundimages[0]) !== undefined && vm.backgroundimages[0] !== "") {
+                    calcsizes();
+                    var rptwidth = vm.pagewidthpx;
+                    var rptheight = vm.pageheightpx;
+                    background = {      
+               			image: vm.backgroundimages[0],
+                       width: rptwidth,
+                       height: rptheight
+                    };
                 } else {
                     background = '';
                 }
@@ -2829,11 +3091,18 @@ $log.debug('school', vm.userdta);
                   pageOrientation: vm.pageOrientation,
                   // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
 //                  pageMargins: vm.pageMargins,
-                  pageMargins: [
+/*                  pageMargins: [
                       vm.pageMarginL,
                       hheight > vm.pageMarginT ? hheight : vm.pageMarginT,
                       vm.pageMarginR,
                       fheight > vm.pageMarginB ? fheight : vm.pageMarginB
+                    ],
+*/
+                  pageMargins: [
+                      vm.pageMarginL,
+                      vm.pageMarginT,
+                      vm.pageMarginR,
+                      vm.pageMarginB
                     ],
                   pageSize: vm.pageSize,
                   background,

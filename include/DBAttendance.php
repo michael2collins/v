@@ -319,6 +319,39 @@ class AttendanceDbHandler {
         }
     }
 
+    public function getAttendanceSum($contactid = NULL, $lastpromoted = NULL) {
+        error_log( print_R("getAttendanceSum entered", TRUE), 3, LOG);
+
+        $sql = "SELECT a.ContactId as contactid, sum( a.attended ) as daysAttended ";
+        $sql .= " FROM attendance a, ncontacts c ";
+        $sql .= " where  a.ContactId = c.ID  and a.ContactId = ? and DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(?, '%Y-%m-%d') group by a.ContactId ";
+
+        $schoolfield = "c.studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getAttendanceSum sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss", $contactid, $lastpromoted);
+
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getAttendanceSum list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getAttendanceSum list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getAttendanceSum list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+    }
+
+
     public function getRegistrationList($daynum, $thedow, $thelimit, $theclass) {
         error_log( print_R("getRegistrationList entered", TRUE), 3, LOG);
     error_log( print_R("attendance entered: daynum: $daynum thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);

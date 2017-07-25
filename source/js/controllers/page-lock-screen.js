@@ -18,11 +18,12 @@
             'PaymentServices',
             'ClassServices',
             'TestingServices',
+            'TemplateServices',
             '$q'
             ];
         function PageLockScreenController($scope, $log, $routeParams, 
                 $location, UserServices, AttendanceServices, CalendarServices,
-                EventServices,StudentServices,PaymentServices, ClassServices, TestingServices,
+                EventServices,StudentServices,PaymentServices, ClassServices, TestingServices,TemplateServices,
                 $q){
         /* jshint validthis: true */
 

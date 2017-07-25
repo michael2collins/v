@@ -176,16 +176,20 @@ $app->post('/testcandidateregistration', 'authenticate', function() use ($app) {
                         //if next rank is not entered on the resgrid, then calculate it
         $nextRank  = (isset($studentarr[$i]->nextRank) ? 
                         $studentarr[$i]->nextRank : "");
+        $classwas  = (isset($studentarr[$i]->classWas) ? 
+                        $studentarr[$i]->classWas : "");
+        $pgmwas  = (isset($studentarr[$i]->pgmWas) ? 
+                        $studentarr[$i]->pgmWas : "");
 
 
-        error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+        error_log( print_R("testcandidate ContactId: $ContactID\n", TRUE ), 3, LOG);
 
         $db = new TestingDBHandler();
         $response = array();
     
         // creating testcandidates
         $testcandidate = $db->createtestcandidate(
-            $testingid, $ContactID, $nextRank
+            $testingid, $ContactID, $nextRank, $classwas, $pgmwas
                                     );
     
 
@@ -444,6 +448,16 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["contactpictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $picroot . $slist["pictureurl"]);
         $tmp["birthday"] = (empty($slist["Birthday"]) ? "1900-01-01" : $slist["Birthday"]);
         $tmp["lastpromoted"] = (empty($slist["LastPromoted"]) ? "1900-01-01" : $slist["LastPromoted"]);
+        $tmp["daysAttended"] = (empty($slist["daysAttended"]) ? "NULL" : $slist["daysAttended"]);
+        $tmp["classWas"] = (empty($slist["classWas"]) ? "NULL" : $slist["classWas"]);
+        $tmp["pgmWas"] = (empty($slist["pgmWas"]) ? "NULL" : $slist["pgmWas"]);
+        $tmp["email"] = (empty($slist["email"]) ? "NULL" : $slist["email"]);
+        $tmp["address"] = (empty($slist["address"]) ? "NULL" : $slist["address"]);
+        $tmp["city"] = (empty($slist["city"]) ? "NULL" : $slist["city"]);
+        $tmp["zip"] = (empty($slist["zip"]) ? "NULL" : $slist["zip"]);
+        $tmp["state"] = (empty($slist["state"]) ? "NULL" : $slist["state"]);
+        $tmp["phone"] = (empty($slist["phone"]) ? "NULL" : $slist["phone"]);
+        $tmp["parent"] = (empty($slist["parent"]) ? "NULL" : $slist["parent"]);
 
         $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
         $tmp["nclassid"] = (empty($slist["nclassid"]) ? "NULL" : $slist["nclassid"]);
@@ -469,6 +483,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["age"] = "NULL";
         $tmp["birthday"] = "NULL";
         $tmp["lastpromoted"] = "NULL";
+        $tmp["daysAttended"] = "NULL";
         $tmp["nclassid"] = "NULL";
         $tmp["nclass"] = "NULL";
         $tmp["nclasssort"] = "NULL";
@@ -542,11 +557,276 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
         $tmp["nextrank"] = (empty($slist["nextrank"]) ? "NULL" : $slist["nextrank"]);
         $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
         $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+        $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+        $tmp["pgmid"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+        $tmp["registrationid"] = (empty($slist["registrationid"]) ? "NULL" : $slist["registrationid"]);
         array_push($response["testcandidatedetails"], $tmp);
     }
 
 
     echoRespnse(200, $response);
+});
+
+$app->get('/templatenames', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("templatenames entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $templatepartial = '';
+
+    if(array_key_exists('templatepartial', $allGetVars)){
+        $templatepartial = $allGetVars['templatepartial'];
+    }
+
+
+    $response = array();
+    $db = new TestingDBHandler();
+
+    // fetch task
+    $result = $db->getTemplateNames($templatepartial);
+    $response["error"] = false;
+    $response["templatelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["templatename"] = (empty($slist["templatename"]) ? "NULL" : $slist["templatename"]);
+        array_push($response["templatelist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+$app->get('/templatedetails', 'authenticate', function() use($app){
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("templatedetails entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $templatename = '';
+
+    if(array_key_exists('templatename', $allGetVars)){
+        $templatename = $allGetVars['templatename'];
+    }
+
+    error_log( print_R("templatedetails params: template: $templatename \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new TestingDBHandler();
+
+    // fetch task
+    $result = $db->getTemplateDetails($templatename);
+    $response["error"] = false;
+    $response["templatedetails"] = array();
+
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+             $tmp["htmlheader"] = (empty($slist["htmlheader"]) ? "NULL" : $slist["htmlheader"]);
+             $tmp["htmlbody"] = (empty($slist["htmlbody"]) ? "NULL" : $slist["htmlbody"]);
+             $tmp["htmlfooter"] = (empty($slist["htmlfooter"]) ? "NULL" : $slist["htmlfooter"]);
+             $tmp["parsedheader"] = (empty($slist["parsedheader"]) ? "NULL" : $slist["parsedheader"]);
+             $tmp["parsedbody"] = (empty($slist["parsedbody"]) ? "NULL" : $slist["parsedbody"]);
+             $tmp["parsedfooter"] = (empty($slist["parsedfooter"]) ? "NULL" : $slist["parsedfooter"]);
+             $tmp["headerimage"] = (empty($slist["headerimage"]) ? "NULL" : $slist["headerimage"]);
+             $tmp["footerimage"] = (empty($slist["footerimage"]) ? "NULL" : $slist["footerimage"]);
+             $tmp["backgroundimage"] = (empty($slist["backgroundimage"]) ? "NULL" : $slist["backgroundimage"]);
+             $tmp["maxHeaderHeight"] = (empty($slist["maxHeaderHeight"]) ? "NULL" : $slist["maxHeaderHeight"]);
+             $tmp["maxFooterHeight"] = (empty($slist["maxFooterHeight"]) ? "NULL" : $slist["maxFooterHeight"]);
+             $tmp["pageMarginLeft"] = (empty($slist["pageMarginLeft"]) ? "NULL" : $slist["pageMarginLeft"]);
+             $tmp["pageMarginRight"] = (empty($slist["pageMarginRight"]) ? "NULL" : $slist["pageMarginRight"]);
+             $tmp["pageMarginTop"] = (empty($slist["pageMarginTop"]) ? "NULL" : $slist["pageMarginTop"]);
+             $tmp["pageMarginBottom"] = (empty($slist["pageMarginBottom"]) ? "NULL" : $slist["pageMarginBottom"]);
+             $tmp["pageSize"] = (empty($slist["pageSize"]) ? "NULL" : $slist["pageSize"]);
+             $tmp["pageOrientation"] = (empty($slist["pageOrientation"]) ? "NULL" : $slist["pageOrientation"]);
+             $tmp["templatename"] = (empty($slist["templateName"]) ? "NULL" : $slist["templateName"]);
+        array_push($response["templatedetails"], $tmp);
+    }
+
+
+    echoRespnse(200, $response);
+});
+
+$app->post('/template', 'authenticate', function() use ($app) {
+
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("template before insert\n", TRUE ), 3, LOG);
+
+    $htmlheader = (isset($dataJsonDecode->thedata->htmlheader) ? $dataJsonDecode->thedata->htmlheader : "");
+    $htmlbody = (isset($dataJsonDecode->thedata->htmlbody) ? $dataJsonDecode->thedata->htmlbody : "");
+    $htmlfooter = (isset($dataJsonDecode->thedata->htmlfooter) ? $dataJsonDecode->thedata->htmlfooter : "");
+    $parsedheader = (isset($dataJsonDecode->thedata->parsedheader) ? $dataJsonDecode->thedata->parsedheader : "");
+    $parsedbody = (isset($dataJsonDecode->thedata->parsedbody) ? $dataJsonDecode->thedata->parsedbody : "");
+    $parsedfooter = (isset($dataJsonDecode->thedata->parsedfooter) ? $dataJsonDecode->thedata->parsedfooter : "");
+    $headerimage = (isset($dataJsonDecode->thedata->headerimage) ? $dataJsonDecode->thedata->headerimage : "");
+    $footerimage = (isset($dataJsonDecode->thedata->footerimage) ? $dataJsonDecode->thedata->footerimage : "");
+    $backgroundimage = (isset($dataJsonDecode->thedata->backgroundimage) ? $dataJsonDecode->thedata->backgroundimage : "");
+    $maxHeaderHeight = (isset($dataJsonDecode->thedata->maxHeaderHeight) ? $dataJsonDecode->thedata->maxHeaderHeight : "");
+    $maxFooterHeight = (isset($dataJsonDecode->thedata->maxFooterHeight) ? $dataJsonDecode->thedata->maxFooterHeight: "");
+    $pageMarginLeft = (isset($dataJsonDecode->thedata->pageMarginLeft) ? $dataJsonDecode->thedata->pageMarginLeft : "");
+    $pageMarginRight = (isset($dataJsonDecode->thedata->pageMarginRight) ? $dataJsonDecode->thedata->pageMarginRight : "");
+    $pageMarginTop = (isset($dataJsonDecode->thedata->pageMarginTop) ? $dataJsonDecode->thedata->pageMarginTop : "");
+    $pageMarginBottom = (isset($dataJsonDecode->thedata->pageMarginBottom) ? $dataJsonDecode->thedata->pageMarginBottom : "");
+    $pageSize = (isset($dataJsonDecode->thedata->pageSize) ? $dataJsonDecode->thedata->pageSize : "");
+    $pageOrientation = (isset($dataJsonDecode->thedata->pageOrientation) ? $dataJsonDecode->thedata->pageOrientation : "");
+    $templateName = (isset($dataJsonDecode->thedata->templateName) ? $dataJsonDecode->thedata->templateName : "");
+
+    error_log( print_R("templatekey: $templateName\n", TRUE ), 3, LOG);
+
+
+    $db = new TestingDBHandler();
+    $response = array();
+
+    // updating task
+    $templateid = $db->createTemplate($htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
+ $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
+ $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName
+                                );
+
+    if ($templateid > 0) {
+        $response["error"] = false;
+        $response["message"] = "templatecontent created successfully";
+        $response["$templateid"] = $templateid;
+        error_log( print_R("templatecontent created: $templateid\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($templateid == RECORD_ALREADY_EXISTED) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this templatecontent already existed";
+        error_log( print_R("templatecontent already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
+    } else {
+        error_log( print_R("after templatecontent result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $templateid, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create templatecontent. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+$app->post('/templateupdate','authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("template before update\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $htmlheader = (isset($dataJsonDecode->thedata->htmlheader) ? $dataJsonDecode->thedata->htmlheader : "");
+    $htmlbody = (isset($dataJsonDecode->thedata->htmlbody) ? $dataJsonDecode->thedata->htmlbody : "");
+    $htmlfooter = (isset($dataJsonDecode->thedata->htmlfooter) ? $dataJsonDecode->thedata->htmlfooter : "");
+    $parsedheader = (isset($dataJsonDecode->thedata->parsedheader) ? $dataJsonDecode->thedata->parsedheader : "");
+    $parsedbody = (isset($dataJsonDecode->thedata->parsedbody) ? $dataJsonDecode->thedata->parsedbody : "");
+    $parsedfooter = (isset($dataJsonDecode->thedata->parsedfooter) ? $dataJsonDecode->thedata->parsedfooter : "");
+    $headerimage = (isset($dataJsonDecode->thedata->headerimage) ? $dataJsonDecode->thedata->headerimage : "");
+    $footerimage = (isset($dataJsonDecode->thedata->footerimage) ? $dataJsonDecode->thedata->footerimage : "");
+    $backgroundimage = (isset($dataJsonDecode->thedata->backgroundimage) ? $dataJsonDecode->thedata->backgroundimage : "");
+    $maxHeaderHeight = (isset($dataJsonDecode->thedata->maxHeaderHeight) ? $dataJsonDecode->thedata->maxHeaderHeight : "");
+    $maxFooterHeight = (isset($dataJsonDecode->thedata->maxFooterHeight) ? $dataJsonDecode->thedata->maxFooterHeight : "");
+    $pageMarginLeft = (isset($dataJsonDecode->thedata->pageMarginLeft) ? $dataJsonDecode->thedata->pageMarginLeft : "");
+    $pageMarginRight = (isset($dataJsonDecode->thedata->pageMarginRight) ? $dataJsonDecode->thedata->pageMarginRight : "");
+    $pageMarginTop = (isset($dataJsonDecode->thedata->pageMarginTop) ? $dataJsonDecode->thedata->pageMarginTop : "");
+    $pageMarginBottom = (isset($dataJsonDecode->thedata->pageMarginBottom) ? $dataJsonDecode->thedata->pageMarginBottom : "");
+    $pageSize = (isset($dataJsonDecode->thedata->pageSize) ? $dataJsonDecode->thedata->pageSize : "");
+    $pageOrientation = (isset($dataJsonDecode->thedata->pageOrientation) ? $dataJsonDecode->thedata->pageOrientation : "");
+    $templateName = (isset($dataJsonDecode->thedata->templateName) ? $dataJsonDecode->thedata->templateName : "");
+
+    error_log( print_R("templateName: $templateName\n", TRUE ), 3, LOG);
+    error_log( print_R("htmlheader:\n", TRUE ), 3, LOG);
+    error_log( print_R($htmlheader, TRUE ), 3, LOG);
+
+ 
+    $templategood=0;
+    $templatebad=0;
+
+    $db = new TestingDBHandler();
+    $response = array();
+
+    // creating templates
+    $template = $db->updateTemplate(
+            $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
+             $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
+             $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName
+         );
+
+    if ($template > 0) {
+        error_log( print_R("Template updated: $template\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "Template created successfully";
+        $templategood = 1;
+        $response["template"] = $templategood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after updateTemplate result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $template, TRUE), 3, LOG);
+        $templatebad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to update template. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+ 
+});
+
+$app->delete('/template','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("template before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $templateName      = (isset($test->thedata->templatename)     ? 
+                    $test->thedata->templatename : "");
+
+    error_log( print_R("templateName: $templateName\n", TRUE ), 3, LOG);
+
+
+    $templategood=0;
+    $templatebad=0;
+
+    $db = new TestingDBHandler();
+    $response = array();
+
+    // creating templates
+    $template = $db->removeTemplate(
+        $templateName
+                                );
+
+    if ($template > 0) {
+        error_log( print_R("template removed: $template\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "template removed successfully";
+        $templategood = 1;
+        $response["template"] = $templategood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete template result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $template, TRUE), 3, LOG);
+        $templatebad = -1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove template. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
 });
 
 ?>

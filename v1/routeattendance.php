@@ -466,5 +466,45 @@ $app->get('/Attendancelist', 'authenticate', function() {
     echoRespnse(200, $response);
 });
 
+$app->get('/Attendancesum', 'authenticate', function() use($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("Attendancesum entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $lastpromoted = '';
+    $contactid = '';
+
+    if(array_key_exists('contactid', $allGetVars)){
+        $contactid = $allGetVars['contactid'];
+    }
+    if(array_key_exists('lastpromoted', $allGetVars)){
+        $lastpromoted = $allGetVars['lastpromoted'];
+    }
+
+    error_log( print_R("Attendancesum params: contactid: $contactid lastpromoted: $lastpromoted \n ", TRUE), 3, LOG);
+
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getAttendanceSum( $contactid, $lastpromoted);
+
+    $response["error"] = false;
+    $response["attendancesum"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["contactid"] = $slist["contactid"];
+        $tmp["daysAttended"] = $slist["daysAttended"];
+
+        array_push($response["attendancesum"], $tmp);
+
+    }
+
+    echoRespnse(200, $response);
+});
 
 ?>

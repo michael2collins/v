@@ -25,7 +25,8 @@
             updateAttendance: updateAttendance,
 //            getAttendance: getAttendance,
             setActiveTab: setActiveTab,
-            getActiveTab: getActiveTab
+            getActiveTab: getActiveTab,
+            getAttendanceSum: getAttendanceSum
         };
         return service;
         
@@ -41,28 +42,6 @@
      }
         
         
-/*
-        function getAllAttendances(path, configdata) {
-            $log.debug('getAllAttendances service entered');
-            $log.debug('path',path);
-            $log.debug('configdata',configdata);
-            var themethod="POST";
-            $log.debug('method',themethod);
-            var request = $http({
-                method: themethod,
-                url: path,
-              params: {
-                        },
-              headers: {'Content-Type': 'application/json'},
-                data: configdata
-            });
-            $log.debug('request', request);
-//            debugger;
-            response = null;
-            code = null;
-            return( request.then( handleSuccess, handleError ) );
-        }
-*/
 
         function refreshAttendances(path) {
             $log.debug('refreshAttendances service entered');
@@ -78,6 +57,12 @@
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
+        function getAttendanceSum(path) {
+            $log.debug('getAttendanceSum service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
 
         function getDOW() {
             var path = '../v1/DOW';
@@ -97,22 +82,6 @@
             return( request.then( handleSuccess, handleError ) );
         }
 
-/*        function getAttendance(path) {
-            return $http({method: 'GET', url: path}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getAttendance success:' + path);
-                    $log.debug(data);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getAttendance failure:' + path);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
-        }
-*/
         function setStudentReadyNextRank(path, readyness) {
                     $log.debug('setStudentReadyNextRank before put :',path, readyness);
                     var dta = {
@@ -165,37 +134,15 @@
         // from the API response payload.
         function handleSuccess( response ) {
             $log.debug(' success:');
-            $log.debug(response);
+            $log.debug(response, response.error);
+            if (response.error === true || response.data === null) {
+                $log.debug('attendanceServices error returned', response);
+                response.message = "attendanceServices error returned";
+                return ($q.reject(response));                        
+            }
+            
             return( response.data );
         }
-
-/*            function getFriends() {
-                    var request = $http({
-                        method: "get",
-                        url: "api/index.cfm",
-                        params: {
-                            action: "get"
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-                }
-                // I remove the friend with the given ID from the remote collection.
-                function removeFriend( id ) {
-                    var request = $http({
-                        method: "delete",
-                        url: "api/index.cfm",
-                        params: {
-                            action: "delete"
-                        },
-                        data: {
-                            id: id
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-                }
-
-                */
-
 
         }
  })();

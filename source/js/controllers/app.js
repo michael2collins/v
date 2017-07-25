@@ -55,6 +55,7 @@ var studentpick = {};
     'CalendarServices',
     'TestingServices',
     'EventServices',
+    'TemplateServices',
     'StudentServices',
     'PaymentServices',
     'ClassServices', 
@@ -78,6 +79,7 @@ var studentpick = {};
          CalendarServices,
          TestingServices,
          EventServices, 
+         TemplateServices, 
          StudentServices, 
          PaymentServices,
          ClassServices,
@@ -976,6 +978,7 @@ $(document).ready(function() {
             CalendarServices.setapikey(thekey);
             TestingServices.setapikey(thekey);
             EventServices.setapikey(thekey);
+            TemplateServices.setapikey(thekey);
             StudentServices.setapikey(thekey);
             PaymentServices.setapikey(thekey);
             ClassServices.setapikey(thekey);

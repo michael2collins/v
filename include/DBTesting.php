@@ -43,7 +43,7 @@ class TestingDbHandler {
  /**
      * Creating new testcandidate
      */
-    public function createtestcandidate($testid, $ContactID, $nextRank
+    public function createtestcandidate($testid, $ContactID, $nextRank, $classwas, $pgmwas
     ) {
 
         error_log( print_R("createtestcandidate entered\n", TRUE ),3, LOG);
@@ -56,16 +56,16 @@ class TestingDbHandler {
                                       
         $response = array();
 
-        $sql = "INSERT INTO testcandidates (testID, contactID, RankAchievedInTest) VALUES (?, ?, ? )";
+        $sql = "INSERT INTO testcandidates (testID, contactID, RankAchievedInTest, classwas, pgmwas) VALUES (?, ?, ?, ?, ? )";
 
         // First check if user already existed in db
         if (!$this->istestcandidateExists($testid,  $ContactID, $nextRank)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sss",
+                $stmt->bind_param("sssss",
                                   $testid ,
                                   $ContactID ,
-                                  $nextRank
+                                  $nextRank,$classwas,$pgmwas
                                      );
                     // Check for successful insertion
                 $stmt->execute();
@@ -83,7 +83,7 @@ class TestingDbHandler {
         } else {
             // User with same testcandidate existed
                 //update the rank
-            return $this->updatetestcandidate($testid,  $ContactID, $nextRank);
+            return $this->updatetestcandidate($testid,  $ContactID, $nextRank, $classwas, $pgmwas);
 
         }
 
@@ -133,21 +133,23 @@ class TestingDbHandler {
 
      */
     public function updatetestcandidate($testid,  $ContactID, 
-            $nextRank
+            $nextRank, $classwas, $pgmwas
         ) {
 
         $num_affected_rows = 0;
 
         $sql = "UPDATE testcandidates set ";
         $sql .= "  RankAchievedInTest = ? ";
+        $sql .= "  classwas = ? ";
+        $sql .= "  pgmwas = ? ";
         $sql .= " where testid = ? and  ContactID = ? ";
 
         error_log( print_R($sql, TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sss",
-                $nextRank,  $testid, $ContactID 
+            $stmt->bind_param("sssss",
+                $nextRank, $classwas, $pgmwas,  $testid, $ContactID 
                                      );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
@@ -191,9 +193,19 @@ class TestingDbHandler {
 
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
 
-        $sql = "SELECT * FROM testcandidatelist where testname = ? and testdescription = ?";
+//        $sql = "SELECT * FROM testcandidatelist where testname = ? and testdescription = ?";
+$sql = " Select x.*, j.daysAttended from (
+           SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, sum( a.attended ) as daysAttended 
+            FROM attendance a
+        right outer join ncontactrank cr on (a.ContactId = cr.contactID )
+            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d') 
+            group by a.ContactId, cr.ranktype, cr.currentrank
+            ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype and x.currentrank = j.currentrank)
+        where x.testname = ? and x.testdescription = ?
+        ";
 
-        $schoolfield = "studentschool";
+
+        $schoolfield = "x.studentschool";
         $sql = addSecurity($sql, $schoolfield);
 
         
@@ -358,6 +370,207 @@ class TestingDbHandler {
         }
 
     }
+
+    public function updateTemplate($htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
+         $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
+         $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName
+        ) {
+
+        $num_affected_rows = 0;
+        global $school;
+
+        $sql = "UPDATE pdftemplate set ";
+        $sql .= "   htmlheader = ?, htmlbody = ?, htmlfooter = ?, parsedheader = ?, parsedbody = ?, parsedfooter = ?, ";
+        $sql .= "   headerimage = ?, footerimage = ?, backgroundimage = ?, maxHeaderHeight = ?, maxFooterHeight = ?, pageMarginLeft = ?, ";
+        $sql .= "   pageMarginRight = ?, pageMarginTop = ?, pageMarginBottom = ?, pageSize = ?, pageOrientation = ? ";       
+        $sql .= " where templatename = ?  and school = ?";
+
+    	$null = NULL;
+        error_log( print_R($sql, TRUE ));
+        error_log( print_R($backgroundimage, TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sssssssssssssssssss",
+                $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
+                 $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
+                 $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $school
+             );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+        }
+        return $num_affected_rows >= 0;
+    }
+
+ 
+    public function getTemplateNames($theinput) {
+        $sql = "SELECT distinct templatename FROM pdftemplate ";
+        $sql .= " where templatename like '%" . $theinput . "%' "; 
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getTemplateNames sql after security: $sql", TRUE), 3, LOG);
+
+        
+        $sql .= " order by templatename ";
+        error_log( print_R("getTemplateNames sql: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getTemplateNames list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getTemplateNames list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getTemplateNames list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getTemplateDetails($theinput) {
+        $sql = "SELECT `id`, `htmlheader`, `htmlbody`, `htmlfooter`, `parsedheader`, `parsedbody`, `parsedfooter`, ";
+        $sql .= " `headerimage`, `footerimage`, `backgroundimage`, `maxHeaderHeight`, `maxFooterHeight`, `pageMarginLeft`, ";
+        $sql .= " `pageMarginRight`, `pageMarginTop`, `pageMarginBottom`, `pageSize`, `pageOrientation`, `templateName` ";
+        $sql .= " from pdftemplate  ";
+        $sql .= " where templatename = ? "; 
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getTemplateDetails sql after security: $sql", TRUE), 3, LOG);
+
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $theinput);
+            
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getTemplateDetails list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getTemplateDetails list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getTemplateDetails list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    private function isTemplateExists($Template) {
+
+    error_log( print_R("before isTemplateExists\n", TRUE ), 3, LOG);
+    error_log( print_R("template: $Template\n", TRUE ), 3, LOG);
+
+        
+        $sql = "SELECT templatename from pdftemplate WHERE templatename = ? ";
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("isTemplateExists sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
+        
+        $stmt->bind_param("s", $Template);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
+
+    public function createTemplate(
+         $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
+         $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
+         $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName        
+    ) {
+
+        global $school;
+        error_log( print_R("createTemplate entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "INSERT INTO pdftemplate (
+ htmlheader, htmlbody, htmlfooter, parsedheader, parsedbody, parsedfooter, 
+ headerimage, footerimage, backgroundimage, maxHeaderHeight, maxFooterHeight, pageMarginLeft, 
+ pageMarginRight, pageMarginTop, pageMarginBottom, pageSize, pageOrientation, templateName, school        
+            ) VALUES ";
+        $sql .= "  ( ?,?,?,?,?,?, ";
+        $sql .= "    ?,?,?,?,?,?, ";
+        $sql .= "    ?,?,?,?,?,?, ?)";
+
+        // First check if user already existed in db
+        if (!$this->isTemplateExists($templateName)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sssssssssssssssssss",
+ $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
+ $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
+ $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName , $school       
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        } else {
+            // User with same template existed
+            return RECORD_ALREADY_EXISTED;
+        }
+
+        return $response;
+    }
+    
+    public function removeTemplate($templateName
+    ) {
+
+        error_log( print_R("removeTemplate entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from pdftemplate  where templateName = ? and school = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $templateName, $school 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
 
 }
 ?>
