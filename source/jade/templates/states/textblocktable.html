@@ -25,6 +25,14 @@
                 </select>
           </div>
           <div class="form-group">
+                <label class="control-label" for="Sample">Sample Text option</label>
+                <select class="form-control input-block-level"
+                        ng-model="newtable.style"
+                        ng-options="samplestyle.value as samplestyle.name for samplestyle in samplestyles" id="SampleStyle">
+                    <option value="">No sample</option>
+                </select>
+          </div>
+          <div class="form-group">
             <label for="tblMarginL"> Margin Left</label>
               <input id="tblMarginL" type="number" name="tblMarginL" 
                 ng-model="newtable.tblMarginL" 

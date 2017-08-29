@@ -439,6 +439,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["contactID"] = (empty($slist["ContactID"]) ? "NULL" : $slist["ContactID"]);
         $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
         $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+        $tmp["FullName"] = $tmp["FirstName"] . ' ' . $tmp["LastName"];
         $tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
         $tmp["CurrentRank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
         $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
@@ -458,40 +459,16 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["state"] = (empty($slist["state"]) ? "NULL" : $slist["state"]);
         $tmp["phone"] = (empty($slist["phone"]) ? "NULL" : $slist["phone"]);
         $tmp["parent"] = (empty($slist["parent"]) ? "NULL" : $slist["parent"]);
-
-        $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
-        $tmp["nclassid"] = (empty($slist["nclassid"]) ? "NULL" : $slist["nclassid"]);
-        $tmp["nclass"] = (empty($slist["nclass"]) ? "NULL" : $slist["nclass"]);
-        $tmp["nclasssort"] = (empty($slist["nclasssort"]) ? "NULL" : $slist["nclasssort"]);
-        $tmp["nextClass"] = (empty($slist["nextClass"]) ? "NULL" : $slist["nextClass"]);
-        $tmp["pgrmcat"] = (empty($slist["pgrmcat"]) ? "NULL" : $slist["pgrmcat"]);
         $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
+        $tmp["pgmcat"] = (empty($slist["pgmcat"]) ? "NULL" : $slist["pgmcat"]);
         $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
+        $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+        $tmp["registrationtype"] = (empty($slist["registrationtype"]) ? "NULL" : $slist["registrationtype"]);
+        $tmp["pgm"] = (empty($slist["pgm"]) ? "NULL" : $slist["pgm"]);
+        $tmp["classtype"] = (empty($slist["classtype"]) ? "NULL" : $slist["classtype"]);
 
         $tmp["testingid"] = (empty($slist["testingid"]) ? "NULL" : $slist["testingid"]);
 
-                } else {
-        $tmp["contactID"] = "NULL";
-        $tmp["LastName"] = "NULL";
-        $tmp["FirstName"] = "NULL";
-        $tmp["BeltSize"] = "NULL";
-        $tmp["CurrentRank"] = "NULL";
-        $tmp["ranktype"] = "NULL";
-        $tmp["ContactType"] = "NULL";
-        $tmp["ReadyForNextRank"] = "NULL";
-        $tmp["contactpictureurl"] = "NULL";
-        $tmp["age"] = "NULL";
-        $tmp["birthday"] = "NULL";
-        $tmp["lastpromoted"] = "NULL";
-        $tmp["daysAttended"] = "NULL";
-        $tmp["nclassid"] = "NULL";
-        $tmp["nclass"] = "NULL";
-        $tmp["nclasssort"] = "NULL";
-        $tmp["nextClass"] = "NULL";
-        $tmp["pgrmcat"] = "NULL";
-        $tmp["classcat"] = "NULL";
-        $tmp["agecat"] = "NULL";
-        $tmp["testingid"] = "NULL";
         }
                 array_push($response["testcandidateList"], $tmp);
             }
@@ -643,6 +620,7 @@ $app->get('/templatedetails', 'authenticate', function() use($app){
              $tmp["pageSize"] = (empty($slist["pageSize"]) ? "NULL" : $slist["pageSize"]);
              $tmp["pageOrientation"] = (empty($slist["pageOrientation"]) ? "NULL" : $slist["pageOrientation"]);
              $tmp["templatename"] = (empty($slist["templateName"]) ? "NULL" : $slist["templateName"]);
+             $tmp["pagebreak"] = (empty($slist["pagebreak"]) ? "NULL" : $slist["pagebreak"]);
         array_push($response["templatedetails"], $tmp);
     }
 
@@ -679,6 +657,7 @@ $app->post('/template', 'authenticate', function() use ($app) {
     $pageSize = (isset($dataJsonDecode->thedata->pageSize) ? $dataJsonDecode->thedata->pageSize : "");
     $pageOrientation = (isset($dataJsonDecode->thedata->pageOrientation) ? $dataJsonDecode->thedata->pageOrientation : "");
     $templateName = (isset($dataJsonDecode->thedata->templateName) ? $dataJsonDecode->thedata->templateName : "");
+    $pagebreak = (isset($dataJsonDecode->thedata->pagebreak) ? $dataJsonDecode->thedata->pagebreak : "");
 
     error_log( print_R("templatekey: $templateName\n", TRUE ), 3, LOG);
 
@@ -689,7 +668,7 @@ $app->post('/template', 'authenticate', function() use ($app) {
     // updating task
     $templateid = $db->createTemplate($htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
  $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
- $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName
+ $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $pagebreak
                                 );
 
     if ($templateid > 0) {
@@ -743,6 +722,7 @@ $app->post('/templateupdate','authenticate', function() use ($app) {
     $pageSize = (isset($dataJsonDecode->thedata->pageSize) ? $dataJsonDecode->thedata->pageSize : "");
     $pageOrientation = (isset($dataJsonDecode->thedata->pageOrientation) ? $dataJsonDecode->thedata->pageOrientation : "");
     $templateName = (isset($dataJsonDecode->thedata->templateName) ? $dataJsonDecode->thedata->templateName : "");
+    $pagebreak = (isset($dataJsonDecode->thedata->pagebreak) ? $dataJsonDecode->thedata->pagebreak : "");
 
     error_log( print_R("templateName: $templateName\n", TRUE ), 3, LOG);
     error_log( print_R("htmlheader:\n", TRUE ), 3, LOG);
@@ -759,7 +739,7 @@ $app->post('/templateupdate','authenticate', function() use ($app) {
     $template = $db->updateTemplate(
             $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
              $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
-             $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName
+             $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $pagebreak
          );
 
     if ($template > 0) {
@@ -826,6 +806,88 @@ $app->delete('/template','authenticate', function() use ($app) {
         echoRespnse(400, $response);
     }
                         
+
+});
+
+$app->post('/testcandidatepromotion', 'authenticate', function() use ($app) {
+    // check for required params
+//    verifyRequiredParams(array('name', 'email', 'password'));
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("testcandidatepromotion before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $promotiongood=0;
+    $promotionbad=0;
+    $promotionexists=0;
+
+    $testDate  = (isset($dataJsonDecode->thedata->testDate) ? $dataJsonDecode->thedata->testDate : "");
+     
+    for($i = 0; $i < count($studentarr); $i++ ) {
+
+        error_log( print_R("cont: " . $studentarr[$i]->ContactID . "\n", TRUE ), 3, LOG);
+        error_log( print_R("rank: " . $studentarr[$i]->RankAchievedInTest . "\n", TRUE ), 3, LOG);
+        error_log( print_R("type: " . $studentarr[$i]->rankType . "\n", TRUE ), 3, LOG);
+
+        $ContactID  = (isset($studentarr[$i]->ContactID) ? 
+                        $studentarr[$i]->ContactID : "");
+        $RankAchievedInTest  = (isset($studentarr[$i]->RankAchievedInTest) ? 
+                        $studentarr[$i]->RankAchievedInTest : "");
+        $ranktype  = (isset($studentarr[$i]->rankType) ? 
+                        $studentarr[$i]->rankType : "");
+
+        error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+
+        $db = new TestingDBHandler();
+        $response = array();
+    
+        // creating promotions
+        $promotion = $db->promoteStudent(
+            $testDate, $ContactID, $RankAchievedInTest, $ranktype
+                                    );
+    
+        if ($promotion > -1) {
+            error_log( print_R("B=Number of promotions created: $promotion\n", TRUE ), 3, LOG);
+
+            $promotiongood += 1;
+        } else {
+            error_log( print_R("after createpromotion result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $promotion, TRUE), 3, LOG);
+            $promotionbad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($promotiongood > 0) {
+            $response["error"] = false;
+            $response["message"] = "promotion $promotiongood created successfully";
+            $response["promotion"] = $promotiongood;
+            error_log( print_R("promotion created: $promotiongood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after createpromotion result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $promotionbad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $promotionbad promotion. Please try again";
+            echoRespnse(400, $response);
+        }
+
+
+    // validating email address
+//    validateEmail($email);
+
+
 
 });
 

@@ -45,5 +45,8 @@
   },
   "engines": {
     "node": ">=0.8.0"
+  },
+  "dependencies": {
+    "ui-grid-auto-fit-columns": "^1.1.4"
   }
 }

@@ -38,7 +38,20 @@ class TestingDbHandler {
         return $num_rows > 0;
     }
 
+    private function ispromotionExists($ranktype, $ContactID) {
 
+    error_log( print_R("before ispromotionExists\n", TRUE ), 3, LOG);
+    error_log( print_R("contactid: $ContactID\n", TRUE ), 3, LOG);
+        
+        
+        $stmt = $this->conn->prepare("SELECT id from ncontactrank WHERE ranktype = ? and  contactID = ?");
+        $stmt->bind_param("ss", $ranktype, $ContactID);
+        $stmt->execute();
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+        $stmt->close();
+        return $num_rows > 0;
+    }
 
  /**
      * Creating new testcandidate
@@ -139,8 +152,8 @@ class TestingDbHandler {
         $num_affected_rows = 0;
 
         $sql = "UPDATE testcandidates set ";
-        $sql .= "  RankAchievedInTest = ? ";
-        $sql .= "  classwas = ? ";
+        $sql .= "  RankAchievedInTest = ?, ";
+        $sql .= "  classwas = ?, ";
         $sql .= "  pgmwas = ? ";
         $sql .= " where testid = ? and  ContactID = ? ";
 
@@ -190,10 +203,75 @@ class TestingDbHandler {
         return $num_affected_rows;
     }
 
+    public function promoteStudent(
+        $testDate, $ContactID, $RankAchievedInTest, $ranktype
+        ) {
+
+        $num_affected_rows = 0;
+
+        $sql = "UPDATE ncontactrank set ";
+        $sql .= "  currentrank = ?,  ";
+        $sql .= "  LastPromoted = ?  ";
+        $sql .= " where ContactID = ? and ranktype = ? ";
+
+        $histsql = "INSERT into ncontactmgmt (";
+        $histsql .= " contactid ,";
+        $histsql .= " contactmgmttype ,";
+        $histsql .= " contactDate ) ";
+        $histsql .= " values ( ?, ?, ?) ";
+
+        $histtype = $testDate . ' ' . $RankAchievedInTest;
+
+        error_log( print_R("$sql\n", TRUE ));
+        error_log( print_R("$histsql\n", TRUE ));
+
+        //       try {
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ssss",
+                  $RankAchievedInTest, $testDate, $ContactID, $ranktype
+                                 );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+
+            if ( $num_affected_rows > -1) {
+                if ($stmt = $this->conn->prepare($histsql) ) {
+                    error_log( print_R("histtype: $histtype\n", TRUE ));
+                    error_log( print_R("cont: $ContactID\n", TRUE ));
+                    error_log( print_R("date: $testDate\n", TRUE ));
+    
+                    $stmt->bind_param("sss",
+                                      $ContactID,
+                                      $histtype,
+                                      $testDate
+                                         );
+                        $result = $stmt->execute();
+        
+                        $stmt->close();
+                        // Check for successful insertion
+                        if ($result) {
+                        } else {
+                            // Failed to create history
+                            return NULL;
+                        }
+    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return -2;
+                }
+            }
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+            return -1;
+        }
+        return $num_affected_rows;
+    }
 
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
 
 //        $sql = "SELECT * FROM testcandidatelist where testname = ? and testdescription = ?";
+/*
 $sql = " Select x.*, j.daysAttended from (
            SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, sum( a.attended ) as daysAttended 
             FROM attendance a
@@ -203,11 +281,29 @@ $sql = " Select x.*, j.daysAttended from (
             ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype and x.currentrank = j.currentrank)
         where x.testname = ? and x.testdescription = ?
         ";
-
+*/
+$sql = "Select p.classcat, p.pgmcat, p.agecat, c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended from (
+           SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, sum( a.attended ) as daysAttended
+            FROM attendance a
+        right outer join ncontactrank cr on (a.ContactId = cr.contactID )
+            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
+            group by a.ContactId, cr.ranktype, cr.currentrank
+            ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype and x.currentrank = j.currentrank)
+Inner join nclass c on (x.classwas = c.id)
+Inner join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid )
+Inner join nclasslist l on (l.id = p.pgmid)
+        where x.testname = ? and x.testdescription = ?
+";
 
         $schoolfield = "x.studentschool";
         $sql = addSecurity($sql, $schoolfield);
-
+        $schoolfield = "c.school";
+        $sql = addSecurity($sql, $schoolfield);
+        $schoolfield = "l.school";
+        $sql = addSecurity($sql, $schoolfield);
+        $schoolfield = "p.school";
+        $sql = addSecurity($sql, $schoolfield);
+        
         
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
             $sql .= "  LIMIT " . $thelimit ;
@@ -373,7 +469,7 @@ $sql = " Select x.*, j.daysAttended from (
 
     public function updateTemplate($htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
          $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
-         $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName
+         $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $pagebreak
         ) {
 
         $num_affected_rows = 0;
@@ -382,7 +478,7 @@ $sql = " Select x.*, j.daysAttended from (
         $sql = "UPDATE pdftemplate set ";
         $sql .= "   htmlheader = ?, htmlbody = ?, htmlfooter = ?, parsedheader = ?, parsedbody = ?, parsedfooter = ?, ";
         $sql .= "   headerimage = ?, footerimage = ?, backgroundimage = ?, maxHeaderHeight = ?, maxFooterHeight = ?, pageMarginLeft = ?, ";
-        $sql .= "   pageMarginRight = ?, pageMarginTop = ?, pageMarginBottom = ?, pageSize = ?, pageOrientation = ? ";       
+        $sql .= "   pageMarginRight = ?, pageMarginTop = ?, pageMarginBottom = ?, pageSize = ?, pageOrientation = ?, pagebreak = ? " ;       
         $sql .= " where templatename = ?  and school = ?";
 
     	$null = NULL;
@@ -391,10 +487,10 @@ $sql = " Select x.*, j.daysAttended from (
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sssssssssssssssssss",
+            $stmt->bind_param("ssssssssssssssssssss",
                 $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
                  $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
-                 $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $school
+                 $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $pagebreak, $templateName, $school
              );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
@@ -442,7 +538,7 @@ $sql = " Select x.*, j.daysAttended from (
     public function getTemplateDetails($theinput) {
         $sql = "SELECT `id`, `htmlheader`, `htmlbody`, `htmlfooter`, `parsedheader`, `parsedbody`, `parsedfooter`, ";
         $sql .= " `headerimage`, `footerimage`, `backgroundimage`, `maxHeaderHeight`, `maxFooterHeight`, `pageMarginLeft`, ";
-        $sql .= " `pageMarginRight`, `pageMarginTop`, `pageMarginBottom`, `pageSize`, `pageOrientation`, `templateName` ";
+        $sql .= " `pageMarginRight`, `pageMarginTop`, `pageMarginBottom`, `pageSize`, `pageOrientation`, `templateName`, pagebreak ";
         $sql .= " from pdftemplate  ";
         $sql .= " where templatename = ? "; 
 
@@ -498,7 +594,7 @@ $sql = " Select x.*, j.daysAttended from (
     public function createTemplate(
          $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
          $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
-         $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName        
+         $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $pagebreak        
     ) {
 
         global $school;
@@ -509,20 +605,20 @@ $sql = " Select x.*, j.daysAttended from (
         $sql = "INSERT INTO pdftemplate (
  htmlheader, htmlbody, htmlfooter, parsedheader, parsedbody, parsedfooter, 
  headerimage, footerimage, backgroundimage, maxHeaderHeight, maxFooterHeight, pageMarginLeft, 
- pageMarginRight, pageMarginTop, pageMarginBottom, pageSize, pageOrientation, templateName, school        
+ pageMarginRight, pageMarginTop, pageMarginBottom, pageSize, pageOrientation, templateName, school, pagebreak        
             ) VALUES ";
         $sql .= "  ( ?,?,?,?,?,?, ";
         $sql .= "    ?,?,?,?,?,?, ";
-        $sql .= "    ?,?,?,?,?,?, ?)";
+        $sql .= "    ?,?,?,?,?,?, ?, ?)";
 
         // First check if user already existed in db
         if (!$this->isTemplateExists($templateName)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssssssssssssssssss",
+                $stmt->bind_param("ssssssssssssssssssss",
  $htmlheader, $htmlbody, $htmlfooter, $parsedheader, $parsedbody, $parsedfooter, $headerimage, 
  $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
- $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName , $school       
+ $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName , $school , $pagebreak       
                                      );
                     // Check for successful insertion
                 $stmt->execute();

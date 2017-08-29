@@ -41,7 +41,7 @@
                  <button ng-click="vm.gettestcandidateDetails(vm.TestCandidateSelected)" class="btn btn-green btn-default TestCandidateCreation">Refresh List</button>
               </div>
            </div>
-            <div class="col-md-12 row">
+            <div class="col-md-12 row" ng-show="vm.testdateshow()">
                  <h3 class="block-heading"> {{vm.testdatelist.eventtype}} from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
             </div>
             <div class="row">
@@ -94,34 +94,14 @@
             <div class="col-md-12">
                <form action="" novalidate name="edittest" class="form-horizontal">
                   <div class="form-body pal">
-                     <div class="row col-md-12" style="height: 70px;">
-                        <div class="col-md-3">
-                           <div class="select-box">
-                              <ui-select  ng-model="vm.templatenameSelected" 
-                                 theme="bootstrap" 
-                                 reset-search-input="false"
-                                 on-select="vm.gettemplateDetails($item)"
-                                 style="width: 300px;" 
-                                 title="Choose a test doc"
-                                 append-to-body="false">
-                                 <ui-select-match placeholder="Pick test document...">{{$select.selected.templatename}}</ui-select-match>
-                                 <ui-select-choices 
-                                    repeat="template in vm.templatelist | filter: $select.search track by $index"
-                                    refresh="vm.getTemplateNames($select.search)"
-                                    refresh-delay="0">
-                                    <div ng-bind-html="template.templatename | highlight: $select.search"></div>
-                                 </ui-select-choices>
-                              </ui-select>
-                           </div>
-                        </div>
-                        <div class="col-md-5">
-                           <button type="button" ta-button ng-click="vm.genPDF()">Download {{vm.templatenameSelected.templatename}}</button>
-                        </div>
-                     </div>
-                     <!--<button type="button" ng-click="vm.createCertificate()">Click Me!</button>-->
                      <div class="col-lg-12">
+                              before test-> Checklist, Intent Promote, e-Reminder, Certificate, Belt Labels <br/>
+                              after test-> To Test history, Promote, PostCard List <br/>
+                              Remove Candidate
+                              open contact, contact name, rank Ach'd Test, Test status, Testdate/time, Testers, TestType, Promodate, Attendence, Test name
+                        
                         <div class="row col-md-12" style="height: 70px;">
-                           <div class="col-md-4">
+                           <div class="col-md-3">
                               <div class="select-box ">
                                  <ui-select  ng-model="vm.TestCandidateSelected" 
                                     theme="bootstrap" 
@@ -143,17 +123,39 @@
                                  </ui-select>
                               </div>
                            </div>
-                           <div class="col-md-8">
-                              before test-> Checklist, Intent Promote, e-Reminder, Certificate, Belt Labels <br/>
-                              after test-> To Test history, Promote, PostCard List <br/>
-                              Remove Candidate
-                              open contact, contact name, rank Ach'd Test, Test status, Testdate/time, Testers, TestType, Promodate, Attendence, Test name
+                           <div class="col-md-5" style="height: 70px;" ng-show="!!vm.selected">
+                              <div class="col-md-7" >
+                                 <div class="select-box">
+                                    <ui-select  ng-model="vm.templatenameSelected" 
+                                       theme="bootstrap" 
+                                       reset-search-input="false"
+                                       on-select="vm.gettemplateDetails($item)"
+                                       style="width: 300px;" 
+                                       title="Choose a test doc"
+                                       append-to-body="false">
+                                       <ui-select-match placeholder="Pick test document...">{{$select.selected.templatename}}</ui-select-match>
+                                       <ui-select-choices 
+                                          repeat="template in vm.templatelist | filter: $select.search track by $index"
+                                          refresh="vm.getTemplateNames($select.search)"
+                                          refresh-delay="0">
+                                          <div ng-bind-html="template.templatename | highlight: $select.search"></div>
+                                       </ui-select-choices>
+                                    </ui-select>
+                                 </div>
+                              </div>
+                              <div class="col-md-5">
+                                 <button type="button" class="btn btn-green btn-default" ng-click="vm.genPDF()">Download {{vm.templatenameSelected.templatename}}</button>
+                              </div>
+                           </div>
+                           <div class="col-md-2" style="height: 70px;" ng-show="!!vm.selected">
+                              <button type="button" class="btn btn-green btn-default" ng-click="vm.createTestChecklist()">Test Checklist</button>
+                           </div>
+                           <div class="col-md-2" style="height: 70px;" ng-show="!!vm.selected">
+                              <button type="button" class="btn btn-green btn-default" ng-click="vm.promotetestcandidate()">Promote Students</button>
                            </div>
                         </div>
-                        <div>
-                        </div>
                         <div class="">
-                           <h3 class="block-heading"> {{vm.testdatelist.eventtype}} from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
+                           <h3 class="block-heading" ng-show="vm.testdateshow()"> {{vm.testdatelist.eventtype}} from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
                            <div class="row">
                               <div class="col-md-3">
                                  <div ng-class="{'has-error': edittest.tester1.$invalid, 'has-success': !edittest.tester1.$invalid}" class="form-group">
@@ -243,17 +245,15 @@
                         </div>
                      </div>
                      <div class="row col-md-12">
-                        <div ui-grid="vm.resgridOptions" ng-style="{height: (30*11)+140+'px'}"
+                        <div ui-grid="vm.resgridOptions" id="grid1" ng-style="{height: (30*11)+140+'px'}" 
                            ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
                            ui-grid-resize-columns ui-grid-pinning ui-grid-edit
                            ui-grid-selection ui-grid-move-columns  
                            ui-grid-exporter
+                            ui-grid-auto-fit-columns
                            class="mygrid" >
                            <div class="watermark" ng-show="!vm.resgridOptions.data.length">No data available</div>
                         </div>
-                     </div>
-                     <div>
-                        <!--    <div class="item" ng-show="false"><img src="images/logos/StudioDiplomaTemplate.png" alt="" class="img-responsive"/></div> -->
                      </div>
                   </div>
                </form>
@@ -411,7 +411,7 @@
                   </div>
                </div>
                <div class="col-md-12 row">
-                  <div class="input-icon right">
+                  <div class="input-icon right col-md-3">
                      <label for="pagesize">Pagesize</label>
                      <select id="pagesize" type="text" name="pagesize" 
                      ng-model="vm.pageSize" 
@@ -421,14 +421,23 @@
                      <option ng-repeat="iter in vm.pageSizes" ng-selected="{{iter==vm.pageSize}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
                      </select>
                   </div>
-                  <div class="input-icon right">
+                  <div class="input-icon right col-md-3">
                      <label for="orientation">Orientation</label>
                      <select id="orientation" type="text" name="orientation" 
-                     ng-model="vm.pageOrientation" 
+                        ng-model="vm.pageOrientation" 
                      required
                      ng-change(vm.calcsizes();)
                      class="form-control">
                      <option ng-repeat="iter in vm.pageOrientations" ng-selected="{{iter==vm.pageOrientation}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                     </select>
+                  </div>
+                  <div class="input-icon right col-md-3">
+                     <label for="pagebreak">Page Break?</label>
+                     <select id="pagebreak" type="text" name="pagebreak" 
+                        ng-model="vm.pagebreak" 
+                     required
+                     class="form-control">
+                     <option ng-repeat="iter in vm.pagebreaks" ng-selected="{{iter==vm.pagebreak}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
                      </select>
                   </div>
                </div>

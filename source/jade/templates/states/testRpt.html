@@ -1,0 +1,29 @@
+ <div class="modal-content" >
+    <div class="modal-header">
+    <b>Print or Export the Report</b>
+    </div>
+    <form name="form" novalidate >
+    <div class="modal-body">
+          <div>
+              <h1>Student/Belt Checklist for testing on {{vmnew.testDate}}</h1>
+              <h3>Test time: {{vmnew.testTime}}</h3>
+          </div>
+           <div class="row col-md-12">
+              <div ui-grid="vmnew.rptgridOptionsnew" id="grid1" ng-style="{height: (30*11)+140+'px'}"
+                 ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize 
+                 ui-grid-resize-columns 
+                 ui-grid-selection ui-grid-move-columns  
+                 ui-grid-exporter
+                 class="mygrid" >
+                 <div class="watermark" ng-show="!vmnew.rptgridOptionsnew.data.length">No data available</div>
+              </div>
+           </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" ng-click="vmnew.printAll()" ng-disabled="form.$invalid">Print All</button>
+        <button type="submit" class="btn btn-primary" ng-click="vmnew.printSelected()" ng-disabled="form.$invalid">Print Selected</button>
+        <button type="button" class="btn btn-default" ng-click="vmnew.cancel()">Close</button>
+    </div>
+    </form>
+</div>

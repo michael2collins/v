@@ -17,6 +17,10 @@
         var intervalValue = 5000; //milli
         var okNotify;
         var checktime;
+        var thisgrid;
+        var thisapi;
+        var testDate;
+        var testTime;
 
         var service = {
   //          getAlltasknamelists: getAlltasknamelists,
@@ -28,15 +32,40 @@
              createtestcandidate: createtestcandidate,
              removetestcandidate: removetestcandidate,
              updatetestcandidate: updatetestcandidate,
+             promotetestcandidate: promotetestcandidate,
              updateTesting: updateTesting,
-             getTestDates: getTestDates
+             getTestDates: getTestDates,
+             setGrid: setGrid,
+             getGrid: getGrid,
+             getGridApi: getGridApi,
+             getTestDate: getTestDate,
+             getTestTime: getTestTime
         };
         return service;
+
+        function setGrid(input,api,thedate,thestart) {
+            thisgrid = input;
+            thisapi = api;
+            testDate = thedate;
+            testTime = thestart;
+        }
+        function getGrid() {
+            return thisgrid;
+        }
+        function getGridApi() {
+            return thisapi;
+        }
+        function getTestDate() {
+            return testDate;
+        }
+        function getTestTime() {
+            return testTime;
+        }
+         function setapikey(key) {
+       //     $log.debug('setapikey', key);
+             apikey = key;
+        }
         
-     function setapikey(key) {
-   //     $log.debug('setapikey', key);
-         apikey = key;
-     }
         function getTestTypes(path) {
             $log.debug('getTestTypes service entered');
             $log.debug('path',path);
@@ -86,6 +115,18 @@
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
+        function promotetestcandidate(path, thedata ) {
+                    $log.debug('promotetestcandidate data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
         function getTestDates(path) {
             $log.debug('getTestDates service entered');
             $log.debug('path',path);

@@ -34,13 +34,15 @@
     'angularMoment',
     'textAngular',
     'appFilereader',
-    'angularSpectrumColorpicker','ui.bootstrap.dropdownToggle'
+    'angularSpectrumColorpicker','ui.bootstrap.dropdownToggle',
+    'ui.grid.autoFitColumns'
   //      'notifyme'
 
 //    'omr.directives'
 //    'webcam'
         //        'dynamicLayout'
         //
+    
         ])
 
     // allow DI for use in controllers, unit tests for lodash

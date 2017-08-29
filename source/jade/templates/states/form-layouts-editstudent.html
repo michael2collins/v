@@ -696,7 +696,7 @@
                                     minLength="3" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                       class="form-control">
                                     <option 
-                                      ng-repeat="r in vmstudent.RanksList.ranklist track by r.rankid" 
+                                      ng-repeat="r in vmstudent.ranklist.ranklist track by r.rankid" 
                                       placeholder="Select" 
                                       value="{{r.ranklist}}">{{r.ranklist}}</option>
                     
