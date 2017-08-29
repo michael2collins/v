@@ -174,8 +174,8 @@ $app->post('/testcandidateregistration', 'authenticate', function() use ($app) {
         $ContactID  = (isset($studentarr[$i]->ContactID) ? 
                         $studentarr[$i]->ContactID : "");
                         //if next rank is not entered on the resgrid, then calculate it
-        $nextRank  = (isset($studentarr[$i]->nextRank) ? 
-                        $studentarr[$i]->nextRank : "");
+        $nextRank  = (isset($studentarr[$i]->RankAchievedInTest) ? 
+                        $studentarr[$i]->RankAchievedInTest : "");
         $classwas  = (isset($studentarr[$i]->classWas) ? 
                         $studentarr[$i]->classWas : "");
         $pgmwas  = (isset($studentarr[$i]->pgmWas) ? 
@@ -183,6 +183,9 @@ $app->post('/testcandidateregistration', 'authenticate', function() use ($app) {
 
 
         error_log( print_R("testcandidate ContactId: $ContactID\n", TRUE ), 3, LOG);
+        error_log( print_R("testcandidate rankAchievedInTest: $nextRank\n", TRUE ), 3, LOG);
+        error_log( print_R("testcandidate classWas: $classwas\n", TRUE ), 3, LOG);
+        error_log( print_R("testcandidate pgmWas: $pgmwas\n", TRUE ), 3, LOG);
 
         $db = new TestingDBHandler();
         $response = array();

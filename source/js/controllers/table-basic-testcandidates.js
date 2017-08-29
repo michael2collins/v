@@ -1204,7 +1204,8 @@
                         Notification.error({message: error, delay: 5000});
                         return ($q.reject(error));
                     });
-                return vm.thistestcandidate;
+                return;
+            
             }).catch(function(e) {
                 $log.debug('createtestcandidate failure:');
                 $log.debug("error", e);
