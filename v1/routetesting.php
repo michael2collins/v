@@ -525,6 +525,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["registrationtype"] = (empty($slist["registrationtype"]) ? "NULL" : $slist["registrationtype"]);
         $tmp["pgm"] = (empty($slist["pgm"]) ? "NULL" : $slist["pgm"]);
         $tmp["classtype"] = (empty($slist["classtype"]) ? "NULL" : $slist["classtype"]);
+        $tmp["alphasortkey"] = (empty($slist["alphasortkey"]) ? "NULL" : $slist["alphasortkey"]);
 
         $tmp["testingid"] = (empty($slist["testingid"]) ? "NULL" : $slist["testingid"]);
 

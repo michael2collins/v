@@ -531,7 +531,7 @@
         vmnew.rptgridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
             //rows, col = selected, visible
         //    rptGridOptions.grid.api.exporter.pdfExport('selected', 'visible');          
-          vmnew.rptgridApi.grid.api.exporter.pdfExport('all','visible');
+          vmnew.rptgridApi.grid.api.exporter.pdfExport('visible','visible');
 //          $uibModalInstance.close();
     }
     function printSelected() {
@@ -727,7 +727,7 @@
             //            rptGridOptions.data = vm.resgridOptions.data;
                         rptGridOptions = saveResgridOptions;
             
-            
+/*            
                         rptGridOptions.columnDefs = [
                             {
                                 field: 'FullName',
@@ -755,10 +755,10 @@
                                 visible: true
                             }
                             ];
-            
-            
-//                        rptGridOptions.columnDefs = vm.checklistcoldef.columns;
-                            
+ */           
+                        rptGridOptions.enableGridMenu = true;            
+                        rptGridOptions.columnDefs = vm.checklistcoldef.columns;
+                        rptGridOptions.exporterPdfTableLayout = {fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }} ;
                         rptGridOptions.exporterPdfDefaultStyle =  {fontSize: 7};
                         rptGridOptions.exporterPdfTableStyle = {margin: [15, 15, 15, 15]};
                         rptGridOptions.exporterPdfTableHeaderStyle = {fontSize: 9, bold: true, italics: true, color: 'blue'};
