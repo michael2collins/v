@@ -140,6 +140,62 @@ $app->delete('/testcandidateregistration', 'authenticate', function() use ($app)
 
 });
 
+$app->get('/gencoldefs', 'authenticate', function() use($app){
+    error_log( print_R("gencoldefs entered", TRUE), 3, LOG);
+
+    $allGetVars = $app->request->get();
+
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $colkey = '';
+    $colsubkey = '';
+
+    if(array_key_exists('colkey', $allGetVars)){
+        $colkey = $allGetVars['colkey'];
+    }
+    if(array_key_exists('colsubkey', $allGetVars)){
+        $colsubkey = $allGetVars['colsubkey'];
+    }
+
+    error_log( print_R("gencoldefs params: colkey: $colkey colsubkey: $colsubkey\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new TestingDBHandler();
+
+    $result = $db->getGenColDefs($colkey, $colsubkey);
+
+    $response["error"] = false;
+    $response["gcolumns"] = array();
+
+    $tmp = array();
+
+    $slist = $result->fetch_assoc();
+    error_log( print_R("colcontent\n ", TRUE), 3, LOG);
+    error_log( print_R("\n ", TRUE), 3, LOG);
+    $tmp[] = $slist["colcontent"];
+
+    array_push($response["gcolumns"], $tmp);
+
+    error_log( print_R("gencoldefs responding\n ", TRUE), 3, LOG);
+    error_log( print_R($response["gcolumns"], TRUE), 3, LOG);
+    error_log( print_R("\n ", TRUE), 3, LOG);
+
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in coldef query";
+        error_log( print_R("coldef query bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+
+
+    
+});
+
 
 $app->post('/testcandidateregistration', 'authenticate', function() use ($app) {
     // check for required params

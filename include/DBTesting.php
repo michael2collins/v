@@ -502,6 +502,32 @@ Inner join nclasslist l on (l.id = p.pgmid)
         return $num_affected_rows >= 0;
     }
 
+    public function getGenColDefs($colkey, $colsubkey) {
+
+        error_log( print_R("getGenColDefs entered: $colkey, $colsubkey\n", TRUE ),3, LOG);
+
+        $sql  = " SELECT colcontent FROM generalcoldef ";
+        $sql .= " where ";
+        $sql .= " colkey = '" . $colkey . "'";
+        $sql .= " and colsubkey = '" . $colsubkey . "'";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getGenColDefs sql after security: $sql", TRUE), 3, LOG);
+        
+        if (!$stmt = $this->conn->prepare($sql) ) {
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        } else {
+            $stmt->execute();
+            //$slists = $stmt->bind_result($colcontent);
+            $slists = $stmt->get_result();
+
+            $stmt->close();
+            return $slists;
+        }
+    }
+
  
     public function getTemplateNames($theinput) {
         $sql = "SELECT distinct templatename FROM pdftemplate ";

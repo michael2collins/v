@@ -19,6 +19,8 @@
         var checktime;
         var thisgrid;
         var thisapi;
+        var thissrcgrid;
+        var thissrcapi;
         var testDate;
         var testTime;
 
@@ -38,8 +40,12 @@
              setGrid: setGrid,
              getGrid: getGrid,
              getGridApi: getGridApi,
+             setsrcGrid: setsrcGrid,
+             getsrcGrid: getsrcGrid,
+             getsrcGridApi: getsrcGridApi,
              getTestDate: getTestDate,
-             getTestTime: getTestTime
+             getTestTime: getTestTime,
+             getGeneralColDefs: getGeneralColDefs
         };
         return service;
 
@@ -49,11 +55,23 @@
             testDate = thedate;
             testTime = thestart;
         }
+        function setsrcGrid(input,api,thedate,thestart) {
+            thissrcgrid = input;
+            thissrcapi = api;
+            testDate = thedate;
+            testTime = thestart;
+        }
         function getGrid() {
             return thisgrid;
         }
+        function getsrcGrid() {
+            return thissrcgrid;
+        }
         function getGridApi() {
             return thisapi;
+        }
+        function getsrcGridApi() {
+            return thissrcapi;
         }
         function getTestDate() {
             return testDate;
@@ -68,6 +86,12 @@
         
         function getTestTypes(path) {
             $log.debug('getTestTypes service entered');
+            $log.debug('path',path);
+
+            return($http.get(path).then( handleSuccess, handleError) );
+        }
+        function getGeneralColDefs(path) {
+            $log.debug('getGeneralColDefs service entered');
             $log.debug('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );

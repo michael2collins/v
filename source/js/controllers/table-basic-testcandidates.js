@@ -495,7 +495,6 @@
         }])
         .controller('ModalTestRptInstanceController', ModalTestRptInstanceController);
 
-
   ModalTestRptInstanceController.$inject = [
       '$log',
       '$uibModalInstance',
@@ -504,10 +503,6 @@
       'Notification',
       'uiGridConstants'
     ];
-
-
-
-
 
   function ModalTestRptInstanceController( $log, $uibModalInstance, TestingServices, $window, Notification, uiGridConstants) {
     /* jshint validthis: true */
@@ -580,7 +575,7 @@
         /* jshint validthis: true */
 
         var vm=this;
-        
+
         vm.gettestcandidateList = gettestcandidateList;
         vm.gettestcandidateDetails = gettestcandidateDetails;
         vm.updatetestcandidate = updatetestcandidate;
@@ -613,6 +608,7 @@
         vm.loadAttempted = false;
         vm.gridOptions={};
         vm.resgridApi;
+        vm.gridApi;
         vm.resgridOptions={};
         vm.selectedStudents=[];
         vm.TestCandidateSelected = '';
@@ -673,7 +669,10 @@
         vm.mycontentheader;
         vm.mycontent;
         vm.mycontentfooter;
-
+        vm.checklistcoldef;
+        vm.tcsrccoldef;
+        vm.tclistcoldef;
+        vm.tempres;
 
 //            <p><img class="ta-insert-video" ta-insert-video="https://www.youtube.com/embed/2maA1-mvicY" src="https://img.youtube.com/vi/2maA1-mvicY/hqdefault.jpg" allowfullscreen="true" width="300" frameborder="0" height="250"/></p> 
 
@@ -710,95 +709,108 @@
         
                 //$scope.$watch('data.htmlcontent', function(val){$log.debug('htmlcontent changed to:', val);});
                 
+
         function createTestChecklist() {
             if (vm.selected === false) {
                 var error = "no rows selected for test candidate";
                 Notification.error({message: error, delay: 5000});
                 return;                
             }
+                  getGeneralColDefs('test','checklist').then(function(){
+                      $log.debug('getGeneralColDefs ready');
+
+                        var saveResgridOptions = angular.copy(vm.resgridOptions);
+                        var vmTestRptmodal = vm;
+                        var testDate = vmTestRptmodal.TestCandidateSelected.name;
+                        var testTime = vmTestRptmodal.testdatelist.starttime;
+                        var rptGridOptions={};
+            //            rptGridOptions.data = vm.resgridOptions.data;
+                        rptGridOptions = saveResgridOptions;
             
-            var saveResgridOptions = angular.copy(vm.resgridOptions);
-            var vmTestRptmodal = this;
-            var testDate = vmTestRptmodal.TestCandidateSelected.name;
-            var testTime = vmTestRptmodal.testdatelist.starttime;
-            var rptGridOptions={};
-//            rptGridOptions.data = vm.resgridOptions.data;
-            rptGridOptions = saveResgridOptions;
-            rptGridOptions.columnDefs = [
-                {
-                    field: 'FullName',
-                    visible: true
-                }, {
-                    field: 'BeltSize',
-                    visible: true
-                }, {
-                    field: 'RankAchievedInTest',
-                    visible: true
-                }, {
-                    field: 'lastpromoted',
-                    visible: true
-                }, {
-                    field: 'daysAttended',
-                    visible: true
-                }, {
-                    field: 'daysSinceLastTest',
-                    visible: true
-                }, {
-                    field: 'class',
-                    visible: true
-                }, {
-                    field: 'pgm',
-                    visible: true
-                }
-                ];
-                
-            rptGridOptions.exporterPdfDefaultStyle =  {fontSize: 7};
-            rptGridOptions.exporterPdfTableStyle = {margin: [30, 30, 30, 30]};
-            rptGridOptions.exporterPdfTableHeaderStyle = {fontSize: 10, bold: true, italics: true, color: 'red'};
-            rptGridOptions.exporterPdfHeader = { text: "Student/Belt Test Checklist for testing on: " + testDate, style: 'headerStyle' };
-            rptGridOptions.exporterPdfFooter = myexporterPdfFooter;
-            function myexporterPdfFooter( currentPage, pageCount ) {
-              return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
-            }
-            rptGridOptions.exporterPdfCustomFormatter = myexporterPdfCustomFormatter;
-            function myexporterPdfCustomFormatter( docDefinition ) {
-              docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
-              docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
-              return docDefinition;
-            }
-            rptGridOptions.exporterPdfOrientation = 'landscape';
-            rptGridOptions.exporterPdfPageSize = 'LETTER';
-//            rptGridOptions.exporterPdfMaxGridWidth =  1000;
-
-
-            TestingServices.setGrid(rptGridOptions,vm.resgridApi,testDate,testTime);
-
-            vmTestRptmodal.animationsEnabled = true;
             
-            vmTestRptmodal.modalInstance = undefined;
-            vmTestRptmodal.retvlu = '';
-
-            vmTestRptmodal.modalInstance = $uibModal.open({
-                animation: vmTestRptmodal.animationsEnabled,
-                templateUrl: 'templates/states/testRpt.html',
-                controller: 'ModalTestRptInstanceController as vmnew',
-                size: 'lg',
-                resolve: {
-                  classname: function () {
-                      $log.debug('return from open');
-                    return vmTestRptmodal.retvlu;
-                  }
-                }
-            });
-            vmTestRptmodal.modalInstance.result.then(function (retvlu) {
-                console.log('search modalInstance result :', retvlu);
-                vmTestRptmodal.retvlu = retvlu;
-            }, function () {
-                $log.info('Modal dismissed at: ' + new Date());
-            });
-
-            //restore
-  //          vm.resgridOptions = saveResgridOptions;
+                        rptGridOptions.columnDefs = [
+                            {
+                                field: 'FullName',
+                                visible: true
+                            }, {
+                                field: 'BeltSize',
+                                visible: true
+                            }, {
+                                field: 'RankAchievedInTest',
+                                visible: true
+                            }, {
+                                field: 'lastpromoted',
+                                visible: true
+                            }, {
+                                field: 'daysAttended',
+                                visible: true
+                            }, {
+                                field: 'daysSinceLastTest',
+                                visible: true
+                            }, {
+                                field: 'class',
+                                visible: true
+                            }, {
+                                field: 'pgm',
+                                visible: true
+                            }
+                            ];
+            
+            
+//                        rptGridOptions.columnDefs = vm.checklistcoldef.columns;
+                            
+                        rptGridOptions.exporterPdfDefaultStyle =  {fontSize: 7};
+                        rptGridOptions.exporterPdfTableStyle = {margin: [15, 15, 15, 15]};
+                        rptGridOptions.exporterPdfTableHeaderStyle = {fontSize: 9, bold: true, italics: true, color: 'blue'};
+                        rptGridOptions.exporterPdfHeader = { text: "Student/Belt Test Checklist for testing on: " + testDate, style: 'headerStyle' };
+                        rptGridOptions.exporterPdfFooter = myexporterPdfFooter;
+                        function myexporterPdfFooter( currentPage, pageCount ) {
+                          return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+                        }
+                        rptGridOptions.exporterPdfCustomFormatter = myexporterPdfCustomFormatter;
+                        function myexporterPdfCustomFormatter( docDefinition ) {
+                          docDefinition.styles.headerStyle = { fontSize: 18, bold: true, margin: 5 };
+                          docDefinition.styles.footerStyle = { fontSize: 10, bold: true, margin: 15 };
+                          return docDefinition;
+                        }
+                        rptGridOptions.exporterPdfOrientation = 'landscape';
+                        rptGridOptions.exporterPdfPageSize = 'LETTER';
+                        rptGridOptions.exporterPdfMaxGridWidth =  600;
+            
+            
+                        TestingServices.setGrid(rptGridOptions,vm.resgridApi,testDate,testTime);
+            
+                        vmTestRptmodal.animationsEnabled = true;
+                        
+                        vmTestRptmodal.modalInstance = undefined;
+                        vmTestRptmodal.retvlu = '';
+            
+                        vmTestRptmodal.modalInstance = $uibModal.open({
+                            animation: vmTestRptmodal.animationsEnabled,
+                            templateUrl: 'templates/states/testRpt.html',
+                            controller: 'ModalTestRptInstanceController as vmnew',
+                            size: 'lg',
+                            resolve: {
+                              classname: function () {
+                                  $log.debug('return from open');
+                                return vmTestRptmodal.retvlu;
+                              }
+                            }
+                        });
+                        vmTestRptmodal.modalInstance.result.then(function (retvlu) {
+                            console.log('search modalInstance result :', retvlu);
+                            vmTestRptmodal.retvlu = retvlu;
+                        }, function () {
+                            $log.info('Modal dismissed at: ' + new Date());
+                        });
+            
+                        //restore
+              //          vm.resgridOptions = saveResgridOptions;
+        
+                  }).catch(function(e){
+                        $log.debug("getPayerList error in activate", e);
+                  });
+            
         }
                 
         function calcsizes() {
@@ -943,15 +955,44 @@
         }
         
         function activate() {
-            getInstructorList();
-            getTestDates();
-            setGridOptions();
-            setResGridOptions();
-            getUserDetails();
-            getTemplateNames('').then(function() {
-                $log.debug('activate eventdetails fetched');
-            });
+                    getTestDates();
+                    initGridOptions();
+                    initResGridOptions();
+                    getUserDetails();
+                    getTemplateNames('').then(function() {
+                        $log.debug('activate eventdetails fetched');
+                    });
 
+            $q.all([
+                  getGeneralColDefs('test','checklist').then(function(){
+                      $log.debug('getGeneralColDefs ready');
+        
+                  }).catch(function(e){
+                        $log.debug("getPayerList error in activate", e);
+                  }),
+                  getGeneralColDefs('test','Testcandidatesource').then(function(){
+                      $log.debug('getGeneralColDefs ready');
+                        setGridOptions();
+        
+                  }).catch(function(e){
+                        $log.debug("getPayerList error in activate", e);
+                  }),
+                  getGeneralColDefs('test','Testcandidatelist').then(function(){
+                      $log.debug('getGeneralColDefs ready');
+                        setResGridOptions();
+                  }).catch(function(e){
+                        $log.debug("testcandidates error in activate", e);
+                  }),
+                  getInstructorList().then(function(){
+                      $log.debug('getInstructorList ready');
+        
+                  }).catch(function(e){
+                        $log.debug("testcandidates error in activate", e);
+                  })
+                ])
+                .then(function() {
+                    $log.debug('testcandidates activation done');
+                });
         }
     function changeTab(tabname) {
         if (tabname === 'tab-test') {
@@ -985,6 +1026,40 @@
                 vm.loadAttempted = true;
             }
             );
+        
+    }
+    function getGeneralColDefs(colkey,colsubkey){
+        $log.debug('getGeneralColDefs entered',colkey,colsubkey);
+        var path = encodeURI("../v1/gencoldefs?colkey=" + colkey + "&colsubkey=" + colsubkey);
+
+       return TestingServices.getGeneralColDefs(path).then(function(data) {
+            $log.debug("getGeneralColDefs returned:", data);
+            var retdata = JSON.parse(data.gcolumns[0][0]);
+            if (colsubkey === 'checklist') {
+                vm.checklistcoldef = retdata;
+            }
+            if (colsubkey === 'Testcandidatesource') {
+                vm.tcsrccoldef =   retdata;
+            }
+            if (colsubkey === 'Testcandidatelist') {
+                vm.tclistcoldef =  retdata;
+            }
+            
+            return retdata;
+            },
+
+        function (error) {
+            $log.debug('Caught an error getGeneralColDefs, going to notify:', error); 
+            vm.userdta = [];
+            vm.message = error;
+            Notification.error({message: error, delay: 5000});
+            return ($q.reject(error));
+        }).
+        finally(function () { 
+            vm.loading = false; 
+            vm.loadAttempted = true;
+        }
+        );
         
     }
         
@@ -1084,9 +1159,30 @@
                     vm.testdatelist = data.testdatelist[0]; 
                     vm.testdatelist.starttime = convertTime(data.testdatelist[0].startdate);
                     vm.testdatelist.endtime = convertTime(data.testdatelist[0].enddate);
-                    vm.gettestcandidateDetails(vm.testdatelist.testtype);
-                    vm.gettestcandidateList(testname.name,testname.eventtype);
-                    
+                    gettestcandidateList(vm.testname,vm.testtype).then
+                        (function(zdata) {
+                         $log.debug('gettestcandidateList returned', zdata);
+                         },
+                        function (error) {
+                            $log.debug('Caught an error gettestcandidateList after update:', error); 
+                            vm.data = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
+                    gettestcandidateDetails(vm.testdatelist.testtype).then
+                        (function(zdata) {
+                         $log.debug('gettestcandidateDetails returned', zdata);
+                         },
+                        function (error) {
+                            $log.debug('Caught an error gettestcandidateDetails after update:', error); 
+                            vm.data = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
+
+
                 } else {
                     error = "No testdates found in calendar for:" + testname.name;
                     vm.message = error;
@@ -1231,6 +1327,7 @@
                             mom = moment(data.testcandidateList[iter].lastpromoted);
                             data.testcandidateList[iter].daysSinceLastTest = now.diff(mom, 'days');
                         }
+                        setResGridOptions();
                         vm.resgridOptions.data = data.testcandidateList; 
                     }
                     return;
@@ -1257,12 +1354,18 @@
             var messagetxt;
 //view testcandidatesource
             $log.debug('gettestcandidateDetails path:', path);
+//            setGridOptions();
+//            TestingServices.setsrcGrid(vm.gridOptions,vm.gridApi,vm.TestCandidateSelected.name,vm.testdatelist.starttime);
             
              return TestingServices.gettestcandidateDetails(path).then(function(data){
                     $log.debug('gettestcandidateDetails returned data');
                     $log.debug(data);
                     if (typeof(data.testcandidatedetails) !== 'undefined' && data.testcandidatedetails.length > 0) {
                         vm.gridOptions.data = data.testcandidatedetails; 
+//                        vm.gridOptions = TestingServices.getsrcGrid();
+//                        vm.gridApi = TestingServices.getsrcGridApi();
+//                        vm.thisscope.gridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
+                        
                         $log.debug("details",data.testcandidatedetails[0]);
                         
                         vm.ContactID = data.testcandidatedetails[0].contactID;
@@ -1322,12 +1425,96 @@
 
         }
 
-        function setGridOptions() {
+        function initGridOptions() {
+
+
             vm.gridOptions = {
                 enableFiltering: true,
                 paginationPageSizes: vm.limits,
                 paginationPageSize: 10,
                 rowHeight: 100,
+//                columnDefs: vm.tcsrccoldef.columns,
+                //rowHeight: 15,
+                showGridFooter: true,
+                enableColumnResizing: true,
+                enableGridMenu: true,
+                showColumnFooter: true,
+                appScopeProvider: vm,
+                exporterCsvFilename: 'testcandidate.csv',
+                exporterPdfDefaultStyle: {fontSize: 9},
+                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
+                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+                exporterPdfOrientation: 'portrait',
+                exporterPdfPageSize: 'LETTER',
+                exporterPdfMaxGridWidth: 500,
+                exporterPdfFooter: function ( currentPage, pageCount ) {
+                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+                },
+                exporterPdfCustomFormatter: function ( docDefinition ) {
+                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
+                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
+                  return docDefinition;
+                },
+                onRegisterApi: function( gridApi ) {
+                $log.debug('vm gridapi onRegisterApi');
+                 vm.gridApi = gridApi;
+
+                gridApi.selection.on.rowSelectionChanged($scope,function(row){
+                    var msg = 'grid row selected ' + row.entity;
+                    $log.debug(msg);
+
+//                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                    var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                    $log.debug('selected', selectedStudentarr);
+                    setSelectedArray(selectedStudentarr);
+                    
+                });
+                gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
+                    $log.debug("grid batch");  
+                    //note this will send the list of changed rows
+                /*    var selectedContacts=[];
+                    for (var index=0, len=rows.length; index < len; index++) {
+                        $log.debug("selected?",rows[index].isSelected);
+                        if (rows[index].isSelected === true) {
+                            selectedContacts.push(rows[index].entity);
+                        }
+                    }
+                    $log.debug("batch", selectedContacts);
+                    setSelectedArray(selectedContacts);
+                    */
+//                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+                    var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                    $log.debug('batch selected', selectedStudentarr);
+                    setSelectedArray(selectedStudentarr);
+
+                });
+                gridApi.edit.on.afterCellEdit($scope, 
+                        function(rowEntity, colDef, newValue, oldValue) {
+                    $log.debug('rowEntity');
+                    $log.debug(rowEntity);
+                    //Alert to show what info about the edit is available
+                    $log.debug('Column: ' + colDef.name  + 
+                        ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
+                    if (newValue != oldValue) {
+                        updatetestcandidate(colDef,newValue,rowEntity);       
+                    }
+                });
+            }
+                
+            };
+
+
+            $log.debug('setGridOptions gridOptions', vm.gridOptions);
+
+        }
+
+        function setGridOptions() {
+
+
+            vm.gridOptions = {
+                columnDefs: vm.tcsrccoldef.columns
+/*                
             columnDefs: [
                 // default
                 {
@@ -1339,20 +1526,15 @@
                     field: 'FirstName',
                     name: 'First',
                     headerCellClass: highlightFilteredHeader,
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    visible: false
                 }, {
-                    //<zoom src="./imageURL.jpg" frame="example1" img="image1" zoomlvl="1.5"></zoom>
-//                    field: 'contactpictureurl',
- //                   cellTemplate:"<img width=\"50px\" ng-src=\"./images/students/{{grid.getCellValue(row, col)}}\" lazy-src>",
-  //                  name: 'Picture',
-//                    headerCellClass: highlightFilteredHeader,
- //                   enableCellEdit: false
-  //              }, {
                     field: 'contactpictureurl',
                     minWidth: 100,
                     name: 'Picture',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: false,
+                    visible: false,
                     cellTemplate: '<zoom ng-src="{{grid.getCellValue(row, col)}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
                 }, {
                     field: 'contactID',
@@ -1376,11 +1558,13 @@
                     field: 'ranklist',
                     name: 'Rank',
                     headerCellClass: highlightFilteredHeader,
+                    visible: false,
                     enableCellEdit: true
                 }, {
                     field: 'nextrank',
                     name: 'Next Rank',
                     headerCellClass: highlightFilteredHeader,
+                    visible: false,
                     enableCellEdit: true
                 }, {
                     field: 'LastPromoted',
@@ -1393,8 +1577,8 @@
                     name: 'Contact',
                     headerCellClass: highlightFilteredHeader,
                     enableCellEdit: true,
+                    visible: false
  //                   filter: {term: "Student"},                    
-                    visible: true
                 }, {
                     field: 'rankForNextClass',
                     name: 'rankForNextClass',
@@ -1444,11 +1628,26 @@
                     enableCellEdit: false,
                     visible: false
                 }],
+*/                
 
-                //rowHeight: 15,
+            };
+
+
+            $log.debug('setGridOptions gridOptions', vm.gridOptions);
+
+        }
+
+        function initResGridOptions() {
+
+            vm.resgridOptions = {
+                enableFiltering: true,
+                paginationPageSizes: vm.limits,
+                paginationPageSize: 10,
+                rowHeight: 100,
                 showGridFooter: true,
                 enableColumnResizing: true,
                 enableGridMenu: true,
+                enableHorizontalScrollbar: 2,
                 showColumnFooter: true,
                 exporterCsvFilename: 'testcandidate.csv',
                 exporterPdfDefaultStyle: {fontSize: 9},
@@ -1468,17 +1667,18 @@
                 exporterPdfMaxGridWidth: 500,
                 
                 onRegisterApi: function(gridApi) {
-                    $log.debug('vm gridapi onRegisterApi');
-                     vm.gridApi = gridApi;
+                    $log.debug('resgridapi onRegisterApi');
+                     vm.resgridApi = gridApi;
 
                     gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'grid row selected ' + row.entity;
                         $log.debug(msg);
 
-//                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+//                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
                         var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+
                         $log.debug('selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
+                        setresSelectedArray(selectedStudentarr);
                         
                     });
                     gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
@@ -1494,10 +1694,10 @@
                         $log.debug("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
-//                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
+//                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
                         var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                         $log.debug('batch selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
+                        setresSelectedArray(selectedStudentarr);
 
                     });
                     gridApi.edit.on.afterCellEdit($scope, 
@@ -1515,16 +1715,14 @@
                     }
             };
 
-            $log.debug('setGridOptions gridOptions', vm.gridOptions);
+            $log.debug('setResGridOptions ', vm.resgridOptions);
 
         }
-
         function setResGridOptions() {
+
             vm.resgridOptions = {
-                enableFiltering: true,
-                paginationPageSizes: vm.limits,
-                paginationPageSize: 10,
-                rowHeight: 100,
+            columnDefs: vm.tclistcoldef.columns
+/*
             columnDefs: [
                 // default
                 {
@@ -1732,77 +1930,8 @@
                    
                     visible: false
                 }],
+*/
 
-                //rowHeight: 15,
-                showGridFooter: true,
-                enableColumnResizing: true,
-                enableGridMenu: true,
-                enableHorizontalScrollbar: 2,
-                showColumnFooter: true,
-                exporterCsvFilename: 'testcandidate.csv',
-                exporterPdfDefaultStyle: {fontSize: 9},
-                exporterPdfTableStyle: {margin: [30, 30, 30, 30]},
-                exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
-                exporterPdfFooter: function ( currentPage, pageCount ) {
-                  return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
-                },
-                exporterPdfCustomFormatter: function ( docDefinition ) {
-                  docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
-                  docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
-                  return docDefinition;
-                },
-                exporterPdfOrientation: 'portrait',
-                exporterPdfPageSize: 'LETTER',
-                exporterPdfMaxGridWidth: 500,
-                
-                onRegisterApi: function(gridApi) {
-                    $log.debug('resgridapi onRegisterApi');
-                     vm.resgridApi = gridApi;
-
-                    gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'grid row selected ' + row.entity;
-                        $log.debug(msg);
-
-//                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
-                        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
-
-                        $log.debug('selected', selectedStudentarr);
-                        setresSelectedArray(selectedStudentarr);
-                        
-                    });
-                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                        $log.debug("grid batch");  
-                        //note this will send the list of changed rows
-                    /*    var selectedContacts=[];
-                        for (var index=0, len=rows.length; index < len; index++) {
-                            $log.debug("selected?",rows[index].isSelected);
-                            if (rows[index].isSelected === true) {
-                                selectedContacts.push(rows[index].entity);
-                            }
-                        }
-                        $log.debug("batch", selectedContacts);
-                        setSelectedArray(selectedContacts);
-                        */
-//                        var selectedStudentarr = vm.resgridApi.selection.getSelectedRows();
-                        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
-                        $log.debug('batch selected', selectedStudentarr);
-                        setresSelectedArray(selectedStudentarr);
-
-                    });
-                    gridApi.edit.on.afterCellEdit($scope, 
-                            function(rowEntity, colDef, newValue, oldValue) {
-                        $log.debug('rowEntity');
-                        $log.debug(rowEntity);
-                        //Alert to show what info about the edit is available
-                        $log.debug('Column: ' + colDef.name  + 
-                            ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
-                        if (newValue != oldValue) {
-                            updatetestcandidate(colDef,newValue,rowEntity);       
-                        }
-                    });
-
-                    }
             };
 
             $log.debug('setResGridOptions ', vm.resgridOptions);
@@ -1855,6 +1984,7 @@
                     $log.debug(data.message);
                     vm.message = data.message;
                     Notification.success({message: vm.message, delay: 5000});
+                $q.all([
                     gettestcandidateList(vm.testname,vm.testtype).then
                         (function(zdata) {
                          $log.debug('gettestcandidateList returned', zdata);
@@ -1865,7 +1995,22 @@
                         vm.message = error;
                         Notification.error({message: error, delay: 5000});
                         return ($q.reject(error));
-                    });
+                    }),
+                    gettestcandidateDetails(vm.testdatelist.testtype).then
+                        (function(zdata) {
+                         $log.debug('gettestcandidateDetails returned', zdata);
+                         },
+                        function (error) {
+                            $log.debug('Caught an error gettestcandidateDetails after update:', error); 
+                            vm.data = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        })
+                ])
+                .then(function() {
+                    $log.debug('promotetestcandidate post activities done');
+                });
                   
                 }).catch(function(e) {
                     $log.debug('promotetestcandidate failure:');
