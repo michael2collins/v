@@ -21,6 +21,7 @@
         var thisapi;
         var thissrcgrid;
         var thissrcapi;
+        var thisrptlayout;
         var testDate;
         var testTime;
 
@@ -43,17 +44,19 @@
              setsrcGrid: setsrcGrid,
              getsrcGrid: getsrcGrid,
              getsrcGridApi: getsrcGridApi,
+             getRptLayout: getRptLayout,
              getTestDate: getTestDate,
              getTestTime: getTestTime,
              getGeneralColDefs: getGeneralColDefs
         };
         return service;
 
-        function setGrid(input,api,thedate,thestart) {
+        function setGrid(input,api,thedate,thestart,thelayout) {
             thisgrid = input;
             thisapi = api;
             testDate = thedate;
             testTime = thestart;
+            thisrptlayout = thelayout;
         }
         function setsrcGrid(input,api,thedate,thestart) {
             thissrcgrid = input;
@@ -75,6 +78,9 @@
         }
         function getTestDate() {
             return testDate;
+        }
+        function getRptLayout(){
+            return thisrptlayout;
         }
         function getTestTime() {
             return testTime;

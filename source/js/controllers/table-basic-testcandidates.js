@@ -510,7 +510,8 @@
     console.log('modal TestRpt entered');
     console.log(vmnew);
 
-    vmnew.path = '../v1/TestRpt';
+    vmnew.rptLayout = TestingServices.getRptLayout();
+    vmnew.path = '../v1/' + vmnew.rptLayout;
     vmnew.printAll = printAll;
     vmnew.printSelected = printSelected;
     vmnew.cancel = cancel;
@@ -592,6 +593,8 @@
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.createCertificate = createCertificate;
         vm.createTestChecklist = createTestChecklist;
+        vm.createPromoPostcards = createPromoPostcards;
+        vm.createBeltLabels = createBeltLabels;
         vm.genPDF = genPDF;
         vm.limit = 0;
         vm.limits = [10,20,50,100,200,500,5000];
@@ -670,6 +673,8 @@
         vm.mycontent;
         vm.mycontentfooter;
         vm.checklistcoldef;
+        vm.promopostcard;
+        vm.beltlabelcoldef;
         vm.tcsrccoldef;
         vm.tclistcoldef;
         vm.tempres;
@@ -721,44 +726,15 @@
 
                         var saveResgridOptions = angular.copy(vm.resgridOptions);
                         var vmTestRptmodal = vm;
+                        var rptlayout = 'testRpt';
                         var testDate = vmTestRptmodal.TestCandidateSelected.name;
                         var testTime = vmTestRptmodal.testdatelist.starttime;
                         var rptGridOptions={};
             //            rptGridOptions.data = vm.resgridOptions.data;
                         rptGridOptions = saveResgridOptions;
-            
-/*            
-                        rptGridOptions.columnDefs = [
-                            {
-                                field: 'FullName',
-                                visible: true
-                            }, {
-                                field: 'BeltSize',
-                                visible: true
-                            }, {
-                                field: 'RankAchievedInTest',
-                                visible: true
-                            }, {
-                                field: 'lastpromoted',
-                                visible: true
-                            }, {
-                                field: 'daysAttended',
-                                visible: true
-                            }, {
-                                field: 'daysSinceLastTest',
-                                visible: true
-                            }, {
-                                field: 'class',
-                                visible: true
-                            }, {
-                                field: 'pgm',
-                                visible: true
-                            }
-                            ];
- */           
                         rptGridOptions.enableGridMenu = true;            
                         rptGridOptions.columnDefs = vm.checklistcoldef.columns;
-                        rptGridOptions.exporterPdfTableLayout = {fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }} ;
+                //        rptGridOptions.exporterPdfTableLayout = {fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }} ;
                         rptGridOptions.exporterPdfDefaultStyle =  {fontSize: 7};
                         rptGridOptions.exporterPdfTableStyle = {margin: [15, 15, 15, 15]};
                         rptGridOptions.exporterPdfTableHeaderStyle = {fontSize: 9, bold: true, italics: true, color: 'blue'};
@@ -771,6 +747,10 @@
                         function myexporterPdfCustomFormatter( docDefinition ) {
                           docDefinition.styles.headerStyle = { fontSize: 18, bold: true, margin: 5 };
                           docDefinition.styles.footerStyle = { fontSize: 10, bold: true, margin: 15 };
+                          docDefinition.content[0].layout = {
+                              fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }
+                          };
+
                           return docDefinition;
                         }
                         rptGridOptions.exporterPdfOrientation = 'landscape';
@@ -779,6 +759,212 @@
             
             
                         TestingServices.setGrid(rptGridOptions,vm.resgridApi,testDate,testTime);
+            
+                        vmTestRptmodal.animationsEnabled = true;
+                        
+                        vmTestRptmodal.modalInstance = undefined;
+                        vmTestRptmodal.retvlu = '';
+            
+                        vmTestRptmodal.modalInstance = $uibModal.open({
+                            animation: vmTestRptmodal.animationsEnabled,
+                            templateUrl: 'templates/states/testRpt.html',
+                            controller: 'ModalTestRptInstanceController as vmnew',
+                            size: 'lg',
+                            resolve: {
+                              classname: function () {
+                                  $log.debug('return from open');
+                                return vmTestRptmodal.retvlu;
+                              }
+                            }
+                        });
+                        vmTestRptmodal.modalInstance.result.then(function (retvlu) {
+                            console.log('search modalInstance result :', retvlu);
+                            vmTestRptmodal.retvlu = retvlu;
+                        }, function () {
+                            $log.info('Modal dismissed at: ' + new Date());
+                        });
+            
+                        //restore
+              //          vm.resgridOptions = saveResgridOptions;
+        
+                  }).catch(function(e){
+                        $log.debug("createTestChecklist error in activate", e);
+                  });
+            
+        }
+        function createPromoPostcards() {
+            if (vm.selected === false) {
+                var error = "no rows selected for createPromoPostcards";
+                Notification.error({message: error, delay: 5000});
+                return;                
+            }
+                  getGeneralColDefs('test','promopostcard').then(function(){
+                      $log.debug('getGeneralColDefs ready createPromoPostcards');
+
+                        var saveResgridOptions = angular.copy(vm.resgridOptions);
+                        var vmTestRptmodal = vm;
+                        var rptlayout = 'testRpt';
+                        var testDate = vmTestRptmodal.TestCandidateSelected.name;
+                        var testTime = vmTestRptmodal.testdatelist.starttime;
+                        var rptGridOptions={};
+            //            rptGridOptions.data = vm.resgridOptions.data;
+                        rptGridOptions = saveResgridOptions;
+                        rptGridOptions.enableGridMenu = true;            
+                        rptGridOptions.columnDefs = vm.promopostcard.columns;
+                        rptGridOptions.exporterPdfDefaultStyle =  {fontSize: 7};
+                        rptGridOptions.exporterPdfTableStyle = {margin: [15, 15, 15, 15]};
+                        rptGridOptions.exporterPdfTableHeaderStyle = {fontSize: 9, bold: true, italics: true, color: 'blue'};
+                        rptGridOptions.exporterPdfHeader = { text: "Promotion Postcards for test on: " + testDate, style: 'headerStyle' };
+                        rptGridOptions.exporterPdfFooter = myexporterPdfFooter;
+                        function myexporterPdfFooter( currentPage, pageCount ) {
+                          return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+                        }
+                        rptGridOptions.exporterPdfCustomFormatter = myexporterPdfCustomFormatter;
+                        function myexporterPdfCustomFormatter( docDefinition ) {
+                          docDefinition.styles.headerStyle = { fontSize: 18, bold: true, margin: 5 };
+                          docDefinition.styles.footerStyle = { fontSize: 10, bold: true, margin: 15 };
+                          docDefinition.content[0].layout = {
+                              fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }
+                          };
+
+                          return docDefinition;
+                        }
+                        rptGridOptions.exporterPdfOrientation = 'landscape';
+                        rptGridOptions.exporterPdfPageSize = 'LETTER';
+                        rptGridOptions.exporterPdfMaxGridWidth =  600;
+            
+            
+                        TestingServices.setGrid(rptGridOptions,vm.resgridApi,testDate,testTime);
+            
+                        vmTestRptmodal.animationsEnabled = true;
+                        
+                        vmTestRptmodal.modalInstance = undefined;
+                        vmTestRptmodal.retvlu = '';
+            
+                        vmTestRptmodal.modalInstance = $uibModal.open({
+                            animation: vmTestRptmodal.animationsEnabled,
+                            templateUrl: 'templates/states/testRpt.html',
+                            controller: 'ModalTestRptInstanceController as vmnew',
+                            size: 'lg',
+                            resolve: {
+                              classname: function () {
+                                  $log.debug('return from open');
+                                return vmTestRptmodal.retvlu;
+                              }
+                            }
+                        });
+                        vmTestRptmodal.modalInstance.result.then(function (retvlu) {
+                            console.log('search modalInstance result :', retvlu);
+                            vmTestRptmodal.retvlu = retvlu;
+                        }, function () {
+                            $log.info('Modal dismissed at: ' + new Date());
+                        });
+            
+                        //restore
+              //          vm.resgridOptions = saveResgridOptions;
+        
+                  }).catch(function(e){
+                        $log.debug("getPayerList error in activate", e);
+                  });
+            
+        }
+        function convertDataToColumns(thedata,fields,fieldlabels,numOfCols) {
+            var convertedData=[];
+            var datalen = thedata.length;
+            var fieldlen = fields.length;
+            var colarr=[];
+            var rowstr;
+            var colcounter=0;
+            //convert fields to rows
+            for (var i=0;i<datalen;i++) {
+                var fieldstr=[];
+                colcounter = colcounter + 1;
+                //keep track of when we want to output 
+                if (colcounter > numOfCols) {
+                    colarr=[];
+                    colcounter = 1;
+                }
+                //split the row into a row per field
+                for (var j=0;j<fieldlen;j++) {
+                    fieldstr[j]= fieldlabels[j] + " " + thedata[i][fields[j]];
+                }
+                colarr.push(fieldstr);
+                //now we can output
+                if (colcounter === numOfCols) {
+                    //for the field row loop, we need to realign rows into columns
+                    for (var m=0; m<fieldlen;m++) {
+                        rowstr = '{';
+                        for (var k=0;k<numOfCols-1;k++) {
+                            var c=k+1;
+                            rowstr =  rowstr + '"column' + c + '" : "' + colarr[k][m] + '",' ;
+                        }
+                        rowstr = rowstr +  '"column' + numOfCols + '" : "' + colarr[numOfCols-1][m] + '" }';
+                        convertedData.push( JSON.parse(rowstr));
+                    }
+                }
+            }
+            return convertedData;
+        }
+        function createBeltLabels() {
+            if (vm.selected === false) {
+                var error = "no rows selected for createBeltLabels";
+                Notification.error({message: error, delay: 5000});
+                return;                
+            }
+                  getGeneralColDefs('test','beltlabels').then(function(){
+                      $log.debug('getGeneralColDefs ready createBeltLabels');
+
+                        var saveResgridOptions = angular.copy(vm.resgridOptions);
+                        var vmTestRptmodal = vm;
+                        var rptlayout = 'testRpt';
+                        var testDate = vmTestRptmodal.TestCandidateSelected.name;
+                        var testTime = vmTestRptmodal.testdatelist.starttime;
+                        var rptGridOptions={};
+            //            rptGridOptions.data = vm.resgridOptions.data;
+            //            var half_length = Math.ceil(vm.resgridOptions.data.length / 2);    
+                        rptGridOptions = saveResgridOptions;
+                        rptGridOptions.data = convertDataToColumns(
+                            vm.resgridOptions.data,
+                            ['FullName','RankAchievedInTest','BeltSize'],
+                            ['Name:','Rank:','Size:'],
+                            2);
+                        rptGridOptions.exporterHeaderFilter = myexpHeaderFilter;
+                        function myexpHeaderFilter( displayName ){ 
+                            return '' ; 
+                        }
+                        rptGridOptions.enableGridMenu = true;            
+                        rptGridOptions.columnDefs = vm.beltlabelcoldef.columns;
+                        rptGridOptions.exporterPdfDefaultStyle =  {fontSize: 7};
+                        rptGridOptions.exporterPdfCustomFormatter = myexporterPdfCustomFormatter;
+                        function myexporterPdfCustomFormatter( docDefinition ) {
+//                          docDefinition.content[0].layout = 'noBorders';
+                          docDefinition.content[0].layout = {
+                		    paddingBottom: function(i, node) {
+            			        return (i % 3 === 0) ?  10 : 0;  },
+                            hLineWidth: function(i, node) {
+                               return (0)},
+                            vLineWidth: function(i, node) {
+                               return (0)}
+                          };
+                          docDefinition.content[0].table.widths = ['*','*'];
+                          docDefinition.pageMargins = [10, 0, 0, 0];
+                          /*{
+                                hLineWidth: function(i, node) {
+                                   return (i === 0 || i === node.table.body.length) ? 2 : 1;},
+                                vLineWidth: function(i, node) {
+                                   return (i === 0 || i === node.table.widths.length) ? 2 : 1;},
+                                hLineColor: function(i, node) {
+                                   return (i === 0 || i === node.table.body.length) ? 'black' : 'gray';},
+                                vLineColor: function(i, node) {
+                                    return (i === 0 || i === node.table.widths.length) ? 'black' : 'gray';}
+                          } */
+                            return docDefinition;
+                          }
+                        rptGridOptions.exporterPdfOrientation = 'portrait';
+                        rptGridOptions.exporterPdfPageSize = 'LETTER';
+                        rptGridOptions.exporterPdfMaxGridWidth =  400;
+            
+                        TestingServices.setGrid(rptGridOptions,vm.resgridApi,testDate,testTime,rptlayout);
             
                         vmTestRptmodal.animationsEnabled = true;
                         
@@ -1037,6 +1223,12 @@
             var retdata = JSON.parse(data.gcolumns[0][0]);
             if (colsubkey === 'checklist') {
                 vm.checklistcoldef = retdata;
+            }
+            if (colsubkey === 'promopostcard') {
+                vm.promopostcard = retdata;
+            }
+            if (colsubkey === 'beltlabels') {
+                vm.beltlabelcoldef = retdata;
             }
             if (colsubkey === 'Testcandidatesource') {
                 vm.tcsrccoldef =   retdata;
