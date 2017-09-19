@@ -96,7 +96,23 @@
         function setday(aDay) {
             vm.photos=[];
             settoday(weekday[aDay]);
-            getSchedule(vm.todayDOW);
+            getSchedule(vm.todayDOW).then(function() {
+                setNowChoice();        
+                $log.debug('nowChoice',vm.nowChoice,'classes',vm.classes);
+                if (vm.classes.length > 0) {
+                    setClass(vm.classes[vm.nowChoice].Description);
+                }
+                else {
+                    setClass('All');
+                }
+                refreshtheAttendance();
+                $log.debug('setClass', vm.theclass);
+             },function(error) {
+                 vm.photos=[];
+                 vm.nowChoice=0;
+                 setClass("");
+                 return ($q.reject(error));
+             });
         }
         function setLimit(thelimit) {
             $log.debug('setLimit',thelimit);
@@ -271,8 +287,12 @@
                     getSchedule(vm.todayDOW).then(function() {
                         setNowChoice();        
                         $log.debug('nowChoice',vm.nowChoice,'classes',vm.classes);
-
-                        setClass(vm.classes[vm.nowChoice].Description);
+                        if (vm.classes.length > 0) {
+                            setClass(vm.classes[vm.nowChoice].Description);
+                        }
+                        else {
+                            setClass('All');
+                        }
                         $log.debug('setClass', vm.theclass);
                      },function(error) {
                          vm.photos=[];
@@ -457,6 +477,7 @@
             for (var i=0; i < vm.classes.length; i++) {
                var start = vm.classes[i].TimeStart.split(":");
                var starth = start[0];
+               var dstplus = isDST(d) ? 1 : 0;
                var startmm = start[1];
                var end = vm.classes[i].TimeEnd.split(":");
                $log.debug('end',end);
@@ -479,7 +500,8 @@
                 var startdate=d1.valueOf();
                 var enddate=d2.valueOf();                       
                //making start inclusive and end not
-               if (d<enddate && d>=startdate) {
+//               if (d.valueOf()<enddate && d.valueOf()>=startdate) {
+                if (moment().isBefore(moment(d2),'minute') && moment().isSameOrAfter(moment(d1),'minute')) {
                    vm.nowChoice = i; //note there may be nmultiples and this will pick the last
                    $log.debug('nowChoice',vm.nowChoice);
                }
@@ -487,6 +509,11 @@
             }
             
         }
+        function isDST(t) { //t is the date object to check, returns true if daylight saving time is in effect.
+            var jan = new Date(t.getFullYear(),0,1);
+            var jul = new Date(t.getFullYear(),6,1);
+            return Math.min(jan.getTimezoneOffset(),jul.getTimezoneOffset()) == t.getTimezoneOffset();  
+        }        
         function getSchedule(aDOW) {
             $log.debug('getSchedule',aDOW);
             var path='../v1/schedule/' + aDOW;

@@ -545,18 +545,20 @@ class StudentDbHandler {
         error_log( print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank user: $user_id \n ", TRUE), 3, LOG);
 
 
-        $sql = "SELECT c.*, sr.studentclassstatus from ncontacts  c ";
+        $sql = "SELECT c.*, sr.studentclassstatus, cr.ranktype, cr.currentrank, cr.LastPromoted from ncontacts  c ";
         $sql .= " LEFT JOIN studentregistration sr ON c.id = sr.studentid ";
+        $sql .= " LEFT JOIN ncontactrank cr ON c.id = cr.contactid ";
+        $sql .= " Join nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype) ";
         $sql .= " where (1 = 1)  ";
         if (strlen($status) > 0 && $status != 'ALL') {
             $sql .= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
         } 
 
         if (strlen($contacttype) > 0 && $contacttype != 'All') {
-            $sql .= " and contactType = '" . $contacttype . "'";
+            $sql .= " and contacttype = '" . $contacttype . "'";
         } 
         if (strlen($therank) > 0 && $therank != 'NULL' && $therank != 'All') {
-            $sql .= " and CurrentRank = '" . $therank . "'";
+            $sql .= " and cr.currentrank = '" . $therank . "'";
         }
         
         $schoolfield = "c.studentschool";
@@ -564,7 +566,7 @@ class StudentDbHandler {
         error_log( print_R("getAllStudents sql after security: $sql", TRUE), 3, LOG);
         
 
-        $sql .= "   order by CurrentRank, LastName, FirstName ";
+        $sql .= "   order by cr.currentrank, LastName, FirstName ";
         
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') { 
             $sql .= "  LIMIT " . $thelimit ;

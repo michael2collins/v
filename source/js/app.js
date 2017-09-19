@@ -237,6 +237,9 @@
             .when('/table-basic-testcandidates', {
                 templateUrl: 'templates/states/table-basic-testcandidates.html'
             })
+            .when('/table-basic-schedule', {
+                templateUrl: 'templates/states/table-basic-schedule.html'
+            })
             .otherwise({
                 redirectTo: '/page-signin'
      //           redirectTo: '/'

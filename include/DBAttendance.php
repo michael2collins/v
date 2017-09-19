@@ -45,7 +45,7 @@ class AttendanceDbHandler {
 
         $sql = "SELECT * FROM schedule where takeAttendance in ('All Rank','Yes') ";
         $sql .= " and DayOfWeek = ? and school = ?  order by sortorder";
-        
+
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("ss", $DOWid, $school);
 
@@ -69,6 +69,67 @@ class AttendanceDbHandler {
 
     }
 
+    public function getClassScheduleAll() {
+        
+        global $school;
+
+        $sql = "SELECT s.*, c.class  FROM schedule s left outer join nclass c on (c.id = s.classid)";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by sortorder";
+        
+        error_log( print_R("getClassScheduleAll sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $schedulelist = $stmt->get_result();
+                $stmt->close();
+                return $schedulelist;
+            } else {
+                error_log( print_R("getClassScheduleAll  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassScheduleAll  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getClasses() {
+        
+        global $school;
+
+        $sql = "SELECT * FROM nclass  ";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by sort";
+        
+        error_log( print_R("getClasses sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $classlist = $stmt->get_result();
+                $stmt->close();
+                return $classlist;
+            } else {
+                error_log( print_R("getClasses  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClasses  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
 
     public function getClassAges() {
 
@@ -190,7 +251,7 @@ class AttendanceDbHandler {
         global $school;
         
             $sql = "SELECT distinct DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek ";
-            $sql .= " FROM nattendance n, ncontacts c ";
+            $sql .= " FROM attendance n, ncontacts c ";
             $sql .= " where c.ID = n.contactid ";
             $sql .= " and c.studentschool = ? ";
             $sql .= " order by mondayofweek desc LIMIT 5";
@@ -364,7 +425,11 @@ class AttendanceDbHandler {
         $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum,s.readyForNextRank, 0 as attended";
         $sql .= " FROM  studentregistration  r, nclass n, ncontacts s ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid ";
-        $sql .= " and n.class = '" . $theclass . "'";
+//        $sql .= " and n.class = '" . $theclass . "'";
+
+        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
+            $sql .= " and n.class = '" . $theclass . "'";
+        }
 
         $schoolfield = "s.studentschool";
         $sql = addSecurity($sql, $schoolfield);
@@ -384,10 +449,18 @@ class AttendanceDbHandler {
         $heresql .= " a.attended ";
         $heresql .= " FROM attendance a, ncontacts c, nclass n ";
         $heresql .= " where (1 = 1) and a.ContactId = c.ID  and a.classid = n.id ";
-        $heresql .= " and mondayofweek = '" . $thedow . "'";
-        $heresql .= " and n.class = '" . $theclass . "'";
+  //      $heresql .= " and mondayofweek = '" . $thedow . "'";
+//        $heresql .= " and n.class = '" . $theclass . "'";
         $heresql .= " and a.downum = " . $daynum;
         $heresql .= " and a.attended = 1 ";
+
+        if (strlen($thedow) > 0 && $thedow != 'All') {
+            $heresql .= " and mondayofweek = '" . $thedow . "'";
+        } 
+        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
+            $heresql .= " and n.class = '" . $theclass . "'";
+        }
+
 
         $schoolfield = "c.studentschool";
         $heresql = addSecurity($heresql, $schoolfield);
@@ -601,22 +674,71 @@ class AttendanceDbHandler {
 
     }
 
+    private function isScheduleExists(
+        $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
+        ) {
+
+        error_log( print_R("isScheduleExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as schedulecount from schedule ";
+        $cntsql .= " where dayofweek = ? ";
+        $cntsql .= " and TimeStart =   ? ";
+        $cntsql .= " and TimeEnd = ? ";
+        $cntsql .= " and classid = ? ";
+        $cntsql .= " and ID = ? ";
+
+        error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $sql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("sssss",
+                    $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isScheduleExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            return $row;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
 
     /**
      * Updating or inserting attendance
      */
 
-    public function updateAttendance($sc_ContactId,
-                                       $sc_classid,
-                                       $sc_class,
-                                       $sc_daynum,
-                                       $sc_attend,
-                                       $sc_mondayDOW, 
-                                       $sc_rank
-                                      ) {
+    public function updateAttendance($sc_ContactId,    $sc_classid,    $sc_class,    $sc_daynum,
+    $sc_attend,    $sc_mondayDOW,     $sc_rank
+    ) {
         $num_affected_rows = 0;
         error_log( print_R("attendance update entered", TRUE), 3, LOG);
-
+        
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
@@ -726,7 +848,119 @@ class AttendanceDbHandler {
         return $num_affected_rows > 0;
     }
 
+    public function updateSchedule( $ID,
+        $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance, $TimeStart, $TimeEnd, $sortorder, $classid            
+                                ) {
+        $num_affected_rows = 0;
+        error_log( print_R("schedule update entered", TRUE), 3, LOG);
+
+        global $school;
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO schedule( 
+DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd, sortorder, school, classid            ) ";
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+        
+        if ($this->isScheduleExists(
+            $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("ssssssssss",
+                    $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
+                    $TimeStart, $TimeEnd, $sortorder, $school, $classid            
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_id;
+                    } else {
+                        // Failed to create 
+                        printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                    }
+
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
 
 
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE schedule SET 
+            DayOfWeek = ? ,
+            TimeRange = ? ,
+            AgeRange = ? ,
+            Description = ? ,
+            TakeAttendance = ? ,
+            TimeStart = ? ,
+            TimeEnd = ? ,
+            sortorder = ? ,
+            school = ? ,
+            classid = ? 
+            WHERE ID = ? ";
+
+            error_log( print_R("schedule update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssssssssss",
+                    $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance, 
+                    $TimeStart, $TimeEnd, $sortorder, $school, $classid, $ID
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("schedule update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+        }
+    }
+    public function removeSchedule($id
+    ) {
+
+        error_log( print_R("removeSchedule entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from schedule  where ID = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeSchedule sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    
 }
 ?>

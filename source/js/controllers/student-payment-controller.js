@@ -51,6 +51,8 @@
         vmpayment.removePaymentPlan = removePaymentPlan;
         vmpayment.removePaymentPay = removePaymentPay;
         vmpayment.updatePaymentPay = updatePaymentPay;
+        vmpayment.getPayerList = getPayerList;
+        vmpayment.removePayer = removePayer;
         vmpayment.payerSet = payerSet;
         vmpayment.autoExpand = autoExpand;
         vmpayment.head = {};
@@ -79,10 +81,10 @@
             element.style.minHeight = "35px";
         }
         
-        function payerSet() {
-            $log.debug('payerSet entered');
-            vmpayment.head.payerid = vmpayment.studentpayer;
-            vmpayment.headcoverage.payerid = vmpayment.studentpayer;
+        function payerSet(input) {
+            $log.debug('payerSet entered',input);
+            vmpayment.head.payerid = vmpayment.studentpayer.payerid;
+            vmpayment.headcoverage.payerid = vmpayment.studentpayer.payerid;
             $q.all([
                   getFamily().then(function(){
                       $log.debug('getPayerList ready');
@@ -186,7 +188,7 @@
         }
     
         function getFamily() {
-            var familypath = '../v1/family/' + vmpayment.studentpayer;
+            var familypath = '../v1/family/' + vmpayment.studentpayer.payerid;
             $log.debug('getPayerList entered',familypath);
              return ClassServices.getFamily(familypath).then(function(data){
                     $log.debug('getFamily returned data');
@@ -215,7 +217,7 @@
         }
     
         function getListPrices() {
-            var path = '../v1/listprices/' + vmpayment.studentpayer;
+            var path = '../v1/listprices/' + vmpayment.studentpayer.payerid;
             $log.debug('getListPrices entered',path);
              return ClassServices.getListPrices(path).then(function(data){
                     $log.debug('getListPrices returned data');
@@ -244,7 +246,7 @@
         }
     
         function getPaymentplan() {
-            var path = '../v1/paymentplan/' + vmpayment.studentpayer;
+            var path = '../v1/paymentplan/' + vmpayment.studentpayer.payerid;
             $log.debug('getPaymentplan entered',path);
              return ClassServices.getPaymentplan(path).then(function(data){
                     $log.debug('getPaymentplan returned data');
@@ -399,7 +401,7 @@
         }        
 
         function getPaymentpays() {
-            var path = '../v1/paymentpays/' + vmpayment.studentpayer;
+            var path = '../v1/paymentpays/' + vmpayment.studentpayer.payerid;
             $log.debug('getPaymentpays entered',path);
              return ClassServices.getPaymentpays(path).then(function(data){
                     $log.debug('getPaymentpays returned data');
@@ -433,7 +435,7 @@
     
         }
         function getPayerpayments() {
-            var path = '../v1/payerpayments/' + vmpayment.studentpayer;
+            var path = '../v1/payerpayments/' + vmpayment.studentpayer.payerid;
             $log.debug('getPayerpayments entered',path);
              return ClassServices.getPaymentpays(path).then(function(data){
                     $log.debug('getPayerpayments returned data');
@@ -464,6 +466,30 @@
                 );
     
         }
+
+        function removePayer() {
+            $log.debug('removePayer entered',vmpayment.studentpayer);
+            var path = "../v1/payer";
+            var thedata = {
+                payerid: vmpayment.studentpayer.payerid
+            };
+            return ClassServices.removePayer(path, thedata)
+                .then(function(data){
+                    $log.debug('removePayer returned data');
+                    $log.debug(data);
+                    getPayerList();
+                    getPaymentpays();
+                    getListPrices();
+                    return data;
+                }).catch(function(e) {
+                    $log.debug('removePayer failure:');
+                    $log.debug("error", e);
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+            
+        }
+
 
         function removePaymentPay(input) {
             $log.debug('removePaymentPay entered',input);

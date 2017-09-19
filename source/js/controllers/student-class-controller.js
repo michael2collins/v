@@ -15,11 +15,12 @@
         '$timeout',
         'ClassServices',
         'Notification',
-        '$q'
+        '$q',
+        '$controller'
     ];
 
     function StudentClassController($scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices, Notification, $q) {
+        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller) {
         /* jshint validthis: true */
         var vmclass = this;
 
@@ -397,7 +398,6 @@
         }
 
         function addStudentRegistration() {
-            
             var path = "../v1/studentregistration";
             var thedata = {
                 studentid: $routeParams.id,
@@ -411,6 +411,7 @@
             return ClassServices.addStudentRegistration( path, thedata ).then(function (data) {
                 $log.debug('addStudentRegistration returned data: ');
                 $log.debug(data);
+                //if we added a payer for the registration, then refresh the list on the payment page
                 getStudentClazzList();
                 
             },function(error) {

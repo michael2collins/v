@@ -14,6 +14,7 @@ var jQuery;
         '/table-basic-students': {title:'Student List', 'breadcrumb':['Students', 'Student List']},
         '/table-basic-leads': {title:'Table Basic', 'breadcrumb':['Table', 'Table Basic']},
         '/table-basic-attendance': {title:'Attendance', 'breadcrumb':['Students', 'Attendance']},
+        '/table-basic-schedule': {title:'Class Schedule', 'breadcrumb':['Studio', 'Class Schedule']},
         '/table-basic-eventcreation': {title:'Event Creation', 'breadcrumb':['Students', 'Event Creation']},
         '/table-basic-testcandidates': {title:'Test Creation', 'breadcrumb':['Testing', 'Test Creation']},
         '/table-basic-paymenttracking': {title:'Table Basic', 'breadcrumb':['Table', 'Table Basic']},

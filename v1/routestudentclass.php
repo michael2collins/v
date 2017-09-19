@@ -1251,6 +1251,50 @@ $app->delete('/paymentpay','authenticate', function() use ($app) {
                         
 
 });
+$app->delete('/payer','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("payer before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+    $payerid = (isset($test->thedata->payerid) ? $test->thedata->payerid : "");
+
+    error_log( print_R("payerid: $payerid\n", TRUE ), 3, LOG);
+
+    $payer_good=0;
+    $payer_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // removing payer
+    $res = $db->removePayer(
+        $payerid
+                                );
+
+    if ($res > 0) {
+        error_log( print_R("paymentpay removed for: $payerid \n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "paymentpay removed successfully";
+        $payer_good = 1;
+        $response["payer"] = $payer_good;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete payer result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $payerid, TRUE), 3, LOG);
+        $payer_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove paymentpay. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
 
 
 ?>

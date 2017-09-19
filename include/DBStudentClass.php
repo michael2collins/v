@@ -1140,6 +1140,30 @@ class StudentClassDbHandler {
         }
 
     }
+    public function removePayer($payerid
+    ) {
+
+        error_log( print_R("removePayer entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from payer  where id = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $payerid
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
     
 }
 ?>

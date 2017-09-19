@@ -45,7 +45,8 @@
             getPaymentpays: getPaymentpays,
             getPayerpayments: getPayerpayments,
             updatePaymentPay: updatePaymentPay,
-            removePaymentPay: removePaymentPay
+            removePaymentPay: removePaymentPay,
+            removePayer: removePayer
         };
         return service;
 
@@ -354,6 +355,17 @@
         }         
         function removePaymentPay(path, thedata ) {
             $log.debug('removePaymentPay data before post :', path, thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function removePayer(path, thedata ) {
+            $log.debug('removePayer data before post :', path, thedata);
             var request = $http({
                 method: "DELETE",
                 url: path,

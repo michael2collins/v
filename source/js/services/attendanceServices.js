@@ -15,15 +15,17 @@
         var response;
         var code;
         var service = {
-  //          getAllAttendances: getAllAttendances,
              setapikey: setapikey,
             refreshAttendances: refreshAttendances,
             getAttendanceHistory: getAttendanceHistory,
             setStudentReadyNextRank: setStudentReadyNextRank,
             getDOW: getDOW,
             getSchedule: getSchedule,
+            getSchedules: getSchedules,
+            getClasses: getClasses,
             updateAttendance: updateAttendance,
-//            getAttendance: getAttendance,
+            updateSchedule: updateSchedule,
+            removeSchedule: removeSchedule,
             setActiveTab: setActiveTab,
             getActiveTab: getActiveTab,
             getAttendanceSum: getAttendanceSum
@@ -81,6 +83,22 @@
             });
             return( request.then( handleSuccess, handleError ) );
         }
+        function getSchedules(path) {
+            $log.debug('getSchedules service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function getClasses(path) {
+            $log.debug('getClasses service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
 
         function setStudentReadyNextRank(path, readyness) {
                     $log.debug('setStudentReadyNextRank before put :',path, readyness);
@@ -95,6 +113,18 @@
                     return( request.then( handleSuccess, handleError ) );
         }
 
+        function removeSchedule( thedata, path ) {
+            $log.debug('removeSchedule data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+
         function updateAttendance(path, thedata ) {
                     $log.debug('updateAttendance data before post :' , thedata);
                     var request = $http({
@@ -103,6 +133,17 @@
                     //    params: {
                     //        action: "add"
                     //    },
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateSchedule(path, thedata ) {
+                    $log.debug('updateSchedule data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
                         data: {
                             thedata: thedata
                         }

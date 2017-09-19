@@ -125,7 +125,8 @@
                   <div  class="form-group">
                     <label for="inputcontacttype" class="control-label ">Student Type</label>
                     <div class="input-icon right">
-                      <select id="inputcontacttype" type="text" name="contacttype" ng-model="vm.thecontacttype" ng-change="vm.setContactType(vm.thecontacttype)"  class="form-control ">
+                      <select id="inputcontacttype" type="text" name="contacttype" ng-model="vm.thecontacttype" 
+                        ng-change="vm.setContactType(vm.thecontacttype);vmDual.requery()"  class="form-control ">
                         <option>All</option>
                         <option ng-repeat="g in vm.StudentList.ContactTypeList" 
                         ng-selected="{{(g.listvalue === vm.thecontacttype) && 'selected' || 'not' }}"  
@@ -138,7 +139,8 @@
                   <div class="form-group">
                     <label for="inputRank" class="control-label ">Rank </label>
                     <div class="input-icon right">
-                      <select id="inputRank" type="text" name="Rank" ng-model="vm.Rank" ng-change="vm.setRank(vm.Rank)" class="form-control">
+                      <select id="inputRank" type="text" name="Rank" ng-model="vm.Rank" 
+                        ng-change="vm.setRank(vm.Rank);vmDual.requery()" class="form-control">
                         <option>All</option>
                         <option ng-repeat="iter in vm.RankList.rankList" ng-selected="iter.ranklist === vm.Rank" 
                              value="{{iter.ranklist}}">{{iter.ranklist}}</option>
@@ -163,7 +165,8 @@
                   <div class="form-group">
                     <label for="inputlimit" class="control-label ">Limit</label>
                     <div class="input-icon right">
-                      <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit)" class="form-control">
+                      <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" 
+                        ng-change="vm.setLimit(vm.limit);vmDual.requery()" class="form-control">
                         <option>All</option>
                         <option ng-repeat="lim in vm.limits" ng-selected="{{(lim == vm.limit) && 'selected' || 'not' }}"  
                             value="{{lim}}">{{lim}}</option>

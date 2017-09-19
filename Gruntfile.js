@@ -364,6 +364,7 @@ module.exports = function (grunt) {
 //          "source/jade/templates/states/form-layouts-newweek.html": ["source/jade/templates/states/form-layouts-newweek.jade"],
 //          "source/jade/templates/states/form-layouts-newpayment.html": ["source/jade/templates/states/form-layouts-newpayment.jade"],
           "source/jade/templates/states/table-basic-attendance.html": ["source/jade/templates/states/table-basic-attendance.jade"],
+          "source/jade/templates/states/table-basic-schedule.html": ["source/jade/templates/states/table-basic-schedule.jade"],
 //          "source/jade/templates/states/table-basic-leads.html": ["source/jade/templates/states/table-basic-leads.jade"],
 //          "source/jade/templates/states/table-basic-managetest.html": ["source/jade/templates/states/table-basic-managetest.jade"],
 //          "source/jade/templates/states/table-basic-paymenttracking.html": ["source/jade/templates/states/table-basic-paymenttracking.jade"],

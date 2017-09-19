@@ -337,6 +337,192 @@ $app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
     }
 });
 
+$app->get('/schedule', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClassScheduleAll();
+    $response["error"] = false;
+    $response["Schedulelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+            $tmp["DayOfWeek"] = (empty($slist["DayOfWeek"]) ? "NULL" : $slist["DayOfWeek"]);
+            $tmp["TimeRange"] = (empty($slist["TimeRange"]) ? "NULL" : $slist["TimeRange"]);
+            $tmp["AgeRange"] = (empty($slist["AgeRange"]) ? "NULL" : $slist["AgeRange"]);
+            $tmp["Description"] = (empty($slist["Description"]) ? "NULL" : $slist["Description"]);
+            $tmp["TakeAttendance"] = (empty($slist["TakeAttendance"]) ? "NULL" : $slist["TakeAttendance"]);
+            $tmp["TimeStart"] = (empty($slist["TimeStart"]) ? "NULL" : $slist["TimeStart"]);
+            $tmp["TimeEnd"] = (empty($slist["TimeEnd"]) ? "NULL" : $slist["TimeEnd"]);
+            $tmp["sortorder"] = (empty($slist["sortorder"]) ? "NULL" : $slist["sortorder"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+        } else {
+            $tmp["ID"] = "NULL";
+            $tmp["DayOfWeek"] = "NULL";
+            $tmp["TimeRange"] = "NULL";
+            $tmp["AgeRange"] = "NULL";
+            $tmp["Description"] = "NULL";
+            $tmp["TakeAttendance"] = "NULL";
+            $tmp["TimeStart"] = "NULL";
+            $tmp["TimeEnd"] = "NULL";
+            $tmp["sortorder"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["class"] = "NULL";
+        }
+        array_push($response["Schedulelist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Schedulelists";
+        error_log( print_R("Schedulelists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->get('/classes', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClasses();
+    $response["error"] = false;
+    $response["ClassList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["classid"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+        } else {
+            $tmp["class"] = "NULL";
+            $tmp["classid"] = "NULL";
+        }
+        array_push($response["ClassList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in ClassLists";
+        error_log( print_R("ClassLists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+
+$app->post('/schedule','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("schedule post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $ID          = (isset($dataJsonDecode->thedata->ID)             ? $dataJsonDecode->thedata->ID : "");
+    $DayOfWeek  = (isset($dataJsonDecode->thedata->DayOfWeek)       ? $dataJsonDecode->thedata->DayOfWeek : "");
+    $TimeRange  = (isset($dataJsonDecode->thedata->TimeRange)       ? $dataJsonDecode->thedata->TimeRange : "");
+    $AgeRange   = (isset($dataJsonDecode->thedata->AgeRange)        ? $dataJsonDecode->thedata->AgeRange : "");
+    $Description = (isset($dataJsonDecode->thedata->Description)    ? $dataJsonDecode->thedata->Description : "");
+    $TakeAttendance    = (isset($dataJsonDecode->thedata->TakeAttendance)         ? $dataJsonDecode->thedata->TakeAttendance : "");
+    $TimeStart  = (isset($dataJsonDecode->thedata->TimeStart)       ? $dataJsonDecode->thedata->TimeStart : "");
+    $TimeEnd    = (isset($dataJsonDecode->thedata->TimeEnd)         ? $dataJsonDecode->thedata->TimeEnd : "");
+    $sortorder    = (isset($dataJsonDecode->thedata->sortorder)         ? $dataJsonDecode->thedata->sortorder : "");
+    $classid    = (isset($dataJsonDecode->thedata->classid)         ? $dataJsonDecode->thedata->classid : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateSchedule($ID,
+        $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
+        $TimeStart, $TimeEnd, $sortorder, $classid
+                                     );
+
+    if ($res_id > 1) {
+        $response["error"] = false;
+        $response["message"] = "schedule created successfully";
+        $response["res_id"] = $res_id;
+        error_log( print_R("schedule created: $res_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($res_id == 1) {
+        $response["error"] = false;
+        $response["message"] = "schedule updated successfully";
+        error_log( print_R("schedule already existed\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after schedule result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create schedule. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/schedule','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("schedule before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->ID) ? 
+                    $test->thedata->ID : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $schedulegood=0;
+    $schedulebad=0;
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // remove schedule
+    $schedule = $db->removeSchedule(
+        $ID
+                                );
+
+    if ($schedule > 0) {
+        error_log( print_R("schedule removed: $schedule\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "schedule removed successfully";
+        $schedulegood = 1;
+        $response["schedule"] = $schedulegood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete schedule result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $schedule, TRUE), 3, LOG);
+        $schedulebad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove schedule. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
 
 $app->post('/updateattendance','authenticate',  function() use($app) {
     $response = array();
