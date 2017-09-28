@@ -92,8 +92,14 @@
                 </div>
                 <div class="panel-footer">
 
-                    <div ui-grid="vm.gridOptions"  ui-grid-pagination ui-grid-cellNav  ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-edit class="mygrid">
-                        <div class="watermark" ng-show="!vm.gridOptions.data.length">No data available</div>
+                    <div ui-grid="vm.gridOptions"  ui-grid-pagination 
+                    ui-grid-cellNav  
+                    ui-grid-pinning  
+                    ui-grid-move-columns 
+                    ui-grid-exporter 
+                    ui-grid-edit class="mygrid">
+<!--                        <div class="watermark" ng-show="!vm.gridOptions.data.length">No data available</div>
+-->
                     </div>
                     
                     

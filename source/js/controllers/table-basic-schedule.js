@@ -9,7 +9,7 @@
             template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.class as option.value for option in colFilter.options track by option.id"></select>'
           };
         })
-        .filter('griddropdown', function() {
+        .filter('schedulegriddropdown', function() {
           return function (input, context) {
             
             try {
@@ -82,9 +82,16 @@
         activate();
 
         function activate() {
-            setgridOptions();
             getSchedule().then(function() {
                 $log.debug('getSchedule activate done');
+                getClasses().then(function() {
+                    $log.debug('getClasses activate done');
+                    setgridOptions();
+                 //   vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+                 },function(error) {
+                     return ($q.reject(error));
+                 });
+                
              },function(error) {
                  return ($q.reject(error));
              });
@@ -194,6 +201,7 @@
                         myDate.setMinutes(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[1],10));
                         data.Schedulelist[iter].endT = myDate;
                     }
+
                     vm.gridOptions.data = data.Schedulelist; 
                 }, function(error) {
                     $log.debug('Caught an error getSchedules:', error); 
@@ -208,7 +216,6 @@
         function getClasses() {
             $log.debug('getClasses entered');
             var path='../v1/classes';
-            vm.classhashlist=[];
 
             return AttendanceServices.getClasses(path).then(function(data){
                     $log.debug('getClasses returned data');
@@ -216,13 +223,14 @@
                     
                     vm.classlist = data.ClassList; 
                     //classes which aren't in the db
-                    vm.classlist.push( {class: "No Scheduled Classes", id: 0} );
+                    vm.classlist.push( {class: "No Scheduled Classes", classid: 0} );
                     for(var iter=0,len = data.ClassList.length;iter<len;iter++) {
                         vm.classhashlist.push ({ 
                             value: data.ClassList[iter].class,
                             id: data.ClassList[iter].classid
                         });
-                    }         
+                    }  
+                    return vm.classlist;
                 }, function(error) {
                     $log.debug('Caught an error getClasses:', error); 
                     vm.classlist = [];
@@ -245,12 +253,7 @@
         function setgridOptions() {
             var ctpl_start = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.startT"></div>';
             var ctpl_end = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.endT"></div>';
-            getClasses().then(function() {
-            $log.debug('setgridOptions Options:', vm.gridOptions);
-                $log.debug('getClasses activate done');
-             },function(error) {
-                 return ($q.reject(error));
-             });
+
             vm.gridOptions = {
                 enableFiltering: true,
                 enableCellEditOnFocus: true,
@@ -308,10 +311,12 @@
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    cellFilter: 'griddropdown:this',
-                    editDropdownIdLabel: 'id',
-                    editDropdownValueLabel: 'value',
-                    editDropdownOptionsArray: vm.classhashlist
+                    cellFilter: 'schedulegriddropdown:this',
+//                    editDropdownIdLabel: 'id',
+//                    editDropdownValueLabel: 'value',
+                    editDropdownIdLabel: 'classid',
+                    editDropdownValueLabel: 'class',
+                    editDropdownOptionsArray: vm.classlist
 //                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
 //                    filter: { 
 //                          term: 1,

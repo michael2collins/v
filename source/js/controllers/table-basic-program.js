@@ -4,7 +4,7 @@
     angular
         .module('ng-admin')
         .controller('ProgramTableBasicController', ProgramTableBasicController)
-        .filter('griddropdown', function() {
+        .filter('pgmgriddropdown', function() {
           return function (input, context) {
             
             try {
@@ -56,14 +56,23 @@
         vm.gridApi;
         vm.limits = [5,10,20,50,100,200];
         vm.program={};
-        vm.classTypes = [{"id":"ChildrenKarate","value":"ChildrenKarate","order":1},{"id":"AdultKarate","value":"AdultKarate","order":2},{"id":"Wellness","value":"Wellness","order":3},{"id":"Other","value":"Other","order":4},{"id":"Kickboxing","value":"Kickboxing","order":5},{"id":"Zoomba","value":"Zoomba","order":6},{"id":"AfterSchool","value":"AfterSchool","order":7}];
+        vm.classTypes=[];
+//        vm.classTypes = [{"id":"ChildrenKarate","value":"ChildrenKarate","order":1},{"id":"AdultKarate","value":"AdultKarate","order":2},{"id":"Wellness","value":"Wellness","order":3},{"id":"Other","value":"Other","order":4},{"id":"Kickboxing","value":"Kickboxing","order":5},{"id":"Zoomba","value":"Zoomba","order":6},{"id":"AfterSchool","value":"AfterSchool","order":7}];
         vm.thisProgram=[];
         activate();
 
         function activate() {
-            setgridOptions();
+
             getProgram().then(function() {
                 $log.debug('getProgram activate done');
+                getClassTypes().then(function() {
+                    $log.debug('getClassTypes activate done',vm.classTypes);
+                    setgridOptions();
+               //     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+                 },function(error) {
+                     return ($q.reject(error));
+                 });
              },function(error) {
                  return ($q.reject(error));
              });
@@ -148,8 +157,9 @@
             return ClassServices.getPrograms(path).then(function(data){
                     $log.debug('getPrograms returned data');
                     $log.debug(data);
+
+                        vm.gridOptions.data = data.Programlist; 
                     
-                    vm.gridOptions.data = data.Programlist; 
                 }, function(error) {
                     $log.debug('Caught an error getPrograms:', error); 
                     vm.Programlist = [];
@@ -190,14 +200,6 @@
         }
         
         function setgridOptions() {
-            getClassTypes().then(function() {
-            $log.debug('setgridOptions Options:', vm.gridOptions);
-                $log.debug('getClassTypes activate done',vm.classTypes);
-                vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-
-             },function(error) {
-                 return ($q.reject(error));
-             });
              
             vm.gridOptions = {
                 enableFiltering: true,
@@ -213,7 +215,7 @@
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    cellFilter: 'griddropdown:this',
+                    cellFilter: 'pgmgriddropdown:this',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.classTypes
