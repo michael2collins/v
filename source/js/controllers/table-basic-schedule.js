@@ -9,6 +9,33 @@
             template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.class as option.value for option in colFilter.options track by option.id"></select>'
           };
         })
+        .filter('griddropdown', function() {
+          return function (input, context) {
+            
+            try {
+            
+                var map = context.col.colDef.editDropdownOptionsArray;
+                var idField = context.col.colDef.editDropdownIdLabel;
+                var valueField = context.col.colDef.editDropdownValueLabel;
+                var initial = context.row.entity[context.col.field];
+                if (typeof map !== "undefined") {
+                  for (var i = 0; i < map.length; i++) {
+                    if (map[i][idField] == input) {
+                      return map[i][valueField];
+                    }
+                  }
+                } else if (initial) {
+                  return initial;
+                }
+                return input;
+              
+          } catch (e) {
+//            context.grid.appScope.log("Error: " + e);
+            console.log("error: " + e);
+          }
+        };
+        })
+        
         .directive('myCustomDropdownid', function() {
           return {
             template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.id as option.value for option in colFilter.options track by option.id"></select>'
@@ -229,6 +256,7 @@
                 enableCellEditOnFocus: true,
                 paginationPageSizes: vm.limits,
                 paginationPageSize: 10,
+                appScopeProvider: vm,
                 rowHeight: 88,
             columnDefs: [
                 // default
@@ -280,13 +308,15 @@
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    editDropdownOptionsArray: 'Classid',
-                    editDropdownOptionsArray: vm.classhashlist,
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
-                    filter: { 
-                          term: 1,
-                        options: vm.classhashlist        
-                    },
+                    cellFilter: 'griddropdown:this',
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.classhashlist
+//                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
+//                    filter: { 
+//                          term: 1,
+//                        options: vm.classhashlist        
+ //                   },
                 }, 
                 {
                     field: 'startT',
@@ -323,7 +353,7 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="col.grid.appScope.removeSchedule(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeSchedule(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
                 }
 /*                    { name: 'EventTypeSparring', displayName: 'Sparring',
                       type: 'boolean',enableFiltering: false,
@@ -335,7 +365,7 @@
                 //rowHeight: 15,
                 showGridFooter: false,
                 enableColumnResizing: true,
-                appScopeProvider: vm,
+//                appScopeProvider: vm,
 
                 onRegisterApi: function(gridApi) {
                     $log.debug('vm gridapi onRegisterApi');

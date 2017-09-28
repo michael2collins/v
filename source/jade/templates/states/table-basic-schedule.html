@@ -8,6 +8,17 @@
         </div>
         <div class="portlet-body">
             <div class="row">
+<?php
+
+require_once('/v/templates/states/table-basic.php');
+
+print strcoltemplate(
+    'agerange', 'vm.schedule.agerange', 'Age Range', 'All Ages', true
+    );
+
+?>
+            </div>
+            <div class="row">
                 <form action="" novalidate name="editschedule" class="form-horizontal">
                     <div class="row col-md-12" style="height: 88px;">
                         <div class="col-md-2">

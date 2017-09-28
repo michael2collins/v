@@ -523,6 +523,198 @@ $app->delete('/schedule','authenticate', function() use ($app) {
 
 });
 
+$app->get('/program', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getProgramAll();
+    $response["error"] = false;
+    $response["Programlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["classType"] = (empty($slist["classType"]) ? "NULL" : $slist["classType"]);
+            $tmp["_12MonthPrice"] = (empty($slist["_12MonthPrice"]) ? "NULL" : $slist["_12MonthPrice"]);
+            $tmp["_6MonthPrice"] = (empty($slist["_6MonthPrice"]) ? "NULL" : $slist["_6MonthPrice"]);
+            $tmp["MonthlyPrice"] = (empty($slist["MonthlyPrice"]) ? "NULL" : $slist["MonthlyPrice"]);
+            $tmp["WeeklyPrice"] = (empty($slist["WeeklyPrice"]) ? "NULL" : $slist["WeeklyPrice"]);
+            $tmp["_2ndPersonDiscount"] = (empty($slist["_2ndPersonDiscount"]) ? "NULL" : $slist["_2ndPersonDiscount"]);
+            $tmp["_3rdPersonDiscount"] = (empty($slist["_3rdPersonDiscount"]) ? "NULL" : $slist["_3rdPersonDiscount"]);
+            $tmp["_4thPersonDiscount"] = (empty($slist["_4thPersonDiscount"]) ? "NULL" : $slist["_4thPersonDiscount"]);
+            $tmp["SpecialPrice"] = (empty($slist["SpecialPrice"]) ? "NULL" : $slist["SpecialPrice"]);
+            $tmp["sortKey"] = (empty($slist["sortKey"]) ? "NULL" : $slist["sortKey"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["class"] = "NULL";
+            $tmp["classType"] = "NULL";
+            $tmp["_12MonthPrice"] = "NULL";
+            $tmp["_6MonthPrice"] = "NULL";
+            $tmp["MonthlyPrice"] = "NULL";
+            $tmp["WeeklyPrice"] = "NULL";
+            $tmp["_2ndPersonDiscount"] = "NULL";
+            $tmp["_3rdPersonDiscount"] = "NULL";
+            $tmp["_4thPersonDiscount"] = "NULL";
+            $tmp["SpecialPrice"] = "NULL";
+            $tmp["sortKey"] = "NULL";
+        }
+        array_push($response["Programlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Programlists";
+        error_log( print_R("Programlists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/program','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Program post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+//            id, class, classType, 12MonthPrice, 6MonthPrice, MonthlyPrice, WeeklyPrice, 
+//            2ndPersonDiscount, 3rdPersonDiscount, 4thPersonDiscount, SpecialPrice, sortKey
+
+    $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
+    $class  = (isset($dataJsonDecode->thedata->class)       ? $dataJsonDecode->thedata->class : "");
+    $classType  = (isset($dataJsonDecode->thedata->classType)       ? $dataJsonDecode->thedata->classType : "");
+    $_12MonthPrice   = (isset($dataJsonDecode->thedata->_12MonthPrice)        ? $dataJsonDecode->thedata->_12MonthPrice : "");
+    $_6MonthPrice = (isset($dataJsonDecode->thedata->_6MonthPrice)    ? $dataJsonDecode->thedata->_6MonthPrice : "");
+    $_2ndPersonDiscount    = (isset($dataJsonDecode->thedata->_2ndPersonDiscount) ? $dataJsonDecode->thedata->_2ndPersonDiscount : "");
+    $_3rdPersonDiscount  = (isset($dataJsonDecode->thedata->_3rdPersonDiscount)       ? $dataJsonDecode->thedata->_3rdPersonDiscount : "");
+    $_4thPersonDiscount    = (isset($dataJsonDecode->thedata->_4thPersonDiscount)         ? $dataJsonDecode->thedata->_4thPersonDiscount : "");
+    $MonthlyPrice    = (isset($dataJsonDecode->thedata->MonthlyPrice)         ? $dataJsonDecode->thedata->MonthlyPrice : "");
+    $WeeklyPrice    = (isset($dataJsonDecode->thedata->WeeklyPrice)         ? $dataJsonDecode->thedata->WeeklyPrice : "");
+    $SpecialPrice    = (isset($dataJsonDecode->thedata->SpecialPrice)         ? $dataJsonDecode->thedata->SpecialPrice : "");
+    $sortKey    = (isset($dataJsonDecode->thedata->sortKey)         ? $dataJsonDecode->thedata->sortKey : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateProgram($id,
+    $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
+            $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey
+                                     );
+
+    if ($res_id > 1) {
+        $response["error"] = false;
+        $response["message"] = "Program created successfully";
+        $response["res_id"] = $res_id;
+        error_log( print_R("Program created: $res_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($res_id == 1) {
+        $response["error"] = false;
+        $response["message"] = "Program updated successfully";
+        error_log( print_R("Program already existed\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after Program result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create Program. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/program','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Program before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Programgood=0;
+    $Programbad=0;
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // remove Program
+    $Program = $db->removeProgram(
+        $ID
+                                );
+
+    if ($Program > 0) {
+        error_log( print_R("Program removed: $Program\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "Program removed successfully";
+        $Programgood = 1;
+        $response["Program"] = $Programgood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete Program result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $Program, TRUE), 3, LOG);
+        $Programbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove Program. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+$app->get('/classtypes', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClassTypes();
+    $response["error"] = false;
+    $response["ClassTypelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["listkey"]) ? "NULL" : $slist["listkey"]);
+            $tmp["value"] = (empty($slist["listvalue"]) ? "NULL" : $slist["listvalue"]);
+            $tmp["order"] = (empty($slist["listorder"]) ? "NULL" : $slist["listorder"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["value"] = "NULL";
+            $tmp["order"] = "0";
+        }
+        array_push($response["ClassTypelist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in ClassTypelists";
+        error_log( print_R("ClassTypelists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
 
 $app->post('/updateattendance','authenticate',  function() use($app) {
     $response = array();
@@ -609,8 +801,6 @@ $app->put('/readynextrank/:id', 'authenticate', function($student_id) use($app) 
     }
     echoRespnse(200, $response);
 });
-
-
 
 $app->get('/Attendancelist', 'authenticate', function() {
     $response = array();

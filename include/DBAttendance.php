@@ -961,6 +961,243 @@ DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd,
         }
 
     }
+
+    private function isProgramExists(
+        $class, $id
+        ) {
+
+        error_log( print_R("isProgramExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Programcount from nclasslist ";
+        $cntsql .= " where class = ? ";
+        $cntsql .= " and id = ? ";
+
+        error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $sql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("ss",
+                        $class, $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isProgramExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            return $row;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+    public function updateProgram( $id, 
+    $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
+            $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey
+                                ) {
+        $num_affected_rows = 0;
+        error_log( print_R("Program update entered", TRUE), 3, LOG);
+
+        global $school;
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO nclasslist( 
+            class, classType, 12MonthPrice, 6MonthPrice, MonthlyPrice, WeeklyPrice, 
+            2ndPersonDiscount, 3rdPersonDiscount, 4thPersonDiscount, SpecialPrice, sortKey, school ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+        
+        if ($this->isProgramExists(
+            $class, $id
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("ssssssssssss",
+                     $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
+            $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey, $school
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_id;
+                    } else {
+                        // Failed to create 
+                        printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                    }
+
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE nclasslist SET 
+            class = ?, 
+            classType = ?, 
+            12MonthPrice = ?, 
+            6MonthPrice = ?, 
+            MonthlyPrice = ?, 
+            WeeklyPrice = ?, 
+            2ndPersonDiscount = ?, 3rdPersonDiscount = ?, 4thPersonDiscount = ?,
+            SpecialPrice = ?, sortKey = ?, school = ?
+            WHERE id = ? ";
+
+            error_log( print_R("Program update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssssssssssss",
+                     $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
+            $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey, $school, $id
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("Program update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+        }
+    }
+    public function removeProgram($id
+    ) {
+
+        error_log( print_R("removeProgram entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from nclasslist  where id = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeProgram sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    public function getProgramAll() {
+        
+        global $school;
+
+        $sql = "SELECT             id, class, classType, 
+            12MonthPrice as _12MonthPrice, 
+            6MonthPrice as _6MonthPrice, 
+            2ndPersonDiscount as _2ndPersonDiscount, 
+            3rdPersonDiscount as _3rdPersonDiscount, 
+            4thPersonDiscount as _4thPersonDiscount,
+            MonthlyPrice, WeeklyPrice, 
+            SpecialPrice, sortKey
+        FROM nclasslist";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by sortKey";
+        
+        error_log( print_R("getProgramAll sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $Programlist = $stmt->get_result();
+                $stmt->close();
+                return $Programlist;
+            } else {
+                error_log( print_R("getProgramAll  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getProgramAll  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getClassTypes() {
+        
+        global $school;
+
+        $sql = "SELECT listvalue, listkey, listorder
+        FROM studentlist where listtype = 'Classtype' ";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by listorder";
+        
+        error_log( print_R("getClassTypes sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $results = $stmt->get_result();
+                $stmt->close();
+                return $results;
+            } else {
+                error_log( print_R("getClassTypes  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassTypes  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
     
 }
 ?>

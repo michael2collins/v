@@ -238,7 +238,10 @@
                 templateUrl: 'templates/states/table-basic-testcandidates.html'
             })
             .when('/table-basic-schedule', {
-                templateUrl: 'templates/states/table-basic-schedule.html'
+                templateUrl: 'templates/states/table-basic-schedule.php'
+            })
+            .when('/table-basic-program', {
+                templateUrl: 'templates/states/table-basic-program.php'
             })
             .otherwise({
                 redirectTo: '/page-signin'

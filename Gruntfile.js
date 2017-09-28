@@ -47,7 +47,7 @@ module.exports = function (grunt) {
 		    //ctpl: [ 'src/common/**/*.tpl.html' ],
 		    //translations: ['src/assets/languages/*.json'],
 	  apache: [ 'apache_setup/.htaccess' ],
-	  postjade: [ 'source/jade/templates/states/**/*.html'],
+	  postjade: [ 'source/jade/templates/states/**/*.html', 'source/jade/templates/states/**/*.php'],
       html: [ 'source/index.html' ]
 			//less: ['src/less/main.less', 'src/common/**/*.less']
 	},
@@ -59,7 +59,7 @@ module.exports = function (grunt) {
 		'!app/js/lib.js' ],
 		apache: ['app/.htaccess'],
 		css: ['app/css/**/*.css'],
-		html: ['app/templates/states/**/*.html']
+		html: ['app/templates/states/**/*.html', 'app/templates/states/**/*.php']
     },
 	project: {
       javascript: {

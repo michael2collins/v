@@ -46,9 +46,55 @@
             getPayerpayments: getPayerpayments,
             updatePaymentPay: updatePaymentPay,
             removePaymentPay: removePaymentPay,
-            removePayer: removePayer
+            removePayer: removePayer,
+            getPrograms: getPrograms,
+            getClassTypes: getClassTypes,
+            updateProgram: updateProgram,
+            removeProgram: removeProgram,
+            
         };
         return service;
+
+        function updateProgram(path, thedata ) {
+                    $log.debug('updateProgram data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function getPrograms(path) {
+            $log.debug('getPrograms service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function getClassTypes(path) {
+            $log.debug('getClassTypes service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeProgram( thedata, path ) {
+            $log.debug('removeProgram data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+
 
      function setapikey(key) {
 //        $log.debug('ClassServices setapikey', key);
