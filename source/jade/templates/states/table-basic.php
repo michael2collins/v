@@ -1,69 +1,150 @@
 <?php
+function param_default( $def = array(), $parameters= array() ){
+    $parm_diff = array();
+    $ak=array();
+    $va=array();
+    $parm = array();
+    foreach($def as $key=>$values) if(!in_array($key, array_keys($parameters))){
+        $ak[]=$key;
+        $va[]=$values;
+    }
+    $parm_diff = array_combine($ak,$va);
+    $parm = array_merge($parm_diff,$parameters);
+    unset($parm_diff, $ak,$va);
 
-function strColTemplate($field, $model, $label, $placeholder, $required, $fieldtype) {
+    return $parm;
+}
+
+//function strColTemplate($field, $model, $label, $placeholder, $required, $fieldtype) {
+function strColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false,
+        'fieldtype' => 'text'
+     );
+     
+   $param = param_default( $def, $parameters );    
+   
     ob_start(); ?>
 
     <div class="form-group">
-        <label for="<?=$field?>" class="control-label"><?=$label?></label>
+        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label>
+
         <div>
-            <input id="<?=$field?>" type="<?=$fieldtype?>" placeholder="<?=$placeholder?>" name="<?=$field?>" ng-model="<?=$model?>" <?=($required  ? 'required' : '')?> class="form-control">
+            <input  id="<?=$param['field']?>" 
+                    type="<?=$param['fieldtype']?>" 
+                    placeholder="<?=$param['placeholder']?>" 
+                    name="<?=$param['field']?>" 
+                    ng-model="<?=$param['model']?>" 
+                    <?=($param['required']  ? 'required' : '')?> 
+                    class="form-control">
         </div>
     </div>
 
     <?php return ob_get_clean();
 }
 
-function timepickerColTemplate($hourStep, $minuteStep, $showMeridian, $model,  $required ) {
+//function timepickerColTemplate($hourStep, $minuteStep, $showMeridian, $model,  $required ) {
+function timepickerColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false,
+        'showMeridian' => "false",
+        'hourStep' => 1,
+        'minuteStep' => 5
+     );
+     
+   $param = param_default( $def, $parameters );    
+
     ob_start(); ?>
-    <div uib-timepicker <?=($required  ? 'required' : '')?> hour-step="<?=$hourStep?>" minute-step="<?=$minuteStep?>" show-meridian="<?=$showMeridian?>" ng-model="<?=$model?>"></div>
+    <div class="form-group">
+<!--        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label> -->
+        <div id="<?=$param['field']?>"  uib-timepicker 
+            <?=($param['required']  ? 'required' : '')?> 
+            hour-step="<?=$param['hourStep']?>" 
+            minute-step="<?=$param['minuteStep']?>" 
+            show-meridian="<?=$param['showMeridian']?>" 
+            ng-model="<?=$param['model']?>"></div>
+    </div>        
     <?php return ob_get_clean();
 }
 
-function toggleswitchColTemplate($field, $model, $label, $required, $form, $onLabel, $offLabel) {
+//function toggleswitchColTemplate($field, $model, $label, $required, $form, $onLabel, $offLabel) {
+function toggleswitchColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false,
+        'onLabel' => 'Yes',
+        'offLabel' => 'No'
+     );
+     
+   $param = param_default( $def, $parameters );    
+   
     ob_start(); ?>
-    <div ng-class="{'has-error': <?=$form?>.<?=$field?>.$invalid, 
-                    'has-success': !<?=$form?>.<?=$field?>.$invalid}" class="form-group">
-        <label for="<?=$field?>" class="control-label"><?=$label?></label>
+    <div ng-class="{'has-error': <?=$param['form']?>.<?=$param['field']?>.$invalid, 
+                    'has-success': !<?=$param['form']?>.<?=$param['field']?>.$invalid}" class="form-group">
+        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label>
         <div class="input-icon right">
             <i data-hover="tooltip" data-original-title="Correct" 
-            ng-show="<?=$form?>.<?=$field?>.$dirty" 
-            ng-class="<?=$form?>.<?=$field?>.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            ng-show="<?=$param['form']?>.<?=$param['field']?>.$dirty" 
+            ng-class="<?=$param['form']?>.<?=$param['field']?>.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
             class="glyphicon tooltips"></i>
-            <toggle-switch on-label="<?=$onLabel?>" off-label="<?=$offLabel?>" id="<?=$field?>" 
-                type="checkbox" name="<?=$field?>" ng-model="<?=$model?>" 
-                <?=($required  ? 'required' : '')?>
-                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="switch-primary">
+            <toggle-switch 
+                    on-label="<?=$param['onLabel']?>" 
+                    off-label="<?=$param['offLabel']?>" 
+                    id="<?=$param['field']?>" 
+                    type="checkbox" 
+                    name="<?=$param['field']?>" 
+                    ng-model="<?=$param['model']?>" 
+                <?=($param['required']  ? 'required' : '')?>
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="switch-primary">
             </toggle-switch>
         </div>
-        <div style="color:maroon" role="alert" ng-messages="<?=$form?>.<?=$field?>.$error" class="has-error">
+        <div style="color:maroon" role="alert" 
+            ng-messages="<?=$param['form']?>.<?=$param['field']?>.$error" 
+            class="has-error">
             <div ng-message="required">You did not enter a field</div>
         </div>
     </div>
     <?php return ob_get_clean();
 }
 
-function selectColTemplate($field, $model, $label, $placeholder, $required, $form, $repeatmodel, $repeatvalue, $repeatid) {
+//function selectColTemplate($field, $model, $label, $placeholder, $required, $form, $repeatmodel, $repeatvalue, $repeatid) {
+function selectColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false
+     );
+     
+   $param = param_default( $def, $parameters );    
+
     ob_start(); ?>
 
-    <div ng-class="{'has-error': <?=$form?>.<?=$field?>.$invalid, 'has-success': !<?=$form?>.<?=$field?>.$invalid}" class="form-group">
-        <label for="<?=$field?>" class="control-label"><?=$label?></label>
+    <div ng-class="{'has-error': <?=$param['form']?>.<?=$param['field']?>.$invalid, 
+                    'has-success': !<?=$param['form']?>.<?=$param['field']?>.$invalid}" class="form-group">
+        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label>
         <div class="input-icon right">
-            <i data-hover="tooltip" data-original-title="Correct" ng-show="<?=$form?>.<?=$field?>.$dirty" 
-                ng-class="<?=$form?>.<?=$field?>.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-            <select id="<?=$field?>" type="text" 
-                name="<?=$field?>" 
-                ng-model="<?=$model?>" 
-                <?=($required  ? 'required' : '')?> 
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="<?=$param['form']?>.<?=$param['field']?>.$dirty" 
+            ng-class="<?=$param['form']?>.<?=$param['field']?>.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="<?=$param['field']?>" type="text" 
+                name="<?=$param['field']?>" 
+                ng-model="<?=$param['model']?>" 
+                <?=($param['required']  ? 'required' : '')?> 
                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
                 class="form-control">
                 <option 
-                    ng-repeat="iter in <?=$repeatmodel?>" 
-                    ng-selected="{{iter.<?=$repeatid?>==<?=$model?>}}" 
-                    placeholder="<?=$placeholder?>" 
-                    value="{{ iter.<?=$repeatid?> }}">{{ iter.<?=$repeatvalue?> }}</option>
+                    ng-repeat="iter in <?=$param['repeatmodel']?>" 
+                    ng-selected="{{iter.<?=$param['repeatid']?>==<?=$param['model']?>}}" 
+                    placeholder="<?=$param['placeholder']?>" 
+                    value="{{ iter.<?=$param['repeatid']?> }}">{{ iter.<?=$param['repeatvalue']?> }}</option>
             </select>
         </div>
-        <div style="color:maroon" role="alert" ng-messages="<?=$form?>.<?=$field?>.$error" class="has-error">
+        <div style="color:maroon" role="alert" 
+            ng-messages="<?=$param['form']?>.<?=$param['field']?>.$error" 
+            class="has-error">
             <div ng-message="required">You did not enter a field</div>
         </div>
     </div>
@@ -71,11 +152,21 @@ function selectColTemplate($field, $model, $label, $placeholder, $required, $for
     <?php return ob_get_clean();
 }
 
-function btnColTemplate($field, $click, $label, $color, $style) {
+//function btnColTemplate($field, $click, $label, $color, $style) {
+function btnColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false,
+        'color' => 'green',
+        'style' => 'fa-plus'
+     );
+     
+   $param = param_default( $def, $parameters );    
+
     ob_start(); ?>
-        <label for="<?=$field?>" class="control-label">&nbsp; </label>
-        <a role="button" class="btn btn-<?=$color?> form-control" 
-            ng-click="<?=$click?>"><i class="fa <?=$style?>"></i>&nbsp; <?=$label?></a>
+        <label for="<?=$param['field']?>" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-<?=$param['color']?> form-control" 
+            ng-click="<?=$param['click']?>"><i class="fa <?=$param['style']?>"></i>&nbsp; <?=$param['label']?></a>
     <?php return ob_get_clean();
 }
 

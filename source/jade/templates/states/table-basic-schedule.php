@@ -10,79 +10,152 @@
             <div class="panel panel-blue">
                 <div class="panel-heading">Schedule</div>
                 <div class="panel-body pan">
-            <div class="col-md-12" style="height: 88px;">
+            <div class="col-md-12" style="height: 110px;">
                 <form action="" novalidate name="editschedule2" class="form-horizontal">
                             <div class="col-md-3">
                                 <div class="col-md-4">
                                     <?php require_once('table-basic.php');
+//   'dow', 'vm.schedule.dow', 'Day Of Week', 'Select', true, 'editschedule2', 'vm.weekschedule', 'value', 'value'
                                         print selectColTemplate(
-                                            'dow', 'vm.schedule.dow', 'Day Of Week', 'Select', true, 'editschedule2', 'vm.weekschedule', 'value', 'value'
+                                            array(
+                                                'field'=>'dow',
+                                                'model'=>'vm.schedule.dow',
+                                                'label'=>'Day of<br/>Week',
+                                                'placeholder'=>'Select',
+                                                'required'=>'true',
+                                                'form'=>'editschedule2',
+                                                'repeatmodel'=>'vm.weekschedule',
+                                                'repeatvalue'=>'value',
+                                                'repeatid'=>'value'
+                                                )
+                                        );
+                                        
+                                    ?>
+                                </div>
+                                <div class="col-md-4">
+                                    <?php require_once('table-basic.php');
+//'timerange', 'vm.schedule.timerange', 'Time Range', '0:00AM to 0:00', true, 'text'
+                                        print strColTemplate(
+                                            array(
+                                                'field'=>'timerange',
+                                                'model'=>'vm.schedule.timerange',
+                                                'label'=>'Time<br/>Range',
+                                                'placeholder'=>'0:00AM to 0:00',
+                                                'required'=>'true'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-4">
                                     <?php require_once('table-basic.php');
+//'agerange', 'vm.schedule.agerange', 'Age Range', 'All Ages', true, 'text'
                                         print strColTemplate(
-                                            'timerange', 'vm.schedule.timerange', 'Time Range', '0:00AM to 0:00', true, 'text'
+                                            array(
+                                                'field'=>'agerange',
+                                                'model'=>'vm.schedule.agerange',
+                                                'label'=>'Age<br/>Range',
+                                                'placeholder'=>'All Ages ',
+                                                'required'=>'true'
+                                                )
                                         );
                                     ?>
                                 </div>
-                                <div class="col-md-4">
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-6">
                                     <?php require_once('table-basic.php');
-                                        print strColTemplate(
-                                            'agerange', 'vm.schedule.agerange', 'Age Range', 'All Ages', true, 'text'
-                                        );
+    //'description', 'vm.schedule.description', 'Description', 'Enter Class Name', true, 'text'
+                                            print strColTemplate(
+                                                array(
+                                                    'field'=>'description',
+                                                    'model'=>'vm.schedule.description',
+                                                    'label'=>'Description<br/>&nbsp;',
+                                                    'placeholder'=>'Enter Class Name',
+                                                    'required'=>'true'
+                                                    )
+                                            );
+                                    ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?php require_once('table-basic.php');
+    //'classid', 'vm.schedule.classid', 'Class', 'Select', true, 'editschedule2', 'vm.classhashlist', 'value', 'id'
+                                            print selectColTemplate(
+                                                array(
+                                                    'field'=>'classid',
+                                                    'model'=>'vm.schedule.classid',
+                                                    'label'=>'Class<br/>&nbsp;',
+                                                    'placeholder'=>'Select',
+                                                    'required'=>'true',
+                                                    'form'=>'editschedule2',
+                                                    'repeatmodel'=>'vm.classhashlist',
+                                                    'repeatvalue'=>'value',
+                                                    'repeatid'=>'id'
+                                                    )
+                                            );
                                     ?>
                                 </div>
                             </div>
-                            <div class="col-md-2">
-                                <?php require_once('table-basic.php');
-                                    print strColTemplate(
-                                        'description', 'vm.schedule.description', 'Description', 'Enter Class Name', true, 'text'
-                                    );
-                                ?>
-                            </div>
-                            <div class="col-md-2">
-                                <?php require_once('table-basic.php');
-                                    print selectColTemplate(
-                                        'classid', 'vm.schedule.classid', 'Class', 'Select', true, 'editschedule2', 'vm.classhashlist', 'value', 'id'
-                                    );
-                                ?>
-                            </div>
-                            <div class="col-md-2">
-                                <div class="col-md-6" style="margin-top: -10px;">
+                            <div class="col-md-3">
+                                <div class="col-md-6" style="margin-top: 10px;">
                                     <?php require_once('table-basic.php');
                                         print timepickerColTemplate(
-                                            '1', '5', 'false', 'vm.schedule.startT', true
+                                            array(
+                                                'field'=>'startT',
+                                                'model'=>'vm.schedule.startT',
+                                                'required'=>'true'
+                                            )
                                         );
                                     ?>
                                 </div>
-                                <div class="col-md-6" style="margin-top: -10px;">
+                                <div class="col-md-6" style="margin-top: 10px;">
                                     <?php require_once('table-basic.php');
                                         print timepickerColTemplate(
-                                            '1', '5', 'false', 'vm.schedule.endT', true
+                                            array(
+                                                'field'=>'endT',
+                                                'model'=>'vm.schedule.endT',
+                                                'required'=>'true'
+                                            )
                                         );
                                     ?>
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <?php require_once('table-basic.php');
+//                                        'TakeAttendance', 'vm.schedule.TakeAttendance', 'Take Attendance?', false, 'editschedule2', 'Yes', 'No'
                                     print toggleSwitchColTemplate(
-                                        'TakeAttendance', 'vm.schedule.TakeAttendance', 'Take Attendance?', false, 'editschedule2', 'Yes', 'No'
+                                            array(
+                                                'field'=>'TakeAttendance',
+                                                'model'=>'vm.schedule.TakeAttendance',
+                                                'label'=>'Take<br/>Attendance',
+                                                'required'=>'true',
+                                                'form'=>'editschedule2'
+                                                )
                                     );
                                 ?>
                             </div>
                             <div class="col-md-1">
                                 <?php require_once('table-basic.php');
-                                    print strColTemplate(
-                                        'sortorder', 'vm.schedule.sortorder', 'Sort Order', '', true, 'number'
-                                    );
+//'sortorder', 'vm.schedule.sortorder', 'Sort Order', '', true, 'number'
+                                        print strColTemplate(
+                                            array(
+                                                'field'=>'sortorder',
+                                                'model'=>'vm.schedule.sortorder',
+                                                'label'=>'Sort<br/>Order',
+                                                'placeholder'=>'',
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
+                                        );
                                 ?>
                             </div>
-                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                            <div class="col-md-1 btn" style="margin-top: 36px;">
                                 <?php require_once('table-basic.php');
                                     print btnColTemplate(
-                                        'rankbtn', 'vm.updSchedule(vm.schedule)', 'Add', 'green', 'fa-plus'
+                                        array(
+                                            'field'=>'rankbtn',
+                                            'label'=>'Add',
+                                            'click'=>'vm.updSchedule(vm.schedule)'
+                                            )
                                     );
                                 ?>
                             </div>

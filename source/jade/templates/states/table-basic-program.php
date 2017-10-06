@@ -15,15 +15,33 @@
                             <div class="col-md-2">
                                 <div class="col-md-6">
                                     <?php require_once('table-basic.php');
+//    'classtype', 'vm.program.classType', 'Class<br/> Type', 'Select', true, 'editschedule2', 'vm.classTypes', 'value', 'value'
+
                                         print selectColTemplate(
-                                            'classtype', 'vm.program.classType', 'Class Type', 'Select', true, 'editschedule2', 'vm.classTypes', 'value', 'value'
+                                            array(
+                                                'field'=>'classtype',
+                                                'model'=>'vm.program.classType',
+                                                'label'=>'Class<br/>Type',
+                                                'placeholder'=>'Select',
+                                                'required'=>'true',
+                                                'form'=>'editschedule2',
+                                                'repeatmodel'=>'vm.classTypes',
+                                                'repeatvalue'=>'value',
+                                                'repeatid'=>'value'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-6">
                                     <?php require_once('table-basic.php');
                                         print strColTemplate(
-                                            'class', 'vm.program.class', 'Class', 'Enter name', true, 'text'
+                                            array(
+                                                'field'=>'class',
+                                                'model'=>'vm.program.class',
+                                                'label'=>'Class<br/>&nbsp;',
+                                                'placeholder'=>'Enter Name',
+                                                'required'=>'true'
+                                                )
                                         );
                                     ?>
                                 </div>
@@ -31,66 +49,139 @@
                             <div class="col-md-5">
                                 <div class="col-md-2">
                                     <?php require_once('table-basic.php');
+//                                            '_12MonthPrice', 'vm.program._12MonthPrice', '12 Month Price', '0', true, 'number'
                                         print strColTemplate(
-                                            '_12MonthPrice', 'vm.program._12MonthPrice', '12 Month Price', '0', true, 'number'
+                                            array(
+                                                'field'=>'_12MonthPrice',
+                                                'model'=>'vm.program._12MonthPrice',
+                                                'label'=>'12 Month<br/> Price',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-2">
                                     <?php require_once('table-basic.php');
+//                                            '_6MonthPrice', 'vm.program._6MonthPrice', '6 Month Price', '0', true, 'number'
                                         print strColTemplate(
-                                            '_6MonthPrice', 'vm.program._6MonthPrice', '6 Month Price', '0', true, 'number'
+                                            array(
+                                                'field'=>'_6MonthPrice',
+                                                'model'=>'vm.program._6MonthPrice',
+                                                'label'=>'6 Month<br/> Price',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-2">
                                     <?php require_once('table-basic.php');
+//                                            'MonthlyPrice', 'vm.program.MonthlyPrice', 'Monthly Price', '0', true, 'number'
                                         print strColTemplate(
-                                            'MonthlyPrice', 'vm.program.MonthlyPrice', 'Monthly Price', '0', true, 'number'
+                                            array(
+                                                'field'=>'MonthlyPrice',
+                                                'model'=>'vm.program.MonthlyPrice',
+                                                'label'=>'Monthly<br/> Price',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-2">
                                     <?php require_once('table-basic.php');
+//                                            'WeeklyPrice', 'vm.program.WeeklyPrice', 'Weekly Price', '0', true, 'number'
                                         print strColTemplate(
-                                            'WeeklyPrice', 'vm.program.WeeklyPrice', 'Weekly Price', '0', true, 'number'
+                                            array(
+                                                'field'=>'WeeklyPrice',
+                                                'model'=>'vm.program.WeeklyPrice',
+                                                'label'=>'Weekly<br/> Price',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
+                                        
                                     ?>
                                 </div>
                                 <div class="col-md-2">
                                     <?php require_once('table-basic.php');
+//                                            'SpecialPrice', 'vm.program.SpecialPrice', 'Special Price', '0', true, 'number'
                                         print strColTemplate(
-                                            'SpecialPrice', 'vm.program.SpecialPrice', 'Special Price', '0', true, 'number'
+                                            array(
+                                                'field'=>'SpecialPrice',
+                                                'model'=>'vm.program.SpecialPrice',
+                                                'label'=>'Special<br/> Price',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <?php require_once('table-basic.php');
-                                    print strColTemplate(
-                                        'sortKey', 'vm.program.sortKey', 'Sort Order', '', true, 'number'
-                                    );
+//                                        'sortKey', 'vm.program.sortKey', 'Sort Order', '', true, 'number'
+                                        print strColTemplate(
+                                            array(
+                                                'field'=>'sortKey',
+                                                'model'=>'vm.program.sortKey',
+                                                'label'=>'Sort<br/> Order',
+                                                'placeholder'=>'',
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
+                                        );
                                 ?>
                             </div>
                             <div class="col-md-3">
                                 <div class="col-md-4">
                                     <?php require_once('table-basic.php');
+//                                            '_2ndPersonDiscount', 'vm.program._2ndPersonDiscount', '2nd Person Discount', '0', true, 'number'
                                         print strColTemplate(
-                                            '_2ndPersonDiscount', 'vm.program._2ndPersonDiscount', '2nd Person Discount', '0', true, 'number'
+                                            array(
+                                                'field'=>'_2ndPersonDiscount',
+                                                'model'=>'vm.program._2ndPersonDiscount',
+                                                'label'=>'2nd Person<br/> Discount',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-4">
                                     <?php require_once('table-basic.php');
+//                                            '_3rdPersonDiscount', 'vm.program._3rdPersonDiscount', '3rd Person Discount', '0', true, 'number'
                                         print strColTemplate(
-                                            '_3rdPersonDiscount', 'vm.program._3rdPersonDiscount', '3rd Person Discount', '0', true, 'number'
+                                            array(
+                                                'field'=>'_3rdPersonDiscount',
+                                                'model'=>'vm.program._3rdPersonDiscount',
+                                                'label'=>'3rd Person<br/> Discount',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
                                 <div class="col-md-4">
                                     <?php require_once('table-basic.php');
+//                                            '_4thPersonDiscount', 'vm.program._4thPersonDiscount', '4th Person Discount', '0', true, 'number'
                                         print strColTemplate(
-                                            '_4thPersonDiscount', 'vm.program._4thPersonDiscount', '4th Person Discount', '0', true, 'number'
+                                            array(
+                                                'field'=>'_4thPersonDiscount',
+                                                'model'=>'vm.program._4thPersonDiscount',
+                                                'label'=>'4th Person<br/> Discount',
+                                                'placeholder'=>0,
+                                                'required'=>'true',
+                                                'fieldtype'=>'number'
+                                                )
                                         );
                                     ?>
                                 </div>
@@ -98,9 +189,14 @@
                             </div>
                             <div class="col-md-1 btn" style="margin-top: 18px;">
                                 <?php require_once('table-basic.php');
-                                    print btnColTemplate(
-                                        'rankbtn', 'vm.updateProgram(vm.program)', 'Add', 'green', 'fa-plus'
-                                    );
+//                                        'rankbtn', 'vm.updateProgram(vm.program)', 'Add', 'green', 'fa-plus'
+                                        print btnColTemplate(
+                                            array(
+                                                'field'=>'rankbtn',
+                                                'label'=>'Add',
+                                                'click'=>'vm.updateProgram(vm.program)'
+                                                )
+                                        );
                                 ?>
                             </div>
                 </form>

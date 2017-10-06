@@ -468,7 +468,7 @@ $app->post('/schedule','authenticate',  function() use($app) {
         echoRespnse(201, $response);
     } else {
         error_log( print_R("after schedule result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        error_log( print_R( "resid: $res_id\n", TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create schedule. Please try again";
         echoRespnse(400, $response);

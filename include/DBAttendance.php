@@ -690,8 +690,13 @@ class AttendanceDbHandler {
         $cntsql .= " where dayofweek = ? ";
         $cntsql .= " and TimeStart =   ? ";
         $cntsql .= " and TimeEnd = ? ";
-        $cntsql .= " and classid = ? ";
-        $cntsql .= " and ID = ? ";
+        if (strlen($classid) > 0 ) {
+            $cntsql .= " and classid = " . $classid;
+        } 
+
+        if (strlen($ID) > 0 ) {
+            $cntsql .= " and ID = " . $ID;
+        } 
 
         error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
 
@@ -700,8 +705,8 @@ class AttendanceDbHandler {
         error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("sssss",
-                    $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
+                $stmt->bind_param("sss",
+                    $DayOfWeek,  $TimeStart, $TimeEnd
                                      );
 
             $stmt->execute();
@@ -862,20 +867,38 @@ class AttendanceDbHandler {
                 error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
         }
 
-        $inssql = " INSERT INTO schedule( 
-DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd, sortorder, school, classid            ) ";
-        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+        if (strlen($classid) > 0 && $classid != 0 ) {
+            $inssql = " INSERT INTO schedule( 
+    DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd, sortorder, school, classid            ) ";
+            $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+        } else {
+            $inssql = " INSERT INTO schedule( 
+    DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd, sortorder, school            ) ";
+            $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+            
+        }
 
         
         if ($this->isScheduleExists(
             $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
             ) == 0) {
 
+            error_log( print_R("schedule insert\n $inssql\n", TRUE), 3, LOG);
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("ssssssssss",
-                    $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
-                    $TimeStart, $TimeEnd, $sortorder, $school, $classid            
+
+                if (strlen($classid) > 0 && $classid != 0 ) {
+                    $stmt->bind_param("ssssssssss",
+                        $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
+                        $TimeStart, $TimeEnd, $sortorder, $school, $classid            
                                      );
+                } else {
+                    $stmt->bind_param("sssssssss",
+                        $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
+                        $TimeStart, $TimeEnd, $sortorder, $school            
+                                     );
+                    
+                }
                     $result = $stmt->execute();
 
                     $stmt->close();
@@ -883,15 +906,20 @@ DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd,
                     if ($result) {
                         $new_id = $this->conn->insert_id;
                         // User successfully inserted
+                        error_log( print_R("success insert\n", TRUE), 3, LOG);
                         return $new_id;
                     } else {
                         // Failed to create 
-                        printf("Errormessage: %s\n", $this->conn->error);
+                        printf("Insert failed Errormessage: %s\n", $this->conn->error);
+                        error_log( print_R("fail insert $result\n", TRUE), 3, LOG);
+                        error_log( print_R($this->conn->error, TRUE), 3, LOG);
                         return NULL;
                     }
 
                 } else {
-                    printf("Errormessage: %s\n", $this->conn->error);
+                    printf("Prep Errormessage: %s\n", $this->conn->error);
+                        error_log( print_R("fail prep\n", TRUE), 3, LOG);
+                    error_log( print_R($this->conn->error, TRUE), 3, LOG);
                         return NULL;
                 }
 

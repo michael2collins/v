@@ -57,7 +57,7 @@
         $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment) {
         /* jshint validthis: true */
 
-        var vm=this;
+        var vm = this;
         
         vm.getSchedule = getSchedule;
         vm.removeSchedule = removeSchedule;
@@ -75,10 +75,18 @@
             { value: 'Friday', label: 'Friday' },
             { value: 'Saturday', label: 'Saturday' }
         ];
-        vm.schedule={};
+        vm.schedule={
+            TakeAttendance: 'Yes',
+            dow: 'Monday',
+            startT: moment(),
+            endT: moment().add(1, 'hours')
+        };
         vm.classlist=[];
         vm.classhashlist=[];
         vm.thisschedule=[];
+
+        //having it here sets the options, but the dropdown doesn't map
+        setgridOptions();
         activate();
 
         function activate() {
@@ -87,7 +95,7 @@
                 getClasses().then(function() {
                     $log.debug('getClasses activate done');
                     setgridOptions();
-                 //   vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+                    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
                  },function(error) {
                      return ($q.reject(error));
                  });
@@ -223,7 +231,8 @@
                     
                     vm.classlist = data.ClassList; 
                     //classes which aren't in the db
-                    vm.classlist.push( {class: "No Scheduled Classes", classid: 0} );
+                    //vm.classlist.push( {class: "No Scheduled Classes", classid: 0} );
+                    vm.classhashlist.push( {value: "No Scheduled Classes", id: 0} );
                     for(var iter=0,len = data.ClassList.length;iter<len;iter++) {
                         vm.classhashlist.push ({ 
                             value: data.ClassList[iter].class,
@@ -253,6 +262,7 @@
         function setgridOptions() {
             var ctpl_start = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.startT"></div>';
             var ctpl_end = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.endT"></div>';
+            var togtpl = '<toggle-switch on-label="Yes" off-label="No" type="checkbox" ng-model="row.entity.TakeAttendance" requiredclass="switch-primary"></toggle-switch>';
 
             vm.gridOptions = {
                 enableFiltering: true,
@@ -268,6 +278,7 @@
                     field: 'DayOfWeek',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true,
                       filter: {
                         type: uiGridConstants.filter.SELECT,
@@ -277,6 +288,7 @@
                 {
                     field: 'TimeRange',
                     headerCellClass: vm.highlightFilteredHeader,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
                     enableFiltering: true
                 }, 
@@ -284,12 +296,14 @@
                     field: 'AgeRange',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
                 {
                     field: 'Description',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
 /*                {
@@ -304,19 +318,22 @@
                         options: vm.classhashlist        
                     },
                 }, 
-  */              {
+  */              
+                {
                     field: 'classid',
                     displayName: 'Classid',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellClass: 'ui-grid-3rowcenter',
                     cellFilter: 'schedulegriddropdown:this',
-//                    editDropdownIdLabel: 'id',
-//                    editDropdownValueLabel: 'value',
-                    editDropdownIdLabel: 'classid',
-                    editDropdownValueLabel: 'class',
-                    editDropdownOptionsArray: vm.classlist
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'value',
+//                    editDropdownIdLabel: 'classid',
+//                    editDropdownValueLabel: 'class',
+//                    editDropdownOptionsArray: vm.classlist
+                    editDropdownOptionsArray: vm.classhashlist
 //                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
 //                    filter: { 
 //                          term: 1,
@@ -343,12 +360,14 @@
                     field: 'TakeAttendance',
                     displayName: 'TakeAttendance',
                     headerCellClass: vm.highlightFilteredHeader,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
-                    enableFiltering: true
+                    cellTemplate: togtpl
                 }, 
                 {
                     field: 'sortorder',
                     enableCellEdit: true,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
                 {
@@ -356,6 +375,7 @@
                     displayName: 'Action',
                     enableFiltering: false,
                     enableSorting: false,
+                    cellClass: 'ui-grid-3rowcenter',
                     enableHiding: false,
                     enableCellEdit: false,
                     cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeSchedule(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
