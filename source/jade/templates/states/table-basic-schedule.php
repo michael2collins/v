@@ -4,6 +4,7 @@
         <div class="portlet-header">
             <div class="row">
                 <div class="caption">Maintain Schedule</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
             </div>
         </div>
         <div class="portlet-body">
@@ -64,20 +65,6 @@
                             <div class="col-md-3">
                                 <div class="col-md-6">
                                     <?php require_once('table-basic.php');
-    //'description', 'vm.schedule.description', 'Description', 'Enter Class Name', true, 'text'
-                                            print strColTemplate(
-                                                array(
-                                                    'field'=>'description',
-                                                    'model'=>'vm.schedule.description',
-                                                    'label'=>'Description<br/>&nbsp;',
-                                                    'placeholder'=>'Enter Class Name',
-                                                    'required'=>'true'
-                                                    )
-                                            );
-                                    ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?php require_once('table-basic.php');
     //'classid', 'vm.schedule.classid', 'Class', 'Select', true, 'editschedule2', 'vm.classhashlist', 'value', 'id'
                                             print selectColTemplate(
                                                 array(
@@ -86,10 +73,25 @@
                                                     'label'=>'Class<br/>&nbsp;',
                                                     'placeholder'=>'Select',
                                                     'required'=>'true',
+                                                    'changefunction'=>'vm.changeclass()',
                                                     'form'=>'editschedule2',
                                                     'repeatmodel'=>'vm.classhashlist',
                                                     'repeatvalue'=>'value',
                                                     'repeatid'=>'id'
+                                                    )
+                                            );
+                                    ?>
+                                </div>
+                                <div class="col-md-6">
+                                    <?php require_once('table-basic.php');
+    //'description', 'vm.schedule.description', 'Description', 'Enter Class Name', true, 'text'
+                                            print strColTemplate(
+                                                array(
+                                                    'field'=>'description',
+                                                    'model'=>'vm.schedule.description',
+                                                    'label'=>'Description<br/>&nbsp;',
+                                                    'placeholder'=>'Enter Class Name',
+                                                    'required'=>'true'
                                                     )
                                             );
                                     ?>
@@ -165,14 +167,15 @@
                 </div>
                 <div class="panel-footer">
 
-                    <div ui-grid="vm.gridOptions"  ui-grid-pagination 
-                    ui-grid-cellNav  
-                    ui-grid-pinning  
-                    ui-grid-move-columns 
-                    ui-grid-exporter 
-                    ui-grid-edit class="mygrid">
-<!--                        <div class="watermark" ng-show="!vm.gridOptions.data.length">No data available</div>
--->
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
                     </div>
                     
                     

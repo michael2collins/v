@@ -690,12 +690,11 @@ class AttendanceDbHandler {
         $cntsql .= " where dayofweek = ? ";
         $cntsql .= " and TimeStart =   ? ";
         $cntsql .= " and TimeEnd = ? ";
-        if (strlen($classid) > 0 ) {
-            $cntsql .= " and classid = " . $classid;
-        } 
+        $cntsql .= " and classid = ? ";
 
         if (strlen($ID) > 0 ) {
-            $cntsql .= " and ID = " . $ID;
+            $cntsql = "select count(*) as schedulecount from schedule ";
+            $cntsql .= " where ID = " . $ID;
         } 
 
         error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
@@ -705,10 +704,11 @@ class AttendanceDbHandler {
         error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("sss",
-                    $DayOfWeek,  $TimeStart, $TimeEnd
-                                     );
-
+            if (strlen($ID) == 0 ) {
+                    $stmt->bind_param("ssss",
+                        $DayOfWeek,  $TimeStart, $TimeEnd, $classid
+                                         );
+            }
             $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
@@ -867,17 +867,9 @@ class AttendanceDbHandler {
                 error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
         }
 
-        if (strlen($classid) > 0 && $classid != 0 ) {
             $inssql = " INSERT INTO schedule( 
     DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd, sortorder, school, classid            ) ";
             $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-
-        } else {
-            $inssql = " INSERT INTO schedule( 
-    DayOfWeek, TimeRange, AgeRange, Description, TakeAttendance, TimeStart, TimeEnd, sortorder, school            ) ";
-            $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-            
-        }
 
         
         if ($this->isScheduleExists(
@@ -887,18 +879,11 @@ class AttendanceDbHandler {
             error_log( print_R("schedule insert\n $inssql\n", TRUE), 3, LOG);
             if ($stmt = $this->conn->prepare($inssql)) {
 
-                if (strlen($classid) > 0 && $classid != 0 ) {
                     $stmt->bind_param("ssssssssss",
                         $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
                         $TimeStart, $TimeEnd, $sortorder, $school, $classid            
                                      );
-                } else {
-                    $stmt->bind_param("sssssssss",
-                        $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance,
-                        $TimeStart, $TimeEnd, $sortorder, $school            
-                                     );
-                    
-                }
+
                     $result = $stmt->execute();
 
                     $stmt->close();
@@ -953,7 +938,7 @@ class AttendanceDbHandler {
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("schedule update failed", TRUE), 3, LOG);
+                error_log( print_R("schedule update prep failed", TRUE), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;

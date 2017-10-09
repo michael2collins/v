@@ -34,7 +34,8 @@
     'angularMoment',
     'textAngular',
     'appFilereader',
-    'angularSpectrumColorpicker','ui.bootstrap.dropdownToggle'
+    'angularSpectrumColorpicker','ui.bootstrap.dropdownToggle',
+//    'ui.toggle'
 //    'ui.grid.autoFitColumns'
   //      'notifyme'
 

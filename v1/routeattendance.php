@@ -446,6 +446,10 @@ $app->post('/schedule','authenticate',  function() use($app) {
     $sortorder    = (isset($dataJsonDecode->thedata->sortorder)         ? $dataJsonDecode->thedata->sortorder : "");
     $classid    = (isset($dataJsonDecode->thedata->classid)         ? $dataJsonDecode->thedata->classid : "");
 
+    if ($classid == "0" || $classid == "NULL") {
+        error_log( print_R("classid converted: $classid\n", TRUE ), 3, LOG);
+        $classid = NULL;
+    }
     $db = new AttendanceDbHandler();
     $response = array();
 
@@ -461,7 +465,7 @@ $app->post('/schedule','authenticate',  function() use($app) {
         $response["res_id"] = $res_id;
         error_log( print_R("schedule created: $res_id\n", TRUE ), 3, LOG);
         echoRespnse(201, $response);
-    } else if ($res_id == 1) {
+    } else if ($res_id == 1 || $res_id == 0) {
         $response["error"] = false;
         $response["message"] = "schedule updated successfully";
         error_log( print_R("schedule already existed\n", TRUE ), 3, LOG);

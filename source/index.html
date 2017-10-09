@@ -1,4 +1,3 @@
-
 <!DOCTYPE html> 
 <html lang="en">
   <head>
@@ -567,6 +566,10 @@ mlc some problems with mobile
   transform: translateY(-50%);
 }
 </style>
+<!-- didn't work in uigrid
+<link href="vendors/angular-bootstrap-toggle/angular-bootstrap-toggle.css" rel="stylesheet">
+<script src="vendors/angular-bootstrap-toggle/angular-bootstrap-toggle.js"></script>
+-->
 
 <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
 <!--    <script src="js/main.js"></script>    -->
@@ -575,9 +578,10 @@ mlc some problems with mobile
   <script type="text/javascript" src="js/app.js"></script>
   <script type="text/javascript" src="js/controllers/app.js"></script>
 <!--  <script type="text/javascript" src="js/factories/textAngular.js"></script> -->
-  <script type="text/javascript" src="js/factories/textAngularExtra.js"></script> -
-  <script type="text/javascript" src="js/factories/textAngular-dropdownToggle.js"></script> -
-  <script type="text/javascript" src="js/factories/angular-spectrum-colorpicker.min.js"></script> -
+  <script type="text/javascript" src="js/factories/textAngularExtra.js"></script>
+  <script type="text/javascript" src="js/filters/dropdown.js"></script>
+  <script type="text/javascript" src="js/factories/textAngular-dropdownToggle.js"></script>
+  <script type="text/javascript" src="js/factories/angular-spectrum-colorpicker.min.js"></script>
   <script type="text/javascript" src="js/controllers/dashboard-blog.js"></script>
   <script type="text/javascript" src="js/controllers/dashboard-shopping.js"></script>
   <script type="text/javascript" src="js/controllers/data.js"></script>
@@ -643,9 +647,8 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
 //]]>
 </script>   
   </head>
-
+<body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"   style="padding:  0px;" >
     <!--V JS-->
-    <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"   style="padding:  0px;" >
 
 
     <div ng-controller="AppController as vm" class="default-page">

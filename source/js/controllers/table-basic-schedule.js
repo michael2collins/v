@@ -9,33 +9,7 @@
             template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.class as option.value for option in colFilter.options track by option.id"></select>'
           };
         })
-        .filter('schedulegriddropdown', function() {
-          return function (input, context) {
-            
-            try {
-            
-                var map = context.col.colDef.editDropdownOptionsArray;
-                var idField = context.col.colDef.editDropdownIdLabel;
-                var valueField = context.col.colDef.editDropdownValueLabel;
-                var initial = context.row.entity[context.col.field];
-                if (typeof map !== "undefined") {
-                  for (var i = 0; i < map.length; i++) {
-                    if (map[i][idField] == input) {
-                      return map[i][valueField];
-                    }
-                  }
-                } else if (initial) {
-                  return initial;
-                }
-                return input;
-              
-          } catch (e) {
-//            context.grid.appScope.log("Error: " + e);
-            console.log("error: " + e);
-          }
-        };
-        })
-        
+
         .directive('myCustomDropdownid', function() {
           return {
             template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.id as option.value for option in colFilter.options track by option.id"></select>'
@@ -50,11 +24,12 @@
     'AttendanceServices',
         'uiGridConstants',
     'Notification',
-    'moment'
+    'moment',
+    'iddropdownFilter'
     ];
 
     function ScheduleTableBasicController(
-        $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment) {
+        $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment, iddropdownFilter) {
         /* jshint validthis: true */
 
         var vm = this;
@@ -62,10 +37,12 @@
         vm.getSchedule = getSchedule;
         vm.removeSchedule = removeSchedule;
         vm.updSchedule = updSchedule;
+        vm.changeclass = changeclass;
+        vm.changetime = changetime;
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
         vm.gridApi;
-        vm.limits = [5,10,20,50,100,200];
+        vm.limits = [1,3,5,10,20,50,100,200];
         vm.weekschedule = [
             { value: 'Sunday', label: 'Sunday' },
             { value: 'Monday', label: 'Monday' },
@@ -75,15 +52,20 @@
             { value: 'Friday', label: 'Friday' },
             { value: 'Saturday', label: 'Saturday' }
         ];
-        vm.schedule={
-            TakeAttendance: 'Yes',
-            dow: 'Monday',
-            startT: moment(),
-            endT: moment().add(1, 'hours')
-        };
+        vm.yesno = [
+            { value: 'Yes', label: 'Yes' },
+            { value: 'No', label: 'No' }
+            ];
         vm.classlist=[];
         vm.classhashlist=[];
+        vm.schedule={};
         vm.thisschedule=[];
+        vm.gridLength={};
+        vm.initialLength=3;
+        vm.rowheight=88;
+        vm.headerheight=140;
+        vm.getGridLength = getGridLength;
+        setGridLength(vm.initialLength);
 
         //having it here sets the options, but the dropdown doesn't map
         setgridOptions();
@@ -96,6 +78,13 @@
                     $log.debug('getClasses activate done');
                     setgridOptions();
                     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+                    vm.schedule.TakeAttendance = 'Yes';
+                    vm.schedule.dow = 'Monday';
+                    vm.schedule.startT = moment();
+                    vm.schedule.endT = moment().add(1, 'hours');
+                    vm.schedule.classid = String(vm.classhashlist[0].id);
+                    
+                    changeclass();                    
                  },function(error) {
                      return ($q.reject(error));
                  });
@@ -106,6 +95,46 @@
              
         }
 
+        function changeclass() {
+            vm.schedule.description = getByValue(vm.classhashlist, vm.schedule.classid, 'id', 'value');
+            
+        }
+        
+        function setGridLength(size) {
+            vm.gridLength=  {
+                height: (size*vm.rowheight)+vm.headerheight+'px'
+            };
+        }
+        function getGridLength() {
+            return vm.gridLength;
+        }
+        function maxObjArr(arr,attr) {
+            var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}))
+            return res;
+        }
+        
+        function getByValue(arr, value, attr, resvlu) {
+        
+          var result  = arr.filter(function(o){return o[attr] == value;} );
+        
+          return result? result[0][resvlu] : null; // or undefined
+        
+        }
+        
+        $scope.$watch('vm.schedule.startT', function (value) {
+            if (!value) return;
+            changetime();
+        }, true);
+        $scope.$watch('vm.schedule.endT', function (value) {
+            if (!value) return;
+            changetime();
+        }, true);
+
+
+        function changetime() {
+            vm.schedule.timerange = moment(vm.schedule.startT).format('h:mm A') 
+                + ' to ' + moment(vm.schedule.endT).format('h:mm A');
+        }
         function removeSchedule(input) {
             $log.debug('removeSchedule entered',input);
             var path = "../v1/schedule";
@@ -116,7 +145,17 @@
                 .then(function(data){
                     $log.debug('removeSchedule returned data');
                     $log.debug(data);
-                    getSchedule();
+                    getSchedule().then
+                        (function(zdata) {
+                         $log.debug('getSchedule returned', zdata);
+                     },
+                        function (error) {
+                            $log.debug('Caught an error getSchedule after remove:', error); 
+                            vm.thisschedule = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
                     return data;
                 }).catch(function(e) {
                     $log.debug('removeSchedule failure:');
@@ -126,8 +165,11 @@
                 });
             
         }
+        function addSchedule(rowEntity) {
+            updSchedule(rowEntity,'Add');
+        }
 
-        function updSchedule(input) {
+        function updSchedule(input,type) {
             $log.debug('updSchedule entered',input);
             var output = {
                 ID: input.ID,
@@ -141,9 +183,9 @@
                 sortorder: input.sortorder,
                 classid: input.classid
             };
-            updateSchedule(output);            
+            updateSchedule(output,type);            
         }
-        function updateSchedule(rowEntity) {
+        function updateSchedule(rowEntity,updatetype) {
             var updpath = "../v1/schedule";
 
             var thedata = {
@@ -159,7 +201,7 @@
                 classid: rowEntity.classid
             };
             
-            $log.debug('about updateSchedule ',rowEntity, updpath);
+            $log.debug('about updateSchedule ',rowEntity, updpath,updatetype);
             return AttendanceServices.updateSchedule(updpath, thedata)
                 .then(function(data){
                     $log.debug('updateSchedule returned data');
@@ -168,18 +210,26 @@
                     $log.debug(vm.thisschedule);
                     $log.debug(vm.thisschedule.message);
                     vm.message = vm.thisschedule.message;
-                    getSchedule().then
-                        (function(zdata) {
-                         $log.debug('getSchedule returned', zdata);
-                     },
-                        function (error) {
-                            $log.debug('Caught an error getSchedule after update:', error); 
-                            vm.thisschedule = [];
-                            vm.message = error;
-                            Notification.error({message: error, delay: 5000});
-                            return ($q.reject(error));
-                        });
-
+                    if ((typeof vm.thisschedule === 'undefined' || vm.thisschedule.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: vm.message, delay: 5000});
+                    }
+                    if (updatetype === 'Add') {
+                        getSchedule().then
+                            (function(zdata) {
+                             $log.debug('getSchedule returned', zdata);
+                         },
+                            function (error) {
+                                $log.debug('Caught an error getSchedule after update:', error); 
+                                vm.thisschedule = [];
+                                vm.message = error;
+                                Notification.error({message: error, delay: 5000});
+                                return ($q.reject(error));
+                            });
+                    }
                     return vm.thisschedule;
                 }).catch(function(e) {
                     $log.debug('updateSchedule failure:');
@@ -209,6 +259,7 @@
                         myDate.setMinutes(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[1],10));
                         data.Schedulelist[iter].endT = myDate;
                     }
+                    vm.schedule.sortorder = parseInt(maxObjArr(data.Schedulelist,'sortorder'),10) + 1;
 
                     vm.gridOptions.data = data.Schedulelist; 
                 }, function(error) {
@@ -262,15 +313,17 @@
         function setgridOptions() {
             var ctpl_start = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.startT"></div>';
             var ctpl_end = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.endT"></div>';
-            var togtpl = '<toggle-switch on-label="Yes" off-label="No" type="checkbox" ng-model="row.entity.TakeAttendance" requiredclass="switch-primary"></toggle-switch>';
+//            var togtpl = '<toggle on="Yes" off="No" ng-model="row.entity.TakeAttendance" size="btn-sm" onstyle="btn-success" offstyle="btn-danger""></toggle-switch>';
 
             vm.gridOptions = {
                 enableFiltering: true,
                 enableCellEditOnFocus: true,
                 paginationPageSizes: vm.limits,
-                paginationPageSize: 10,
+                paginationPageSize: vm.initialLength,
                 appScopeProvider: vm,
-                rowHeight: 88,
+                rowHeight: vm.rowheight,
+                showGridFooter: false,
+                enableColumnResizing: true,
             columnDefs: [
                 // default
 
@@ -280,6 +333,11 @@
                     enableCellEdit: true,
                     cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellFilter: 'iddropdown:this',
+                    editDropdownIdLabel: 'label',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.weekschedule,
                       filter: {
                         type: uiGridConstants.filter.SELECT,
                         selectOptions: vm.weekschedule
@@ -300,26 +358,6 @@
                     enableFiltering: true
                 }, 
                 {
-                    field: 'Description',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true,
-                    cellClass: 'ui-grid-3rowcenter',
-                    enableFiltering: true
-                }, 
-/*                {
-                    field: 'class',
-                    displayName: 'Class',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true,
-                    enableFiltering: true,
-                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdown></div></div>', 
-                    filter: { 
-                          term: 1,
-                        options: vm.classhashlist        
-                    },
-                }, 
-  */              
-                {
                     field: 'classid',
                     displayName: 'Classid',
                     headerCellClass: vm.highlightFilteredHeader,
@@ -327,7 +365,7 @@
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
                     cellClass: 'ui-grid-3rowcenter',
-                    cellFilter: 'schedulegriddropdown:this',
+                    cellFilter: 'iddropdown:this',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
 //                    editDropdownIdLabel: 'classid',
@@ -339,6 +377,13 @@
 //                          term: 1,
 //                        options: vm.classhashlist        
  //                   },
+                }, 
+                {
+                    field: 'Description',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    enableCellEdit: true,
+                    cellClass: 'ui-grid-3rowcenter',
+                    enableFiltering: true
                 }, 
                 {
                     field: 'startT',
@@ -362,7 +407,19 @@
                     headerCellClass: vm.highlightFilteredHeader,
                     cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
-                    cellTemplate: togtpl
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellClass: 'ui-grid-3rowcenter',
+                    cellFilter: 'iddropdown:this',
+                    editDropdownIdLabel: 'label',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.yesno,
+                    
+//                    cellTemplate: togtpl
+                      filter: {
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: vm.yesno
+                    }
+
                 }, 
                 {
                     field: 'sortorder',
@@ -386,49 +443,27 @@
 */                      
 
                 ],
-
-                //rowHeight: 15,
-                showGridFooter: false,
-                enableColumnResizing: true,
-//                appScopeProvider: vm,
-
                 onRegisterApi: function(gridApi) {
                     $log.debug('vm gridapi onRegisterApi');
                      vm.gridApi = gridApi;
 
-     /*               gridApi.selection.on.rowSelectionChanged($scope,function(row){
-                        var msg = 'grid row selected ' + row.entity;
-                        $log.debug(msg);
-
-                        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                        $log.debug('selected', selectedStudentarr);
-                        setSelectedArray(selectedStudentarr);
+                      gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                        $log.debug('pagination changed');
+//                        paginationOptions.pageSize = pageSize;
+                        setGridLength(pageSize);
+                        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
                         
-                    });
-     */
-    /*                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                            $log.debug("grid batch");  
-                            var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                            $log.debug('batch selected', selectedStudentarr);
-                            setSelectedArray(selectedStudentarr);
-
-                    });
-                    
-     */               
-/*             gridApi.core.on.filterChanged( $scope, function() {
-                 $log.debug("filt change, $scope");
-             // vm.gridOptions.data = data;
-            });
-*/
+                      });
                         gridApi.edit.on.afterCellEdit($scope, 
                             function(rowEntity, colDef, newValue, oldValue) {
-                        $log.debug('rowEntity');
+/*                        $log.debug('rowEntity');
                         $log.debug(rowEntity);
                         //Alert to show what info about the edit is available
                         $log.debug('Column: ' + colDef.name  + 
                             ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
+*/                            
                         if (newValue != oldValue) {
-                            updateSchedule(rowEntity);       
+                            updateSchedule(rowEntity, 'Update');       
                         }
                     });
 

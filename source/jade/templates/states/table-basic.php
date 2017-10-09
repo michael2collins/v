@@ -132,6 +132,7 @@ function selectColTemplate( $parameters = array() ) {
             <select id="<?=$param['field']?>" type="text" 
                 name="<?=$param['field']?>" 
                 ng-model="<?=$param['model']?>" 
+                <?=(isset($param['changefunction']) ? 'ng-change="' . $param['changefunction'] . '"' : '')?>
                 <?=($param['required']  ? 'required' : '')?> 
                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
                 class="form-control">
@@ -156,7 +157,6 @@ function selectColTemplate( $parameters = array() ) {
 function btnColTemplate( $parameters = array() ) {
 
     $def = array(
-        'required' => false,
         'color' => 'green',
         'style' => 'fa-plus'
      );

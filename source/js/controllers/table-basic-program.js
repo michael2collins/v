@@ -1,36 +1,10 @@
-(function() {
+(function(window,angular) {
     'use strict';
 
     angular
         .module('ng-admin')
-        .controller('ProgramTableBasicController', ProgramTableBasicController)
-        .filter('pgmgriddropdown', function() {
-          return function (input, context) {
-            
-            try {
-            
-                var map = context.col.colDef.editDropdownOptionsArray;
-                var idField = context.col.colDef.editDropdownIdLabel;
-                var valueField = context.col.colDef.editDropdownValueLabel;
-                var initial = context.row.entity[context.col.field];
-                if (typeof map !== "undefined") {
-                  for (var i = 0; i < map.length; i++) {
-                    if (map[i][idField] == input) {
-                      return map[i][valueField];
-                    }
-                  }
-                } else if (initial) {
-                  return initial;
-                }
-                return input;
-              
-          } catch (e) {
-//            context.grid.appScope.log("Error: " + e);
-            console.log("error: " + e);
-          }
-        };
-        });
-        
+        .controller('ProgramTableBasicController', ProgramTableBasicController);
+
     ProgramTableBasicController.$inject = [
     '$log',
     '$q',
@@ -39,17 +13,20 @@
     'ClassServices',
         'uiGridConstants',
     'Notification',
-    'moment'
+    'moment',
+    'iddropdownFilter'
     ];
 
     function ProgramTableBasicController(
-        $log, $q, $scope, $interval, ClassServices, uiGridConstants,  Notification, moment) {
+        $log, $q, $scope, $interval, ClassServices, uiGridConstants,  Notification, moment, iddropdownFilter) {
         /* jshint validthis: true */
 
-        var vm=this;
+        var vm = this;
+        var $ = angular.element;
         
         vm.getProgram = getProgram;
         vm.removeProgram = removeProgram;
+        vm.addProgram = addProgram;
         vm.updateProgram = updateProgram;
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
@@ -59,7 +36,23 @@
         vm.classTypes=[];
 //        vm.classTypes = [{"id":"ChildrenKarate","value":"ChildrenKarate","order":1},{"id":"AdultKarate","value":"AdultKarate","order":2},{"id":"Wellness","value":"Wellness","order":3},{"id":"Other","value":"Other","order":4},{"id":"Kickboxing","value":"Kickboxing","order":5},{"id":"Zoomba","value":"Zoomba","order":6},{"id":"AfterSchool","value":"AfterSchool","order":7}];
         vm.thisProgram=[];
+        vm.gridLength={};
+        vm.initialLength=10;
+        vm.rowheight=25;
+        vm.headerheight=140;
+        vm.getGridLength = getGridLength;
+        setGridLength(vm.initialLength);
+
+
+        setgridOptions();
         activate();
+
+       $.fn.Data.Portlet('table-basic-program.js');
+    
+        $('.portlet-scroll').slimScroll({
+            "height": "250",
+            "alwaysVisible": true
+        });
 
         function activate() {
 
@@ -68,7 +61,7 @@
                 getClassTypes().then(function() {
                     $log.debug('getClassTypes activate done',vm.classTypes);
                     setgridOptions();
-               //     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+                    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
 
                  },function(error) {
                      return ($q.reject(error));
@@ -78,6 +71,16 @@
              });
              
         }
+
+        function setGridLength(size) {
+            vm.gridLength=  {
+                height: (size*vm.rowheight)+vm.headerheight+'px'
+            };
+        }
+        function getGridLength() {
+            return vm.gridLength;
+        }
+
 
         function removeProgram(input) {
             $log.debug('removeProgram entered',input);
@@ -89,7 +92,26 @@
                 .then(function(data){
                     $log.debug('removeProgram returned data');
                     $log.debug(data);
-                    getProgram();
+                    vm.message = data.message;
+                    if ((typeof data === 'undefined' || data.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: vm.message, delay: 5000});
+                    }
+                    
+                    getProgram().then
+                        (function(zdata) {
+                         $log.debug('getProgram returned', zdata);
+                     },
+                        function (error) {
+                            $log.debug('Caught an error getProgram after remove:', error); 
+                            vm.thisProgram = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
                     return data;
                 }).catch(function(e) {
                     $log.debug('removeProgram failure:');
@@ -100,7 +122,10 @@
             
         }
 
-        function updateProgram(rowEntity) {
+        function addProgram(rowEntity) {
+            updateProgram(rowEntity,'Add');
+        }
+        function updateProgram(rowEntity,updatetype) {
             var updpath = "../v1/program";
 
             var thedata = {
@@ -119,7 +144,7 @@
                 
             };
             
-            $log.debug('about updateProgram ',thedata, updpath);
+            $log.debug('about updateProgram ',thedata, updpath, updatetype);
             return ClassServices.updateProgram(updpath, thedata)
                 .then(function(data){
                     $log.debug('updateProgram returned data');
@@ -128,18 +153,28 @@
                     $log.debug(vm.thisProgram);
                     $log.debug(vm.thisProgram.message);
                     vm.message = vm.thisProgram.message;
-                    getProgram().then
-                        (function(zdata) {
-                         $log.debug('getProgram returned', zdata);
-                     },
-                        function (error) {
-                            $log.debug('Caught an error getProgram after update:', error); 
-                            vm.thisProgram = [];
-                            vm.message = error;
-                            Notification.error({message: error, delay: 5000});
-                            return ($q.reject(error));
-                        });
-
+                    if ((typeof vm.thisProgram === 'undefined' || vm.thisProgram.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: vm.message, delay: 5000});
+                    }
+                    if (updatetype === 'Add') {
+                        getProgram().then
+                            (function(zdata) {
+                             $log.debug('getProgram returned', zdata);
+                         },
+                            function (error) {
+                                $log.debug('Caught an error getProgram after remove:', error); 
+                                vm.thisProgram = [];
+                                vm.message = error;
+                                Notification.error({message: error, delay: 5000});
+                                return ($q.reject(error));
+                            });
+                        
+                    }
+                    
                     return vm.thisProgram;
                 }).catch(function(e) {
                     $log.debug('updateProgram failure:');
@@ -179,6 +214,7 @@
                     $log.debug(data);
                     
                     vm.classTypes = data.ClassTypelist; 
+                    vm.program.classType=vm.classTypes[0].value;
                     return vm.classTypes;
                 }, function(error) {
                     $log.debug('Caught an error getClassTypes:', error); 
@@ -205,17 +241,25 @@
                 enableFiltering: true,
                 enableCellEditOnFocus: true,
                 paginationPageSizes: vm.limits,
-                paginationPageSize: 10,
+                paginationPageSize: vm.initialLength,
+                rowHeight: vm.rowheight,
                 appScopeProvider: vm,
             columnDefs: [
 
+                {
+                    field: 'class',
+                    displayName: 'Program',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    enableCellEdit: true,
+                    enableFiltering: true
+                }, 
                 {
                     field: 'classType',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    cellFilter: 'pgmgriddropdown:this',
+                    cellFilter: 'iddropdown:this',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.classTypes
@@ -227,18 +271,8 @@
 
                 }, 
                 {
-                    field: 'class',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true,
-                    enableFiltering: true
-                }, 
-                {
-                    field: '_12MonthPrice',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true
-                }, 
-                {
-                    field: '_6MonthPrice',
+                    field: 'WeeklyPrice',
+                    displayName: 'WeeklyPrice',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
@@ -249,20 +283,14 @@
                     enableCellEdit: true
                 }, 
                 {
-                    field: 'WeeklyPrice',
-                    displayName: 'WeeklyPrice',
+                    field: '_6MonthPrice',
+                    displayName: '6Month Factor',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
-                    field: 'SpecialPrice',
-                    displayName: 'SpecialPrice',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true
-                }, 
-                {
-                    field: 'sortKey',
-                    displayName: 'Sort Order',
+                    field: '_12MonthPrice',
+                    displayName: '12Month Factor',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
@@ -279,6 +307,18 @@
                 {
                     field: '_4thPersonDiscount',
                     displayName: '4th person discount',
+                    enableCellEdit: true
+                }, 
+                {
+                    field: 'SpecialPrice',
+                    displayName: 'SpecialPrice',
+                    headerCellClass: vm.highlightFilteredHeader,
+                    enableCellEdit: true
+                }, 
+                {
+                    field: 'sortKey',
+                    displayName: 'Sort Order',
+                    headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
@@ -301,15 +341,23 @@
                     $log.debug('vm gridapi onRegisterApi');
                      vm.gridApi = gridApi;
 
+                      gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
+                        $log.debug('pagination changed');
+//                        paginationOptions.pageSize = pageSize;
+                        setGridLength(pageSize);
+                        vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+                        
+                      });
+
                         gridApi.edit.on.afterCellEdit($scope, 
                             function(rowEntity, colDef, newValue, oldValue) {
-                        $log.debug('rowEntity');
+ /*                       $log.debug('rowEntity');
                         $log.debug(rowEntity);
                         //Alert to show what info about the edit is available
                         $log.debug('Column: ' + colDef.name  + 
                             ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
-                        if (newValue != oldValue) {
-                            updateProgram(rowEntity);       
+ */                       if (newValue != oldValue) {
+                            updateProgram(rowEntity, 'Update');       
                         }
                     });
 
@@ -322,4 +370,4 @@
 
     }
 
-})();
+})(window,window.angular);
