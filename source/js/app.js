@@ -244,6 +244,9 @@
             .when('/table-basic-program', {
                 templateUrl: 'templates/states/table-basic-program.php'
             })
+            .when('/table-basic-class', {
+                templateUrl: 'templates/states/table-basic-class.php'
+            })
             .otherwise({
                 redirectTo: '/page-signin'
      //           redirectTo: '/'

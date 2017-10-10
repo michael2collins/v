@@ -21,7 +21,7 @@
                                                 'model'=>'vm.program.class',
                                                 'label'=>'Program<br/>&nbsp;',
                                                 'placeholder'=>'Enter Name',
-                                                'required'=>'true'
+                                                'required'=>true
                                                 )
                                         );
                                     ?>
@@ -36,7 +36,7 @@
                                                 'model'=>'vm.program.classType',
                                                 'label'=>'Class<br/>Type',
                                                 'placeholder'=>'Select',
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'form'=>'editschedule2',
                                                 'repeatmodel'=>'vm.classTypes',
                                                 'repeatvalue'=>'value',
@@ -56,7 +56,7 @@
                                                 'model'=>'vm.program.WeeklyPrice',
                                                 'label'=>'Weekly<br/> Price',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -72,7 +72,7 @@
                                                 'model'=>'vm.program.MonthlyPrice',
                                                 'label'=>'Monthly<br/> Price',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -87,7 +87,7 @@
                                                 'model'=>'vm.program._6MonthPrice',
                                                 'label'=>'6 Month<br/> Factor',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -102,7 +102,7 @@
                                                 'model'=>'vm.program._12MonthPrice',
                                                 'label'=>'12 Month<br/> Factor',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -119,7 +119,7 @@
                                                 'model'=>'vm.program._2ndPersonDiscount',
                                                 'label'=>'2nd Person<br/> Discount',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -134,7 +134,7 @@
                                                 'model'=>'vm.program._3rdPersonDiscount',
                                                 'label'=>'3rd Person<br/> Discount',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -149,7 +149,7 @@
                                                 'model'=>'vm.program._4thPersonDiscount',
                                                 'label'=>'4th Person<br/> Discount',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -164,7 +164,7 @@
                                                 'model'=>'vm.program.SpecialPrice',
                                                 'label'=>'Special<br/> Price',
                                                 'placeholder'=>0,
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -180,7 +180,7 @@
                                                 'model'=>'vm.program.sortKey',
                                                 'label'=>'Sort<br/> Order',
                                                 'placeholder'=>'',
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
@@ -193,7 +193,7 @@
                                             array(
                                                 'field'=>'rankbtn',
                                                 'label'=>'Add',
-                                                'click'=>'vm.updateProgram(vm.program)'
+                                                'click'=>'vm.addProgram(vm.program)'
                                                 )
                                         );
                                 ?>

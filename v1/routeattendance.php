@@ -658,30 +658,53 @@ $app->delete('/program','authenticate', function() use ($app) {
     $Programbad=0;
 
     $db = new AttendanceDbHandler();
-    $response = array();
 
-    // remove Program
-    $Program = $db->removeProgram(
-        $ID
-                                );
+    $result = $db->isProgramFKExists($ID);
+    $response["error"] = false;
+    $response["ProgramExistsList"] = array();
 
-    if ($Program > 0) {
-        error_log( print_R("Program removed: $Program\n", TRUE ), 3, LOG);
-        $response["error"] = false;
-        $response["message"] = "Program removed successfully";
-        $Programgood = 1;
-        $response["Program"] = $Programgood;
-        echoRespnse(201, $response);
-    } else {
-        error_log( print_R("after delete Program result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $Program, TRUE), 3, LOG);
-        $Programbad = 1;
-        $response["error"] = true;
-        $response["message"] = "Failed to remove Program. Please try again";
-        echoRespnse(400, $response);
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
+        } else {
+            $tmp["type"] = "NULL";
+            $tmp["cnt"] = "0";
+        }
+        array_push($response["ProgramExistsList"], $tmp);
     }
-                        
+    $row_cnt = $result->num_rows;
 
+    if ($row_cnt == 0) {
+
+        // remove Program
+        $Program = $db->removeProgram(
+            $ID
+                                    );
+    
+        if ($Program > 0) {
+            error_log( print_R("Program removed: $Program\n", TRUE ), 3, LOG);
+            $response["error"] = false;
+            $response["message"] = "Program removed successfully";
+            $Programgood = 1;
+            $response["Program"] = $Programgood;
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after delete Program result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $Program, TRUE), 3, LOG);
+            $Programbad = 1;
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Program. Please try again";
+            echoRespnse(400, $response);
+        }
+    } else {
+            error_log( print_R("before delete Program result bad\n", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Program. There are records that are still attached to the program. Please remove those first";
+            echoRespnse(400, $response);
+    }
 });
 $app->get('/classtypes', 'authenticate', function() {
 
@@ -719,6 +742,204 @@ $app->get('/classtypes', 'authenticate', function() {
         echoRespnse(404, $response);
     }
 });
+$app->get('/ranktypes', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getStudentRanktype();
+    $response["error"] = false;
+    $response["RankTypelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+        } else {
+            $tmp["ranktype"] = "NULL";
+        }
+        array_push($response["RankTypelist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in RankTypelists";
+        error_log( print_R("RankTypelists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/class', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClassAll();
+    $response["error"] = false;
+    $response["Classlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["registrationType"] = (empty($slist["registrationType"]) ? "NULL" : $slist["registrationType"]);
+            $tmp["nextClass"] = (empty($slist["nextClass"]) ? "NULL" : $slist["nextClass"]);
+            $tmp["rankForNextClass"] = (empty($slist["rankForNextClass"]) ? "NULL" : $slist["rankForNextClass"]);
+            $tmp["ageForNextClass"] = (empty($slist["ageForNextClass"]) ? "NULL" : $slist["ageForNextClass"]);
+            $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $slist["pictureurl"]);
+            $tmp["sort"] = (empty($slist["sort"]) ? "NULL" : $slist["sort"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["class"] = "NULL";
+            $tmp["registrationType"] = "NULL";
+            $tmp["nextClass"] = "NULL";
+            $tmp["rankForNextClass"] = "NULL";
+            $tmp["ageForNextClass"] = "NULL";
+            $tmp["pictureurl"] = "NULL";
+            $tmp["sort"] = "NULL";
+        }
+        array_push($response["Classlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Classlists";
+        error_log( print_R("Classlists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/class','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Class post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
+    $class  = (isset($dataJsonDecode->thedata->class)       ? $dataJsonDecode->thedata->class : "");
+    $registrationType  = (isset($dataJsonDecode->thedata->registrationType)       ? $dataJsonDecode->thedata->registrationType : "");
+    $nextClass  = (isset($dataJsonDecode->thedata->nextClass)       ? $dataJsonDecode->thedata->nextClass : "");
+    $ageForNextClass  = (isset($dataJsonDecode->thedata->ageForNextClass)       ? $dataJsonDecode->thedata->ageForNextClass : "");
+    $rankForNextClass  = (isset($dataJsonDecode->thedata->rankForNextClass)       ? $dataJsonDecode->thedata->rankForNextClass : "");
+    $pictureurl  = (isset($dataJsonDecode->thedata->pictureurl)       ? $dataJsonDecode->thedata->pictureurl : "");
+    $sort    = (isset($dataJsonDecode->thedata->sort)         ? $dataJsonDecode->thedata->sort : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+//id, class, sort, nextClass, rankForNextClass, ageForNextClass, pictureurl, registrationType
+    // updating task
+    $res_id = $db->updateClass(
+        $id, $class, $sort, $nextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
+                                     );
+
+    if ($res_id > 1) {
+        $response["error"] = false;
+        $response["message"] = "Class created successfully";
+        $response["res_id"] = $res_id;
+        error_log( print_R("Class created: $res_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($res_id == 1) {
+        $response["error"] = false;
+        $response["message"] = "Class updated successfully";
+        error_log( print_R("Class already existed\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after Class result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create Class. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/class','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Class before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Classgood=0;
+    $Classbad=0;
+
+    $db = new AttendanceDbHandler();
+
+    $result = $db->isClassFKExists($ID);
+    $response["error"] = false;
+    $response["ClassExistsList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
+        } else {
+            $tmp["type"] = "NULL";
+            $tmp["cnt"] = "0";
+        }
+        array_push($response["ClassExistsList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt == 0) {
+
+        // remove Class
+        $Class = $db->removeClass(
+            $ID
+                                    );
+    
+        if ($Class > 0) {
+            error_log( print_R("Class removed: $Class\n", TRUE ), 3, LOG);
+            $response["error"] = false;
+            $response["message"] = "Class removed successfully";
+            $Classgood = 1;
+            $response["Class"] = $Classgood;
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after delete Class result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $Class, TRUE), 3, LOG);
+            $Classbad = 1;
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Class. Please try again";
+            echoRespnse(400, $response);
+        }
+    } else {
+            error_log( print_R("before delete Class result bad\n", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Class. There are records that are still attached to the Class. Please remove those first";
+            echoRespnse(400, $response);
+    }
+});
+
 
 $app->post('/updateattendance','authenticate',  function() use($app) {
     $response = array();

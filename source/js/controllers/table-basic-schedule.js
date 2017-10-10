@@ -109,7 +109,7 @@
             return vm.gridLength;
         }
         function maxObjArr(arr,attr) {
-            var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}))
+            var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}));
             return res;
         }
         

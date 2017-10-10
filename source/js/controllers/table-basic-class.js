@@ -3,9 +3,9 @@
 
     angular
         .module('ng-admin')
-        .controller('ProgramTableBasicController', ProgramTableBasicController);
+        .controller('ClassTableBasicController', ClassTableBasicController);
 
-    ProgramTableBasicController.$inject = [
+    ClassTableBasicController.$inject = [
     '$log',
     '$q',
     '$scope',
@@ -17,25 +17,24 @@
     'iddropdownFilter'
     ];
 
-    function ProgramTableBasicController(
+    function ClassTableBasicController(
         $log, $q, $scope, $interval, ClassServices, uiGridConstants,  Notification, moment, iddropdownFilter) {
         /* jshint validthis: true */
 
         var vm = this;
         var $ = angular.element;
         
-        vm.getProgram = getProgram;
-        vm.removeProgram = removeProgram;
-        vm.addProgram = addProgram;
-        vm.updateProgram = updateProgram;
+        vm.getClass = getClass;
+        vm.removeClass = removeClass;
+        vm.addClass = addClass;
+        vm.updateClass = updateClass;
         vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
         vm.gridApi;
         vm.limits = [5,10,20,50,100,200];
-        vm.program={};
-        vm.classTypes=[];
-//        vm.classTypes = [{"id":"ChildrenKarate","value":"ChildrenKarate","order":1},{"id":"AdultKarate","value":"AdultKarate","order":2},{"id":"Wellness","value":"Wellness","order":3},{"id":"Other","value":"Other","order":4},{"id":"Kickboxing","value":"Kickboxing","order":5},{"id":"Zoomba","value":"Zoomba","order":6},{"id":"AfterSchool","value":"AfterSchool","order":7}];
-        vm.thisProgram=[];
+        vm.Class={};
+        vm.rankTypes=[];
+        vm.thisClass=[];
         vm.gridLength={};
         vm.initialLength=10;
         vm.rowheight=25;
@@ -47,7 +46,7 @@
         setgridOptions();
         activate();
 
-       $.fn.Data.Portlet('table-basic-program.js');
+       $.fn.Data.Portlet('table-basic-class.js');
     
         $('.portlet-scroll').slimScroll({
             "height": "250",
@@ -56,10 +55,10 @@
 
         function activate() {
 
-            getProgram().then(function() {
-                $log.debug('getProgram activate done');
-                getClassTypes().then(function() {
-                    $log.debug('getClassTypes activate done',vm.classTypes);
+            getClass().then(function() {
+                $log.debug('getClass activate done');
+                getrankTypes().then(function() {
+                    $log.debug('getrankTypes activate done',vm.rankTypes);
                     setgridOptions();
                     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
 
@@ -86,44 +85,44 @@
             return res;
         }
 
-        function removeProgram(input) {
-            $log.debug('removeProgram entered',input);
-            var path = "../v1/program";
+        function removeClass(input) {
+            $log.debug('removeClass entered',input);
+            var path = "../v1/class";
             var thedata = {
                 id: input.id
             };
             var data = {};
-            data.ProgramExistsList = {};
+            data.ClassExistsList = {};
 
-            //check nclasspays, nclasspgm, studentregistration, testcandidates
-            return ClassServices.removeProgram( thedata, path)
+            //check ???
+            return ClassServices.removeClass( thedata, path)
                 .then(function(data){
-                    $log.debug('removeProgram returned data');
+                    $log.debug('removeClass returned data');
                     $log.debug(data);
                     vm.message = data.message;
                     if ((typeof data === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        vm.programFKExists = data.ProgramExistsList;
+                        vm.ClassFKExists = data.ClassExistsList;
                         $q.reject(data);
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
                     
-                    getProgram().then
+                    getClass().then
                         (function(zdata) {
-                         $log.debug('getProgram returned', zdata);
+                         $log.debug('getClass returned', zdata);
                      },
                         function (error) {
-                            $log.debug('Caught an error getProgram after remove:', error); 
-                            vm.thisProgram = [];
+                            $log.debug('Caught an error getClass after remove:', error); 
+                            vm.thisClass = [];
                             vm.message = error;
                             Notification.error({message: error, delay: 5000});
                             return ($q.reject(error));
                         });
                     return data;
                 }).catch(function(e) {
-                    $log.debug('removeProgram failure:');
+                    $log.debug('removeClass failure:');
                     $log.debug("error", e);
                     Notification.error({message: e, delay: 5000});
                     throw e;
@@ -131,38 +130,33 @@
             
         }
 
-        function addProgram(rowEntity) {
-            updateProgram(rowEntity,'Add');
+        function addClass(rowEntity) {
+            updateClass(rowEntity,'Add');
         }
-        function updateProgram(rowEntity,updatetype) {
-            var updpath = "../v1/program";
+        function updateClass(rowEntity,updatetype) {
+            var updpath = "../v1/class";
 
             var thedata = {
                 id: rowEntity.id,
                 class: rowEntity.class,
-                classType: rowEntity.classType,
-                _12MonthPrice: rowEntity._12MonthPrice,
-                _6MonthPrice: rowEntity._6MonthPrice,
-                _2ndPersonDiscount: rowEntity._2ndPersonDiscount,
-                _3rdPersonDiscount: rowEntity._3rdPersonDiscount,
-                _4thPersonDiscount: rowEntity._4thPersonDiscount,
-                MonthlyPrice: rowEntity.MonthlyPrice,
-                WeeklyPrice: rowEntity.WeeklyPrice,
-                SpecialPrice: rowEntity.SpecialPrice,
-                sortKey: rowEntity.sortKey,
-                
+                registrationType: rowEntity.registrationType,
+                nextClass: rowEntity.nextClass,
+                rankForNextClass: rowEntity.rankForNextClass,
+                ageForNextClass: rowEntity.ageForNextClass,
+                sort: rowEntity.sort,
+                pictureurl: rowEntity.pictureurl                
             };
             
-            $log.debug('about updateProgram ',thedata, updpath, updatetype);
-            return ClassServices.updateProgram(updpath, thedata)
+            $log.debug('about updateClass ',thedata, updpath, updatetype);
+            return ClassServices.updateClass(updpath, thedata)
                 .then(function(data){
-                    $log.debug('updateProgram returned data');
+                    $log.debug('updateClass returned data');
                     $log.debug(data);
-                    vm.thisProgram = data;
-                    $log.debug(vm.thisProgram);
-                    $log.debug(vm.thisProgram.message);
-                    vm.message = vm.thisProgram.message;
-                    if ((typeof vm.thisProgram === 'undefined' || vm.thisProgram.error === true)  
+                    vm.thisClass = data;
+                    $log.debug(vm.thisClass);
+                    $log.debug(vm.thisClass.message);
+                    vm.message = vm.thisClass.message;
+                    if ((typeof vm.thisClass === 'undefined' || vm.thisClass.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                         $q.reject(data);
@@ -170,13 +164,13 @@
                         Notification.success({message: vm.message, delay: 5000});
                     }
                     if (updatetype === 'Add') {
-                        getProgram().then
+                        getClass().then
                             (function(zdata) {
-                             $log.debug('getProgram returned', zdata);
+                             $log.debug('getClass returned', zdata);
                          },
                             function (error) {
-                                $log.debug('Caught an error getProgram after remove:', error); 
-                                vm.thisProgram = [];
+                                $log.debug('Caught an error getClass after remove:', error); 
+                                vm.thisClass = [];
                                 vm.message = error;
                                 Notification.error({message: error, delay: 5000});
                                 return ($q.reject(error));
@@ -184,9 +178,9 @@
                         
                     }
                     
-                    return vm.thisProgram;
+                    return vm.thisClass;
                 }).catch(function(e) {
-                    $log.debug('updateProgram failure:');
+                    $log.debug('updateClass failure:');
                     $log.debug("error", e);
                     vm.message = e;
                     Notification.error({message: e, delay: 5000});
@@ -194,20 +188,20 @@
                 });
         }
         
-        function getProgram() {
-            $log.debug('getProgram entered');
-            var path='../v1/program';
+        function getClass() {
+            $log.debug('getClass entered');
+            var path='../v1/class';
 
-            return ClassServices.getPrograms(path).then(function(data){
-                    $log.debug('getPrograms returned data');
+            return ClassServices.getClasses(path).then(function(data){
+                    $log.debug('getClasses returned data');
                     $log.debug(data);
 
-                        vm.gridOptions.data = data.Programlist; 
-                    vm.program.sortKey = parseInt(maxObjArr(data.Programlist,'sortKey'),10) + 1;
+                        vm.gridOptions.data = data.Classlist; 
+                    vm.Class.sort = parseInt(maxObjArr(data.Classlist,'sort'),10) + 1;
                     
                 }, function(error) {
-                    $log.debug('Caught an error getPrograms:', error); 
-                    vm.Programlist = [];
+                    $log.debug('Caught an error getClasses:', error); 
+                    vm.Classlist = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -215,20 +209,20 @@
                 }
                 );
         }
-        function getClassTypes() {
-            $log.debug('getClassTypes entered');
-            var path='../v1/classtypes';
+        function getrankTypes() {
+            $log.debug('getrankTypes entered');
+            var path='../v1/ranktypes';
 
-            return ClassServices.getClassTypes(path).then(function(data){
-                    $log.debug('getClassTypes returned data');
+            return ClassServices.getRankTypes(path).then(function(data){
+                    $log.debug('getrankTypes returned data');
                     $log.debug(data);
                     
-                    vm.classTypes = data.ClassTypelist; 
-                    vm.program.classType=vm.classTypes[0].value;
-                    return vm.classTypes;
+                    vm.rankTypes = data.RankTypelist; 
+                    vm.Class.registrationType=vm.rankTypes[0].ranktype;
+                    return vm.rankTypes;
                 }, function(error) {
-                    $log.debug('Caught an error getClassTypes:', error); 
-                    vm.classTypes = [];
+                    $log.debug('Caught an error getrankTypes:', error); 
+                    vm.rankTypes = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -254,79 +248,54 @@
                 paginationPageSize: vm.initialLength,
                 rowHeight: vm.rowheight,
                 appScopeProvider: vm,
+                showGridFooter: false,
+                enableColumnResizing: true,
             columnDefs: [
 
                 {
                     field: 'class',
-                    displayName: 'Program',
+                    displayName: 'Class',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true
                 }, 
                 {
-                    field: 'classType',
+                    field: 'registrationType',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
                     cellFilter: 'iddropdown:this',
-                    editDropdownIdLabel: 'id',
-                    editDropdownValueLabel: 'value',
-                    editDropdownOptionsArray: vm.classTypes
-//                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
-//                    filter: { 
- //                         term: 1,
-  //                      options: vm.classTypes        
-//                    },
-
+                    editDropdownIdLabel: 'ranktype',
+                    editDropdownValueLabel: 'ranktype',
+                    editDropdownOptionsArray: vm.rankTypes
                 }, 
                 {
-                    field: 'WeeklyPrice',
-                    displayName: 'WeeklyPrice',
+                    field: 'nextClass',
+                    displayName: 'Next Class',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
-                    field: 'MonthlyPrice',
-                    displayName: 'MonthlyPrice',
+                    field: 'ageForNextClass',
+                    displayName: 'Age for Next Class',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
-                    field: '_6MonthPrice',
-                    displayName: '6Month Factor',
+                    field: 'rankForNextClass',
+                    displayName: 'Rank for Next Class',
                     headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    enableFiltering: true,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellFilter: 'iddropdown:this',
+                    editDropdownIdLabel: 'ranktype',
+                    editDropdownValueLabel: 'ranktype',
+                    editDropdownOptionsArray: vm.rankTypes
                 }, 
                 {
-                    field: '_12MonthPrice',
-                    displayName: '12Month Factor',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true
-                }, 
-                {
-                    field: '_2ndPersonDiscount',
-                    displayName: '2nd person discount',
-                    enableCellEdit: true
-                }, 
-                {
-                    field: '_3rdPersonDiscount',
-                    displayName: '3rd person discount',
-                    enableCellEdit: true
-                }, 
-                {
-                    field: '_4thPersonDiscount',
-                    displayName: '4th person discount',
-                    enableCellEdit: true
-                }, 
-                {
-                    field: 'SpecialPrice',
-                    displayName: 'SpecialPrice',
-                    headerCellClass: vm.highlightFilteredHeader,
-                    enableCellEdit: true
-                }, 
-                {
-                    field: 'sortKey',
+                    field: 'sort',
                     displayName: 'Sort Order',
                     headerCellClass: vm.highlightFilteredHeader,
                     enableCellEdit: true
@@ -338,14 +307,11 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeProgram(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeClass(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
                 }
 
                 ],
 
-                //rowHeight: 15,
-                showGridFooter: false,
-                enableColumnResizing: true,
 
                 onRegisterApi: function(gridApi) {
                     $log.debug('vm gridapi onRegisterApi');
@@ -353,7 +319,6 @@
 
                       gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
                         $log.debug('pagination changed');
-//                        paginationOptions.pageSize = pageSize;
                         setGridLength(pageSize);
                         vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
                         
@@ -361,21 +326,13 @@
 
                         gridApi.edit.on.afterCellEdit($scope, 
                             function(rowEntity, colDef, newValue, oldValue) {
- /*                       $log.debug('rowEntity');
-                        $log.debug(rowEntity);
-                        //Alert to show what info about the edit is available
-                        $log.debug('Column: ' + colDef.name  + 
-                            ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
- */                       if (newValue != oldValue) {
-                            updateProgram(rowEntity, 'Update');       
+                       if (newValue != oldValue) {
+                            updateClass(rowEntity, 'Update');       
                         }
                     });
 
                     }
             };
-
-                
-
         }
 
     }

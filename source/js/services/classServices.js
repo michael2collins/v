@@ -51,6 +51,10 @@
             getClassTypes: getClassTypes,
             updateProgram: updateProgram,
             removeProgram: removeProgram,
+            getClasses: getClasses,
+            getRankTypes: getRankTypes,
+            updateClass: updateClass,
+            removeClass: removeClass
             
         };
         return service;
@@ -85,6 +89,45 @@
         }
         function removeProgram( thedata, path ) {
             $log.debug('removeProgram data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateClass(path, thedata ) {
+                    $log.debug('updateClass data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function getClasses(path) {
+            $log.debug('getClasses service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function getRankTypes(path) {
+            $log.debug('getRankTypes service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeClass( thedata, path ) {
+            $log.debug('removeClass data before delete :' , thedata);
             var request = $http({
                 method: "DELETE",
                 url: path,

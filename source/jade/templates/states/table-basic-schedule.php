@@ -23,7 +23,7 @@
                                                 'model'=>'vm.schedule.dow',
                                                 'label'=>'Day of<br/>Week',
                                                 'placeholder'=>'Select',
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'form'=>'editschedule2',
                                                 'repeatmodel'=>'vm.weekschedule',
                                                 'repeatvalue'=>'value',
@@ -42,7 +42,7 @@
                                                 'model'=>'vm.schedule.timerange',
                                                 'label'=>'Time<br/>Range',
                                                 'placeholder'=>'0:00AM to 0:00',
-                                                'required'=>'true'
+                                                'required'=>true
                                                 )
                                         );
                                     ?>
@@ -56,7 +56,7 @@
                                                 'model'=>'vm.schedule.agerange',
                                                 'label'=>'Age<br/>Range',
                                                 'placeholder'=>'All Ages ',
-                                                'required'=>'true'
+                                                'required'=>true
                                                 )
                                         );
                                     ?>
@@ -72,7 +72,7 @@
                                                     'model'=>'vm.schedule.classid',
                                                     'label'=>'Class<br/>&nbsp;',
                                                     'placeholder'=>'Select',
-                                                    'required'=>'true',
+                                                    'required'=>true,
                                                     'changefunction'=>'vm.changeclass()',
                                                     'form'=>'editschedule2',
                                                     'repeatmodel'=>'vm.classhashlist',
@@ -91,7 +91,7 @@
                                                     'model'=>'vm.schedule.description',
                                                     'label'=>'Description<br/>&nbsp;',
                                                     'placeholder'=>'Enter Class Name',
-                                                    'required'=>'true'
+                                                    'required'=>true
                                                     )
                                             );
                                     ?>
@@ -104,7 +104,7 @@
                                             array(
                                                 'field'=>'startT',
                                                 'model'=>'vm.schedule.startT',
-                                                'required'=>'true'
+                                                'required'=>true
                                             )
                                         );
                                     ?>
@@ -115,7 +115,7 @@
                                             array(
                                                 'field'=>'endT',
                                                 'model'=>'vm.schedule.endT',
-                                                'required'=>'true'
+                                                'required'=>true
                                             )
                                         );
                                     ?>
@@ -129,7 +129,7 @@
                                                 'field'=>'TakeAttendance',
                                                 'model'=>'vm.schedule.TakeAttendance',
                                                 'label'=>'Take<br/>Attendance',
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'form'=>'editschedule2'
                                                 )
                                     );
@@ -144,7 +144,7 @@
                                                 'model'=>'vm.schedule.sortorder',
                                                 'label'=>'Sort<br/>Order',
                                                 'placeholder'=>'',
-                                                'required'=>'true',
+                                                'required'=>true,
                                                 'fieldtype'=>'number'
                                                 )
                                         );
