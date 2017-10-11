@@ -1,20 +1,9 @@
-(function() {
+(function(window,angular) {
     'use strict';
 
     angular
         .module('ng-admin')
-        .controller('ScheduleTableBasicController', ScheduleTableBasicController)
-        .directive('myCustomDropdown', function() {
-          return {
-            template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.class as option.value for option in colFilter.options track by option.id"></select>'
-          };
-        })
-
-        .directive('myCustomDropdownid', function() {
-          return {
-            template: '<select class="form-control" ng-model="colFilter.term" ng-options="option.id as option.value for option in colFilter.options track by option.id"></select>'
-          };
-        });
+        .controller('ScheduleTableBasicController', ScheduleTableBasicController);
         
     ScheduleTableBasicController.$inject = [
     '$log',
@@ -25,21 +14,23 @@
         'uiGridConstants',
     'Notification',
     'moment',
-    'iddropdownFilter'
+    'iddropdownFilter',
+    'Util'
     ];
 
     function ScheduleTableBasicController(
-        $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment, iddropdownFilter) {
+        $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment, iddropdownFilter, Util) {
         /* jshint validthis: true */
 
         var vm = this;
         
         vm.getSchedule = getSchedule;
+        vm.addSchedule = addSchedule;
         vm.removeSchedule = removeSchedule;
         vm.updSchedule = updSchedule;
         vm.changeclass = changeclass;
         vm.changetime = changetime;
-        vm.highlightFilteredHeader = highlightFilteredHeader;
+//        vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
         vm.gridApi;
         vm.limits = [1,3,5,10,20,50,100,200];
@@ -96,7 +87,7 @@
         }
 
         function changeclass() {
-            vm.schedule.description = getByValue(vm.classhashlist, vm.schedule.classid, 'id', 'value');
+            vm.schedule.description = Util.getByValue(vm.classhashlist, vm.schedule.classid, 'id', 'value');
             
         }
         
@@ -108,18 +99,7 @@
         function getGridLength() {
             return vm.gridLength;
         }
-        function maxObjArr(arr,attr) {
-            var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}));
-            return res;
-        }
-        
-        function getByValue(arr, value, attr, resvlu) {
-        
-          var result  = arr.filter(function(o){return o[attr] == value;} );
-        
-          return result? result[0][resvlu] : null; // or undefined
-        
-        }
+
         
         $scope.$watch('vm.schedule.startT', function (value) {
             if (!value) return;
@@ -259,7 +239,7 @@
                         myDate.setMinutes(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[1],10));
                         data.Schedulelist[iter].endT = myDate;
                     }
-                    vm.schedule.sortorder = parseInt(maxObjArr(data.Schedulelist,'sortorder'),10) + 1;
+                    vm.schedule.sortorder = parseInt(Util.maxObjArr(data.Schedulelist,'sortorder'),10) + 1;
 
                     vm.gridOptions.data = data.Schedulelist; 
                 }, function(error) {
@@ -302,14 +282,15 @@
                 );
         }
         
-        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
+/*        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
             if (col.filters[0].term) {
                 return 'header-filtered';
             } else {
                 return '';
             }
         }
-        
+  */
+  
         function setgridOptions() {
             var ctpl_start = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.startT"></div>';
             var ctpl_end = '<div uib-timepicker hour-step="1" minute-step="5" show-meridian="false" ng-model="row.entity.endT"></div>';
@@ -329,7 +310,7 @@
 
                 {
                     field: 'DayOfWeek',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true,
@@ -345,22 +326,24 @@
                 }, 
                 {
                     field: 'TimeRange',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
                     enableFiltering: true
                 }, 
                 {
                     field: 'AgeRange',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
+                { field: 'classid'
+                },
                 {
                     field: 'classid',
-                    displayName: 'Classid',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    displayName: 'Class',
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
@@ -368,19 +351,15 @@
                     cellFilter: 'iddropdown:this',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
-//                    editDropdownIdLabel: 'classid',
-//                    editDropdownValueLabel: 'class',
-//                    editDropdownOptionsArray: vm.classlist
-                    editDropdownOptionsArray: vm.classhashlist
-//                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
-//                    filter: { 
-//                          term: 1,
-//                        options: vm.classhashlist        
- //                   },
+                    editDropdownOptionsArray: vm.classhashlist,
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
+                    filter: { 
+                        options: vm.classhashlist        
+                    }
                 }, 
                 {
                     field: 'Description',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
@@ -388,7 +367,7 @@
                 {
                     field: 'startT',
                     displayName: 'StartTime',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     cellTemplate: ctpl_start
@@ -396,7 +375,7 @@
                 {
                     field: 'endT',
                     displayName: 'EndTime',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     cellTemplate: ctpl_end
@@ -404,7 +383,7 @@
                 {
                     field: 'TakeAttendance',
                     displayName: 'TakeAttendance',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
@@ -476,4 +455,4 @@
 
     }
 
-})();
+})(window,window.angular);

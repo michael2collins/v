@@ -175,6 +175,7 @@
                         ui-grid-move-columns 
                         ui-grid-exporter 
                         ui-grid-auto-resize
+                        ui-grid-resize-columns
                         ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
                     </div>
                     

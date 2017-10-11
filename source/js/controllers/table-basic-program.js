@@ -14,11 +14,12 @@
         'uiGridConstants',
     'Notification',
     'moment',
-    'iddropdownFilter'
+    'iddropdownFilter',
+    'Util'
     ];
 
     function ProgramTableBasicController(
-        $log, $q, $scope, $interval, ClassServices, uiGridConstants,  Notification, moment, iddropdownFilter) {
+        $log, $q, $scope, $interval, ClassServices, uiGridConstants,  Notification, moment, iddropdownFilter, Util) {
         /* jshint validthis: true */
 
         var vm = this;
@@ -28,7 +29,6 @@
         vm.removeProgram = removeProgram;
         vm.addProgram = addProgram;
         vm.updateProgram = updateProgram;
-        vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
         vm.gridApi;
         vm.limits = [5,10,20,50,100,200];
@@ -79,11 +79,6 @@
         }
         function getGridLength() {
             return vm.gridLength;
-        }
-
-        function maxObjArr(arr,attr) {
-            var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}));
-            return res;
         }
 
         function removeProgram(input) {
@@ -203,7 +198,7 @@
                     $log.debug(data);
 
                         vm.gridOptions.data = data.Programlist; 
-                    vm.program.sortKey = parseInt(maxObjArr(data.Programlist,'sortKey'),10) + 1;
+                    vm.program.sortKey = parseInt(Util.maxObjArr(data.Programlist,'sortKey'),10) + 1;
                     
                 }, function(error) {
                     $log.debug('Caught an error getPrograms:', error); 
@@ -236,15 +231,6 @@
                 }
                 );
         }
-
-        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
-            if (col.filters[0].term) {
-                return 'header-filtered';
-            } else {
-                return '';
-            }
-        }
-        
         function setgridOptions() {
              
             vm.gridOptions = {
@@ -259,49 +245,49 @@
                 {
                     field: 'class',
                     displayName: 'Program',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true
                 }, 
                 {
                     field: 'classType',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
                     cellFilter: 'iddropdown:this',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
-                    editDropdownOptionsArray: vm.classTypes
+                    editDropdownOptionsArray: vm.classTypes,
 //                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdownid></div></div>', 
-//                    filter: { 
- //                         term: 1,
-  //                      options: vm.classTypes        
-//                    },
-
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
+                    filter: { 
+//                          term: 1,
+                        options: vm.classTypes        
+                    }
                 }, 
                 {
                     field: 'WeeklyPrice',
                     displayName: 'WeeklyPrice',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
                     field: 'MonthlyPrice',
                     displayName: 'MonthlyPrice',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
                     field: '_6MonthPrice',
                     displayName: '6Month Factor',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
                     field: '_12MonthPrice',
                     displayName: '12Month Factor',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
@@ -322,13 +308,13 @@
                 {
                     field: 'SpecialPrice',
                     displayName: 'SpecialPrice',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
                     field: 'sortKey',
                     displayName: 'Sort Order',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {

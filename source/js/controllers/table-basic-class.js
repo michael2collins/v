@@ -11,6 +11,7 @@
     '$scope',
     '$interval',
     'ClassServices',
+    'Util',
         'uiGridConstants',
     'Notification',
     'moment',
@@ -18,7 +19,8 @@
     ];
 
     function ClassTableBasicController(
-        $log, $q, $scope, $interval, ClassServices, uiGridConstants,  Notification, moment, iddropdownFilter) {
+        $log, $q, $scope, $interval, ClassServices, Util, 
+        uiGridConstants,  Notification, moment, iddropdownFilter) {
         /* jshint validthis: true */
 
         var vm = this;
@@ -28,7 +30,6 @@
         vm.removeClass = removeClass;
         vm.addClass = addClass;
         vm.updateClass = updateClass;
-        vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
         vm.gridApi;
         vm.limits = [5,10,20,50,100,200];
@@ -80,10 +81,6 @@
             return vm.gridLength;
         }
 
-        function maxObjArr(arr,attr) {
-            var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}));
-            return res;
-        }
 
         function removeClass(input) {
             $log.debug('removeClass entered',input);
@@ -197,7 +194,7 @@
                     $log.debug(data);
 
                         vm.gridOptions.data = data.Classlist; 
-                    vm.Class.sort = parseInt(maxObjArr(data.Classlist,'sort'),10) + 1;
+                    vm.Class.sort = parseInt(Util.maxObjArr(data.Classlist,'sort'),10) + 1;
                     
                 }, function(error) {
                     $log.debug('Caught an error getClasses:', error); 
@@ -231,14 +228,6 @@
                 );
         }
 
-        function highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
-            if (col.filters[0].term) {
-                return 'header-filtered';
-            } else {
-                return '';
-            }
-        }
-        
         function setgridOptions() {
              
             vm.gridOptions = {
@@ -255,13 +244,13 @@
                 {
                     field: 'class',
                     displayName: 'Class',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true
                 }, 
                 {
                     field: 'registrationType',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
@@ -273,19 +262,19 @@
                 {
                     field: 'nextClass',
                     displayName: 'Next Class',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
                     field: 'ageForNextClass',
                     displayName: 'Age for Next Class',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
                     field: 'rankForNextClass',
                     displayName: 'Rank for Next Class',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
@@ -297,7 +286,7 @@
                 {
                     field: 'sort',
                     displayName: 'Sort Order',
-                    headerCellClass: vm.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true
                 }, 
                 {
