@@ -988,7 +988,7 @@ class AttendanceDbHandler {
                 error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
         }
 
-        $cntsql = "select count(*) as Classcount from nclasslist ";
+        $cntsql = "select count(*) as Classcount from nclass ";
         $cntsql .= " where class = ? ";
         $cntsql .= " and id = ? ";
 
@@ -1028,6 +1028,7 @@ class AttendanceDbHandler {
 
     }
 
+//mlc: todo get the fk for nclass
     public function isClassFKExists(
          $id
         ) {
@@ -1074,13 +1075,13 @@ class AttendanceDbHandler {
     }
 
     public function updateClass( 
-        $id, $class, $sort, $nextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
+        $id, $class, $sort, $nextClass, $ranklistForNextClass,$rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
         ) {
         $num_affected_rows = 0;
         error_log( print_R("Class update entered", TRUE), 3, LOG);
 
         global $school;
-
+$errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
@@ -1088,9 +1089,9 @@ class AttendanceDbHandler {
         }
 
         $inssql = " INSERT INTO nclass( 
-         class, sort, nextClass, rankForNextClass, ageForNextClass, pictureurl, registrationType, school ) ";
+         class, sort, nextClass, ranklistForNextClass, rankForNextClass, ageForNextClass, pictureurl, registrationType, school ) ";
 
-        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
         
         if ($this->isClassExists(
@@ -1098,8 +1099,8 @@ class AttendanceDbHandler {
             ) == 0) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("ssssssss",
-         $class, $sort, $nextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType, $school
+                $stmt->bind_param("sssssssss",
+         $class, $sort, $nextClass, $ranklistForNextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType, $school
                                      );
                     $result = $stmt->execute();
 
@@ -1108,16 +1109,18 @@ class AttendanceDbHandler {
                     if ($result) {
                         $new_id = $this->conn->insert_id;
                         // User successfully inserted
-                        return $new_id;
+                $errormessage["success"] = $new_id;
+                return $errormessage;
+//                        return $new_id;
                     } else {
                         // Failed to create 
-                        printf("Errormessage: %s\n", $this->conn->error);
-                        return NULL;
+                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
                     }
 
                 } else {
-                    printf("Errormessage: %s\n", $this->conn->error);
-                        return NULL;
+                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
                 }
 
 
@@ -1128,6 +1131,7 @@ class AttendanceDbHandler {
                  class = ?, 
                  sort = ?, 
                  nextClass = ?, 
+                 ranklistForNextClass = ?, 
                  rankForNextClass = ?, 
                  ageForNextClass = ?, 
                  pictureurl = ?, 
@@ -1138,19 +1142,21 @@ class AttendanceDbHandler {
             error_log( print_R("Class update sql: $updsql", TRUE), 3, LOG);
             
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("sssssssss",
-         $class, $sort, $nextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType, $school, $id
+                $stmt->bind_param("ssssssssss",
+         $class, $sort, $nextClass,  $ranklistForNextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType, $school, $id
                                      );
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
-                return $num_affected_rows;
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+//                return $num_affected_rows;
                 
             } else {
                 error_log( print_R("Class update failed", TRUE), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE), 3, LOG);
-                printf("Errormessage: %s\n", $this->conn->error);
-                return NULL;
+                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
             }
         }
     }
@@ -1270,7 +1276,7 @@ class AttendanceDbHandler {
 
     public function getStudentRanktype() {
         
-        $sql = "select listvalue as ranktype from studentlist s where listtype = 'ranktypelist' ";
+        $sql = "select listvalue as value,listorder as id from studentlist s where listtype = 'ranktypelist' ";
         $schoolfield = "s.school";
         $sql = addSecurity($sql, $schoolfield);
 
@@ -1290,6 +1296,36 @@ class AttendanceDbHandler {
 
         } else {
             error_log( print_R("getStudentRanktype list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+    public function getRanks($ranktype) {
+        
+        $sql = "select ranklist as value,rankid as id, ranktype from ranklist where ranktype = ? order by sortkey ";
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+
+        error_log( print_R("getRanks sql after security: $sql \n", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("s",
+                        $ranktype       
+                     );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getRanks list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getRanks list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRanks list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }

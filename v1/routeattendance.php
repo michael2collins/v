@@ -756,9 +756,11 @@ $app->get('/ranktypes', 'authenticate', function() {
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
         if (count($slist) > 0) {
-            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["value"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
         } else {
-            $tmp["ranktype"] = "NULL";
+            $tmp["value"] = "NULL";
+            $tmp["id"] = "0";
         }
         array_push($response["RankTypelist"], $tmp);
     }
@@ -774,11 +776,64 @@ $app->get('/ranktypes', 'authenticate', function() {
         echoRespnse(404, $response);
     }
 });
+$app->get('/ranks', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("ranks entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $ranktype = '';
+
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Missing the registration type";
+        error_log( print_R("Registration type missing bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getRanks($ranktype);
+    $response["error"] = false;
+    $response["Ranklist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["label"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
+            $tmp["value"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+        } else {
+            $tmp["label"] = "NULL";
+            $tmp["value"] = "0";
+            $tmp["ranktype"] = "NULL";
+        }
+        array_push($response["Ranklist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Ranklists";
+        error_log( print_R("Ranklists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
 
 $app->get('/class', 'authenticate', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
+
+//    $picroot = './images/classes/';
 
     // fetch task
     $result = $db->getClassAll();
@@ -793,15 +848,18 @@ $app->get('/class', 'authenticate', function() {
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
             $tmp["registrationType"] = (empty($slist["registrationType"]) ? "NULL" : $slist["registrationType"]);
             $tmp["nextClass"] = (empty($slist["nextClass"]) ? "NULL" : $slist["nextClass"]);
+            $tmp["ranklistForNextClass"] = (empty($slist["ranklistForNextClass"]) ? "NULL" : $slist["ranklistForNextClass"]);
             $tmp["rankForNextClass"] = (empty($slist["rankForNextClass"]) ? "NULL" : $slist["rankForNextClass"]);
             $tmp["ageForNextClass"] = (empty($slist["ageForNextClass"]) ? "NULL" : $slist["ageForNextClass"]);
-            $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "NULL" : $slist["pictureurl"]);
+            $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
+//            $tmp["pictureurl"] = $picroot .  $tmp["pictureurl"];
             $tmp["sort"] = (empty($slist["sort"]) ? "NULL" : $slist["sort"]);
         } else {
             $tmp["id"] = "NULL";
             $tmp["class"] = "NULL";
             $tmp["registrationType"] = "NULL";
             $tmp["nextClass"] = "NULL";
+            $tmp["ranklistForNextClass"] = "NULL";
             $tmp["rankForNextClass"] = "NULL";
             $tmp["ageForNextClass"] = "NULL";
             $tmp["pictureurl"] = "NULL";
@@ -837,32 +895,38 @@ $app->post('/class','authenticate',  function() use($app) {
     $registrationType  = (isset($dataJsonDecode->thedata->registrationType)       ? $dataJsonDecode->thedata->registrationType : "");
     $nextClass  = (isset($dataJsonDecode->thedata->nextClass)       ? $dataJsonDecode->thedata->nextClass : "");
     $ageForNextClass  = (isset($dataJsonDecode->thedata->ageForNextClass)       ? $dataJsonDecode->thedata->ageForNextClass : "");
+    $ranklistForNextClass  = (isset($dataJsonDecode->thedata->ranklistForNextClass)       ? $dataJsonDecode->thedata->ranklistForNextClass : "");
     $rankForNextClass  = (isset($dataJsonDecode->thedata->rankForNextClass)       ? $dataJsonDecode->thedata->rankForNextClass : "");
-    $pictureurl  = (isset($dataJsonDecode->thedata->pictureurl)       ? $dataJsonDecode->thedata->pictureurl : "");
+    $pictureurl  = (isset($dataJsonDecode->thedata->pictureurl)       ? $dataJsonDecode->thedata->pictureurl : "missingstudentpicture.png");
     $sort    = (isset($dataJsonDecode->thedata->sort)         ? $dataJsonDecode->thedata->sort : "");
 
     $db = new AttendanceDbHandler();
     $response = array();
-//id, class, sort, nextClass, rankForNextClass, ageForNextClass, pictureurl, registrationType
+//id, class, sort, nextClass, rankForNextClass,ranklistForNextClass, ageForNextClass, pictureurl, registrationType
     // updating task
     $res_id = $db->updateClass(
-        $id, $class, $sort, $nextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
+        $id, $class, $sort, $nextClass, $ranklistForNextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
                                      );
+    error_log( print_R($res_id, TRUE ), 3, LOG);
+    error_log( print_R("\n", TRUE ), 3, LOG);
 
-    if ($res_id > 1) {
-        $response["error"] = false;
-        $response["message"] = "Class created successfully";
-        $response["res_id"] = $res_id;
-        error_log( print_R("Class created: $res_id\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
-    } else if ($res_id == 1) {
-        $response["error"] = false;
-        $response["message"] = "Class updated successfully";
-        error_log( print_R("Class already existed\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "Class created successfully";
+            $response["res_id"] = $res_id;
+            error_log( print_R("Class created: $res_id\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Class updated successfully";
+            error_log( print_R("Class already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
     } else {
         error_log( print_R("after Class result bad\n", TRUE), 3, LOG);
         error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Class. Please try again";
         echoRespnse(400, $response);

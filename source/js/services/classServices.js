@@ -53,6 +53,7 @@
             removeProgram: removeProgram,
             getClasses: getClasses,
             getRankTypes: getRankTypes,
+            getRanks: getRanks,
             updateClass: updateClass,
             removeClass: removeClass
             
@@ -137,6 +138,14 @@
             });
             return( request.then( handleSuccess, handleError ) );
         }        
+        function getRanks(path) {
+            $log.debug('getRanks service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
 
 
      function setapikey(key) {

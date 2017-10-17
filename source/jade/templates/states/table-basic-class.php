@@ -9,11 +9,32 @@
       <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
             <div class="panel panel-blue">
                 <div class="panel-heading">Class</div>
+                {{vm.Class}}
+                <div class="control-label attendance">Filter by Registration Type</div>
+                <div class="col-md-6">
+                    <?php require_once('table-basic.php');
+                        print selectColTemplate(
+                            array(
+                                'field'=>'registrationType',
+                                'model'=>'vm.Class.registrationType',
+                                'label'=>'Registration<br/>Type',
+                                'placeholder'=>'Select',
+                                'required'=>true,
+                                'form'=>'editClass2',
+                                'changefunction'=>'vm.changeRanktype()',
+                                'repeatmodel'=>'vm.rankTypes',
+                                'repeatvalue'=>'value',
+                                'repeatid'=>'id'
+                                )
+                        );
+                    ?>
+                </div>
+
                 <div class="panel-body pan">
             <div class="col-md-12" style="height: 88px;">
                 <form action="" novalidate name="editClass2" class="form-horizontal">
-                            <div class="col-md-4">
-                                <div class="col-md-6">
+                            <div class="col-md-2">
+                                <div class="col-md-12">
                                     <?php require_once('table-basic.php');
                                         print strColTemplate(
                                             array(
@@ -22,23 +43,6 @@
                                                 'label'=>'Class<br/>&nbsp;',
                                                 'placeholder'=>'Enter Name',
                                                 'required'=>true
-                                                )
-                                        );
-                                    ?>
-                                </div>
-                                <div class="col-md-6">
-                                    <?php require_once('table-basic.php');
-                                        print selectColTemplate(
-                                            array(
-                                                'field'=>'registrationType',
-                                                'model'=>'vm.Class.registrationType',
-                                                'label'=>'Registration<br/>Type',
-                                                'placeholder'=>'Select',
-                                                'required'=>true,
-                                                'form'=>'editClass2',
-                                                'repeatmodel'=>'vm.rankTypes',
-                                                'repeatvalue'=>'ranktype',
-                                                'repeatid'=>'ranktype'
                                                 )
                                         );
                                     ?>
@@ -76,15 +80,33 @@
                                     <?php require_once('table-basic.php');
                                         print selectColTemplate(
                                             array(
+                                                'field'=>'ranklistForNextClass',
+                                                'model'=>'vm.Class.ranklistForNextClass',
+                                                'label'=>'Type of<br/>Next Class',
+                                                'placeholder'=>'Select',
+                                                'required'=>false,
+                                                'form'=>'editClass2',
+                                                'changefunction'=>'vm.changeRanklisttype()',
+                                                'repeatmodel'=>'vm.rankTypes',
+                                                'repeatvalue'=>'value',
+                                                'repeatid'=>'id'
+                                                )
+                                        );
+                                    ?>
+                                </div>
+                                <div class="col-md-3">
+                                    <?php require_once('table-basic.php');
+                                        print selectColTemplate(
+                                            array(
                                                 'field'=>'rankForNextClass',
                                                 'model'=>'vm.Class.rankForNextClass',
                                                 'label'=>'Rank For<br/>Next Class',
                                                 'placeholder'=>'Select',
                                                 'required'=>false,
                                                 'form'=>'editClass2',
-                                                'repeatmodel'=>'vm.rankTypes',
-                                                'repeatvalue'=>'ranktype',
-                                                'repeatid'=>'ranktype'
+                                                'repeatmodel'=>'vm.ranks',
+                                                'repeatvalue'=>'label',
+                                                'repeatid'=>'value'
                                                 )
                                         );
                                     ?>
@@ -100,6 +122,19 @@
                                                 'placeholder'=>'',
                                                 'required'=>true,
                                                 'fieldtype'=>'number'
+                                                )
+                                        );
+                                ?>
+                            </div>
+                            <div class="col-md-2">
+                                <?php require_once('table-basic.php');
+                                        print strColTemplate(
+                                            array(
+                                                'field'=>'pictureurl',
+                                                'model'=>'vm.Class.pictureurl',
+                                                'label'=>'Class<br/> Picture',
+                                                'placeholder'=>'',
+                                                'required'=>true
                                                 )
                                         );
                                 ?>

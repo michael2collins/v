@@ -3,7 +3,34 @@
 
     angular
         .module('ng-admin')
-        .controller('ClassTableBasicController', ClassTableBasicController);
+        .controller('ClassTableBasicController', ClassTableBasicController)
+                .filter('iddropdownlocal', function() {
+          return function (input, context) {
+            
+            try {
+            
+                var map = context.col.colDef.editDropdownOptionsArray;
+                var idField = context.col.colDef.editDropdownIdLabel;
+                var valueField = context.col.colDef.editDropdownValueLabel;
+                var initial = context.row.entity[context.col.field];
+                if (typeof map !== "undefined") {
+                  for (var i = 0; i < map.length; i++) {
+                    if (map[i][idField] == input) {
+                      return map[i][valueField];
+                    }
+                  }
+                } else if (initial) {
+                  return initial;
+                }
+                return input;
+              
+          } catch (e) {
+//            context.grid.appScope.log("Error: " + e);
+            console.log("error: " + e);
+          }
+        };
+        });
+
 
     ClassTableBasicController.$inject = [
     '$log',
@@ -30,15 +57,23 @@
         vm.removeClass = removeClass;
         vm.addClass = addClass;
         vm.updateClass = updateClass;
+        vm.getRanks = getRanks;
+        vm.changeRanktype = changeRanktype;
+        vm.changeRanklisttype = changeRanklisttype;
+        vm.geturl = geturl;
         vm.gridOptions={};
         vm.gridApi;
         vm.limits = [5,10,20,50,100,200];
+        vm.imgsrc="./images/classes/";
         vm.Class={};
         vm.rankTypes=[];
+        vm.ranks=[];
+        vm.ranks2=[];
+        vm.thisranks=[];
         vm.thisClass=[];
         vm.gridLength={};
-        vm.initialLength=10;
-        vm.rowheight=25;
+        vm.initialLength=5;
+        vm.rowheight=85;
         vm.headerheight=140;
         vm.getGridLength = getGridLength;
         setGridLength(vm.initialLength);
@@ -58,14 +93,31 @@
 
             getClass().then(function() {
                 $log.debug('getClass activate done');
-                getrankTypes().then(function() {
-                    $log.debug('getrankTypes activate done',vm.rankTypes);
-                    setgridOptions();
-                    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
-
+                $q.all([
+                getRanks('All').then(function() {
+                    $log.debug('getranks activate done',vm.ranks);
                  },function(error) {
                      return ($q.reject(error));
-                 });
+                 }),
+                getrankTypes().then(function() {
+                    $log.debug('getrankTypes activate done',vm.rankTypes);
+                    changeRanktype();
+/*                    getRanks().then(function() {
+                        $log.debug('getranks activate done',vm.ranks);
+                     },function(error) {
+                         return ($q.reject(error));
+                     });
+    */                 
+                 },function(error) {
+                     return ($q.reject(error));
+                 })
+                ])
+                .then(function() {
+                    $log.debug(' activate done');
+                    setgridOptions();
+                    vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+            });
+                 
              },function(error) {
                  return ($q.reject(error));
              });
@@ -133,11 +185,16 @@
         function updateClass(rowEntity,updatetype) {
             var updpath = "../v1/class";
 
+           var vlu={};
+//            vlu.rankForNextClass = Util.getByValue(vm.thisranks, rowEntity.rankForNextClass, 'value', 'label');
+//            vlu.ranklistForNextClass = Util.getByValue(vm.rankTypes, rowEntity.ranklistForNextClass, 'id', 'value');
+
             var thedata = {
                 id: rowEntity.id,
                 class: rowEntity.class,
                 registrationType: rowEntity.registrationType,
                 nextClass: rowEntity.nextClass,
+                ranklistForNextClass: rowEntity.ranklistForNextClass,
                 rankForNextClass: rowEntity.rankForNextClass,
                 ageForNextClass: rowEntity.ageForNextClass,
                 sort: rowEntity.sort,
@@ -152,15 +209,16 @@
                     vm.thisClass = data;
                     $log.debug(vm.thisClass);
                     $log.debug(vm.thisClass.message);
-                    vm.message = vm.thisClass.message;
+                    vm.message = vm.thisClass.message  ;
                     if ((typeof vm.thisClass === 'undefined' || vm.thisClass.error === true)  
                             && typeof data !== 'undefined') {  
-                        Notification.error({message: vm.message, delay: 5000});
+                        Notification.error({message: vm.message + 
+                            typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : "", delay: 5000});
                         $q.reject(data);
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
-                    if (updatetype === 'Add') {
+//                    if (updatetype === 'Add') {
                         getClass().then
                             (function(zdata) {
                              $log.debug('getClass returned', zdata);
@@ -173,7 +231,7 @@
                                 return ($q.reject(error));
                             });
                         
-                    }
+ //                   }
                     
                     return vm.thisClass;
                 }).catch(function(e) {
@@ -195,7 +253,7 @@
 
                         vm.gridOptions.data = data.Classlist; 
                     vm.Class.sort = parseInt(Util.maxObjArr(data.Classlist,'sort'),10) + 1;
-                    
+
                 }, function(error) {
                     $log.debug('Caught an error getClasses:', error); 
                     vm.Classlist = [];
@@ -206,16 +264,48 @@
                 }
                 );
         }
+        
+        function changeRanktype() {
+            vm.Class.registrationTypeVlu = Util.getByValue(vm.rankTypes, vm.Class.registrationType, 'id', 'value');
+//            getRanks();
+            getRanks().then(function() {
+                $log.debug('getranks activate done',vm.ranks);
+                vm.gridApi.grid.columns[1].filters[0].term = String(vm.Class.registrationTypeVlu);
+    //            vm.gridApi.grid.columns[1].filters[0].term = parseInt(vm.Class.registrationType,10);
+                vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+             },function(error) {
+                 return ($q.reject(error));
+             });
+            
+
+        }
+        function changeRanklisttype() {
+//            vm.Class.registrationTypeVlu = Util.getByValue(vm.rankTypes, vm.Class.registrationType, 'id', 'value');
+//            getRanks();
+//            vm.gridApi.grid.columns[1].filters[0].term = String(vm.Class.registrationTypeVlu);
+//            vm.gridApi.grid.columns[1].filters[0].term = parseInt(vm.Class.registrationType,10);
+//            vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+        }
+        
         function getrankTypes() {
             $log.debug('getrankTypes entered');
             var path='../v1/ranktypes';
-
             return ClassServices.getRankTypes(path).then(function(data){
                     $log.debug('getrankTypes returned data');
                     $log.debug(data);
                     
                     vm.rankTypes = data.RankTypelist; 
-                    vm.Class.registrationType=vm.rankTypes[0].ranktype;
+                    $log.debug(data.message);
+                    vm.message = data.message;
+                    if ((typeof vm.rankTypes === 'undefined' || data.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        vm.Class.registrationType = String(vm.rankTypes[0].id);
+                        vm.Class.registrationTypeVlu = String(vm.rankTypes[0].value);
+                    }
                     return vm.rankTypes;
                 }, function(error) {
                     $log.debug('Caught an error getrankTypes:', error); 
@@ -227,7 +317,93 @@
                 }
                 );
         }
+        function getRanks(mode) {
+            $log.debug('getranks entered',vm.Class.registrationTypeVlu);
+            var path;
+            if (mode === "All") {
+                vm.Class.registrationTypeVlu = 'AdultKarate';
+            }    
+                path = encodeURI('../v1/ranks?ranktype=' + vm.Class.registrationTypeVlu);
+            return getRanksquery(path).then(function(data) {
+                    vm.ranks = data;
+                    vm.Class.rankForNextClass = String(vm.ranks[0].value);
+                    vm.Class.ranklistForNextClass = 
+                        typeof vm.Class.registrationType !== undefined ? vm.Class.registrationType : '';
+                },function(error) {
+                    $log.debug('Caught an error getranks:', error); 
+                    vm.ranks = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }
+            );
 
+        }
+        function getRanksquery(path) {
+            $log.debug('getranksquery entered',path);
+
+            return ClassServices.getRanks(path).then(function(data){
+                    $log.debug('getranks returned data');
+                    $log.debug(data);
+                    
+                    var ranks = data.Ranklist; 
+                    $log.debug(data.message);
+                    vm.message = ranks.message;
+                    if ((typeof ranks === 'undefined' || data.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    }
+                    return ranks;
+                }, function(error) {
+                    $log.debug('Caught an error getranks:', error); 
+                    //ranks = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                    
+                }
+                );
+        }
+        
+        function getRankss(mode) {
+            $log.debug('getranks entered',vm.Class.registrationTypeVlu);
+            var path;
+            if (mode === "All") {
+                path = encodeURI('../v1/ranks?ranktype=AdultKarate' );
+            } else {
+                path = encodeURI('../v1/ranks?ranktype=' + vm.Class.registrationTypeVlu);
+            }    
+
+            return ClassServices.getRanks(path).then(function(data){
+                    $log.debug('getranks returned data');
+                    $log.debug(data);
+                    
+                    vm.ranks = data.Ranklist; 
+                    $log.debug(data.message);
+                    vm.message = vm.ranks.message;
+                    if ((typeof vm.ranks === 'undefined' || data.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        vm.Class.rankForNextClass = String(data.Ranklist[0].value);
+                    }
+                    return vm.ranks;
+                }, function(error) {
+                    $log.debug('Caught an error getranks:', error); 
+                    vm.ranks = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                    
+                }
+                );
+        }
+
+        function geturl(input) {
+            return vm.imgsrc + input;
+        }
         function setgridOptions() {
              
             vm.gridOptions = {
@@ -255,9 +431,35 @@
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
                     cellFilter: 'iddropdown:this',
-                    editDropdownIdLabel: 'ranktype',
-                    editDropdownValueLabel: 'ranktype',
-                    editDropdownOptionsArray: vm.rankTypes
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.rankTypes,
+//                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdown></div></div>', 
+                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filter: { 
+//                        term: 'AdultKarate',
+//                        term: vm.Class.registrationTypeVlu,
+//                        options: vm.rankTypes        
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: vm.rankTypes
+                    }
+                }, 
+                {
+                    field: 'ranklistForNextClass',
+                    displayName: 'Type of Next Class',
+                    headerCellClass: Util.highlightFilteredHeader,
+                    enableCellEdit: true,
+                    enableFiltering: false,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellFilter: 'iddropdown:this',
+                    editDropdownIdLabel: 'value',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.rankTypes,
+              //      filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                //    filter: { 
+                //        type: uiGridConstants.filter.SELECT,
+                //        selectOptions: vm.rankTypes
+                //    }
                 }, 
                 {
                     field: 'nextClass',
@@ -274,14 +476,31 @@
                 {
                     field: 'rankForNextClass',
                     displayName: 'Rank for Next Class',
-                    headerCellClass: Util.highlightFilteredHeader,
+//                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
-                    enableFiltering: true,
+                    enableFiltering: false,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    cellFilter: 'iddropdown:this',
-                    editDropdownIdLabel: 'ranktype',
-                    editDropdownValueLabel: 'ranktype',
-                    editDropdownOptionsArray: vm.rankTypes
+//                    cellFilter: 'iddropdownlocal:this',
+                    editDropdownIdLabel: 'label',
+                    editDropdownValueLabel: 'label',
+//                    editDropdownOptionsArray: vm.ranks,
+    //                filterHeaderTemplate: 'templates/states/filtercoltemplatevlu2.html',
+//                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdown></div></div>', 
+//                    filter: { 
+//                        term: vm.Class.rankForNextClass,
+//                        type: uiGridConstants.filter.SELECT,
+//                        selectOptions: vm.ranks
+//                    },
+                    editDropdownOptionsFunction: function(rowEntity, colDef) {
+                        var path;
+                      //  var vlu = Util.getByValue(vm.rankTypes, rowEntity.ranklistForNextClass, 'id', 'value');
+                        
+                        path = encodeURI('../v1/ranks?ranktype=' + rowEntity.ranklistForNextClass);
+                        return getRanksquery(path).then(function(data) {
+                            vm.thisranks = data;
+                            return data;
+                        });
+                    }
                 }, 
                 {
                     field: 'sort',
@@ -290,6 +509,13 @@
                     enableCellEdit: true
                 }, 
                 {
+                    field: 'pictureurl',
+                    minWidth: 200,
+                    displayName: 'Picture',
+                    headerCellClass: Util.highlightFilteredHeader,
+                    enableCellEdit: false,
+                    cellTemplate: '<zoom ng-src="{{grid.appScope.geturl(grid.getCellValue(row, col))}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
+                }, {
                     field: 'id',
                     displayName: 'Action',
                     enableFiltering: false,
@@ -315,9 +541,13 @@
 
                         gridApi.edit.on.afterCellEdit($scope, 
                             function(rowEntity, colDef, newValue, oldValue) {
-                       if (newValue != oldValue) {
-                            updateClass(rowEntity, 'Update');       
-                        }
+                               if (newValue != oldValue) {
+                                    if (colDef.name === "ranklistForNextClass") {
+                                        //clear the rankForNextClass when the type is changed
+                                        rowEntity.rankForNextClass = "NULL";
+                                    }
+                                    updateClass(rowEntity, 'Update');       
+                                }
                     });
 
                     }
