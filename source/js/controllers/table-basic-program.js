@@ -24,6 +24,7 @@
 
         var vm = this;
         var $ = angular.element;
+        vm.isCollapsed = true;
         
         vm.getProgram = getProgram;
         vm.removeProgram = removeProgram;

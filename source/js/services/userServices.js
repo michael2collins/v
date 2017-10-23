@@ -205,6 +205,7 @@
                     userdetails.userid = data.userid;
                     userdetails.email = data.email;
                     userdetails.school = data.school;
+                    userdetails.pictureurl = data.pictureurl;
                         return userdetails;
                 },
                 function (error) {

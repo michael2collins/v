@@ -24,7 +24,9 @@
             $log, $http, $location, $timeout, ClassServices, StudentServices, PaymentServices, $q, Notification, _) {
         /* jshint validthis: true */
         var vmpayment = this;
-
+        vmpayment.isCollapsed = true;
+        vmpayment.isCollapsed2 = true;
+        
         vmpayment.getFamily = getFamily;
         vmpayment.getListPrices = getListPrices;
         vmpayment.getPaymentplan = getPaymentplan;
@@ -83,8 +85,8 @@
         
         function payerSet(input) {
             $log.debug('payerSet entered',input);
-            vmpayment.head.payerid = vmpayment.studentpayer.payerid;
-            vmpayment.headcoverage.payerid = vmpayment.studentpayer.payerid;
+            vmpayment.head.payerid = vmpayment.studentpayer;
+            vmpayment.headcoverage.payerid = vmpayment.studentpayer;
             $q.all([
                   getFamily().then(function(){
                       $log.debug('getPayerList ready');
@@ -165,6 +167,8 @@
                     $log.debug('getPayerList returned data');
                     $log.debug(data);
                     vmpayment.payerlist = data.payerlist; 
+                    vmpayment.studentpayer = parseInt(data.payerlist[0].payerid,10);
+                    payerSet();
                     if ((typeof data.payerlist === 'undefined' || data.payerlist.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.payerlist = [];
                         Notification.error({message: data, delay: 5000});
@@ -188,7 +192,7 @@
         }
     
         function getFamily() {
-            var familypath = '../v1/family/' + vmpayment.studentpayer.payerid;
+            var familypath = '../v1/family/' + vmpayment.studentpayer;
             $log.debug('getPayerList entered',familypath);
              return ClassServices.getFamily(familypath).then(function(data){
                     $log.debug('getFamily returned data');
@@ -217,7 +221,7 @@
         }
     
         function getListPrices() {
-            var path = '../v1/listprices/' + vmpayment.studentpayer.payerid;
+            var path = '../v1/listprices/' + vmpayment.studentpayer;
             $log.debug('getListPrices entered',path);
              return ClassServices.getListPrices(path).then(function(data){
                     $log.debug('getListPrices returned data');
@@ -246,7 +250,7 @@
         }
     
         function getPaymentplan() {
-            var path = '../v1/paymentplan/' + vmpayment.studentpayer.payerid;
+            var path = '../v1/paymentplan/' + vmpayment.studentpayer;
             $log.debug('getPaymentplan entered',path);
              return ClassServices.getPaymentplan(path).then(function(data){
                     $log.debug('getPaymentplan returned data');
@@ -401,7 +405,7 @@
         }        
 
         function getPaymentpays() {
-            var path = '../v1/paymentpays/' + vmpayment.studentpayer.payerid;
+            var path = '../v1/paymentpays/' + vmpayment.studentpayer;
             $log.debug('getPaymentpays entered',path);
              return ClassServices.getPaymentpays(path).then(function(data){
                     $log.debug('getPaymentpays returned data');
@@ -435,7 +439,7 @@
     
         }
         function getPayerpayments() {
-            var path = '../v1/payerpayments/' + vmpayment.studentpayer.payerid;
+            var path = '../v1/payerpayments/' + vmpayment.studentpayer;
             $log.debug('getPayerpayments entered',path);
              return ClassServices.getPaymentpays(path).then(function(data){
                     $log.debug('getPayerpayments returned data');
@@ -471,7 +475,7 @@
             $log.debug('removePayer entered',vmpayment.studentpayer);
             var path = "../v1/payer";
             var thedata = {
-                payerid: vmpayment.studentpayer.payerid
+                payerid: vmpayment.studentpayer
             };
             return ClassServices.removePayer(path, thedata)
                 .then(function(data){

@@ -266,7 +266,7 @@ hr {
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.05), 0 1px 0 rgba(0, 0, 0, 0.05);
 }
 #topbar .topbar-main .navbar-top-links.navbar-left > li > a {
-  padding: 15px 20px 12px;
+  padding: 2px 2px 2px;
 }
 #topbar .topbar-main .navbar-top-links li {
   display: inline-block;

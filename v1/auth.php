@@ -432,6 +432,7 @@ $app->get('/userdetails', 'authenticate', function() use ($app) {
     $response['email'] = $user['email'];
     $response['userid'] = $user['userid'];
     $response['school'] = $user['school'];
+    $response['pictureurl'] = $user['pictureurl'];
     echoRespnse(200, $response);
 
 });

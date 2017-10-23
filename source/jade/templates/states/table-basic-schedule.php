@@ -11,6 +11,15 @@
             <div class="panel panel-blue">
                 <div class="panel-heading">Schedule</div>
                 <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-11 mbs">
+                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container" >
             <div class="col-md-12" style="height: 110px;">
                 <form action="" novalidate name="editschedule2" class="form-horizontal">
                             <div class="col-md-3">
@@ -162,8 +171,12 @@
                                 ?>
                             </div>
                 </form>
-            </div>
-                
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="panel-footer">
 

@@ -55,8 +55,10 @@
             getRankTypes: getRankTypes,
             getRanks: getRanks,
             updateClass: updateClass,
-            removeClass: removeClass
-            
+            removeClass: removeClass,
+            getBasics: getBasics,
+            updateBasic: updateBasic,
+            removeBasic: removeBasic
         };
         return service;
 
@@ -101,6 +103,37 @@
         }        
         function updateClass(path, thedata ) {
                     $log.debug('updateClass data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function getBasics(path) {
+            $log.debug('getBasics service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeBasic( thedata, path ) {
+            $log.debug('removeBasic data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateBasic(path, thedata ) {
+                    $log.debug('updateBasic data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,

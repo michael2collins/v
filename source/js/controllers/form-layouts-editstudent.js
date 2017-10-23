@@ -1,4 +1,4 @@
-(function () {
+(function(window,angular) {
     'use strict';
 
     angular
@@ -20,6 +20,7 @@
         /* jshint validthis: true */
         var vmstudent = this;
         var $ = angular.element;
+        vmstudent.isCollapsed = true;
 
         vmstudent.getStudent = getStudent;
         vmstudent.getAllZips = getAllZips;
@@ -87,6 +88,14 @@
         getStudentLists();
         getRankList();
         activate();
+
+       $.fn.Data.Portlet('form-layouts-editstudent.js');
+    
+        $('.portlet-scroll').slimScroll({
+            "height": "250",
+            "alwaysVisible": true
+        });
+
 
         function dateopen($event) {
             vmstudent.status.opened = true;
@@ -409,4 +418,4 @@
 
     }
 
-})();
+})(window,window.angular);

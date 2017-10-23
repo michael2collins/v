@@ -19,7 +19,11 @@
     
         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" uib-dropdown-toggle>
         
-        <img src="images/avatar/MarkCropped.jpg" alt="" class="img-responsive img-circle"/>
+<!--        <img src="images/avatar/MarkCropped.jpg" alt="" class="img-responsive img-circle"/> -->
+        <span class="img-responsive img-circle" ng-switch on="vm.userdta.pictureurl">
+             <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
+             <img ng-switch-default   ng-src="{{vm.userdta.pictureurl}}"/>
+          </span>
         
     <span>&nbsp;{{vm.userdta.username}}&nbsp;</span><span class="caret"></span>
         

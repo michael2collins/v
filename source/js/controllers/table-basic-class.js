@@ -52,6 +52,7 @@
 
         var vm = this;
         var $ = angular.element;
+        vm.isCollapsed = true;
         
         vm.getClass = getClass;
         vm.removeClass = removeClass;
@@ -94,20 +95,14 @@
             getClass().then(function() {
                 $log.debug('getClass activate done');
                 $q.all([
-                getRanks('All').then(function() {
+  /*              getRanks('All').then(function() {
                     $log.debug('getranks activate done',vm.ranks);
                  },function(error) {
                      return ($q.reject(error));
                  }),
-                getrankTypes().then(function() {
+    */            getrankTypes().then(function() {
                     $log.debug('getrankTypes activate done',vm.rankTypes);
                     changeRanktype();
-/*                    getRanks().then(function() {
-                        $log.debug('getranks activate done',vm.ranks);
-                     },function(error) {
-                         return ($q.reject(error));
-                     });
-    */                 
                  },function(error) {
                      return ($q.reject(error));
                  })

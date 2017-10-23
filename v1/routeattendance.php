@@ -1004,6 +1004,144 @@ $app->delete('/class','authenticate', function() use ($app) {
     }
 });
 
+$app->get('/basic', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getBasicAll();
+    $response["error"] = false;
+    $response["Basiclist"] = array();
+// listtype, listkey, listvalue, listorder 
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["listtype"] = (empty($slist["listtype"]) ? "NULL" : $slist["listtype"]);
+            $tmp["listkey"] = (empty($slist["listkey"]) ? "NULL" : $slist["listkey"]);
+            $tmp["listvalue"] = (empty($slist["listvalue"]) ? "NULL" : $slist["listvalue"]);
+            $tmp["listorder"] = (empty($slist["listorder"]) ? "NULL" : $slist["listorder"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["listtype"] = "NULL";
+            $tmp["listkey"] = "NULL";
+            $tmp["listvalue"] = "NULL";
+            $tmp["listorder"] = "NULL";
+        }
+        array_push($response["Basiclist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Basiclists";
+        error_log( print_R("Basiclists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/basic','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Basic post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+// listtype, listkey, listvalue, listorder 
+
+    $id          = (isset($dataJsonDecode->thedata->id)         ? $dataJsonDecode->thedata->id : "");
+    $listtype  = (isset($dataJsonDecode->thedata->listtype)     ? $dataJsonDecode->thedata->listtype : "");
+    $listkey  = (isset($dataJsonDecode->thedata->listkey)       ? $dataJsonDecode->thedata->listkey : "");
+    $listvalue  = (isset($dataJsonDecode->thedata->listvalue)   ? $dataJsonDecode->thedata->listvalue : "");
+    $listorder = (isset($dataJsonDecode->thedata->listorder)    ? $dataJsonDecode->thedata->listorder : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+    // updating task
+    $res_id = $db->updateBasic(
+        $id, $listtype, $listkey, $listvalue, $listorder 
+                                     );
+    error_log( print_R($res_id, TRUE ), 3, LOG);
+    error_log( print_R("\n", TRUE ), 3, LOG);
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "Basic created successfully";
+            $response["res_id"] = $res_id;
+            error_log( print_R("Basic created: $res_id\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Basic updated successfully";
+            error_log( print_R("Basic already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
+    } else {
+        error_log( print_R("after Basic result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create Basic. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/basic','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Basic before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Basicgood=0;
+    $Basicbad=0;
+
+    $db = new AttendanceDbHandler();
+
+    $response["error"] = false;
+
+    // remove Basic.  too hard to check FK
+    $Basic = $db->removeBasic(
+        $ID
+                                );
+
+    if ($Basic > 0) {
+        error_log( print_R("Basic removed: $Basic\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "Basic removed successfully";
+        $Basicgood = 1;
+        $response["Basic"] = $Basicgood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete Basic result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $Basic, TRUE), 3, LOG);
+        $Basicbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove Basic. Please try again";
+        echoRespnse(400, $response);
+    }
+});
+
 
 $app->post('/updateattendance','authenticate',  function() use($app) {
     $response = array();

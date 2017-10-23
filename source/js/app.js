@@ -120,10 +120,10 @@
                 return;
               }
               // Do something with the granted permission.
-                var notification = new $window.Notification('Notification title', {
-                  icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-                  body: "Hey there! You've been notified!",
-                });
+                //var notification = new $window.Notification('Notification title', {
+                //  icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+                //  body: "Hey there! You've been notified!",
+                //});
             });        
         }
     }
@@ -243,6 +243,9 @@
             })
             .when('/table-basic-program', {
                 templateUrl: 'templates/states/table-basic-program.php'
+            })
+            .when('/table-basic-basic', {
+                templateUrl: 'templates/states/table-basic-basic.php'
             })
             .when('/table-basic-class', {
                 templateUrl: 'templates/states/table-basic-class.php'

@@ -23,7 +23,8 @@
         $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller) {
         /* jshint validthis: true */
         var vmclass = this;
-
+        vmclass.isCollapsed=true;
+        
         vmclass.getStudentClass = getStudentClass;
         vmclass.updateStudentClass = updateStudentClass;
         vmclass.changeStudentStatus = changeStudentStatus;

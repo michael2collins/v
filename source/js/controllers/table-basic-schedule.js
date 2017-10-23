@@ -21,8 +21,10 @@
     function ScheduleTableBasicController(
         $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment, iddropdownFilter, Util) {
         /* jshint validthis: true */
+        var $ = angular.element;
 
         var vm = this;
+        vm.isCollapsed = true;
         
         vm.getSchedule = getSchedule;
         vm.addSchedule = addSchedule;
@@ -61,6 +63,14 @@
         //having it here sets the options, but the dropdown doesn't map
         setgridOptions();
         activate();
+
+       $.fn.Data.Portlet('table-basic-schedule.js');
+    
+        $('.portlet-scroll').slimScroll({
+            "height": "250",
+            "alwaysVisible": true
+        });
+
 
         function activate() {
             getSchedule().then(function() {
@@ -338,8 +348,8 @@
                     cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
-                { field: 'classid'
-                },
+//                { field: 'classid'
+//                },
                 {
                     field: 'classid',
                     displayName: 'Class',

@@ -700,7 +700,7 @@ class AttendanceDbHandler {
         error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $sql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield);
         error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -995,7 +995,7 @@ class AttendanceDbHandler {
         error_log( print_R("Class isClassExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $sql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield);
         error_log( print_R("isClassExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -1042,20 +1042,27 @@ class AttendanceDbHandler {
             for ($i = 0; $i < $numargs; $i++) {
                 error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
         }
-
-        $cntsql = "select count(*) as cnt, 'payer for class' as type from nclasspays where pgmseq = ? group by 2
+        //attendance classID, classrank classid (school), ncalendar classname?,  nclass nextclass, nclasspays classseq, nclasspgm classid
+        //studentregistration classid, testcandidates classwas
+        $cntsql = "select count(*) as cnt, 'payer for class' as type from nclasspays where classseq = ? group by 2
             union
-            select count(*) as cnt, 'category for class and program' as type from nclasspgm p where pgmid = ? and p.school = ? group by 2
+            select count(*) as cnt, 'category for class and program' as type from nclasspgm p where classid = ? and p.school = ? group by 2
             union 
-            select count(*) as cnt, 'students registered for class' as type from studentregistration where pgmid = ? group by 2
+            select count(*) as cnt, 'students registered for class' as type from studentregistration where classid = ? group by 2
             union
-            select count(*) as cnt, 'test candidates for class' as type from testcandidates where pgmwas = ? group by 2";
+            select count(*) as cnt, 'test candidates for class' as type from testcandidates where classwas = ? group by 2
+            union
+            select count(*) as cnt, 'attendance for class' as type from attendance where classID = ? group by 2
+            union
+            select count(*) as cnt, 'ranks for class' as type from classrank cr where cr.classid = ? and cr.school = ? group by 2
+            union
+            select count(*) as cnt, 'next class for class' as type from nclass where nextclass = ? group by 2";
 
         error_log( print_R("Class isClassFKExists sql: $cntsql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("sssss",
-                         $id, $id, $school, $id, $id
+                $stmt->bind_param("sssssssss",
+                         $id, $id, $school, $id, $id, $id, $id, $school, $id
                                      );
 
             if ($stmt->execute()) {
@@ -1241,7 +1248,7 @@ $errormessage=array();
         error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $sql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield);
         error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -1562,6 +1569,241 @@ $errormessage=array();
         }
 
     }
+
+    private function isBasicExists(
+        $listtype, $listkey, $id
+        ) {
+
+        error_log( print_R("isBasicExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Basiccount from studentlist ";
+        $cntsql .= " where id = ? ";
+
+        $cnt2sql = "select count(*) as Basiccount from studentlist ";
+        $cnt2sql .= " where listtype = ? and listkey = ?";
+
+        error_log( print_R("Basic isBasicExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield);
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isBasicExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("s",
+                         $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isBasicExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            if ($row) {
+                return $row;
+            } else {
+                if ($stmt = $this->conn->prepare($cnt2sql)) {
+                    $stmt->bind_param("ss",
+                             $listtype, $listkey
+                                         );
+        
+                    $stmt->execute();
+                    if (! $stmt->execute() ){
+                        $stmt->close();
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -1;
+                    }
+        
+                    $row = null;
+                    $stmt->bind_result($row);
+                    while ($stmt->fetch()) { 
+                        error_log( print_R("isBasicExists: " . $row . "\n", TRUE), 3, LOG);
+                    }
+        
+                    $stmt->close();
+                    return $row;
+                    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+                }
+                
+            }
+
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+    public function updateBasic( 
+        $id, $listtype, $listkey, $listvalue, $listorder 
+        ) {
+        $num_affected_rows = 0;
+        error_log( print_R("Basic update entered", TRUE), 3, LOG);
+
+        global $school;
+$errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO studentlist( 
+             listtype, listkey, listvalue, listorder, school ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?, ?) ";
+
+        
+        if ($this->isBasicExists(
+            $listtype, $listkey, $id
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("sssss",
+        $listtype, $listkey, $listvalue, $listorder, $school
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                $errormessage["success"] = $new_id;
+                return $errormessage;
+//                        return $new_id;
+                    } else {
+                        // Failed to create 
+                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
+                    }
+
+                } else {
+                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE studentlist SET 
+                 listtype = ?, 
+                 listkey = ?, 
+                 listvalue = ?, 
+                 listorder = ?, 
+                 school = ?
+            WHERE id = ? ";
+
+            error_log( print_R("Basic update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("ssssss",
+        $listtype, $listkey, $listvalue, $listorder, $school, $id
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+//                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("Basic update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
+            }
+        }
+    }
+    public function removeBasic($id
+    ) {
+
+        error_log( print_R("removeBasic entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from studentlist  where id = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeBasic sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    public function getBasicAll() {
+        
+        global $school;
+
+        $sql = "SELECT *
+        FROM studentlist 
+        where listtype in (
+'beltsize','ClassStatus','Classtype','ContactType','gisize','Instructor Title','PaymentType','PaymentType','ranktypelist','shirtsize'
+)        ";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by listtype, listorder";
+        
+        error_log( print_R("getBasicAll sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $Basiclist = $stmt->get_result();
+                $stmt->close();
+                return $Basiclist;
+            } else {
+                error_log( print_R("getBasicAll  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getBasicAll  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
     
 }
 ?>
