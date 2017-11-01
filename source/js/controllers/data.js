@@ -16,6 +16,7 @@ var jQuery;
         '/table-basic-attendance': {title:'Attendance', 'breadcrumb':['Students', 'Attendance']},
         '/table-basic-schedule': {title:'Class Schedule', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-program': {title:'Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
+        '/table-basic-classpgm': {title:'Class Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Program']},
         '/table-basic-class': {title:'Class Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-eventcreation': {title:'Event Creation', 'breadcrumb':['Students', 'Event Creation']},
         '/table-basic-testcandidates': {title:'Test Creation', 'breadcrumb':['Testing', 'Test Creation']},

@@ -244,8 +244,14 @@
             .when('/table-basic-program', {
                 templateUrl: 'templates/states/table-basic-program.php'
             })
+            .when('/table-basic-classpgm', {
+                templateUrl: 'templates/states/table-basic-classpgm.php'
+            })
             .when('/table-basic-basic', {
                 templateUrl: 'templates/states/table-basic-basic.php'
+            })
+            .when('/table-basic-rank', {
+                templateUrl: 'templates/states/table-basic-ranks.php'
             })
             .when('/table-basic-class', {
                 templateUrl: 'templates/states/table-basic-class.php'

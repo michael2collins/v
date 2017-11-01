@@ -513,10 +513,8 @@ $app->get('/rankpartial', 'authenticate', function() use ($app) {
             $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
             $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
             $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
-            $tmp["childAttendPromoteTarget"] = $slist["childAttendPromoteTarget"] . " " . $slist["childAttendPromoteTarget"];
-            $tmp["childDurationPromoteTarget"] = $slist["childDurationPromoteTarget"] . " " . $slist["childDurationPromoteTarget"];
-            $tmp["adultAttendPromoteTarget"] = $slist["adultAttendPromoteTarget"] . " " . $slist["adultAttendPromoteTarget"];
-            $tmp["adultDurationPromoteTarget"] = $slist["adultDurationPromoteTarget"] . " " . $slist["adultDurationPromoteTarget"];
+            $tmp["AttendPromoteTarget"] = $slist["AttendPromoteTarget"] . " " . $slist["AttendPromoteTarget"];
+            $tmp["DurationPromoteTarget"] = $slist["DurationPromoteTarget"] . " " . $slist["DurationPromoteTarget"];
         array_push($response["ranklist"], $tmp);
     }
         //send no errors
@@ -553,10 +551,8 @@ $app->get('/rank', 'authenticate', function() use ($app) {
             $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
             $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
             $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
-            $tmp["childAttendPromoteTarget"] = $slist["childAttendPromoteTarget"] . " " . $slist["childAttendPromoteTarget"];
-            $tmp["childDurationPromoteTarget"] = $slist["childDurationPromoteTarget"] . " " . $slist["childDurationPromoteTarget"];
-            $tmp["adultAttendPromoteTarget"] = $slist["adultAttendPromoteTarget"] . " " . $slist["adultAttendPromoteTarget"];
-            $tmp["adultDurationPromoteTarget"] = $slist["adultDurationPromoteTarget"] . " " . $slist["adultDurationPromoteTarget"];
+            $tmp["AttendPromoteTarget"] = $slist["AttendPromoteTarget"] . " " . $slist["AttendPromoteTarget"];
+            $tmp["DurationPromoteTarget"] = $slist["DurationPromoteTarget"] . " " . $slist["DurationPromoteTarget"];
         array_push($response["ranklist"], $tmp);
     }
         //send no errors

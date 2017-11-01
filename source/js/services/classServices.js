@@ -58,7 +58,14 @@
             removeClass: removeClass,
             getBasics: getBasics,
             updateBasic: updateBasic,
-            removeBasic: removeBasic
+            removeBasic: removeBasic,
+            getAllRanks: getAllRanks,
+            getRankGroups: getRankGroups,
+            updateRank: updateRank,
+            removeRank: removeRank,
+            getClassPgms: getClassPgms,
+            updateClassPgm: updateClassPgm,
+            removeClassPgm: removeClassPgm
         };
         return service;
 
@@ -144,6 +151,45 @@
                     return( request.then( handleSuccess, handleError ) );
         }        
 
+        function getAllRanks(path) {
+            $log.debug('getRanks service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeRank( thedata, path ) {
+            $log.debug('removeRank data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateRank(path, thedata ) {
+                    $log.debug('updateRank data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        function getRankGroups(path) {
+            $log.debug('getRankGroups service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+
         function getClasses(path) {
             $log.debug('getClasses service entered', path);
             var request = $http({
@@ -180,6 +226,36 @@
             return( request.then( handleSuccess, handleError ) );
         }
 
+        function getClassPgms(path) {
+            $log.debug('getClassPgms service entered', path);
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeClassPgm( thedata, path ) {
+            $log.debug('removeClassPgm data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateClassPgm(path, thedata ) {
+                    $log.debug('updateClassPgm data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
 
      function setapikey(key) {
 //        $log.debug('ClassServices setapikey', key);

@@ -1228,59 +1228,6 @@ $errormessage=array();
 
     }
 
-
-    private function isProgramExists(
-        $class, $id
-        ) {
-
-        error_log( print_R("isProgramExists entered", TRUE), 3, LOG);
-
-        $numargs = func_num_args();
-        $arg_list = func_get_args();
-            for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
-        }
-
-        $cntsql = "select count(*) as Programcount from nclasslist ";
-        $cntsql .= " where class = ? ";
-        $cntsql .= " and id = ? ";
-
-        error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
-
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
-        error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
-        
-        if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("ss",
-                        $class, $id
-                                     );
-
-            $stmt->execute();
-            if (! $stmt->execute() ){
-                $stmt->close();
-                printf("Errormessage: %s\n", $this->conn->error);
-                    return -1;
-                
-            }
-
-            $row = null;
-            $stmt->bind_result($row);
-            while ($stmt->fetch()) { 
-                error_log( print_R("isProgramExists: " . $row . "\n", TRUE), 3, LOG);
-            }
-
-            $stmt->close();
-
-            return $row;
-
-        } else {
-            printf("Errormessage: %s\n", $this->conn->error);
-                return -1;
-        }
-
-    }
-
     public function getStudentRanktype() {
         
         $sql = "select listvalue as value,listorder as id from studentlist s where listtype = 'ranktypelist' ";
@@ -1335,6 +1282,58 @@ $errormessage=array();
             error_log( print_R("getRanks list sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
+        }
+
+    }
+
+    private function isProgramExists(
+        $class, $id
+        ) {
+
+        error_log( print_R("isProgramExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Programcount from nclasslist ";
+        $cntsql .= " where class = ? ";
+        $cntsql .= " and id = ? ";
+
+        error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("ss",
+                        $class, $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isProgramExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            return $row;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
         }
 
     }
@@ -1537,6 +1536,71 @@ $errormessage=array();
         }
 
     }
+    public function getPrograms() {
+        
+        global $school;
+
+        $sql = "SELECT          
+            id, class as value
+        FROM nclasslist";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by sortKey";
+        
+        error_log( print_R("getPrograms sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $Programlist = $stmt->get_result();
+                $stmt->close();
+                return $Programlist;
+            } else {
+                error_log( print_R("getPrograms  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getPrograms  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+    public function getClassPrograms() {
+        
+        global $school;
+
+        $sql = "SELECT          
+            id, classid, pgmid, classcat,pgmcat,agecat
+        FROM nclasspgm";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by pgmid";
+        
+        error_log( print_R("getClassPgms sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $ClassPgmList = $stmt->get_result();
+                $stmt->close();
+                return $ClassPgmList;
+            } else {
+                error_log( print_R("getClassPgms  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClassPgms  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
 
     public function getClassTypes() {
         
@@ -1798,6 +1862,326 @@ $errormessage=array();
 
         } else {
             error_log( print_R("getBasicAll  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    private function isRankExists(
+        $ranklist, $ranktype
+        ) {
+
+        error_log( print_R("isRankExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Rankcount from ranklist ";
+        $cntsql .= " where ranklist = ? ";
+        $cntsql .= " and ranktype = ? ";
+
+        error_log( print_R("Rank isRankExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isRankExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("ss",
+                        $ranklist, $ranktype
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isRankExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            return $row;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+    private function isRankIDExists(
+        $id
+        ) {
+
+        error_log( print_R("isRankIDExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Rankcount from ranklist ";
+        $cntsql .= " where rankid = ? ";
+
+        error_log( print_R("Rank isRankIDExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isRankIDExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("s",
+                         $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isRankIDExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            return $row;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+    public function isRankFKExists(
+         $id
+        ) {
+
+        error_log( print_R("isRankFKExists entered", TRUE), 3, LOG);
+
+        global $school;
+        
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+//todo
+        $cntsql = "select count(*) as cnt, 'payer for class' as type from nclasspays where pgmseq = ? group by 2
+            union
+            select count(*) as cnt, 'category for class and program' as type from nclasspgm p where pgmid = ? and p.school = ? group by 2
+            union 
+            select count(*) as cnt, 'students registered for class' as type from studentregistration where pgmid = ? group by 2
+            union
+            select count(*) as cnt, 'test candidates for class' as type from testcandidates where pgmwas = ? group by 2";
+
+        error_log( print_R("Rank isRankFKExists sql: $cntsql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("sssss",
+                         $id, $id, $school, $id, $id
+                                     );
+
+            if ($stmt->execute()) {
+                $results = $stmt->get_result();
+                $stmt->close();
+                return $results;
+            } else {
+                error_log( print_R("isRankFKExists  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+    public function updateRank( $rankid, 
+        $ranktype, $ranklist, $sortkey, $rankGroup, $alphasortkey, $AttendPromoteTarget, $DurationPromoteTarget, $nextsortkey
+                                ) {
+        $num_affected_rows = 0;
+        error_log( print_R("Rank update entered", TRUE), 3, LOG);
+
+        global $school;
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO ranklist( 
+            ranktype, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, nextsortkey, school ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?) ";
+
+        
+        if (($this->isRankExists($ranklist,$ranktype) == 0) || ($this->isRankIDExists($rankid) == 0)) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("sssssssss",
+        $ranktype, $ranklist, $sortkey, $rankGroup, $alphasortkey, $AttendPromoteTarget, $DurationPromoteTarget, $nextsortkey, $school
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_id;
+                    } else {
+                        // Failed to create 
+                        printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                    }
+
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+        } else {
+            // already existed in the db, update
+            $updsql = "UPDATE ranklist SET 
+            ranktype = ?, 
+            ranklist = ?, 
+            sortkey = ?, 
+            rankGroup = ?, 
+            alphasortkey = ?, 
+            AttendPromoteTarget = ?, 
+            DurationPromoteTarget = ?,
+            nextsortkey = ?,
+            school = ?
+            WHERE rankid = ? ";
+
+            error_log( print_R("Rank update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("ssssssssss",
+        $ranktype, $ranklist, $sortkey, $rankGroup, $alphasortkey, $AttendPromoteTarget, $DurationPromoteTarget, $nextsortkey, $school, $rankid
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("Rank update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+        }
+    }
+    public function removeRank($id
+    ) {
+
+        error_log( print_R("removeRank entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from ranklist  where rankid = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeRank sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    public function getRankAll() {
+        
+        global $school;
+
+        $sql = "SELECT 
+        ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, nextsortkey
+        FROM ranklist";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by alphasortkey";
+        
+        error_log( print_R("getRankAll sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $Ranklist = $stmt->get_result();
+                $stmt->close();
+                return $Ranklist;
+            } else {
+                error_log( print_R("getRankAll  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRankAll  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getRankGroups() {
+        
+        global $school;
+
+        $sql = "SELECT listvalue, listkey, listorder
+        FROM studentlist where listtype = 'rankgroup' ";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by listorder";
+        
+        error_log( print_R("getRankGroups sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $results = $stmt->get_result();
+                $stmt->close();
+                return $results;
+            } else {
+                error_log( print_R("getRankGroups  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRankGroups  sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }

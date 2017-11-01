@@ -1,8 +1,4 @@
 <?php
-
-
-
-
 $app->get('/studentregistration','authenticate',  function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -90,8 +86,6 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
 //        echoRespnse(200, $response);
     }
 });
-
-
 $app->get('/attendance', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -179,7 +173,6 @@ $app->get('/attendance', 'authenticate', function() use ($app) {
 //        echoRespnse(200, $response);
     }
 });
-
 $app->get('/attendancehistory', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -259,8 +252,6 @@ $app->get('/attendancehistory', 'authenticate', function() use ($app) {
 //        echoRespnse(200, $response);
     }
 });
-
-
 $app->get('/DOW', 'authenticate', function() {
 
     $response = array();
@@ -293,7 +284,6 @@ $app->get('/DOW', 'authenticate', function() {
         echoRespnse(404, $response);
     }
 });
-
 $app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
 
     $response = array();
@@ -421,6 +411,198 @@ $app->get('/classes', 'authenticate', function() {
         $response["message"] = "error in ClassLists";
         error_log( print_R("ClassLists bad\n ", TRUE), 3, LOG);
         echoRespnse(404, $response);
+    }
+});
+$app->get('/programs', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getPrograms();
+    $response["error"] = false;
+    $response["Programlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["value"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+        } else {
+            $tmp["value"] = "NULL";
+            $tmp["id"] = "NULL";
+        }
+        array_push($response["Programlist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Programlists";
+        error_log( print_R("Programlists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->get('/ClassPgm', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClassPrograms();
+    $response["error"] = false;
+    $response["ClassPgmList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["pgmid"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+            $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
+            $tmp["pgmcat"] = (empty($slist["pgmcat"]) ? "NULL" : $slist["pgmcat"]);
+            $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["pgmid"] = "NULL";
+            $tmp["classcat"] = "NULL";
+            $tmp["pgmcat"] = "NULL";
+            $tmp["agecat"] = "NULL";
+        }
+        array_push($response["ClassPgmList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in ClassPgmList";
+        error_log( print_R("ClassPgmList bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/ClassPgm','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Program post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
+    $classid  = (isset($dataJsonDecode->thedata->classid)       ? $dataJsonDecode->thedata->classid : "");
+    $pgmid  = (isset($dataJsonDecode->thedata->pgmid)       ? $dataJsonDecode->thedata->pgmid : "");
+    $classcat  = (isset($dataJsonDecode->thedata->classcat)       ? $dataJsonDecode->thedata->classcat : "");
+    $pgmcat  = (isset($dataJsonDecode->thedata->pgmcat)       ? $dataJsonDecode->thedata->pgmcat : "");
+    $agecat  = (isset($dataJsonDecode->thedata->agecat)       ? $dataJsonDecode->thedata->agecat : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateProgram($id,
+        $classid, $pgmid, $classcat, $pgmcat, $agecat
+                                     );
+
+    if ($res_id > 1) {
+        $response["error"] = false;
+        $response["message"] = "Class Program created successfully";
+        $response["res_id"] = $res_id;
+        error_log( print_R("Class Program created: $res_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($res_id == 1) {
+        $response["error"] = false;
+        $response["message"] = "Class Program updated successfully";
+        error_log( print_R("Class Program already existed\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after Class Program result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create Class Program. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/ClassPgm','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Program before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Programgood=0;
+    $Programbad=0;
+
+    $db = new AttendanceDbHandler();
+
+    $result = $db->isProgramFKExists($ID);
+    $response["error"] = false;
+    $response["ProgramExistsList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
+        } else {
+            $tmp["type"] = "NULL";
+            $tmp["cnt"] = "0";
+        }
+        array_push($response["ProgramExistsList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt == 0) {
+
+        // remove Program
+        $Program = $db->removeProgram(
+            $ID
+                                    );
+    
+        if ($Program > 0) {
+            error_log( print_R("Program removed: $Program\n", TRUE ), 3, LOG);
+            $response["error"] = false;
+            $response["message"] = "Program removed successfully";
+            $Programgood = 1;
+            $response["Program"] = $Programgood;
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after delete Program result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $Program, TRUE), 3, LOG);
+            $Programbad = 1;
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Program. Please try again";
+            echoRespnse(400, $response);
+        }
+    } else {
+            error_log( print_R("before delete Program result bad\n", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Program. There are records that are still attached to the program. Please remove those first";
+            echoRespnse(400, $response);
     }
 });
 
@@ -1308,6 +1490,212 @@ $app->get('/Attendancesum', 'authenticate', function() use($app) {
     }
 
     echoRespnse(200, $response);
+});
+
+$app->get('/rrank', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getRankAll();
+    $response["error"] = false;
+    $response["Ranklist"] = array();
+//ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, school, nextsortkey
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+            $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["sortkey"] = (empty($slist["sortkey"]) ? "NULL" : $slist["sortkey"]);
+            $tmp["nextsortkey"] = (empty($slist["nextsortkey"]) ? "NULL" : $slist["nextsortkey"]);
+            $tmp["alphasortkey"] = (empty($slist["alphasortkey"]) ? "NULL" : $slist["alphasortkey"]);
+            $tmp["rankGroup"] = (empty($slist["rankGroup"]) ? "NULL" : $slist["rankGroup"]);
+            $tmp["AttendPromoteTarget"] = (empty($slist["AttendPromoteTarget"]) ? "NULL" : $slist["AttendPromoteTarget"]);
+            $tmp["DurationPromoteTarget"] = (empty($slist["DurationPromoteTarget"]) ? "NULL" : $slist["DurationPromoteTarget"]);
+        } else {
+            $tmp["rankid"] = "NULL";
+            $tmp["ranklist"] = "NULL";
+            $tmp["ranktype"] = "NULL";
+            $tmp["sortkey"] = "NULL";
+            $tmp["nextsortkey"] = "NULL";
+            $tmp["alphasortkey"] = "NULL";
+            $tmp["rankGroup"] = "NULL";
+            $tmp["AttendPromoteTarget"] = "NULL";
+            $tmp["DurationPromoteTarget"] = "NULL";
+        }
+        array_push($response["Ranklist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in Ranklists";
+        error_log( print_R("Ranklists bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/rrank','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Rank post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+//ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, school, nextsortkey
+
+    $rankid          = (isset($dataJsonDecode->thedata->rankid) ? $dataJsonDecode->thedata->rankid : "");
+    $ranklist  = (isset($dataJsonDecode->thedata->ranklist)       ? $dataJsonDecode->thedata->ranklist : "");
+    $ranktype  = (isset($dataJsonDecode->thedata->ranktype)       ? $dataJsonDecode->thedata->ranktype : "");
+    $sortkey   = (isset($dataJsonDecode->thedata->sortkey)        ? $dataJsonDecode->thedata->sortkey : "");
+    $nextsortkey = (isset($dataJsonDecode->thedata->nextsortkey)    ? $dataJsonDecode->thedata->nextsortkey : "");
+    $alphasortkey    = (isset($dataJsonDecode->thedata->alphasortkey) ? $dataJsonDecode->thedata->alphasortkey : "");
+    $rankGroup  = (isset($dataJsonDecode->thedata->rankGroup)       ? $dataJsonDecode->thedata->rankGroup : "");
+    $AttendPromoteTarget    = (isset($dataJsonDecode->thedata->AttendPromoteTarget) ? $dataJsonDecode->thedata->AttendPromoteTarget : "");
+    $DurationPromoteTarget    = (isset($dataJsonDecode->thedata->DurationPromoteTarget) ? $dataJsonDecode->thedata->DurationPromoteTarget : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateRank($rankid,
+        $ranktype, $ranklist, $sortkey, $rankGroup, $alphasortkey, $AttendPromoteTarget, $DurationPromoteTarget, $nextsortkey
+                                     );
+
+    if ($res_id > 1) {
+        $response["error"] = false;
+        $response["message"] = "Rank created successfully";
+        $response["res_id"] = $res_id;
+        error_log( print_R("Rank created: $res_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($res_id == 1) {
+        $response["error"] = false;
+        $response["message"] = "Rank updated successfully";
+        error_log( print_R("Rank already existed\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after Rank result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create Rank. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/rrank','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Rank before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->rankid) ? 
+                    $test->thedata->rankid : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Rankgood=0;
+    $Rankbad=0;
+
+    $db = new AttendanceDbHandler();
+
+    $result = $db->isRankFKExists($ID);
+    $response["error"] = false;
+    $response["RankExistsList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
+        } else {
+            $tmp["type"] = "NULL";
+            $tmp["cnt"] = "0";
+        }
+        array_push($response["RankExistsList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt == 0) {
+
+        // remove Rank
+        $Rank = $db->removeRank(
+            $ID
+                                    );
+    
+        if ($Rank > 0) {
+            error_log( print_R("Rank removed: $Rank\n", TRUE ), 3, LOG);
+            $response["error"] = false;
+            $response["message"] = "Rank removed successfully";
+            $Rankgood = 1;
+            $response["Rank"] = $Rankgood;
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after delete Rank result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $Rank, TRUE), 3, LOG);
+            $Rankbad = 1;
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Rank. Please try again";
+            echoRespnse(400, $response);
+        }
+    } else {
+            error_log( print_R("before delete Rank result bad\n", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Rank. There are records that are still attached to the Rank. Please remove those first";
+            echoRespnse(400, $response);
+    }
+});
+$app->get('/rankgroups', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getRankGroups();
+    $response["error"] = false;
+    $response["RankGrouplist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["listkey"]) ? "NULL" : $slist["listkey"]);
+            $tmp["value"] = (empty($slist["listvalue"]) ? "NULL" : $slist["listvalue"]);
+            $tmp["order"] = (empty($slist["listorder"]) ? "NULL" : $slist["listorder"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["value"] = "NULL";
+            $tmp["order"] = "0";
+        }
+        array_push($response["RankGrouplist"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in RankGrouplist";
+        error_log( print_R("RankGrouplist bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
 });
 
 ?>
