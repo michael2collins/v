@@ -496,7 +496,7 @@ $app->post('/ClassPgm','authenticate',  function() use($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Program post before update insert\n", TRUE ), 3, LOG);
+    error_log( print_R("ClassPgm post before update insert\n", TRUE ), 3, LOG);
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
     error_log( print_R($thedata, TRUE ), 3, LOG);
 
@@ -511,24 +511,27 @@ $app->post('/ClassPgm','authenticate',  function() use($app) {
     $response = array();
 
     // updating task
-    $res_id = $db->updateProgram($id,
+    $res_id = $db->updateClassPgm($id,
         $classid, $pgmid, $classcat, $pgmcat, $agecat
                                      );
 
-    if ($res_id > 1) {
-        $response["error"] = false;
-        $response["message"] = "Class Program created successfully";
-        $response["res_id"] = $res_id;
-        error_log( print_R("Class Program created: $res_id\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
-    } else if ($res_id == 1) {
-        $response["error"] = false;
-        $response["message"] = "Class Program updated successfully";
-        error_log( print_R("Class Program already existed\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "Class Program created successfully";
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("Class Program created: \n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Class Program updated successfully";
+            error_log( print_R("Class Program already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
     } else {
         error_log( print_R("after Class Program result bad\n", TRUE), 3, LOG);
         error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Class Program. Please try again";
         echoRespnse(400, $response);
@@ -539,7 +542,7 @@ $app->delete('/ClassPgm','authenticate', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Program before delete\n", TRUE ), 3, LOG);
+    error_log( print_R("ClassPgm before delete\n", TRUE ), 3, LOG);
     $request = $app->request();
 
     $body = $request->getBody();
@@ -553,57 +556,32 @@ $app->delete('/ClassPgm','authenticate', function() use ($app) {
     error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
 
 
-    $Programgood=0;
-    $Programbad=0;
+    $ClassPgmgood=0;
+    $ClassPgmbad=0;
 
     $db = new AttendanceDbHandler();
 
-    $result = $db->isProgramFKExists($ID);
-    $response["error"] = false;
-    $response["ProgramExistsList"] = array();
+    // remove ClassPgm
+    $ClassPgm = $db->removeClassPgm(
+        $ID
+                                );
 
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-        if (count($slist) > 0) {
-            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
-            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
-        } else {
-            $tmp["type"] = "NULL";
-            $tmp["cnt"] = "0";
-        }
-        array_push($response["ProgramExistsList"], $tmp);
-    }
-    $row_cnt = $result->num_rows;
-
-    if ($row_cnt == 0) {
-
-        // remove Program
-        $Program = $db->removeProgram(
-            $ID
-                                    );
-    
-        if ($Program > 0) {
-            error_log( print_R("Program removed: $Program\n", TRUE ), 3, LOG);
-            $response["error"] = false;
-            $response["message"] = "Program removed successfully";
-            $Programgood = 1;
-            $response["Program"] = $Programgood;
-            echoRespnse(201, $response);
-        } else {
-            error_log( print_R("after delete Program result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Program, TRUE), 3, LOG);
-            $Programbad = 1;
-            $response["error"] = true;
-            $response["message"] = "Failed to remove Program. Please try again";
-            echoRespnse(400, $response);
-        }
+    if ($ClassPgm > 0) {
+        error_log( print_R("ClassPgm removed: $ClassPgm\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "ClassPgm removed successfully";
+        $ClassPgmgood = 1;
+        $response["ClassPgm"] = $ClassPgmgood;
+        echoRespnse(201, $response);
     } else {
-            error_log( print_R("before delete Program result bad\n", TRUE), 3, LOG);
-            $response["error"] = true;
-            $response["message"] = "Failed to remove Program. There are records that are still attached to the program. Please remove those first";
-            echoRespnse(400, $response);
+        error_log( print_R("after delete ClassPgm result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $ClassPgm, TRUE), 3, LOG);
+        $ClassPgmbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove ClassPgm. Please try again";
+        echoRespnse(400, $response);
     }
+    
 });
 
 $app->post('/schedule','authenticate',  function() use($app) {
@@ -1096,8 +1074,8 @@ $app->post('/class','authenticate',  function() use($app) {
         if ($res_id["success"] > 1) {
             $response["error"] = false;
             $response["message"] = "Class created successfully";
-            $response["res_id"] = $res_id;
-            error_log( print_R("Class created: $res_id\n", TRUE ), 3, LOG);
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("Class created\n", TRUE ), 3, LOG);
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
@@ -1258,8 +1236,8 @@ $app->post('/basic','authenticate',  function() use($app) {
         if ($res_id["success"] > 1) {
             $response["error"] = false;
             $response["message"] = "Basic created successfully";
-            $response["res_id"] = $res_id;
-            error_log( print_R("Basic created: $res_id\n", TRUE ), 3, LOG);
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("Basic created: \n", TRUE ), 3, LOG);
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;

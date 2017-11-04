@@ -1840,7 +1840,8 @@ $errormessage=array();
         $sql = "SELECT *
         FROM studentlist 
         where listtype in (
-'beltsize','ClassStatus','Classtype','ContactType','gisize','Instructor Title','PaymentType','PaymentType','ranktypelist','shirtsize'
+'beltsize','ClassStatus','Classtype','ContactType','gisize','Instructor Title','PaymentType','PaymentType','ranktypelist','shirtsize', 
+'agecat','pgmcat','classcat'
 )        ";
         
         $schoolfield = "school";
@@ -2184,6 +2185,209 @@ $errormessage=array();
             error_log( print_R("getRankGroups  sql failed", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
+        }
+
+    }
+
+    private function isClassPgmExists(
+        $classid, $pgmid, $id
+        ) {
+
+        error_log( print_R("isClassPgmExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as ClassPgmcount from nclasspgm ";
+        $cntsql .= " where id = ? ";
+
+        $cnt2sql = "select count(*) as ClassPgmcount from nclasspgm ";
+        $cnt2sql .= " where classid = ? and pgmid = ?";
+
+        error_log( print_R("ClassPgm isClassPgmExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield);
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield);
+        error_log( print_R("isClassPgmExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("s",
+                         $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isClassPgmExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            if ($row) {
+                return $row;
+            } else {
+                if ($stmt = $this->conn->prepare($cnt2sql)) {
+                    $stmt->bind_param("ss",
+                             $classid, $pgmid
+                                         );
+        
+                    $stmt->execute();
+                    if (! $stmt->execute() ){
+                        $stmt->close();
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -1;
+                    }
+        
+                    $row = null;
+                    $stmt->bind_result($row);
+                    while ($stmt->fetch()) { 
+                        error_log( print_R("isClassPgmExists: " . $row . "\n", TRUE), 3, LOG);
+                    }
+        
+                    $stmt->close();
+                    return $row;
+                    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+                }
+                
+            }
+
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+    public function updateClassPgm( 
+        $id, 
+        $classid, $pgmid, $classcat, $pgmcat, $agecat
+        ) {
+        $num_affected_rows = 0;
+        error_log( print_R("ClassPgm update entered", TRUE), 3, LOG);
+
+        global $school;
+$errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO nclasspgm( 
+        classid, pgmid, classcat, pgmcat, agecat, school 
+             ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?) ";
+
+        
+        if ($this->isClassPgmExists(
+            $classid, $pgmid, $id
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("ssssss",
+        $classid, $pgmid, $classcat, $pgmcat, $agecat, $school 
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                $errormessage["success"] = $new_id;
+                return $errormessage;
+//                        return $new_id;
+                    } else {
+                        // Failed to create 
+                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
+                    }
+
+                } else {
+                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE nclasspgm SET 
+                 classid = ?, 
+                 pgmid = ?, 
+                 classcat = ?, 
+                 pgmcat = ?, 
+                 agecat = ?, 
+                 school = ?
+            WHERE id = ? ";
+
+            error_log( print_R("ClassPgm update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssssss",
+        $classid, $pgmid, $classcat, $pgmcat, $agecat, $school, $id 
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+//                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("ClassPgm update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                return $errormessage;
+            }
+        }
+    }
+    public function removeClassPgm($id
+    ) {
+
+        error_log( print_R("removeClassPgm entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from nclasspgm  where id = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeClassPgm sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
         }
 
     }

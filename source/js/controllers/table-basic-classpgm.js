@@ -196,9 +196,9 @@
                 id: rowEntity.id,
                 classid: rowEntity.classid,
                 pgmid: rowEntity.pgmid,
-                classcat: rowEntity.classcat,
-                pgmcat: rowEntity.pgmcat,
-                agecat: rowEntity.agecat
+                classcat: rowEntity.classcatVlu,
+                pgmcat: rowEntity.pgmcatVlu,
+                agecat: rowEntity.agecatVlu
             };
             
             $log.debug('about updateClassPgm ',thedata, updpath, updatetype);
@@ -451,10 +451,9 @@
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.classes,
-                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
                     filter: { 
-                        type: uiGridConstants.filter.SELECT,
-                        selectOptions: vm.classes
+                        options: vm.classes
                     }
                 }, 
                 {

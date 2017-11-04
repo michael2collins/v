@@ -39,7 +39,7 @@ class StudentClassDbHandler {
     }
 
     public function getClassAges() {
-        $stmt = $this->conn->prepare("SELECT distinct agecat FROM nclasspgm order by agecat");
+        $stmt = $this->conn->prepare("SELECT listkey as agecat FROM studentlist where listtype = 'agecat' order by listorder");
         $stmt->execute();
         $agelist = $stmt->get_result();
         $stmt->close();
@@ -47,15 +47,15 @@ class StudentClassDbHandler {
     }
 
     public function getClassPgms() {
-        $stmt = $this->conn->prepare("SELECT distinct pgmcat FROM nclasspgm order by pgmcat");
-        $stmt->execute();
+        $stmt = $this->conn->prepare("SELECT listkey as pgmcat FROM studentlist where listtype = 'pgmcat' order by listorder");
+                $stmt->execute();
         $pgmlist = $stmt->get_result();
         $stmt->close();
         return $pgmlist;
     }
     
     public function getClassCats() {
-        $stmt = $this->conn->prepare("SELECT distinct classcat FROM nclasspgm order by classcat");
+        $stmt = $this->conn->prepare("SELECT listkey as classcat FROM studentlist where listtype = 'classcat' order by listorder");
         $stmt->execute();
         $catlist = $stmt->get_result();
         $stmt->close();

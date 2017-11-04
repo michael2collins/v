@@ -45,7 +45,10 @@
 {"id":"PaymentPlan","value":"PaymentPlan","order":7},
 {"id":"PaymentType","value":"PaymentType","order":8},
 {"id":"ranktypelist","value":"ranktypelist","order":9},
-{"id":"shirtsize","value":"shirtsize","order":10}
+{"id":"pgmcat","value":"pgmcat","order":10},
+{"id":"classcat","value":"classcat","order":11},
+{"id":"agecat","value":"agecat","order":12},
+{"id":"shirtsize","value":"shirtsize","order":13}
 ];
         vm.thisBasic=[];
         
