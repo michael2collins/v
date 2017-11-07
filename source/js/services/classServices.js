@@ -65,7 +65,10 @@
             removeRank: removeRank,
             getClassPgms: getClassPgms,
             updateClassPgm: updateClassPgm,
-            removeClassPgm: removeClassPgm
+            removeClassPgm: removeClassPgm,
+            getClassRanks: getClassRanks,
+            updateClassRank: updateClassRank,
+            removeClassRank: removeClassRank
         };
         return service;
 
@@ -581,6 +584,36 @@
                 }
             });
             return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function getClassRanks(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeClassRank( thedata, path ) {
+            $log.debug('removeClassRank data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateClassRank(path, thedata ) {
+                    $log.debug('updateClassRank data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
         }        
         
         function handleError( response ) {

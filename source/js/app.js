@@ -247,6 +247,9 @@
             .when('/table-basic-classpgm', {
                 templateUrl: 'templates/states/table-basic-classpgm.php'
             })
+            .when('/table-basic-classrank', {
+                templateUrl: 'templates/states/table-basic-classrank.php'
+            })
             .when('/table-basic-basic', {
                 templateUrl: 'templates/states/table-basic-basic.php'
             })

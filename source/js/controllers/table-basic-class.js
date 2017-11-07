@@ -3,33 +3,7 @@
 
     angular
         .module('ng-admin')
-        .controller('ClassTableBasicController', ClassTableBasicController)
-                .filter('iddropdownlocal', function() {
-          return function (input, context) {
-            
-            try {
-            
-                var map = context.col.colDef.editDropdownOptionsArray;
-                var idField = context.col.colDef.editDropdownIdLabel;
-                var valueField = context.col.colDef.editDropdownValueLabel;
-                var initial = context.row.entity[context.col.field];
-                if (typeof map !== "undefined") {
-                  for (var i = 0; i < map.length; i++) {
-                    if (map[i][idField] == input) {
-                      return map[i][valueField];
-                    }
-                  }
-                } else if (initial) {
-                  return initial;
-                }
-                return input;
-              
-          } catch (e) {
-//            context.grid.appScope.log("Error: " + e);
-            console.log("error: " + e);
-          }
-        };
-        });
+        .controller('ClassTableBasicController', ClassTableBasicController);
 
 
     ClassTableBasicController.$inject = [
@@ -471,25 +445,14 @@
                 {
                     field: 'rankForNextClass',
                     displayName: 'Rank for Next Class',
-//                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: false,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-//                    cellFilter: 'iddropdownlocal:this',
                     editDropdownIdLabel: 'label',
                     editDropdownValueLabel: 'label',
-//                    editDropdownOptionsArray: vm.ranks,
-    //                filterHeaderTemplate: 'templates/states/filtercoltemplatevlu2.html',
-//                    filterHeaderTemplate: '<div class="ui-grid-filter-container" ng-repeat="colFilter in col.filters"><div my-custom-dropdown></div></div>', 
-//                    filter: { 
-//                        term: vm.Class.rankForNextClass,
-//                        type: uiGridConstants.filter.SELECT,
-//                        selectOptions: vm.ranks
-//                    },
                     editDropdownOptionsFunction: function(rowEntity, colDef) {
                         var path;
-                      //  var vlu = Util.getByValue(vm.rankTypes, rowEntity.ranklistForNextClass, 'id', 'value');
-                        
+
                         path = encodeURI('../v1/ranks?ranktype=' + rowEntity.ranklistForNextClass);
                         return getRanksquery(path).then(function(data) {
                             vm.thisranks = data;
