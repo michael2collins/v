@@ -507,8 +507,8 @@
   function ModalTestRptInstanceController( $log, $uibModalInstance, TestingServices, $window, Notification, uiGridConstants) {
     /* jshint validthis: true */
     var vmnew = this;
-    console.log('modal TestRpt entered');
-    console.log(vmnew);
+    $log.debug('modal TestRpt entered');
+    $log.debug(vmnew);
 
     vmnew.rptLayout = TestingServices.getRptLayout();
     vmnew.path = '../v1/' + vmnew.rptLayout;
@@ -527,7 +527,7 @@
   };
 
     function printAll() {
-        console.log('hit print');
+        $log.debug('hit print');
         $log.debug('ModalTestRptInstanceController ready to close');
         vmnew.rptgridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
             //rows, col = selected, visible
@@ -536,7 +536,7 @@
 //          $uibModalInstance.close();
     }
     function printSelected() {
-        console.log('hit print sel');
+        $log.debug('hit print sel');
         $log.debug('ModalTestRptInstanceController ready to close');
         vmnew.rptgridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
           vmnew.rptgridApi.grid.api.exporter.pdfExport('selected','visible');
@@ -778,7 +778,7 @@
                             }
                         });
                         vmTestRptmodal.modalInstance.result.then(function (retvlu) {
-                            console.log('search modalInstance result :', retvlu);
+                            $log.debug('search modalInstance result :', retvlu);
                             vmTestRptmodal.retvlu = retvlu;
                         }, function () {
                             $log.info('Modal dismissed at: ' + new Date());
@@ -854,7 +854,7 @@
                             }
                         });
                         vmTestRptmodal.modalInstance.result.then(function (retvlu) {
-                            console.log('search modalInstance result :', retvlu);
+                            $log.debug('search modalInstance result :', retvlu);
                             vmTestRptmodal.retvlu = retvlu;
                         }, function () {
                             $log.info('Modal dismissed at: ' + new Date());
@@ -984,7 +984,7 @@
                             }
                         });
                         vmTestRptmodal.modalInstance.result.then(function (retvlu) {
-                            console.log('search modalInstance result :', retvlu);
+                            $log.debug('search modalInstance result :', retvlu);
                             vmTestRptmodal.retvlu = retvlu;
                         }, function () {
                             $log.info('Modal dismissed at: ' + new Date());

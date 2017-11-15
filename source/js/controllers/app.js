@@ -315,7 +315,7 @@ $(document).ready(function() {
         
     });
     getInstructorList().then(function() {
-        $log.debug("returned from getInstructorList");
+//        $log.debug("returned from getInstructorList");
 //        $('#external-events span.external-event').each(function() {
 //            eventDrag($(this));
 //            $log.debug('external-events after drag',$(this));
@@ -324,7 +324,7 @@ $(document).ready(function() {
 
     });
     getTestTypes().then(function() {
-       $log.debug("returned from getTesttypes"); 
+  //     $log.debug("returned from getTesttypes"); 
     });
     
 });
@@ -1040,7 +1040,7 @@ $(document).ready(function() {
     });
     
     $scope.$on('$routeChangeSuccess', function (event, current, previous){
-        console.log('routechange in app for success');
+        $log.debug('routechange in app for success');
         vm.header.animation = 'fadeInUp';
         setTimeout(function(){
             vm.header.animation = '';
@@ -1051,10 +1051,10 @@ $(document).ready(function() {
 //        });
 
 //        vm.userdta = UserServices.getUserDetails();
-//        console.log('$routeChangeSuccess', vm.userdta);
+//        $log.debug('$routeChangeSuccess', vm.userdta);
 
         vm.data = $.fn.Data.get(current.originalPath);
-        console.log('data in $routeChangeSuccess',vm.data);
+        $log.debug('data in $routeChangeSuccess',vm.data);
 
         if(-1 == $.inArray(current.originalPath, ['/page-lock-screen', '/page-signup', '/page-signin','/reset-pwd','/change-pwd','/forget-pwd'])){
             $("body>.default-page").show();
@@ -1111,14 +1111,14 @@ $(document).ready(function() {
             });
 		}
 
-    console.log('exit routechangesucess');
+    $log.debug('exit routechangesucess');
 
 
     });
     $scope.$on('$routeChangeError', function (event, current, previous){
-        console.log('routechange in app for error');
-        console.log('originalPath');
-        console.log(current.originalPath);
+        $log.debug('routechange in app for error');
+        $log.debug('originalPath');
+        $log.debug(current.originalPath);
     });
     
        var eventDrag = function(el){
@@ -1547,14 +1547,14 @@ function hexToComplimentary(hex){
 }  
     
     function loadTopbar() {
-        console.log("loadTopbar");
+        $log.debug("loadTopbar");
         $("[data-toggle='offcanvas']").on('click', function () {
             $('#sidebar-wrapper').toggleClass('active');
             return false;
         });
         // Setting toggle in mobile view 
         $('#setting-toggle').click(function(){
-            console.log('mobile toggle');
+            $log.debug('mobile toggle');
           $('.topbar-main').toggle();
         });
     }
@@ -1574,7 +1574,7 @@ function hexToComplimentary(hex){
 
     
      function loadSidebar(){
-         console.log('loadSidebar');
+         $log.debug('loadSidebar');
             //BEGIN SIDEBAR FIXED
             $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
                 "height": $(window).height() - 50,
@@ -1598,7 +1598,7 @@ function hexToComplimentary(hex){
 
             $('#menu-toggle').toggle(
                 function() {
-                console.log('menu-toggle');                    
+                $log.debug('menu-toggle');                    
                     if($('#wrapper').hasClass('right-sidebar')) {
                         $('body').addClass('right-side-collapsed');
                         $('.navbar-header').addClass('logo-collapsed');
@@ -1736,7 +1736,7 @@ function hexToComplimentary(hex){
     }
 
     function genGraph() {
-        $log.debug('genGraph entered');
+  //      $log.debug('genGraph entered');
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -1746,20 +1746,20 @@ function hexToComplimentary(hex){
         //var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
         
         var d2_1 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(0));
-        $log.debug('d2_1', d2_1);
+//        $log.debug('d2_1', d2_1);
         var d2_2 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(1));
-        $log.debug('d2_2', d2_2);
+//        $log.debug('d2_2', d2_2);
         var d2_3 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(3));
-        $log.debug('d2_3', d2_3);
+//        $log.debug('d2_3', d2_3);
         var d2_4 = datToGraph(vm.studentstats,'month','summaryvalue','ContactType',getYType(4));
-        $log.debug('d2_4', d2_4);
+//        $log.debug('d2_4', d2_4);
 
 //        var d2_2 = [["Jan", -32],["Feb", -22],["Mar", -13],["Apr", -24],["May", -16],["Jun", -27],["Jul", -15],["Aug", -31],["Sep", -14]];
  //       var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
 
         // Add a SumArray method to all arrays by expanding the Array prototype(do this once in a general place)
         Array.prototype.SumArray = function (arr) {
-            $log.debug('sum:',arr,this);
+        //    $log.debug('sum:',arr,this);
             var sum = [];
             var sumx,sumy;
             if (arr !== null && this.length === arr.length) {
@@ -1770,7 +1770,7 @@ function hexToComplimentary(hex){
                 }
                 return sum;
             } else {
-                $log.debug('sum: nothing to add');
+      //          $log.debug('sum: nothing to add');
                 return this;            
             }
         
@@ -1812,7 +1812,7 @@ function hexToComplimentary(hex){
         }
         
         var d2_sum = d2_1.SumArray(d2_2).SumArray(d2_3).SumArray(d2_4);
-        console.log('sumarr',d2_sum); // [6,8,10,12]
+     //   $log.debug('sumarr',d2_sum); // [6,8,10,12]
 
         $.plot("#line-chart-spline", [{
             data: d2_1,
@@ -1860,13 +1860,13 @@ function hexToComplimentary(hex){
            content: function(label, xval, yval, flotItem){
             //  $log.debug('flot %j',flotItem);
               var xy = JSON.parse(gety(xval,flotItem.seriesIndex));
-              console.log('xy',xy,xval,yval,getYType(flotItem.seriesIndex));
+              $log.debug('xy',xy,xval,yval,getYType(flotItem.seriesIndex));
 //               return 'new students:<br/> <json-formatter json="'+ gety(xval,flotItem.seriesIndex) + 
 //               '" open="1"></json-formatter> <br/> for:' + yval;
                 var xx='';
                  if (xy !== 'no text' ) {
                     for (var iter=0,len=xy.length;iter<len;iter++) {
-                        //console.log('each', xy[iter].item.firstname);
+                        //$log.debug('each', xy[iter].item.firstname);
                              xx = xx + '<div class="row col-md-12"> name:' + 
                                             xy[iter].item.firstname + ' ' +
                                             xy[iter].item.lastname + ' ' +
@@ -1876,7 +1876,7 @@ function hexToComplimentary(hex){
                                         '</div>';
                     }
                  }
-                console.log('xx',xx);
+                $log.debug('xx',xx);
 //               return 'new students: ' + xx + ' for:' + yval;
                 xx +=  'Count:' + yval ;
                return xx;
@@ -2076,7 +2076,7 @@ function hexToComplimentary(hex){
         });
 
         } catch(e) {
-                console.log(e.message, "from", e.stack);
+                $log.debug(e.message, "from", e.stack);
                 // You can send data to your server
                 // sendError(data);
                 //throw e;
@@ -2088,7 +2088,7 @@ function hexToComplimentary(hex){
 
     }
         function datToGraph(data, x, y, type, category) {
-            $log.debug('datToGraph:',data, x,y,type,category);
+      //      $log.debug('datToGraph:',data, x,y,type,category);
             var res=[];
 
             for(var iter=0,len = data.length;iter<len;iter++) {
@@ -2098,11 +2098,11 @@ function hexToComplimentary(hex){
                 
                 if(data[iter].type === type &&
                     data[iter].category === category) {
-                        $log.debug('datIf found:',d,data[iter].type,data[iter].category);
+              //          $log.debug('datIf found:',d,data[iter].type,data[iter].category);
                         res.push(d);
                     }
             }
-            $log.debug('datToGraph res:', res);
+     //       $log.debug('datToGraph res:', res);
             return res;
         }
         function contentForGraph(data, x, y, type, category, status) {
@@ -2214,11 +2214,11 @@ function hexToComplimentary(hex){
         }
 
         function mergedata() {
-            $log.debug('mergedata entered'); 
+      //      $log.debug('mergedata entered'); 
             for (var iter=0,len=vm.studentstats.length;iter<len;iter++ ){
                 vm.studentstats[iter].details = [];
                 for (var diter=0,lend=vm.studentstatsdetails.length;diter<lend;diter++ ){
-                        $log.debug('check a match', 
+     /*                   $log.debug('check a match', 
                             vm.studentstats[iter].month, 
                             vm.studentstatsdetails[diter].month, 
                             vm.studentstats[iter].datetype,
@@ -2229,7 +2229,7 @@ function hexToComplimentary(hex){
                             vm.studentstats[iter].classstatus,
                             vm.studentstatsdetails[diter].category
                             );
-                
+       */         
                     if (vm.studentstats[iter].month === vm.studentstatsdetails[diter].month
                         && 
                         vm.studentstats[iter].type === vm.studentstatsdetails[diter].type
@@ -2248,18 +2248,18 @@ function hexToComplimentary(hex){
                             'details': vm.studentstatsdetails[diter]
                         };
                         vm.studentstats[iter].details.push(dta);
-                        $log.debug('found a match', 
+            /*            $log.debug('found a match', 
                             vm.studentstats[iter].month, 
                             vm.studentstats[iter].datetype,
                             vm.studentstats[iter].details
                             );
-                        
+              */          
                     }
                     
                 }
             }
             
-            $log.debug('merged stats',vm.studentstats);
+//            $log.debug('merged stats',vm.studentstats);
             
         }
 

@@ -1677,7 +1677,7 @@ function checkSecurity() {
     
 }
 
-function addSecurity($insql, $field) {
+function addSecurity($insql, $field, $override = 'false') {
     $app = \Slim\Slim::getInstance();
     global $role;
     global $school;
@@ -1690,8 +1690,12 @@ function addSecurity($insql, $field) {
         //admin can see all data, others need to filter by school or user  
         $insql .= " and " .  $field . " = '" . $school . "'";
         error_log( print_R("addSecurity done: $insql\n ", TRUE), 3, LOG);
+    } else if ( $override == 'true' ) {
+        //admin can see all data, but when checking fK needs to be in the check  
+        $insql .= " and " .  $field . " = '" . $school . "'";
+        error_log( print_R("addSecurity done: $insql\n ", TRUE), 3, LOG);
     } else {
-        error_log( print_R("addSecurity not needed for admin\n ", TRUE), 3, LOG);
+        error_log( print_R("addSecurity not needed for admin $override\n ", TRUE), 3, LOG);
     }
 
     return $insql;

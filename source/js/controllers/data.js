@@ -16,8 +16,10 @@ var jQuery;
         '/table-basic-attendance': {title:'Attendance', 'breadcrumb':['Students', 'Attendance']},
         '/table-basic-schedule': {title:'Class Schedule', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-program': {title:'Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
+        '/table-basic-testtype': {title:'Test type Maintenance', 'breadcrumb':['Manage Studio', 'Test Type']},
         '/table-basic-classpgm': {title:'Class Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Program']},
         '/table-basic-classrank': {title:'Class Rank Maintenance', 'breadcrumb':['Manage Studio', 'Class Rank']},
+        '/table-basic-classtest': {title:'Class Test Maintenance', 'breadcrumb':['Manage Studio', 'Class Test']},
         '/table-basic-class': {title:'Class Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-eventcreation': {title:'Event Creation', 'breadcrumb':['Students', 'Event Creation']},
         '/table-basic-testcandidates': {title:'Test Creation', 'breadcrumb':['Testing', 'Test Creation']},
@@ -41,45 +43,45 @@ var jQuery;
     $.fn.Data.Portlet = function(src){
         /*************************/
         /******** Portlet *******/
-        console.log("portlet entered", src);
+//        console.log("portlet entered", src);
         $(".portlet").each(function(index, element) {
             var me = $(this);
-            console.log('portlet: each',index, element);
+//            console.log('portlet: each',index, element);
             $(">.portlet-header>.tools>i", me).off('click').click(function(e){
-                    console.log('portlet: click entered', me, e);
+  //                  console.log('portlet: click entered', me, e);
                 if($(this).hasClass('fa-chevron-up')){
-                    console.log('portlet: chevron up');
+    //                console.log('portlet: chevron up');
                     $(">.portlet-body", me).slideUp('fast');
                     $(this).removeClass('fa-chevron-up').addClass('fa-chevron-down');
                 }
                 else if($(this).hasClass('fa-chevron-down')){
-                    console.log('portlet: chevron down');
+    //                console.log('portlet: chevron down');
                     $(">.portlet-body", me).slideDown('fast');
                     $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
                 else if($(this).hasClass('fa-cog')){
-                    console.log('portlet: cog');
+     //               console.log('portlet: cog');
                     //Show modal
                 }
                 else if($(this).hasClass('fa-refresh')){
-                    console.log('portlet: refresh');
+     //               console.log('portlet: refresh');
                     //$(">.portlet-body", me).hide();
                     $(">.portlet-body", me).addClass('wait');
 
                     setTimeout(function(){
-                    console.log('portlet: refresh timeout');
+     //               console.log('portlet: refresh timeout');
                         //$(">.portlet-body>div", me).show();
                         $(">.portlet-body", me).removeClass('wait');
                     }, 1000);
                 }
                 else if($(this).hasClass('fa-times')){
-                    console.log('portlet: fa times');
+    //                console.log('portlet: fa times');
                     me.remove();
                 }
             });
         });
         /******** Portlet *******/
         /***********************/
-        console.log("portlet exit", src);
+   //     console.log("portlet exit", src);
     };
 })(jQuery);

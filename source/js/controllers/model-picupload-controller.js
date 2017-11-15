@@ -72,14 +72,14 @@
     //    openCamera();
         
     function openCamera() {
-        console.log("openCamera");
+        $log.debug("openCamera");
         /*global angular*/
         angular.forEach(angular.element(document).find('div'), function(node) {
-            //console.log('finddiv',node);
+            //$log.debug('finddiv',node);
 //          if(node.id == 'photowrapper'){
           if(node.id == 'my_camera'){
             //do something   ]
-                console.log('mycam', node);
+                $log.debug('mycam', node);
                 vmpicmodal.camera_on();                
                 vmpicmodal.Webcam.attach( node );
             }
@@ -117,7 +117,7 @@
 		  vmpicmodal.cameraIsOn = 'off';
 			vmpicmodal.Webcam.reset();
 
-        console.log("Camera_off");
+        $log.debug("Camera_off");
 
 			pretakon();
 		}
@@ -145,7 +145,7 @@
     			//var stuid = document.getElementById('studentid').innerHTML;
                 //var picnm = lname + "." + fname + "." + stuid + ".jpg";
                 var ur = '../v1/picupload?picnm=' + picnm;
-                console.log("picnm",ur);
+                $log.debug("picnm",ur);
                 
     			// display results in page
     		//	document.getElementById('results').innerHTML = 
@@ -157,24 +157,24 @@
 			    vmpicmodal.Webcam.reset();
     		  vmpicmodal.cameraIsOn = 'off';
                 vmpicmodal.Webcam.upload( data_uri, ur, function(code, text) {
-                    console.log("upload called",code,text);
+                    $log.debug("upload called",code,text);
                 });
                 vmpicmodal.Webcam.on('error', function(err) {
                   // an error occurred (see 'err')
-                  console.log('webcam err',err);
+                  $log.debug('webcam err',err);
                 } );                
                 vmpicmodal.Webcam.on( 'uploadComplete', function(code, text) {
                     // Upload complete!
                     // 'code' will be the HTTP response code from the server, e.g. 200
                     // 'text' will be the raw response content
-                    console.log("uploaded",code,text);
+                    $log.debug("uploaded",code,text);
         //            var em = angular.element(document.getElementById('form-layouts-editstudent'));
-                    //console.log("em", em);
+                    //$log.debug("em", em);
           //          var emscope = em.scope();
-        //            console.log("emscope", emscope);
+        //            $log.debug("emscope", emscope);
          //           setTimeout(function() {
           //              emscope.vmstudent.setStudentPIC(picnm);
-        //                console.log("finished setpic");
+        //                $log.debug("finished setpic");
          //           }, 1000);    
                     //call services to save pic
                      StudentServices.saveStudentPic(student,picnm).then(function (data) {
@@ -210,7 +210,7 @@
         }
       });
       vmpicmodal.modalInstance.result.then(function (selectedpic, student) {
-          console.log('pick upload modalInstance result picfile:', selectedpic);
+          $log.debug('pick upload modalInstance result picfile:', selectedpic);
         vmpicmodal.picfile = selectedpic;
         vmpicmodal.student = student;
       }, function () {
@@ -233,7 +233,7 @@
         }
       });
       vmpicmodal.modalInstance.result.then(function (selectedpic, student) {
-          console.log('picsearch modalInstance result picfile:', selectedpic);
+          $log.debug('picsearch modalInstance result picfile:', selectedpic);
         
         vmpicmodal.picfile = selectedpic;
         vmpicmodal.student = student;
@@ -262,17 +262,17 @@
     activate();
 
     function activate() {
-      console.log("picselect student");
-      console.log(vmpicselect.student);
+      $log.debug("picselect student");
+      $log.debug(vmpicselect.student);
     }
 
 
     function renameFile(student, currentpicfile) {
-      console.log('renameFile');
-      console.log(' student:' );
-      console.log(student);
-      console.log('pic');
-      console.log(currentpicfile);
+      $log.debug('renameFile');
+      $log.debug(' student:' );
+      $log.debug(student);
+      $log.debug('pic');
+      $log.debug(currentpicfile);
 
       return StudentServices.renameStudentPicFile(vmpicselect.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
@@ -284,12 +284,12 @@
 
 
     function ok() {
-      console.log('hit ok');
+      $log.debug('hit ok');
       var thisstudent = StudentServices.getTheStudent();
       vmpicselect.okpicFile = StudentServices.getstudentPicFile();
       vmpicselect.okpicFile = renameFile(thisstudent, vmpicselect.okpicFile);
-      console.log('got file for ok:', vmpicselect.okpicFile);
-      console.log('for student:' ,thisstudent);
+      $log.debug('got file for ok:', vmpicselect.okpicFile);
+      $log.debug('for student:' ,thisstudent);
 
       $uibModalInstance.close(vmpicselect.okpicFile, thisstudent);
     }
@@ -322,14 +322,14 @@
     setGridOptions();
 
     function activate() {
-        console.log("picselect student");
-        console.log(vmpicsearch.student);
+        $log.debug("picselect student");
+        $log.debug(vmpicsearch.student);
         getFiles();
     }
 
 
     function getFiles() {
-      console.log('getfiles');
+      $log.debug('getfiles');
       return StudentServices.getstudentPicFiles(vmpicsearch.picpath).then(function (data) {
         $log.debug('getstudentPicFiles returned data');
         $log.debug(data.data);
@@ -349,11 +349,11 @@
     }
 
     function renameFile(student, currentpicfile) {
-      console.log('renameFile');
-      console.log(' student:' );
-      console.log(student);
-      console.log('pic');
-      console.log(currentpicfile);
+      $log.debug('renameFile');
+      $log.debug(' student:' );
+      $log.debug(student);
+      $log.debug('pic');
+      $log.debug(currentpicfile);
 
       return StudentServices.renameStudentPicFile(vmpicsearch.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
@@ -374,13 +374,13 @@
             onRegisterApi: function( gridApi ) {
                   //set gridApi on scope
                 vmpicsearch.gridApi = gridApi;
-                    console.log('gridApi onRegisterApi',vmpicsearch.gridApi);
-        //          console.log(gridApi);
-        //          console.log(vmpicsearch);
-                console.log($scope);
+                    $log.debug('gridApi onRegisterApi',vmpicsearch.gridApi);
+        //          $log.debug(gridApi);
+        //          $log.debug(vmpicsearch);
+                $log.debug($scope);
                     gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'row selected ' + row.entity.name;
-                        console.log(msg);
+                        $log.debug(msg);
                         StudentServices.setstudentPicFile(row.entity.name);
 
                   });
@@ -422,12 +422,12 @@
 
 
     function ok() {
-      console.log('hit ok');
+      $log.debug('hit ok');
       var thisstudent = StudentServices.getTheStudent();
       vmpicsearch.okpicFile = StudentServices.getstudentPicFile();
       vmpicsearch.okpicFile = renameFile(thisstudent, vmpicsearch.okpicFile);
-      console.log('got file for ok:', vmpicsearch.okpicFile);
-      console.log('for student:' ,thisstudent);
+      $log.debug('got file for ok:', vmpicsearch.okpicFile);
+      $log.debug('for student:' ,thisstudent);
 
       $uibModalInstance.close(vmpicsearch.okpicFile, thisstudent);
     }

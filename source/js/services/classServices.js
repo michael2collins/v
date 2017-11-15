@@ -68,7 +68,13 @@
             removeClassPgm: removeClassPgm,
             getClassRanks: getClassRanks,
             updateClassRank: updateClassRank,
-            removeClassRank: removeClassRank
+            removeClassRank: removeClassRank,
+            getTesttypes: getTesttypes,
+            updateTesttype: updateTesttype,
+            removeTesttype: removeTesttype,
+            getClassTests: getClassTests,
+            updateClassTest: updateClassTest,
+            removeClassTest: removeClassTest
         };
         return service;
 
@@ -606,6 +612,65 @@
         }        
         function updateClassRank(path, thedata ) {
                     $log.debug('updateClassRank data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function getTesttypes(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeTesttype( thedata, path ) {
+            $log.debug('removeTesttype data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateTesttype(path, thedata ) {
+                    $log.debug('updateTesttype data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        function getClassTests(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeClassTest( thedata, path ) {
+            $log.debug('removeClassTest data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateClassTest(path, thedata ) {
+                    $log.debug('updateClassTest data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,

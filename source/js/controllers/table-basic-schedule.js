@@ -207,7 +207,7 @@
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
-                    if (updatetype === 'Add') {
+             //       if (updatetype === 'Add') {
                         getSchedule().then
                             (function(zdata) {
                              $log.debug('getSchedule returned', zdata);
@@ -219,7 +219,7 @@
                                 Notification.error({message: error, delay: 5000});
                                 return ($q.reject(error));
                             });
-                    }
+             //       }
                     return vm.thisschedule;
                 }).catch(function(e) {
                     $log.debug('updateSchedule failure:');

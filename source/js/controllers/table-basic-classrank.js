@@ -377,7 +377,7 @@
                 {
                     field: 'classid',
                     displayName: 'Class',
-                    headerCellClassRank: Util.highlightFilteredHeader,
+                    headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 

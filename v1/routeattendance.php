@@ -1875,4 +1875,267 @@ $app->get('/classbytype', 'authenticate', function() {
     }
 });
 
+$app->get('/testtype', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getTesttypes();
+    $response["error"] = false;
+    $response["TesttypeList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["value"] = (empty($slist["testtype"]) ? "NULL" : $slist["testtype"]);
+            $tmp["testtype"] = (empty($slist["testtype"]) ? "NULL" : $slist["testtype"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["testdescription"] = (empty($slist["testdescription"]) ? "NULL" : $slist["testdescription"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["testtype"] = "NULL";
+            $tmp["ranktype"] = "NULL";
+            $tmp["testdescription"] = "NULL";
+        }
+        array_push($response["TesttypeList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in TesttypeList";
+        error_log( print_R("TesttypeList bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/testtype','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Testtype post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
+    $testtype  = (isset($dataJsonDecode->thedata->testtype)       ? $dataJsonDecode->thedata->testtype : "");
+    $ranktype  = (isset($dataJsonDecode->thedata->ranktype)       ? $dataJsonDecode->thedata->ranktype : "");
+    $testdescription  = (isset($dataJsonDecode->thedata->testdescription)       ? $dataJsonDecode->thedata->testdescription : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateTesttype($id,
+        $testtype, $ranktype, $testdescription
+                                     );
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "Test type created successfully";
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("Test type created: \n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Test type updated successfully";
+            error_log( print_R("Test type already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
+    } else {
+        error_log( print_R("after Test type result bad\n", TRUE), 3, LOG);
+     //   error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create Test type. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/testtype','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Testtype before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Testtypegood=0;
+    $Testtypebad=0;
+
+    $db = new AttendanceDbHandler();
+
+    // remove Testtype
+    $Testtype = $db->removeTesttype(
+        $ID
+                                );
+
+    if ($Testtype > 0) {
+        error_log( print_R("Testtype removed: $Testtype\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "Testtype removed successfully";
+        $Testtypegood = 1;
+        $response["Testtype"] = $Testtypegood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete Testtype result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $Testtype, TRUE), 3, LOG);
+        $Testtypebad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove Testtype. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
+$app->get('/classtest', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getClasstests();
+    $response["error"] = false;
+    $response["ClasstestList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["testtypeid"] = (empty($slist["testtypeid"]) ? "NULL" : $slist["testtypeid"]);
+            $tmp["sortorder"] = (empty($slist["sortorder"]) ? "0" : $slist["sortorder"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["testtypeid"] = "NULL";
+            $tmp["sortorder"] = "NULL";
+        }
+        array_push($response["ClasstestList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in ClasstestList";
+        error_log( print_R("ClasstestList bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/classtest','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("Classtest post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
+    $classid  = (isset($dataJsonDecode->thedata->classid)       ? $dataJsonDecode->thedata->classid : "");
+    $testtypeid  = (isset($dataJsonDecode->thedata->testtypeid)       ? $dataJsonDecode->thedata->testtypeid : "");
+    $sortorder  = (isset($dataJsonDecode->thedata->sortorder)       ? $dataJsonDecode->thedata->sortorder : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateClasstest($id,
+        $classid, $testtypeid, $sortorder
+                                     );
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "Test type created successfully";
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("Test type created: \n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Test type updated successfully";
+            error_log( print_R("Test type already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
+    } else {
+        error_log( print_R("after Test type result bad\n", TRUE), 3, LOG);
+     //   error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create Test type. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/classtest','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Classtest before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $Classtestgood=0;
+    $Classtestbad=0;
+
+    $db = new AttendanceDbHandler();
+
+    // remove Classtest
+    $Classtest = $db->removeClasstest(
+        $ID
+                                );
+
+    if ($Classtest > 0) {
+        error_log( print_R("Classtest removed: $Classtest\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "Classtest removed successfully";
+        $Classtestgood = 1;
+        $response["Classtest"] = $Classtestgood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete Classtest result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $Classtest, TRUE), 3, LOG);
+        $Classtestbad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove Classtest. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
 ?>

@@ -60,36 +60,68 @@
         });
     })
     
+    
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {
             $rootScope._ = window._;
     })
-    .config(logConfig)
+//    .config(logConfig)
+
+    .config(['$provide', function($provide) {
+		// decorates the $log instance to disable logging
+		$provide.decorator('$log', ['$delegate',
+			function($delegate) {
+				var $log, enabled = true;
+				
+				$log = {
+					debugEnabled: function(flag) {
+						enabled = !!flag;
+					}
+				};
+				
+				// methods implemented by Angular's $log service
+				['log', 'warn', 'info', 'error', 'debug'].forEach(function(methodName) {
+					$log[methodName] = function() {
+						if (!enabled) return;
+						
+						var logger = $delegate;
+						logger[methodName].apply(logger, arguments);
+					};
+				});
+
+				return $log;
+			}
+		]);
+	}])
+	.run(['$log', function($log) {
+		$log.debugEnabled(false);
+	}])
+
     .config(routeConfig)
- //   .config(formatterConfig)
+//    .config(formatterConfig)
         
-    .run(function($rootScope, $location, $route, $routeParams) {
-        console.log('locationpath',$location.path());
-        console.log('$routeParams',$routeParams);
+    .run(function($rootScope, $location, $route, $routeParams,$log) {
+        $log.debug('locationpath',$location.path());
+        $log.debug('$routeParams',$routeParams);
 
       $rootScope.$on('$routeChangeSuccess', function () {
-            console.log('$routeChangeSuccess');
-        console.log('routecurrent',$route.current);
+            $log.debug('$routeChangeSuccess');
+        $log.debug('routecurrent',$route.current);
       });
     })
     
     // Initialize the application
     .run(['$location', function AppRun($location) {
         //  debugger; // -->> here i debug the $location object to see what angular see's as URL
-        console.log('$location setting in app');
-        console.log($location);
+        //$log.debug('$location setting in app');
+        //$log.debug($location);
 
     }])
     
     .run(authrun);
-
+	
 //    formatterConfig.$inject = ['JSONFormatterConfigProvider'];
-    logConfig.$inject = ['$logProvider'];
+//    logConfig.$inject = ['$logProvider'];
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
     //    flowConfig.$inject = ['flowFactoryProvider'];
 
@@ -102,21 +134,21 @@
         $log.debug('authrun entered');
 
     $(document).ready(function() {
-        console.log('fixing for drag-drop');
+        $log.debug('fixing for drag-drop');
         window.jQuery.event.props.push('dataTransfer'); //prevent conflict with drag-drop
-        console.log(window.jQuery.event.props);
+        $log.debug(window.jQuery.event.props);
 
     if ('Notification' in window) {
     // request permission on page load for Notification
-        console.log('onload permission check b4:',$window.Notification.permission);
+        $log.debug('onload permission check b4:',$window.Notification.permission);
         if ($window.Notification.permission !== 'denied') {
             $window.Notification.requestPermission().then(function(result) {
               if (result === 'denied') {
-                console.log('Permission wasn\'t granted. Allow a retry.');
+                $log.debug('Permission wasn\'t granted. Allow a retry.');
                 return;
               }
               if (result === 'default') {
-                console.log('The permission request was dismissed.');
+                $log.debug('The permission request was dismissed.');
                 return;
               }
               // Do something with the granted permission.
@@ -183,13 +215,15 @@
       JSONFormatterConfigProvider.hoverPreviewEnabled = true;
     }
    */ 
-    function logConfig($logProvider) {
-        $logProvider.debugEnabled(true);
-    }
+//    function logConfig($logProvider) {
+//        $logProvider.debugEnabled(false);
+//    }
+
+
+
 
     function routeConfig($routeProvider, $locationProvider) {
-        console.log('enter routeConfig');
-        
+
         $routeProvider
             .when('/main', {
                 templateUrl: 'templates/states/main.html'
@@ -244,11 +278,17 @@
             .when('/table-basic-program', {
                 templateUrl: 'templates/states/table-basic-program.php'
             })
+            .when('/table-basic-testtype', {
+                templateUrl: 'templates/states/table-basic-testtype.php'
+            })
             .when('/table-basic-classpgm', {
                 templateUrl: 'templates/states/table-basic-classpgm.php'
             })
             .when('/table-basic-classrank', {
                 templateUrl: 'templates/states/table-basic-classrank.php'
+            })
+            .when('/table-basic-classtest', {
+                templateUrl: 'templates/states/table-basic-classtest.php'
             })
             .when('/table-basic-basic', {
                 templateUrl: 'templates/states/table-basic-basic.php'

@@ -47,7 +47,7 @@
         }
       });
       vmnewstudentmodal.modalInstance.result.then(function (thisstudent) {
-          console.log('search modalInstance result thisstudent:', thisstudent);
+          $log.debug('search modalInstance result thisstudent:', thisstudent);
           vmnewstudentmodal.thisstudent = thisstudent;
       }, function () {
           $log.info('Modal dismissed at: ' + new Date());
@@ -62,8 +62,8 @@
   function ModalNewStudentInstanceController( $log, $uibModalInstance, StudentServices, $window, Notification) {
     /* jshint validthis: true */
     var vmnew = this;
-    console.log('modal newstudent entered');
-    console.log(vmnew);
+    $log.debug('modal newstudent entered');
+    $log.debug(vmnew);
 
     vmnew.path = '../v1/newstudent';
     vmnew.submit = submit;
@@ -73,7 +73,7 @@
 
 
     function submit() {
-      console.log('hit submit');
+      $log.debug('hit submit');
       createStudent().then(function(){
           $log.debug('createstudent ready to close', vmnew.thisstudent);
           $uibModalInstance.close(vmnew.thisstudent);

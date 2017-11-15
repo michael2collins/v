@@ -233,7 +233,7 @@
           
         vmDual.vm = $controller('StudentsTableBasicController as vm', {$scope: $scope});
 
-        console.log('vmDual');
+        $log.debug('vmDual');
 
         getUserPrefCols();
         
@@ -299,7 +299,7 @@
 
 
         function submit() {
-          console.log('hit submit');
+          $log.debug('hit submit');
           createUserPrefCols().then(function(){
               $log.debug('createUserPrefCols ready to close');
           }).catch(function(e){
@@ -308,7 +308,7 @@
         }
 
         function colreset() {
-          console.log('hit reset');
+          $log.debug('hit reset');
           vmDual.listA = [];
           vmDual.listB = [];
             var thisdta;
@@ -466,7 +466,7 @@
         }
   
         function bToA() {
-            console.log('bToA');
+            $log.debug('bToA');
             var i;
             for (i in vmDual.selectedB) {
                 if (vmDual.selectedB.hasOwnProperty(i)) {
@@ -494,8 +494,8 @@
             } else {
                 for (i in vmDual.listA) {
                     if (vmDual.listA.hasOwnProperty(i) ) {
-                 //       console.log('a i',i);
-                 //       console.log('a id',vmDual.listA[i].id);
+                 //       $log.debug('a i',i);
+                 //       $log.debug('a id',vmDual.listA[i].id);
                         vmDual.selectedA.push(vmDual.listA[i].id);
                     }
                 }
@@ -509,8 +509,8 @@
             } else {
                 for (i in vmDual.listB) {
                     if (vmDual.listB.hasOwnProperty(i) ) {
-                   //     console.log('b i',i);
-                //        console.log('b id',vmDual.listB[i].id);
+                   //     $log.debug('b i',i);
+                //        $log.debug('b id',vmDual.listB[i].id);
                         vmDual.selectedB.push(vmDual.listB[i].id);
                     }
                 }
@@ -518,20 +518,20 @@
         }
  
         function drop(dragEl, dropEl, direction) {
-    //    console.log('dragl',dragEl);
+    //    $log.debug('dragl',dragEl);
         
             var drag = angular.element(dragEl);
-        //    console.log('drag', drag);
+        //    $log.debug('drag', drag);
             var drop = angular.element(dropEl);
-        //    console.log('drop', drop);
+        //    $log.debug('drop', drop);
             var id = drag.attr("id");
-        //    console.log('id', id);
+        //    $log.debug('id', id);
             var ela = document.getElementById(dragEl);
             var el = ela.getElementsByTagName("input");
-        //    console.log('el', el);
+        //    $log.debug('el', el);
             
             if(!angular.element(el).attr("checked")){
-         //       console.log('dropclick');
+         //       $log.debug('dropclick');
               angular.element(el).triggerHandler('click');
             }
             

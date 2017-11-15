@@ -37,7 +37,7 @@
     vmsetclassmodal.classname = '';
     vmsetclassmodal.modalInstance = undefined;
     $log.debug('ModalSetStudentClassController entered');
-    console.log($controller('StudentClassController as vmclass', {$scope: $scope}));
+    $log.debug($controller('StudentClassController as vmclass', {$scope: $scope}));
     vmsetclassmodal.vmclass = $controller('StudentClassController as vmclass', {$scope: $scope});
 
 
@@ -51,7 +51,7 @@
         size: 'lg',
         resolve: {
           classname: function () {
-            console.log("modal resolve", vmsetclassmodal.classname);
+            $log.debug("modal resolve", vmsetclassmodal.classname);
             return vmsetclassmodal.classname;
           }
         }
@@ -59,7 +59,7 @@
       });
 
       vmsetclassmodal.modalInstance.result.then(function (result) {
-          console.log('search modalInstance result class:', result, $scope);
+          $log.debug('search modalInstance result class:', result, $scope);
 //        ClassServices.setClassSearchResult(result);
 //        vmsetclassmodal.classname = result;
 //        vmsetclassmodal.vmclass.studentclass2 = result;

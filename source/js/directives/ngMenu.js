@@ -30,7 +30,7 @@
                 $scope._menu.hover[i] = 'nav-hover';
             };
             $scope._menu.collapse = function(i){
-                console.log('collapse');
+          //      console.log('collapse');
                 $scope._menu.status[i] = !$scope._menu.status[i];
 
                 var current = attributes.$$element.find('a[index='+i+']');

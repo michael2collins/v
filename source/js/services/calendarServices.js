@@ -197,7 +197,7 @@
                     add(intervalValue/1000, 'seconds') ||
                     notifylist[niter].remove === true
                     ) {
-                        $log.debug('dropping too old ones',notifylist[niter], checktime);
+            //            $log.debug('dropping too old ones',notifylist[niter], checktime);
                         //remove if they were passed by in the loop above
                           notifylist.splice(niter,1);
                 }

@@ -47,7 +47,7 @@
         }
       });
       vmnewPayermodal.modalInstance.result.then(function (thisPayer) {
-          console.log('search modalInstance result thisPayer:', thisPayer);
+          $log.debug('search modalInstance result thisPayer:', thisPayer);
           vmnewPayermodal.thisPayer = thisPayer;
       }, function () {
           $log.info('Modal dismissed at: ' + new Date());
@@ -62,8 +62,8 @@
   function ModalNewPayerInstanceController( $log, $uibModalInstance, PaymentServices, $window, Notification) {
     /* jshint validthis: true */
     var vmnew = this;
-    console.log('modal newPayer entered');
-    console.log(vmnew);
+    $log.debug('modal newPayer entered');
+    $log.debug(vmnew);
 
     vmnew.submit = submit;
     vmnew.cancel = cancel;
@@ -72,7 +72,7 @@
 
 
     function submit() {
-      console.log('hit submit');
+      $log.debug('hit submit');
       createPayer().then(function(){
           $log.debug('createPayer ready to close', vmnew.thisPayer);
           $uibModalInstance.close(vmnew.thisPayer);

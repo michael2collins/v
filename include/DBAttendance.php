@@ -630,7 +630,7 @@ class AttendanceDbHandler {
      * @return boolean
      */
     private function isAttendanceExists($daynum, $mondayofweek, $classid, $studentid) {
-
+//school not needed
         error_log( print_R("isAttendanceExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -700,7 +700,7 @@ class AttendanceDbHandler {
         error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -995,7 +995,7 @@ class AttendanceDbHandler {
         error_log( print_R("Class isClassExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClassExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -1121,12 +1121,14 @@ $errormessage=array();
 //                        return $new_id;
                     } else {
                         // Failed to create 
-                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                     }
 
                 } else {
-                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                 }
 
@@ -1162,7 +1164,8 @@ $errormessage=array();
             } else {
                 error_log( print_R("Class update failed", TRUE), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE), 3, LOG);
-                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "update failure: " ;
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
             }
         }
@@ -1340,7 +1343,7 @@ $errormessage=array();
         error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -1690,10 +1693,10 @@ $errormessage=array();
         error_log( print_R("Basic isBasicExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield);
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isBasicExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -1797,12 +1800,14 @@ $errormessage=array();
 //                        return $new_id;
                     } else {
                         // Failed to create 
-                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                     }
 
                 } else {
-                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                 }
 
@@ -1834,7 +1839,8 @@ $errormessage=array();
             } else {
                 error_log( print_R("Basic update failed", TRUE), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE), 3, LOG);
-                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
             }
         }
@@ -1923,7 +1929,7 @@ $errormessage=array();
         error_log( print_R("Rank isRankExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isRankExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -1974,7 +1980,7 @@ $errormessage=array();
         error_log( print_R("Rank isRankIDExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isRankIDExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -2245,10 +2251,10 @@ $errormessage=array();
         error_log( print_R("ClassPgm isClassPgmExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield);
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClassPgmExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -2354,12 +2360,14 @@ $errormessage=array();
 //                        return $new_id;
                     } else {
                         // Failed to create 
-                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                     }
 
                 } else {
-                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                 }
 
@@ -2392,7 +2400,8 @@ $errormessage=array();
             } else {
                 error_log( print_R("ClassPgm update failed", TRUE), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE), 3, LOG);
-                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
             }
         }
@@ -2480,10 +2489,10 @@ $errormessage=array();
         error_log( print_R("ClassRank isClassRankExists sql: $cntsql", TRUE), 3, LOG);
 
         $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield);
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
         $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield);
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClassRankExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -2589,12 +2598,14 @@ $errormessage=array();
 //                        return $new_id;
                     } else {
                         // Failed to create 
-                $errormessage["sqlerror"] = "Insert failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                     }
 
                 } else {
-                $errormessage["sqlerror"] = "Insert sql failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
                 }
 
@@ -2624,7 +2635,8 @@ $errormessage=array();
             } else {
                 error_log( print_R("ClassRank update failed", TRUE), 3, LOG);
                 error_log( print_R($this->conn->error, TRUE), 3, LOG);
-                $errormessage["sqlerror"] = "update failure: " . printf("%s", $this->conn->error);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
             }
         }
@@ -2640,6 +2652,476 @@ $errormessage=array();
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("removeClassRank sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
+    public function getTesttypes() {
+        
+        global $school;
+
+        $sql = "SELECT          
+            id, testtype, ranktype, testdescription
+        FROM testtypes where (1=1) ";
+        
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield, 'true');
+        $sql .= "   order by testtype ";
+        
+        error_log( print_R("getTesttypes sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $TesttypeList = $stmt->get_result();
+                $stmt->close();
+                return $TesttypeList;
+            } else {
+                error_log( print_R("getTesttypes  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getTesttypes  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+    private function isTesttypeExists(
+        $testtype, $id
+        ) {
+
+        error_log( print_R("isTesttypeExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Testtypecount from testtypes ";
+        $cntsql .= " where id = ? ";
+
+        $cnt2sql = "select count(*) as Testtypecount from testtypes ";
+        $cnt2sql .= " where testtype = ? ";
+
+        error_log( print_R("Testtype isTesttypeExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "studentschool";
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+
+        $schoolfield = "studentschool";
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+        error_log( print_R("isTesttypeExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("s",
+                         $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isTesttypeExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            if ($row) {
+                return $row;
+            } else {
+                if ($stmt = $this->conn->prepare($cnt2sql)) {
+                    $stmt->bind_param("s",
+                             $testtype
+                                         );
+        
+                    $stmt->execute();
+                    if (! $stmt->execute() ){
+                        $stmt->close();
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -1;
+                    }
+        
+                    $row = null;
+                    $stmt->bind_result($row);
+                    while ($stmt->fetch()) { 
+                        error_log( print_R("isTesttypeExists: " . $row . "\n", TRUE), 3, LOG);
+                    }
+        
+                    $stmt->close();
+                    return $row;
+                    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+                }
+                
+            }
+
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+    public function updateTesttype( 
+        $id, 
+        $testtype, $ranktype, $description
+        ) {
+        $num_affected_rows = 0;
+        error_log( print_R("Testtype update entered", TRUE), 3, LOG);
+
+        global $school;
+        $errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO testtypes( 
+        testtype, ranktype, testdescription,  studentschool
+             ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?) ";
+
+        error_log( print_R("Testtype insert sql: $inssql \n testtype $testtype\nranktype $ranktype\n desc $description\n school  $school\n ", TRUE), 3, LOG);
+        
+        if ($this->isTesttypeExists(
+            $testtype, $id
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("ssss",
+                    $testtype, $ranktype, $description,  $school 
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        $errormessage["success"] = $new_id;
+                        return $errormessage;
+                    } else {
+                        // Failed to create 
+                        $errormessage["sqlerror"] = "Insert failure: ";
+                        $errormessage["sqlerrordtl"] = $this->conn->error;
+                        return $errormessage;
+                    }
+
+                } else {
+                    $errormessage["sqlerror"] = "Insert sql failure";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+                    return $errormessage;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE testtypes SET 
+                 testtype = ?, 
+                 ranktype = ?, 
+                 testdescription = ?,
+                 studentschool = ?
+            WHERE id = ? ";
+
+            error_log( print_R("Testtype update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssss",
+        $testtype, $ranktype, $description,  $school, $id 
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+//                return $num_affected_rows;
+                
+            } else {
+                error_log( print_R("Testtype update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+            }
+        }
+    }
+    public function removeTesttype($id
+    ) {
+
+        error_log( print_R("removeTesttype entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from testtypes  where id = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeTesttype sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
+    public function getClasstests() {
+        
+        global $school;
+
+        $sql = "SELECT          
+            id, classid, testtypeid, sortorder
+        FROM notherclass ";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        $sql .= "   order by sortorder";
+        
+        error_log( print_R("getClasstests sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $ClasstestList = $stmt->get_result();
+                $stmt->close();
+                return $ClasstestList;
+            } else {
+                error_log( print_R("getClasstests  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getClasstests  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+    private function isClasstestExists(
+        $classid, $testtypeid, $id
+        ) {
+
+        error_log( print_R("isClasstestExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as Classtestcount from notherclass ";
+        $cntsql .= " where id = ? ";
+
+        $cnt2sql = "select count(*) as Classtestcount from notherclass ";
+        $cnt2sql .= " where classid = ? and testtypeid = ?";
+
+        error_log( print_R("Classtest isClasstestExists sql: $cntsql", TRUE), 3, LOG);
+
+        $schoolfield = "school";
+        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+        error_log( print_R("isClasstestExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("s",
+                         $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isClasstestExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            if ($row) {
+                return $row;
+            } else {
+                if ($stmt = $this->conn->prepare($cnt2sql)) {
+                    $stmt->bind_param("ss",
+                             $classid, $testtypeid
+                                         );
+        
+                    $stmt->execute();
+                    if (! $stmt->execute() ){
+                        $stmt->close();
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -1;
+                    }
+        
+                    $row = null;
+                    $stmt->bind_result($row);
+                    while ($stmt->fetch()) { 
+                        error_log( print_R("isClasstestExists: " . $row . "\n", TRUE), 3, LOG);
+                    }
+        
+                    $stmt->close();
+                    return $row;
+                    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+                }
+                
+            }
+
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+    public function updateClasstest( 
+        $id, 
+        $classid, $testtypeid, $sortorder
+        ) {
+        $num_affected_rows = 0;
+        error_log( print_R("Classtest update entered", TRUE), 3, LOG);
+
+        global $school;
+$errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO notherclass( 
+        classid, testtypeid, sortorder,  school 
+             ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?) ";
+
+        
+        if ($this->isClasstestExists(
+            $classid, $testtypeid,  $id
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("ssss",
+        $classid, $testtypeid, $sortorder,  $school 
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        $errormessage["success"] = $new_id;
+                        return $errormessage;
+                    } else {
+                        // Failed to create 
+                        $errormessage["sqlerror"] = "Insert failure: ";
+                        $errormessage["sqlerrordtl"] = $this->conn->error;
+                        return $errormessage;
+                    }
+
+                } else {
+                    $errormessage["sqlerror"] = "Insert failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+                    return $errormessage;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE notherclass SET 
+                 classid = ?, 
+                 testtypeid = ?,
+                 sortorder = ?, 
+                 school = ?
+            WHERE id = ? ";
+
+            error_log( print_R("Classtest update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssss",
+        $classid, $testtypeid, $sortorder,  $school, $id 
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+
+            } else {
+                error_log( print_R("Classtest update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+            }
+        }
+    }
+    public function removeClasstest($id
+    ) {
+
+        error_log( print_R("removeClasstest entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from notherclass  where id = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeClasstest sql after security: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
