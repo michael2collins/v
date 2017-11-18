@@ -308,7 +308,7 @@ class AttendanceDbHandler {
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
             $sql .= " and n.class = '" . $theclass . "'";
         }
-
+//todo: currentrank remove
         $sql .= " group by contactid, classid, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d'), rank ";
         $sql .= "   order by mondayofweek desc, c.currentrank " ;
 
@@ -436,6 +436,7 @@ class AttendanceDbHandler {
 
         error_log( print_R("getRegistrationList firstsql: $sql \n", TRUE), 3, LOG);
 
+//todo: currentrank from registration
 
         $heresql = " Union ";
         $heresql .= " SELECT n.class, ";

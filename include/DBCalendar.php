@@ -398,7 +398,9 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         global $school;
 
-        $sql = "SELECT firstname,lastname,instructortitle FROM ncontacts WHERE instructorflag = 1 and studentschool = ? ";
+        $sql = "SELECT firstname,lastname,instructortitle FROM ncontacts c, studentlist sl WHERE ";
+        $sql .= " c.instructortitle = sl.listkey and sl.listtype = 'Instructor Title' and ";
+        $sql .= " sl.listvalue = 'Instructor' and c.studentschool = ? and c.studentschool = sl.school ";
         $sql .= " order by lastname";
 
         if ($stmt = $this->conn->prepare($sql)) {

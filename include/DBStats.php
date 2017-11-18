@@ -209,6 +209,8 @@ $tr = 10;
 
         $app->log->info("getStudentStats");
 
+//todo: this info is from the wrong tables
+
 // instructorflag, ContactType, sex, pgrmcat, classcat, agecat, age, CurrentRank, Nclass
         $querytypes = array(
             ''                  => "ContactType",

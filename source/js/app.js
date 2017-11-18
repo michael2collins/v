@@ -35,6 +35,8 @@
     'textAngular',
     'appFilereader',
     'angularSpectrumColorpicker','ui.bootstrap.dropdownToggle',
+    'angular-loading-bar',
+    'ngAnimate'
 //    'ui.toggle'
 //    'ui.grid.autoFitColumns'
   //      'notifyme'
@@ -60,7 +62,14 @@
         });
     })
     
-    
+  .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
+    cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
+//    cfpLoadingBarProvider.spinnerTemplate = '<div><span class="fa fa-spinner"> Custom Loading Message...</div>';
+    cfpLoadingBarProvider.includeSpinner = false;
+    cfpLoadingBarProvider.includeBar = true;
+    cfpLoadingBarProvider.latencyThreshold = 100;
+  }])
+
     // use in views, ng-repeat="x in _.range(3)"
     .run(function ($rootScope) {
             $rootScope._ = window._;

@@ -373,6 +373,8 @@
                             src: './images/students/' + vm.data.attendancelist[i].pictureurl,
                             name: vm.data.attendancelist[i].firstname 
                                 + ' ' + vm.data.attendancelist[i].lastname,
+                            firstname: vm.data.attendancelist[i].firstname,
+                            lastname: vm.data.attendancelist[i].lastname,
                             studentID: vm.data.attendancelist[i].ContactId,
                             rank: vm.data.attendancelist[i].rank,
                             class: vm.data.attendancelist[i].class,

@@ -2217,6 +2217,7 @@
         function setSelectedArray(inputArray) {
             $log.debug("setSelectedArray entered", inputArray);
             vm.selectedStudents = [];
+        //todo: move readyfornext rank to studentregistration
             
             if (inputArray.length > 0){
                 vm.selected = true;

@@ -298,8 +298,6 @@ class DbHandler {
         $stmt = $this->conn->prepare("SELECT api_key FROM users WHERE id = ?");
         $stmt->bind_param("i", $user_id);
         if ($stmt->execute()) {
-            // $api_key = $stmt->get_result()->fetch_assoc();
-            // TODO
             $stmt->bind_result($api_key);
             $stmt->close();
             return $api_key;
@@ -318,8 +316,6 @@ class DbHandler {
         if ($stmt->execute()) {
             $stmt->bind_result($user_id);
             $stmt->fetch();
-            // TODO
-            // $user_id = $stmt->get_result()->fetch_assoc();
             $stmt->close();
             return $user_id;
         } else {
@@ -333,8 +329,6 @@ class DbHandler {
         if ($stmt->execute()) {
             $stmt->bind_result($user_name);
             $stmt->fetch();
-            // TODO
-            // $user_id = $stmt->get_result()->fetch_assoc();
             $stmt->close();
         error_log( print_R("getUserName:  user: $user_name\n ", TRUE), 3, LOG);
             
@@ -350,8 +344,6 @@ class DbHandler {
         if ($stmt->execute()) {
             $stmt->bind_result($role);
             $stmt->fetch();
-            // TODO
-            // $user_id = $stmt->get_result()->fetch_assoc();
             $stmt->close();
         error_log( print_R("getRole:  role: $role\n ", TRUE), 3, LOG);
             
@@ -367,8 +359,6 @@ class DbHandler {
         if ($stmt->execute()) {
             $stmt->bind_result($school);
             $stmt->fetch();
-            // TODO
-            // $user_id = $stmt->get_result()->fetch_assoc();
             $stmt->close();
         error_log( print_R("getSchool:  school: $school\n ", TRUE), 3, LOG);
             

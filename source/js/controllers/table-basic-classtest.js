@@ -42,6 +42,7 @@
         vm.rowheight=25;
         vm.headerheight=140;
         vm.getGridLength = getGridLength;
+        vm.dataLoading = true;
         setGridLength(vm.initialLength);
 
   $scope.$on('$routeChangeSuccess', function(event, current, previous) {
@@ -87,8 +88,12 @@
                  
              },function(error) {
                  return ($q.reject(error));
-             });
-             
+             }).
+            finally(function () { 
+                vm.dataLoading = false; 
+            }
+            );
+                 
         }
 
         function setGridLength(size) {
@@ -129,8 +134,8 @@
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
                     
-                }
-                );
+            });
+                
         }
 
         function getTesttypes() {
@@ -156,6 +161,8 @@
 
         function removeClassTest(input) {
             $log.debug('removeClassTest entered',input);
+            vm.dataLoading = true;
+            
             var path = "../v1/classtest";
             var thedata = {
                 id: input.id
@@ -194,7 +201,11 @@
                     $log.debug("error", e);
                     Notification.error({message: e, delay: 5000});
                     throw e;
-                });
+                }).
+            finally(function () { 
+                vm.dataLoading = false; 
+            }
+            );
             
         }
 
@@ -203,6 +214,7 @@
         }
         function updateClassTest(rowEntity,updatetype) {
             var updpath = "../v1/classtest";
+            vm.dataLoading = true;
 
             var thedata = {
                 id: rowEntity.id,
@@ -247,7 +259,11 @@
                     vm.message = e;
                     Notification.error({message: e, delay: 5000});
                     throw e;
-                });
+            }).
+            finally(function () { 
+                vm.dataLoading = false; 
+            }
+            );
         }
         
         function getClassTest() {
@@ -295,9 +311,10 @@
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.classes,
-                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu2id.html',
                     filter: { 
-                        options: vm.classes
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: vm.classes
                     }
                 }, 
                 {
@@ -311,9 +328,10 @@
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.testTypes,
-                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu2id.html',
                     filter: { 
-                        options: vm.testTypes        
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: vm.testTypes
                     }
                 }, 
                 {

@@ -679,6 +679,8 @@ $txn_id
      * @param String $student_id id of the student
      */
     public function getStudent($student_id) {
+        //todo: currentrank
+        
         $stmt = $this->conn->prepare("SELECT
                    t.ID,
                    t.LastName,
@@ -769,13 +771,7 @@ $txn_id
                 $nextScheduledTest,
                 $createdby
             );
-            // TODO
-            // $student = $stmt->get_result()->fetch_assoc();
             $stmt->fetch();
-            //          $res["id"] = $id;
-            //          $res["student"] = $student;
-            //          $res["status"] = $status;
-            //          $res["created_at"] = $created_at;
             $res["ID"] = $ID;
             $res["LastName"] = $LastName;
             $res["FirstName"] = $FirstName;

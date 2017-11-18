@@ -83,7 +83,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel-footer">
+
+                <div class="panel-footer" >
                     <div ui-grid="vm.gridOptions"  
                         ui-if="vm.gridOptions.data.length>0"
                         ui-grid-pagination 

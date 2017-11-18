@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <div ng-controller="ClassTestTableBasicController as vm">
+{{vm.dataLoading}}
 
-    <div class="portlet box portlet-green">
+    <img ng-if="vm.dataLoading" ng-src="/images/Spinner.gif"/>
+    <img id="spinner" ng-src="/images/Spinner.gif" style="display:none;">
+    <div class="portlet box portlet-green" ng-hide="vm.dataLoading">
         <div class="portlet-header">
                 <div class="caption">Maintain Class Test</div>
                 <div class="tools"><i class="fa fa-chevron-up"></i></div>
         </div>
+
       <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
             <div class="panel panel-blue">
                 <div class="panel-heading">Class Test</div>

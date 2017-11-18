@@ -28,16 +28,20 @@
         </div>
 
         <div class="photo-wrapper">
-            <img src="" style='height:auto; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+<!--            <img src="" style='height:auto; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+-->
+            <img src="" style='height:200px; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
         </div>
-        <div class="photo-description">
-            <h3>{{card.name}}</h3>
+        <div class="photo-description" style='text-align: center;'>
+            <p style='font-size: large; line-height: 7px;'>{{card.firstname}}</p><br>
+            <p style='font-size: large; line-height: 7px;'>{{card.lastname}}</p>
         </div>
     </a>
- </div>
-<div>
+<div style='text-align: center;'>
   <button type="button" 
     data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readyness = !card.readyness)" 
-    class="btn btn-default btn-sm">Ready?</button>
+    class="mbm btn btn-default btn-sm">Ready?</button>
 
 </div>        
+
+ </div>

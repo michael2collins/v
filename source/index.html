@@ -574,6 +574,15 @@ mlc some problems with mobile
 <link href="vendors/angular-bootstrap-toggle/angular-bootstrap-toggle.css" rel="stylesheet">
 <script src="vendors/angular-bootstrap-toggle/angular-bootstrap-toggle.js"></script>
 -->
+<link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css' type='text/css' media='all' />
+ <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
+<style type="text/css">
+#loading-bar .bar {
+  position: relative;
+    width: 100%;
+  height: 20px;
+}
+</style>
 
 <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
 <!--    <script src="js/main.js"></script>    -->
@@ -661,8 +670,6 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
   </head>
 <body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed"   style="padding:  0px;" >
     <!--V JS-->
-
-
     <div ng-controller="AppController as vm" class="default-page">
 
       <!--BEGIN TO TOP-->
@@ -689,7 +696,8 @@ document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/tru
                 </div>
             </div>
         </div>          
-          
+            <div id="loading-bar-container"></div>          
+        
           <!--BEGIN CONTENT-->
           <div ng-view="" class="page-content"></div>
           <!--END CONTENT-->

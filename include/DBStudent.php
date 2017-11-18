@@ -618,6 +618,9 @@ class StudentDbHandler {
      * @param String $student_id id of the student
      */
     public function getStudent($student_id) {
+        
+        //todo: currentrank remove
+        //todo: move readyfornext rank to studentregistration
         $sql = "SELECT
                    t.ID,
                    t.LastName,
@@ -713,13 +716,7 @@ class StudentDbHandler {
                 $pictureurl,
                 $nextScheduledTest
             );
-            // TODO
-            // $student = $stmt->get_result()->fetch_assoc();
             $stmt->fetch();
-            //          $res["id"] = $id;
-            //          $res["student"] = $student;
-            //          $res["status"] = $status;
-            //          $res["created_at"] = $created_at;
             $res["ID"] = $ID;
             $res["LastName"] = $LastName;
             $res["FirstName"] = $FirstName;
