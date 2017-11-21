@@ -66,6 +66,16 @@
             opened: false
         };
 
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("student-payment-controller started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("student-payment-controller dismissed");
+		$log.debugEnabled(false);
+    });
+
         function getPriceDate(input) {
             $log.debug('getPriceDate',input);
           //  var theDate = moment(input).format('YYYY-MM-DD');

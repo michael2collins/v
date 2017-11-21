@@ -14,6 +14,7 @@
       '$scope',
       '$window',
       '$route',
+      '$scope',
       'ClassServices'
     ];
   ModalInstanceController.$inject = [
@@ -39,6 +40,15 @@
     $log.debug('ModalSetStudentClassController entered');
     $log.debug($controller('StudentClassController as vmclass', {$scope: $scope}));
     vmsetclassmodal.vmclass = $controller('StudentClassController as vmclass', {$scope: $scope});
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("student-ModalSetStudentClassController started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("student-ModalSetStudentClassController dismissed");
+		$log.debugEnabled(false);
+    });
 
 
     function opensearch() {

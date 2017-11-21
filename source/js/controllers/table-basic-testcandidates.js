@@ -708,6 +708,16 @@
         vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
         vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
 
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("table-basic-testcandidates started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("table-basic-testcandidates dismissed");
+		$log.debugEnabled(false);
+    });
+
         activate();
         calcsizes();
         refresHtml();

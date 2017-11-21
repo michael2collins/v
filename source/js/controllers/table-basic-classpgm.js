@@ -49,6 +49,15 @@
         vm.headerheight=140;
         vm.getGridLength = getGridLength;
         setGridLength(vm.initialLength);
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("table-basic-classpgm started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("table-basic-classpgm dismissed");
+		$log.debugEnabled(false);
+    });
 
 
         setgridOptions();

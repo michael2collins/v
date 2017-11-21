@@ -1,33 +1,23 @@
 <!DOCTYPE html>
- <div class="photo">
+ <div class="photo" style='height: 300px;'>
     <a href="" data-ng-click="card.showIndex = !card.showIndex;mother.vm.selectItem(card.studentID,card.showIndex, card, true)">
 
-        <div class="photo-index" data-ng-if="card.showIndex">
-            <p style='font-size: large;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.name}} here!</p>
-            <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.rank}}</p>
+        <div class="mls photo-index" data-ng-if="card.showIndex" style='text-align: left; font-size: small;'>
+            <p class="mls"   data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.firstname}}</p>
+            <p class="mls"   data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.rank}}</p>
 
             <p class="balloon-wrapper">
-<!--                    <span class="balloon">{{card.$index}}</span> -->
                 <span 
-                ng-style="(card.readyness === true ) && {'background':'lightgreen'}  || (card.readyness === false ) && {'background':'yellow'}" 
+                ng-style="(card.readyness === true ) && {'background':'lightgreen','color':'black'}  || (card.readyness === false ) && {'background':'yellow','color':'black'}" 
                 class="balloon">{{mother.vm.getAttendingCount()}}</span>
             </p>
-            <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.daynum}}</p>
-            <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.attended}}</p>
-            <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.class}}</p>
-            <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.MondayDOW}}</p>
-            <p style='font-size: small;' 
-                data-ng-if="mother.vm.hasSelected(card.studentID)">{{card.readyness}}</p>
-            
+            <p class="mls"       data-ng-if="mother.vm.hasSelected(card.studentID)">Time In?: {{card.daysSince}}</p>
+            <p class="mls"       data-ng-if="mother.vm.hasSelected(card.studentID)">Attend: {{card.daysAttended}}</p>
+            <p class="mls"       data-ng-if="mother.vm.hasSelected(card.studentID)">As of: {{card.MondayDOW}}</p>
+
         </div>
 
-        <div class="photo-wrapper">
+        <div class="mls photo-wrapper">
 <!--            <img src="" style='height:auto; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
 -->
             <img src="" style='height:200px; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
@@ -37,11 +27,17 @@
             <p style='font-size: large; line-height: 7px;'>{{card.lastname}}</p>
         </div>
     </a>
+ </div>
 <div style='text-align: center;'>
   <button type="button" 
     data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readyness = !card.readyness)" 
     class="mbm btn btn-default btn-sm">Ready?</button>
-
+  <button type="button" 
+    data-ng-click="mother.vm.checkAttendanceStats(card.studentID)" 
+    class="mbm btn btn-default btn-sm">Stats?</button>
+<!--    <div ng-show="mother.vm.hasStats(card.studentID)"> -->
+<div>
+        <p class="mls"       data-ng-if="mother.vm.hasStats(card.studentID)">Time In?: {{mother.vm.daysSince}}</p>
+        <p class="mls"       data-ng-if="mother.vm.hasStats(card.studentID)">Attend: {{mother.vm.daysAttended}}</p>
+    </div>
 </div>        
-
- </div>

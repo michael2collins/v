@@ -41,7 +41,7 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
             $tmp["ContactId"] = (empty($slist["studentid"]) ? "NULL" : $slist["studentid"]);
             $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["DOWnum"] = (empty($slist["downum"]) ? "NULL" : $slist["downum"]);
+            $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);;
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
             $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
             $tmp["rank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
@@ -71,11 +71,12 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
 
     if ($row_cnt > 0) {
         $response["error"] = false;
+        $response["message"] = "Attendance shows $row_cnt potential students\n";
         error_log( print_R("getRegistrationList fine with $row_cnt\n ", TRUE), 3, LOG);
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
-        $response["message"] = "error in getRegistrationList: No records found";
+        $response["message"] = "Warning in getRegistrationList: No records found";
         error_log( print_R("getRegistrationList bad\n ", TRUE), 3, LOG);
         error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
         error_log( print_R("getRegistrationList error\n ", TRUE), 3, LOG);
@@ -86,6 +87,8 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
 //        echoRespnse(200, $response);
     }
 });
+
+/*
 $app->get('/attendance', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -173,6 +176,7 @@ $app->get('/attendance', 'authenticate', function() use ($app) {
 //        echoRespnse(200, $response);
     }
 });
+*/
 $app->get('/attendancehistory', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -1442,24 +1446,24 @@ $app->get('/Attendancesum', 'authenticate', function() use($app) {
     error_log( print_R("Attendancesum entered:\n ", TRUE), 3, LOG);
     error_log( print_R($allGetVars, TRUE), 3, LOG);
 
-    $lastpromoted = '';
     $contactid = '';
+    $theclass = '';
 
     if(array_key_exists('contactid', $allGetVars)){
         $contactid = $allGetVars['contactid'];
     }
-    if(array_key_exists('lastpromoted', $allGetVars)){
-        $lastpromoted = $allGetVars['lastpromoted'];
+    if(array_key_exists('theclass', $allGetVars)){
+        $theclass = $allGetVars['theclass'];
     }
 
-    error_log( print_R("Attendancesum params: contactid: $contactid lastpromoted: $lastpromoted \n ", TRUE), 3, LOG);
+    error_log( print_R("Attendancesum params: contactid: $contactid theclass: $theclass\n ", TRUE), 3, LOG);
 
 
     $response = array();
     $db = new AttendanceDbHandler();
 
     // fetching all user tasks
-    $result = $db->getAttendanceSum( $contactid, $lastpromoted);
+    $result = $db->getAttendanceSum( $contactid, $theclass);
 
     $response["error"] = false;
     $response["attendancesum"] = array();
@@ -1469,12 +1473,30 @@ $app->get('/Attendancesum', 'authenticate', function() use($app) {
         $tmp = array();
         $tmp["contactid"] = $slist["contactid"];
         $tmp["daysAttended"] = $slist["daysAttended"];
+        $tmp["lastPromoted"] = $slist["lastpromoted"];
 
         array_push($response["attendancesum"], $tmp);
 
     }
+    $row_cnt = count($response["attendancesum"]);
+    error_log( print_R("attendancesum cnt: $row_cnt\n ", TRUE), 3, LOG);
 
-    echoRespnse(200, $response);
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        error_log( print_R("Attendancesum fine with $row_cnt\n ", TRUE), 3, LOG);
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Warning in Attendancesum: No records found";
+        error_log( print_R("Attendancesum bad\n ", TRUE), 3, LOG);
+        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
+        error_log( print_R("Attendancesum error\n ", TRUE), 3, LOG);
+        error_log( print_R($response, TRUE), 3, LOG);
+        
+//todo: need to handle 404 data notfound
+        echoRespnse(404, $response);
+    }
+
 });
 
 $app->get('/rrank', 'authenticate', function() {

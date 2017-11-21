@@ -158,6 +158,16 @@
             vm.time = new Date(value.toISOString());
         }, true);
       
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("table-basic-eventcreation started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("table-basic-eventcreation dismissed");
+		$log.debugEnabled(false);
+    });
+      
         activate();
 
         function dateopen($event) {

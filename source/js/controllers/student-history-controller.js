@@ -10,10 +10,11 @@
 //    '$http',
 //    '$location',
 //    '$timeout',
+'$scope',
     'StudentServices'
     ];
 
-    function StudentHistoryController($routeParams, $log, StudentServices) {
+    function StudentHistoryController($routeParams, $log, $scope, StudentServices) {
         /* jshint validthis: true */
         var vmHistory = this;
 
@@ -24,6 +25,15 @@
         vmHistory.path = '../v1/studenthistory/' + $routeParams.id;
         $log.debug('studentid for studenthistory: ' + $routeParams.id);
 
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("studenthistory started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("studenthistory dismissed");
+		$log.debugEnabled(false);
+    });
 
         setGridOptions();
         activate();

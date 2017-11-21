@@ -53,6 +53,16 @@
         vm.getGridLength = getGridLength;
         setGridLength(vm.initialLength);
 
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("table-basic-class started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("table-basic-class dismissed");
+		$log.debugEnabled(false);
+    });
+
 
         setgridOptions();
         activate();

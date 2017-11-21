@@ -74,6 +74,17 @@
         vmstudent.sListPath = '../v1/studentlists';
         vmstudent.rankListPath = '../v1/ranklist';
 
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("editstudent started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("editstudent dismissed");
+		$log.debugEnabled(false);
+    });
+
+
         $log.debug('Routeparam is:');
         $log.debug($routeParams.id);
 

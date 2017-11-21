@@ -35,8 +35,11 @@
         vm.getMonday = getMonday;
         vm.getFormattedDate = getFormattedDate;
         vm.getAttendingCount = getAttendingCount;
+        vm.checkAttendance = checkAttendance;
+        vm.checkAttendanceStats = checkAttendanceStats;
         vm.getActiveTab = getActiveTab;
         vm.setActiveTab = setActiveTab;
+        vm.hasStats = hasStats;
         vm.reload = reload;
         vm.setday = setday;
         vm.DOWlist = [];
@@ -48,6 +51,8 @@
         vm.data = [];
         vm.classes = [];
         vm.radioModel;
+        vm.attendancesum={};
+        vm.showStats='';
 
         var weekday = new Array(7);
         weekday[0]=  "Sunday";
@@ -83,7 +88,19 @@
         vm.SundayOfWeek;
         vm.radioModel;
         vm.checkModel = [];
+        vm.daysSince = '';
+        vm.daysAttended = '';
 
+
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("table-basic-attendance started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("table-basic-attendance dismissed");
+		$log.debugEnabled(false);
+    });
 
         //setGridsize('col-md-12');
         setMonday();
@@ -189,52 +206,65 @@
             $log.debug('selectItem', item, indextoggle, callrefresh);
             var found=false;
             var carddata={};
+            var a = moment();
+            var b;
             
-            for (var i=0, len=vm.attending.length; i < len; i++) {
-                $log.debug('is there?', item, vm.attending[i].attended);
-                if (vm.attending[i].attended == item && indextoggle === true) {
-                    //already there, don't add
-                    //does this actually happen?
-                    carddata = vm.attending[i];
-                    found=true;
-                    break;
-                }
-                if (vm.attending[i].attended == item && indextoggle === false) {
-                    //already there, remove
-                    carddata = vm.attending[i];
-                    carddata.attend = indextoggle;
-                    vm.attending.splice(i,1);
-                    found=true;
-                    break;
-                }
-            }
+            checkAttendance(item).then(function() {
+                $log.debug('checkAttendance returns');
+                b = moment(vm.attendancesum[0].lastPromoted);
+                card.daysSince = a.diff(b, 'days');
+                card.daysAttended = vm.attendancesum[0].daysAttended;
 
-            //add
-            if (found === false && indextoggle === true) {
-                carddata = {
-                    attended: item,
-                    attend: indextoggle,
-                    class: vm.theclass,
-                    theday: vm.todayDOW,
-                    tday: vm.tday,
-                    DOW: getFormattedDate(vm.MondayOfWeek),
-                    student_id: item,
-                    daynum: card.theday,
-                    rank: card.rank,
-                    classid: card.classid
-                };
-                vm.attending.push(carddata);
-            }
-
-            $log.debug('selectedItem', vm.attending);
-            if (carddata != {} && callrefresh) {
-                updateAttendance(carddata).then(function() {
-                    $log.debug('updateAttendance returns');
-                 },function(error) {
-                    $log.debug('updateAttendance',error);
-                    return ($q.reject(error));
+                for (var i=0, len=vm.attending.length; i < len; i++) {
+                    $log.debug('is there?', item, vm.attending[i].attended);
+                    if (vm.attending[i].attended == item && indextoggle === true) {
+                        //already there, don't add
+                        //does this actually happen?
+                        carddata = vm.attending[i];
+                        found=true;
+                        break;
+                    }
+                    if (vm.attending[i].attended == item && indextoggle === false) {
+                        //already there, remove
+                        carddata = vm.attending[i];
+                        carddata.attend = indextoggle;
+                        vm.attending.splice(i,1);
+                        found=true;
+                        break;
+                    }
+                }
+    
+                //add
+                if (found === false && indextoggle === true) {
+                    carddata = {
+                        attended: item,
+                        attend: indextoggle,
+                        class: vm.theclass,
+                        theday: vm.todayDOW,
+                        tday: vm.tday,
+                        DOW: getFormattedDate(vm.MondayOfWeek),
+                        student_id: item,
+                        daynum: card.theday,
+                        rank: card.rank,
+                        classid: card.classid,
+                        daysAttended: vm.attendancesum[0].daysAttended,
+                        daysSince: vm.attendancesum[0].daysSince
+                    };
+                    vm.attending.push(carddata);
+                }
+    
+                    $log.debug('selectedItem', vm.attending);
+                    if (carddata != {} && callrefresh) {
+                        updateAttendance(carddata).then(function() {
+                            $log.debug('updateAttendance returns');
+                         },function(error) {
+                            $log.debug('updateAttendance',error);
+                            return ($q.reject(error));
+                         });
+                    }            
+                    
                  });
-            }            
+            
         }
 
         function hasSelected(item){
@@ -245,6 +275,15 @@
             }
             return false;
         }
+        function hasStats(item){
+            for (var i=0, len=vm.photos.length; i < len; i++) {
+                if (vm.photos[i].studentID == item && vm.showStats == item) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function getAttendingCount(){
             return vm.attending.length;
         }
@@ -319,10 +358,14 @@
                     $log.debug(vm.thisattendance);
                     $log.debug(vm.thisattendance.message);
                     vm.message = vm.thisattendance.message;
-        //            var url = './#/form-layouts-editstudent/id/' + vm.thisattendance.student_id;
-        //            $log.debug(url);
-        //            alert(url);
-        //            $window.location.href = url;
+                    if ((typeof vm.thisattendance === 'undefined' || vm.thisattendance.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: vm.message, delay: 5000});
+                    }
+        
                     refreshtheAttendance().then
                         (function(zdata) {
                          $log.debug('refreshtheAttendance returned', zdata);
@@ -358,7 +401,6 @@
                 vm.dowChoice + '&thelimit=' + 
                 vm.limit + '&theclass=' + 
                 pclass + '&daynum=' + thisdaynum);
-            //var refreshpath = encodeURI('../v1/attendance?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit );
 
             $log.debug('refreshtheAttendance path:', refreshpath);
             
@@ -366,6 +408,17 @@
                     $log.debug('refreshAttendances returned data');
                     $log.debug(data);
                     vm.data = data; 
+                    $log.debug(vm.data.message);
+                    vm.message = vm.data.message;
+                    if ((typeof vm.data === 'undefined' || vm.data.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.warning({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                //        Notification.success({message: vm.message, delay: 5000});
+                    }
+
+                    
                     vm.photos = [];
                     vm.attending = [];
                     for (var i = 0, len=vm.data.attendancelist.length; i < len; i++) {
@@ -394,10 +447,6 @@
                 },
                 function (error) {
                     $log.debug('Caught an error refreshtheAttendance, going to notify:', error); 
-            //              $log.debug('set no data route');
-                    //        $location.url('/v/#/table-basic-attendance');
-               //            var url = '#/table-basic-attendance';
-                //           $window.location.href = url;
                     vm.data = [];
                     vm.photos = [];
                     vm.message = error;
@@ -429,10 +478,6 @@
                 },
                 function (error) {
                     $log.debug('Caught an error attendancehistory:', error); 
-                    //      $log.debug('set no data route');
-                    //        $location.url('/v/#/table-basic-attendance');
-               //            var url = '#/table-basic-attendance';
-                //           $window.location.href = url;
                     vm.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
@@ -560,6 +605,49 @@
                 }
                 );
         }
+        
+        function checkAttendanceStats(thestudent) {
+            vm.showStats = thestudent;
+            var a= moment();
+            var b;
+            checkAttendance(thestudent).then(function() {
+                b = moment(vm.attendancesum[0].lastPromoted);
+                vm.daysSince = a.diff(b, 'days');
+                vm.daysAttended = vm.attendancesum[0].daysAttended;
+            });
+        }
+        function checkAttendance(thestudent) {
+            $log.debug('about checkAttendance ', thestudent);
+            var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
+            $log.debug('pclass:', pclass);
+
+            var path = encodeURI('../v1/Attendancesum?contactid=' + thestudent + '&theclass=' + pclass );
+
+            $log.debug('checkAttendance path:', path);
+            
+            return AttendanceServices.getAttendanceSum(path).then(function (data) {
+                    $log.debug("getAttendanceSum returned data", data);
+                    $log.debug(data);
+                    vm.attendancesum = data.attendancesum;
+                    $log.debug(vm.data.message);
+                    vm.message = vm.data.message;
+                    if ((typeof vm.attendancesum === 'undefined' || vm.attendancesum.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.warning({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                //        Notification.success({message: vm.message, delay: 5000});
+                    }
+                
+                }, function(error) {
+                    $log.debug('Caught an error getAttendanceSum:', error); 
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                }
+                );
+        }
+        
     }
 
 })();

@@ -59,6 +59,15 @@
         vm.headerheight=140;
         vm.getGridLength = getGridLength;
         setGridLength(vm.initialLength);
+  $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+		$log.debugEnabled(true);
+        $log.debug("table-basic-schedule started");
+      
+  });
+  $scope.$on('$destroy', function iVeBeenDismissed() {
+        $log.debug("table-basic-schedule dismissed");
+		$log.debugEnabled(false);
+    });
 
         //having it here sets the options, but the dropdown doesn't map
         setgridOptions();

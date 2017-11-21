@@ -40,7 +40,7 @@
                     <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
                     <div class="input-icon right">
                       <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" 
-                      ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendance()" class="form-control attendance">
+                      ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendance();vm.getAttendanceHistory()" class="form-control attendance">
                         <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option>
                         <option ng-repeat="iter in vm.DOWlist" 
                             ng-selected="iter.MondayOfWeek === vm.dowChoice" 

@@ -12,7 +12,12 @@ class TestingDbHandler {
     private $conn;
 
     function __construct() {
-        require_once dirname(__FILE__) . '/DbConnect.php';
+        global $mode;
+        if ( $mode == 'prod' ) {
+            require_once dirname(__FILE__) . '/DbConnect.php';
+        } else if ( $mode == 'test' ) {
+            require_once dirname(__FILE__) . '/DbConnecttest.php';
+        }
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();

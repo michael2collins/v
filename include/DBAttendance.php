@@ -12,7 +12,12 @@ class AttendanceDbHandler {
     private $conn;
 
     function __construct() {
-        require_once dirname(__FILE__) . '/DbConnect.php';
+        global $mode;
+        if ( $mode == 'prod' ) {
+            require_once dirname(__FILE__) . '/DbConnect.php';
+        } else if ( $mode == 'test' ) {
+            require_once dirname(__FILE__) . '/DbConnecttest.php';
+        }
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
@@ -334,7 +339,7 @@ class AttendanceDbHandler {
             return NULL;
         }
     }
-
+/*
     public function getAttendanceList($thedow = NULL, $thelimit, $theclass = NULL) {
         error_log( print_R("getAttendanceList entered", TRUE), 3, LOG);
     error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
@@ -379,20 +384,29 @@ class AttendanceDbHandler {
             return NULL;
         }
     }
+*/
 
-    public function getAttendanceSum($contactid = NULL, $lastpromoted = NULL) {
-        error_log( print_R("getAttendanceSum entered", TRUE), 3, LOG);
+    public function getAttendanceSum($contactid, $theclass) {
+        error_log( print_R("getAttendanceSum entered: cont: $contactid theclass: $theclass\n ", TRUE), 3, LOG);
 
-        $sql = "SELECT a.ContactId as contactid, sum( a.attended ) as daysAttended ";
-        $sql .= " FROM attendance a, ncontacts c ";
-        $sql .= " where  a.ContactId = c.ID  and a.ContactId = ? and DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(?, '%Y-%m-%d') group by a.ContactId ";
+        $sql = "SELECT a.ContactId as contactid, cr.lastpromoted, sum( a.attended ) as daysAttended ";
+        $sql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt ";
+        $sql .= " WHERE  r.studentid = c.ID and n.id = r.classid and cr.contactid = c.ID ";
+        $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
+        $sql .= " and a.ContactId = c.ID and a.classid = n.id and a.ContactId = ? ";
+
+        if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
+            $sql .= " and n.class = '" . $theclass . "'";
+        }
 
         $schoolfield = "c.studentschool";
         $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getAttendanceSum sql after security: $sql", TRUE), 3, LOG);
 
+        $sql .= "  and DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d') group by a.ContactId, cr.lastpromoted ";
+
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("ss", $contactid, $lastpromoted);
+            $stmt->bind_param("s", $contactid);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -419,13 +433,13 @@ class AttendanceDbHandler {
 
 
         $sumsql = " select class, classid, studentid, currentrank, firstname, ";
-        $sumsql .= " lastname, pictureurl, downum, readyForNextRank, sum( attended) as attended from ( ";
+        $sumsql .= " lastname, pictureurl, readyForNextRank, DOWnum, sum( attended) as attended from ( ";
 
-        $sql = "SELECT  n.class, r.classid, r.studentid, s.currentrank, s.firstname, ";
-        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum,s.readyForNextRank, 0 as attended";
-        $sql .= " FROM  studentregistration  r, nclass n, ncontacts s ";
-        $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid ";
-//        $sql .= " and n.class = '" . $theclass . "'";
+        $sql = "SELECT  n.class, r.classid, r.studentid, cr.currentrank, s.firstname, ";
+        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum,s.readyForNextRank, 0 as attended ";
+        $sql .= " FROM  studentregistration  r, nclass n, ncontacts s , ncontactrank cr, notherclass no, testtypes tt ";
+        $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid and cr.contactid = s.ID ";
+        $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
             $sql .= " and n.class = '" . $theclass . "'";
@@ -442,18 +456,17 @@ class AttendanceDbHandler {
         $heresql .= " SELECT n.class, ";
         $heresql .= " a.classid, ";
         $heresql .= " a.ContactId as studentid, "; 
-        $heresql .= " c.currentrank,";
+        $heresql .= " cr.currentrank,";
         $heresql .= " c.firstname, ";
         $heresql .= " c.lastname, ";
         $heresql .= " c.pictureurl, ";
         $heresql .= " a.DOWnum,  c.readyForNextRank, ";
         $heresql .= " a.attended ";
-        $heresql .= " FROM attendance a, ncontacts c, nclass n ";
-        $heresql .= " where (1 = 1) and a.ContactId = c.ID  and a.classid = n.id ";
-  //      $heresql .= " and mondayofweek = '" . $thedow . "'";
-//        $heresql .= " and n.class = '" . $theclass . "'";
+        $heresql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt ";
+        $heresql .= " WHERE  r.studentid = c.ID and n.id = r.classid and cr.contactid = c.ID ";
+        $heresql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
         $heresql .= " and a.downum = " . $daynum;
-        $heresql .= " and a.attended = 1 ";
+        $heresql .= " and a.attended = 1 and a.ContactId = c.ID and a.classid = n.id ";
 
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $heresql .= " and mondayofweek = '" . $thedow . "'";
