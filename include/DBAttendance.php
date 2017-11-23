@@ -436,7 +436,7 @@ class AttendanceDbHandler {
         $sumsql .= " lastname, pictureurl, readyForNextRank, DOWnum, sum( attended) as attended from ( ";
 
         $sql = "SELECT  n.class, r.classid, r.studentid, cr.currentrank, s.firstname, ";
-        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum,s.readyForNextRank, 0 as attended ";
+        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, r.readyForNextRank, 0 as attended ";
         $sql .= " FROM  studentregistration  r, nclass n, ncontacts s , ncontactrank cr, notherclass no, testtypes tt ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid and cr.contactid = s.ID ";
         $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
@@ -460,7 +460,7 @@ class AttendanceDbHandler {
         $heresql .= " c.firstname, ";
         $heresql .= " c.lastname, ";
         $heresql .= " c.pictureurl, ";
-        $heresql .= " a.DOWnum,  c.readyForNextRank, ";
+        $heresql .= " a.DOWnum,  r.readyForNextRank, ";
         $heresql .= " a.attended ";
         $heresql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt ";
         $heresql .= " WHERE  r.studentid = c.ID and n.id = r.classid and cr.contactid = c.ID ";
@@ -832,32 +832,28 @@ class AttendanceDbHandler {
     /**
      * set student next rank
      */
-    public function setStudentNextRank($sc_ContactId, $sc_ready
+    public function setStudentNextRank($sc_ContactId, $sc_ready, $sc_theclass
                                    ) {
         $num_affected_rows = 0;
-        global $school;
 
-        $sql = "UPDATE ncontacts  set ";
+        $sql = "UPDATE studentregistration  set ";
         $sql .= " readyForNextRank = ? ";
-        $sql .= " where ID = ? and studentschool = ?";
+        $sql .= " where studentid = ?  and classid = ? ";
 
         error_log( print_R($sql . "\n", TRUE), 3, LOG);
-        error_log( print_R($sc_ContactId . "\n", TRUE), 3, LOG);
-        error_log( print_R($sc_ready . "\n", TRUE), 3, LOG);
+        error_log( print_R("id $sc_ContactId \n", TRUE), 3, LOG);
+        error_log( print_R("ready $sc_ready \n", TRUE), 3, LOG);
+        error_log( print_R("class $sc_theclass \n", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-//            error_log( print_R("student setStudentNextRank set prepared", TRUE), 3, LOG);
-            $stmt->bind_param("iis",
+            $stmt->bind_param("sss",
                               $sc_ready,
                               $sc_ContactId,
-                              $school
+                              $sc_theclass
                              );
- //           error_log( print_R("student setStudentNextRank set bind", TRUE), 3, LOG);
             $stmt->execute();
-//            error_log( print_R("student setStudentNextRank set execute", TRUE), 3, LOG);
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-//            error_log( print_R("student setStudentNextRank set done", TRUE), 3, LOG);
 
         } else {
             error_log( print_R("student setStudentNextRank update failed", TRUE), 3, LOG);

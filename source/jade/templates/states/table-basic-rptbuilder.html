@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<div class="panel panel-green" ng-controller="RptBuilderController as vmrpt">
+   <div class="panel-heading">Test Documents</div>
+   <div class="panel-body ">
+      <div class="col-md-12">
+         <form action="" novalidate name="edittemplate" class="form-horizontal">
+            <div class="form-body pal">
+               <div class="row col-md-12" style="height: 70px;">
+                  <div class="col-md-3">
+                     <div class="select-box">
+                        <ui-select ng-model="vmrpt.templatenameSelected" theme="bootstrap" reset-search-input="false" on-select="vmrpt.gettemplateDetails($item)" style="width: 300px;" title="Choose an existing test document" append-to-body="false">
+                           <ui-select-match placeholder="Pick existing test document...">{{$select.selected.templatename}}</ui-select-match>
+                           <ui-select-choices repeat="template in vmrpt.templatelist | filter: $select.search track by $index" refresh="vmrpt.getTemplateNames($select.search)" refresh-delay="0">
+                              <div ng-bind-html="template.templatename | highlight: $select.search"></div>
+                           </ui-select-choices>
+                        </ui-select>
+                     </div>
+                  </div>
+                  <div class="col-md-3">
+                     <button ng-click="vmrpt.updatetemplate(vmrpt.templatename);" class="btn btn-green btn-default ">Save Changes for {{vmrpt.templatename}}</button>
+                  </div>
+                  <div class="col-md-3">
+                     <button ng-click="vmrpt.removetemplate(vmrpt.templatename);" class="btn btn-green btn-default ">Remove {{vmrpt.templatename}}</button>
+                  </div>
+                  <div class="col-md-3">
+                     <button ng-click="vmrpt.gettemplateDetails(vmrpt.templatename)" class="btn btn-green btn-default ">Refresh Display</button>
+                  </div>
+               </div>
+               <div class="row">
+                  <div class="col-md-4">
+                     <div ng-class="{'has-error': edittemplate.inputtemplate.$invalid, 'has-success': !edittemplate.inputtemplate.$invalid}" class="">
+                        <div class="input-icon right col-md-12">
+                           <i data-hover="tooltip" data-original-title="New Test Doc" ng-show="edittemplate.inputtemplate.$dirty" ng-class="edittemplate.inputtemplate.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                           <input id="input_template" type="text" placeholder="New Document Name" name="inputtemplate" ng-model="vmrpt.templatename" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 2500, 'blur': 0 } }" class="form-control">
+                        </div>
+                        <div style="color:maroon" role="alert" ng-messages="edittemplate.inputtemplate.$error" class="has-error">
+                           <div ng-message="required">You did not enter a field</div>
+                           <div ng-message="minlength">Your field is too short</div>
+                           <div ng-message="maxlength">Your field is too long</div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="col-md-6">
+                     <button type="button" ng-click="vmrpt.createtemplate(vmrpt.templatename);" class="btn btn-default btn-blue">Create template for: {{vmrpt.templatename}}</button>
+                  </div>
+               </div>
+            </div>
+         </form>
+      </div>
+      <div class="col-md-12">
+         <h1>Editor</h1>
+         <div class="col-md-12 row">
+            <div class="col-md-4">
+               <h2>Header Logo</h2>
+               <form novalidate>
+                  Pick an image-file: <input type="file" ng-model="vmrpt.headerimages" accept="image/*" multiple app-filereader /><br />
+                  <img style="max-width:300px;" ng-repeat="image in vmrpt.headerimages" ng-src="{{image}}" /><br />
+                  <button ng-click="vmrpt.headerimages = null" ng-show="!!vmrpt.headerimages">Remove {{vmrpt.headerimages.length}} images</button><br />
+                  <button ng-click="vmrpt.setHeaderLogo();" ng-show="!!vmrpt.headerimages">Add to Header</button><br />
+               </form>
+            </div>
+            <div class="col-md-4">
+               <h2>Footer Logo</h2>
+               <form novalidate>
+                  Pick an image-file: <input type="file" ng-model="vmrpt.footerimages" accept="image/*" multiple app-filereader /><br />
+                  <img style="max-width:300px;" ng-repeat="image in vmrpt.footerimages" ng-src="{{image}}" /><br />
+                  <button ng-click="vmrpt.footerimages = null" ng-show="!!vmrpt.footerimages">Remove {{vmrpt.footerimages.length}} images</button><br />
+                  <button ng-click="vmrpt.setFooterLogo();" ng-show="!!vmrpt.footerimages">Add to Footer</button><br />
+               </form>
+            </div>
+            <div class="col-md-4">
+               <h2>Background Images</h2>
+               <form novalidate>
+                  Pick an image-file: <input type="file" ng-model="vmrpt.backgroundimages" accept="image/*" multiple app-filereader /><br />
+                  <img style="max-width:300px;" ng-repeat="image in vmrpt.backgroundimages" ng-src="{{image}}" /><br />
+                  <button ng-click="vmrpt.backgroundimages = null" ng-show="!!vmrpt.backgroundimages">Remove {{vmrpt.backgroundimages.length}} images</button><br />
+                  <button ng-click="vmrpt.setBackgroundImage();" ng-show="!!vmrpt.backgroundimages">Set as Background</button><br />
+               </form>
+            </div>
+         </div>
+         <div class="col-md-12 row">
+            <div class="input-icon right col-md-2">
+               <label for="maxHeaderHeight">Max Header Height</label>
+               <input id="maxHeaderHeight" type="number" name="maxHeaderHeight" ng-model="vmrpt.maxHeaderHeight" class="form-control">
+               </input>
+            </div>
+            <div class="input-icon right col-md-2">
+               <label for="maxFooterHeight">Max Footer Height</label>
+               <input id="maxFooterHeight" type="number" name="maxFooterHeight" ng-model="vmrpt.maxFooterHeight" class="form-control">
+               </input>
+            </div>
+            <div class="input-icon right col-md-2">
+               <label for="pageMarginL">Page Margin Left</label>
+               <input id="pageMarginL" type="number" name="pageMarginL" ng-model="vmrpt.pageMarginL" class="form-control">
+               </input>
+            </div>
+            <div class="input-icon right col-md-2">
+               <label for="pageMarginT"> Top</label>
+               <input id="pageMarginT" type="number" name="pageMarginT" ng-model="vmrpt.pageMarginT" class="form-control">
+               </input>
+            </div>
+            <div class="input-icon right col-md-2">
+               <label for="pageMarginR"> Right</label>
+               <input id="pageMarginR" type="number" name="pageMarginR" ng-model="vmrpt.pageMarginR" class="form-control">
+               </input>
+            </div>
+            <div class="input-icon right col-md-2">
+               <label for="pageMarginB"> Bottom</label>
+               <input id="pageMarginB" type="number" name="pageMarginB" ng-model="vmrpt.pageMarginB" class="form-control">
+               </input>
+            </div>
+         </div>
+         <div class="col-md-12 row">
+            <div class="input-icon right col-md-3">
+               <label for="pagesize">Pagesize</label>
+               <select id="pagesize" type="text" name="pagesize" ng-model="vmrpt.pageSize" required ng-change(vmrpt.calcsizes();) class="form-control">
+                     <option ng-repeat="iter in vmrpt.pageSizes" ng-selected="{{iter==vmrpt.pageSize}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                     </select>
+            </div>
+            <div class="input-icon right col-md-3">
+               <label for="orientation">Orientation</label>
+               <select id="orientation" type="text" name="orientation" ng-model="vmrpt.pageOrientation" required ng-change(vmrpt.calcsizes();) class="form-control">
+                     <option ng-repeat="iter in vmrpt.pageOrientations" ng-selected="{{iter==vmrpt.pageOrientation}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                     </select>
+            </div>
+            <div class="input-icon right col-md-3">
+               <label for="pagebreak">Page Break?</label>
+               <select id="pagebreak" type="text" name="pagebreak" ng-model="vmrpt.pagebreak" required class="form-control">
+                     <option ng-repeat="iter in vmrpt.pagebreaks" ng-selected="{{iter==vmrpt.pagebreak}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
+                     </select>
+            </div>
+         </div>
+         <hr/>
+         <div text-angular-toolbar name="htmlcontenttools"></div>
+         <div class="col-md-12 row">
+            <div class="col-md-1">
+               <button type="button" ta-button ng-click="vmrpt.refresHtml()">Refresh</button>
+            </div>
+            <div class="col-md-1">
+               <button type="button" ta-button ng-click="vmrpt.htmlcontentreset()">Reset</button>
+            </div>
+            <div class="col-md-1">
+               <button type="button" ta-button ng-click="vmrpt.htmlcontentclear()">clear</button>
+            </div>
+            <div class="col-md-1">
+               <button type="button" ta-button ng-click="vmrpt.doPDF()">Download PDF</button>
+            </div>
+         </div>
+         <form name="validationForm" ng-submit="vmrpt.htmlcontentsubmit()">
+            <div id="testValidationHeader">
+               <text-angular class="convert" name="testValidationHeader" ng-model="vmrpt.htmlcontentdata.htmlcontentheader" tabindex="3" placeholder="header placeholder" ta-unsafe-sanitizer="true" ta-default-wrap="p" ta-target-toolbars='htmlcontenttools' ng-model-options="{debounce: 10}">
+               </text-angular>
+            </div>
+            <text-angular class="convert" name="testValidation" ng-model="vmrpt.htmlcontentdata.htmlcontent" tabindex="3" placeholder="Body placeholder" ta-unsafe-sanitizer="true" ta-default-wrap="p" ta-target-toolbars='htmlcontenttools' ng-model-options="{debounce: 10}">
+            </text-angular>
+            <div id="testValidationFooter">
+               <text-angular class="convert" name="testValidationFooter" ng-model="vmrpt.htmlcontentdata.htmlcontentfooter" tabindex="3" placeholder="footer placeholder" ta-unsafe-sanitizer="true" ta-default-wrap="p" ta-target-toolbars='htmlcontenttools' ng-model-options="{debounce: 10}">
+               </text-angular>
+            </div>
+            <div id="convertthis" class="convert" ta-bind name="testValidation" ng-model="vmrpt.htmlcontentdata.htmlcontentall" placeholder="test placeholder" ng-model-options="{debounce: 10}"></div>
+         </form>
+      </div>
+   </div>
+   <div class="panel-footer" id="iframeContainer"></div>
+</div>

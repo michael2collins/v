@@ -1,4 +1,4 @@
-(function() {
+(function(window,angular) {
     'use strict';
 
     angular
@@ -14,13 +14,25 @@
     '$q',
     '$scope',
     '$route',
-    'Notification'
+    'Notification',
+    'moment',
+    'Util'
     ];
 
-    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, $location, $window, $q, $scope, $route, Notification) {
+    function AttendanceTableBasicController($routeParams, $log, AttendanceServices, 
+        $location, $window, $q, $scope, $route, Notification, moment, Util) {
         /* jshint validthis: true */
 
         var vm=this;
+        var $ = angular.element;
+
+       $.fn.Data.Portlet('table-basic-attendance.js');
+    
+        $('.portlet-scroll').slimScroll({
+            "height": "250",
+            "alwaysVisible": true
+        });
+
         
         vm.refreshtheAttendance = refreshtheAttendance;
         vm.getAttendanceHistory = getAttendanceHistory;
@@ -47,6 +59,7 @@
         vm.limits = [10,20,50,100,200,500];
         vm.dowChoice ='';
         vm.theclass ='';
+        vm.theclassid ='';
         vm.gridsize;
         vm.data = [];
         vm.classes = [];
@@ -389,8 +402,6 @@
                 });
         }
 
-
-
         function refreshtheAttendance() {
             $log.debug('refreshtheAttendance entered with radioModel', vm.radioModel);
             var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
@@ -491,7 +502,6 @@
 
         }
 
-        
         function getDOW() {
             return AttendanceServices.getDOW().then(function(data){
                     $log.debug('getDOW returned data');
@@ -504,10 +514,11 @@
         function fillClassList() {
             vm.classes=[];
             for (var i=0; i < vm.Schedulelist.length; i++) {
-               $log.debug('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
+/*               $log.debug('DayOfWeek',vm.Schedulelist[i].DayOfWeek);
                $log.debug('TimeRange',vm.Schedulelist[i].TimeRange);
                $log.debug('timestart',vm.Schedulelist[i].TimeStart);
                $log.debug('timeend',vm.Schedulelist[i].TimeEnd);
+              */ 
                vm.classes.push(vm.Schedulelist[i] );
             }
             
@@ -594,7 +605,9 @@
         function setStudentReadyNextRank(thestudent,readyness) {
             $log.debug('about setStudentReadyNextRank ', thestudent, readyness);
             var path='../v1/readynextrank/' + thestudent;
-            return AttendanceServices.setStudentReadyNextRank(path, readyness).then(function (data) {
+            var theclassid = Util.getByValue(vm.classes, vm.theclass, 'Description', 'classid');
+            
+            return AttendanceServices.setStudentReadyNextRank(path, readyness, theclassid).then(function (data) {
                 $log.debug("setStudentReadyNextRank returned data", data);
                 $log.debug(data);
                 }, function(error) {
@@ -611,7 +624,8 @@
             var a= moment();
             var b;
             checkAttendance(thestudent).then(function() {
-                b = moment(vm.attendancesum[0].lastPromoted);
+                b = moment((typeof(vm.attendancesum[0]) === 'undefined' ||
+                    vm.attendancesum[0].lastPromoted === null) ? '01-01-1900' : vm.attendancesum[0].lastPromoted);
                 vm.daysSince = a.diff(b, 'days');
                 vm.daysAttended = vm.attendancesum[0].daysAttended;
             });
@@ -650,4 +664,4 @@
         
     }
 
-})();
+})(window,window.angular);

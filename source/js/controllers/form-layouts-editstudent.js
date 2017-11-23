@@ -13,10 +13,12 @@
     '$location',
     'Notification',
     'ClassServices',
-    '_'
+    '_',
+    '$q'
     ];
 
-    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, $log, $location,Notification,ClassServices,_) {
+    function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, 
+        $log, $location,Notification,ClassServices,_,$q) {
         /* jshint validthis: true */
         var vmstudent = this;
         var $ = angular.element;
@@ -92,8 +94,6 @@
             opened: false
         };
 
-        //        $.fn.Data.Portlet();
-        //        setHeight();
         setLists();
         getAllZips();
         getStudentLists();
@@ -179,23 +179,35 @@
             return StudentServices.getStudent(vmstudent.path).then(function (data) {
                 $log.debug('getStudent returned data');
                 $log.debug(data.data);
-                StudentServices.setTheStudent(data.data);
-                vmstudent.students = data.data;
-                $log.debug('studen pic url', vmstudent.students.pictureurl);
-                if (_.isEmpty(vmstudent.students.pictureurl)) {
-                    $log.debug('empty picture');
-                    vmstudent.students.pictureurldecache = 'missingstudentpicture.png';
-                } else {
-                    vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
-                }
-                $log.debug('get Birthday:', vmstudent.students.Birthday);
-                if (_.isEmpty(vmstudent.students.Birthday)) {
-                    vmstudent.students.Birthday = getBirthday(new Date());
-                } else {
-                    vmstudent.students.Birthday = getBirthday(vmstudent.students.Birthday);
-                }
 
-                $log.debug('studen pic url decache', vmstudent.students.pictureurldecache);
+                vmstudent.students = data.data;
+
+                $log.debug(vmstudent.students.message);
+                vmstudent.message = vmstudent.students.message;
+                if ((typeof vmstudent.students === 'undefined' || vmstudent.students.error === true)  
+                        && typeof data !== 'undefined') {  
+                    Notification.error({message: vmstudent.message, delay: 5000});
+                    $q.reject(data);
+                } else {
+                    Notification.success({message: vmstudent.message, delay: 5000});
+                    StudentServices.setTheStudent(data.data);
+                    $log.debug('studen pic url', vmstudent.students.pictureurl);
+                    if (_.isEmpty(vmstudent.students.pictureurl)) {
+                        $log.debug('empty picture');
+                        vmstudent.students.pictureurldecache = 'missingstudentpicture.png';
+                    } else {
+                        vmstudent.students.pictureurldecache = vmstudent.students.pictureurl +  '?decache=' + Math.random();
+                    }
+                    $log.debug('get Birthday:', vmstudent.students.Birthday);
+                    if (_.isEmpty(vmstudent.students.Birthday)) {
+                        vmstudent.students.Birthday = getBirthday(new Date());
+                    } else {
+                        vmstudent.students.Birthday = getBirthday(vmstudent.students.Birthday);
+                    }
+    
+                    $log.debug('studen pic url decache', vmstudent.students.pictureurldecache);
+                }
+                
                 return vmstudent.students;
             },function(error) {
                     $log.debug('getStudent',error);

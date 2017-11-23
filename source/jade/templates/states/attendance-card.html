@@ -35,9 +35,9 @@
   <button type="button" 
     data-ng-click="mother.vm.checkAttendanceStats(card.studentID)" 
     class="mbm btn btn-default btn-sm">Stats?</button>
-<!--    <div ng-show="mother.vm.hasStats(card.studentID)"> -->
-<div>
+    <div ng-show="mother.vm.hasStats(card.studentID)">
         <p class="mls"       data-ng-if="mother.vm.hasStats(card.studentID)">Time In?: {{mother.vm.daysSince}}</p>
         <p class="mls"       data-ng-if="mother.vm.hasStats(card.studentID)">Attend: {{mother.vm.daysAttended}}</p>
+        <p class="mls"       data-ng-if="mother.vm.hasStats(card.studentID)">Ready?: {{card.readyness}}</p>
     </div>
 </div>        

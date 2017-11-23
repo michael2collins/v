@@ -900,12 +900,8 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
     // fetch task
     $result = $db->getStudent($student_id);
 
-    if ($result != NULL) {
+    if ($result["ID"] > 0) {
         $response["error"] = false;
-        //                $response["id"] = $result["id"];
-        //                $response["task"] = $result["task"];
-        //                $response["status"] = $result["status"];
-        //                $response["createdAt"] = $result["created_at"];
         $response["ID"] = $result["ID"];
         $response["LastName"] = $result["LastName"];
         $response["FirstName"] = $result["FirstName"];
@@ -920,19 +916,12 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
         $response["ZIP"] = $result["ZIP"];
         $response["Notes"] = $result["Notes"];
         $response["Birthday"] = $result["Birthday"];
-        $response["NewRank"] = $result["NewRank"];
         $response["BeltSize"] = $result["BeltSize"];
-        $response["CurrentRank"]= $result["CurrentRank"];
-        $response["LastPromoted"] = $result["LastPromoted"];
         $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
-        //error_log( print_R("get student instructor payment free:" + $response["InstructorPaymentFree"], TRUE ));
         $response["ContactType"] = $result["ContactType"];
         $response["include"] = $result["include"];
-        $response["InstructorFlag"] = $result["InstructorFlag"];
         $response["quickbooklink"] = $result["quickbooklink"];
         $response["instructorTitle"] = $result["instructorTitle"];
-        $response["testDate"]= $result["testDate"];
-        $response["testTime"] = $result["testTime"];
         $response["bdayinclude"] = $result["bdayinclude"];
         $response["sex"] = $result["sex"];
         $response["medicalConcerns"] = $result["medicalConcerns"];
@@ -940,13 +929,11 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
         $response["ShirtSize"] = $result["ShirtSize"];
         $response["phoneExt"] = $result["phoneExt"];
         $response["altPhoneExt"] = $result["altPhoneExt"];
-        $response["CurrentReikiRank"] = $result["CurrentReikiRank"];
         $response["StudentSchool"] = $result["StudentSchool"];
         $response["EmergencyContact"] = $result["EmergencyContact"];
-        $response["CurrentIARank"] = $result["CurrentIARank"];
-        $response["ReadyForNextRank"] = $result["ReadyForNextRank"];
         $response["pictureurl"] = $result["pictureurl"];
         $response["nextScheduledTest"] = $result["nextScheduledTest"];
+        $response["message"] = "Student retrieved";
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
@@ -1045,13 +1032,8 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     $ShirtSize = $student->ShirtSize;
     $BeltSize = $student->BeltSize;
     $InstructorPaymentFree = $student->InstructorPaymentFree;
-    $ReadyForNextRank = $student->ReadyForNextRank;
-    $InstructorFlag = $student->InstructorFlag;
     $instructorTitle = $student->instructorTitle;
-    $CurrentRank = $student->CurrentRank;
-    $CurrentReikiRank = $student->CurrentReikiRank;
     $pictureurl = $student->pictureurl;
-    $CurrentIARank = $student->CurrentIARank;
 
     error_log( print_R("before update\n", TRUE ), 3, LOG);
 
@@ -1092,13 +1074,8 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
                                  $ShirtSize,
                                  $BeltSize,
                                  $InstructorPaymentFree,
-                                 $ReadyForNextRank,
-                                 $InstructorFlag,
                                  $instructorTitle,
-                                 $CurrentRank,
-                                 $CurrentReikiRank,
-                                 $pictureurl,
-                                 $CurrentIARank
+                                 $pictureurl
 
                                 );
     if ($result) {
@@ -1299,16 +1276,12 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["State"] = (empty($slist["State"]) ? "NULL" : $slist["State"]);
         $tmp["ZIP"] = (empty($slist["ZIP"]) ? "NULL" : $slist["ZIP"]);
         $tmp["Notes"] = (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
-        $tmp["Newrank"] = (empty($slist["Newrank"]) ? "NULL" : $slist["Newrank"]);
         $tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
-        $tmp["CurrentRank"] = (empty($slist["CurrentRank"]) ? "NULL" : $slist["CurrentRank"]);
         $tmp["InstructorPaymentFree"] = (empty($slist["InstructorPaymentFree"]) ? "NULL" : $slist["InstructorPaymentFree"]);
         $tmp["ContactType"] = (empty($slist["ContactType"]) ? "NULL" : $slist["ContactType"]);
         $tmp["include"] = (empty($slist["include"]) ? "NULL" : $slist["include"]);
-        $tmp["InstructorFlag"] = (empty($slist["InstructorFlag"]) ? "NULL" : $slist["InstructorFlag"]);
         $tmp["quickbooklink"] = (empty($slist["quickbooklink"]) ? "NULL" : $slist["quickbooklink"]);
         $tmp["instructorTitle"] = (empty($slist["instructorTitle"]) ? "NULL" : $slist["instructorTitle"]);
-        $tmp["testTime"] = (empty($slist["testTime"]) ? "NULL" : $slist["testTime"]);
         $tmp["bdayinclude"] = (empty($slist["bdayinclude"]) ? "NULL" : $slist["bdayinclude"]);
         $tmp["sex"] = (empty($slist["sex"]) ? "NULL" : $slist["sex"]);
         $tmp["medicalConcerns"] = (empty($slist["medicalConcerns"]) ? "NULL" : $slist["medicalConcerns"]);
@@ -1316,11 +1289,8 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["ShirtSize"] = (empty($slist["ShirtSize"]) ? "NULL" : $slist["ShirtSize"]);
         $tmp["phoneExt"] = (empty($slist["phoneExt"]) ? "NULL" : $slist["phoneExt"]);
         $tmp["altPhoneExt"] = (empty($slist["altPhoneExt"]) ? "NULL" : $slist["altPhoneExt"]);
-        $tmp["CurrentReikiRank"] = (empty($slist["CurrentReikiRank"]) ? "NULL" : $slist["CurrentReikiRank"]);
         $tmp["StudentSchool"] = (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
         $tmp["EmergencyContact"] = (empty($slist["EmergencyContact"]) ? "NULL" : $slist["EmergencyContact"]);
-        $tmp["CurrentIARank"] = (empty($slist["CurrentIARank"]) ? "NULL" : $slist["CurrentIARank"]);
-        $tmp["ReadyForNextRank"] = (empty($slist["ReadyForNextRank"]) ? "NULL" : $slist["ReadyForNextRank"]);
         $tmp["nextScheduledTest"] = (empty($slist["nextScheduledTest"]) ? "NULL" : $slist["nextScheduledTest"]);
         $tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $slist["contactpictureurl"]);
         $tmp["nclassid"] = (empty($slist["nclassid"]) ? "NULL" : $slist["nclassid"]);
@@ -1347,8 +1317,6 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["rankalphasortkey"] = (empty($slist["rankalphasortkey"]) ? "NULL" : $slist["rankalphasortkey"]);
         $tmp["age"] = (empty($slist["age"]) ? "100" : $slist["age"]);
         $tmp["birthday"] = (empty($slist["birthday"]) ? "1900-01-01" : $slist["birthday"]);
-        $tmp["lastpromoted"] = (empty($slist["lastpromoted"]) ? "1900-01-01" : $slist["lastpromoted"]);
-        $tmp["testdate"] = (empty($slist["testdate"]) ? "1900-01-01" : $slist["testdate"]);
         $tmp["lastpaymentdate"] = (empty($slist["lastpaymentdate"]) ? "1900-01-01" : $slist["lastpaymentdate"]);
         $tmp["nextpaymentdate"] = (empty($slist["nextpaymentdate"]) ? "1900-01-01" : $slist["nextpaymentdate"]);
                     
@@ -1366,16 +1334,12 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["State"] = "NULL";
         $tmp["ZIP"] = "NULL";
         $tmp["Notes"] = "NULL";
-        $tmp["Newrank"] = "NULL";
         $tmp["BeltSize"] = "NULL";
-        $tmp["CurrentRank"] = "NULL";
         $tmp["InstructorPaymentFree"] = "NULL";
         $tmp["ContactType"] = "NULL";
         $tmp["include"] = "NULL";
-        $tmp["InstructorFlag"] = "NULL";
         $tmp["quickbooklink"] = "NULL";
         $tmp["instructorTitle"] = "NULL";
-        $tmp["testTime"] = "NULL";
         $tmp["bdayinclude"] = "NULL";
         $tmp["sex"] = "NULL";
         $tmp["medicalConcerns"] = "NULL";
@@ -1383,11 +1347,8 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["ShirtSize"] = "NULL";
         $tmp["phoneExt"] = "NULL";
         $tmp["altPhoneExt"] = "NULL";
-        $tmp["CurrentReikiRank"] = "NULL";
         $tmp["StudentSchool"] = "NULL";
         $tmp["EmergencyContact"] = "NULL";
-        $tmp["CurrentIARank"] = "NULL";
-        $tmp["ReadyForNextRank"] = "NULL";
         $tmp["nextScheduledTest"] = "NULL";
         $tmp["contactpictureurl"] = "NULL";
         $tmp["nclassid"] = "NULL";
@@ -1414,8 +1375,6 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["rankalphasortkey"] = "NULL";
         $tmp["age"] = "NULL";
         $tmp["birthday"] = "NULL";
-        $tmp["lastpromoted"] = "NULL";
-        $tmp["testdate"] = "NULL";
         $tmp["lastpaymentdate"] = "NULL";
         $tmp["nextpaymentdate"] = "NULL";
         }

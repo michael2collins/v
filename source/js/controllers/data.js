@@ -20,6 +20,7 @@ var jQuery;
         '/table-basic-classpgm': {title:'Class Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Program']},
         '/table-basic-classrank': {title:'Class Rank Maintenance', 'breadcrumb':['Manage Studio', 'Class Rank']},
         '/table-basic-classtest': {title:'Class Test Maintenance', 'breadcrumb':['Manage Studio', 'Class Test']},
+        '/table-basic-rptbuilder': {title:'Report Builder', 'breadcrumb':['Manage Studio', 'Report Builder']},
         '/table-basic-class': {title:'Class Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-eventcreation': {title:'Event Creation', 'breadcrumb':['Students', 'Event Creation']},
         '/table-basic-testcandidates': {title:'Test Creation', 'breadcrumb':['Testing', 'Test Creation']},

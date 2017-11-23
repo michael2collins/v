@@ -281,6 +281,9 @@
             .when('/table-basic-testcandidates', {
                 templateUrl: 'templates/states/table-basic-testcandidates.html'
             })
+            .when('/table-basic-rptbuilder', {
+                templateUrl: 'templates/states/table-basic-rptbuilder.html'
+            })
             .when('/table-basic-schedule', {
                 templateUrl: 'templates/states/table-basic-schedule.php'
             })

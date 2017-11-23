@@ -275,26 +275,14 @@ class TestingDbHandler {
 
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
 
-//        $sql = "SELECT * FROM testcandidatelist where testname = ? and testdescription = ?";
-/*
-$sql = " Select x.*, j.daysAttended from (
-           SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, sum( a.attended ) as daysAttended 
-            FROM attendance a
-        right outer join ncontactrank cr on (a.ContactId = cr.contactID )
-            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d') 
-            group by a.ContactId, cr.ranktype, cr.currentrank
-            ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype and x.currentrank = j.currentrank)
-        where x.testname = ? and x.testdescription = ?
-        ";
-*/
 $sql = "Select p.classcat, p.pgmcat, p.agecat, c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey from (
            SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, sum( a.attended ) as daysAttended
             FROM attendance a
         right outer join ncontactrank cr on (a.ContactId = cr.contactID )
             where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
             group by a.ContactId, cr.ranktype, cr.currentrank
-            ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype and x.currentrank = j.currentrank)
-            inner join ranklist r on (x.ranktype = r.ranktype and x.currentrank = r.ranklist)
+            ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype )
+            inner join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist)
 Inner join nclass c on (x.classwas = c.id)
 Inner join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid )
 Inner join nclasslist l on (l.id = p.pgmid)

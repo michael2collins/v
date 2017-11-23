@@ -624,49 +624,11 @@ class StudentDbHandler {
      */
     public function getStudent($student_id) {
         
-        //todo: currentrank remove
-        //todo: move readyfornext rank to studentregistration
-        $sql = "SELECT
-                   t.ID,
-                   t.LastName,
-                   t.FirstName,
-                   t.Email,
-                   t.Email2,
-                   t.Parent,
-                   t.Phone,
-                   t.AltPhone,
-                   t.Address,
-                   t.City,
-                   t.State,
-                   t.ZIP,
-                   t.Notes,
-                   DATE_FORMAT(t.Birthday, '%Y-%m-%d'),
-                   t.NewRank,
-                   t.BeltSize,
-                   t.CurrentRank,
-                   t.LastPromoted,
-                   t.InstructorPaymentFree,
-                   t.ContactType,
-                   t.include,
-                   t.InstructorFlag,
-                   t.quickbooklink,
-                   t.instructorTitle,
-                   t.testDate,
-                   t.testTime,
-                   t.bdayinclude,
-                   t.sex,
-                   t.medicalConcerns,
-                   t.GuiSize,
-                   t.ShirtSize,
-                   t.phoneExt,
-                   t.altPhoneExt,
-                   t.CurrentReikiRank,
-                   t.StudentSchool,
-                   t.EmergencyContact,
-                   t.CurrentIARank,
-                   t.ReadyForNextRank,
-                   t.pictureurl,
-                   t.nextScheduledTest
+        $sql = "SELECT t.ID,t.LastName,t.FirstName,t.Email,t.Email2,t.Parent,t.Phone,
+            t.AltPhone,t.Address,t.City,t.State,t.ZIP,t.Notes,DATE_FORMAT(t.Birthday, '%Y-%m-%d'),
+            t.BeltSize,t.InstructorPaymentFree,t.ContactType,t.include,t.quickbooklink,t.instructorTitle,
+            t.bdayinclude,t.sex,t.medicalConcerns,t.GuiSize,t.ShirtSize,t.phoneExt,t.altPhoneExt,
+            t.StudentSchool,t.EmergencyContact,t.pictureurl,t.nextScheduledTest
         from ncontacts t WHERE t.ID = ? ";
 
         $schoolfield = "t.studentschool";
@@ -679,47 +641,11 @@ class StudentDbHandler {
         if ($stmt->execute()) {
             $res = array();
             $stmt->bind_result(
-                //           $id, $student, $status, $created_at
-                $ID,
-                $LastName,
-                $FirstName,
-                $Email,
-                $Email2,
-                $Parent,
-                $Phone,
-                $AltPhone,
-                $Address,
-                $City,
-                $State,
-                $ZIP,
-                $Notes,
-                $Birthday,
-                $NewRank,
-                $BeltSize,
-                $CurrentRank,
-                $LastPromoted,
-                $InstructorPaymentFree,
-                $ContactType,
-                $include,
-                $InstructorFlag,
-                $quickbooklink,
-                $instructorTitle,
-                $testDate,
-                $testTime,
-                $bdayinclude,
-                $sex,
-                $medicalConcerns,
-                $GuiSize,
-                $ShirtSize,
-                $phoneExt,
-                $altPhoneExt,
-                $CurrentReikiRank,
-                $StudentSchool,
-                $EmergencyContact,
-                $CurrentIARank,
-                $ReadyForNextRank,
-                $pictureurl,
-                $nextScheduledTest
+                $ID,$LastName,$FirstName,$Email,$Email2,$Parent,$Phone,
+                $AltPhone,$Address,$City,$State,$ZIP,$Notes,$Birthday,
+                $BeltSize,$InstructorPaymentFree,$ContactType,$include,$quickbooklink,$instructorTitle,
+                $bdayinclude,$sex,$medicalConcerns,$GuiSize,$ShirtSize,$phoneExt,$altPhoneExt,
+                $StudentSchool,$EmergencyContact,$pictureurl,$nextScheduledTest
             );
             $stmt->fetch();
             $res["ID"] = $ID;
@@ -736,18 +662,18 @@ class StudentDbHandler {
             $res["ZIP"] = $ZIP;
             $res["Notes"] = $Notes;
             $res["Birthday"] = $Birthday;
-            $res["NewRank"] = $NewRank;
+    //        $res["NewRank"] = $NewRank;
             $res["BeltSize"] = $BeltSize;
-            $res["CurrentRank"]= $CurrentRank;
-            $res["LastPromoted"] = $LastPromoted;
+      //      $res["CurrentRank"]= $CurrentRank;
+    //        $res["LastPromoted"] = $LastPromoted;
             $res["InstructorPaymentFree"] = $InstructorPaymentFree;
             $res["ContactType"] = $ContactType;
             $res["include"] = $include;
-            $res["InstructorFlag"] = $InstructorFlag;
+   //         $res["InstructorFlag"] = $InstructorFlag;
             $res["quickbooklink"] = $quickbooklink;
             $res["instructorTitle"] = $instructorTitle;
-            $res["testDate"]= $testDate;
-            $res["testTime"] = $testTime;
+    //        $res["testDate"]= $testDate;
+//            $res["testTime"] = $testTime;
             $res["bdayinclude"] = $bdayinclude;
             $res["sex"] = $sex;
             $res["medicalConcerns"] = $medicalConcerns;
@@ -755,11 +681,11 @@ class StudentDbHandler {
             $res["ShirtSize"] = $ShirtSize;
             $res["phoneExt"] = $phoneExt;
             $res["altPhoneExt"] = $altPhoneExt;
-            $res["CurrentReikiRank"] = $CurrentReikiRank;
+     //       $res["CurrentReikiRank"] = $CurrentReikiRank;
             $res["StudentSchool"] = $StudentSchool;
             $res["EmergencyContact"] = $EmergencyContact;
-            $res["CurrentIARank"] = $CurrentIARank;
-            $res["ReadyForNextRank"] = $ReadyForNextRank;
+     //       $res["CurrentIARank"] = $CurrentIARank;
+     //       $res["ReadyForNextRank"] = $ReadyForNextRank;
             $res["pictureurl"] = $pictureurl;
             $res["nextScheduledTest"] = $nextScheduledTest;
             $stmt->close();
@@ -839,13 +765,9 @@ class StudentDbHandler {
                                   $ShirtSize,
                                   $BeltSize,
                                   $InstructorPaymentFree,
-                                  $ReadyForNextRank,
-                                  $InstructorFlag,
                                   $instructorTitle,
-                                  $CurrentRank,
-                                  $CurrentReikiRank,
-                                  $pictureurl,
-                                  $CurrentIARank    ) {
+                                  $pictureurl
+                                    ) {
         $num_affected_rows = 0;
 
         $sql = "UPDATE ncontacts t set ";
@@ -874,13 +796,8 @@ class StudentDbHandler {
         $sql .= " t.ShirtSize = ?,";
         $sql .= " t.BeltSize = ?,";
         $sql .= " t.InstructorPaymentFree = ?,";
-        $sql .= " t.ReadyForNextRank = ?,";
-        //$sql .= " t.InstructorFlag = ?,";
         $sql .= " t.instructorTitle = ?,";
-        $sql .= " t.CurrentRank = ?,";
-        $sql .= " t.CurrentReikiRank = ?,";
-        $sql .= " t.pictureurl = ?,";
-        $sql .= " t.CurrentIARank = ? ";
+        $sql .= " t.pictureurl = ?";
 
 
         $sql .= " where ID = ? ";
@@ -915,18 +832,13 @@ class StudentDbHandler {
         error_log( print_R($ShirtSize, TRUE ));
         error_log( print_R($BeltSize, TRUE ));
         error_log( print_R($InstructorPaymentFree, TRUE ));
-        error_log( print_R($ReadyForNextRank, TRUE ));
-        error_log( print_R($InstructorFlag, TRUE ));
         error_log( print_R($instructorTitle, TRUE ));
-        error_log( print_R($CurrentRank, TRUE ));
-        error_log( print_R($CurrentReikiRank, TRUE ));
         error_log( print_R($pictureurl, TRUE ));
-        error_log( print_R($CurrentIARank, TRUE ));
         error_log( print_R($student_id, TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sssssssssssssssssssssssdissssssi",
+            $stmt->bind_param("ssssssssssssssssssssssssssss",
                               $LastName,
                               $FirstName    ,
                               $Email    ,
@@ -952,13 +864,8 @@ class StudentDbHandler {
                               $ShirtSize    ,
                               $BeltSize    ,
                               $InstructorPaymentFree    ,
-                              $ReadyForNextRank    ,
-                              //            $InstructorFlag    ,
                               $instructorTitle    ,
-                              $CurrentRank    ,
-                              $CurrentReikiRank    ,
                               $pictureurl,
-                              $CurrentIARank    ,
                               $student_id    );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
@@ -967,12 +874,6 @@ class StudentDbHandler {
         } else {
             printf("Errormessage: %s\n", $this->conn->error);
         }
-        //handled in common function
-        //echo json_encode($student);
-        //        }
-        //        catch(PDOException $e) {
-        //            echo '{"error":{"text":'. $e->getMessage() .'}}';
-        //       }
         return $num_affected_rows >= 0;
     }
 

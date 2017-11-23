@@ -88,95 +88,6 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
     }
 });
 
-/*
-$app->get('/attendance', 'authenticate', function() use ($app) {
-
-    $allGetVars = $app->request->get();
-    error_log( print_R("attendance entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
-
-    $thedow = '';
-    $thelimit = '';
-    $theclass = '';
-    
-    if(array_key_exists('thedow', $allGetVars)){
-        $thedow = $allGetVars['thedow'];
-    }
-    if(array_key_exists('thelimit', $allGetVars)){
-        $thelimit = $allGetVars['thelimit'];
-    }
-    if(array_key_exists('theclass', $allGetVars)){
-        $theclass = $allGetVars['theclass'];
-    }
-
-    error_log( print_R("attendance params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
-
-    $response = array();
-    $db = new AttendanceDbHandler();
-
-    // fetch task
-    $result = $db->getAttendanceList($thedow, $thelimit, $theclass);
-    $response["error"] = false;
-    $response["attendancelist"] = array();
-
-    // looping through result and preparing  arrays
-    while ($slist = $result->fetch_assoc()) {
-        $tmp = array();
-
-        if (count($slist) > 0) {
-            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
-            $tmp["MondayOfWeek"] = (empty($slist["MondayOfWeek"]) ? "NULL" : $slist["MondayOfWeek"]);
-            $tmp["ContactId"] = (empty($slist["studentid"]) ? "NULL" : $slist["studentid"]);
-            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
-            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
-            $tmp["attended"] = (empty($slist["attended"]) ? 0 : $slist["attended"]);
-            $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);
-            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
-            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
-            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
-            $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
-            $tmp["readynextrank"] = (empty($slist["readynextrank"]) ? "NULL" : $slist["readynextrank"]);
-            
-        } else {
-            $tmp["ID"] = "NULL";
-            $tmp["MondayOfWeek"] = "NULL";
-            $tmp["ContactId"] = "NULL";
-            $tmp["firstname"] = "NULL";
-            $tmp["lastname"] = "NULL";
-            $tmp["attended"] = "NULL";
-            $tmp["DOWnum"] = "NULL";
-            $tmp["class"] = "NULL";
-            $tmp["classid"] = "NULL";
-            $tmp["rank"] = "NULL";
-            $tmp["pictureurl"] = "NULL";
-            $tmp["readynextrank"] = "NULL";
-            
-        }
-//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
-//        error_log( print_R($tmp, TRUE), 3, LOG);
-        array_push($response["attendancelist"], $tmp);
-    }
-    $row_cnt = count($response["attendancelist"]);
-    error_log( print_R("attendance cnt: $row_cnt\n ", TRUE), 3, LOG);
-
-    if ($row_cnt > 0) {
-        $response["error"] = false;
-        error_log( print_R("attendance fine with $row_cnt\n ", TRUE), 3, LOG);
-        echoRespnse(200, $response);
-    } else {
-        $response["error"] = true;
-        $response["message"] = "error in attendance";
-        error_log( print_R("attendance bad\n ", TRUE), 3, LOG);
-        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
-        error_log( print_R("attendance error\n ", TRUE), 3, LOG);
-        error_log( print_R($response, TRUE), 3, LOG);
-        
-//note need to handle 404 data notfound
-        echoRespnse(404, $response);
-//        echoRespnse(200, $response);
-    }
-});
-*/
 $app->get('/attendancehistory', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -308,6 +219,7 @@ $app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
             $tmp["Description"] = (empty($slist["Description"]) ? "NULL" : $slist["Description"]);
             $tmp["TimeStart"] = (empty($slist["TimeStart"]) ? "NULL" : $slist["TimeStart"]);
             $tmp["TimeEnd"] = (empty($slist["TimeEnd"]) ? "NULL" : $slist["TimeEnd"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
         } else {
             $tmp["DayOfWeek"] = "NULL";
             $tmp["TimeRange"] = "NULL";
@@ -315,6 +227,7 @@ $app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
             $tmp["Description"] = "NULL";
             $tmp["TimeStart"] = "NULL";
             $tmp["TimeEnd"] = "NULL";
+            $tmp["classid"] = "NULL";
         }
         array_push($response["Schedulelist"], $tmp);
     }
@@ -1380,13 +1293,15 @@ $app->put('/readynextrank/:id', 'authenticate', function($student_id) use($app) 
     $contactID = $student_id;
 
     $ready = ( $studentrank->readyness == "1" ? 1 : 0);
+    $theclass = $studentrank->theclass;
 
     $db = new AttendanceDbHandler();
     $response = array();
 
     // updating task
     $result = $db->setStudentNextRank( $contactID,
-                                      $ready
+                                      $ready,
+                                      $theclass
                                      );
     if ($result) {
         // task updated successfully

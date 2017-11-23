@@ -128,7 +128,7 @@
                                        theme="bootstrap" 
                                        reset-search-input="false"
                                        on-select="vm.gettemplateDetails($item)"
-                                       style="width: 300px;" 
+                                       style="width: 180px;" 
                                        title="Choose a test doc"
                                        append-to-body="false">
                                        <ui-select-match placeholder="Pick test document...">{{$select.selected.templatename}}</ui-select-match>
@@ -142,20 +142,22 @@
                                  </div>
                               </div>
                               <div class="col-md-5">
-                                 <button type="button" class="btn btn-green btn-default" ng-click="vm.genPDF()">Download {{vm.templatenameSelected.templatename}}</button>
+                                 <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="vm.genPDF()">Download {{vm.templatenameSelected.templatename}}</button>
                               </div>
                            </div>
-                           <div class="col-md-1" style="height: 70px;" ng-show="!!vm.selected">
-                              <button type="button" class="btn btn-green btn-default" ng-click="vm.createTestChecklist()">Test Checklist</button>
-                           </div>
-                           <div class="col-md-1" style="height: 70px;" ng-show="!!vm.selected">
-                              <button type="button" class="btn btn-green btn-default" ng-click="vm.createBeltLabels()">Belt Labels</button>
-                           </div>
-                           <div class="col-md-1" style="height: 70px;" ng-show="!!vm.selected">
-                              <button type="button" class="btn btn-green btn-default" ng-click="vm.promotetestcandidate()">Promote Students</button>
-                           </div>
-                           <div class="col-md-1" style="height: 70px;" ng-show="!!vm.selected">
-                              <button type="button" class="btn btn-green btn-default" ng-click="vm.createPromoPostcards()">Promo Postcard</button>
+                           <div class="col-md-4">
+                              <div class="col-md-3" style="height: 70px;" ng-show="!!vm.selected">
+                                 <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="vm.createTestChecklist()">Test Checklist</button>
+                              </div>
+                              <div class="col-md-3" style="height: 70px;" ng-show="!!vm.selected">
+                                 <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="vm.createBeltLabels()">Belt Labels</button>
+                              </div>
+                              <div class="col-md-3" style="height: 70px;" ng-show="!!vm.selected">
+                                 <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="vm.promotetestcandidate()">Promote Students</button>
+                              </div>
+                              <div class="col-md-3" style="height: 70px;" ng-show="!!vm.selected">
+                                 <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="vm.createPromoPostcards()">Promo Postcard</button>
+                              </div>
                            </div>
                         </div>
                         <div class="">
@@ -264,261 +266,6 @@
             </div>
          </div>
          <div class="panel-footer"></div>
-      </div>
-   </uib-tab>
-   <uib-tab 
-      id="tab-testmaterial" 
-      heading="Test Document Setup"
-      active="active.ManageTestmaterial"
-      select="vm.changeTab('tab-testmaterial')"
-      >
-      <div class="panel panel-green">
-         <div class="panel-heading">Test Documents</div>
-         <div class="panel-body ">
-            <div class="col-md-12">
-               <form action="" novalidate name="edittemplate" class="form-horizontal">
-                  <div class="form-body pal">
-                     <div class="row col-md-12" style="height: 70px;">
-                        <div class="col-md-3" >
-                           <div class="select-box">
-                              <ui-select  ng-model="vm.templatenameSelected" 
-                                 theme="bootstrap" 
-                                 reset-search-input="false"
-                                 on-select="vm.gettemplateDetails($item)"
-                                 style="width: 300px;" 
-                                 title="Choose an existing test document"
-                                 append-to-body="false">
-                                 <ui-select-match placeholder="Pick existing test document...">{{$select.selected.templatename}}</ui-select-match>
-                                 <ui-select-choices 
-                                    repeat="template in vm.templatelist | filter: $select.search track by $index"
-                                    refresh="vm.getTemplateNames($select.search)"
-                                    refresh-delay="0">
-                                    <div ng-bind-html="template.templatename | highlight: $select.search"></div>
-                                 </ui-select-choices>
-                              </ui-select>
-                           </div>
-                        </div>
-                        <div class="col-md-3">
-                           <button ng-click="vm.updatetemplate(vm.templatename);" class="btn btn-green btn-default ">Save Changes for {{vm.templatename}}</button>
-                        </div>
-                        <div class="col-md-3">
-                           <button ng-click="vm.removetemplate(vm.templatename);" class="btn btn-green btn-default ">Remove {{vm.templatename}}</button>
-                        </div>
-                        <div class="col-md-3">
-                           <button ng-click="vm.gettemplateDetails(vm.templatename)" class="btn btn-green btn-default ">Refresh Display</button>
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-4">
-                           <div ng-class="{'has-error': edittemplate.inputtemplate.$invalid, 'has-success': !edittemplate.inputtemplate.$invalid}" class="">
-                              <div class="input-icon right col-md-12">
-                                 <i data-hover="tooltip" 
-                                    data-original-title="New Test Doc" 
-                                    ng-show="edittemplate.inputtemplate.$dirty" 
-                                    ng-class="edittemplate.inputtemplate.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
-                                    class="glyphicon tooltips"></i>
-                                 <input id="input_template" type="text" 
-                                    placeholder="New Document Name" 
-                                    name="inputtemplate" 
-                                    ng-model="vm.templatename" 
-                                    minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 2500, 'blur': 0 } }" class="form-control">
-                              </div>
-                              <div style="color:maroon" role="alert" ng-messages="edittemplate.inputtemplate.$error" class="has-error">
-                                 <div ng-message="required">You did not enter a field</div>
-                                 <div ng-message="minlength">Your field is too short</div>
-                                 <div ng-message="maxlength">Your field is too long</div>
-                              </div>
-                           </div>
-                        </div>
-                        <div class="col-md-6">
-                           <button type="button" ng-click="vm.createtemplate(vm.templatename);" 
-                              class="btn btn-default btn-blue"
-                              >Create template for: {{vm.templatename}}</button>
-                        </div>
-                     </div>
-                  </div>
-               </form>
-            </div>
-            <div class="col-md-12">
-               <h1>Editor</h1>
-               <div  class="col-md-12 row">
-                  <div class="col-md-4">
-                     <h2>Header Logo</h2>
-                     <form novalidate>
-                        Pick an image-file: <input type="file" ng-model="vm.headerimages" accept="image/*" multiple app-filereader /><br />
-                        <img style="max-width:300px;" ng-repeat="image in vm.headerimages" ng-src="{{image}}"  /><br />
-                        <button ng-click="vm.headerimages = null" ng-show="!!vm.headerimages">Remove {{vm.headerimages.length}} images</button><br />
-                        <button ng-click="vm.setHeaderLogo();" ng-show="!!vm.headerimages">Add to Header</button><br />
-                     </form>
-                  </div>
-                  <div class="col-md-4">
-                     <h2>Footer Logo</h2>
-                     <form novalidate>
-                        Pick an image-file: <input type="file" ng-model="vm.footerimages" accept="image/*" multiple app-filereader /><br />
-                        <img style="max-width:300px;" ng-repeat="image in vm.footerimages" ng-src="{{image}}"  /><br />
-                        <button ng-click="vm.footerimages = null" ng-show="!!vm.footerimages">Remove {{vm.footerimages.length}} images</button><br />
-                        <button ng-click="vm.setFooterLogo();" ng-show="!!vm.footerimages">Add to Footer</button><br />
-                     </form>
-                  </div>
-                  <div class="col-md-4">
-                     <h2>Background Images</h2>
-                     <form novalidate>
-                        Pick an image-file: <input type="file" ng-model="vm.backgroundimages" accept="image/*" multiple app-filereader /><br />
-                        <img style="max-width:300px;" ng-repeat="image in vm.backgroundimages" ng-src="{{image}}" /><br />
-                        <button ng-click="vm.backgroundimages = null" ng-show="!!vm.backgroundimages">Remove {{vm.backgroundimages.length}} images</button><br />
-                        <button ng-click="vm.setBackgroundImage();" ng-show="!!vm.backgroundimages">Set as Background</button><br />
-                     </form>
-                  </div>
-               </div>
-               <div class="col-md-12 row">
-                  <div class="input-icon right col-md-2">
-                     <label for="maxHeaderHeight">Max Header Height</label>
-                     <input id="maxHeaderHeight" type="number" name="maxHeaderHeight" 
-                        ng-model="vm.maxHeaderHeight" 
-                        class="form-control">
-                     </input>
-                  </div>
-                  <div class="input-icon right col-md-2">
-                     <label for="maxFooterHeight">Max Footer Height</label>
-                     <input id="maxFooterHeight" type="number" name="maxFooterHeight" 
-                        ng-model="vm.maxFooterHeight" 
-                        class="form-control">
-                     </input>
-                  </div>
-                  <div class="input-icon right col-md-2">
-                     <label for="pageMarginL">Page Margin Left</label>
-                     <input id="pageMarginL" type="number" name="pageMarginL" 
-                        ng-model="vm.pageMarginL" 
-                        class="form-control">
-                     </input>
-                  </div>
-                  <div class="input-icon right col-md-2">
-                     <label for="pageMarginT"> Top</label>
-                     <input id="pageMarginT" type="number" name="pageMarginT" 
-                        ng-model="vm.pageMarginT" 
-                        class="form-control">
-                     </input>
-                  </div>
-                  <div class="input-icon right col-md-2">
-                     <label for="pageMarginR"> Right</label>
-                     <input id="pageMarginR" type="number" name="pageMarginR" 
-                        ng-model="vm.pageMarginR" 
-                        class="form-control">
-                     </input>
-                  </div>
-                  <div class="input-icon right col-md-2">
-                     <label for="pageMarginB"> Bottom</label>
-                     <input id="pageMarginB" type="number" name="pageMarginB" 
-                        ng-model="vm.pageMarginB" 
-                        class="form-control">
-                     </input>
-                  </div>
-               </div>
-               <div class="col-md-12 row">
-                  <div class="input-icon right col-md-3">
-                     <label for="pagesize">Pagesize</label>
-                     <select id="pagesize" type="text" name="pagesize" 
-                     ng-model="vm.pageSize" 
-                     required
-                     ng-change(vm.calcsizes();)
-                     class="form-control">
-                     <option ng-repeat="iter in vm.pageSizes" ng-selected="{{iter==vm.pageSize}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
-                     </select>
-                  </div>
-                  <div class="input-icon right col-md-3">
-                     <label for="orientation">Orientation</label>
-                     <select id="orientation" type="text" name="orientation" 
-                        ng-model="vm.pageOrientation" 
-                     required
-                     ng-change(vm.calcsizes();)
-                     class="form-control">
-                     <option ng-repeat="iter in vm.pageOrientations" ng-selected="{{iter==vm.pageOrientation}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
-                     </select>
-                  </div>
-                  <div class="input-icon right col-md-3">
-                     <label for="pagebreak">Page Break?</label>
-                     <select id="pagebreak" type="text" name="pagebreak" 
-                        ng-model="vm.pagebreak" 
-                     required
-                     class="form-control">
-                     <option ng-repeat="iter in vm.pagebreaks" ng-selected="{{iter==vm.pagebreak}}" placeholder="Select" value="{{iter}}">{{iter}}</option>
-                     </select>
-                  </div>
-               </div>
-               <hr/>
-               <div text-angular-toolbar name="htmlcontenttools"></div>
-               <div  class="col-md-12 row">
-                  <!--                <div class="col-md-1">
-                     <button ng-click="vm.htmlcontentcanEdit = !vm.htmlcontentcanEdit">Can Edit</button>
-                     </div>
-                     -->                
-                  <div class="col-md-1">
-                     <button type="button" ta-button ng-click="vm.refresHtml()">Refresh</button>
-                  </div>
-                  <div class="col-md-1">
-                     <button type="button" ta-button ng-click="vm.htmlcontentreset()">Reset</button>
-                  </div>
-                  <div class="col-md-1">
-                     <button type="button" ta-button ng-click="vm.htmlcontentclear()">clear</button>
-                  </div>
-                  <div class="col-md-1">
-                     <button type="button" ta-button ng-click="vm.doPDF()">Download PDF</button>
-                  </div>
-               </div>
-               <form name="validationForm" ng-submit="vm.htmlcontentsubmit()">
-                  <!--                  <label for="name">Name:</label>
-                     <input type="text" tabindex="1" id="name" ng-model="vm.htmlcontentname">
-                     <label for="website">Website:</label>
-                     <input type="url" tabindex="2" id="website" ng-model="vm.htmlcontentwebsite"> 
-                         formValid: pristine {{validationForm.testValidation.$pristine}} 
-                         valid {{validationForm.testValidation.$valid}} 
-                         dirty {{validationForm.testValidation.$dirty}} 
-                         invalid {{validationForm.testValidation.$invalid}} Bio:
-                       ng-if="vm.htmlcontentcanEdit" 
-                       ta-text-editor-class="form-control validationFormHeader-height" 
-                       ta-html-editor-class="form-control validationFormHeader-height"
-                     <div id="testValidationHeader" ng-style="{ 'maxHeight' : vm.maxHeaderHeight + 35 }">
-                     <div id="testValidationFooter" ng-style="{ 'maxHeight' : vm.maxFooterHeight + 35 }">
-                       required 
-                     -->                      
-                  <div id="testValidationHeader" >
-                     <text-angular  class="convert" name="testValidationHeader" 
-                        ng-model="vm.htmlcontentdata.htmlcontentheader" 
-                        tabindex="3" 
-                        placeholder="header placeholder" 
-                        ta-unsafe-sanitizer="true"
-                        ta-default-wrap="p" 
-                        ta-target-toolbars='htmlcontenttools' 
-                        ng-model-options="{debounce: 10}">
-                     </text-angular>
-                  </div>
-                  <text-angular  class="convert" name="testValidation" 
-                     ng-model="vm.htmlcontentdata.htmlcontent" 
-                     tabindex="3" 
-                     placeholder="Body placeholder" 
-                     ta-unsafe-sanitizer="true"
-                     ta-default-wrap="p" 
-                     ta-target-toolbars='htmlcontenttools' 
-                     ng-model-options="{debounce: 10}">
-                  </text-angular>
-                  <div id="testValidationFooter" >
-                     <text-angular  class="convert" name="testValidationFooter" 
-                        ng-model="vm.htmlcontentdata.htmlcontentfooter" 
-                        tabindex="3" 
-                        placeholder="footer placeholder" 
-                        ta-unsafe-sanitizer="true"
-                        ta-default-wrap="p" 
-                        ta-target-toolbars='htmlcontenttools' 
-                        ng-model-options="{debounce: 10}">
-                     </text-angular>
-                  </div>
-                  <div id="convertthis" class="convert" ta-bind name="testValidation" ng-model="vm.htmlcontentdata.htmlcontentall" 
-                     placeholder="test placeholder"
-                     ng-model-options="{debounce: 10}"></div>
-               </form>
-            </div>
-         </div>
-         <div class="panel-footer" id="iframeContainer"></div>
       </div>
    </uib-tab>
 </uib-tabset>

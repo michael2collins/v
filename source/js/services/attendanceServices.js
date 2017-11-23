@@ -100,10 +100,11 @@
             return( request.then( handleSuccess, handleError ) );
         }
 
-        function setStudentReadyNextRank(path, readyness) {
-                    $log.debug('setStudentReadyNextRank before put :',path, readyness);
+        function setStudentReadyNextRank(path, readyness, theclass) {
+                    $log.debug('setStudentReadyNextRank before put :',path, readyness, theclass);
                     var dta = {
-                        readyness: readyness
+                        readyness: readyness,
+                        theclass: theclass
                     };
                     var request = $http({
                         method: "PUT",
