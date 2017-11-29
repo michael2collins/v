@@ -302,6 +302,7 @@
                     $log.debug('removeStudentRank returned data');
                     $log.debug(data);
                     getStudentRanks(vmstudent.students.ID);
+                    getStudentRankTypes(vmstudent.students.ID);
                     return data;
                 }).catch(function(e) {
                     $log.debug('removeStudentRank failure:');

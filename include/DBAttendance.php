@@ -1621,7 +1621,7 @@ $errormessage=array();
         global $school;
 
         $sql = "SELECT          
-            id, classid, pgmid, classcat,pgmcat,agecat
+            id, classid, pgmid, classcat,pgmcat,agecat,nextClassid, nextPgmid
         FROM nclasspgm";
         
         $schoolfield = "school";
@@ -2330,7 +2330,7 @@ $errormessage=array();
 
     public function updateClassPgm( 
         $id, 
-        $classid, $pgmid, $classcat, $pgmcat, $agecat
+        $classid, $pgmid, $classcat, $pgmcat, $agecat, $nextClassid, $nextPgmid
         ) {
         $num_affected_rows = 0;
         error_log( print_R("ClassPgm update entered", TRUE), 3, LOG);
@@ -2344,10 +2344,10 @@ $errormessage=array();
         }
 
         $inssql = " INSERT INTO nclasspgm( 
-        classid, pgmid, classcat, pgmcat, agecat, school 
+        classid, pgmid, classcat, pgmcat, agecat, nextClassid, nextPgmid, school 
              ) ";
 
-        $inssql .= " VALUES (?, ?, ?, ?, ?, ?) ";
+        $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?) ";
 
         
         if ($this->isClassPgmExists(
@@ -2355,8 +2355,8 @@ $errormessage=array();
             ) == 0) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("ssssss",
-        $classid, $pgmid, $classcat, $pgmcat, $agecat, $school 
+                $stmt->bind_param("ssssssss",
+        $classid, $pgmid, $classcat, $pgmcat, $agecat, $nextClassid, $nextPgmid, $school 
                                      );
                     $result = $stmt->execute();
 
@@ -2391,14 +2391,16 @@ $errormessage=array();
                  classcat = ?, 
                  pgmcat = ?, 
                  agecat = ?, 
+                 nextClassid = ?,
+                 nextPgmid = ?,
                  school = ?
             WHERE id = ? ";
 
             error_log( print_R("ClassPgm update sql: $updsql", TRUE), 3, LOG);
             
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("sssssss",
-        $classid, $pgmid, $classcat, $pgmcat, $agecat, $school, $id 
+                $stmt->bind_param("sssssssss",
+        $classid, $pgmid, $classcat, $pgmcat, $agecat, $nextClassid, $nextPgmid, $school, $id 
                                      );
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;

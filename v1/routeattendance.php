@@ -381,6 +381,8 @@ $app->get('/ClassPgm', 'authenticate', function() {
             $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
             $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
             $tmp["pgmid"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+            $tmp["nextClassid"] = (empty($slist["nextClassid"]) ? "NULL" : $slist["nextClassid"]);
+            $tmp["nextPgmid"] = (empty($slist["nextPgmid"]) ? "NULL" : $slist["nextPgmid"]);
             $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
             $tmp["pgmcat"] = (empty($slist["pgmcat"]) ? "NULL" : $slist["pgmcat"]);
             $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
@@ -388,6 +390,8 @@ $app->get('/ClassPgm', 'authenticate', function() {
             $tmp["id"] = "NULL";
             $tmp["classid"] = "NULL";
             $tmp["pgmid"] = "NULL";
+            $tmp["nextClassid"] = "NULL";
+            $tmp["nextPgmid"] = "NULL";
             $tmp["classcat"] = "NULL";
             $tmp["pgmcat"] = "NULL";
             $tmp["agecat"] = "NULL";
@@ -420,6 +424,8 @@ $app->post('/ClassPgm','authenticate',  function() use($app) {
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $classid  = (isset($dataJsonDecode->thedata->classid)       ? $dataJsonDecode->thedata->classid : "");
     $pgmid  = (isset($dataJsonDecode->thedata->pgmid)       ? $dataJsonDecode->thedata->pgmid : "");
+    $nextClassid  = (isset($dataJsonDecode->thedata->nextClassid)       ? $dataJsonDecode->thedata->nextClassid : "");
+    $nextPgmid  = (isset($dataJsonDecode->thedata->nextPgmid)       ? $dataJsonDecode->thedata->nextPgmid : "");
     $classcat  = (isset($dataJsonDecode->thedata->classcat)       ? $dataJsonDecode->thedata->classcat : "");
     $pgmcat  = (isset($dataJsonDecode->thedata->pgmcat)       ? $dataJsonDecode->thedata->pgmcat : "");
     $agecat  = (isset($dataJsonDecode->thedata->agecat)       ? $dataJsonDecode->thedata->agecat : "");
@@ -429,7 +435,7 @@ $app->post('/ClassPgm','authenticate',  function() use($app) {
 
     // updating task
     $res_id = $db->updateClassPgm($id,
-        $classid, $pgmid, $classcat, $pgmcat, $agecat
+        $classid, $pgmid, $classcat, $pgmcat, $agecat, $nextClassid, $nextPgmid
                                      );
 
     if (isset($res_id["success"]) ) {

@@ -209,15 +209,29 @@ class TestingDbHandler {
     }
 
     public function promoteStudent(
-        $testDate, $ContactID, $RankAchievedInTest, $ranktype
+            $testDate, $ContactID, $RankAchievedInTest, $ranktype, $promote, 
+         $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $rankListForNextClass
         ) {
 
         $num_affected_rows = 0;
 
-        $sql = "UPDATE ncontactrank set ";
-        $sql .= "  currentrank = ?,  ";
-        $sql .= "  LastPromoted = ?  ";
-        $sql .= " where ContactID = ? and ranktype = ? ";
+        if ($changeClass == 1) {
+            $sql = "UPDATE ncontactrank set ";
+            $sql .= "  currentrank = ?,  ";
+            $sql .= "  LastPromoted = ?,  ";
+            $sql .= "  rankType = '" + $rankListForNextClass   + "'";
+            $sql .= " where ContactID = ? and id = ? ";
+        } else {
+            $sql = "UPDATE ncontactrank set ";
+            $sql .= "  currentrank = ?,  ";
+            $sql .= "  LastPromoted = ?  ";
+            $sql .= " where ContactID = ? and id = ? ";
+        }
+        $clsql = "UPDATE studentregistration  set ";
+        $clsql .= " readyForNextRank = 0, ";
+        $clsql .= " classid = ?, ";
+        $clsql .= " pgmid = ? ";
+        $clsql .= " where studentid = ?  and classid = ? and pgmid = ?";
 
         $histsql = "INSERT into ncontactmgmt (";
         $histsql .= " contactid ,";
@@ -227,23 +241,54 @@ class TestingDbHandler {
 
         $histtype = $testDate . ' ' . $RankAchievedInTest;
 
-        error_log( print_R("$sql\n", TRUE ));
+        error_log( print_R("$sql $RankAchievedInTest, $testDate, $rankListForNextClass, $ContactID, $crid\n", TRUE ));
+        error_log( print_R("$clsql $recommendedClassid,
+                                        $recommendedPgmid,
+                                      $ContactID,
+                                      $classWas,
+                                      $pgmWas\n", TRUE ));
         error_log( print_R("$histsql\n", TRUE ));
+                    error_log( print_R("histtype: $histtype\n", TRUE ));
+                    error_log( print_R("cont: $ContactID\n", TRUE ));
+                    error_log( print_R("date: $testDate\n", TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("ssss",
-                  $RankAchievedInTest, $testDate, $ContactID, $ranktype
+                  $RankAchievedInTest, $testDate, $ContactID, $crid
                                  );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
+            error_log( print_R("contactrank set: $num_affected_rows\n", TRUE ));
 
             if ( $num_affected_rows > -1) {
+                if ($changeClass == 1) {
+                    if ($stmt = $this->conn->prepare($clsql) ) {
+                        $stmt->bind_param("sssss",
+                                            $recommendedClassid,
+                                            $recommendedPgmid,
+                                          $ContactID,
+                                          $classWas,
+                                          $pgmWas
+                                             );
+                            $result = $stmt->execute();
+            
+                            $stmt->close();
+                            // Check for successful insertion
+                            if ($result) {
+                                error_log( print_R("studentregistration set: $result\n", TRUE ));
+                            } else {
+                                // Failed to register new class
+                                return NULL;
+                            }
+        
+                    } else {
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -2;
+                    }
+                }
                 if ($stmt = $this->conn->prepare($histsql) ) {
-                    error_log( print_R("histtype: $histtype\n", TRUE ));
-                    error_log( print_R("cont: $ContactID\n", TRUE ));
-                    error_log( print_R("date: $testDate\n", TRUE ));
     
                     $stmt->bind_param("sss",
                                       $ContactID,
@@ -255,6 +300,7 @@ class TestingDbHandler {
                         $stmt->close();
                         // Check for successful insertion
                         if ($result) {
+                            error_log( print_R("contacthist set: $result\n", TRUE ));
                         } else {
                             // Failed to create history
                             return NULL;
@@ -262,7 +308,7 @@ class TestingDbHandler {
     
                 } else {
                     printf("Errormessage: %s\n", $this->conn->error);
-                        return -2;
+                        return -3;
                 }
             }
 
@@ -275,17 +321,20 @@ class TestingDbHandler {
 
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
 
-$sql = "Select p.classcat, p.pgmcat, p.agecat, c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey from (
-           SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, sum( a.attended ) as daysAttended
+$sql = "Select p.classcat, p.pgmcat, p.agecat, p.nextClassid, p.nextPgmid, nextc.class as nextClassnm, nextp.class as nextPgmnm,
+c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid from (
+           SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, cr.id as crid, sum( a.attended ) as daysAttended
             FROM attendance a
         right outer join ncontactrank cr on (a.ContactId = cr.contactID )
             where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
-            group by a.ContactId, cr.ranktype, cr.currentrank
+            group by a.ContactId, cr.ranktype, cr.currentrank, cr.id
             ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype )
             inner join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist)
 Inner join nclass c on (x.classwas = c.id)
 Inner join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid )
 Inner join nclasslist l on (l.id = p.pgmid)
+left join nclass nextc on (p.nextClassid = nextc.id)
+left join nclasslist nextp on (p.nextPgmid = nextp.id)
         where x.testname = ? and x.testdescription = ?
 ";
 

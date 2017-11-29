@@ -65,11 +65,9 @@
                                   <span>
                                     <div>
                                       <div id="my_photo_booth">
-                                      <pre>firstname {{vmstudent.students.FirstName}}</pre>
-                                      <pre>camcheck {{vmpicmodal.checkCameraIsOn()}}</pre>
                                           <div id="my_camera" style="width:320px; "
-                                      ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vmpickmodal.checkCameraIsOn() === false ) && {'height':'0px'}"
-                                      ></div>
+                                      ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vmpickmodal.checkCameraIsOn() === false ) && {'height':'0px'}">
+                                          </div>
                                       
                                               <form>
                                       			<div id="pre_take_buttons" >
@@ -712,7 +710,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="table-responsive">
+                              <div class="">
                                 <table class="col-md-12 table-striped table-hover table-bordered">
                                   <thead>
                                     <tr>
@@ -1087,7 +1085,7 @@
                                   </div>
                                 </div>
                               </div>
-                              <div class="table-responsive">
+                              <div class="">
                                 <table class="col-md-12 table-striped table-hover table-bordered">
                                   <thead>
                                     <tr>
@@ -1200,18 +1198,11 @@
                 <div class="col-md-12 form-body pal">
                   <form action="" novalidate name="editPaymentPlan" class="form-horizontal">
                     <div class="row">
-                      <div class="col-md-2">
+                      <div class="row col-md-2">
                         <h3 class="block-heading">Payer</h3>
-                        <div class="form-group">
-                          {{vmpayment.studentpayer}}
-                          <label for="inputsc_payer" class="control-label">Name</label>
+                        <div class="mlm form-group">
                           <div class="input-icon right">
                             <select id="inputsc_payer" type="text" name="studentpayer" ng-model="vmpayment.studentpayer" ng-change="vmpayment.payerSet(vmpayment.studentpayer);" class="form-control" ng-options="iter.payerid as iter.payername for iter in vmpayment.payerlist">
-<!--                               <option value="">---Please select---</option> 
-                            ng-click="vmpayment.getPayerList()" 
-                             <option ng-repeat="iter in vmpayment.payerlist track by iter.payerid" ng-selected="{{iter.payername==vmpayment.studentpayer}}" 
-                               value="{{iter.payerid}}">{{iter.payername}}</option>
-  -->
                             </select>
                           </div>
                           <div>
@@ -1219,7 +1210,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="col-md-10">
+                      <div class="row col-md-12">
                         <div>
                           <div class="form-body pal">
                             <div class="row">
@@ -1368,7 +1359,7 @@
                                         </div>
                                       </div>
                                     </div>
-                                    <div class="table-responsive">
+                                    <div class="">
                                       <table class="col-md-12 table-striped table-hover table-bordered">
                                         <thead>
                                           <tr>
@@ -1515,14 +1506,14 @@
                         </div>
                       </div>
                       <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                           <div class="panel panel-blue">
                             <div class="panel-body pan">
-                              <div class="col-md-12 form-body pal">
+                              <div class=" form-body pal">
                                 <h3 class="block-heading">Family Members</h3>
-                                <div ng-repeat="family in vmpayment.FamilyList">
-                                  <div class="col-md-2">Name: {{ family.firstname }} {{family.lastname}}</div>
-                                  <div class="col-md-2">
+                                <div class="row" ng-repeat="family in vmpayment.FamilyList">
+                                  <div class="col-md-6">Name: {{ family.firstname }} {{family.lastname}}</div>
+                                  <div class="col-md-6">
                                     <div class="fixheight100" ng-show="family.pictureurl">
                                       <img height="100px" ng-src="{{ './images/students/' + family.pictureurl || '' }}">
                                     </div>
@@ -1532,12 +1523,12 @@
                             </div>
                           </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-9">
                           <div class="panel panel-blue">
                             <div class="panel-body pan">
                               <div class="col-md-12 form-body pal">
                                 <h3 class="block-heading">List Prices</h3>
-                                <table class="col-md-10 table=responsive table-striped table-hover table-bordered">
+                                <table class="col-md-10  table-striped table-hover table-bordered">
                                   <thead>
                                     <tr>
                                       <th>Name</th>
@@ -1652,7 +1643,7 @@
                                           </div>
                                         </div>
                                       </div>
-                                      <div class="table-responsive">
+                                      <div class="">
                                         <table class="col-md-12 table-striped table-hover table-bordered">
                                           <thead>
                                             <tr>

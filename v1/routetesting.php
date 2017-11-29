@@ -526,9 +526,20 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["pgm"] = (empty($slist["pgm"]) ? "NULL" : $slist["pgm"]);
         $tmp["classtype"] = (empty($slist["classtype"]) ? "NULL" : $slist["classtype"]);
         $tmp["alphasortkey"] = (empty($slist["alphasortkey"]) ? "NULL" : $slist["alphasortkey"]);
-
         $tmp["testingid"] = (empty($slist["testingid"]) ? "NULL" : $slist["testingid"]);
-
+        
+        $tmp["age"] = (empty($slist["age"]) ? "NULL" : $slist["age"]);
+        $tmp["AttendPromoteTarget"] = (empty($slist["AttendPromoteTarget"]) ? "NULL" : $slist["AttendPromoteTarget"]);
+        $tmp["DurationPromoteTarget"] = (empty($slist["DurationPromoteTarget"]) ? "NULL" : $slist["DurationPromoteTarget"]);
+        $tmp["ageForNextClass"] = (empty($slist["ageForNextClass"]) ? "NULL" : $slist["ageForNextClass"]);
+        $tmp["nextClass"] = (empty($slist["nextClass"]) ? "NULL" : $slist["nextClass"]);
+        $tmp["rankForNextClass"] = (empty($slist["rankForNextClass"]) ? "NULL" : $slist["rankForNextClass"]);
+        $tmp["ranklistForNextClass"] = (empty($slist["ranklistForNextClass"]) ? "NULL" : $slist["ranklistForNextClass"]);
+        $tmp["nextClassid"] = (empty($slist["nextClassid"]) ? "NULL" : $slist["nextClassid"]);
+        $tmp["nextPgmid"] = (empty($slist["nextPgmid"]) ? "NULL" : $slist["nextPgmid"]);
+        $tmp["nextClassnm"] = (empty($slist["nextClassnm"]) ? "NULL" : $slist["nextClassnm"]);
+        $tmp["nextPgmnm"] = (empty($slist["nextPgmnm"]) ? "NULL" : $slist["nextPgmnm"]);
+        $tmp["crid"] = (empty($slist["crid"]) ? "NULL" : $slist["crid"]);
         }
                 array_push($response["testcandidateList"], $tmp);
             }
@@ -905,6 +916,22 @@ $app->post('/testcandidatepromotion', 'authenticate', function() use ($app) {
                         $studentarr[$i]->RankAchievedInTest : "");
         $ranktype  = (isset($studentarr[$i]->rankType) ? 
                         $studentarr[$i]->rankType : "");
+        $promote  = (isset($studentarr[$i]->promote) ? 
+                        $studentarr[$i]->promote : "");
+        $recommendedClassid  = (isset($studentarr[$i]->recommendedClassid) ? 
+                        $studentarr[$i]->recommendedClassid : "");
+        $recommendedPgmid  = (isset($studentarr[$i]->recommendedPgmid) ? 
+                        $studentarr[$i]->recommendedPgmid : "");
+        $changeClass  = (isset($studentarr[$i]->changeClass) ? 
+                        $studentarr[$i]->changeClass : "");
+        $classWas  = (isset($studentarr[$i]->classWas) ? 
+                        $studentarr[$i]->classWas : "");
+        $pgmWas  = (isset($studentarr[$i]->pgmWas) ? 
+                        $studentarr[$i]->pgmWas : "");
+        $crid  = (isset($studentarr[$i]->crid) ? 
+                        $studentarr[$i]->crid : "");
+        $ranklistForNextClass  = (isset($studentarr[$i]->ranklistForNextClass) ? 
+                        $studentarr[$i]->ranklistForNextClass : "");
 
         error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
 
@@ -912,18 +939,21 @@ $app->post('/testcandidatepromotion', 'authenticate', function() use ($app) {
         $response = array();
     
         // creating promotions
-        $promotion = $db->promoteStudent(
-            $testDate, $ContactID, $RankAchievedInTest, $ranktype
-                                    );
+        if ($promote == 1) {
+            $promotion = $db->promoteStudent(
+                $testDate, $ContactID, $RankAchievedInTest, $ranktype, $promote, 
+             $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $ranklistForNextClass
+                                        );
+        
+            if ($promotion > -1) {
+                error_log( print_R("Number of promotions created: $promotion\n", TRUE ), 3, LOG);
     
-        if ($promotion > -1) {
-            error_log( print_R("B=Number of promotions created: $promotion\n", TRUE ), 3, LOG);
-
-            $promotiongood += 1;
-        } else {
-            error_log( print_R("after createpromotion result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $promotion, TRUE), 3, LOG);
-            $promotionbad += 1;
+                $promotiongood += 1;
+            } else {
+                error_log( print_R("after createpromotion result bad\n", TRUE), 3, LOG);
+                error_log( print_R( $promotion, TRUE), 3, LOG);
+                $promotionbad += 1;
+            }
         }
                         
     }
@@ -936,7 +966,7 @@ $app->post('/testcandidatepromotion', 'authenticate', function() use ($app) {
             error_log( print_R("promotion created: $promotiongood\n", TRUE ), 3, LOG);
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createpromotion result bad\n", TRUE), 3, LOG);
+            error_log( print_R("post loop after createpromotion result bad\n", TRUE), 3, LOG);
             error_log( print_R( $promotionbad, TRUE), 3, LOG);
             $response["error"] = true;
             $response["message"] = "Failed to create $promotionbad promotion. Please try again";

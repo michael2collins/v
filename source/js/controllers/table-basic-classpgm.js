@@ -178,9 +178,14 @@
                 id: rowEntity.id,
                 classid: rowEntity.classid,
                 pgmid: rowEntity.pgmid,
-                classcat: rowEntity.classcatVlu,
-                pgmcat: rowEntity.pgmcatVlu,
-                agecat: rowEntity.agecatVlu
+//                classcat: Util.getByValue(vm.classcats, rowEntity.classcat, 'id', 'value'),
+//                pgmcat: Util.getByValue(vm.pgmcats, rowEntity.pgmcat, 'id', 'value'),
+//                agecat: Util.getByValue(vm.agecats, rowEntity.agecat, 'id', 'value'),
+                classcat: rowEntity.classcat,
+                pgmcat: rowEntity.pgmcat,
+                agecat: rowEntity.agecat,
+                nextClassid: rowEntity.nextClassid,
+                nextPgmid: rowEntity.nextPgmid
             };
             
             $log.debug('about updateClassPgm ',thedata, updpath, updatetype);
@@ -322,7 +327,8 @@
                         $q.reject(data);
                     } else {
                         for (var iter=0,len=vm.pgmcats.length;iter<len;iter++) {
-                            vm.pgmcats[iter].id = iter;
+//                            vm.pgmcats[iter].id = iter;
+                            vm.pgmcats[iter].id = vm.pgmcats[iter].pgmcat;
                             vm.pgmcats[iter].value = vm.pgmcats[iter].pgmcat;
                         }
                         vm.ClassPgm.pgmcat = String(vm.pgmcats[0].id);
@@ -355,7 +361,8 @@
                         $q.reject(data);
                     } else {
                         for (var iter=0,len=vm.classcats.length;iter<len;iter++) {
-                            vm.classcats[iter].id = iter;
+//                            vm.classcats[iter].id = iter;
+                            vm.classcats[iter].id = vm.classcats[iter].classcat;
                             vm.classcats[iter].value = vm.classcats[iter].classcat;
                         }
                         vm.ClassPgm.classcat = String(vm.classcats[0].id);
@@ -387,8 +394,9 @@
                         $q.reject(data);
                     } else {
                         for (var iter=0,len=vm.agecats.length;iter<len;iter++) {
-                            vm.agecats[iter].id = iter;
+//                            vm.agecats[iter].id = iter;
                             vm.agecats[iter].value = vm.agecats[iter].agecat;
+                            vm.agecats[iter].id = vm.agecats[iter].agecat;
                         }
                         
                         vm.ClassPgm.agecat = String(vm.agecats[0].id);
@@ -456,6 +464,39 @@
                     }
                 }, 
                 {
+                    field: 'nextClassid',
+                    displayName: 'Next Class',
+                    headerCellClassPgm: Util.highlightFilteredHeader,
+                    enableCellEdit: true,
+                    enableFiltering: true,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellFilter: 'iddropdown:this',
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.classes,
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
+                    filter: { 
+                        options: vm.classes
+                    }
+                }, 
+                {
+                    field: 'nextPgmid',
+                    displayName: 'Next Program',
+                    headerCellClassPgm: Util.highlightFilteredHeader,
+                    enableCellEdit: true,
+                    enableFiltering: true,
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellFilter: 'iddropdown:this',
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'value',
+                    editDropdownOptionsArray: vm.programs,
+                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filter: { 
+                        type: uiGridConstants.filter.SELECT,
+                        selectOptions: vm.programs
+                    }
+                }, 
+                {
                     field: 'pgmcat',
                     displayName: 'Program Category',
                     headerCellClassPgm: Util.highlightFilteredHeader,
@@ -466,10 +507,9 @@
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.pgmcats,
-                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
                     filter: { 
-                        type: uiGridConstants.filter.SELECT,
-                        selectOptions: vm.pgmcats
+                        options: vm.pgmcats
                     }
                 }, 
                 {
@@ -483,10 +523,9 @@
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.classcats,
-                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
                     filter: { 
-                        type: uiGridConstants.filter.SELECT,
-                        selectOptions: vm.classcats
+                        options: vm.classcats
                     }
                     
                 }, 
@@ -501,10 +540,9 @@
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
                     editDropdownOptionsArray: vm.agecats,
-                    filterHeaderTemplate: 'templates/states/filtercoltemplatevlu.html',
+                    filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
                     filter: { 
-                        type: uiGridConstants.filter.SELECT,
-                        selectOptions: vm.agecats
+                        options: vm.agecats
                     }
                     
                 }, {

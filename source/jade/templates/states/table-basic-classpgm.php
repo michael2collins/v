@@ -22,7 +22,7 @@
 <!-- classid, pgmid, pgmcat, classcat, agecat -->                    
             <div class="col-md-12" style="height: 88px;">
                 <form action="" novalidate name="editClassPgm2" class="form-horizontal">
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <?php require_once('table-basic.php');
                                         print selectColTemplate(
                                             array(
@@ -56,7 +56,41 @@
                                         );
                                     ?>
                                 </div>
+                                <div class="col-md-1">
+                                    <?php require_once('table-basic.php');
+                                        print selectColTemplate(
+                                            array(
+                                                'field'=>'nextClassid',
+                                                'model'=>'vm.ClassPgm.nextClassid',
+                                                'label'=>'Next<br/>Class;',
+                                                'placeholder'=>'Select',
+                                                'required'=>false,
+                                                'form'=>'editClassPgm2',
+                                                'repeatmodel'=>'vm.classes',
+                                                'repeatvalue'=>'value',
+                                                'repeatid'=>'id'
+                                                )
+                                        );
+                                    ?>
+                                </div>
                                 <div class="col-md-2">
+                                    <?php require_once('table-basic.php');
+                                        print selectColTemplate(
+                                            array(
+                                                'field'=>'nextPgmid',
+                                                'model'=>'vm.ClassPgm.nextPgmid',
+                                                'label'=>'Next<br/>Program;',
+                                                'placeholder'=>'Select',
+                                                'required'=>false,
+                                                'form'=>'editClassPgm2',
+                                                'repeatmodel'=>'vm.programs',
+                                                'repeatvalue'=>'value',
+                                                'repeatid'=>'id'
+                                                )
+                                        );
+                                    ?>
+                                </div>
+                                <div class="col-md-1">
                                     <?php require_once('table-basic.php');
                                         print selectColTemplate(
                                             array(
@@ -73,7 +107,7 @@
                                         );
                                     ?>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <?php require_once('table-basic.php');
                                         print selectColTemplate(
                                             array(
@@ -90,7 +124,7 @@
                                         );
                                     ?>
                                 </div>
-                                <div class="col-md-2">
+                                <div class="col-md-1">
                                     <?php require_once('table-basic.php');
                                         print selectColTemplate(
                                             array(
