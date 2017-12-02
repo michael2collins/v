@@ -1,4 +1,4 @@
-(function () {
+(function (window, angular) {
     'use strict';
  
     angular
@@ -25,7 +25,7 @@
     function AppControllerFirst( $scope, $routeParams, UserServices){
         /* jshint validthis: true */
         var vm = this;
- 
+        var $ = angular.element;
     vm.data = {};
     vm.header = {
         layout_menu:'',
@@ -246,4 +246,4 @@
     
 
     }
-})();    
+})(window,window.angular);    

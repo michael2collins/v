@@ -39,6 +39,8 @@ $app->post('/removeCalendarEvent','authenticate',  function() use($app) {
 $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     $response = array();
 
+    global $user_id;
+    
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
@@ -59,7 +61,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     $color      = (isset($dataJsonDecode->thedata->color) ? $dataJsonDecode->thedata->color : "");
     $textcolor      = (isset($dataJsonDecode->thedata->textcolor) ? $dataJsonDecode->thedata->textcolor : "");
     $eventtype      = (isset($dataJsonDecode->thedata->eventtype) ? $dataJsonDecode->thedata->eventtype : "");
-    $userpick      = (isset($dataJsonDecode->thedata->userpick) ? $dataJsonDecode->thedata->userpick : "");
+    $userpick      = (isset($dataJsonDecode->thedata->userpick) ? $dataJsonDecode->thedata->userpick : $user_id);
 
     $db = new CalendarDbHandler();
     $response = array();

@@ -52,10 +52,6 @@
 
     $.fn.Data.Portlet('promotion-controller.js');
 
-    $('.portlet-scroll').slimScroll({
-      "height": "150",
-      "alwaysVisible": true
-    });
 
     function setGridLength(size) {
       vm.gridLength = {

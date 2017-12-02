@@ -1,313 +1,277 @@
 <!DOCTYPE html>
+<div ng-controller="AppController as vm">
+  <div id="adialog" title="Student Picker" style="display: none" >
+    <form novalidate class="simple-form">
+      <div class="select-box pal" id="calEventDialogpick">
+        <ui-select ng-model="vm.studentpick2" theme="bootstrap" reset-search-input="true" style="width: 300px;" on-select="vm.setStudentFromPick($item)" title="Choose a student" append-to-body="true">
+          <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
+          <ui-select-choices repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="vm.refreshStudents($select.search)" refresh-delay="0">
+            <div id="contactpicklist" ng-bind-html="stu.FullName | highlight: $select.search"></div>
+          </ui-select-choices>
+          <ui-select-no-choice>
+            Dang! We couldn't find any choices...
+          </ui-select-no-choice>
+        </ui-select>
+      </div>
+    </form>
+  </div>
 
-<div id="adialog" title="Student Picker" style="display: none" ng-controller="AppController as vm">
-        <form novalidate class="simple-form"> 
-    <!--      <div id="contactid" style="display: none;">{{$select.selected.ID}}</div> -->
-              <div class="select-box pal" id="calEventDialogpick">
-                  <ui-select  ng-model="vm.studentpick2" 
-                              theme="bootstrap"
-                              reset-search-input="true"
-                              style="width: 300px;" 
-                              on-select="vm.setStudentFromPick($item)"
-                              title="Choose a student"
-                              append-to-body="true">
-                    <ui-select-match  placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
-                    <ui-select-choices 
-                        repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID"
-                        refresh="vm.refreshStudents($select.search)"
-                        refresh-delay="0">
-                          <div id="contactpicklist" ng-bind-html="stu.FullName | highlight: $select.search"></div>
-                    </ui-select-choices>
-                    <ui-select-no-choice>
-                      Dang!  We couldn't find any choices...
-                    </ui-select-no-choice>                    
-                  </ui-select>
-            </div>          
-        </form>
-</div>
-
-    <div id="calEventDialog"   style="display: none">
-        <form novalidate class="simple-form">
-            <div class="pal">
-              <div class="form-group">
-                <label for="eventTitle" class="control-label col-md-3">Title</label>
-                <div class="col-md-9">
-                  <input type="text" name="eventTitle" id="eventTitle" class="form-control" />
-                </div>
-              </div>
-                <div class="form-group" id="eventPickDiv">
-                  <label for="eventpick" class="control-label col-md-3">Student</label>
-                  <div class="col-md-9">
-                  <div class="input-group ">
-                      <input id="eventpick" type="text" class="form-control">
-                      <span class="input-group-addon">
+  <div id="calEventDialog" style="display: none">
+    <form novalidate class="simple-form">
+      <div class="pal">
+        <div class="form-group">
+          <label for="eventTitle" class="control-label col-md-3">Title</label>
+          <div class="col-md-9">
+            <input type="text" name="eventTitle" id="eventTitle" class="form-control" />
+          </div>
+        </div>
+        <div class="form-group" id="eventPickDiv">
+          <label for="eventpick" class="control-label col-md-3">Student</label>
+          <div class="col-md-9">
+            <div class="input-group ">
+              <input id="eventpick" type="text" class="form-control">
+              <span class="input-group-addon">
                           <i class="glyphicon glyphicon-search"></i>
                       </span>
-                  </div>
-                  </div>
-                </div>
-              <div class="form-group">
-                  <label for="userpick" class="control-label col-md-3">Assign</label>
-                <div class="col-md-9">
-                  <select id="userpick" type="text" name="userpick" 
-                    ng-model="vm.userpick" 
-                    ng-options="u.user as u.fullname for u in vm.thisUserlist track by u.user" 
-                    class="form-control">
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="userpick" class="control-label col-md-3">Assign</label>
+          <div class="col-md-9">
+            <select id="userpick" type="text" name="userpick" ng-model="vm.userpick" ng-options="u.user as u.fullname for u in vm.thisUserlist track by u.user" class="form-control">
                      <option value="">-- Assign user --</option>
                   </select>
-                  </div>                  
-                </div>
-
-              
-              <div class="form-group">
-                <label for="eventStartd" class="control-label col-md-3">Date</label>
-                <div class="col-md-9">
-                  <input type="text" name="eventStartd" id="eventStartd" class="form-control"/>
-                </div>
-              </div>
+          </div>
+        </div>
 
 
-              <div class="form-group" id="eventStartDiv">
-                <label for="eventStart" class="control-label col-md-3">Start</label>
-                <div class="col-md-9">
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="eventStart" type="text" class="form-control input-small">
-                    <span class="input-group-addon">
+        <div class="form-group">
+          <label for="eventStartd" class="control-label col-md-3">Date</label>
+          <div class="col-md-9">
+            <input type="text" name="eventStartd" id="eventStartd" class="form-control" />
+          </div>
+        </div>
+
+
+        <div class="form-group" id="eventStartDiv">
+          <label for="eventStart" class="control-label col-md-3">Start</label>
+          <div class="col-md-9">
+            <div class="input-group bootstrap-timepicker timepicker">
+              <input id="eventStart" type="text" class="form-control input-small">
+              <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
-                    <input id="eventStarttz" type="text" class="form-control" readonly style="border: 0px;" />
-                </div>
+              <input id="eventStarttz" type="text" class="form-control" readonly style="border: 0px;" />
+            </div>
 
-                </div>
-              </div>
-              <div class="form-group" id="eventEndDiv">
-                <label for="eventEnd" class="control-label col-md-3">End</label>
-                <div class="col-md-9">
-                <div class="input-group bootstrap-timepicker timepicker">
-                    <input id="eventEnd" type="text" class="form-control input-small">
-                    <span class="input-group-addon">
+          </div>
+        </div>
+        <div class="form-group" id="eventEndDiv">
+          <label for="eventEnd" class="control-label col-md-3">End</label>
+          <div class="col-md-9">
+            <div class="input-group bootstrap-timepicker timepicker">
+              <input id="eventEnd" type="text" class="form-control input-small">
+              <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
-                    <input id="eventEndtz" type="text" class="form-control" readonly style="border: 0px;" />
-                </div>
-                </div>
-              </div>
-              <div class="form-group">
-                
-                <label for="reminderCheckbox" class="control-label col-md-3">Reminder
+              <input id="eventEndtz" type="text" class="form-control" readonly style="border: 0px;" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+
+          <label for="reminderCheckbox" class="control-label col-md-3">Reminder
                 <div class="col-md-3">
                   <input id="reminderCheckbox" type="checkbox">&nbsp;
                 </div>                  
                 </label>
-                <div class="col-md-9">
-                  <select id="reminderInterval" type="text" name="reminderInterval" 
-                    ng-model="vm.reminderInterval" 
-                    ng-options="r for r in vm.reminderOptions track by r"
-                    class="form-control">
+          <div class="col-md-9">
+            <select id="reminderInterval" type="text" name="reminderInterval" ng-model="vm.reminderInterval" ng-options="r for r in vm.reminderOptions track by r" class="form-control">
                   </select>
-                  </div>                  
-                </div>
-
-                
-                <input id="eventid" type="hidden">
-                <input id="studentpick" type="hidden">
-            </div>
-        </form>
-    </div> 
+          </div>
+        </div>
 
 
+        <input id="eventid" type="hidden">
+        <input id="studentpick" type="hidden">
+      </div>
+    </form>
+  </div>
 
-<div id="tab-general" ng-controller="AppController as vm" ng-show="vm.isok">
+  <div id="tab-general" ng-show="vm.isok">
 
-<!--    <button type="button" 
-        data-ng-click="vm.mynotify()" 
-        class="btn btn-default btn-sm">Notify Me
-    </button>
--->    
     <div class="col-lg-12">
       <div class="portlet portlet-blue">
-      <div class="portlet-header">
-        <div class="caption">Calendar and Task Lists</div>
-        <div class="tools"><i class="fa fa-chevron-up"></i></div>
-      </div>
-      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
-        <div class="panel" style="background-color: grey;">
-          <div class="panel-body">
-                <div class="col-md-3" style="background-color: grey;">
-                  <div class="panel">
-                    <div class="panel-body">
-                      <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-exclamation icons mrs"></i>Filter</h4>
-                      <div class="form-group col-md-12">
-                        <label for="inputForUser" class="control-label col-md-3">User</label>
-                        <div class="col-md-9">
-                          <select id="inputForUser" type="text" name="forUser" 
-                            ng-model="vm.forUser" 
-                            required
-                            placeholder="Schedule/Tasks for?"
-                            class="form-control">
+        <div class="portlet-header">
+          <div class="caption">Calendar and Task Lists</div>
+          <div class="tools"><i class="fa fa-chevron-init fa-chevron-down"></i></div>
+        </div>
+        <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+          <div class="panel" style="background-color: grey;">
+            <div class="panel-body">
+              <div class="col-md-3" style="background-color: grey;">
+                <div class="panel">
+                  <div class="panel-body">
+                    <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-exclamation icons mrs"></i>Filter</h4>
+                    <div class="form-group col-md-12">
+                      <label for="inputForUser" class="control-label col-md-3">User</label>
+                      <div class="col-md-9">
+                        <select id="inputForUser" type="text" name="forUser" ng-model="vm.forUser" required placeholder="Schedule/Tasks for?" class="form-control">
                             <option ng-repeat="iter in vm.forUsers.userlist" value="{{iter.user}}">{{iter.user}}</option>
                           </select>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="portlet portlet-green">
+                  <div class="portlet-header">
+                    <div class="caption">Event</div>
+                    <div class="tools"><i class="fa fa-chevron-init fa-chevron-down"></i></div>
+                  </div>
+                  <div class="portlet-body pbn ptl" style="display: block;   background-color: white;">
+                    <div class="panel">
+                      <div class="panel-body">
+                        <div id="external-events">
+                          <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-event icons mrs"></i>Event List</h4>
+                          <div class="col-md-12 input-group">
+                            <div class="col-md-2">
+                              <color-picker ng-model="vm.mycolor" color-picker-format="'hex'" color-picker-swatch="true" color-picker-swatch-pos="'right'" color-picker-swatch-only="true" color-picker-on-change="vm.settextcolor()">
+
+                              </color-picker>
+                            </div>
+                            <div class="col-md-9 input-group">
+                              <input id="event-name" type="text" class="form-control" value="" placeholder="Create an Event..." style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important">
+                              <span class="input-group-btn">
+                                        <a id="event-add" 
+                                          href="javascript:;" 
+                                          class="btn btn-primary">Add</a>
+                                      </span>
+                            </div>
+                          </div>
+                          <div class="col-md-12">
+                            <hr>
+                            <div id="items">
+                              <span ng-repeat="item in vm.instructorlist" items-drag class="external-event label label-default" id="event" style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important">
+                                            {{item.firstname}} {{item.lastname}}</span>
+                            </div>
+                            <hr>
+                            <div id="testtype">
+                              <span ng-repeat="item in vm.testtypelist" items-drag class="external-event label label-default" id="{{item.testdescription}}" style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important">
+                                            {{item.testdescription}}</span>
+                            </div>
+                            <hr>
+                            <div class="external-event label label-default ui-draggable " id="movie" style="position: relative;background-color: cyan !important; color: black;">
+                              Movie Night</div>
+                          </div>
+                          <div id="event-block"></div>
                         </div>
                       </div>
-
                     </div>
-                  </div>
-                  <div class="panel">
-                    <div class="panel-body">
-                          <div id="external-events">
-                            <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-event icons mrs"></i>Event List</h4>
-                            <div class="col-md-12 input-group" >
-                                <div class="col-md-2">
-                                <color-picker
-                                  ng-model="vm.mycolor"
-                                  color-picker-format="'hex'"
-                                  color-picker-swatch="true"
-                                  color-picker-swatch-pos="'right'"
-                                  color-picker-swatch-only="true"
-                                  color-picker-on-change="vm.settextcolor()">
-                                      
-                                </color-picker>
-                                </div>
-                                <div class="col-md-9 input-group">
-                                <input id="event-name" 
-                                  type="text"
-                                  class="form-control"
-                                  value="" 
-                                  placeholder="Create an Event..." 
-                                  style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important"
-                                  >
-                                  <span class="input-group-btn">
-                                    <a id="event-add" 
-                                      href="javascript:;" 
-                                      class="btn btn-primary">Add</a>
-                                  </span>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <hr>
-                                <div  id="items" >
-                                  <span ng-repeat="item in vm.instructorlist"  items-drag  class="external-event label label-default" id="event"
-                                    style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important" >
-                                        {{item.firstname}} {{item.lastname}}</span>
-                                </div>      
-                                <hr>
-                                <div  id="testtype" >
-                                  <span ng-repeat="item in vm.testtypelist"  items-drag  class="external-event label label-default" id="{{item.testdescription}}"
-                                    style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important" >
-                                        {{item.testdescription}}</span>
-                                </div>      
-                                <hr>
-                                <div class="external-event label label-default ui-draggable " id="movie"
-                                    style="position: relative;background-color: cyan !important; color: black;">
-                                      Movie Night</div>
-                            </div>
-                            <div id="event-block"></div>
-              <!--              <p>
-                              <input id="drop-remove" type="checkbox">&nbsp;
-                              <label for="drop-remove">Remove after drop</label>
-                            </p>
-              -->              
-                          </div>
-                    </div>
-                  </div>
-             
-           
-                  <div id="eventContent" title="Event Details" style="display: none">
-                      Start: <span id="startTime"></span><br>
-                      End: <span id="endTime"></span><br><br>
+                    <div id="eventContent" title="Event Details" style="display: none">
+                      Start: <span id="startTime"></span><br> End: <span id="endTime"></span><br><br>
                       <div id="eventInfo"></div>
                       <p><strong><a id="eventLink" target="_blank">Read More</a></strong></p>
-                  </div>
-        
-                <div class="panel">
-                  <div class="panel-body">
-                    <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-directions mrs"></i>Todo List</h4>
-                    <div id="todos-list">
-                      <ul id="todos-list-sort" class="list-unstyled">
-                      <li>
-                          <div class="input-group">
-                            <input id="todos-list-input" type="text" placeholder="New task content" value="" class="form-control"/><span class="input-group-btn">
-                              <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
-                          </div>
-                      </li>    
-                      </ul>
-                      <ul id="todos-list-gen" class="list-unstyled">          
-                          <li class="row"  ng-repeat="task in vm.thisTasknamelist " style="padding: 0px 10px 0px 20px;">
-                          <input type="checkbox" id="{{task.taskid}}" 
-                          ng-model="task.taskstatus" 
-                          ng-change="vm.updateTasknamelist(task.taskname, task.taskstatus)" 
-                          ng-true-value="1" ng-false-value="0"/>
-                          <label for="{{task.taskid}}">{{task.taskname}}</label><a href="" ng-click="vm.removeTasknamelist(task.taskname)" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
-                          </li>
-                        
-                      </ul>
                     </div>
                   </div>
                 </div>
-                <div class="panel">
-                  <div class="panel-body">
-                    <div>
-                      <h4 class="block-heading" style="font-family: "oswald";"><i class="icon-exclamation icons mrs"></i>Notification List</h4>
-                      <div class="form-group col-md-12">
-                      <label for="inputokNotify" class="control-label col-md-3">Notify Me?</label>
-                      <div class="col-md-9">
-                        <select id="inputokNotify" type="text" name="okNotify" 
-                          ng-model="vm.okNotify" 
-                          required
-                          placeholder="select"
-                          ng-options="o for o in vm.okoptions track by o"
-                          class="form-control">
-                        </select>
+                <div class="portlet portlet-green">
+                  <div class="portlet-header">
+                    <div class="caption">Tasks</div>
+                    <div class="tools"><i class="fa fa-chevron-down fa-chevron-init"></i></div>
+                  </div>
+                  <div class="portlet-body pbn ptl" style="display: block;   background-color: white;">
+                    <div class="panel">
+                      <div class="panel-body">
+                        <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-directions mrs"></i>Todo List</h4>
+                        <div id="todos-list">
+                          <ul id="todos-list-sort" class="list-unstyled">
+                            <li>
+                              <div class="input-group">
+                                <input id="todos-list-input" type="text" placeholder="New task content" value="" class="form-control" /><span class="input-group-btn">
+                                    <button id="todos-list-add" type="button" class="btn btn-primary">Add</button></span>
+                              </div>
+                            </li>
+                          </ul>
+                          <ul id="todos-list-gen" class="list-unstyled">
+                            <li class="row" ng-repeat="task in vm.thisTasknamelist " style="padding: 0px 10px 0px 20px;">
+                              <input type="checkbox" id="{{task.taskid}}" ng-model="task.taskstatus" ng-change="vm.updateTasknamelist(task.taskname, task.taskstatus)" ng-true-value="1" ng-false-value="0" />
+                              <label for="{{task.taskid}}">{{task.taskname}}</label><a href="" ng-click="vm.removeTasknamelist(task.taskname)" data-hover="tooltip" data-original-title="remove" class="delete"><span class="fa fa-trash-o"></span></a>
+                            </li>
+
+                          </ul>
                         </div>
                       </div>
-                      
-                      <ul class="nav nav-pills pull-left">
-<!--                      <p>  listoftimes: {{vm.notifylist}}</p> 
--->                        <li>Time: {{vm.displayTime() | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}</li>
-                          <li class="row"  ng-repeat="msg in vm.notifylist | filter:{reminderCheckbox:1 , reminderInterval: '!NULL'} ">
-                          {{msg.title}} at {{msg.start | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}
-                          </li>
+                    </div>
+                  </div>
+                </div>
+                <div class="portlet portlet-green">
+                  <div class="portlet-header">
+                    <div class="caption">Notifications</div>
+                    <div class="tools"><i class="fa fa-chevron-up"></i></div>
+                  </div>
+                  <div class="portlet-body pbn ptl" style="display: block;   background-color: white;">
+                    <div class="panel">
+                      <div class="panel-body">
+                        <div>
+                          <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-exclamation icons mrs"></i>Notification List</h4>
+                          <div class="form-group col-md-12">
+                            <label for="inputokNotify" class="control-label col-md-3">Notify Me?</label>
+                            <div class="col-md-9">
+                              <select id="inputokNotify" type="text" name="okNotify" ng-model="vm.okNotify" required placeholder="select" ng-options="o for o in vm.okoptions track by o" class="form-control">
+                              </select>
+                            </div>
+                          </div>
+
+                          <ul class="nav nav-pills pull-left">
+                            <li>Time: {{vm.displayTime() | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}</li>
+                            <li class="row" ng-repeat="msg in vm.notifylist | filter:{reminderCheckbox:1 , reminderInterval: '!NULL'} ">
+                              {{msg.title}} at {{msg.start | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}
+                            </li>
                           </ul>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                  
+
               </div>
-                <div class="col-md-9">
-                  <div class="panel">
-                    <div class="panel-body">
-                          <div id="calendar" ></div>
-                    </div>
+              <div class="col-md-9">
+                <div class="panel">
+                  <div class="panel-body">
+                    <div id="calendar"></div>
                   </div>
                 </div>
+              </div>
 
 
-          </div> <!-- panel body -->
-        </div>
-        
-        </div>
-
-      </div>
-    </div>
- 
- 
-  <div class="row">
-    <div class="col-lg-4">
-      <div class="panel">
-        <div class="panel-body">
-          <h4 class="block-heading"><i class="icon-cursor mrs"></i>Student Makeup</h4>
-          <div ng-repeat="stats in vm.studentstats | orderBy: 'timeint':true | filter: vm.filterstat ">
-            <div ng-repeat="d in stats.details">
-                {{d.details.firstname}} {{d.details.lastname}} became {{d.details.classstatus}} on {{d.details.month}} 
-                <a ng-href="./#/form-layouts-editstudent/id/{{d.details.contactid}}" 
-                class="btn btn-blue btn-default">Edit {{d.details.firstname}}</a>
             </div>
           </div>
-          <div id="line-chart-spline" style="height:300px" class="col-lg-12"></div>
-          <div id="line-chart-spline-legend" style="height:35px; padding-top:20px;"  class="col-lg-12"></div>
+
         </div>
+
       </div>
     </div>
+
+
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="panel">
+          <div class="panel-body">
+            <h4 class="block-heading"><i class="icon-cursor mrs"></i>Student Makeup</h4>
+            <div ng-repeat="stats in vm.studentstats | orderBy: 'timeint':true | filter: vm.filterstat ">
+              <div ng-repeat="d in stats.details">
+                {{d.details.firstname}} {{d.details.lastname}} became {{d.details.classstatus}} on {{d.details.month}}
+                <a ng-href="./#/form-layouts-editstudent/id/{{d.details.contactid}}" class="btn btn-blue btn-default">Edit {{d.details.firstname}}</a>
+              </div>
+            </div>
+            <div id="line-chart-spline" style="height:300px" class="col-lg-12"></div>
+            <div id="line-chart-spline-legend" style="height:35px; padding-top:20px;" class="col-lg-12"></div>
+          </div>
+        </div>
+      </div>
+<!--    
     <div class="col-sm-12 col-lg-8">
       <div class="panel">
         <div class="panel-body">
@@ -342,7 +306,9 @@
         </div>
       </div>
     </div>
-  </div>
+-->
+    </div>
+    <!--  
   <div class="row">
     <div class="col-sm-6 col-md-6 col-lg-4">
         <div class="panel">
@@ -362,12 +328,13 @@
           <div id="new-customer-chart" style="width: 100%; height:120px"></div>
         </div>
       </div>
-      <div class="panel">
+  <div class="panel">
         <div class="panel-body">
           <h4 class="block-heading"><i class="icon-globe mrs"></i>Under 18 Demographic view</h4>
           <div id="traffice-sources-chart" style="width: 100%; height:120px"></div>
         </div>
       </div>
+     
     </div>
     <div class="col-sm-6 col-md-6 col-lg-2">
       <div class="panel">
@@ -601,6 +568,8 @@
       </div>
     </div>
   </div>
-  
-  
+-->
+  </div>
+
+
 </div>

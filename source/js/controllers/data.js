@@ -5,6 +5,7 @@ var jQuery;
 
     $.fn.Data.pages = {
         '/': {title:'Dashboard', 'breadcrumb':['Dashboard']},
+        '/main': {title:'Dashboard', 'breadcrumb':['Dashboard']},
         '/form-layouts-newlead': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
         '/form-layouts-newpayment': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
         '/form-layouts-newstudent': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
@@ -42,21 +43,18 @@ var jQuery;
     };
 
     $.fn.Data.Portlet = function(src){
-        /*************************/
-        /******** Portlet *******/
-//        console.log("portlet entered", src);
         $(".portlet").each(function(index, element) {
             var me = $(this);
-//            console.log('portlet: each',index, element);
+            if($(">.portlet-header>.tools>i", me).hasClass('fa-chevron-init')){
+                $(">.portlet-body", me).slideUp('fast');
+                $(">.portlet-header>.tools>i", me).removeClass('fa-chevron-init');
+            }            
             $(">.portlet-header>.tools>i", me).off('click').click(function(e){
-  //                  console.log('portlet: click entered', me, e);
                 if($(this).hasClass('fa-chevron-up')){
-    //                console.log('portlet: chevron up');
                     $(">.portlet-body", me).slideUp('fast');
                     $(this).removeClass('fa-chevron-up').addClass('fa-chevron-down');
                 }
                 else if($(this).hasClass('fa-chevron-down')){
-    //                console.log('portlet: chevron down');
                     $(">.portlet-body", me).slideDown('fast');
                     $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
@@ -65,24 +63,19 @@ var jQuery;
                     //Show modal
                 }
                 else if($(this).hasClass('fa-refresh')){
-     //               console.log('portlet: refresh');
                     //$(">.portlet-body", me).hide();
                     $(">.portlet-body", me).addClass('wait');
 
                     setTimeout(function(){
-     //               console.log('portlet: refresh timeout');
                         //$(">.portlet-body>div", me).show();
                         $(">.portlet-body", me).removeClass('wait');
                     }, 1000);
                 }
                 else if($(this).hasClass('fa-times')){
-    //                console.log('portlet: fa times');
                     me.remove();
                 }
             });
+            
         });
-        /******** Portlet *******/
-        /***********************/
-   //     console.log("portlet exit", src);
     };
 })(jQuery);

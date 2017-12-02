@@ -59,10 +59,6 @@
 
        $.fn.Data.Portlet('table-basic-program.js');
     
-        $('.portlet-scroll').slimScroll({
-            "height": "250",
-            "alwaysVisible": true
-        });
 
         function activate() {
 

@@ -64,10 +64,6 @@
 
        $.fn.Data.Portlet('table-basic-classrank.js');
     
-        $('.portlet-scroll').slimScroll({
-            "height": "250",
-            "alwaysVisible": true
-        });
 
         function activate() {
 

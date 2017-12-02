@@ -1,4 +1,4 @@
-;(function($){
+(function($){
     $.fn.Data = function(){};
     var $this = $.fn.Data;
 

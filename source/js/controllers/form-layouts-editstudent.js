@@ -102,11 +102,6 @@
 
        $.fn.Data.Portlet('form-layouts-editstudent.js');
     
-        $('.portlet-scroll').slimScroll({
-            "height": "250",
-            "alwaysVisible": true
-        });
-
 
         function dateopen($event) {
             vmstudent.status.opened = true;

@@ -28,10 +28,6 @@
 
        $.fn.Data.Portlet('table-basic-attendance.js');
     
-        $('.portlet-scroll').slimScroll({
-            "height": "250",
-            "alwaysVisible": true
-        });
 
         
         vm.refreshtheAttendance = refreshtheAttendance;

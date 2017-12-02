@@ -1,14 +1,13 @@
-(function () {
+(function (window, angular) {
     'use strict';
 
     angular
         .module('ng-admin')
     .factory('UserServices', UserServices);
 
-    UserServices.$inject = ['$http', '$q', '$log', '$rootScope',  '$cookieStore','$cookies'];
+    UserServices.$inject = ['$http', '$q', '$log', '$rootScope',  '$cookieStore','$cookies', '_'];
 
-    function UserServices( $http, $q, $log, $rootScope,  $cookieStore, $cookies ) {
-        var response;
+    function UserServices( $http, $q, $log, $rootScope,  $cookieStore, $cookies, _ ) {
         var apikey;
         var userdetails={};
         
@@ -27,17 +26,14 @@
             forgotpassword: forgotpassword,
             resetpassword: resetpassword,
             changepassword: changepassword
-//            getUser: getUser,
         };
         return service;
         
         function setapikey(key){
-    //        $log.debug('UserServices setapikey', key);
             apikey = key;
             return apikey;
         }
         function getapikey(){
-   //         $log.debug('UserServices getapikey', apikey);
             return apikey;
         }
 
@@ -197,7 +193,7 @@
                 var path="../v1/userdetails?usernm=" + usernm;
 
                 return getUserNames(path).then(function(data){
-                    $log.debug('getUserNames returned data');
+                    $log.debug('userServices getUserNames returned data');
                     $log.debug(data);
                     userdetails.username = data.username;
                     userdetails.firstname = data.firstname;
@@ -279,10 +275,12 @@
             userdetails.firstname = response.data.firstname;
             userdetails.lastname = response.data.lastname;
             userdetails.email = response.data.email;
+            userdetails.pictureurl = response.data.pictureurl;
+            userdetails.school = response.data.school;
             $log.debug(response);
             return( response.data );
         }
 
 
         }
- })();
+ })(window, window.angular, window._);

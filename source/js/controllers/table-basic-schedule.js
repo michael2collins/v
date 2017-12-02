@@ -75,11 +75,6 @@
 
        $.fn.Data.Portlet('table-basic-schedule.js');
     
-        $('.portlet-scroll').slimScroll({
-            "height": "250",
-            "alwaysVisible": true
-        });
-
 
         function activate() {
             getSchedule().then(function() {

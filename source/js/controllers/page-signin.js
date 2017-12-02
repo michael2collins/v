@@ -1,4 +1,4 @@
-(function () {
+(function (window,angular, $) {
 
     'use strict';
 
@@ -39,7 +39,7 @@
             
             $log.debug('enter PageSigninController');
             $log.debug('username', pagevm.username);
-            $log.debug('password', pagevm.password);
+      //      $log.debug('password', pagevm.password);
             
             (function initController() {
                 // reset login status
@@ -118,4 +118,4 @@
             }            
         }
 
-})();    
+})(window, window.angular, window.$);    

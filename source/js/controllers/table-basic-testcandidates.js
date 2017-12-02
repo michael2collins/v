@@ -562,7 +562,7 @@
         function getUserDetails() {
             $log.debug('getUserDetails entered');
             return UserServices.getUserDetails().then(function(data) {
-                    $log.debug("getuserdetails returned:", data);
+                    $log.debug("testcandidate getuserdetails returned:", data);
                     vm.userdta = data;
                     return vm.userdta;
                 },
@@ -662,7 +662,7 @@
                 name: 'Witness'
             };
             return CalendarServices.getinstructorlist(refreshpath).then(function(data) {
-                    $log.debug('getinstructorlist returned data');
+                    $log.debug(' calservices getinstructorlist returned data');
                     $log.debug(data);
                     vm.instructorlist = data.instructorlist;
                     if (typeof data.instructorlist !== 'undefined') {
