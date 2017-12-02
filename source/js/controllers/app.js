@@ -57,6 +57,18 @@ var studentpick = {};
         vm.myuser;
         vm.message;
 
+        $scope.$on('$destroy', function iVeBeenDismissed() {
+            $log.debug("main dismissed");
+            $log.debugEnabled(false);
+        });
+
+        $scope.$on('$routeChangeSuccess', function(event, current, previous) {
+            $log.debugEnabled(true);
+            $log.debug('routechange in main for success');
+        });
+        
+        $.fn.Data.Portlet('app.js');
+
         getUserDetails();
         
         function getUserDetails() {
@@ -286,18 +298,9 @@ var studentpick = {};
 
 
         vm.studentpick2 = {};
-        //    vm.getStudentpick = getStudentpick;
-        //    vm.disable = undefined;
-
-        //    vm.refreshStudents = refreshStudents;
-        //    vm.refreshstudentlist = [];
         vm.events = [];
         vm.colorlist = ['maroon', 'red', 'orange', 'yellow', 'olive', 'purple', 'fuchsia', 'lime', 'green', 'navy', 'blue', 'aqua', 'teal', 'silver', 'black'];
         vm.colorlisthex = ['#fff', '#000', '#000', '#000', '#fff', '#fff', '#000', '#000', '#fff', '#fff', '#fff', '#000', '#000', '#fff', '#fff'];
-
-
-        //    vm.vmevent = $controller('EventPopController as vmevent', {$scope: $scope});
-
 
         vm.setStudentFromPick = setStudentFromPick;
         vm.disable = undefined;
@@ -307,8 +310,6 @@ var studentpick = {};
 
 
         vm.reminderOptions = ['15 min', '1 hour', '1 day'];
-        //    vm.thisevent = {}; 
-        //    $log.debug("EventPopController this event",vm.thisevent);
         vm.popinit = popinit;
 
         var title = $('#eventTitle');
@@ -339,12 +340,6 @@ var studentpick = {};
         };
 
         $.fn.Data.Portlet('app.js');
-/*
-        $('.portlet-scroll').slimScroll({
-            "height": "50px",
-            "alwaysVisible": true
-        });
-*/
 
         $scope.$on('$destroy', function iVeBeenDismissed() {
             $log.debug("app dismissed");
