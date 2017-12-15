@@ -78,9 +78,9 @@ class AttendanceDbHandler {
         
         global $school;
 
-        $sql = "SELECT s.*, c.class  FROM schedule s left outer join nclass c on (c.id = s.classid)";
+        $sql = "SELECT s.*, c.class  FROM schedule s left outer join nclass c on (c.id = s.classid and c.school = s.school) where 1=1 ";
         
-        $schoolfield = "school";
+        $schoolfield = "s.school";
         $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortorder";
         
@@ -109,7 +109,7 @@ class AttendanceDbHandler {
         
         global $school;
 
-        $sql = "SELECT * FROM nclass  ";
+        $sql = "SELECT * FROM nclass where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -519,7 +519,6 @@ class AttendanceDbHandler {
         $sql = "SELECT distinct p.classPayName as classpaynametmp, ";
         $sql .= " c.LastName as lastname, c.FirstName as firstname, p.contactID as contactID ";
         $sql .=" FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid ";
-        $sql .= " order by p.classPayName ";
 
         $schoolfield = "c.studentschool";
         $sql = addSecurity($sql, $schoolfield);
@@ -1214,7 +1213,7 @@ $errormessage=array();
         global $school;
 
         $sql = "SELECT *
-        FROM nclass";
+        FROM nclass where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -1246,7 +1245,7 @@ $errormessage=array();
         global $school;
 
         $sql = "SELECT *
-        FROM nclass where classtype = ?";
+        FROM nclass where classtype = ? ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -1305,9 +1304,10 @@ $errormessage=array();
     }
     public function getRanks($ranktype) {
         
-        $sql = "select ranklist as value,rankid as id, ranktype from ranklist where ranktype = ? order by sortkey ";
+        $sql = "select ranklist as value,rankid as id, ranktype from ranklist where ranktype = ?  ";
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
+        $sql .= " order by sortkey ";
 
         error_log( print_R("getRanks sql after security: $sql \n", TRUE), 3, LOG);
 
@@ -1558,7 +1558,7 @@ $errormessage=array();
             4thPersonDiscount as _4thPersonDiscount,
             MonthlyPrice, WeeklyPrice, 
             SpecialPrice, sortKey
-        FROM nclasslist";
+        FROM nclasslist where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -1590,7 +1590,7 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, class as value
-        FROM nclasslist";
+        FROM nclasslist where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -1622,7 +1622,7 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, classid, pgmid, classcat,pgmcat,agecat,nextClassid, nextPgmid
-        FROM nclasspgm";
+        FROM nclasspgm where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -2181,7 +2181,7 @@ $errormessage=array();
 
         $sql = "SELECT 
         ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, nextsortkey, ranklist as value,rankid as id
-        FROM ranklist";
+        FROM ranklist where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -2256,7 +2256,7 @@ $errormessage=array();
         $cntsql .= " where id = ? ";
 
         $cnt2sql = "select count(*) as ClassPgmcount from nclasspgm ";
-        $cnt2sql .= " where classid = ? and pgmid = ?";
+        $cnt2sql .= " where classid = ? and pgmid = ? ";
 
         error_log( print_R("ClassPgm isClassPgmExists sql: $cntsql", TRUE), 3, LOG);
 
@@ -2454,7 +2454,7 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, classid, rankid
-        FROM classrank";
+        FROM classrank where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -2496,7 +2496,7 @@ $errormessage=array();
         $cntsql .= " where id = ? ";
 
         $cnt2sql = "select count(*) as ClassRankcount from classrank ";
-        $cnt2sql .= " where classid = ? and rankid = ?";
+        $cnt2sql .= " where classid = ? and rankid = ? ";
 
         error_log( print_R("ClassRank isClassRankExists sql: $cntsql", TRUE), 3, LOG);
 
@@ -2925,7 +2925,7 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, classid, testtypeid, sortorder
-        FROM notherclass ";
+        FROM notherclass where 1=1 ";
         
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
@@ -2967,7 +2967,7 @@ $errormessage=array();
         $cntsql .= " where id = ? ";
 
         $cnt2sql = "select count(*) as Classtestcount from notherclass ";
-        $cnt2sql .= " where classid = ? and testtypeid = ?";
+        $cnt2sql .= " where classid = ? and testtypeid = ? ";
 
         error_log( print_R("Classtest isClasstestExists sql: $cntsql", TRUE), 3, LOG);
 
