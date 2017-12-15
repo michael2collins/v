@@ -32,7 +32,8 @@ var studentpick = {};
         '$interval',
         '$controller',
         '$rootScope',
-        'moment'
+        'moment',
+        'CalUtil'
     ];
     MainController.$inject = ['$scope',
         'UserServices',
@@ -225,7 +226,8 @@ var studentpick = {};
         $interval,
         $controller,
         $rootScope,
-        moment
+        moment,
+        CalUtil
     ) {
         /* jshint validthis: true */
         var vm = this;
@@ -303,6 +305,10 @@ var studentpick = {};
         vm.colorlisthex = ['#fff', '#000', '#000', '#000', '#fff', '#fff', '#000', '#000', '#fff', '#fff', '#fff', '#000', '#000', '#fff', '#fff'];
 
         vm.setStudentFromPick = setStudentFromPick;
+        vm.setstudent = setstudent;
+        vm.eventopen = eventopen;
+        vm.getStudent = getStudent;
+        
         vm.disable = undefined;
 
         vm.refreshStudents = refreshStudents;
@@ -311,23 +317,12 @@ var studentpick = {};
 
         vm.reminderOptions = ['15 min', '1 hour', '1 day'];
         vm.popinit = popinit;
-
-        var title = $('#eventTitle');
-        var startd = $('#eventStartd');
-        var start = $('#eventStart');
-        var end = $('#eventEnd');
-        var eventid = $('#eventid');
-        var reminderInterval = $('#reminderInterval');
-        var userpick = $('#userpick');
-        var reminderCheckbox = $('#reminderCheckbox');
-        var contactid = $('#contactid');
-        var eventclass;
-        var color;
-        var textcolor;
-        var eventtype;
+        vm.calsave = calsave;
+        vm.eventDrag = eventDrag;
+        vm.saveCalendarEvent = saveCalendarEvent;
+        vm.removeCalendarEvent = removeCalendarEvent;
 
         var adialog;
-        var uid;
         var eventDrag;
 
         $scope.data = {};
@@ -431,117 +426,20 @@ var studentpick = {};
 
         function activate() {
             $log.debug('app.js activate entered');
-            vm.textcolor = getColorByBgColor(vm.mycolor); // Set to complement of textColor.
-            uid = (function() { var id = 0; return function() { if (arguments[0] === 0) id = 0; return id++; } })();
-            $('#calEventDialog').dialog({
-                resizable: false,
-                autoOpen: false,
-                title: 'Add Event',
-                width: 400,
-                buttons: {}
-            });
-    
-    
+            vm.textcolor = CalUtil.getColorByBgColor(vm.mycolor); // Set to complement of textColor.
+
+            CalUtil.calActivate();
+            
             $("#eventPickDiv").button().on("click", function() {
                 var somevlu = $("#eventpick").val();
                 $log.debug("click pick is", somevlu, vm.studentpick2, studentpick, $("#studentpick").val());
                 vm.studentpick2 = studentpick;
-                //          $('#ui-select-choices-0').val(somevlu).change();
-                //      $("#mike")[0].innerText = somevlu;
                 adialog.dialog("open");
             });
-    
-    
-            $('#eventStart').timepicker({
-                minuteStep: 15,
-                template: 'dropdown',
-                modalBackdrop: 'false',
-                showSeconds: false,
-                showMeridian: true,
-                defaultTime: false
-            });
-            $('#eventEnd').timepicker({
-                minuteStep: 15,
-                template: 'dropdown',
-                modalBackdrop: 'false',
-                showSeconds: false,
-                showMeridian: true,
-                defaultTime: false
-            });
 
-
-            adialog = $('#adialog').dialog({
-                resizable: false,
-                autoOpen: false,
-                title: 'Select Student',
-                width: 400,
-                modal: true,
-                buttons: {
-                    /*            "Select": function() {
-                                    $log.debug('save in edit. note need to update');
-                                    var contactid = $('#contactid')[0].innerHTML;
-                                    $(this).dialog("close");
-                                }, */
-                    "Close": function() {
-                        $log.debug("picked is", vm.studentpick2);
-                        //          vm.studentpick = vm.studentpick2;
-                        $(this).dialog("close");
-                    }
-                }
-            });
-
-            eventDrag = function(el) {
-                $log.debug("eventdrag entered", el);
-                // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
-                // it doesn't need to have a start or end
-                var eventObject = {
-                    title: $.trim(el.text()), // use the element's text as the event title
-                    id: uid()
-                };
+            adialog = CalUtil.aDialog(vm);
+            eventDrag = CalUtil.EventDrag();
     
-                // store the Event Object in the DOM element so we can get to it later
-                el.data('eventObject', eventObject);
-                $log.debug('drag after EventObject', el);
-    
-                // make the event draggable using jQuery UI
-                el.draggable({
-                    zIndex: 999,
-                    revert: true, // will cause the event to go back to its
-                    revertDuration: 0 //  original position after the drag
-                });
-            };
-    
-    
-            $('#external-events div.external-event').each(function() {
-    
-                eventDrag($(this));
-                $log.debug('external-events after drag', $(this));
-    
-            });
-            $('#todos-list-sort > li > label.external-event').each(function() {
-    
-                eventDrag($(this));
-                $log.debug('todos external-events after drag', $(this));
-    
-            });
-    
-            // Back To Top 
-            $(window).scroll(function() {
-                if ($(this).scrollTop() < 20) {
-    //                console.log("under 150",$(this).scrollTop() );
-                    $('#totop').fadeOut();
-                }
-                else {
-    //                console.log("over 150");
-                    $('#totop').fadeIn();
-                }
-            });
-            $('#totop').on('click', function() {
-                $('html, body').animate({ scrollTop: 0 }, 'fast');
-                return false;
-            });
-
-            
             getUserDetails().then(function() {
                 $log.debug('activate getUserDetails returned', vm.userdta);
                 islogin();
@@ -586,16 +484,6 @@ var studentpick = {};
             
         }
 
-        //  sampleset();
-
-        //added dates in index.html
-        //moment.tz.add([
-        //    'America/New_York|EST EDT|50 40|0101|1Lz50 1zb0 Op0'
-        //]);
-
-
-
-
 
         function popinit() {
             $log.debug("popinit entered");
@@ -603,119 +491,8 @@ var studentpick = {};
 
         }
 
-        function onCalendarDayClick(date, jsEvent, view) {
-            // Check to see whether the mouse was hovering over our day corner overlay 
-            // that is itself applied to the fullCalendar's selection overlay div.
-            // If it is, then we know we clicked on the day number and not some other 
-            // part of the cell.
-            //    if ($('.my-cell-overlay-day-corner').is(':hover')) {
-            //        alert('Click!');
-            //    }
-            $log.debug('onCalendarDayClick entered', date, jsEvent, view);
-            if ($(jsEvent.target).is('td')) {
-                // Clicked on the day number in the month view 
-                $('#calendar').fullCalendar('changeView', 'agendaDay');
-                $('#calendar').fullCalendar('gotoDate', date);
-            }
-
-        }
-
         function eventopen(calEvent) {
-            $log.debug('eventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
-            //          if (vm.studentpick.ID !== null) {
-            //              $log.debug("studentpick exists", vm.studentpick.ID, $("#focusser-0"));
-            $("#eventpick").val(studentpick.FullName);
-            //            }
-
-            CalendarServices.setCurrentEvent(calEvent);
-            $("#eventStartd").val(moment(calEvent.start).tz('America/New_York').format('MM/DD/YYYY'));
-
-            $("#eventStart").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('hh:mm A z'));
-            $("#eventStarttz").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('z'));
-
-            $("#eventEnd").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('hh:mm A z'));
-            $("#eventEndtz").val(moment(new Date(calEvent.end.toString())).tz('America/New_York').format('z'));
-
-            $('#eventStart').timepicker('setTime', new Date(calEvent.start.toString()));
-            $('#eventEnd').timepicker('setTime', new Date(calEvent.end.toString()));
-
-            if (calEvent.reminderCheckbox === 1 || calEvent.reminderCheckbox === true) {
-                $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
-            }
-            else {
-                $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', false);
-            }
-            $("#reminderInterval").val(calEvent.reminderInterval);
-            //            $("#userpick").val("number:" + calEvent.userpick);
-            $("#userpick").val(calEvent.userpick);
-
-            $("#eventid").val(calEvent.eventid);
-
-            $('#calEventDialog #eventTitle').val(calEvent.title);
-            $('#calEventDialog #allday').val(
-                [calEvent.className == "gbcs-partialday-event" ? "1" : "2"]
-            ).prop('checked', true);
-            $("#calEventDialog").dialog("option", "buttons", [{
-                    text: "Update",
-                    click: function() {
-                        $log.debug('save in edit. note need to update', $('#eventpick'), $('#contactpicklist'), studentpick, $('#studentpick'));
-                        var title = $('#eventTitle').val();
-                        var startd = $('#eventStartd').val();
-                        var start = $('#eventStart').val();
-                        var end = $('#eventEnd').val();
-                        var contactid = studentpick.ID;
-                        var eventid = $('#eventid').val();
-                        var eventclass = calEvent.className;
-                        var color = calEvent.backgroundColor;
-                        var textcolor = calEvent.textColor;
-                        var eventtype = calEvent.eventtype;
-
-                        var reminderInterval = $('#reminderInterval').val();
-                        var userpick = $('#userpick').val();
-                        var reminderCheckbox = $('#reminderCheckbox');
-                        var screen = $(this);
-                        $log.debug('before calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype);
-
-                        calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype);
-                        $('#calendar').fullCalendar('unselect');
-
-                        $(this).dialog("close");
-                    }
-                },
-                {
-                    text: "Delete",
-                    click: function() {
-                        $log.debug('delete event entered', calEvent);
-
-                        /*    if ( calEvent.reminderCheckbox === true ) {
-                        $log.debug('remove reminder time from event list',calEvent.reminderCheckbox, calEvent);
-        				var atimetoremove = {
-        				    "title": calEvent.title, 
-        				    "time": calEvent.start,
-        				    "id": calEvent.id
-        				}
-        				removeListOfTimes(atimetoremove);
-                    } else {
-                        $log.debug('do not neeed to remove reminder time from event list',calEvent.reminderCheckbox, calEvent);
-                        
-                    }
-                    */
-
-                        removeCalendarEvent(calEvent.id);
-                        $('#calendar').fullCalendar('removeEvents', calEvent._id);
-                        $(this).dialog("close");
-                    }
-                },
-                {
-                    text: "Cancel",
-                    click: function() {
-                        $(this).dialog("close");
-                    }
-                }
-            ]);
-            $("#calEventDialog").dialog("option", "title", "Edit Event");
-            $('#calEventDialog').dialog('open');
-
+            CalUtil.eventopen(calEvent,studentpick,vm,CalendarServices);
         }
 
         function displayTime() {
@@ -771,16 +548,6 @@ var studentpick = {};
             }
             $log.debug('check reminderCheck', reminderCheck, $('input#reminderCheckbox:checked'));
 
-            /*        if ($('input:radio[name=allday]:checked').val() == "1") {
-                        eventClass = "gbcs-partialday-event";
-                        color = "#9E6320";
-                        end.val(start.val());
-                    }
-                    else {
-                        eventClass = "gbcs-allday-event";
-                        color = "#875DA8";
-                    }
-                    */
             var eventData;
             $log.debug('isTitle', title);
             if (updateflag && theevent !== null) {
@@ -810,25 +577,6 @@ var studentpick = {};
 
                 saveCalendarEvent(theevent);
 
-                //if reminderinterval is set, add/update it in the listoftimes
-                //todo
-                //            {"title": "sample1","time": sample1},
-                /*                if ( reminderCheck === 1 ) {
-                    				var atimetoadd = {
-                    				    "title": theevent.title, 
-                    				    "time": displaytime(theevent.start),
-                    				    "theevent": theevent,
-                    				    "id": theevent.id
-                    				};
-                                    $log.debug('add reminder time to event list',reminderCheck, theevent,atimetoadd);
-                    				//todo the change in title is causing extra events
-                    				addListOfTimes(atimetoadd);
-                    				
-                                } else {
-                                    $log.debug('not adding reminder time to event list',reminderCheck, theevent, theevent.id);
-                                    
-                                }
-                */
                 $('#calendar').fullCalendar('updateEvent', theevent);
             }
 
@@ -857,11 +605,6 @@ var studentpick = {};
 
 
         }
-
-        function getStudentpick() {
-            return $rootScope.studentpick;
-        }
-
 
         function saveCalendarEvent(theEvent) {
             var updpath = "../v1/saveCalendarEvent";
@@ -916,7 +659,6 @@ var studentpick = {};
                     throw e;
                 });
         }
-
 
         function updateTasknamelist(taskname, taskstatus) {
             var updpath = "../v1/updatetasknamelist";
@@ -1178,52 +920,6 @@ var studentpick = {};
 
         }
 
-
-        /*    function refreshStudents(theinput) {
-                return StudentServices.refreshStudents(theinput).then(function(data){
-                        $log.debug('controller refreshStudents returned data');
-                        $log.debug(data);
-                        vm.refreshstudentlist = data;
-                        $log.debug('controller refreshstudentlist service data',vm.refreshstudentlist);
-                        return vm.refreshstudentlist;
-                    });
-                
-            }
-        */
-
-        function convertToMoment(thetime) {
-            var testtime;
-            //it has DST on the end
-            if (typeof(thetime) !== 'undefined') {
-                /*            if (thetime.slice(-1,thetime.length) === "T" ) {
-                                testtime = new Date(thetime.slice(1,thetime.length - 4));
-                            } else {
-                                testtime = thetime;
-                            }
-                            */
-                var m = moment(thetime, "MM/DD/YYYY hh:mm A z");
-                $log.debug('convertToMoment: passed in: ', thetime,
-                    'isvalid?', m.isValid(),
-                    'where invalid', m.invalidAt());
-                return moment(thetime, "MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
-                //24 hr?    return moment(testtime).utc().format("YYYY-MM-DDThh:mm:ss.SSS[Z]");
-            }
-        }
-
-        function convertToMomentDST(thetime) {
-            if (typeof(thetime) === 'undefined') {
-                return;
-            }
-            //          if (moment.isMoment(thetime) === true) {
-            //           return moment(thetime).tz('America/New_York').format('z');              
-            //         } else {
-            //      var testtime = thetime.slice(-3, thetime.length);
-            //         $log.debug('convertToMomentDST',thetime,testtime);
-            //        return testtime;
-            return moment(thetime).tz('America/New_York').format('z');
-            //         }
-        }
-
         function getEventList(qparm) {
             //                var qparm =  typeof(vm.forUser) !== 'undefined' ? vm.forUser : 'ALL' ;
             var refreshpath = "../v1/getEventList?username=" + qparm;
@@ -1234,12 +930,6 @@ var studentpick = {};
                     $log.debug(data, typeof(data.events));
                     if (typeof(data.events) !== "undefined") {
                         for (var i = 0; i < data.events.length; i++) {
-                            //                    data.events[i].end = moment(convertToMoment( data.events[i].end));
-                            //                   data.events[i].endtz = convertToMomentDST(data.events[i].end);
-                            //                        data.events[i].start = moment(convertToMoment( data.events[i].start));
-                            //                   data.events[i].start = moment(convertToMoment( data.events[i].start)).tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
-                            //                    data.events[i].starttz = convertToMomentDST(data.events[i].start);
-                            //                     data.events[i].startd = moment(data.events[i].startd,'YYYY-MM-DD');
                             $log.debug('reformat dates', data.events[i]);
                             var atimetoadd = {
                                 "title": data.events[i].title,
@@ -1247,8 +937,8 @@ var studentpick = {};
                                 "theevent": data.events[i],
                                 "id": data.events[i].id
                             };
-                            data.events[i].end = moment(convertToMoment(data.events[i].end));
-                            data.events[i].start = moment(convertToMoment(data.events[i].start));
+                            data.events[i].end = moment(CalUtil.convertToMoment(data.events[i].end));
+                            data.events[i].start = moment(CalUtil.convertToMoment(data.events[i].start));
                             data.events[i].startd = moment(data.events[i].startd, 'YYYY-MM-DD');
 
                             //        addListOfTimes(atimetoadd);
@@ -1282,62 +972,6 @@ var studentpick = {};
             });
         }
 
-        /*    function sampleset() {
-                  var sample1 = displaytime(moment(vm.initTime).add(15,'seconds'));
-                  var sample2 = displaytime(moment(vm.initTime).add(20,'seconds'));
-                  var sample3 = displaytime(moment(vm.initTime).add(20,'seconds'));
-                  var sample4 = displaytime(moment(vm.initTime).add(45,'seconds'));
-                  vm.listOfTimes = [
-                    {"title": "sample1","time": sample1},
-                    {"title": "sample2","time": sample2},
-                    {"title": "sample3","time": sample3},
-                    {"title": "sample4","time": sample4}
-                  ];
-                
-            }
-            */
-        /*    function getEventListold() {
-                var someevents = [
-                  {title: 'First Event',
-                   start: displaytime(moment(vm.initTime).add(45,'hours')),
-                    end:  displaytime(moment(vm.initTime).add(47,'hours'))
-                  },
-                  {title: '2nd Event',
-                   start: displaytime(moment(vm.initTime).add(55,'hours')),
-                    end:  displaytime(moment(vm.initTime).add(57,'hours'))
-                  }
-                ];
-                return someevents;
-                
-            }
-            */
-        /*    function addListOfTimes(timevalues) {
-                $log.debug("add to time list", vm.listOfTimes, timevalues);
-                //remove old one before adjusting the list
-                removeListOfTimes(timevalues);
-                vm.listOfTimes.push(timevalues);
-                $log.debug("after add to time list", vm.listOfTimes, timevalues);
-            }
-            */
-        /*
-    function removeListOfTimes(timevalues) {
-        $log.debug("remove from time list", vm.listOfTimes, timevalues);
-          for (var niter=0,nlen=vm.listOfTimes.length;niter<nlen;niter++) {
-           if (typeof(vm.listOfTimes[niter]) !== 'undefined') {
-                //i think there is a transitional period where it is in 
-                // process of being cleared that the count is wrong
-                if(
-                    vm.listOfTimes[niter].id === timevalues.id
-                    ) {
-                        $log.debug('dropping deleted one',vm.listOfTimes[niter]);
-                        //remove if they were passed by in the loop above
-                          vm.listOfTimes.splice(niter,1);
-                }
-            }
-           }
-
-    }
-*/
         function intervalChecker() {
             $log.debug('intervalChecker entered, using', vm.initTime);
 
@@ -1403,290 +1037,17 @@ var studentpick = {};
 
         // initialize the calendar
         // -----------------------------------------------------------------
-        function initCalendar() {
-            //  $(document).ready(function() {
-            $log.debug("callendar ready");
-            $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                eventLimit: 3, // for all non-agenda views
-                views: {
-                    agenda: {
-                        eventLimit: 3 // adjust to 6 only for agendaWeek/agendaDay
-                    }
-                },
-                //        timezone: 'America/New_York',
-                events: vm.events,
-                //        events: getEventList(),
-                timezone: 'local',
-                timeFormat: 'hh:mm A z',
-                selectable: true,
-                selectHelper: true,
-                //    viewRender : onCalendarViewRender,
-                dayClick: onCalendarDayClick,
-                editable: true,
-                droppable: true, // this allows things to be dropped onto the calendar !!!
-
-                drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
-                    $log.debug('drop entered', date, jsEvent, ui, resourceId);
-                    //       $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
-
-                    // retrieve the dropped element's stored Event Object
-                    var originalEventObject = $(this).data('eventObject');
-
-                    // we need to copy it, so that multiple events don't have a reference to the same object
-                    var copiedEventObject = $.extend({}, originalEventObject);
-
-                    // assign it the date that was reported
-                    if (date._ambigTime === true) {
-                        copiedEventObject.start = moment(date).tz('America/New_York').add(11, 'hours');
-                        copiedEventObject.startd = moment(date).tz('America/New_York').add(11, 'hours').format('MM/DD/YYYY');
-                    }
-                    else {
-                        copiedEventObject.start = moment(date).tz('America/New_York');
-                        copiedEventObject.startd = moment(date).tz('America/New_York').format('MM/DD/YYYY');
-                    }
-
-                    copiedEventObject.end = moment(copiedEventObject.start).add(2, 'hours');
-                    $log.debug("copied end", copiedEventObject.end);
-                    copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
-                    copiedEventObject.textColor = jsEvent.target.style.color;
-                    copiedEventObject.eventtype = jsEvent.target.id;
-                    var inner = jsEvent.target.innerText;
-                    //        $log.debug('drop parsing',inner);
-                    var innerJ, desc;
-                    try {
-                        innerJ = JSON.parse(inner);
-                        desc = innerJ.details.name;
-                    }
-                    catch (e) {
-                        //            $log.debug('json parse err',e);
-                        innerJ = inner;
-                        desc = inner;
-                    }
-                    //            $log.debug('drop entered',innerJ);
-                    //           $log.debug('drop entered',desc);
-
-                    copiedEventObject.title = desc;
-                    copiedEventObject.description = innerJ;
-
-                    //mlc todo, use a db inserted id 
-                    saveCalendarEvent(copiedEventObject).then(function() {
-                        $log.debug("test looking for new eventid", vm.neweventid);
-                        copiedEventObject.id = vm.neweventid;
-                        copiedEventObject.eventid = vm.neweventid;
-                        //    copiedEventObject.mike = "mikeisgreat";
-                        //copiedEventObject.id = uid();
-
-                        //            copiedEventObject.allDay = allDay;
-                        //         $log.debug('after set copiedEventObject',copiedEventObject);
-
-                        // render the event on the calendar
-                        // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-                        $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-                        // is the "remove after drop" checkbox checked?
-                        if ($('#drop-remove').is(':checked')) {
-                            // if so, remove the element from the "Draggable Events" list
-                            $(this).remove();
-                        }
-
-                    });
-
-                },
-                select: function(start, end) {
-                    $log.debug('select entered', start, end);
-                    $("#eventStartd").val(moment(start).tz('America/New_York').format('MM/DD/YYYY'));
-                    $("#eventStart").val(moment(start).tz('America/New_York').format('hh:mm A z'));
-                    $("#eventEnd").val(moment(start).tz('America/New_York').format('hh:mm A z'));
-                    $log.debug('start', $("#eventStart"), 'end', $("#eventEnd"));
-                    //            $('#calEventDialog').dialog('open');
-                },
-                eventClick: function(calEvent, jsEvent, view) {
-                    $log.debug('eventClick entered', calEvent, jsEvent, view);
-
-                    //get stu name if contactid set
-                    if (calEvent.contactid !== "" && calEvent.contactid !== "NULL") {
-                        var path = '../v1/students/' + calEvent.contactid;
-                        getStudent(path).then(function(data) {
-                            $log.debug("eventclick get studentname returned", data);
-                            var fullname = data.FirstName + " " + data.LastName;
-                            setstudent({ ID: data.ID, FirstName: data.FirstName, LastName: data.LastName, FullName: fullname });
-                            $log.debug("student exit in eventclick", studentpick);
-                            eventopen(calEvent);
-
-                        });
-                    }
-                    else {
-                        setstudent({});
-                        eventopen(calEvent);
-                    }
-
-                },
-
-                eventDrop: function(event, delta, revertFunc) {
-
-                    $log.debug('eventdrop', event, event.title + " was dropped on " + event.startd, delta);
-
-                    var title = event.title;
-                    var startd = moment(event.startd).add(delta, 'seconds').tz('America/New_York').format('MM/DD/YYYY');
-                    var start = moment(event.start).tz('America/New_York').format('hh:mm A z');
-                    var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
-
-                    var reminderInterval = event.reminderInterval;
-                    var userpick = event.userpick;
-                    var reminderCheckbox = event.reminderCheckbox;
-                    var contactid = event.contactid;
-                    var eventid = event.eventid;
-                    var eventclass = event.className;
-                    var color = event.backgroundColor;
-                    var textcolor = event.textColor;
-                    var eventtype = event.eventtype;
-                    var screen = $(this);
-
-                    if (!confirm("Are you sure about this change?")) {
-                        revertFunc();
-                    }
-                    else {
-
-                        $log.debug('save in eventdrop');
-                        $log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
-
-                        calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
-
-                    }
-
-                }
-            });
-
-            var addEvent = function(name) {
-                var thecolor = vm.mycolor;
-                var thetextcolor = vm.textcolor;
-
-                name = name.length === 0 ? "Untitled Event" : name;
-                var html = $('<div class="external-event label label-default" style="background-color: ' +
-                    thecolor + '!important; color:' + thetextcolor + ' !important;">' + name + '</div>');
-                $('#event-block').append(html);
-                eventDrag(html);
-                $log.debug('after addEvent drag', html);
-
-            };
-
-            $('#event-add').on('click', function() {
-                var name = $('#event-name').val();
-                addEvent(name);
-                $log.debug('after addEvent click', name);
-            });
-            // });
+        function initCalendar(){
+            CalUtil.initCalendar(vm,studentpick);
         }
 
         function settextcolor() {
-            vm.textcolor = getColorByBgColor(vm.mycolor);
+            vm.textcolor = CalUtil.getColorByBgColor(vm.mycolor);
             //      vm.textcolor = 0xFFFFFF ^ vm.mycolor;
             $log.debug('settextcolor', vm.mycolor, vm.textcolor);
         }
 
-        //
-        // * Get color (black/white) depending on bgColor so it would be clearly seen.
-        // * @param bgColor
-        // * @returns {string}
-        //
-        function getColorByBgColor(bgColor) {
-            $log.debug('getColorByBgColor', bgColor);
-            if (!bgColor) { return ''; }
-            return (parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff';
-        }
 
-        // hexToComplimentary : Converts hex value to HSL, shifts
-        // hue by 180 degrees and then converts hex, giving complimentary color
-        // as a hex value
-        // @param  [String] hex : hex value  
-        // @return [String] : complimentary color as hex value
-        //
-        function hexToComplimentary(hex) {
-
-            // Convert hex to rgb
-            // Credit to Denis http://stackoverflow.com/a/36253499/4939630
-            var rgb = 'rgb(' + (hex = hex.replace('#', '')).match(new RegExp('(.{' + hex.length / 3 + '})', 'g')).map(function(l) { return parseInt(hex.length % 2 ? l + l : l, 16); }).join(',') + ')';
-
-            // Get array of RGB values
-            rgb = rgb.replace(/[^\d,]/g, '').split(',');
-
-            var r = rgb[0],
-                g = rgb[1],
-                b = rgb[2];
-
-            // Convert RGB to HSL
-            // Adapted from answer by 0x000f http://stackoverflow.com/a/34946092/4939630
-            r /= 255.0;
-            g /= 255.0;
-            b /= 255.0;
-            var max = Math.max(r, g, b);
-            var min = Math.min(r, g, b);
-            var h, s, l = (max + min) / 2.0;
-
-            if (max == min) {
-                h = s = 0; //achromatic
-            }
-            else {
-                var d = max - min;
-                s = (l > 0.5 ? d / (2.0 - max - min) : d / (max + min));
-
-                if (max == r && g >= b) {
-                    h = 1.0472 * (g - b) / d;
-                }
-                else if (max == r && g < b) {
-                    h = 1.0472 * (g - b) / d + 6.2832;
-                }
-                else if (max == g) {
-                    h = 1.0472 * (b - r) / d + 2.0944;
-                }
-                else if (max == b) {
-                    h = 1.0472 * (r - g) / d + 4.1888;
-                }
-            }
-
-            h = h / 6.2832 * 360.0 + 0;
-
-            // Shift hue to opposite side of wheel and convert to [0-1] value
-            h += 180;
-            if (h > 360) { h -= 360; }
-            h /= 360;
-
-            // Convert h s and l values into r g and b values
-            // Adapted from answer by Mohsen http://stackoverflow.com/a/9493060/4939630
-            if (s === 0) {
-                r = g = b = l; // achromatic
-            }
-            else {
-                var hue2rgb = function hue2rgb(p, q, t) {
-                    if (t < 0) t += 1;
-                    if (t > 1) t -= 1;
-                    if (t < 1 / 6) return p + (q - p) * 6 * t;
-                    if (t < 1 / 2) return q;
-                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-                    return p;
-                };
-
-                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                var p = 2 * l - q;
-
-                r = hue2rgb(p, q, h + 1 / 3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1 / 3);
-            }
-
-            r = Math.round(r * 255);
-            g = Math.round(g * 255);
-            b = Math.round(b * 255);
-
-            // Convert r b and g values to hex
-            rgb = b | (g << 8) | (r << 16);
-            return "#" + (0x1000000 | rgb).toString(16).substring(1);
-        }
 
         function getYType(index) {
             switch (index) {
@@ -1745,26 +1106,10 @@ var studentpick = {};
 
 
                 $('#todos-list-add').click(function() {
-                    /*            var index = $('#todos-list-sort > li').length;
-                                var ht_txt = '<li><input type="checkbox" id="task-item-' + index
-                                    + '" /><label for="task-item-' 
-                                    + index + '" >' 
-                                    + $("#todos-list-input").val() 
-                                    + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="fa fa-trash-o"></span></a></li>';
-                                $log.debug('todo add, index is:', index, ' and txt:', ht_txt);
-                                $('ul#todos-list-sort').append(ht_txt);
-                      */
                     updateTasknamelist($("#todos-list-input").val(), '0');
                     $("[data-hover='tooltip']").tooltip();
                     return false;
                 });
-                //        $( document ).on( 'click', '#todos-list-sort li a.delete', function() {
-                //            $log.debug('todo list remove entered');
-                //mlc         $('#todos-list-gen li a.delete').live('click', function() {
-                //            $(this).parent().remove();
-                //            removeTasknamelist($("#todos-list-input").val());
-                //        });
-                //END TODOS LIST
 
             });
         }
@@ -2293,22 +1638,9 @@ var studentpick = {};
         }
 
         function mergedata() {
-            //      $log.debug('mergedata entered'); 
             for (var iter = 0, len = vm.studentstats.length; iter < len; iter++) {
                 vm.studentstats[iter].details = [];
                 for (var diter = 0, lend = vm.studentstatsdetails.length; diter < lend; diter++) {
-                    /*                   $log.debug('check a match', 
-                                           vm.studentstats[iter].month, 
-                                           vm.studentstatsdetails[diter].month, 
-                                           vm.studentstats[iter].datetype,
-                                           vm.studentstatsdetails[diter].datetype,
-                                           vm.studentstats[iter].type,
-                                           vm.studentstatsdetails[diter].type,
-                                           vm.studentstats[iter].category,
-                                           vm.studentstats[iter].classstatus,
-                                           vm.studentstatsdetails[diter].category
-                                           );
-                      */
                     if (vm.studentstats[iter].month === vm.studentstatsdetails[diter].month &&
                         vm.studentstats[iter].type === vm.studentstatsdetails[diter].type &&
                         (vm.studentstats[iter].category === 'Inactive' ||
@@ -2324,18 +1656,10 @@ var studentpick = {};
                             'details': vm.studentstatsdetails[diter]
                         };
                         vm.studentstats[iter].details.push(dta);
-                        /*            $log.debug('found a match', 
-                                        vm.studentstats[iter].month, 
-                                        vm.studentstats[iter].datetype,
-                                        vm.studentstats[iter].details
-                                        );
-                          */
                     }
 
                 }
             }
-
-            //            $log.debug('merged stats',vm.studentstats);
 
         }
 

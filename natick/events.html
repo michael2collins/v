@@ -1,0 +1,187 @@
+<?php
+
+$openclose = file_get_contents('./data/openclose.txt');
+
+if ($openclose == "true" ) {
+
+   $dojo = "closed";
+
+} else {
+
+   $dojo = "open";
+
+}
+
+?>
+
+<div class="eventlist" >
+  <ul id="todayclosed">
+    <?php
+
+
+
+if ($dojo == "closed" ) {
+
+ echo  "<li>Today the Dojo is unexpectedly closed </li>";
+
+} else {
+
+ echo  "<li> Read below to see if the Dojo has a planned closing: </li>";
+
+}
+
+
+
+?>
+  </ul>
+  <ul id="plannedclosed">
+    <?php
+
+
+
+if ($dojo == "closed" ) {
+
+
+
+ echo  "<li data-closed='closed'>Today the Dojo is unexpectedly closed ";
+
+
+
+  echo  "<div id='time'>" . date("Y-m-d") . "</div>";
+
+
+
+  echo " </li>";
+
+
+
+} 
+
+?>
+    <li data-closed="closed">Haunted Dojo - No Classes
+      <div id="time">2013-10-26</div>
+    </li>
+    <li data-closed="closed"> New Year's Day 2015
+      <div id="time">2015-01-01</div>
+    </li>
+    <li data-closed="open"> Martin Luther King Day 1/20 2015
+      <div id="time">2015-01-20</div>
+    </li>
+    <li data-closed="open"> Presidents Day 2/16 and Washington's Birthday 2015
+      <div id="time">2015-02-16</div>
+    </li>
+    <li data-closed="closed"> Patriots Day 2015
+      <div id="time">2015-04-20</div>
+    </li>
+    <li data-closed="closed"> Memorial Day Sat 5/28 2016
+      <div id="time">2016-05-29</div>
+    </li>
+    <li data-closed="closed"> Memorial Day 5/29 2017
+      <div id="time">2017-05-29</div>
+    </li>
+    <li data-closed="closed"> July 4th 2017
+      <div id="time">2017-07-04</div>
+    </li>
+    <li data-closed="closed"> July 6th 2015
+      <div id="time">2015-07-06</div>
+    </li>
+    <li data-closed="closed"> Labor Day Sat 9/2 2017
+      <div id="time">2017-09-02</div>
+    </li>
+    <li data-closed="closed"> Labor Day 9/4 2017
+      <div id="time">2017-09-04</div>
+    </li>
+    <li data-closed="open"> Patriot Day 9/11 2015
+      <div id="time">2015-09-11</div>
+    </li>
+    <li data-closed="open"> Columbus Day 10/12 2015
+      <div id="time">2015-10-12</div>
+    </li>
+    <li data-closed="closed"> Haunted Dojo 10/29 2017
+      <div id="time">2017-10-29</div>
+    </li>
+    <li data-closed="open"> Veterans' Day 11/11 2015
+      <div id="time">2015-11-11</div>
+    </li>
+    <li data-closed="closed"> Thanksgiving 22 2017
+      <div id="time">2017-11-22</div>
+    </li>
+    <li data-closed="closed"> Thanksgiving 23 2017
+      <div id="time">2017-11-23</div>
+    </li>
+    <li data-closed="closed"> Thanksgiving 25 2017
+      <div id="time">2017-11-25</div>
+    </li>
+    <li data-closed="closed"> Black Friday 2016
+      <div id="time">2016-11-25</div>
+    </li>
+    <li data-closed="closed"> Thanksgiving Sat 2016
+      <div id="time">2016-11-26</div>
+    </li>
+    <li data-closed="closed"> Christmas Friday 2016
+      <div id="time">2016-12-23</div>
+    </li>
+    <li data-closed="closed"> Christmas 2017
+      <div id="time">2016-12-25</div>
+    </li>
+    <li data-closed="closed"> Pre New Year
+      <div id="time">2016-12-31</div>
+    </li>
+    <li data-closed="closed"> New Year's Day 2018
+      <div id="time">2018-01-01</div>
+    </li>
+    <li data-closed="closed"> New Year Monday 2017
+      <div id="time">2017-01-02</div>
+    </li>
+    <li data-closed="open"> Saturday after New Year's Day 2016
+      <div id="time">2016-01-02</div>
+    </li>
+    <li data-closed="open"> Martin Luther King Day 1/18 2016
+      <div id="time">2016-01-18</div>
+    </li>
+  </ul>
+  <ul id="events">
+ <!--   <li data-event-name="Sturbridge tournament" data-url="http://www.karateevents.com/">Signup for tournament
+      <div id="time">2013-10-26</div>
+    </li>
+-->
+<!--
+    <li data-event-name="Haunted Dojo" data-url=""> For Haunted Dojo - All ages welcome - starts at 4pm
+      <div id="time">2015-10-24</div>
+    </li>
+-->
+<!--
+    <li data-event-name="Board breaking for relay" data-url="/relayforlife.php" >
+      <div class="stime" id="time">2014-04-05</div>
+<div class="sclass" >Board breaking for relay - 2pm</div>
+    </li>
+    <li data-event-name="Meat Shoot for relay" data-url="/relayforlife.php" > 
+      <div class="stime" id="time">2014-04-06</div>
+<div class="sclass" >Meat Shoot for relay</div>
+    <li data-event-name="Knife clinic and tourn." data-url="/knifeclinic.php" > 
+    </li>
+
+-->
+  </ul>
+  <ul id="promotions">
+    <li data-promotion-name="" data-page-url="/index-8.html" data-graphic-url="../images/offer.png" data-duration="28">Back to School Special
+      <div id="time">2013-08-15</div>
+    </li>
+  </ul>
+  <ul id="movienights">
+<!--    <li data-rating="PG" data-time="6pm to 9pm" > -->
+<!--    <li data-rating="PG" data-time="5:00pm to 8:00pm" > 
+      <div class="stime" id="time">2015-06-27</div>
+    </li>
+-->
+  </ul>
+  <ul id="tests">
+    <li data-type="Adult" >During 6:30 class
+      <div id="time">2013-10-26</div>
+    </li>
+    <li data-type="Kids" >1:30 for Basic<br/>
+      2:30 for Advanced
+      <div id="time">2013-10-26</div>
+    </li>
+  </ul>
+</div>

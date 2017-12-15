@@ -46,6 +46,7 @@
         vm.updateTest = updateTest;
         vm.addToTest = addToTest;
         vm.removeFromTest = removeFromTest;
+        vm.setSlide = setSlide;
         vm.setLimit = setLimit;
         vm.createtestcandidate = createtestcandidate;
         vm.highlightFilteredHeader = highlightFilteredHeader;
@@ -71,9 +72,11 @@
         vm.loading = true;
         vm.loadAttempted = false;
         vm.gridOptions = {};
+        vm.gridOptions.data = [{}];
         vm.resgridApi;
         vm.gridApi;
         vm.resgridOptions = {};
+        vm.resgridOptions.data = [{}];
         vm.selectedStudents = [];
         vm.TestCandidateSelected = '';
         vm.testcandidatenames = [];
@@ -129,6 +132,10 @@
         vm.htmlcontentdata.htmlcontentheader;
         vm.htmlcontentdata.htmlcontent;
         vm.htmlcontentdata.htmlcontentfooter;
+        vm.styleleft="400px";
+        vm.styleright="400px";
+        vm.gridright=5;
+        vm.gridleft=5;
 
         $scope.$on('$routeChangeSuccess', function(event, current, previous) {
             $log.debugEnabled(true);
@@ -142,6 +149,39 @@
 
         activate();
 
+        function setSlide(direction) {
+            if (direction == 'left') {
+//                vm.styleright = "col-md-9";
+//                vm.styleleft = 'col-md-1';                
+                vm.styleright = "770px";
+                vm.styleleft = "0px";               
+                vm.gridright = 10;
+                vm.gridleft = 0;
+                vm.showright = true;
+                vm.showleft = false;
+            }
+            if (direction == 'right') {
+//                vm.styleright = "col-md-1";
+//                vm.styleleft = 'col-md-9';                
+                vm.styleright = "0px";
+                vm.styleleft = "770px";                
+                vm.gridright = 0;
+                vm.gridleft = 10;
+                vm.showright = false;
+                vm.showleft = true;
+            }
+            if (direction == 'center') {
+//                vm.styleright = "col-md-1";
+//                vm.styleleft = 'col-md-9';                
+                vm.styleright = "400px";
+                vm.styleleft = "400px";                
+                vm.gridright = 5;
+                vm.gridleft = 5;
+                vm.showright = true;
+                vm.showleft = true;
+            }
+        }
+        
         function createTestChecklist() {
             if (vm.selected === false) {
                 var error = "no rows selected for test candidate";

@@ -1,0 +1,401 @@
+/*********************************page_7*************************************/
+
+/* Contact form */
+
+#contact-form {padding:8px 0 0 0; position: relative;}
+
+#contact-form textarea, #contact-form input {
+
+	margin:0;
+
+	font-size:12px;
+
+	 border:1px solid #b1b1b1;
+
+	 color:#6a6a6a; 
+
+	 padding:16px 15px 17px;
+
+	 outline:none;
+
+	  position:relative;
+
+	   font-family:Arial, Helvetica, sans-serif;
+
+	   background:#fff;
+
+	    -webkit-box-sizing: border-box;
+
+-moz-box-sizing: border-box;
+
+box-sizing: border-box;}
+
+#contact-form input {width:100%; float:left;}
+
+#contact-form textarea {overflow:auto; width:100%; resize:vertical; float:left; margin: 0 0 0 0; -webkit-box-sizing: border-box;
+
+-moz-box-sizing: border-box;
+
+box-sizing: border-box; resize: none;}	
+
+
+
+#contact-form .movieleft {
+
+	width: 65%;
+
+	float: left;
+
+}
+
+#contact-form .movieright {
+
+	width: 35%;
+
+	float: right;
+
+}
+
+#contact-form .moviemid {
+
+	width: 20%;
+
+	float: left;
+
+}
+
+#contact-form .moviesmright {
+
+	width: 15%;
+
+	float: right;
+
+}
+
+
+
+#contact-form .referleft {
+
+	width: 65%;
+
+	float: left;
+
+}
+
+#contact-form .referright {
+
+	width: 35%;
+
+	float: right;
+
+}
+
+#contact-form .refermid {
+
+	width: 20%;
+
+	float: left;
+
+}
+
+#contact-form .refersmright {
+
+	width: 15%;
+
+	float: right;
+
+}
+
+#contact-form .offerleft {
+
+	width: 65%;
+
+	float: left;
+
+}
+
+#contact-form .offerright {
+
+	width: 35%;
+
+	float: right;
+
+}
+
+
+#contact-form .partyleft {
+
+	width: 65%;
+
+	float: left;
+
+}
+
+#contact-form .partyright {
+
+	width: 35%;
+
+	float: right;
+
+}
+
+#contact-form .partymid {
+
+	width: 20%;
+
+	float: left;
+
+}
+
+#contact-form .partysmright {
+
+	width: 15%;
+
+	float: right;
+
+}
+
+
+#contact-form .hidden {
+
+    display:none;
+
+    width:0px;
+
+    height:0px;
+
+}
+
+#contact-form label {
+
+    display: block;
+
+    min-height: 50px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    width: 100%;
+
+}	
+
+
+
+#contact-form select {
+
+    display: block;
+
+    min-height: 50px;
+
+    overflow: hidden;
+
+    position: relative;
+
+    width: 100%;
+
+    height: 100%;
+
+}	
+
+
+
+
+
+#contact-form label.message {
+
+    width: 100%;
+
+}
+
+#contact-form label.message { display:block; padding-bottom:0; }
+
+#contact-form .button1 {margin-left:17px;}	
+
+#contact-form .error,
+
+#contact-form .empty {
+
+	color:#f00;
+
+	font-size:10px;
+
+	line-height:1.25em;
+
+	display:none;
+
+	font-family:Arial, Helvetica, sans-serif;
+
+	overflow:hidden;
+
+	position:absolute;
+
+	right:3px;
+
+	top:2px;
+
+}
+
+#contact-form .message .error, 
+
+#contact-form .message .empty {
+
+    left: 0;
+
+    right: auto;
+
+    top: 191px;
+
+}
+
+#contact-form .buttons2 {
+
+	overflow:hidden;
+
+	text-align:right;
+
+	 position:relative; 
+
+	 clear:both; 
+
+	 padding-top:14px;
+
+	 padding-bottom:11px;
+
+	 margin-right: 30px;
+
+	 }
+
+#contact-form .buttons2 a {
+
+	cursor:pointer;
+
+	margin-top:0;
+
+	text-align:center;
+
+}
+
+#contact-form .success {
+
+    background: none repeat scroll 0 0 #f6f6f5;
+
+    border: 1px solid #333333;
+
+    display: none;
+
+    height: 170px;
+
+    box-sizing: border-box;
+
+    -moz-box-sizing: border-box;
+
+    -webkit-box-sizing: border-box;
+
+    -o-box-sizing: border-box;
+
+    -ms-box-sizing: border-box;
+
+    position: absolute;
+
+    width: 296px;
+
+    z-index: 1;
+
+}
+
+
+
+#contact-form .success .success_txt {
+
+    color: #000;
+
+    position: relative;
+
+    text-align: center;
+
+    top: 34%;
+
+}
+
+#contact-form span{ display:block; margin: 0px 0 0 5px;}
+
+
+
+@media only screen and (max-width: 995px) {
+
+	#contact-form input, #contact-form textarea{width:100%;}
+
+	#contact-form label.message {
+
+    width: 100%;
+
+}
+
+#contact-form label {
+
+    width: 100%;
+
+}
+
+
+
+#contact-form .success {
+
+	width: 100%;
+
+}
+
+
+
+#contact-form .success {
+
+    width: 100%;	
+
+}
+
+}
+
+
+
+ @media only screen and (max-width: 767px) {
+
+	 #contact-form input, #contact-form textarea{width:100%;}
+
+	
+
+#contact-form label {
+
+    width: 100%;
+
+}
+
+
+
+#contact-form .success {
+
+    width: 100%;	
+
+}
+
+
+
+	 }
+
+ 
+
+
+
+
+
+
+
+@media only screen and (max-width: 479px){
+
+
+
+	
+
+
+
+}

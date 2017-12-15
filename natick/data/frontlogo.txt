@@ -1,0 +1,1 @@
+<?php $frontlogo='<a href="specialoffer2.php" class="specialoffercoupon"></a>';?>

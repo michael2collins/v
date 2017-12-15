@@ -1,0 +1,48 @@
+Event,TIME ,DIVISION ,Age,RING 
+Event 1 - Kata,,,,
+,10:00 AM,White to Orange,Ages 4 to 6,1 (Double Ring)
+,10:00 AM,Purple and up,Ages 4 to 6,1 (Double Ring)
+,10:00 AM,White to Orange,Ages 7 to 8,2
+,10:00 AM,Purple to Blue/Stripe ,Ages 7 to 8,3
+,10:00 AM,Green and up ,Ages 7 to 8,4
+,10:00 AM,White thru Purple,Ages 9 to 10,5 (Double Ring)
+,10:00 AM,Blue to Blue/Stripe,Ages 9 to 10,5 (Double Ring)
+,10:00 AM,Green to Green/Stripe,Ages 9 to 10,6 (Double Ring)
+,10:00 AM,Brown ,Ages 9 to 10,6 (Double Ring)
+,10:00 AM,White to Green/Stripe,Ages 11 to 12,7
+,10:00 AM,Brown ,Ages 11 to 12,8
+,,,,
+Event 2 - Sparring,11:00 AM,White to Orange,Ages 4 to 6,1 (Double Ring)
+,11:00 AM,Purple and up,Ages 4 to 6,1 (Double Ring)
+,11:00 AM,White to Orange,Ages 7 to 8,2
+,11:00 AM,Purple to Blue/Stripe ,Ages 7 to 8,3
+,11:00 AM,Green and up ,Ages 7 to 8,4
+,11:00 AM,White thru Purple,Ages 9 to 10,5 (Double Ring)
+,11:00 AM,Blue to Blue/Stripe,Ages 9 to 10,5 (Double Ring)
+,11:00 AM,Green to Green/Stripe,Ages 9 to 10,6 (Double Ring)
+,11:00 AM,Brown ,Ages 9 to 10,6 (Double Ring)
+,11:00 AM,Girls - All Ranks,Ages 11 to 12,7
+,11:00 AM,Boys - White to Green/Stripe,Ages 11 to 12,8 (Double Ring)
+,11:00 AM,Boys - Brown,Ages 11 to 12,8 (Double Ring)
+,,,,
+Event 3 - Weapons,Noon,Weapons 9 years and Under,Ages 9 and under,1
+,Noon,Weapons 10 years,Ages 10,2
+,Noon,Weapons 11 years,Ages 11 ,3
+,Noon,Weapons 12 and up,Ages 12 and up,4
+,Noon,Black Belt Weapons 13 years and under,Ages 13 and under,5
+,Noon,Black Belt Weapons 14 years and up,Ages 14 and up,6
+,,,,
+Event 4 - Kata,1:00 PM,Adult 17 and up,Ages 17 and up,1
+,1:00 PM,Teens 13 thru 16 years,Ages 13 to 16,2
+,1:00 PM,Black Belt 12 and Under,Ages 12 and Under,3
+,1:00 PM,Black Belt 13 and 14 years,Ages 13 to 14,4
+,1:00 PM,Black Belt 15 and 16 years,Ages 15 to 16,5
+,1:00 PM,Black Belt 17 and up,Ages 17 and up,6
+,,,,
+Event 5 - Sparring,2:00 PM,Adults All divisions,Adult,1
+,2:00 PM,Teen Girls,Ages 13 to 16,2 (Double Ring)
+,2:00 PM,Teen Boys,Ages 13 to 16,2 (Double Ring)
+,2:00 PM,Black Belt 12 and under,Ages 12 and Under,3
+,2:00 PM,Black Belt Teen Boys 13 and 14 years,Ages 13 to 14,4
+,2:00 PM,Black Belt Teen Girls 13 to 17 years,Ages 13 to 17,5
+,2:00 PM,Black Belt Mens 15 and up,Ages 15 and up,6

@@ -1,0 +1,1 @@
+<?php $moviename="Beauty and the Beast";$moviepic1="https://lumiere-a.akamaihd.net/v1/images/image_19221b22.jpeg";$moviepic2="https://pentanglearts.org/wp-content/uploads/2017/04/Beauty-Beast-wide.jpeg";$sliderarr = array($moviepic1 , $moviepic2);$moviedate="08/26/17";$dropoff="5pm";$pickup="8pm";?>

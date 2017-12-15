@@ -1,0 +1,390 @@
+.slider_box{ position:relative;}
+
+.items {display:none}
+
+.register{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/fallspecial.png) no-repeat; 
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+.specialoffer{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/movietrans.png) no-repeat;
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+.specialoffercoupon{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/coupon2.jpg) no-repeat;
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialoffermovie{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/movietrans.png) no-repeat;
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferkkamp{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/kkampsplat2.png) no-repeat;
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferjuly{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/usflagcircle.png) no-repeat; 
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferschool{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/backtoschool.png) no-repeat;
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferhalloween{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/pumpkin.png) no-repeat; 
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferwinter{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/penguinSpecial.png) no-repeat; 
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferknifeclinic{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/target.png) no-repeat; 
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.specialofferfall{
+	display: block;
+	width: 250px;
+	height: 250px;
+	position: absolute;
+	z-index: 999;
+	top: 150px;
+	border-radius: 234px;
+	background: url(../images/fallspecial.png) no-repeat; 
+	background-size: 200px;
+	background-position-x: 50%;
+	background-position-y: 50%;
+	
+}
+
+.camera_pag_ul {position:absolute;bottom:19px; right:21px; z-index:888;}
+
+.camera_pag_ul li {float:left;margin:0 0px 0 5px;display:block;overflow: hidden;cursor: pointer;}
+
+.camera_pag_ul li span:hover, .camera_pag_ul li.cameracurrent span{ background-position: 0 bottom;}
+
+.camera_pag_ul li span {width:28px;height:29px;display:block; background:url(../images/pags.png) no-repeat; text-indent: -1000px;-webkit-background-size: cover;
+
+background-size: cover;}
+
+.banner {width:100px;height:50px;position:absolute;color:#fff;font:20px Arial, Helvetica, sans-serif;background:#f0f;display:none}
+
+
+
+.camera_wrap {
+
+	display: none;
+
+	min-height:350px;
+
+	z-index:9;	
+
+	box-sizing: border-box;
+
+    -moz-box-sizing: border-box;
+
+    -webkit-box-sizing: border-box;
+
+    -o-box-sizing: border-box;
+
+    -ms-box-sizing: border-box;
+
+	position: relative;
+
+	width: 100%;
+
+	margin:0 !important;	
+
+	overflow:hidden !important;
+
+}
+
+
+
+.camera_src {
+
+	display: none;
+
+}
+
+
+
+.cameraCont, .cameraContents {
+
+	height: 100%;
+
+	position: relative;
+
+	width: 100%;
+
+	z-index: 1;
+
+}
+
+.cameraSlide {
+
+	bottom: 0;
+
+	left: 0;
+
+	position: absolute;
+
+	right: 0;
+
+	top: 0;
+
+	width: 100%;
+
+}
+
+.cameraContent {
+
+	bottom: 0;
+
+	display: none;
+
+	left: 0;
+
+	position: absolute;
+
+	right: 0;
+
+	top: 0;
+
+	width: 100%;
+
+}
+
+
+
+/******************** Responsive ******************/
+
+
+
+
+
+
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+
+
+
+.camera_wrap {
+
+	min-height: 300px;
+
+}
+
+}
+
+
+
+@media only screen and (max-width: 800px) {
+
+	.camera_wrap {
+
+	min-height: 300px;
+
+}
+
+
+
+}
+
+
+
+ @media only screen and (max-width: 767px) {
+
+
+
+
+
+.camera_wrap {
+
+	min-height: 190px;
+
+}
+
+
+
+}
+
+
+
+@media only screen and (min-width: 480px) and (max-width: 767px) {
+
+
+
+.camera_wrap {
+
+	min-height: 170px;
+
+}
+
+.camera_pag_ul li span {width:20px;height:21px;}
+
+
+
+.camera_pag_ul li span:hover, .camera_pag_ul li.cameracurrent span {
+
+	background-position: 0 -21px;
+
+}
+
+
+
+.camera_pag_ul {
+
+    bottom: 5px;
+
+}
+
+
+
+.camera_pag_ul li span {width:20px;height:20px;}
+
+
+
+}
+
+@media only screen and (max-width: 479px) {
+
+
+
+
+
+.camera_wrap {
+
+	min-height: 100px;
+
+}
+
+
+
+.camera_pag_ul {
+
+    bottom: 5px;
+
+}
+
+
+
+.camera_pag_ul li span:hover, .camera_pag_ul li.cameracurrent span {
+
+	background-position: 0 -19px;
+
+}
+
+
+
+.camera_pag_ul li span {width:18px;height:18px;}
+
+}

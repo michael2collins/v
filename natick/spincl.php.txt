@@ -1,0 +1,7 @@
+<?php 
+//$specialInclude = '<a href="contactnatickmartialarts.php" class="register"></a>';
+//$specialInclude = '<a href="/images/haunteddojo15.jpg" class="register"></a>';
+//$specialInclude = '<a href="camp.php" class="register"></a>';
+$specialInclude = '<a href="movienight.php" class="specialoffer"></a>';
+//$specialInclude = '<a href="knifeclinic.php" class="register"></a>';
+ ?>
