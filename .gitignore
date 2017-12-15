@@ -15,6 +15,7 @@ temp
 build/*
 secret.json
 vendor
+*.mp4
 
 *.sublime-workspace
 *.sublime-project
