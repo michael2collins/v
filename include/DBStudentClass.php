@@ -547,6 +547,7 @@ class StudentClassDbHandler {
                                       
         $response = array();
         $testfeedefault = 0;
+        $new_id = '';
 
         $sql = "INSERT INTO studentregistration (studentid, classid, pgmid, studentclassstatus) VALUES ";
         $sql .= "  ( ?, ?, ?, ? )";

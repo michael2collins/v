@@ -540,6 +540,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["nextClassnm"] = (empty($slist["nextClassnm"]) ? "NULL" : $slist["nextClassnm"]);
         $tmp["nextPgmnm"] = (empty($slist["nextPgmnm"]) ? "NULL" : $slist["nextPgmnm"]);
         $tmp["crid"] = (empty($slist["crid"]) ? "NULL" : $slist["crid"]);
+        $tmp["cpid"] = (empty($slist["cpid"]) ? "NULL" : $slist["cpid"]);
         }
                 array_push($response["testcandidateList"], $tmp);
             }
@@ -930,6 +931,8 @@ $app->post('/testcandidatepromotion', 'authenticate', function() use ($app) {
                         $studentarr[$i]->pgmWas : "");
         $crid  = (isset($studentarr[$i]->crid) ? 
                         $studentarr[$i]->crid : "");
+        $cpid  = (isset($studentarr[$i]->cpid) ? 
+                        $studentarr[$i]->cpid : "");
         $ranklistForNextClass  = (isset($studentarr[$i]->ranklistForNextClass) ? 
                         $studentarr[$i]->ranklistForNextClass : "");
 
@@ -942,7 +945,7 @@ $app->post('/testcandidatepromotion', 'authenticate', function() use ($app) {
         if ($promote == 1) {
             $promotion = $db->promoteStudent(
                 $testDate, $ContactID, $RankAchievedInTest, $ranktype, $promote, 
-             $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $ranklistForNextClass
+             $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $ranklistForNextClass, $cpid
                                         );
         
             if ($promotion > -1) {

@@ -1406,7 +1406,8 @@
                         ageForNextClass: inputArray[i].ageForNextClass,
                         nextClassid: inputArray[i].nextClassid,
                         nextPgmid: inputArray[i].nextPgmid,
-                        crid: inputArray[i].crid
+                        crid: inputArray[i].crid,
+                        cpid: inputArray[i].cpid
                         
                     };
                     vm.selectedStudents.push(info);

@@ -619,14 +619,14 @@ $app->post('/studentregistration', 'authenticate', function() use ($app) {
         $response["studentreg_id"] = $studentreg_id;
         error_log( print_R("Student Registration created: $studentreg_id\n", TRUE ), 3, LOG);
         echoRespnse(201, $response);
-    } else if ($studentreg_id == RECORD_ALREADY_EXISTED) {
+    } else if ($studentreg_id == RECORD_ALREADY_EXISTED || $studentreg_id == '') {
         $response["error"] = true;
         $response["message"] = "Sorry, this already existed";
         error_log( print_R("StudentRegistration already existed\n", TRUE ), 3, LOG);
         echoRespnse(409, $response);
     } else {
         error_log( print_R("after StudentRegistration result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $studentrank_id, TRUE), 3, LOG);
+        error_log( print_R( $studentreg_id, TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create StudentRegistration. Please try again";
         echoRespnse(400, $response);

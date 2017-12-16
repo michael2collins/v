@@ -162,7 +162,7 @@ class TestingDbHandler {
         $sql .= "  pgmwas = ? ";
         $sql .= " where testid = ? and  ContactID = ? ";
 
-        error_log( print_R($sql, TRUE ));
+        error_log( print_R($sql, TRUE ), 3, LOG);
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -191,7 +191,7 @@ class TestingDbHandler {
         $sql .= "  Tester4 = ?  ";
         $sql .= " where ID = ?  ";
 
-        error_log( print_R($sql, TRUE ));
+        error_log( print_R($sql, TRUE ), 3, LOG);
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -210,7 +210,7 @@ class TestingDbHandler {
 
     public function promoteStudent(
             $testDate, $ContactID, $RankAchievedInTest, $ranktype, $promote, 
-         $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $rankListForNextClass
+         $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $rankListForNextClass, $cpid
         ) {
 
         $num_affected_rows = 0;
@@ -218,13 +218,13 @@ class TestingDbHandler {
         if ($changeClass == 1) {
             $sql = "UPDATE ncontactrank set ";
             $sql .= "  currentrank = ?,  ";
-            $sql .= "  LastPromoted = ?,  ";
-            $sql .= "  rankType = '" + $rankListForNextClass   + "'";
+            $sql .= "  LastPromoted = DATE_FORMAT(?, '%Y-%m-%d'),  ";
+            $sql .= "  rankType = '" . $rankListForNextClass   . "'";
             $sql .= " where ContactID = ? and id = ? ";
         } else {
             $sql = "UPDATE ncontactrank set ";
             $sql .= "  currentrank = ?,  ";
-            $sql .= "  LastPromoted = ?  ";
+            $sql .= "  LastPromoted = DATE_FORMAT(?, '%Y-%m-%d')  ";
             $sql .= " where ContactID = ? and id = ? ";
         }
         $clsql = "UPDATE studentregistration  set ";
@@ -233,24 +233,30 @@ class TestingDbHandler {
         $clsql .= " pgmid = ? ";
         $clsql .= " where studentid = ?  and classid = ? and pgmid = ?";
 
+        $cpsql = "UPDATE nclasspays  set ";
+        $cpsql .= " classseq = ?, ";
+        $cpsql .= " pgmseq = ? ";
+        $cpsql .= " where contactid = ?  and ID = ? ";
+
         $histsql = "INSERT into ncontactmgmt (";
         $histsql .= " contactid ,";
         $histsql .= " contactmgmttype ,";
         $histsql .= " contactDate ) ";
-        $histsql .= " values ( ?, ?, ?) ";
+        $histsql .= " values ( ?, ?, DATE_FORMAT(?,'%Y-%m-%d')  ) ";
 
         $histtype = $testDate . ' ' . $RankAchievedInTest;
 
-        error_log( print_R("$sql $RankAchievedInTest, $testDate, $rankListForNextClass, $ContactID, $crid\n", TRUE ));
+        error_log( print_R("$sql $RankAchievedInTest, $testDate, $rankListForNextClass, $ContactID, $crid, cpid $cpid\n", TRUE ), 3, LOG);
+        error_log( print_R("$cpsql rcl: $recommendedClassid, rpid: $recommendedPgmid, cpid $cpid\n", TRUE ), 3, LOG);
         error_log( print_R("$clsql $recommendedClassid,
                                         $recommendedPgmid,
                                       $ContactID,
                                       $classWas,
-                                      $pgmWas\n", TRUE ));
-        error_log( print_R("$histsql\n", TRUE ));
-                    error_log( print_R("histtype: $histtype\n", TRUE ));
-                    error_log( print_R("cont: $ContactID\n", TRUE ));
-                    error_log( print_R("date: $testDate\n", TRUE ));
+                                      $pgmWas\n", TRUE ), 3, LOG);
+        error_log( print_R("$histsql\n", TRUE ), 3, LOG);
+                    error_log( print_R("histtype: $histtype\n", TRUE ), 3, LOG);
+                    error_log( print_R("cont: $ContactID\n", TRUE ), 3, LOG);
+                    error_log( print_R("date: $testDate\n", TRUE ), 3, LOG);
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -260,7 +266,7 @@ class TestingDbHandler {
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("contactrank set: $num_affected_rows\n", TRUE ));
+            error_log( print_R("contactrank set: $num_affected_rows\n", TRUE ), 3, LOG);
 
             if ( $num_affected_rows > -1) {
                 if ($changeClass == 1) {
@@ -277,7 +283,29 @@ class TestingDbHandler {
                             $stmt->close();
                             // Check for successful insertion
                             if ($result) {
-                                error_log( print_R("studentregistration set: $result\n", TRUE ));
+                                error_log( print_R("studentregistration set: $result\n", TRUE ), 3, LOG);
+                            } else {
+                                // Failed to register new class
+                                return NULL;
+                            }
+        
+                    } else {
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -2;
+                    }
+                    if ($stmt = $this->conn->prepare($cpsql) ) {
+                        $stmt->bind_param("ssss",
+                                          $recommendedClassid,
+                                          $recommendedPgmid,
+                                          $ContactID,
+                                          $cpid
+                                             );
+                            $result = $stmt->execute();
+            
+                            $stmt->close();
+                            // Check for successful insertion
+                            if ($result) {
+                                error_log( print_R("classpays set: $result\n", TRUE ), 3, LOG);
                             } else {
                                 // Failed to register new class
                                 return NULL;
@@ -300,7 +328,7 @@ class TestingDbHandler {
                         $stmt->close();
                         // Check for successful insertion
                         if ($result) {
-                            error_log( print_R("contacthist set: $result\n", TRUE ));
+                            error_log( print_R("contacthist set: $result\n", TRUE ), 3, LOG);
                         } else {
                             // Failed to create history
                             return NULL;
@@ -322,7 +350,7 @@ class TestingDbHandler {
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
 
 $sql = "Select p.classcat, p.pgmcat, p.agecat, p.nextClassid, p.nextPgmid, nextc.class as nextClassnm, nextp.class as nextPgmnm,
-c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid from (
+c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid, cp.id as cpid from (
            SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, cr.id as crid, sum( a.attended ) as daysAttended
             FROM attendance a
         right outer join ncontactrank cr on (a.ContactId = cr.contactID )
@@ -332,6 +360,7 @@ c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended,
             inner join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist)
 Inner join nclass c on (x.classwas = c.id)
 Inner join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid )
+Inner join nclasspays cp on (x.pgmwas = cp.pgmseq and x.classwas = cp.classseq and x.contactid = cp.contactid)
 Inner join nclasslist l on (l.id = p.pgmid)
 left join nclass nextc on (p.nextClassid = nextc.id)
 left join nclasslist nextp on (p.nextPgmid = nextp.id)
@@ -525,8 +554,8 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
         $sql .= " where templatename = ?  and school = ?";
 
     	$null = NULL;
-        error_log( print_R($sql, TRUE ));
-        error_log( print_R($backgroundimage, TRUE ));
+        error_log( print_R($sql, TRUE ), 3, LOG);
+        error_log( print_R($backgroundimage, TRUE ), 3, LOG);
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {

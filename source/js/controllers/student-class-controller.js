@@ -412,6 +412,15 @@
             return ClassServices.addStudentRegistration( path, thedata ).then(function (data) {
                 $log.debug('addStudentRegistration returned data: ');
                 $log.debug(data);
+
+                if ((typeof data.message === 'undefined' || data.error === true)  
+                        && typeof data !== 'undefined') {  
+                    Notification.error({message: data.message , delay: 5000});
+                    $q.reject(data);
+                } else {
+                    Notification.success({message: data.message, delay: 5000});
+                }
+
                 //if we added a payer for the registration, then refresh the list on the payment page
                 getStudentClazzList();
                 

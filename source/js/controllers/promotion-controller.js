@@ -152,6 +152,7 @@
             classWas: inputArray[i].classWas,
             pgmWas: inputArray[i].pgmWas,
             crid: inputArray[i].crid,
+            cpid: inputArray[i].cpid,
             changeClass: inputArray[i].changeClass
 
           };
@@ -206,7 +207,7 @@
 
       var path = "../v1/testcandidatepromotion";
       var thedata = {
-        testDate: vm.testDate,
+        testDate: vm.testDate.slice(0,10),
         selectedStudents: vm.selectedStudents,
       };
 
