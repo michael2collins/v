@@ -595,6 +595,7 @@ class StudentClassDbHandler {
         error_log( print_R("removeStudentReg entered\n", TRUE ),3, LOG);
                                       
         $sql = "DELETE from studentregistration  where studentid = ? and classid = ? and pgmid = ?";
+        $cpsql = "DELETE from nclasspays  where contactid = ? and classseq = ? and pgmseq = ?";
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("sss",
@@ -605,7 +606,22 @@ class StudentClassDbHandler {
             $num_affected_rows = $stmt->affected_rows;
 
             $stmt->close();
-            return $num_affected_rows >= 0;
+//            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+        if ($stmt = $this->conn->prepare($cpsql)) {
+            $stmt->bind_param("sss",
+                              $studentid, $classid , $pgmid
+                                 );
+                // Check for success
+            $stmt->execute();
+            $numcp_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return ($num_affected_rows + $numcp_affected_rows) >= 0;
 
         } else {
             printf("Errormessage: %s\n", $this->conn->error);

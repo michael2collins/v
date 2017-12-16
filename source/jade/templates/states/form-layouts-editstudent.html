@@ -891,7 +891,6 @@
                                               </div>
                                               <div class="modal-body">
                                                 <div class="col-md-12">
-                                                  <div>{{vmsearch.vmclass.concat}}</div>
                                                   <div class="row">
                                                     <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-group">
                                                       <button ok-sel="*" ng-click="vmsearch.vmclass.clearSelect()" class="btn btn-default">Show All</button>
@@ -935,14 +934,13 @@
                                                   </div>
                                                   <div class="row">
                                                     <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
-                                                      <pre>{{vmsearch.vmclass}}</pre>
                                                       <div ng-repeat="x in vmsearch.vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
                                                         <div class="hover-effect">
                                                           <div class="img">
                                                             <img ng-src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive" />
                                                           </div>
                                                           <div class="info">
-                                                            <h4>{{x.class}} - {{x.pgm}}</h4>
+                                                            <div class="form-control">{{x.class}} - {{x.pgm}}</div>
                                                             <div>
                                                               <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-default btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
                                                             </div>
@@ -1209,6 +1207,7 @@
                           </div>
                           <div>
                             <a role="button" class="btn btn-red form-control" ng-click="vmpayment.removePayer()"><i class="fa fa-minus"></i>&nbsp; Remove {{vmpayment.studentpayer.payername}}</a>
+                            <a role="button" class="btn btn-blue form-control" ng-click="vmpayment.activate()"><i class="fa fa-refresh"></i>&nbsp; Refresh</a>
                           </div>
                         </div>
                       </div>

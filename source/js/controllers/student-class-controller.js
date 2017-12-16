@@ -100,8 +100,6 @@
           }),
           getStudentClazzList().then(function(){
               $log.debug('getStudentClazzList ready');
-    //        getStudentClassStatuses();
-     //       $log.debug("listnew in activate", vmclass.xlistnew);
 
           }).catch(function(e){
                 $log.debug("getStudentClassList error in activate", e);
@@ -130,10 +128,6 @@
               $log.debug("distinctPgm error", e);
           }),
 
-//            getStudentClass().then(function() {
-//            }).catch(function(e){
-//              $log.debug("getStudentClass error", e);
-//          })
 
                 ])
                 .then(function() {
@@ -205,34 +199,6 @@
                 $log.debug('getClassPgm returned data', data);
                 vmclass.studentclass = data;
                 vmclass.classpictureurl = data.pictureurl;
-/*
-                if (vmclass.studentclass !== 'undefined') { 
-                    vmclass.picID = vmclass.studentclass.classseq;
-                    getStudentClassPicture().then(function(retdata) {
-                        $log.debug('studentclasspiclist is:' + vmclass.studentclass.class);
-                        var class2 = '';
-    
-                        class2 = ClassServices.getclass2(vmclass.studentclass.class);
-                        $log.debug('studentclass class2 is:' , class2);
-                        vmclass.catset(class2[0].classcat[0]);
-                        vmclass.ageset(class2[0].agecat[0]);
-                        vmclass.pgmset(class2[0].pgmcat[0]);
-                        concatset();
-    
-                        $log.debug(vmclass.concat);
-                        $scope.$emit('iso-option', {
-                            filter: vmclass.concat
-                        });
-        
-                        $log.debug('student concat result is:' + vmclass.concat);
-                        
-                    });
-
-                } else {
-//                     vmclass.studentclass.contactID = $routeParams.id; 
- //                   $log.debug('studentclass class is null, other data is:', vmclass.studentclass);
-                }
-                */
                 return vmclass.studentclass;
             },function(error) {
                     $log.debug('getStudentClass ',error);
@@ -247,32 +213,6 @@
                 vmclass.studentclass = data.data;
                 vmclass.classpictureurl = data.data.pictureurl;
 
-  //              if (vmclass.studentclass.class !== null) { 
-//                    vmclass.picID = vmclass.studentclass.classseq;
-  /*                  getStudentClassPicture().then(function(retdata) {
-                        $log.debug('studentclasspiclist is:' + vmclass.studentclass.class);
-                        var class2 = '';
-    
-                        class2 = ClassServices.getclass2(vmclass.studentclass.class);
-                        $log.debug('studentclass class2 is:' , class2);
-                        vmclass.catset(class2[0].classcat[0]);
-                        vmclass.ageset(class2[0].agecat[0]);
-                        vmclass.pgmset(class2[0].pgmcat[0]);
-                        concatset();
-    
-                        $log.debug(vmclass.concat);
-                        $scope.$emit('iso-option', {
-                            filter: vmclass.concat
-                        });
-        
-                        $log.debug('student concat result is:' + vmclass.concat);
-                        
-                    });
-*/
-//                } else {
-//                     vmclass.studentclass.contactID = $routeParams.id; 
- //                   $log.debug('studentclass class is null, other data is:', vmclass.studentclass);
- //               }
                 return vmclass.studentclass;
             },function(error) {
                     $log.debug('getStudentClass ',error);

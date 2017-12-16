@@ -57,6 +57,7 @@
         vmpayment.removePayer = removePayer;
         vmpayment.payerSet = payerSet;
         vmpayment.autoExpand = autoExpand;
+        vmpayment.activate = activate;
         vmpayment.head = {};
         vmpayment.headcoverage = {};
         vmpayment.PriceListcovered = {};
