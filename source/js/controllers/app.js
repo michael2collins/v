@@ -1599,6 +1599,12 @@ var studentpick = {};
                 function(response) {
                     $log.debug('stats success:');
                     $log.debug(response);
+                    if ((typeof response.data === 'undefined' || response.data.error === true)  
+                            && typeof response.data.message !== 'undefined') {  
+                        Notification.error({message: response.data.message, delay: 5000});
+                        return($q.reject(response.data));
+                    } 
+                    
                     response.data.studentstats.timeint = response.data.thedata.timeint;
                     vm.studentstats = response.data.studentstats;
                     vm.studentstatsdetails = response.data.detailslist;
@@ -1610,7 +1616,11 @@ var studentpick = {};
                     if (!angular.isObject(response.data) ||
                         !response.data.message
                     ) {
-                        response.data.message = "getStudentStats An unknown error occurred";
+                        response = {
+                            data: {
+                                message: "getStudentStats An unknown error occurred"
+                            }
+                        };
                     }
                     $log.debug(' getStudentStats error', response.data.message);
                     Notification.error({ message: response.data.message, delay: 5000 });

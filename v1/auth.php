@@ -157,7 +157,7 @@ $app->post('/login', function() use ($app) {
  //       error_log( print_R("getUserByUsername:", TRUE ), 3, LOG);
  //       error_log( print_R($user, TRUE ), 3, LOG);
 
-        if ($user != NULL) {
+        if ($user != NULL && $user['school'] != NULL) {
             $response["error"] = false;
             $response['firstname'] = $user['name'];
             $response['lastname'] = $user['lastname'];
@@ -165,12 +165,37 @@ $app->post('/login', function() use ($app) {
             $response['email'] = $user['email'];
             $response['apiKey'] = $user['api_key'];
             $response['createdAt'] = $user['created_at'];
-    $response['school'] = $user['school'];
-    $response['pictureurl'] = $user['pictureurl'];
+            $response['school'] = $user['school'];
+            $response['pictureurl'] = $user['pictureurl'];
             $user_name = $user['username'];
 //            error_log( print_R("login return:", TRUE ), 3, LOG);
 //            error_log( print_R($response, TRUE ), 3, LOG);
             echoRespnse(200, $response);
+        } else if ( $user['school'] == NULL ) {
+            error_log( print_R("login error\n", TRUE ), 3, LOG);
+            $response['error'] = true;
+            $response['message'] = "An error occurred. You do not have access. This is a private site.  Please contact your dojo administrator. This transaction has been audited for possible prosecution.";
+            $user_name = '';
+            $to = "michael.collins.natick@gmail.com";
+        $Subject = 'Login attempt for account with no school to villaris.us';
+        $Body    = "
+            <p>Hi,</p>
+            <p>            
+            We have received a request for a login for:" . $user['name'] . " " . $user['lastname'] . " as " . $user['username'] . " which is missing school.
+            </p>
+            <p>
+            If you have any questions about this email, you may contact us at support@vdojo.villaris.us.
+            </p>
+            <p>
+            With regards,
+            <br>
+            The Villaris VDojo Team
+            </p>";
+    
+        emailnotify($to,$Subject,$Body);
+
+            echoRespnse(400, $response);
+            $app->stop();            
         } else {
             // unknown error occurred
             error_log( print_R("login error\n", TRUE ), 3, LOG);
@@ -178,6 +203,7 @@ $app->post('/login', function() use ($app) {
             $response['message'] = "An error occurred. Please try again";
             $user_name = '';
             echoRespnse(400, $response);
+            $app->stop();            
         }
     } else {
         // user credentials are wrong

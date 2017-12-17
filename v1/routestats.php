@@ -94,6 +94,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
         $response["message"] = "error in studentstatsmonths: $msg";
         $app->log->error( print_R($response, TRUE));
         echoRespnse(404, $response);
+        $app->stop();
     };
     if (strlen($thedatelate) > 0 && ! DateTime::createFromFormat('Y-m-d H:i:s', $thedatelate)) {
         $msg = "bad late date: $thedatelate";
@@ -102,6 +103,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
         $response["message"] = "error in studentstatsmonths: $msg";
         $app->log->error( print_R($response, TRUE));
         echoRespnse(404, $response);
+        $app->stop();
     };
 
 
@@ -163,6 +165,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
         
 //note need to handle 404 data notfound
         echoRespnse(404, $response);
+        $app->stop();
 //        echoRespnse(200, $response);
     }
 
@@ -219,6 +222,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
         
 //note need to handle 404 data notfound
         echoRespnse(404, $response);
+        $app->stop();
 //        echoRespnse(200, $response);
     }
     
