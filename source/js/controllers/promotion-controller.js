@@ -203,7 +203,31 @@
       vm.rptgridApi.core.notifyDataChange(uiGridConstants.dataChange.COLUMN);
       //      vm.rptgridApi.grid.api.exporter.pdfExport('selected', 'visible');
 
-
+/*
+{  
+   "field":"changeClass",
+   "cellClass":"grid-align",
+   "visible":true,
+   "enableCellEdit":true,
+   "type":"boolean",
+//   "cellTemplate":"<span class='bigcheck'><input ng-model='row.entity.changeClass'  type='checkbox' class='bigcheck'/><span class='bigcheck-target'</span>"
+   "cellTemplate":"<input ng-model='row.entity.changeClass'  type='checkbox' />"
+},
+{  
+   "field":"lastpromoted",
+   "visible":true,
+   "enableCellEditOnFocus":false,
+   "enableCellEdit":false
+},
+{  
+   "field":"promote",
+   "cellClass":"grid-align",
+   "visible":true,
+   "enableCellEdit":true,
+   "type":"boolean",
+   "cellTemplate":"<span class='bigcheck'><input ng-model='row.entity.promote'  type='checkbox' class='bigcheck'/><span class='bigcheck-target'</span>"
+}
+*/
 
       var path = "../v1/testcandidatepromotion";
       var thedata = {

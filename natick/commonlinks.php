@@ -31,8 +31,8 @@ $("html").addClass("ie10");
     if ($('html').is('.ie6, .ie7')) {
 
      $('body').append('<div style=" clear: both; text-align:center; position: relative;">');
-     $('body').append('<a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">');
-     $('body').append('<img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />   </a>');
+     $('body').append('<a href="https://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">');
+     $('body').append('<img src="https://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />   </a>');
      $('body').append('  </div>');
 	}
     if ($('html').is('.ie6, .ie7, .ie8')) {

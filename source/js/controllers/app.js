@@ -53,10 +53,12 @@ var studentpick = {};
         var vm = this;
         vm.loadTopbar = loadTopbar;
         vm.loadSidebar = loadSidebar;
+        vm.loadPageHeader = loadPageHeader;
         vm.isokf = isokf;
         vm.userdta = {};
         vm.myuser;
         vm.message;
+        vm.data;
 
         $scope.$on('$destroy', function iVeBeenDismissed() {
             $log.debug("main dismissed");
@@ -66,6 +68,7 @@ var studentpick = {};
         $scope.$on('$routeChangeSuccess', function(event, current, previous) {
             $log.debugEnabled(true);
             $log.debug('routechange in main for success');
+            vm.data = $.fn.Data.get(current.originalPath);
         });
         
         $.fn.Data.Portlet('app.js');
@@ -97,6 +100,10 @@ var studentpick = {};
             //        $log.debug('isokf');
             vm.isok = UserServices.isapikey();
             return vm.isok;
+        }
+
+        function loadPageHeader() {
+            $log.debug("loadPageHeader entered");
         }
 
         function loadTopbar() {

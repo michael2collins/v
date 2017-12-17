@@ -242,7 +242,31 @@
                         vmpayment.PriceList = [];
                         Notification.error({message: data, delay: 5000});
                         $q.reject(data);
+                    } else {
+                        for (var iter=0,len=vmpayment.PriceList.length;iter<len;iter++) {
+                                vmpayment.PriceList[iter].d2ndPersonDiscount12 = vmpayment.PriceList[iter].p12MonthPrice + 
+                            Math.round(vmpayment.PriceList[iter].d2ndPersonDiscountrate *  vmpayment.PriceList[iter].p12MonthPrice  ) ;
+                                vmpayment.PriceList[iter].d2ndPersonDiscount6 = vmpayment.PriceList[iter].p6MonthPrice +
+                            Math.round(vmpayment.PriceList[iter].d2ndPersonDiscountrate *  vmpayment.PriceList[iter].p6MonthPrice   );
+                                vmpayment.PriceList[iter].d2ndPersonDiscount1 = vmpayment.PriceList[iter].pMonthlyPrice +
+                            Math.round(vmpayment.PriceList[iter].d2ndPersonDiscountrate *  vmpayment.PriceList[iter].pMonthlyPrice   );
+                            
+                                vmpayment.PriceList[iter].d3rdPersonDiscount12 = vmpayment.PriceList[iter].d2ndPersonDiscount12 + 
+                            Math.round(vmpayment.PriceList[iter].d3rdPersonDiscountrate *  vmpayment.PriceList[iter].p12MonthPrice ) ;
+                                vmpayment.PriceList[iter].d3rdPersonDiscount6 = vmpayment.PriceList[iter].d2ndPersonDiscount6 +
+                            Math.round(vmpayment.PriceList[iter].d3rdPersonDiscountrate *  vmpayment.PriceList[iter].p6MonthPrice  );
+                                vmpayment.PriceList[iter].d3rdPersonDiscount1 = vmpayment.PriceList[iter].d2ndPersonDiscount1  +
+                            Math.round(vmpayment.PriceList[iter].d3rdPersonDiscountrate *  vmpayment.PriceList[iter].pMonthlyPrice   );
+
+                                vmpayment.PriceList[iter].d4thPersonDiscount12 = vmpayment.PriceList[iter].d3rdPersonDiscount12 + 
+                            Math.round(vmpayment.PriceList[iter].d4thPersonDiscountrate *  vmpayment.PriceList[iter].p12MonthPrice) ;
+                                vmpayment.PriceList[iter].d4thPersonDiscount6 = vmpayment.PriceList[iter].d3rdPersonDiscount6 +
+                            Math.round(vmpayment.PriceList[iter].d4thPersonDiscountrate *  vmpayment.PriceList[iter].p6MonthPrice  );
+                                vmpayment.PriceList[iter].d4thPersonDiscount1 = vmpayment.PriceList[iter].d3rdPersonDiscount1 +
+                            Math.round(vmpayment.PriceList[iter].d4thPersonDiscountrate *  vmpayment.PriceList[iter].pMonthlyPrice  );
+                        }
                     }
+                    
                     return vmpayment.PriceList;
                 },
                 function (error) {

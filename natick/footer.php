@@ -9,7 +9,7 @@
           </div>
             
             <!-- {%FOOTER_LINK} --></div>
-   <div itemscope itemtype="http://data-vocabulary.org/Organization"> 
+   <div itemscope itemtype="https://data-vocabulary.org/Organization"> 
     <div itemprop="name">Natick Villari's Martial Arts</div>
     <div itemprop="address" itemscope itemtype="http://data-vocabulary.org/Address">
         <span itemprop="street-address">148 East Central Street 4B</span>, 
@@ -17,7 +17,7 @@
         <span itemprop="region">MA</span> 
         <span itemprop="postal-code">01760&ndash;3660</span>
     </div>
-    <span itemprop="geo" itemscope itemtype="http://www.data-vocabulary.org/Geo/" style="display:none"><!—Don’t display in UI-->
+    <span itemprop="geo" itemscope itemtype="https://www.data-vocabulary.org/Geo/" style="display:none"><!—Don’t display in UI-->
         <span itemprop="latitude">42.288084</span>  
         <span itemprop="longitude">-71.334465</span>  
     </span>  
@@ -28,10 +28,12 @@
     </div>
   </div>
 </div>
-<!-- Counter/Statistics -->
+<!-- Counter/Statistics 
 <script language="JavaScript"
-src="http://us.js2.yimg.com/us.js.yimg.com/lib/smb/js/hosting/cp/js_source/whv2_001.js">
+src="https://us.js2.yimg.com/us.js.yimg.com/lib/smb/js/hosting/cp/js_source/whv2_001.js">
 </script>
-<script language="javascript">geovisit();</script>
-<noscript><img src="http://visit.webhosting.yahoo.com/visit.gif?time"
+-->
+<!--<script language="javascript">geovisit();</script>
+<noscript><img src="https://visit.webhosting.yahoo.com/visit.gif?time"
 alt="setstats" border="0" width="1" height="1"></noscript>
+-->

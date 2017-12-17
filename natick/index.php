@@ -18,8 +18,8 @@ include 'meta.php';
 include 'commonlinks.php';
 include 'camera.php';
 ?>
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
-<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui-tabs-rotate.js"></script>
 <script type="text/javascript" charset="utf-8" src="js/jquery-ui-tabs-hover.js"></script>
 <script src="js/moment.min.js"></script>

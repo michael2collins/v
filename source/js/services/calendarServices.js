@@ -1,13 +1,13 @@
-(function () {
+(function (window,angular) {
     'use strict';
 
     angular
         .module('ng-admin')
     .factory('CalendarServices', CalendarServices);
 
-    CalendarServices.$inject = ['$http', '$q', '$log', '$window'];
+    CalendarServices.$inject = ['$http', '$q', '$log', '$window', 'moment'];
 
-    function CalendarServices( $http, $q, $log, $window ) {
+    function CalendarServices( $http, $q, $log, $window, moment ) {
         var apikey;
         var thetasknamelist = '';
         var response;
@@ -72,10 +72,10 @@
         }
     
 
-    function sendNotification(title, options) {
+    function sendNotification(title, options, optionssyn) {
       // Memoize based on feature detection.
       if ("Notification" in $window) {
-        sendNotification = function (title, options) {
+        sendNotification = function (title, options, optionssyn) {
             console.log('in window');
           try {
               $window.Notification.requestPermission().then(function(permission) {
@@ -84,7 +84,7 @@
                       console.log('fallback notify from incognito');
                       alert(title + ": " + options.body);
                   } else {
-                      return new $window.Notification(title, options);
+                      return new $window.Notification(title, optionssyn);
                   }
               });
           } catch(e) {
@@ -93,11 +93,11 @@
             
         };
       } else if ("mozNotification" in $window.navigator) {
-        sendNotification = function (title, options) {
+        sendNotification = function (title, options, optionssyn) {
           // Gecko < 22
           console.log('in moz');
           return $window.navigator.mozNotification
-                   .createNotification(title, options.body, options.icon)
+                   .createNotification(title, optionssyn.body, optionssyn.icon)
                    .show();
         };
       } else {
@@ -106,33 +106,77 @@
           alert(title + ": " + options.body);
         };
       }
-      return sendNotification(title, options);
+      return sendNotification(title, options, optionssyn);
     }
 
+    function syntaxHighlight(json) {
+        if (typeof json != 'string') {
+             json = JSON.stringify(json, undefined, 2);
+        }
+        json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+            var cls = 'number';
+            if (/^"/.test(match)) {
+                if (/:$/.test(match)) {
+                    cls = 'key';
+                } else {
+                    cls = 'string';
+                }
+            } else if (/true|false/.test(match)) {
+                cls = 'boolean';
+            } else if (/null/.test(match)) {
+                cls = 'null';
+            }
+            return '<span class="' + cls + '">' + match + '</span>';
+        });
+    }
     
     function mynotify(msg){
-        $log.debug('notify entered');
-                      var title = msg.title;
-                      var body = 'This is a simple demo for the notification API Angular Service';
-     //                 NotifyMe.launch(title, {
+        $log.debug('notify entered',msg);
+        var title = msg.title;
+        var output = {
+             title: msg.title,
+             start: msg.start,
+             now: moment()
+//             assignee: msg.userpick,
+//             reminder: msg.reminderInterval,
+//             type: msg.eventtype
+         };
+         //var str = JSON.stringify(output, undefined, 4);
+         var str = 'check calendar for: ' + msg.title + ' at: ' + msg.start;
+         var iconstr =  'https://natick.villaris.us/images/notifyicon.jpg';
                       sendNotification(title, {
-                          body: body,
-          icon: 'http://us.cdn2.123rf.com/168nwm/dxinerz/dxinerz1506/'
-              + 'dxinerz150601488/41355464-bell-notification-call-icon-vector'
-              + '-image-can-also-be-used-for-education-academics-and-science'
-              + '-suitab.jpg',
-          lang: 'en-US',                         
-          tag: generateTag(),
-                          onclick:function(){
-                              console.log("On Click Triggered");
-                          },
-                          onerror:function(){
-                              console.log("On Error Triggered");
-                          },
-                          onclose:function(){
-                              console.log("On Close Triggered");
-                          }
-                      });
+                          body: str,
+                          icon: iconstr,
+                          lang: 'en-US',                         
+                          tag: generateTag(),
+                                              onclick:function(){
+                                                  console.log("On Click Triggered");
+                                              },
+                                              onerror:function(){
+                                                  console.log("On Error Triggered");
+                                              },
+                                              onclose:function(){
+                                                  console.log("On Close Triggered");
+                                              }
+                      },
+                      {
+//                          body: syntaxHighlight(str),
+                          body: str,
+                          icon: iconstr,
+                          lang: 'en-US',                         
+                          tag: generateTag(),
+                                              onclick:function(){
+                                                  console.log("On Click Triggered");
+                                              },
+                                              onerror:function(){
+                                                  console.log("On Error Triggered");
+                                              },
+                                              onclose:function(){
+                                                  console.log("On Close Triggered");
+                                              }
+                      }
+                      );
     }
 
       //
@@ -307,4 +351,4 @@
 
 
         }
- })();
+ })(window,window.angular);
