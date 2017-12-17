@@ -503,18 +503,7 @@
                 showMeridian: true,
                 defaultTime: false
             });
-            $('#external-events div.external-event').each(function() {
-    
-                EventDrag($(this));
-                $log.debug('external-events after drag', $(this));
-    
-            });
-            $('#todos-list-sort > li > label.external-event').each(function() {
-    
-                EventDrag($(this));
-                $log.debug('todos external-events after drag', $(this));
-    
-            });
+
             // Back To Top 
             $(window).scroll(function() {
                 if ($(this).scrollTop() < 20) {

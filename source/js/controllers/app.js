@@ -429,7 +429,27 @@ var studentpick = {};
             $log.debug(current.originalPath);
         });
 
+              $(document).ready(function() {
 
+  $('.dropdown-submenu a.test').on("click", function(e){
+    $(this).next('ul').toggle();
+    e.stopPropagation();
+    e.preventDefault();
+  });
+
+                $('#external-events div.external-event').each(function() {
+        
+                    CalUtil.EventDrag($(this));
+                    $log.debug('external-events after drag', $(this));
+        
+                });
+                $('#todos-list-sort > li > label.external-event').each(function() {
+        
+                    CalUtil.EventDrag($(this));
+                    $log.debug('todos external-events after drag', $(this));
+        
+                });
+              });
 
         function activate() {
             $log.debug('app.js activate entered');

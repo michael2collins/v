@@ -11,20 +11,7 @@
    <span class="icon-social-tumblr"></span>
    <span class="logo-text">V Dojo</span></a>
 </div>
-<div class="topbar-main">
-   <ul class="nav navbar-top-links navbar-left">
-      <li class="mll mtl dropdown">
-         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" aria-haspopup="true" aria-expanded="true"><i class="icon-envelope-open"></i><span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span><span class="badge badge-yellow">35</span></a>
-         <ul class="dropdown-menu dropdown-alerts">
-            <li><a href="javascript:void(0);"><span class="label label-green"><i class="fa fa-handshake-o fa-fw"></i></span>12 New Students Last 2 weeks<span class="pull-right text-muted small">4 minutes ago</span></a></li>
-            <li><a href="javascript:void(0);"><span class="label label-violet"><i class="fa fa-flag-checkered fa-fw"></i></span>3 Students ready to test<span class="pull-right text-muted small">12 minutes ago</span></a></li>
-            <li><a href="javascript:void(0);"><span class="label label-red"><i class="fa fa-fire fa-fw"></i></span>4 Overdue Payments<span class="pull-right text-muted small">15 minutes ago</span></a></li>
-            <li><a href="javascript:void(0);"><span class="label label-blue"><i class="fa fa-coffee fa-fw"></i></span>3 No show Students +2wk<span class="pull-right text-muted small">18 minutes ago</span></a></li>
-            <li><a href="javascript:void(0);"><span class="label label-orange"><i class="fa fa-tasks fa-fw"></i></span>13 Tasks outstanding<span class="pull-right text-muted small">18 minutes ago</span></a></li>
-            <li><a href="javascript:void(0);" class="text-right">See all alerts</a></li>
-         </ul>
-      </li>
-   </ul>
+<div id="top-menu" class="topbar-main">
    <ul class="nav navbar-top-links navbar-right">
       <li class="dropdown" uib-dropdown on-toggle="toggled(open)" ng-show="vm.isokf()">
          <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" uib-dropdown-toggle>
@@ -55,5 +42,65 @@
             </li>
          </ul>
       </li>
+   </ul>
+   <ul class="nav navbar-top-links navbar-left">
+
+      <div class="container">
+         <div class="dropdown">
+            <ul class="nav navbar-top-links navbar-left">
+               <li class="mll mtl dropdown" ng-show="vm.isokf()">
+                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-envelope-open"></i>
+            <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
+            <span class="badge badge-yellow">35</span></a>
+
+                  <ul class="dropdown-menu dropdown-alerts">
+                     <li class="dropdown-submenu">
+                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-green"><i class="fa fa-handshake-o fa-fw"></i></span><span class="menu-title">12 New Students Last 2 weeks</span>
+         <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Arron Arzi</a></li>
+                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Blah blah</a></li>
+                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear New Student alerts</a></li>
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-violet"><i class="fa fa-flag-checkered fa-fw"></i></span><span class="menu-title">3 Students ready to test</span>
+         <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                           <li><a tabindex="-1" href="#/table-basic-testcandidates">Arron Arzi</a></li>
+                           <li><a tabindex="-1" href="#/table-basic-testcandidates">Blah blah</a></li>
+                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear Test alerts</a></li>
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fa fa-fire fa-fw"></i></span><span class="menu-title">4 Overdue Payments</span>
+         <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Arron Arzi</a></li>
+                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Blah blah</a></li>
+                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear Payment alerts</a></li>
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-blue"><i class="fa fa-coffee fa-fw"></i></span><span class="menu-title">3 No show Students +2wk</span>
+         <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Arron Arzi</a></li>
+                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Blah blah</a></li>
+                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear No Show alerts</a></li>
+                        </ul>
+                     </li>
+                     <li><a tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fa fa-tasks fa-fw"></i></span><span class="menu-title">13 Tasks outstanding</span></a>
+                     </li>
+                     <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear all alerts</a><span class="pull-right text-muted small">Last upd. 12min ago</span></li>
+
+
+                  </ul>
+               </li>
+            </ul>
+         </div>
+      </div>
+
    </ul>
 </div>
