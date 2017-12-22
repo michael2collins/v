@@ -1571,6 +1571,57 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
 
 });
 
+$app->post('/message',  function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+
+//    $userid = (isset($dataJsonDecode->thedata->->emailHead->userid) ? $dataJsonDecode->thedata->userid : "");
+//    $school = (isset($dataJsonDecode->thedata->school) ? $dataJsonDecode->thedata->school : "");
+$userid = "4";
+$school = "Natick";
+    $subject = (isset($dataJsonDecode->thedata->emailHead->_subject) ? $dataJsonDecode->thedata->emailHead->_subject : "");
+    $to = (isset($dataJsonDecode->thedata->emailHead->_to) ? $dataJsonDecode->thedata->emailHead->_to : "");
+    $body = (isset($dataJsonDecode->thedata->emailBody->body) ? $dataJsonDecode->thedata->emailBody->body : "");
+
+    error_log( print_R("route subject: $subject\n", TRUE ), 3, LOG);
+    error_log( print_R("to: $to\n", TRUE ), 3, LOG);
+    error_log( print_R("body: $body\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $message_id = $db->createMessage($userid,
+                                 $school,
+                                 $subject, $to, $body
+                                );
+
+    if ($message_id > 0) {
+        $response["error"] = false;
+        $response["message"] = "Message created successfully";
+        $response["message_id"] = $message_id;
+        error_log( print_R("Message created: $message_id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after insert message result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $message_id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create message. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+
+
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();
     $app->log->info( print_R("createStudentHistory entered: $contactid, $histtype, $histdate", TRUE));

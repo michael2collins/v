@@ -1290,6 +1290,57 @@ class StudentDbHandler {
 
     }
 
+    public function createMessage($userid,
+                                 $school,
+                                 $subject, $to, $body ) {
+
+        error_log( print_R("createMessage entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+        $bod = json_encode($body);
+
+
+        $sql = "INSERT into message ( userid, school, subject, emailto, body ) ";
+        $sql .= " VALUES ( ?, ?, ?, ?, ?)";
+
+        error_log( print_R($sql, TRUE ));
+        error_log( print_R("u $userid s $school sb $subject t $to b $body\n", TRUE ));
+
+        // First check if user already existed in db
+//        if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sssss",
+                                  $userid,
+                                 $school,
+                                 $subject, $to, $body
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_message_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_message_id;
+                    } else {
+                        // Failed to create message
+                        return NULL;
+                    }
+
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+
+
+  /*      } else {
+            // User with same email already existed in the db
+            return RECORD_ALREADY_EXISTED;
+        }
+*/
+        return $response;
+    }
 
     
 }

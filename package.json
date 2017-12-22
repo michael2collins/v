@@ -47,6 +47,10 @@
     "node": ">=0.8.0"
   },
   "dependencies": {
+    "dotenv": "^4.0.0",
+    "mailparser": "^2.1.0",
+    "safe-json-stringify": "^1.0.4",
+    "through": "^2.3.8",
     "ui-grid-auto-fit-columns": "^1.1.4"
   }
 }
