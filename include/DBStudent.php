@@ -1289,31 +1289,56 @@ class StudentDbHandler {
         }
 
     }
+    public function getUserFromEmail($to) {
 
+        error_log( print_R("getUserFromEmail entered with $to\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $usql = "select id,school from users where systememail = ?";
+        if ($stmt = $this->conn->prepare($usql)) {
+            $stmt->bind_param("s",
+                             $to );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getUserFromEmail  returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getUserFromEmail  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+    }
+    
     public function createMessage($userid,
                                  $school,
-                                 $subject, $to, $body ) {
+                                 $subject, $to, $body,
+                                 $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc
+                                 ) {
 
         error_log( print_R("createMessage entered\n", TRUE ),3, LOG);
                                       
         $response = array();
         $bod = json_encode($body);
 
-
-        $sql = "INSERT into message ( userid, school, subject, emailto, body ) ";
-        $sql .= " VALUES ( ?, ?, ?, ?, ?)";
+        $sql = "INSERT into message ( userid, school, subject, emailto, body, `thread-topic`, `email-date`, `from`, `return-path`, `delivered-to`, `reply-to`, cc, bcc ) ";
+        $sql .= " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         error_log( print_R($sql, TRUE ));
         error_log( print_R("u $userid s $school sb $subject t $to b $body\n", TRUE ));
 
-        // First check if user already existed in db
-//        if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
-
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssss",
+                $stmt->bind_param("sssssssssssss",
                                   $userid,
                                  $school,
-                                 $subject, $to, $body
+                                 $subject, $to, $body,
+                                 $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc
                                      );
                     $result = $stmt->execute();
 
@@ -1334,11 +1359,6 @@ class StudentDbHandler {
                 }
 
 
-  /*      } else {
-            // User with same email already existed in the db
-            return RECORD_ALREADY_EXISTED;
-        }
-*/
         return $response;
     }
 

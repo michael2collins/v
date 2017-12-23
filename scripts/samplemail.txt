@@ -1,40 +1,21 @@
 MIME-Version: 1.0
-Received: by 10.79.149.145 with HTTP; Tue, 19 Dec 2017 15:21:44 -0800 (PST)
-In-Reply-To: <CAAFvQoj=0p5PTE0dSSaq3hPPSoo_z_TVp98h6LrzFZzy6GS_fg@mail.gmail.com>
-References: <CAAFvQoj=0p5PTE0dSSaq3hPPSoo_z_TVp98h6LrzFZzy6GS_fg@mail.gmail.com>
-Date: Tue, 19 Dec 2017 18:21:44 -0500
+Received: by 10.79.149.145 with HTTP; Sat, 23 Dec 2017 05:57:35 -0800 (PST)
+Date: Sat, 23 Dec 2017 08:57:35 -0500
 Delivered-To: michael.collins.natick@gmail.com
-Message-ID: <CAAFvQoiVKodA8+H-srxzVBDEw+-YuUY8D-NE1ZJ-rffjU7Fomw@mail.gmail.com>
-Subject: Fwd: test7
+Message-ID: <CAAFvQohQJGHcL3gJ0Z6F906MJ8WV8epA3txuTfE1p17orpnTQA@mail.gmail.com>
+Subject: getuser test
 From: michael collins <michael.collins.natick@gmail.com>
-To: Michael Collins <michael_collins_natick@yahoo.com>
-Content-Type: multipart/alternative; boundary="001a11397978e2f06a0560b9ba6c"
+To: marktest@villaris.us
+Content-Type: multipart/alternative; boundary="001a113fca32b769200561025040"
 
---001a11397978e2f06a0560b9ba6c
+--001a113fca32b769200561025040
 Content-Type: text/plain; charset="UTF-8"
 
-what do you think
+does it work
 
----------- Forwarded message ----------
-From: michael collins <michael.collins.natick@gmail.com>
-Date: Mon, Dec 18, 2017 at 10:05 PM
-Subject: test7
-To: mark@villaris.us
-
-
-try procmail stuff
-
---001a11397978e2f06a0560b9ba6c
+--001a113fca32b769200561025040
 Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-<div dir=3D"ltr">what do you think<div><br><div class=3D"gmail_quote">-----=
------ Forwarded message ----------<br>From: <b class=3D"gmail_sendername">m=
-ichael collins</b> <span dir=3D"ltr">&lt;<a href=3D"mailto:michael.collins.=
-natick@gmail.com">michael.collins.natick@gmail.com</a>&gt;</span><br>Date: =
-Mon, Dec 18, 2017 at 10:05 PM<br>Subject: test7<br>To: <a href=3D"mailto:ma=
-rk@villaris.us">mark@villaris.us</a><br><br><br><div dir=3D"ltr">try procma=
-il stuff</div>
-</div><br></div></div>
+<div dir="ltr">does it work</div>
 
---001a11397978e2f06a0560b9ba6c--
+--001a113fca32b769200561025040--

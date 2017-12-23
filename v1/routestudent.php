@@ -1582,42 +1582,72 @@ $app->post('/message',  function() use ($app) {
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
     error_log( print_R($thedata, TRUE ), 3, LOG);
 
-    error_log( print_R("before insert\n", TRUE ), 3, LOG);
 
-//    $userid = (isset($dataJsonDecode->thedata->->emailHead->userid) ? $dataJsonDecode->thedata->userid : "");
-//    $school = (isset($dataJsonDecode->thedata->school) ? $dataJsonDecode->thedata->school : "");
-$userid = "4";
-$school = "Natick";
-    $subject = (isset($dataJsonDecode->thedata->emailHead->_subject) ? $dataJsonDecode->thedata->emailHead->_subject : "");
+    $db = new StudentDbHandler();
+    $response = array();
+
     $to = (isset($dataJsonDecode->thedata->emailHead->_to) ? $dataJsonDecode->thedata->emailHead->_to : "");
+    $subject = (isset($dataJsonDecode->thedata->emailHead->_subject) ? $dataJsonDecode->thedata->emailHead->_subject : "");
     $body = (isset($dataJsonDecode->thedata->emailBody->body) ? $dataJsonDecode->thedata->emailBody->body : "");
+    $threadTopic = (isset($dataJsonDecode->thedata->emailHead->_threadtopic) ? $dataJsonDecode->thedata->emailHead->_threadtopic : "");
+    $emailDate = (isset($dataJsonDecode->thedata->emailHead->_date) ? $dataJsonDecode->thedata->emailHead->_date : "");
+    $from = (isset($dataJsonDecode->thedata->emailHead->_from) ? $dataJsonDecode->thedata->emailHead->_from : "");
+    $returnPath = (isset($dataJsonDecode->thedata->emailHead->_returnpath) ? $dataJsonDecode->thedata->emailHead->_returnpath : "");
+    $deliveredTo = (isset($dataJsonDecode->thedata->emailHead->_deliveredto) ? $dataJsonDecode->thedata->emailHead->_deliveredto : "");
+    $replyTo = (isset($dataJsonDecode->thedata->emailHead->_replyto) ? $dataJsonDecode->thedata->emailHead->_replyto : "");
+    $cc = (isset($dataJsonDecode->thedata->emailHead->_cc) ? $dataJsonDecode->thedata->emailHead->_cc : "");
+    $bcc = (isset($dataJsonDecode->thedata->emailHead->_bcc) ? $dataJsonDecode->thedata->emailHead->_bcc : "");
 
     error_log( print_R("route subject: $subject\n", TRUE ), 3, LOG);
     error_log( print_R("to: $to\n", TRUE ), 3, LOG);
     error_log( print_R("body: $body\n", TRUE ), 3, LOG);
 
-    $db = new StudentDbHandler();
-    $response = array();
+    // get user
+    $result = $db->getUserFromEmail($to);
 
-    // updating task
-    $message_id = $db->createMessage($userid,
-                                 $school,
-                                 $subject, $to, $body
-                                );
+    while ($slist = $result->fetch_assoc()) {
+        //expecting 1 result
+        
+        $userid = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+        $schl = (empty($slist["school"]) ? "NULL" : $slist["school"]);
 
-    if ($message_id > 0) {
-        $response["error"] = false;
-        $response["message"] = "Message created successfully";
-        $response["message_id"] = $message_id;
-        error_log( print_R("Message created: $message_id\n", TRUE ), 3, LOG);
-        echoRespnse(201, $response);
+    } 
+    $row_cnt = $result->num_rows;
+    error_log( print_R("before insert $row_cnt, $userid, $schl\n", TRUE ), 3, LOG);
+
+    if ($row_cnt == 1 && $userid != "NULL" && $schl != "NULL") {
+    
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // updating task
+        $message_id = $db->createMessage($userid,
+                                     $schl,
+                                     $subject, $to, $body,
+                                     $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc
+                                    );
+    
+        if ($message_id > 0) {
+            $response["error"] = false;
+            $response["message"] = "Message created successfully";
+            $response["message_id"] = $message_id;
+            error_log( print_R("Message created: $message_id\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after insert message result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $message_id, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create message. Please try again";
+            echoRespnse(400, $response);
+        }
+
     } else {
-        error_log( print_R("after insert message result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $message_id, TRUE), 3, LOG);
         $response["error"] = true;
-        $response["message"] = "Failed to create message. Please try again";
-        echoRespnse(400, $response);
+        $response["message"] = "error in getuserfor email";
+        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
     }
+    
 
 });
 

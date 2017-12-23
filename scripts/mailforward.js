@@ -115,16 +115,16 @@ parser.on('headers', headers => {
     var _to = extractAddress(headers.get('to'));
     emailHead = {
         "_subject": headers.get('subject').toString(),
-        "_to": _to
+        "_to": _to,
+    	 "_threadtopic": typeof(headers.get('thread-topic')) == "undefined" ? ' ' : headers.get('thread-topic').toString(),
+    	 "_date": headers.get('date').toString(),
+    	 "_from": extractAddress(headers.get('from')),
+    	 "_returnpath": extractAddress(headers.get('return-path')),
+    	 "_deliveredto": extractAddress(headers.get('delivered-to')),
+    	 "_replyto": extractAddress(headers.get('reply-to')),
+    	 "_cc": extractAddress(headers.get('cc')),
+    	 "_bcc": extractAddress(headers.get('bcc'))
     };
-    //	 "_thread-topic": typeof(headers.get('thread-topic')) == "undefined" ? ' ' : headers.get('thread-topic').toString(),
-    //	 "_date": headers.get('date').toString(),
-    //	 "_from": extractAddress(headers.get('from')),
-    //	 "_return-path": extractAddress(headers.get('return-path')),
-    //	 "_delivered-to": extractAddress(headers.get('delivered-to')),
-    //	 "_reply-to": extractAddress(headers.get('reply-to')),
-    //	 "_cc": extractAddress(headers.get('cc')),
-    //	 "_bcc": extractAddress(headers.get('bcc'))
 
 });
 
