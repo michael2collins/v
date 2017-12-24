@@ -44,60 +44,68 @@
       </li>
    </ul>
    <ul class="nav navbar-top-links navbar-left">
-
       <div class="container">
          <div class="dropdown">
             <ul class="nav navbar-top-links navbar-left">
                <li class="mll mtl dropdown" ng-show="vm.isokf()">
                   <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="icon-envelope-open"></i>
+            <i class="fa fa-comments-o"></i>
             <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
-            <span class="badge badge-yellow">35</span></a>
+            <span class="badge badge-yellow">{{vm.alertcount}}</span></a>
 
                   <ul class="dropdown-menu dropdown-alerts">
                      <li class="dropdown-submenu">
-                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-green"><i class="fa fa-handshake-o fa-fw"></i></span><span class="menu-title">12 New Students Last 2 weeks</span>
-         <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Arron Arzi</a></li>
-                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Blah blah</a></li>
-                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear New Student alerts</a></li>
+                        <a class="test" ng-hide="!vm.newstudents.length" tabindex="-1" href="javascript:void(0);"><span class="label label-green"><i class="fa fa-handshake-o fa-fw"></i></span><span class="menu-title">{{vm.newstudents.length}} New Students Last 2 weeks</span>
+         <span class="caret"></span></a> 
+                        <ul class="dropdown-menu" >
+                           <li ng-repeat="stu in vm.newstudents"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
+                           <li><a tabindex="-1" ng-click="vm.clearNewStudents()" class="text-right">Clear All</a></li>
                         </ul>
                      </li>
                      <li class="dropdown-submenu">
-                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-violet"><i class="fa fa-flag-checkered fa-fw"></i></span><span class="menu-title">3 Students ready to test</span>
+                        <a class="test" ng-hide="!vm.teststudents.length"  tabindex="-1" href="javascript:void(0);"><span class="label label-violet"><i class="fa fa-flag-checkered fa-fw"></i></span><span class="menu-title">{{vm.teststudents.length}} Students ready to test</span>
          <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                           <li><a tabindex="-1" href="#/table-basic-testcandidates">Arron Arzi</a></li>
-                           <li><a tabindex="-1" href="#/table-basic-testcandidates">Blah blah</a></li>
-                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear Test alerts</a></li>
+                           <li ng-repeat="stu in vm.teststudents"><a tabindex="-1" href="#/table-basic-testcandidate">{{stu.firstname}} {{stu.lastname}}</a></li>
+                           <li><a tabindex="-1" ng-click="vm.clearTestStudents()" class="text-right">Clear All</a></li>
                         </ul>
                      </li>
                      <li class="dropdown-submenu">
-                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fa fa-fire fa-fw"></i></span><span class="menu-title">4 Overdue Payments</span>
+                        <a class="test" ng-hide="!vm.overduestudents.overdue.length"  tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fa fa-fire fa-fw"></i></span><span class="menu-title">{{vm.overduestudents.overdue.length}} Overdue Payments</span>
          <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Arron Arzi</a></li>
-                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Blah blah</a></li>
-                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear Payment alerts</a></li>
+                           <li ng-repeat="stu in vm.overduestudents.overdue"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
+                           <li><a tabindex="-1" ng-click="vm.clearOverdueStudents()" class="text-right">Clear All</a></li>
                         </ul>
                      </li>
                      <li class="dropdown-submenu">
-                        <a class="test" tabindex="-1" href="javascript:void(0);"><span class="label label-blue"><i class="fa fa-coffee fa-fw"></i></span><span class="menu-title">3 No show Students +2wk</span>
+                        <a class="test" ng-hide="!vm.noshowstudents.noshow.length"  tabindex="-1" href="javascript:void(0);"><span class="label label-blue"><i class="fa fa-coffee fa-fw"></i></span><span class="menu-title">{{vm.noshowstudents.noshow.length}} No show Students +2wk</span>
          <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Arron Arzi</a></li>
-                           <li><a tabindex="-1" href="#/form-layouts-editstudent/id/8023">Blah blah</a></li>
-                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear No Show alerts</a></li>
+                           <li ng-repeat="stu in vm.noshowstudents.noshow"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
+                           <li><a tabindex="-1" ng-click="vm.clearNoshowStudents()" href="javascript:void(0);" class="text-right">Clear All</a></li>
                         </ul>
                      </li>
-                     <li><a tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fa fa-tasks fa-fw"></i></span><span class="menu-title">13 Tasks outstanding</span></a>
+                     <li class="dropdown-submenu">
+                        <a class="test" ng-hide="!vm.thisTasknamelist.length"  tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fa fa-tasks fa-fw"></i></span><span class="menu-title">{{vm.thisTasknamelist.length}} Tasks outstanding</span>
+         <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                           <li ng-repeat="task in vm.thisTasknamelist"><a tabindex="-1" href="javascript:void(0);" >{{task.taskname}}</a></li>
+                           <li><a tabindex="-1"  href="javascript:void(0);" class="text-right">End of tasks alerts</a></li>
+                        </ul>
                      </li>
                      <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear all alerts</a><span class="pull-right text-muted small">Last upd. 12min ago</span></li>
 
 
                   </ul>
                </li>
+               <li class="mll mtl dropdown" ng-show="vm.isokf()">
+                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+            <i class="icon-envelope-open"></i>
+            <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
+            <span class="badge badge-yellow">5</span></a>
+               </li>
+
             </ul>
          </div>
       </div>

@@ -123,13 +123,12 @@ $app->get('/eventnames', 'authenticate', function() use ($app) {
     
 });
 
+$app->get('/eventdetails', 'authenticate', function() use($app){
 /**
  * Listing event details for an event
  * method GET
  * url /events 
  */
- 
-$app->get('/eventdetails', 'authenticate', function() use($app){
 
     $allGetVars = $app->request->get();
     error_log( print_R("eventdetails entered:\n ", TRUE), 3, LOG);
@@ -180,13 +179,12 @@ $app->get('/eventdetails', 'authenticate', function() use($app){
     echoRespnse(200, $response);
 });
 
+$app->post('/eventregistration','authenticate', function() use ($app) {
 /* Event Registration
  * url - /eventregistration
  * method - POST
  * params - full list of event fields
  */
- 
-$app->post('/eventregistration','authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -293,7 +291,6 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
 
 });
 
-
 $app->put('/eventregistration','authenticate', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
@@ -364,7 +361,6 @@ $app->put('/eventregistration','authenticate', function() use ($app) {
                         
 
 });
-
 
 $app->get('/userprefcols/:prefkey', 'authenticate', function($prefkey) {
     error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
@@ -781,12 +777,12 @@ $app->delete('/studentrank','authenticate', function() use ($app) {
 
 });
 
+$app->get('/students', 'authenticate', function() use($app){
 /**
  * Listing all tasks of particual user
  * method GET
  * url /tasks
  */
-$app->get('/students', 'authenticate', function() use($app){
 
     checkSecurity();
     global $user_id;
@@ -891,7 +887,6 @@ $app->get('/contacttypes', 'authenticate', function() {
     }
 });
 
-
 $app->get('/students/:id', 'authenticate', function($student_id) {
     //  global $user_id;
     $response = array();
@@ -942,15 +937,13 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
     }
 });
 
-
+$app->get('/studenthistory/:id', 'authenticate', function($student_id) {
 /**
  * get student contact history
  * method GET
  * params student_id
  * url - /studenthistory/:id
  */
-
-$app->get('/studenthistory/:id', 'authenticate', function($student_id) {
     //  global $user_id;
     $response = array();
     $db = new StudentDbHandler();
@@ -987,15 +980,13 @@ $app->get('/studenthistory/:id', 'authenticate', function($student_id) {
     }
 });
 
-
-
+$app->put('/students/:id', 'authenticate', function($student_id) use($app) {
 /**
  * Updating existing student
  * method PUT
  * params task, status
  * url - /tasks/:id
  */
-$app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //error_log( print_R("before request", TRUE ));
@@ -1094,7 +1085,6 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     echoRespnse(200, $response);
 });
 
-
 $app->get('/studentlists', 'authenticate', function() {
     $response = array();
     $db = new StudentDbHandler();
@@ -1155,46 +1145,30 @@ $app->get('/studentlists', 'authenticate', function() {
     echoRespnse(200, $response);
 });
 
-
+$app->post('/newstudent', 'authenticate', function() use ($app) {
 /* Student Registration
  * url - /newstudent
  * method - POST
  * params - full list of student fields
  */
- 
-$app->post('/newstudent', 'authenticate', function() use ($app) {
-    // check for required params
-//    verifyRequiredParams(array('name', 'email', 'password'));
 
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
-  //      $message            = $dataJsonDecode->message;
-    //    echo $message;     //'Hello world'
 
     error_log( print_R("before insert\n", TRUE ), 3, LOG);
-//    error_log( print_R($data, TRUE ), 3, LOG);
-//    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
 
 
     $LastName = (isset($dataJsonDecode->thedata->LastName) ? $dataJsonDecode->thedata->LastName : "");
     $Email = (isset($dataJsonDecode->thedata->Email) ? $dataJsonDecode->thedata->Email : "");
     $FirstName = (isset($dataJsonDecode->thedata->FirstName) ? $dataJsonDecode->thedata->FirstName : "");
 
-
-//    $LastName = $app->request->post('LastName');
-//    $FirstName = $app->request->post('FirstName');
-//    $Email = $app->request->post('Email');
-
     error_log( print_R("lastname: $LastName\n", TRUE ), 3, LOG);
     error_log( print_R("FirstName: $FirstName\n", TRUE ), 3, LOG);
     error_log( print_R("email: $Email\n", TRUE ), 3, LOG);
 
-
-    // validating email address
-//    validateEmail($email);
 
     $db = new StudentDbHandler();
     $response = array();
@@ -1211,6 +1185,7 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
         $response["student_id"] = $student_id;
         error_log( print_R("Student created: $student_id\n", TRUE ), 3, LOG);
         $dt1=date("Y-m-d");
+        $notificationid = createNotification('newstudent','student_id',$student_id);
         $histid = createStudentHistory($student_id,'StartDate',$dt1);
         echoRespnse(201, $response);
     } else if ($student_id == RECORD_ALREADY_EXISTED) {
@@ -1229,13 +1204,12 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
 
 });
 
+$app->get('/eventsource', 'authenticate', function() use($app) {
 /**
  * get student data for creating events
  * method GET
  * url - /eventsource
  */
-
-$app->get('/eventsource', 'authenticate', function() use($app) {
     //  global $user_id;
 
     $allGetVars = $app->request->get();
@@ -1389,7 +1363,6 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         echoRespnse(404, $response);
     }
 });
-
 
 $app->get('/coldefs', 'authenticate', function() use($app){
     error_log( print_R("coldefs entered", TRUE), 3, LOG);
@@ -1651,6 +1624,86 @@ $app->post('/message',  function() use ($app) {
 
 });
 
+$app->get('/notification', 'authenticate', function() use($app) {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getNotifications();
+
+    $response["error"] = false;
+    $response["NotificationList"] = array();
+
+    if ($result != NULL) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+                $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+                $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+                $tmp["notifkey"] = (empty($slist["notifkey"]) ? "NULL" : $slist["notifkey"]);
+                $tmp["value"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
+                $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+                $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+
+            } else {
+                $tmp["id"] = "NULL";
+                $tmp["type"] = "NULL";
+                $tmp["notifkey"] = "NULL";
+                $tmp["value"] = "NULL";
+                $tmp["firstname"] = "NULL";
+                $tmp["lastname"] = "NULL";
+            }
+            array_push($response["NotificationList"], $tmp);
+        }
+        $response["error"] = false;
+        echoRespnse(200, $response);
+
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Notifications don't exist";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->delete('/notification','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("notification before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $id      = (isset($test->thedata->id)     ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+    $result = $db->removeNotification(
+        $id );
+
+    if ($result > 0) {
+        error_log( print_R("notification removed: $id\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "notification removed successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after notification result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to remove notification. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();
@@ -1674,6 +1727,33 @@ function createStudentHistory($contactid,$histtype,$histdate) {
         error_log( print_R( $histid, TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create histcontent. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+}
+
+function createNotification($type,$notifkey,$value) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->info( print_R("createNotification entered: $type,$notifkey,$value", TRUE));
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $notifid = $db->createNotification($type,$notifkey,$value,$app);
+
+    if ($notifid > 0) {
+        $response["error"] = false;
+        $response["message"] = "notification created successfully";
+        $response["notifid"] = $notifid;
+        $app->log->info( print_R("createNotification created: $notifid", TRUE));
+
+        return 201;
+    } else {
+        error_log( print_R("after createNotification result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $notifid, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create createNotification. Please try again";
         echoRespnse(400, $response);
     }
     

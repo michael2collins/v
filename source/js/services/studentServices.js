@@ -41,7 +41,9 @@
             getUserPrefCols: getUserPrefCols,
             refreshStudents: refreshStudents,
             createUserPrefCols: createUserPrefCols,
-            saveStudentPic: saveStudentPic
+            saveStudentPic: saveStudentPic,
+            getNotifications: getNotifications,
+            removeNotification: removeNotification
         };
         return service;
 
@@ -315,31 +317,6 @@
             return( request.then( handleSuccess, handleError ) );
         }        
         
-/*            function getFriends() {
-                    var request = $http({
-                        method: "get",
-                        url: "api/index.cfm",
-                        params: {
-                            action: "get"
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-                }
-                // I remove the friend with the given ID from the remote collection.
-                function removeFriend( id ) {
-                    var request = $http({
-                        method: "delete",
-                        url: "api/index.cfm",
-                        params: {
-                            action: "delete"
-                        },
-                        data: {
-                            id: id
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-                }
-                */
                 // ---
                 // PRIVATE METHODS.
                 // ---
@@ -369,24 +346,6 @@
                     return( response.data );
                 }
         
-                
-/*        function createStudent(path, thedata) {
-                    $log.debug('createStudent data before post :' , thedata);
-            return $http({method: 'POST', url: path, data: thedata }).
-                success(function(data, status, headers, config) {
-                    $log.debug('createStudent success:' + path);
-                    $log.debug(data);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('createStudent failure:' + path);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
-        }
-*/
 
         function updateStudent(path, students) {
                     $log.debug('updateStudent vm.data before put :' , students);
@@ -484,6 +443,25 @@
                     $log.debug('getStudentRankTypes failure:' + path);
                 });
         }
+        function getNotifications(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeNotification( thedata ) {
+            $log.debug('removeNotification data before post :' , thedata);
+            var path = "../v1/notification";
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
 
         }
  })();

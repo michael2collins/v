@@ -654,7 +654,7 @@ class AttendanceDbHandler {
 
         $cntsql = "select count(*) as attendcount from attendance ";
         $cntsql .= " where DOWnum = " . $daynum ;
-        $cntsql .= " and mondayofweek =  '" . $mondayofweek . "'";;
+        $cntsql .= " and mondayofweek =  '" . $mondayofweek . "'";
         $cntsql .= " and classid =  " . $classid;
         $cntsql .= " and contactID = " . $studentid;
 
@@ -801,7 +801,7 @@ class AttendanceDbHandler {
             $updsql = " UPDATE attendance  SET attended = " . $fixattend;
             $updsql .= " where contactID = " . $sc_ContactId;
             $updsql .= " and classid =  " . $sc_classid;
-            $updsql .= " and mondayofweek =  '" . $sc_mondayDOW . "'";;
+            $updsql .= " and mondayofweek =  '" . $sc_mondayDOW . "'";
             $updsql .= " and DOWnum =  " . $sc_daynum ;
 
             error_log( print_R("attendance update sql: $updsql", TRUE), 3, LOG);
@@ -835,6 +835,22 @@ class AttendanceDbHandler {
                                    ) {
         $num_affected_rows = 0;
 
+        global $user_id;
+        global $school;
+
+        $response = array();
+
+        $type = "readytotest";
+        $notifkey = "student_id";
+
+        $nsql = "INSERT into notification ( userid, school, type, notifkey, value ) values ( ?, ?, ?, ? , ?)";
+        $delsql = "DELETE from notification where type = ? and notifkey = ? and value = ?";
+
+        $othsql = "INSERT into notification (userid, school, type, notifkey, value) ";
+        $othsql .= "   select x.userid, n.school, n.type, n.notifkey, n.value from notification n,useraccessuser x where ";
+        $othsql .= "   x.granteduserid = ? and n.id = ? ";
+
+
         $sql = "UPDATE studentregistration  set ";
         $sql .= " readyForNextRank = ? ";
         $sql .= " where studentid = ?  and classid = ? ";
@@ -854,6 +870,70 @@ class AttendanceDbHandler {
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
 
+            if ($sc_ready) {
+                if ($stmt = $this->conn->prepare($nsql)) {
+                    error_log( print_R("createNotification  do insert\n", TRUE), 3, LOG);
+                    $stmt->bind_param("sssss",
+                                      $user_id, $school,
+                                      $type, $notifkey,
+                                      $sc_ContactId
+                                         );
+                    $result = $stmt->execute();
+    
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_notif_id = $this->conn->insert_id;
+                        if ($stmt = $this->conn->prepare($othsql)) {
+                            error_log( print_R("createNotification  do sub insert", TRUE), 3, LOG);
+                            $stmt->bind_param("ss",
+                                              $user_id, $new_notif_id
+                                                 );
+                            $result = $stmt->execute();
+            
+                            $stmt->close();
+                            // Check for successful insertion
+                            if ($result) {
+    
+                                return 1;
+                            } else {
+                                // Failed to create user
+                                return NULL;
+                            }
+            
+                        } else {
+                            printf("Errormessage: %s\n", $this->conn->error);
+                                return NULL;
+                        }
+                            
+                    } else {
+                        // Failed to create user
+                        return NULL;
+                    }
+    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+                
+            } else {
+                if ($stmt = $this->conn->prepare($delsql)) {
+                    error_log( print_R("createNotification  do cleanup\n", TRUE), 3, LOG);
+                    $stmt->bind_param("sss",
+                                      $type, $notifkey,
+                                      $sc_ContactId
+                                         );
+                    $result = $stmt->execute();
+    
+                    $stmt->close();
+                
+            
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                }
+
+            }
         } else {
             error_log( print_R("student setStudentNextRank update failed", TRUE), 3, LOG);
             error_log( print_R($this->conn->error, TRUE), 3, LOG);
@@ -1097,7 +1177,7 @@ class AttendanceDbHandler {
         error_log( print_R("Class update entered", TRUE), 3, LOG);
 
         global $school;
-$errormessage=array();
+        $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
@@ -1125,22 +1205,21 @@ $errormessage=array();
                     if ($result) {
                         $new_id = $this->conn->insert_id;
                         // User successfully inserted
-                $errormessage["success"] = $new_id;
-                return $errormessage;
+                            $errormessage["success"] = $new_id;
+                            return $errormessage;
 //                        return $new_id;
                     } else {
                         // Failed to create 
-                $errormessage["sqlerror"] = "Insert failure: ";
-                $errormessage["sqlerrordtl"] = $this->conn->error;
-                return $errormessage;
+                        $errormessage["sqlerror"] = "Insert failure: ";
+                        $errormessage["sqlerrordtl"] = $this->conn->error;
+                        return $errormessage;
                     }
 
                 } else {
-                $errormessage["sqlerror"] = "Insert failure: ";
-                $errormessage["sqlerrordtl"] = $this->conn->error;
-                return $errormessage;
+                    $errormessage["sqlerror"] = "Insert failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+                    return $errormessage;
                 }
-
 
         } else {
 

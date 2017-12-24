@@ -37,6 +37,8 @@ var studentpick = {};
     ];
     MainController.$inject = ['$scope',
         'UserServices',
+        'CalendarServices',
+        'StudentServices',
         'Notification',
         '$q',
         '$log'
@@ -45,20 +47,33 @@ var studentpick = {};
 
     function MainController($scope,
         UserServices,
+        CalendarServices,
+        StudentServices,
         Notification,
         $q,
         $log
-        
-        ) {
+
+    ) {
         var vm = this;
         vm.loadTopbar = loadTopbar;
         vm.loadSidebar = loadSidebar;
         vm.loadPageHeader = loadPageHeader;
+        vm.clearNewStudents = clearNewStudents;
+        vm.clearTestStudents = clearTestStudents;
+        vm.clearOverdueStudents = clearOverdueStudents;
+        vm.clearNoshowStudents = clearNoshowStudents;
         vm.isokf = isokf;
         vm.userdta = {};
         vm.myuser;
         vm.message;
         vm.data;
+        vm.thisTasknamelist = [];
+        vm.alertcount;
+        vm.newstudents= [];
+        vm.teststudents= [];
+        vm.overduestudents= [];
+        vm.noshowstudents= [];
+        
 
         $scope.$on('$destroy', function iVeBeenDismissed() {
             $log.debug("main dismissed");
@@ -70,17 +85,81 @@ var studentpick = {};
             $log.debug('routechange in main for success');
             vm.data = $.fn.Data.get(current.originalPath);
         });
-        
-        $.fn.Data.Portlet('app.js');
 
+        $.fn.Data.Portlet('app.js');
         getUserDetails();
-        
+
+
+        function setAlertCount() {
+            vm.alertcount = vm.teststudents.length + 
+                vm.newstudents.length + 
+                vm.overduestudents.overdue.length + 
+                vm.noshowstudents.noshow.length + 
+                vm.thisTasknamelist.length;
+            
+        }
+        function clearNewStudents() {
+            $log.debug("clearNewStudents entered");
+            for(var i=0; i < vm.newstudents.length; i++) {
+                removeNotification(vm.newstudents[i].id);
+            }
+        }
+        function clearTestStudents() {
+            $log.debug("clearTestStudents entered");
+            for(var i=0; i < vm.teststudents.length; i++) {
+                removeNotification(vm.teststudents[i].id);
+            }
+        }
+        function clearOverdueStudents() {
+            $log.debug("clearOverdueStudents entered");
+        }
+        function clearNoshowStudents() {
+            $log.debug("clearNoshowStudents entered");
+        }
+        function gettheTasknamelist() {
+            $log.debug('gettheTasknamelist entered');
+            var refreshpath = "../v1/tasknamelist";
+
+            return CalendarServices.gettasknamelist(refreshpath).then(function(data) {
+                    $log.debug('gettasknamelists returned data');
+                    $log.debug(data);
+                    vm.thisTasknamelist = data.tasknamelist;
+                    return vm.thisTasknamelist;
+                },
+                function(error) {
+                    $log.debug('Caught an error gettheTasknamelist, going to notify:', error);
+                    vm.thisTasknamelist = [];
+                    vm.message = error;
+                    Notification.error({ message: error, delay: 5000 });
+                    return ($q.reject(error));
+                }).
+            finally(function() {
+                vm.loading = false;
+                vm.loadAttempted = true;
+            });
+
+        }
+
         function getUserDetails() {
             $log.debug('getUserDetails entered');
             return UserServices.getUserDetails().then(function(data) {
                     $log.debug("service getuserdetails returned:", data);
                     vm.userdta = data;
                     vm.myuser = data.userid;
+                    
+                    $q.all([
+                            gettheTasknamelist().then(function() {
+                                $log.debug('gettheTasknamelist returned');
+                            }),
+                            getTNotifications().then(function() {
+                                $log.debug('getNotifications returned');
+                            })
+                        ])
+                        .then(function() {
+                            $log.debug('getAll stats done returned');
+                            setAlertCount();
+                        });
+
                     return vm.userdta;
                 },
 
@@ -91,8 +170,108 @@ var studentpick = {};
                     Notification.error({ message: error, delay: 5000 });
                     return ($q.reject(error));
                 }).
-            finally(function() {
-            });
+            finally(function() {});
+
+        }
+        function getTNotifications() {
+            $log.debug('getNotifications entered');
+            var path = "../v1/notification";
+            return StudentServices.getNotifications(path).then(function(data) {
+                    $log.debug("service getNotifications returned:", data);
+                if (typeof(data.NotificationList) !== 'undefined' && data.error === false) {
+                    $log.debug('NotificationList', data.NotificationList);
+                    vm.newstudents = [];
+                    vm.teststudents = [];
+                    for (var i=0;i < data.NotificationList.length; i++){
+                        var newstu = {}, teststu ={};
+                        if (data.NotificationList[i].type === "newstudent") {
+                             newstu = {
+                                id: data.NotificationList[i].id,
+                                type: data.NotificationList[i].type,
+                                notifkey: data.NotificationList[i].notifkey,
+                                value: data.NotificationList[i].value,
+                                firstname: data.NotificationList[i].firstname,
+                                lastname: data.NotificationList[i].lastname
+                            };
+                            vm.newstudents.push(newstu);
+                        }
+                        if (data.NotificationList[i].type === "readytotest") {
+                             teststu = {
+                                id: data.NotificationList[i].id,
+                                type: data.NotificationList[i].type,
+                                notifkey: data.NotificationList[i].notifkey,
+                                value: data.NotificationList[i].value,
+                                firstname: data.NotificationList[i].firstname,
+                                lastname: data.NotificationList[i].lastname
+                            };
+                            vm.teststudents.push(teststu);
+                        }
+                    }
+    /*        vm.newstudents= { "new": 
+                [                 
+                    { "id": 1, "firstname": "first1", "lastname": "last1" },
+                    { "id": 2, "firstname": "first2", "lastname": "last2" }
+                ]
+            };
+            vm.teststudents= { "test": 
+                [                 
+                    { "id": 1, "firstname": "first1", "lastname": "last1" },
+                    { "id": 2, "firstname": "first2", "lastname": "last2" }
+                ]
+            };
+      */
+                } else {
+                    if (typeof(data) !== 'undefined') {
+                        Notification.error({message: typeof(data.message) !== 'undefined' ? data.message : 'error NotificationList', delay: 5000});
+                    } //else ok to have no ranklist
+                }
+              vm.overduestudents= { "overdue": 
+                [                 
+                    { "id": 1, "firstname": "first1", "lastname": "last1" },
+                    { "id": 2, "firstname": "first2", "lastname": "last2" }
+                ]
+            };
+            vm.noshowstudents= { "noshow": 
+                [                 
+                    { "id": 1, "firstname": "first1", "lastname": "last1" },
+                    { "id": 2, "firstname": "first2", "lastname": "last2" }
+                ]
+            };
+                    setAlertCount();
+
+                    return;
+                },
+
+                function(error) {
+                    $log.debug('Caught an error getNotifications, going to notify:', error);
+                    vm.notifications = [];
+                    vm.message = error;
+                    Notification.error({ message: error, delay: 5000 });
+                    return ($q.reject(error));
+                }).
+            finally(function() {});
+
+        }
+
+        function removeNotification(id) {
+            $log.debug('removeNotification entered');
+            var thedata = {
+                id: id
+            };
+            return StudentServices.removeNotification(thedata).then(function(data) {
+                    $log.debug("service removeNotification returned:", data);
+                    getTNotifications();
+
+                    return;
+                },
+
+                function(error) {
+                    $log.debug('Caught an error removeNotification, going to notify:', error);
+                    vm.message = error;
+                    Notification.error({ message: error, delay: 5000 });
+                    return ($q.reject(error));
+                }).
+            finally(function() {});
 
         }
 
@@ -209,8 +388,8 @@ var studentpick = {};
 
 
         }
-            
-        }
+
+    }
 
     function AppController($scope,
         $routeParams,
@@ -315,7 +494,7 @@ var studentpick = {};
         vm.setstudent = setstudent;
         vm.eventopen = eventopen;
         vm.getStudent = getStudent;
-        
+
         vm.disable = undefined;
 
         vm.refreshStudents = refreshStudents;
@@ -328,6 +507,7 @@ var studentpick = {};
         vm.eventDrag = eventDrag;
         vm.saveCalendarEvent = saveCalendarEvent;
         vm.removeCalendarEvent = removeCalendarEvent;
+        
 
         var adialog;
         var eventDrag;
@@ -429,34 +609,34 @@ var studentpick = {};
             $log.debug(current.originalPath);
         });
 
-              $(document).ready(function() {
+        $(document).ready(function() {
 
-  $('.dropdown-submenu a.test').on("click", function(e){
-    $(this).next('ul').toggle();
-    e.stopPropagation();
-    e.preventDefault();
-  });
+            $('.dropdown-submenu a.test').on("click", function(e) {
+                $(this).next('ul').toggle();
+                e.stopPropagation();
+                e.preventDefault();
+            });
 
-                $('#external-events div.external-event').each(function() {
-        
-                    CalUtil.EventDrag($(this));
-                    $log.debug('external-events after drag', $(this));
-        
-                });
-                $('#todos-list-sort > li > label.external-event').each(function() {
-        
-                    CalUtil.EventDrag($(this));
-                    $log.debug('todos external-events after drag', $(this));
-        
-                });
-              });
+            $('#external-events div.external-event').each(function() {
+
+                CalUtil.EventDrag($(this));
+                $log.debug('external-events after drag', $(this));
+
+            });
+            $('#todos-list-sort > li > label.external-event').each(function() {
+
+                CalUtil.EventDrag($(this));
+                $log.debug('todos external-events after drag', $(this));
+
+            });
+        });
 
         function activate() {
             $log.debug('app.js activate entered');
             vm.textcolor = CalUtil.getColorByBgColor(vm.mycolor); // Set to complement of textColor.
 
             CalUtil.calActivate();
-            
+
             $("#eventPickDiv").button().on("click", function() {
                 var somevlu = $("#eventpick").val();
                 $log.debug("click pick is", somevlu, vm.studentpick2, studentpick, $("#studentpick").val());
@@ -466,39 +646,39 @@ var studentpick = {};
 
             adialog = CalUtil.aDialog(vm);
             eventDrag = CalUtil.EventDrag();
-    
+
             getUserDetails().then(function() {
                 $log.debug('activate getUserDetails returned', vm.userdta);
                 islogin();
 
                 todos();
                 gettheTasknamelist();
-                
-//                $(document).ready(function() {
-                    $("select[name='forUser']").unbind('change').bind('change', function() {
-                        var u = $(this).val();
-                        $log.debug("reset cal", vm.forUser, u);
-                        vm.forUser = u;
-                        //        $('#calendar').fullCalendar('removeEvents');
-                        $('#calendar').fullCalendar('destroy');
-                        getEventList(vm.forUser).then(function() {
-                            $log.debug("refetch", vm.events);
-                            //            $('#calendar').fullCalendar( 'refetchEventSources', vm.events );
-                            initCalendar();
-                        }).catch(function(e) {
-                            $log.debug("resetCalendar error in activate", e);
-                        });
-        
+
+                //                $(document).ready(function() {
+                $("select[name='forUser']").unbind('change').bind('change', function() {
+                    var u = $(this).val();
+                    $log.debug("reset cal", vm.forUser, u);
+                    vm.forUser = u;
+                    //        $('#calendar').fullCalendar('removeEvents');
+                    $('#calendar').fullCalendar('destroy');
+                    getEventList(vm.forUser).then(function() {
+                        $log.debug("refetch", vm.events);
+                        //            $('#calendar').fullCalendar( 'refetchEventSources', vm.events );
+                        initCalendar();
+                    }).catch(function(e) {
+                        $log.debug("resetCalendar error in activate", e);
                     });
-                    getInstructorList().then(function() {
-                         $log.debug("returned from getInstructorList"); 
-                    });
-                    getTestTypes().then(function() {
-                         $log.debug("returned from getTesttypes"); 
-                    });
-        
-//                });
-    
+
+                });
+                getInstructorList().then(function() {
+                    $log.debug("returned from getInstructorList");
+                });
+                getTestTypes().then(function() {
+                    $log.debug("returned from getTesttypes");
+                });
+
+                //                });
+
                 //works but is annoying
                 getEventList('ALL').then(function() {
                     initCalendar();
@@ -506,9 +686,9 @@ var studentpick = {};
                 }).catch(function(e) {
                     $log.debug("getEventList error in activate", e);
                 });
-    
+
             });
-            
+
         }
 
 
@@ -519,7 +699,7 @@ var studentpick = {};
         }
 
         function eventopen(calEvent) {
-            CalUtil.eventopen(calEvent,studentpick,vm,CalendarServices);
+            CalUtil.eventopen(calEvent, studentpick, vm, CalendarServices);
         }
 
         function displayTime() {
@@ -1064,8 +1244,8 @@ var studentpick = {};
 
         // initialize the calendar
         // -----------------------------------------------------------------
-        function initCalendar(){
-            CalUtil.initCalendar(vm,studentpick);
+        function initCalendar() {
+            CalUtil.initCalendar(vm, studentpick);
         }
 
         function settextcolor() {
@@ -1619,12 +1799,12 @@ var studentpick = {};
                 function(response) {
                     $log.debug('stats success:');
                     $log.debug(response);
-                    if ((typeof response.data === 'undefined' || response.data.error === true)  
-                            && typeof response.data.message !== 'undefined') {  
-                        Notification.error({message: response.data.message, delay: 5000});
-                        return($q.reject(response.data));
-                    } 
-                    
+                    if ((typeof response.data === 'undefined' || response.data.error === true) &&
+                        typeof response.data.message !== 'undefined') {
+                        Notification.error({ message: response.data.message, delay: 5000 });
+                        return ($q.reject(response.data));
+                    }
+
                     response.data.studentstats.timeint = response.data.thedata.timeint;
                     vm.studentstats = response.data.studentstats;
                     vm.studentstatsdetails = response.data.detailslist;

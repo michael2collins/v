@@ -1362,6 +1362,138 @@ class StudentDbHandler {
         return $response;
     }
 
+    public function getNotifications() {
+        
+        global $school;
+        global $user_id;
+
+        $sql = "SELECT          
+            n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname
+        FROM notification n, ncontacts c where n.userid = ? and n.school = ? and notifkey = 'student_id' 
+        and c.ID = n.value and c.studentschool = n.school
+        ";
+        
+        error_log( print_R("getNotifications sql : $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $user_id, $school
+                                 );
+
+            if ($stmt->execute()) {
+                $notificationList = $stmt->get_result();
+                $stmt->close();
+                return $notificationList;
+            } else {
+                error_log( print_R("getNotifications  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getNotifications  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function createNotification($type,
+                                  $notifkey,
+                                  $value,$app ) {
+
+        $app->log->info( print_R("createNotification entered: $type,
+                                  $notifkey,
+                                  $value", TRUE));
+
+        global $user_id;
+        global $school;
+        $response = array();
+
+        $sql = "INSERT into notification (";
+        $sql .= " userid ,";
+        $sql .= " school ,";
+        $sql .= " type, notifkey, value ) ";
+        $sql .= " values ( ?, ?, ?, ? , ?) ";
+
+        $othsql = "INSERT into notification (userid, school, type, notifkey, value) 
+            select x.userid, n.school, n.type, n.notifkey, n.value from notification n,useraccessuser x where
+            x.granteduserid = ? and n.id = ?";
+            
+        if ($stmt = $this->conn->prepare($sql)) {
+            $app->log->info( print_R("createNotification  do insert", TRUE));
+            $stmt->bind_param("sssss",
+                              $user_id, $school,
+                              $type    , $notifkey,
+                              $value
+                                 );
+                $result = $stmt->execute();
+
+                $stmt->close();
+                // Check for successful insertion
+                if ($result) {
+                    $new_notif_id = $this->conn->insert_id;
+                    if ($stmt = $this->conn->prepare($othsql)) {
+                        $app->log->info( print_R("createNotification  do sub insert", TRUE));
+                        $stmt->bind_param("ss",
+                                          $user_id, $new_notif_id
+                                             );
+                            $result = $stmt->execute();
+            
+                            $stmt->close();
+                            // Check for successful insertion
+                            if ($result) {
+
+                                return 1;
+                            } else {
+                                // Failed to create user
+                                return NULL;
+                            }
+            
+                        } else {
+                            printf("Errormessage: %s\n", $this->conn->error);
+                                return NULL;
+                        }
+                        
+                } else {
+                    // Failed to create user
+                    return NULL;
+                }
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+
+        return $response;
+    }
+
+    public function removeNotification($id
+    ) {
+        global $user_id;
+        error_log( print_R("removeNotification entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from notification  where id = ? and userid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $id, $user_id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
+
     
 }
 ?>

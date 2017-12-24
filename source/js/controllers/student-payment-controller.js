@@ -177,13 +177,16 @@
              return ClassServices.getPayerList(path).then(function(data){
                     $log.debug('getPayerList returned data');
                     $log.debug(data);
-                    vmpayment.payerlist = data.payerlist; 
-                    vmpayment.studentpayer = parseInt(data.payerlist[0].payerid,10);
-                    payerSet();
                     if ((typeof data.payerlist === 'undefined' || data.payerlist.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.payerlist = [];
                         Notification.error({message: data, delay: 5000});
                         $q.reject(data);
+                    } else {
+                        vmpayment.payerlist = data.payerlist; 
+                        if (data.payerlist.length > 0) {
+                            vmpayment.studentpayer = parseInt(data.payerlist[0].payerid,10);
+                            payerSet();
+                        }
                     }
                     return vmpayment.payerlist;
                 },
