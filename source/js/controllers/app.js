@@ -84,11 +84,39 @@ var studentpick = {};
             $log.debugEnabled(true);
             $log.debug('routechange in main for success');
             vm.data = $.fn.Data.get(current.originalPath);
+            getUserDetails();
         });
 
         $.fn.Data.Portlet('app.js');
-        getUserDetails();
 
+        function islogin() {
+
+            $log.debug('islogin main controller');
+            vm.isok = UserServices.isapikey();
+
+            if (vm.isok) {
+                $log.debug('setting apikey for services in main controller');
+                var thekey = UserServices.getapikey();
+                CalendarServices.setapikey(thekey);
+                StudentServices.setapikey(thekey);
+                UserServices.setapikey(thekey);
+
+                $q.all([
+                        gettheTasknamelist().then(function() {
+                            $log.debug('gettheTasknamelist returned');
+                        }),
+                        getTNotifications().then(function() {
+                            $log.debug('getNotifications returned');
+                        })
+                    ])
+                    .then(function() {
+                        $log.debug('getAll stats done returned');
+                        setAlertCount();
+                    });
+
+            }
+
+        }
 
         function setAlertCount() {
             vm.alertcount = vm.teststudents.length + 
@@ -143,23 +171,11 @@ var studentpick = {};
         function getUserDetails() {
             $log.debug('getUserDetails entered');
             return UserServices.getUserDetails().then(function(data) {
-                    $log.debug("service getuserdetails returned:", data);
+                    $log.debug("main controller service getuserdetails returned:", data);
+                    islogin();
                     vm.userdta = data;
                     vm.myuser = data.userid;
                     
-                    $q.all([
-                            gettheTasknamelist().then(function() {
-                                $log.debug('gettheTasknamelist returned');
-                            }),
-                            getTNotifications().then(function() {
-                                $log.debug('getNotifications returned');
-                            })
-                        ])
-                        .then(function() {
-                            $log.debug('getAll stats done returned');
-                            setAlertCount();
-                        });
-
                     return vm.userdta;
                 },
 
