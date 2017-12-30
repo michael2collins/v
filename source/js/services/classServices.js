@@ -74,7 +74,10 @@
             removeTesttype: removeTesttype,
             getClassTests: getClassTests,
             updateClassTest: updateClassTest,
-            removeClassTest: removeClassTest
+            removeClassTest: removeClassTest,
+            getTemplates: getTemplates,
+            updateTemplate: updateTemplate,
+            removeTemplate: removeTemplate
         };
         return service;
 
@@ -671,6 +674,36 @@
         }        
         function updateClassTest(path, thedata ) {
                     $log.debug('updateClassTest data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function getTemplates(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeTemplate( thedata, path ) {
+            $log.debug('removeTemplate data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateTemplate(path, thedata ) {
+                    $log.debug('updateTemplate data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,

@@ -57,8 +57,6 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
-
-
     public function removeCalendarEvent($eventID) {
 
         global $user_id;
@@ -151,12 +149,11 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
-
+    private function isCalendarEventExists($eventID) {
         /**
      * Checking for duplicate calendarevent for a user.  
      * @return boolean
      */
-    private function isCalendarEventExists($eventID) {
 
      //   global $user_id;
 
@@ -201,16 +198,13 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
-
-
-    /**
-     * Updating or inserting calEvent
-     */
-
     public function saveCalendarEvent($eventID,
                                        $title, $startdated, $startdate, $enddate,
                                        $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor, $eventtype
                                       ) {
+    /**
+     * Updating or inserting calEvent
+     */
 
 //        global $user_id;
         global $school;
@@ -427,8 +421,6 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
-
-
     public function getTasknamelist() {
 
         global $user_id;
@@ -456,12 +448,11 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
-
+    private function istasknamelistExists($taskname) {
         /**
      * Checking for duplicate tasknamemlist for a user
      * @return boolean
      */
-    private function istasknamelistExists($taskname) {
 
         global $user_id;
 
@@ -509,15 +500,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     }
 
-
-
-    /**
-     * Updating or inserting tasknamelist
-     */
-
     public function updateTasknamelist($taskname,
                                        $taskstatus
                                       ) {
+    /**
+     * Updating or inserting tasknamelist
+     */
 
         global $user_id;
 

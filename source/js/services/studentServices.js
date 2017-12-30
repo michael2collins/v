@@ -43,7 +43,14 @@
             createUserPrefCols: createUserPrefCols,
             saveStudentPic: saveStudentPic,
             getNotifications: getNotifications,
-            removeNotification: removeNotification
+            removeNotification: removeNotification,
+            sendEmail: sendEmail,
+            refreshEmails: refreshEmails,
+            getEmailcount: getEmailcount,
+            updateEmailList: updateEmailList,
+            removeEmailList: removeEmailList,
+            getEmailLists: getEmailLists,
+            getEmailViews: getEmailViews
         };
         return service;
 
@@ -84,6 +91,24 @@
                     $log.debug(response.data);
           return response.data;
         });
+      }
+     function refreshEmails(input) {
+        var params = {input: input};
+        var request = $http({
+            method: "get",
+            url: '../v1/emails',
+            params: params                
+        });
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function getEmailViews(input) {
+        var params = {input: input};
+        var request = $http({
+            method: "get",
+            url: '../v1/emailview',
+            params: params                
+        });
+        return( request.then( handleSuccess, handleError ) );
       }
 
      function getRankPartial(input,ranktype) {
@@ -462,6 +487,56 @@
             });
             return( request.then( handleSuccess, handleError ) );
         }        
+        function getEmailcount(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function getEmailLists(path) {
+            var request = $http({
+                method: "get",
+                url: path
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }
+        function removeEmailList( thedata, path ) {
+            $log.debug('removeEmailList data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateEmailList(path, thedata ) {
+                    $log.debug('updateEmailList data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+
+        function sendEmail(path, thedata ) {
+            $log.debug('send email data before post :' , path, thedata);
+            var request = $http({
+                method: "POST",
+                url: path,
+                headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+
 
         }
  })();

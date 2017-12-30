@@ -1315,11 +1315,38 @@ class StudentDbHandler {
                 return NULL;
         }
     }
+
+    public function getEmailFromUser($user) {
+
+        error_log( print_R("getEmailFromUser entered with $user\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $usql = "select email from users where id = ?";
+        if ($stmt = $this->conn->prepare($usql)) {
+            $stmt->bind_param("s",
+                             $user );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEmailFromUser  returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEmailFromUser  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+    }
     
     public function createMessage($userid,
                                  $school,
                                  $subject, $to, $body,
-                                 $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc
+                                 $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc,$ContactID = NULL
                                  ) {
 
         error_log( print_R("createMessage entered\n", TRUE ),3, LOG);
@@ -1327,18 +1354,18 @@ class StudentDbHandler {
         $response = array();
         $bod = json_encode($body);
 
-        $sql = "INSERT into message ( userid, school, subject, emailto, body, `thread-topic`, `email-date`, `from`, `return-path`, `delivered-to`, `reply-to`, cc, bcc ) ";
-        $sql .= " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT into message ( userid, school, subject, emailto, body, `thread-topic`, `email-date`, `from`, `return-path`, `delivered-to`, `reply-to`, cc, bcc, contactid ) ";
+        $sql .= " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         error_log( print_R($sql, TRUE ));
-        error_log( print_R("u $userid s $school sb $subject t $to b $body\n", TRUE ));
+        error_log( print_R("u $userid s $school sb $subject t $to b $body c $ContactID\n", TRUE ));
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sssssssssssss",
+                $stmt->bind_param("ssssssssssssss",
                                   $userid,
                                  $school,
                                  $subject, $to, $body,
-                                 $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc
+                                 $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc,$ContactID
                                      );
                     $result = $stmt->execute();
 
@@ -1493,7 +1520,179 @@ class StudentDbHandler {
 
     }
 
+    public function getEmails($theinput) {
 
+        $sql = "SELECT distinct email, ID, FirstName, LastName FROM ncontacts ";
+        $sql .= " where email like concat ('%',?,'%')  "; 
+        $sql .= " or LastName like concat ('%',?,'%')  "; 
+        $sql .= " or FirstName like concat ('%',?,'%') ";
+
+        $schoolfield = "studentschool";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getEmails sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sss", $theinput, $theinput, $theinput );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEmails list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEmails list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEmails list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getEmailView($theinput) {
+        global $user_id;
+        $sql = "SELECT m.id, userid,  emailto, subject, body, `thread-topic`, `reply-to`, `return-path`, 
+            `delivered-to`, cc, bcc, `email-date`, `from`, contactid, status, FirstName as firstname, LastName as lastname
+            from message m left join ncontacts n on (m.contactid = n.ID) where  userid = ? and m.id = ? ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getEmailView sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss", 
+                    $user_id, $theinput );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEmailView list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEmailView list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEmailView list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getEmailList() {
+        global $user_id;
+        $sql = "SELECT m.id, userid,  emailto, subject, body, `thread-topic`, `reply-to`, `return-path`, 
+            `delivered-to`, cc, bcc, `email-date`, `from`, contactid, status, FirstName as firstname, LastName as lastname
+            from message m left join ncontacts n on ( m.contactid = n.ID ) where userid = ? ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("getEmailList sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", 
+                    $user_id );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEmailList list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEmailList list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEmailList list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+    public function getEmailCount() {
+        global $user_id;
+        $sql = "SELECT count(*) as count
+            from message where status = 'new' and userid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", 
+                    $user_id );
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getEmailCount list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getEmailCount list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEmailCount list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function updateEmail($id, $status
+    ) {
+        global $user_id;
+        error_log( print_R("updateEmail entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+
+        $sql = "update message set status = ? where id = ? and userid = ? ";
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("sss",$status,
+                                  $id, $user_id    
+                                     );
+                    // Check for successful insertion
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                $stmt->close();
+                return $num_affected_rows >= 0;
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+
+    }
+
+    public function removeEmail($id
+    ) {
+        global $user_id;
+        error_log( print_R("removeEmail entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from message  where id = ? and userid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $id, $user_id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
     
 }
 ?>

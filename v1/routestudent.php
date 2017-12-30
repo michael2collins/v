@@ -1544,6 +1544,117 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
 
 });
 
+$app->post('/email', 'authenticate', function() use ($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    global $user_id;
+    global $school;
+    
+    $db = new StudentDbHandler();
+    $response = array();
+    $inout = (isset($dataJsonDecode->thedata->emailHead->inout) ? $dataJsonDecode->thedata->emailHead->inout : "");
+    $to = (isset($dataJsonDecode->thedata->emailHead->_to) ? $dataJsonDecode->thedata->emailHead->_to : "");
+    $subject = (isset($dataJsonDecode->thedata->emailHead->_subject) ? $dataJsonDecode->thedata->emailHead->_subject : "");
+    $body = (isset($dataJsonDecode->thedata->emailBody->body) ? $dataJsonDecode->thedata->emailBody->body : "");
+    $threadTopic = (isset($dataJsonDecode->thedata->emailHead->_threadtopic) ? $dataJsonDecode->thedata->emailHead->_threadtopic : "");
+    $emailDate = (isset($dataJsonDecode->thedata->emailHead->_date) ? $dataJsonDecode->thedata->emailHead->_date : "");
+    $from = (isset($dataJsonDecode->thedata->emailHead->_from) ? $dataJsonDecode->thedata->emailHead->_from : "");
+    $returnPath = (isset($dataJsonDecode->thedata->emailHead->_returnpath) ? $dataJsonDecode->thedata->emailHead->_returnpath : "");
+    $deliveredTo = (isset($dataJsonDecode->thedata->emailHead->_deliveredto) ? $dataJsonDecode->thedata->emailHead->_deliveredto : "");
+    $replyTo = (isset($dataJsonDecode->thedata->emailHead->_replyto) ? $dataJsonDecode->thedata->emailHead->_replyto : "");
+    $cc = (isset($dataJsonDecode->thedata->emailHead->_cc) ? $dataJsonDecode->thedata->emailHead->_cc : "");
+    $bcc = (isset($dataJsonDecode->thedata->emailHead->_bcc) ? $dataJsonDecode->thedata->emailHead->_bcc : "");
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->emailHead->contacts;
+
+    error_log( print_R("email route subject: $subject\n", TRUE ), 3, LOG);
+    error_log( print_R("to: $to\n", TRUE ), 3, LOG);
+    error_log( print_R("body: $body\n", TRUE ), 3, LOG);
+    error_log( print_R("inout: $inout\n", TRUE ), 3, LOG);
+
+    // get user
+    if ($inout == "") {
+        $response["error"] = true;
+        $response["message"] = "error missing param inout email";
+        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+        $app->stop();
+    } else if ( $inout == "out" ) {
+        $row_cnt = 1;
+        $schl = $school;
+        $userid = $user_id;
+        $result = $db->getEmailFromUser($userid);
+    
+        while ($slist = $result->fetch_assoc()) {
+            //expecting 1 result
+            
+            $from = (empty($slist["email"]) ? "NULL" : $slist["email"]);
+
+        } 
+        $row_cnt = $result->num_rows;
+
+        error_log( print_R("out: u $userid s $schl e $from\n ", TRUE), 3, LOG);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error missing param inout email $inout";
+        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+        $app->stop();
+        
+    }
+
+    if ($row_cnt == 1 && $userid != "NULL" && $schl != "NULL") {
+        for($i = 0; $i < count($studentarr); $i++ ) {
+    
+            error_log( print_R($studentarr[$i]->ID, TRUE ), 3, LOG);
+    
+            $ContactID  = (isset($studentarr[$i]->ID) ? 
+                            $studentarr[$i]->ID : "");
+    
+            //fails and exits which means db won't write
+            emailoutbound($to,$subject,$body,$from,$cc,$bcc);    
+        
+            $db = new StudentDbHandler();
+            $response = array();
+        
+            // updating task
+            $message_id = $db->createMessage($userid,
+                                         $schl,
+                                         $subject, $to, $body,
+                                         $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc,$ContactID
+                                        );
+        
+            if ($message_id > 0) {
+                $response["error"] = false;
+                $response["message"] = "Message created successfully";
+                $response["message_id"] = $message_id;
+                error_log( print_R("Message created: $message_id\n", TRUE ), 3, LOG);
+                echoRespnse(201, $response);
+            } else {
+                error_log( print_R("after insert message result bad\n", TRUE), 3, LOG);
+                error_log( print_R( $message_id, TRUE), 3, LOG);
+                $response["error"] = true;
+                $response["message"] = "Failed to create message. Please try again";
+                echoRespnse(400, $response);
+            }
+        }
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in getuserfor email";
+        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+    
+
+});
 $app->post('/message',  function() use ($app) {
 
     $response = array();
@@ -1555,10 +1666,9 @@ $app->post('/message',  function() use ($app) {
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
     error_log( print_R($thedata, TRUE ), 3, LOG);
 
-
     $db = new StudentDbHandler();
     $response = array();
-
+    $inout = (isset($dataJsonDecode->thedata->emailHead->inout) ? $dataJsonDecode->thedata->emailHead->inout : "");
     $to = (isset($dataJsonDecode->thedata->emailHead->_to) ? $dataJsonDecode->thedata->emailHead->_to : "");
     $subject = (isset($dataJsonDecode->thedata->emailHead->_subject) ? $dataJsonDecode->thedata->emailHead->_subject : "");
     $body = (isset($dataJsonDecode->thedata->emailBody->body) ? $dataJsonDecode->thedata->emailBody->body : "");
@@ -1574,19 +1684,42 @@ $app->post('/message',  function() use ($app) {
     error_log( print_R("route subject: $subject\n", TRUE ), 3, LOG);
     error_log( print_R("to: $to\n", TRUE ), 3, LOG);
     error_log( print_R("body: $body\n", TRUE ), 3, LOG);
+    error_log( print_R("date: $emailDate\n", TRUE ), 3, LOG);
 
     // get user
-    $result = $db->getUserFromEmail($to);
-
-    while ($slist = $result->fetch_assoc()) {
-        //expecting 1 result
+    if ($inout == "") {
+        $response["error"] = true;
+        $response["message"] = "error missing param inout email";
+        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+        $app->stop();
+    } else if ($inout == "in") {
+        $result = $db->getUserFromEmail($to);
+    
+        while ($slist = $result->fetch_assoc()) {
+            //expecting 1 result
+            
+            $userid = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $schl = (empty($slist["school"]) ? "NULL" : $slist["school"]);
+    
+        } 
+        $row_cnt = $result->num_rows;
+        if ($row_cnt > 0 ) {
+            error_log( print_R("before insert $row_cnt, $userid, $schl\n", TRUE ), 3, LOG);
+        } else {
+            error_log( print_R("no user from email insert $row_cnt\n", TRUE ), 3, LOG);
+            $userid='';
+            $schl='';
+        }
         
-        $userid = (empty($slist["id"]) ? "NULL" : $slist["id"]);
-        $schl = (empty($slist["school"]) ? "NULL" : $slist["school"]);
-
-    } 
-    $row_cnt = $result->num_rows;
-    error_log( print_R("before insert $row_cnt, $userid, $schl\n", TRUE ), 3, LOG);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error missing param inout email $inout";
+        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+        $app->stop();
+        
+    }
 
     if ($row_cnt == 1 && $userid != "NULL" && $schl != "NULL") {
     
@@ -1621,6 +1754,249 @@ $app->post('/message',  function() use ($app) {
         echoRespnse(404, $response);
     }
     
+
+});
+$app->get('/emails', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("studentnames entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $theinput = '';
+
+    if(array_key_exists('input', $allGetVars)){
+        $theinput = $allGetVars['input'];
+    }
+
+    error_log( print_R("emails params: theinput: $theinput \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getEmails($theinput);
+    $response["error"] = false;
+    $response["refreshemaillist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+            $tmp["email"] = (empty($slist["email"]) ? "NULL" : $slist["email"]);
+            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+            $tmp["FirstName"] = (empty($slist["FirstName"]) ? "NULL" : $slist["FirstName"]);
+            $tmp["LastName"] = (empty($slist["LastName"]) ? "NULL" : $slist["LastName"]);
+            $tmp["FullName"] = $slist["FirstName"] . " " . $slist["LastName"];
+        array_push($response["refreshemaillist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+
+$app->get('/emailcount', 'authenticate', function() use($app) {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getEmailCount();
+
+    $response["error"] = false;
+    $response["emailcount"] = array();
+
+    if ($result != NULL) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+                $tmp["count"] = (empty($slist["count"]) ? "NULL" : $slist["count"]);
+            }
+            array_push($response["emailcount"], $tmp);
+        }
+        $response["error"] = false;
+        echoRespnse(200, $response);
+
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Email count does not exist";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/emailview', 'authenticate', function() use($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("emailview entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $theinput = '';
+
+    if(array_key_exists('input', $allGetVars)){
+        $theinput = $allGetVars['input'];
+    }
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getEmailView($theinput);
+
+    $response["error"] = false;
+    $response["EmailView"] = array();
+
+    if ($result != NULL) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+                $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+                $tmp["emailto"] = (empty($slist["emailto"]) ? "NULL" : $slist["emailto"]);
+                $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+                $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+                $tmp["subject"] = (empty($slist["subject"]) ? "NULL" : $slist["subject"]);
+                $tmp["body"] = (empty($slist["body"]) ? "NULL" : $slist["body"]);
+                $tmp["threadtopic"] = (empty($slist["thread-topic"]) ? "NULL" : $slist["thread-topic"]);
+                $tmp["replyto"] = (empty($slist["reply-to"]) ? "NULL" : $slist["reply-to"]);
+                $tmp["returnpath"] = (empty($slist["return-path"]) ? "NULL" : $slist["return-path"]);
+                $tmp["deliveredto"] = (empty($slist["delivered-to"]) ? "NULL" : $slist["delivered-to"]);
+                $tmp["cc"] = (empty($slist["cc"]) ? "NULL" : $slist["cc"]);
+                $tmp["bcc"] = (empty($slist["bcc"]) ? "NULL" : $slist["bcc"]);
+                $tmp["emaildate"] = (empty($slist["email-date"]) ? "NULL" : $slist["email-date"]);
+                $tmp["from"] = (empty($slist["from"]) ? "NULL" : $slist["from"]);
+                $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
+                $tmp["status"] = (empty($slist["status"]) ? "NULL" : $slist["status"]);
+            }
+            array_push($response["EmailView"], $tmp);
+        }
+        $response["error"] = false;
+        $response["message"] = "Email retrieved";
+        echoRespnse(200, $response);
+
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Email view does not exist";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/emaillist', 'authenticate', function() use($app) {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getEmailList();
+
+    $response["error"] = false;
+    $response["EmailList"] = array();
+
+    if ($result != NULL) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+                $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+                $tmp["emailto"] = (empty($slist["emailto"]) ? "NULL" : $slist["emailto"]);
+                $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+                $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+                $tmp["subject"] = (empty($slist["subject"]) ? "NULL" : $slist["subject"]);
+                $tmp["body"] = (empty($slist["body"]) ? "NULL" : $slist["body"]);
+                $tmp["threadtopic"] = (empty($slist["thread-topic"]) ? "NULL" : $slist["thread-topic"]);
+                $tmp["replyto"] = (empty($slist["reply-to"]) ? "NULL" : $slist["reply-to"]);
+                $tmp["returnpath"] = (empty($slist["return-path"]) ? "NULL" : $slist["return-path"]);
+                $tmp["deliveredto"] = (empty($slist["delivered-to"]) ? "NULL" : $slist["delivered-to"]);
+                $tmp["cc"] = (empty($slist["cc"]) ? "NULL" : $slist["cc"]);
+                $tmp["bcc"] = (empty($slist["bcc"]) ? "NULL" : $slist["bcc"]);
+                $tmp["emaildate"] = (empty($slist["email-date"]) ? "" : $slist["email-date"]);
+                $tmp["from"] = (empty($slist["from"]) ? "NULL" : $slist["from"]);
+                $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
+                $tmp["status"] = (empty($slist["status"]) ? "NULL" : $slist["status"]);
+            }
+            array_push($response["EmailList"], $tmp);
+        }
+        $response["error"] = false;
+        echoRespnse(200, $response);
+
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Email list does not exist";
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/emaillist', 'authenticate', function() use ($app) {
+     $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+
+    $id = (isset($dataJsonDecode->thedata->id) ? $dataJsonDecode->thedata->id : "");
+    $status = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    error_log( print_R("status: $status\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $emailid = $db->updateEmail($id, 
+                                 $status
+                                );
+
+    if ($emailid > 0) {
+        $response["error"] = false;
+        $response["message"] = "email updated successfully";
+        error_log( print_R("Email updated: $emailid\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $emailid, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to update email. Please try again";
+        echoRespnse(400, $response);
+    }
+
+    
+
+});
+$app->delete('/emaillist','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("email before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $id      = (isset($test->thedata->id)     ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+    $result = $db->removeEmail(
+        $id );
+
+    if ($result > 0) {
+        error_log( print_R("email removed: $id\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "email removed successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to remove email. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
 
 });
 

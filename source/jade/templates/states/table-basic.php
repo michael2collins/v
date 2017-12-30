@@ -44,6 +44,33 @@ function strColTemplate( $parameters = array() ) {
     <?php return ob_get_clean();
 }
 
+function textareaColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false
+     );
+     
+   $param = param_default( $def, $parameters );    
+   
+    ob_start(); ?>
+
+    <div class="form-group">
+        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label>
+
+        <div>
+            <textarea placeholder="<?=$param['placeholder']?>" 
+                    name="<?=$param['field']?>" 
+                    ng-model="<?=$param['model']?>" 
+                    ng-change="<?=$param['change']?>" 
+                    <?=($param['required']  ? 'required' : '')?> 
+                    <?=($param['tinymce']  ? 'ui-tinymce="tinymceOptions"' : '')?> 
+                    class="form-control"></textarea>
+        </div>
+    </div>
+
+    <?php return ob_get_clean();
+}
+
 //function timepickerColTemplate($hourStep, $minuteStep, $showMeridian, $model,  $required ) {
 function timepickerColTemplate( $parameters = array() ) {
 

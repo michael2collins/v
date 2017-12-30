@@ -17,6 +17,7 @@ var jQuery;
         '/table-basic-attendance': {title:'Attendance', 'breadcrumb':['Students', 'Attendance']},
         '/table-basic-schedule': {title:'Class Schedule', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-program': {title:'Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
+        '/table-basic-htmltemplate': {title:'Email Template Maintenance', 'breadcrumb':['Manage Studio', 'Email Template']},
         '/table-basic-testtype': {title:'Test type Maintenance', 'breadcrumb':['Manage Studio', 'Test Type']},
         '/table-basic-classpgm': {title:'Class Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Program']},
         '/table-basic-classrank': {title:'Class Rank Maintenance', 'breadcrumb':['Manage Studio', 'Class Rank']},

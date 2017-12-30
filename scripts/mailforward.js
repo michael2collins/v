@@ -17,6 +17,8 @@ var _input = "";
 var host = process.env.host;
 
 let parser = new MailParser();
+let attachments = [];
+
 var stream;
 
 function extractAddress(src) {
@@ -62,7 +64,8 @@ function performRequest(thedata) {
         port: 443,
         path: '/v1/message',
         method: 'POST',
-        headers: postheaders
+        headers: postheaders,
+        rejectUnauthorized: false
     };
 
 
@@ -116,6 +119,7 @@ parser.on('headers', headers => {
     emailHead = {
         "_subject": headers.get('subject').toString(),
         "_to": _to,
+        "inout": "in",
     	 "_threadtopic": typeof(headers.get('thread-topic')) == "undefined" ? ' ' : headers.get('thread-topic').toString(),
     	 "_date": headers.get('date').toString(),
     	 "_from": extractAddress(headers.get('from')),
@@ -138,6 +142,33 @@ parser.on('data', data => {
             }
         });
     }
+  if (data.type === 'attachment') {
+        attachments.push(data);
+        data.chunks = [];
+        data.chunklen = 0;
+        let size = 0;
+        Object.keys(data).forEach(key => {
+            if (typeof data[key] !== 'object' && typeof data[key] !== 'function') {
+                console.log('%s: %s', key, JSON.stringify(data[key]));
+            }
+        });
+        data.content.on('readable', () => {
+            let chunk;
+            while ((chunk = data.content.read()) !== null) {
+                size += chunk.length;
+                data.chunks.push(chunk);
+                data.chunklen += chunk.length;
+            }
+        });
+
+        data.content.on('end', () => {
+            data.buf = Buffer.concat(data.chunks, data.chunklen);
+            console.log('%s: %s B', 'size', size);
+            // attachment needs to be released before next chunk of
+            // message data can be processed
+            data.release();
+        });
+    }    
 
 });
 

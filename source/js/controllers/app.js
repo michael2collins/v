@@ -40,6 +40,8 @@ var studentpick = {};
         'CalendarServices',
         'StudentServices',
         'Notification',
+        '$uibModal',
+        'uiGridConstants',
         '$q',
         '$log'
     ];
@@ -50,6 +52,8 @@ var studentpick = {};
         CalendarServices,
         StudentServices,
         Notification,
+        $uibModal,
+        uiGridConstants,
         $q,
         $log
 
@@ -62,6 +66,9 @@ var studentpick = {};
         vm.clearTestStudents = clearTestStudents;
         vm.clearOverdueStudents = clearOverdueStudents;
         vm.clearNoshowStudents = clearNoshowStudents;
+        vm.getEmailCount = getEmailCount;
+        vm.newEmail = newEmail;
+        vm.openEmail = openEmail;
         vm.isokf = isokf;
         vm.userdta = {};
         vm.myuser;
@@ -73,7 +80,8 @@ var studentpick = {};
         vm.teststudents= [];
         vm.overduestudents= [];
         vm.noshowstudents= [];
-        
+        vm.emailcount='';
+
 
         $scope.$on('$destroy', function iVeBeenDismissed() {
             $log.debug("main dismissed");
@@ -85,9 +93,75 @@ var studentpick = {};
             $log.debug('routechange in main for success');
             vm.data = $.fn.Data.get(current.originalPath);
             getUserDetails();
+            getEmailCount();
         });
 
         $.fn.Data.Portlet('app.js');
+
+        function newEmail() {
+            var emailModal = vm;
+
+            emailModal.animationsEnabled = true;
+
+            emailModal.modalInstance = undefined;
+            emailModal.retvlu = '';
+
+            emailModal.modalInstance = $uibModal.open({
+                animation: emailModal.animationsEnabled,
+                templateUrl: 'templates/states/email.html',
+                controller: 'ModalEmailInstanceController as vm',
+                size: 'md',
+                scope: $scope,
+                windowClass: 'my-modal-popup',
+                resolve: {
+                    contactform: function () {
+                        return $scope.contactform;
+                    }
+/*                    classname: function() {
+                        $log.debug('return from open');
+                        return emailModal.retvlu;
+                    }
+*/                    
+                }
+            });
+            emailModal.modalInstance.result.then(function(retvlu) {
+                $log.debug('search modalInstance result :', retvlu);
+                emailModal.retvlu = retvlu;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+
+        }
+        function openEmail() {
+            var emailModal = vm;
+ 
+            emailModal.animationsEnabled = true;
+
+            emailModal.modalInstance = undefined;
+            emailModal.retvlu = '';
+
+            emailModal.modalInstance = $uibModal.open({
+                animation: emailModal.animationsEnabled,
+                templateUrl: 'templates/states/emaillist.html',
+                controller: 'ModalEmailListInstanceController as vm',
+                size: 'lg',
+                windowClass: 'my-modal-popup',
+                resolve: {
+                    classname: function() {
+                        $log.debug('return from open');
+                        return emailModal.retvlu;
+                    }
+                    
+                }
+            });
+            emailModal.modalInstance.result.then(function(retvlu) {
+                $log.debug('search modalInstance result :', retvlu);
+                emailModal.retvlu = retvlu;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+
+        }
 
         function islogin() {
 
@@ -269,6 +343,34 @@ var studentpick = {};
 
         }
 
+        function getEmailCount() {
+            $log.debug('getEmailCount entered');
+            var path='../v1/emailcount';
+
+            return StudentServices.getEmailcount(path).then(function(data){
+                    $log.debug('getEmailCount returned data');
+                    $log.debug(data);
+                    if ((typeof vm.emailcount === 'undefined' || vm.emailcount.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                    //    Notification.success({message: vm.message, delay: 5000});
+                        vm.emailcount = ( data.emailcount[0].count > 0 ? data.emailcount[0].count : '' ); 
+                    }
+
+
+                }, function(error) {
+                    $log.debug('Caught an error getEmailLists:', error); 
+                    vm.emailcount = '';
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                    
+                }
+                );
+        }
+        
         function removeNotification(id) {
             $log.debug('removeNotification entered');
             var thedata = {
@@ -313,8 +415,6 @@ var studentpick = {};
                 $('.topbar-main').toggle();
             });
         }
-
-
 
         function loadSidebar() {
             $log.debug('loadSidebar');

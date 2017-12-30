@@ -1,0 +1,31 @@
+<div class="modal-content">
+  <div class="modal-header">
+   <h1>Email List</h1>
+  </div>
+
+  <div class="modal-body">
+   <div class="row">
+    <div class="col-md-12">
+     <div class="panel panel-default">
+      <div class="panel-heading">
+       <h2 class="panel-title">Mail</h2>
+      </div>
+      <div class="panel-body">
+       <div ui-grid="vm.gridOptions" ui-if="vm.gridOptions.data.length>0" 
+       ui-grid-pagination ui-grid-cellNav ui-grid-pinning ui-grid-move-columns 
+       ui-grid-exporter ui-grid-auto-resize ui-grid-resize-columns ui-grid-edit 
+       class="mygrid" ng-style="vm.getGridLength()">
+        <div class="watermark" ng-show="!vm.gridOptions.data.length">No email available</div>
+
+       </div>
+
+      </div>
+     </div>
+
+    </div>
+   </div>
+  </div>
+  <div class="modal-footer">
+   <button type="button" class="btn btn-default" ng-click="cancel()">Close</button>
+  </div>
+</div>

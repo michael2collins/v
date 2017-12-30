@@ -1,21 +1,74 @@
 MIME-Version: 1.0
-Received: by 10.79.149.145 with HTTP; Sat, 23 Dec 2017 05:57:35 -0800 (PST)
-Date: Sat, 23 Dec 2017 08:57:35 -0500
+Received: by 10.79.149.145 with HTTP; Sat, 30 Dec 2017 10:42:07 -0800 (PST)
+In-Reply-To: <20171230155111.3F753F251@michael2collins.villaris.us>
+References: <20171230155111.3F753F251@michael2collins.villaris.us>
+Date: Sat, 30 Dec 2017 13:42:07 -0500
 Delivered-To: michael.collins.natick@gmail.com
-Message-ID: <CAAFvQohQJGHcL3gJ0Z6F906MJ8WV8epA3txuTfE1p17orpnTQA@mail.gmail.com>
-Subject: getuser test
+Message-ID: <CAAFvQohizsMtv=e5jb2h01t0enRt6qCLiijtcCJTjFE7-fO4qA@mail.gmail.com>
+Subject: Re: Today's email
 From: michael collins <michael.collins.natick@gmail.com>
-To: marktest@villaris.us
-Content-Type: multipart/alternative; boundary="001a113fca32b769200561025040"
+To: Michael Collins <michael.collins.natick@gmail.com>
+Content-Type: multipart/related; boundary="f4f5e802eecc2a3fb90561931b4a"
 
---001a113fca32b769200561025040
+--f4f5e802eecc2a3fb90561931b4a
+Content-Type: multipart/alternative; boundary="f4f5e802eecc2a3fb60561931b49"
+
+--f4f5e802eecc2a3fb60561931b49
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-does it work
+*And some formatted back*
+*=F0=9F=98=80*
 
---001a113fca32b769200561025040
+
+
+On Sat, Dec 30, 2017 at 10:51 AM, <michael.collins.natick@gmail.com> wrote:
+
+> *Hi,*
+>
+> This is some *formatted* content,
+>
+> regards,
+>
+> Mike
+>
+
+--f4f5e802eecc2a3fb60561931b49
 Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-<div dir="ltr">does it work</div>
+<div dir=3D"ltr"><div><b>And some formatted back</b></div><b>=F0=9F=98=80</=
+b><div><b><img src=3D"cid:ii_jbtp1vm30_160a8bb1b0802e59" width=3D"520" heig=
+ht=3D"390"><br><br></b></div></div><div class=3D"gmail_extra"><br><div clas=
+s=3D"gmail_quote">On Sat, Dec 30, 2017 at 10:51 AM,  <span dir=3D"ltr">&lt;=
+<a href=3D"mailto:michael.collins.natick@gmail.com" target=3D"_blank">micha=
+el.collins.natick@gmail.com</a>&gt;</span> wrote:<br><blockquote class=3D"g=
+mail_quote" style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-l=
+eft:1ex">
 
---001a113fca32b769200561025040--
+
+
+
+<p><em>Hi,</em></p>
+<p>This is some <em><strong>formatted</strong></em> content,</p>
+<p>regards,</p>
+<p>Mike</p>
+
+
+</blockquote></div><br></div>
+
+--f4f5e802eecc2a3fb60561931b49--
+--f4f5e802eecc2a3fb90561931b4a
+Content-Type: image/jpeg; name="20171210_152530.jpg"
+Content-Disposition: inline; filename="20171210_152530.jpg"
+Content-Transfer-Encoding: base64
+Content-ID: <ii_jbtp1vm30_160a8bb1b0802e59>
+X-Attachment-Id: ii_jbtp1vm30_160a8bb1b0802e59
+MIME-Version: 1.0
+Date: Sat, 30 Dec 2017 10:42:02 -0800
+Message-ID: <CAAFvQogBMqmd2LwhVqyB0htrFaUXY+dJhqqgUrUN9oKSRrhuCQ@mail.gmail.com>
+Subject: Attachment
+From: michael collins <michael.collins.natick@gmail.com>
+
+
+--f4f5e802eecc2a3fb90561931b4a--

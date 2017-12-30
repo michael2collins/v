@@ -27,6 +27,35 @@ function echoRespnse($status_code, $response) {
  //   fclose($fp);
 }
 
+
+    function emailoutbound($to,$subject,$message,$_from,$_cc,$_bcc){
+
+        $from = 'From: <' . $_from . '>' ;
+        $replyto = $_from . "\r\n";
+        $cc = 'Cc: ' . $_cc . "\r\n";
+        $bcc = 'Bcc: ' . $_bcc . "\r\n";
+        
+        // Always set content-type when sending HTML email
+        $headers = "MIME-Version: 1.0" . "\r\n";
+        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+        $headers .= "From: $_from\r\nReply-to: $replyto";
+        $headers .= $cc;
+        $headers .= $bcc;
+
+        error_log( print_R("emailoutbound about to mail: $to $subject $message $headers", TRUE), 3, LOG);
+        
+        $success = mail($to,$subject,$message,$headers);
+        if (!$success) {
+            $errorMessage = error_get_last()['message'];
+            error_log( print_R("emailoutbound failed: $to $subject $message $headers $errorMessage", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = 'email not sent';
+            echoRespnse(400, $response);
+            $app->stop();
+
+        }        
+    }
+
     function emailnotify($to,$subject,$message){
 
         $from = 'From: <webmaster@villaris.us>' ;

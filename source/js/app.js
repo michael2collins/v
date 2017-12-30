@@ -1,4 +1,4 @@
-(function(window, angular, $, _) {
+(function(window, angular, $, _, tinymce) {
     'use strict';
     angular
         .module('ng-admin', [
@@ -36,11 +36,76 @@
             'appFilereader',
             'angularSpectrumColorpicker', 'ui.bootstrap.dropdownToggle',
             'angular-loading-bar',
-            'ngAnimate'
+            'ngAnimate',
+            'ui.tinymce'
         ])
 
         // allow DI for use in controllers, unit tests for lodash
         .constant('_', window._)
+
+        .value('uiTinymceConfig', {})
+        .directive('uiTinymce', ['uiTinymceConfig', function(uiTinymceConfig) {
+            uiTinymceConfig = uiTinymceConfig || {};
+            var generatedIds = 0;
+            return {
+                require: 'ngModel',
+                link: function(scope, elm, attrs, ngModel) {
+                    var expression, options, tinyInstance;
+                    // generate an ID if not present
+                    if (!attrs.id) {
+                        attrs.$set('id', 'uiTinymce' + generatedIds++);
+                    }
+                    options = {
+                        // Update model when calling setContent (such as from the source editor popup)
+                        setup: function(ed) {
+                            ed.on('init', function(args) {
+                                ngModel.$render();
+                            });
+                            // Update model on button click
+                            ed.on('ExecCommand', function(e) {
+                                ed.save();
+                                ngModel.$setViewValue(elm.val());
+                                if (!scope.$$phase) {
+                                    scope.$apply();
+                                }
+                            });
+                            // Update model on keypress
+                            ed.on('KeyUp', function(e) {
+                                console.log(ed.isDirty());
+                                ed.save();
+                                ngModel.$setViewValue(elm.val());
+                                if (!scope.$$phase) {
+                                    scope.$apply();
+                                }
+                            });
+                        },
+                        mode: 'exact',
+                        elements: attrs.id
+                    };
+                    if (attrs.uiTinymce) {
+                        expression = scope.$eval(attrs.uiTinymce);
+                    }
+                    else {
+                        expression = {};
+                    }
+                    angular.extend(options, uiTinymceConfig, expression);
+                    setTimeout(function() {
+                        tinymce.init(options);
+                    });
+
+
+                    ngModel.$render = function() {
+                        if (!tinyInstance) {
+                            tinyInstance = tinymce.get(attrs.id);
+                        }
+                        if (tinyInstance) {
+                            tinyInstance.setContent(ngModel.$viewValue || '');
+                        }
+                    };
+                }
+            };
+        }])
+
         .config(function(NotificationProvider) {
             NotificationProvider.setOptions({
                 delay: 10000,
@@ -107,8 +172,7 @@
         })
 
         // Initialize the application
-        .run(['$location', function AppRun($location) {
-        }])
+        .run(['$location', function AppRun($location) {}])
 
         .run(authrun);
 
@@ -155,7 +219,7 @@
         $log.debug('authrun globals orig', huh3);
 
         if (!_.isEmpty(huh3.currentUser)) {
-            $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; 
+            $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata;
             $log.debug('in currentUser');
         }
 
@@ -169,7 +233,7 @@
             $log.debug('authrun globals on $locationChangeStart', huh, huh3);
 
             if (huh3 !== null) {
-                $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; 
+                $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata;
                 $log.debug('in currentUser');
                 loggedIn = true;
             }
@@ -249,6 +313,9 @@
             .when('/table-basic-program', {
                 templateUrl: 'templates/states/table-basic-program.php'
             })
+            .when('/table-basic-htmltemplate', {
+                templateUrl: 'templates/states/table-basic-htmltemplate.php'
+            })
             .when('/table-basic-testtype', {
                 templateUrl: 'templates/states/table-basic-testtype.php'
             })
@@ -277,4 +344,4 @@
         $locationProvider.html5Mode(false);
         //    $locationProvider.hashPrefix('!');
     }
-})(window, window.angular, window.$, window._);
+})(window, window.angular, window.$, window._, window.tinymce);

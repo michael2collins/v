@@ -3231,6 +3231,231 @@ $errormessage=array();
         }
 
     }
+
+    public function getHtmlTemplates() {
+        
+
+        $sql = "SELECT          
+            id, title, description, url, content
+        FROM htmltemplate where 1=1 ";
+        
+
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $EmailTemplateList = $stmt->get_result();
+                $stmt->close();
+                return $EmailTemplateList;
+            } else {
+                error_log( print_R("getEmailTemplates  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEmailTemplates  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getEmailTemplates() {
+        
+        global $school;
+
+        $sql = "SELECT          
+            id, title, description, url, content
+        FROM htmltemplate where 1=1 ";
+        
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+
+        error_log( print_R("getEmailTemplates sql after security: $sql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($sql)) {
+
+            if ($stmt->execute()) {
+                $EmailTemplateList = $stmt->get_result();
+                $stmt->close();
+                return $EmailTemplateList;
+            } else {
+                error_log( print_R("getEmailTemplates  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getEmailTemplates  sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+    private function isEmailTemplateExists(
+         $id
+        ) {
+
+        error_log( print_R("isEmailTemplateExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as EmailTemplatecount from htmltemplate ";
+        $cntsql .= " where id = ? ";
+
+        $schoolfield = "school";
+        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+        error_log( print_R("isEmailTemplateExists sql after security: $cntsql", TRUE), 3, LOG);
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("s",
+                         $id
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isEmailTemplateExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            return $row;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+    public function updateEmailTemplate( 
+        $id, 
+        $title, $description, $url, $content
+        ) {
+        $num_affected_rows = 0;
+        error_log( print_R("EmailTemplate update entered", TRUE), 3, LOG);
+
+        global $school;
+        $errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+   //     $cont = json_encode($content);
+   $cont = $content;
+        $inssql = " INSERT INTO htmltemplate( 
+        title, description, url, content,  school 
+             ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?, ?) ";
+
+        
+        if ($this->isEmailTemplateExists(
+             $id
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("sssss",
+        $title, $description, $url, $cont, $school
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        $errormessage["success"] = $new_id;
+                        return $errormessage;
+                    } else {
+                        // Failed to create 
+                        $errormessage["sqlerror"] = "Insert failure: ";
+                        $errormessage["sqlerrordtl"] = $this->conn->error;
+                        return $errormessage;
+                    }
+
+                } else {
+                    $errormessage["sqlerror"] = "Insert failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+                    return $errormessage;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE htmltemplate SET 
+                 title = ?, 
+                 description = ?,
+                 url = ?, 
+                 content = ?, 
+                 school = ?
+            WHERE id = ? ";
+
+            error_log( print_R("EmailTemplate update sql: $updsql", TRUE), 3, LOG);
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("ssssss",
+        $title, $description, $url, $cont, $school, $id
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+
+            } else {
+                error_log( print_R("EmailTemplate update failed", TRUE), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+            }
+        }
+    }
+    public function removeEmailTemplate($id
+    ) {
+
+        error_log( print_R("removeEmailTemplate entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from htmlcontent  where id = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeEmailTemplate sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
     
 }
 ?>

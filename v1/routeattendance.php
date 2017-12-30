@@ -2081,4 +2081,185 @@ $app->delete('/classtest','authenticate', function() use ($app) {
     
 });
 
+$app->get('/emailtemplates',   function() use($app) {
+
+/*
+    $response = array();
+    $tmp = array();
+
+    $tmp["title"] = 'Test template 1';
+    $tmp["content"] = 'Test 1 {$name}';
+    array_push($response, $tmp);
+
+    $tmp = array();
+    $tmp["title"] = 'Test template 2';
+    $tmp["url"] = 'templates/states/mailtemplate.html' ;
+    array_push($response, $tmp);
+
+    echoRespnse(200, $response);
+*/
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getHtmlTemplates();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["title"] = (empty($slist["title"]) ? "NULL" : $slist["title"]);
+            $tmp["description"] = (empty($slist["description"]) ? "NULL" : $slist["description"]);
+            if (!empty($slist["url"])) {
+                $tmp["url"] = $slist["url"];
+            }
+            if (!empty($slist["content"])) {
+                $tmp["content"] = $slist["content"];
+            }
+        }
+        array_push($response, $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        echoRespnse(200, $response);
+    } else {
+        echoRespnse(404, $response);
+    }
+
+});
+
+$app->get('/htmltemplate', 'authenticate', function() {
+
+    $response = array();
+    $db = new AttendanceDbHandler();
+
+    // fetch task
+    $result = $db->getEmailTemplates();
+    $response["error"] = false;
+    $response["HtmlTemplateList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["title"] = (empty($slist["title"]) ? "NULL" : $slist["title"]);
+            $tmp["description"] = (empty($slist["description"]) ? "NULL" : $slist["description"]);
+            $tmp["url"] = (empty($slist["url"]) ? "NULL" : $slist["url"]);
+            $tmp["content"] = (empty($slist["content"]) ? "NULL" : $slist["content"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["title"] = "NULL";
+            $tmp["description"] = "NULL";
+            $tmp["url"] = "NULL";
+            $tmp["content"] = "NULL";
+        }
+        array_push($response["HtmlTemplateList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt > 0) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "error in HtmlTemplateList";
+        error_log( print_R("HtmlTemplateList bad\n ", TRUE), 3, LOG);
+        echoRespnse(404, $response);
+    }
+});
+$app->post('/htmltemplate','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("HtmlTemplate post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+
+    $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
+    $title  = (isset($dataJsonDecode->thedata->title)       ? $dataJsonDecode->thedata->title : "");
+    $description  = (isset($dataJsonDecode->thedata->description)       ? $dataJsonDecode->thedata->description : "");
+    $url  = (isset($dataJsonDecode->thedata->url)       ? $dataJsonDecode->thedata->url : "");
+    $content  = (isset($dataJsonDecode->thedata->content)       ? $dataJsonDecode->thedata->content : "");
+
+    $db = new AttendanceDbHandler();
+    $response = array();
+
+    $res_id = $db->updateEmailTemplate($id,
+        $title, $description, $url, $content
+                                     );
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "template created successfully";
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("Test type created: \n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Template updated successfully";
+            error_log( print_R("Template already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
+    } else {
+        error_log( print_R("after Test type result bad\n", TRUE), 3, LOG);
+     //   error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create Test type. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/htmltemplate','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("HtmlTemplate before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+
+    $HtmlTemplategood=0;
+    $HtmlTemplatebad=0;
+
+    $db = new AttendanceDbHandler();
+
+    // remove HtmlTemplate
+    $HtmlTemplate = $db->removeEmailTemplate(
+        $ID
+                                );
+
+    if ($HtmlTemplate > 0) {
+        error_log( print_R("HtmlTemplate removed: $HtmlTemplate\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "HtmlTemplate removed successfully";
+        $HtmlTemplategood = 1;
+        $response["HtmlTemplate"] = $HtmlTemplategood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete HtmlTemplate result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $HtmlTemplate, TRUE), 3, LOG);
+        $HtmlTemplatebad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove HtmlTemplate. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
 ?>
