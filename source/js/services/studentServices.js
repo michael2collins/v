@@ -50,7 +50,9 @@
             updateEmailList: updateEmailList,
             removeEmailList: removeEmailList,
             getEmailLists: getEmailLists,
-            getEmailViews: getEmailViews
+            getEmailViews: getEmailViews,
+            removeEmailView: removeEmailView,
+            updateEmailView: updateEmailView
         };
         return service;
 
@@ -537,6 +539,28 @@
             return( request.then( handleSuccess, handleError ) );
         }        
 
+        function removeEmailView( thedata, path ) {
+            $log.debug('removeEmailView data before delete :' , thedata);
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateEmailView(path, thedata ) {
+                    $log.debug('updateEmailView data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
 
         }
  })();

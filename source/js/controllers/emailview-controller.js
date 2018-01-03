@@ -16,18 +16,24 @@
     '$q',
     '$sce',
     'moment',
+    '$uibModal',
     'item'
   ];
 
   function ModalEmailViewInstanceController($log, $uibModalInstance, StudentServices, $window, Notification,
-    $scope, Util, $q, $sce, moment, item) {
+    $scope, Util, $q, $sce, moment, $uibModal, item) {
     /* jshint validthis: true */
     $log.debug('item', item);
     var vm = this;
     vm.cancel = cancel;
     vm.removeEmailView = removeEmailView;
     vm.updateEmailView = updateEmailView;
-    vm.data = {};
+    vm.ereply = ereply;
+    vm.eforward = eforward;
+    vm.markRead = markRead;
+    vm.markUnread = markUnread;
+
+    vm.data = item;
     vm.thisEmailView = [];
     getEmailView(item);
 
@@ -83,7 +89,7 @@
 
     function removeEmailView(input) {
       $log.debug('removeEmailView entered', input);
-      var path = "../v1/EmailView";
+      var path = "../v1/emailview";
       var thedata = {
         id: input.id
       };
@@ -126,15 +132,15 @@
 
     }
 
-    function updateEmailView(rowEntity, updatetype) {
-      var updpath = "../v1/EmailView";
+    function updateEmailView(input) {
+      var updpath = "../v1/emailview";
 
       var thedata = {
-        id: rowEntity.id,
-        status: rowEntity.status
+        id: input.id,
+        status: input.status
       };
 
-      $log.debug('about updateEmailView ', thedata, updpath, updatetype);
+      $log.debug('about updateEmailView ', thedata, updpath);
       return StudentServices.updateEmailView(updpath, thedata)
         .then(function(data) {
           $log.debug('updateEmailView returned data');
@@ -149,11 +155,7 @@
             $q.reject(data);
           }
           else {
-            Notification.success({ message: vm.message, delay: 5000 });
-          }
-          if (updatetype === 'Add') {
-            getEmailView().then(function(zdata) {
-                getEmailCount();
+            getEmailView(vm.data).then(function(zdata) {
                 $log.debug('getEmailView returned', zdata);
               },
               function(error) {
@@ -163,8 +165,8 @@
                 Notification.error({ message: error, delay: 5000 });
                 return ($q.reject(error));
               });
-
           }
+
 
           return vm.thisEmailView;
         }).catch(function(e) {
@@ -176,7 +178,62 @@
         });
     }
 
+    function eforward() {
+      $log.debug("eforward entered");
+      newEmail('forward');
+    }
+    function ereply() {
+      $log.debug("ereply entered");
+      newEmail('reply');
+      
+    }
+    
+    function newEmail(newtype) {
 
+      var emailModal = vm;
+      vm.data.emailtype = newtype;
+
+      emailModal.animationsEnabled = true;
+
+      emailModal.modalInstance = undefined;
+      emailModal.retvlu = '';
+
+      emailModal.modalInstance = $uibModal.open({
+        animation: emailModal.animationsEnabled,
+        templateUrl: 'templates/states/email.html',
+        controller: 'ModalEmailInstanceController as vm',
+        size: 'md',
+        scope: $scope,
+        windowClass: 'my-modal-popup',
+        resolve: {
+          myinitial: function() { return vm.data },
+          contactform: function() {
+        //    $scope.contactform.emailpick = vm.data.from;
+            return $scope.contactform;
+          }
+        }
+      });
+      emailModal.modalInstance.result.then(function(retvlu) {
+        $log.debug('search modalInstance result :', retvlu);
+        emailModal.retvlu = retvlu;
+      }, function() {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+
+    }
+            
+    function markRead() {
+      $log.debug("markRead entered");
+      vm.data.status = "read";
+      updateEmailView(vm.data);
+      
+    }
+    function markUnread() {
+      $log.debug("markUnread entered");
+      vm.data.status = "new";
+      updateEmailView(vm.data);
+      
+    }
     function cancel() {
       $uibModalInstance.dismiss('cancel');
     }

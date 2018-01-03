@@ -1672,6 +1672,7 @@ $app->post('/message',  function() use ($app) {
     $to = (isset($dataJsonDecode->thedata->emailHead->_to) ? $dataJsonDecode->thedata->emailHead->_to : "");
     $subject = (isset($dataJsonDecode->thedata->emailHead->_subject) ? $dataJsonDecode->thedata->emailHead->_subject : "");
     $body = (isset($dataJsonDecode->thedata->emailBody->body) ? $dataJsonDecode->thedata->emailBody->body : "");
+    $attachment = (isset($dataJsonDecode->thedata->emailattachment->data) ? $dataJsonDecode->thedata->emailattachment->data : "");
     $threadTopic = (isset($dataJsonDecode->thedata->emailHead->_threadtopic) ? $dataJsonDecode->thedata->emailHead->_threadtopic : "");
     $emailDate = (isset($dataJsonDecode->thedata->emailHead->_date) ? $dataJsonDecode->thedata->emailHead->_date : "");
     $from = (isset($dataJsonDecode->thedata->emailHead->_from) ? $dataJsonDecode->thedata->emailHead->_from : "");
@@ -1690,7 +1691,7 @@ $app->post('/message',  function() use ($app) {
     if ($inout == "") {
         $response["error"] = true;
         $response["message"] = "error missing param inout email";
-        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        error_log( print_R("user inout email bad\n ", TRUE), 3, LOG);
         echoRespnse(404, $response);
         $app->stop();
     } else if ($inout == "in") {
@@ -1729,7 +1730,7 @@ $app->post('/message',  function() use ($app) {
         // updating task
         $message_id = $db->createMessage($userid,
                                      $schl,
-                                     $subject, $to, $body,
+                                     $subject, $to, $body . $attachment,
                                      $threadTopic,$emailDate,$from,$returnPath,$deliveredTo,$replyTo,$cc,$bcc
                                     );
     
@@ -1877,6 +1878,82 @@ $app->get('/emailview', 'authenticate', function() use($app) {
         $response["message"] = "Email view does not exist";
         echoRespnse(404, $response);
     }
+});
+$app->post('/emailview', 'authenticate', function() use ($app) {
+     $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+
+    $id = (isset($dataJsonDecode->thedata->id) ? $dataJsonDecode->thedata->id : "");
+    $status = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    error_log( print_R("status: $status\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $emailid = $db->updateEmail($id, 
+                                 $status
+                                );
+
+    if ($emailid > 0) {
+        $response["error"] = false;
+        $response["message"] = "email updated successfully";
+        error_log( print_R("Email updated: $emailid\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $emailid, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to update email. Please try again";
+        echoRespnse(400, $response);
+    }
+
+    
+
+});
+$app->delete('/emailview','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("email before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $id      = (isset($test->thedata->id)     ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+    $result = $db->removeEmail(
+        $id );
+
+    if ($result > 0) {
+        error_log( print_R("email removed: $id\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "email removed successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to remove email. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
 });
 
 $app->get('/emaillist', 'authenticate', function() use($app) {

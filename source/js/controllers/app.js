@@ -43,7 +43,8 @@ var studentpick = {};
         '$uibModal',
         'uiGridConstants',
         '$q',
-        '$log'
+        '$log',
+        '$interval'
     ];
 
 
@@ -55,7 +56,8 @@ var studentpick = {};
         $uibModal,
         uiGridConstants,
         $q,
-        $log
+        $log,
+        $interval
 
     ) {
         var vm = this;
@@ -93,10 +95,18 @@ var studentpick = {};
             $log.debug('routechange in main for success');
             vm.data = $.fn.Data.get(current.originalPath);
             getUserDetails();
-            getEmailCount();
+            intervalChecker();
         });
 
         $.fn.Data.Portlet('app.js');
+
+        function intervalChecker() {
+            $log.debug('main controller intervalChecker entered, using', vm.initTime);
+
+            $interval(function() {
+                getEmailCount();
+            }, CalendarServices.getIntervalValue() * 10);
+        }
 
         function newEmail() {
             var emailModal = vm;
@@ -114,14 +124,10 @@ var studentpick = {};
                 scope: $scope,
                 windowClass: 'my-modal-popup',
                 resolve: {
+                    myinitial: function() {return {} },
                     contactform: function () {
                         return $scope.contactform;
                     }
-/*                    classname: function() {
-                        $log.debug('return from open');
-                        return emailModal.retvlu;
-                    }
-*/                    
                 }
             });
             emailModal.modalInstance.result.then(function(retvlu) {
@@ -1299,7 +1305,6 @@ var studentpick = {};
             $log.debug('intervalChecker entered, using', vm.initTime);
 
             $interval(function() {
-
                 //        timeCleaner();          
                 vm.notifylist = CalendarServices.getNotifyList(vm.okNotify);
             }, CalendarServices.getIntervalValue());

@@ -16,13 +16,14 @@
     '$q',
     'contactform',
     '_',
-    'moment'
+    'moment',
+    'myinitial'
   ];
 
   function ModalEmailInstanceController($log, $uibModalInstance, StudentServices, $window, Notification, 
-  uiGridConstants, $scope, $q, contactform, _, moment) {
+  uiGridConstants, $scope, $q, contactform, _, moment, myinitial) {
     /* jshint validthis: true */
-
+    $scope.myinitial = myinitial;
     $scope.cancel = cancel;
  //   $scope.submit = submit;
     $scope.form ={};
@@ -35,6 +36,7 @@
     $scope.addTo = addTo;
     $scope.addCC = addCC;
     $scope.addBCC = addBCC;
+    $scope.stuff = 'mike';
 //    $scope.modal = $uibModalInstance;
     $scope.message='';
     $scope.result = 'hidden';
@@ -49,7 +51,23 @@
     $scope.submitButtonDisabled = false;
     $scope.refreshemaillist = [];
     $scope.eventResult ='';
-    $scope.emailpick = [];
+    $scope.emailpick =  [];
+    
+    if (myinitial) {
+      var item = tagTransform(myinitial.from);
+      $scope.emailpick.push(item);
+      setEmailFromPick([item]);
+      if (myinitial.emailtype === 'reply' ) {
+        addTo();
+        $scope.input.Subject = 'Re: ' + myinitial.subject;
+      } else if (myinitial.emailtype === 'forward' ) {
+        $scope.input.Subject = 'Fw: ' + myinitial.subject;
+      } else {
+        $scope.input.Subject =  myinitial.subject;
+      }
+      $scope.input.Message = "On " + myinitial.emaildate + " " + myinitial.from + " wrote: ";
+      $scope.input.Message += '<p style="padding-left: 30px;">' + myinitial.body + "</p>";
+    }
 
  $scope.tinymceOptions = {
         resize: true,

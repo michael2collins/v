@@ -13,6 +13,7 @@ const https = require('https');
 var fs = require('fs');
 let emailHead = {};
 let emailBody = {};
+let emailattachment = {};
 var _input = "";
 var host = process.env.host;
 
@@ -149,6 +150,7 @@ parser.on('data', data => {
         let size = 0;
         Object.keys(data).forEach(key => {
             if (typeof data[key] !== 'object' && typeof data[key] !== 'function') {
+//                console.log('attachment key\n');
                 console.log('%s: %s', key, JSON.stringify(data[key]));
             }
         });
@@ -163,25 +165,65 @@ parser.on('data', data => {
 
         data.content.on('end', () => {
             data.buf = Buffer.concat(data.chunks, data.chunklen);
+            console.log("attachment\n");
             console.log('%s: %s B', 'size', size);
             // attachment needs to be released before next chunk of
             // message data can be processed
             data.release();
+//            console.log("data\n");
+//            console.log(data);
+
         });
     }    
 
 });
 
 parser.on('end', () => {
+        
+   parser.updateImageLinks(
+        (attachment, done) => done(false, 'data:' + attachment.contentType + ';base64,' + attachment.buf.toString('base64')) ,
+        (err, html) => {
+            if (err) {
+                console.log("err from updateimage");
+                console.log(err);
+            }
+            if (html) {
+                console.log("html from updateimage");
+                console.log(html);
+            }
+        }
+    );
+    emailattachment='';
+    for (var i=0;i<attachments.length;i++) {
+        if (attachments[i].contentType === 'image/jpeg') {
+            emailattachment += '<br><img height="200px" src="data:' + attachments[i].contentType + ';base64,' + attachments[i].buf.toString('base64') + '"/>';
+        } else {
+            emailattachment += '<br><a target="_blank"  ' + 
+                ' download="' + attachments[i].filename + '" ' +
+                ' href="data:' + attachments[i].contentType + ';base64,' + 
+                attachments[i].buf.toString('base64') + '"> Click to download attachment </a>' ;
+            
+        }
+    }
+    
+    emailattachment = {
+        "data": emailattachment
+        };
+
 
     var content = {
         "thedata": {
             "emailHead": emailHead,
-            "emailBody": emailBody
+            "emailBody": emailBody,
+            "emailattachment": emailattachment
         }
     };
+//    console.log("the content");
+//    console.log(content);
+
     var thedata = JSON.stringify(content);
 
+    console.log("the data");
     console.log(thedata);
 
 

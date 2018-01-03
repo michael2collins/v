@@ -336,7 +336,6 @@
           }
           if (updatetype === 'Add') {
             getEmailList().then(function(zdata) {
-                getEmailCount();
                 $log.debug('getEmailList returned', zdata);
               },
               function(error) {
