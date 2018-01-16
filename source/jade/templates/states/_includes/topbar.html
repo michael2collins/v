@@ -11,17 +11,19 @@
    <span class="icon-social-tumblr"></span>
    <span class="logo-text">V Dojo</span></a>
 </div>
+
 <div id="top-menu" class="topbar-main">
-   <ul class="nav navbar-top-links navbar-right">
-      <li class="dropdown" uib-dropdown on-toggle="toggled(open)" ng-show="vm.isokf()">
-         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" uib-dropdown-toggle>
+   <ul class="nav navbar-top-links navbar-right mrxxl">
+
+      <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="vm.isokf()">
+         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" >
          <span class="img-responsive img-circle" ng-switch on="vm.userdta.pictureurl">
          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
          <img ng-switch-default   ng-src="{{vm.userdta.pictureurl}}"/>
          </span>
          <span>&nbsp;{{vm.userdta.username}}&nbsp;</span><span class="caret"></span>
          </a>
-         <ul class="dropdown-menu dropdown-user pull-right" uib-dropdown-menu aria-labelledby="simple-dropdown">
+         <ul class="dropdown-menu dropdown-user pull-right"  aria-labelledby="simple-dropdown">
             <li>
                <div class="navbar-content">
                   <div class="row">
@@ -30,12 +32,19 @@
                         <p class="text-muted small">{{vm.userdta.email}}</p>
                      </div>
                   </div>
-                  <div class="navbar-footer">
-                     <div class="navbar-footer-content">
-                        <div class="row">
-                           <div class="col-md-6 col-xs-6"><a href="#/change-pwd" class="btn btn-default btn-sm">Change Password</a></div>
-                           <div class="col-md-6 col-xs-6"><a href="#/page-lock-screen" class="btn btn-default btn-sm pull-right">Sign Out</a></div>
-                        </div>
+               </div>               
+            </li>
+            <li>
+               <div class="row">
+                  <div class="mtm mlm mbm col-md-12 col-xs-12"><a ng-click="vm.openSettings()" class="btn btn-default btn-sm btn-green">Edit Settings</a></div>
+               </div>
+            </li>
+            <li>
+               <div class="navbar-footer">
+                  <div class="navbar-footer-content">
+                     <div class="row">
+                        <div class="col-md-6 col-xs-6"><a href="#/change-pwd" class="btn btn-default btn-sm">Change Password</a></div>
+                        <div class="col-md-6 col-xs-6"><a href="#/page-lock-screen" class="btn btn-default btn-sm pull-right">Sign Out</a></div>
                      </div>
                   </div>
                </div>
@@ -43,7 +52,7 @@
          </ul>
       </li>
    </ul>
-   <ul class="nav navbar-top-links navbar-left">
+   <ul class="nav navbar-top-links"  style="margin-left: 130px;">
       <div class="container">
          <div class="dropdown">
             <ul class="nav navbar-top-links navbar-left">
@@ -103,17 +112,19 @@
             <i ng-class="vm.emailcount > 0 ? ' icon-envelope-open' : ' icon-envelope '"></i>
             <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
             <span class="badge badge-yellow">{{vm.emailcount}}</span></a>
-                  <ul class="dropdown-menu dropdown-user pull-right" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                  <ul class="dropdown-menu  pull-left" uib-dropdown-menu aria-labelledby="simple-dropdown">
                      <li>
                         <div class="navbar-content">
                            <div class="row">
+                              <div class="mll mtm col-md-12 col-xs-12"><a ng-click="vm.openEmail()" class="btn btn-default btn-sm btn-green">Open Email</a></div>
+                           </div>
+                           <div class="row">
+                              <div class="mll mtm col-md-12 col-xs-12"><a ng-click="vm.newEmail()" class="btn btn-default btn-sm btn-green">New Email</a></div>
                            </div>
                            <div class="navbar-footer">
                               <div class="navbar-footer-content">
                                  <div class="row">
-                                    <div class="col-md-4 col-xs-4"><a ng-click="vm.openEmail()" class="btn btn-default btn-sm pull-right">Open Email</a></div>
-                                    <div class="col-md-4 col-xs-4"><a ng-click="vm.newEmail()" class="btn btn-default btn-sm pull-right">New Email</a></div>
-                                    <div class="col-md-4 col-xs-4"><a href="javascript:void(0);" class="btn btn-default btn-sm pull-right">Close</a></div>
+                                    <div class="mbm mtm col-md-offset-5 col-xs-offset-5"><a href="javascript:void(0);" class="btn btn-default btn-sm">Close</a></div>
                                  </div>
                               </div>
                            </div>

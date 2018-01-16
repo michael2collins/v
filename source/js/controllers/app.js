@@ -33,6 +33,7 @@ var studentpick = {};
         '$controller',
         '$rootScope',
         'moment',
+        '$timeout',
         'CalUtil'
     ];
     MainController.$inject = ['$scope',
@@ -44,7 +45,8 @@ var studentpick = {};
         'uiGridConstants',
         '$q',
         '$log',
-        '$interval'
+        '$interval',
+        '$timeout'
     ];
 
 
@@ -57,7 +59,8 @@ var studentpick = {};
         uiGridConstants,
         $q,
         $log,
-        $interval
+        $interval,
+        $timeout
 
     ) {
         var vm = this;
@@ -83,6 +86,16 @@ var studentpick = {};
         vm.overduestudents= [];
         vm.noshowstudents= [];
         vm.emailcount='';
+          vm.userOptions = {};
+          vm.okNotify;
+          vm.mydelay;
+        
+
+//        vm.setInterval = setInterval;
+//        function setInterval(){
+//            CalendarServices.setIntervalValue(vm.mydelay *1000);
+//        }
+        vm.openSettings = openSettings;
 
 
         $scope.$on('$destroy', function iVeBeenDismissed() {
@@ -94,18 +107,111 @@ var studentpick = {};
             $log.debugEnabled(true);
             $log.debug('routechange in main for success');
             vm.data = $.fn.Data.get(current.originalPath);
-            getUserDetails();
+            if (vm.isok) {
+            //do first right away then check at interval 
+                getUserOptions();
+                getUserDetails();
+                getEmailCount();
+            }
+            
             intervalChecker();
         });
 
         $.fn.Data.Portlet('app.js');
 
         function intervalChecker() {
-            $log.debug('main controller intervalChecker entered, using', vm.initTime);
+            $log.debug('main controller intervalChecker entered' );
+            var thedelay = CalendarServices.getIntervalValue();
+            islogin();
+            $timeout(intervalChecker,thedelay * 1000);
+/*            $interval(function() {
+                $log.debug('mainc interval entered');
+                thedelay = CalendarServices.getIntervalValue();
+            }, thedelay);
+*/            
+        }
+        
+    function getUserOptions() {
+      $log.debug('getUserOptions entered');
+      var path = "../v1/useroptions";
+      return UserServices.getUserOptions(path).then(function(data) {
+          $log.debug("main controller service getUserOptions returned:", data);
+          if ((typeof data.options === 'undefined' || data.options.error === true) &&
+            typeof data !== 'undefined') {
+            var themsg = {
+              message: data.message + ': ' +
+                (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
+              delay: 5000
+            };
+            Notification.error(themsg);
+            $q.reject(data);
+          }
+          else {
+            try {
+              vm.userOptions = JSON.parse(data.options);
+              vm.okNotify = (vm.userOptions.notify ? vm.userOptions.notify : false);
+              vm.mydelay = (vm.userOptions.delay ? vm.userOptions.delay : 30);
+              CalendarServices.setIntervalValue(vm.mydelay);
+              CalendarServices.setOkNotify(vm.okNotify);
+              //Notification.success({message: vm.message, delay: 5000});
+            }
+            catch (e) {
+              $log.debug(e instanceof SyntaxError); // true
+              $log.debug(e.message); // "missing ; before statement"
+              $log.debug(e.name); // "SyntaxError"
+              $log.debug(e.fileName); // "Scratchpad/1"
+              $log.debug(e.lineNumber); // 1
+              $log.debug(e.columnNumber); // 4
+              $log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+              Notification.error(e.message);
+              $q.reject(data);
+            }
 
-            $interval(function() {
-                getEmailCount();
-            }, CalendarServices.getIntervalValue() * 10);
+          }
+
+          return vm.userOptions;
+        },
+
+        function(error) {
+          $log.debug('Caught an error getUserOptions, going to notify:', error);
+          vm.userOptions = [];
+          vm.message = error;
+          Notification.error({ message: error, delay: 5000 });
+          return ($q.reject(error));
+        }).
+      finally(function() {});
+
+    }
+        
+        function openSettings() {
+            var thisModal = vm;
+ 
+            thisModal.animationsEnabled = true;
+
+            thisModal.modalInstance = undefined;
+            thisModal.retvlu = '';
+
+            thisModal.modalInstance = $uibModal.open({
+                animation: thisModal.animationsEnabled,
+                templateUrl: 'templates/states/user-settings.html',
+                controller: 'ModalUserSettingsInstanceController as vm',
+                size: 'sm',
+                windowClass: 'my-modal-popup',
+                resolve: {
+                    classname: function() {
+                        $log.debug('return from open');
+                        return thisModal.retvlu;
+                    }
+                    
+                }
+            });
+            thisModal.modalInstance.result.then(function(retvlu) {
+                $log.debug('search modalInstance result :', retvlu);
+                thisModal.retvlu = retvlu;
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+
         }
 
         function newEmail() {
@@ -185,6 +291,9 @@ var studentpick = {};
                         gettheTasknamelist().then(function() {
                             $log.debug('gettheTasknamelist returned');
                         }),
+                        getEmailCount().then(function() {
+                            $log.debug('getEmailCount returned');
+                        }),
                         getTNotifications().then(function() {
                             $log.debug('getNotifications returned');
                         })
@@ -247,7 +356,7 @@ var studentpick = {};
             });
 
         }
-
+        
         function getUserDetails() {
             $log.debug('getUserDetails entered');
             return UserServices.getUserDetails().then(function(data) {
@@ -535,12 +644,14 @@ var studentpick = {};
         $controller,
         $rootScope,
         moment,
+        $timeout,
         CalUtil
     ) {
         /* jshint validthis: true */
         var vm = this;
         vm.data = {};
         vm.userdta = {};
+
         vm.header = {
             layout_menu: '',
             layout_topbar: '',
@@ -558,7 +669,6 @@ var studentpick = {};
         vm.getStudentStatsMonths = getStudentStatsMonths;
         vm.islogin = islogin;
         vm.notifylist = [];
-        vm.okNotify = true;
 
         vm.isok;
         vm.forUser = "ALL";
@@ -601,7 +711,8 @@ var studentpick = {};
         vm.checktimestr;
         vm.displayTime = displayTime;
 
-        vm.okoptions = [true, false];
+        
+        
         //    vm.mycolor = Math.random() * 0xFFFFFF;
         vm.mycolor = '#' + Math.floor(Math.random() * 16777215).toString(16);
         vm.settextcolor = settextcolor;
@@ -804,6 +915,9 @@ var studentpick = {};
                 //works but is annoying
                 getEventList('ALL').then(function() {
                     initCalendar();
+                    //do first one right away, then wait an interval
+                    vm.okNotify = CalendarServices.getOkNotify();
+                    vm.notifylist = CalendarServices.getNotifyList(vm.okNotify);
                     intervalChecker();
                 }).catch(function(e) {
                     $log.debug("getEventList error in activate", e);
@@ -1302,12 +1416,12 @@ var studentpick = {};
         }
 
         function intervalChecker() {
-            $log.debug('intervalChecker entered, using', vm.initTime);
-
-            $interval(function() {
-                //        timeCleaner();          
-                vm.notifylist = CalendarServices.getNotifyList(vm.okNotify);
-            }, CalendarServices.getIntervalValue());
+            $log.debug('appc intervalChecker entered');
+            var mydelay = CalendarServices.getIntervalValue();
+            var myoknotify = CalendarServices.getOkNotify();
+            vm.notifylist = CalendarServices.getNotifyList(myoknotify);
+            
+            $timeout(intervalChecker,mydelay*1000);
         }
 
         function islogin() {

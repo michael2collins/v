@@ -1,4 +1,4 @@
-(function () {
+(function (window, angular) {
     'use strict';
 
     angular
@@ -9,17 +9,8 @@
 
     function TemplateServices( $http, $q, $log, $window ) {
         var apikey;
-        var thetasknamelist = '';
-        var response;
-        var code;
-        var currentCalendarEvent;
-        var notifylist = [];
-        var intervalValue = 5000; //milli
-        var okNotify;
-        var checktime;
 
         var service = {
-  //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
              gettemplateDetails: gettemplateDetails,
              gettemplateNames: gettemplateNames,
@@ -119,4 +110,4 @@
 
 
         }
- })();
+ })(window,window.angular);

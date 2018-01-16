@@ -216,6 +216,7 @@ class StudentClassDbHandler {
             p.class as pgmclass,
             c.class,
             t.isTestFeeWaived,
+            t.primaryContact,
             c.id,
             p.id,
             sr.studentclassstatus,
@@ -243,7 +244,8 @@ class StudentClassDbHandler {
                 $sc_classseq,
                 $sc_pgmseq,
                 $sc_studentclassstatus,
-                $sc_registrationtype
+                $sc_registrationtype,
+                $sc_primaryContact
             );
             $stmt->fetch();
             $res["ID"] = $sc_ID;
@@ -255,6 +257,7 @@ class StudentClassDbHandler {
             $res["pgmseq"] = $sc_pgmseq;
             $res["studentclassstatus"] = $sc_studentclassstatus;
             $res["registrationtype"] = $sc_registrationtype;
+            $res["primaryContact"] = $sc_primaryContact;
             
             $stmt->close();
             error_log( print_R($res, TRUE ), 3, LOG);
@@ -392,6 +395,7 @@ class StudentClassDbHandler {
         cl.pictureurl, 
         cl.registrationtype ,
         cpa.isTestfeewaived,
+        cpa.primaryContact,
         pp.payerName,
         pp.id as payerid
         from 
@@ -418,7 +422,7 @@ class StudentClassDbHandler {
                 error_log( print_R("getClassStudentlist list stmt", TRUE ), 3, LOG);
                 error_log( print_R($sql, TRUE ), 3, LOG);
                 $slists = $stmt->get_result();
-
+//todo: should i do this everywhere
                 if (empty($slists)) {
                     return array();
                 }
@@ -660,17 +664,18 @@ class StudentClassDbHandler {
                                     $sc_classseq,
                                     $sc_pgmseq,
                                     $payer,
-                                    $testfee
+                                    $testfee,
+                                    $primaryContact
                                    ) {
         $num_affected_rows = 0;
 
 
         $updsql = "UPDATE nclasspays  set ";
-        $updsql .= " isTestFeeWaived = ?, payerid = ? ";
+        $updsql .= " isTestFeeWaived = ?, payerid = ? , primaryContact = ?";
         $updsql .= " where contactID = ?  and classseq = ? and pgmseq = ? ";
 
-        $inssql = "INSERT INTO `nclasspays`( `contactid`, `isTestFeeWaived`, `classseq`, `pgmseq`, `payerid`)  VALUES ";
-        $inssql .= " ( ?, ?, ?, ?,? ) ";
+        $inssql = "INSERT INTO `nclasspays`( `contactid`, `isTestFeeWaived`, `classseq`, `pgmseq`, `payerid`, primaryContact)  VALUES ";
+        $inssql .= " ( ?, ?, ?, ?,?,? ) ";
 
 
         error_log( print_R("contact $sc_ContactId\n", TRUE ), 3, LOG);
@@ -678,6 +683,7 @@ class StudentClassDbHandler {
         error_log( print_R("pgm $sc_pgmseq\n", TRUE ), 3, LOG);
         error_log( print_R("fee $testfee\n", TRUE ), 3, LOG);
         error_log( print_R("payer $payer\n", TRUE ), 3, LOG);
+        error_log( print_R("primary $primaryContact\n", TRUE ), 3, LOG);
 
         if ($this->isStudentClassExists(
                               $sc_ContactId,
@@ -685,8 +691,9 @@ class StudentClassDbHandler {
                               $sc_pgmseq)) {
             error_log( print_R($updsql, TRUE ), 3, LOG);
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("sssss",
+                $stmt->bind_param("ssssss",
                                   $testfee, $payer, 
+                                  $primaryContact,
                                   $sc_ContactId,
                                   $sc_classseq,
                                   $sc_pgmseq
@@ -703,12 +710,13 @@ class StudentClassDbHandler {
         } else {
             error_log( print_R($inssql, TRUE ), 3, LOG);
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("sssss", 
+                $stmt->bind_param("ssssss", 
                                     $sc_ContactId,
                                     $testfee,
                                     $sc_classseq,
                                     $sc_pgmseq, 
-                                    $payer                                  
+                                    $payer,
+                                    $primaryContact
                                  );
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;

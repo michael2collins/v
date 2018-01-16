@@ -23,11 +23,36 @@
             setapikey: setapikey,
             getapikey: getapikey,
             isapikey: isapikey,
+            setUserOptions: setUserOptions,
+            getUserOptions: getUserOptions,
             forgotpassword: forgotpassword,
             resetpassword: resetpassword,
             changepassword: changepassword
         };
         return service;
+
+        function getUserOptions(path) {
+            $log.debug('getUserOptions service entered');
+            $log.debug('path',path);
+            var request = $http({
+                method: "GET",
+                url: path,
+                ignoreLoadingBar: true
+            });
+                return( request.then( handleSuccess, handleError ) );
+        
+        }
+        function setUserOptions(path, thedata ) {
+            $log.debug('setUserOptions data before post :' , thedata);
+            var request = $http({
+                method: "POST",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+                return( request.then( handleSuccess, handleError ) );
+        }        
         
         function setapikey(key){
             apikey = key;

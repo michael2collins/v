@@ -106,8 +106,9 @@ $app->get('/eventnames', 'authenticate', function() use ($app) {
 
     $response = array();
     $db = new StudentDbHandler();
-
+    
     // fetch task
+    
     $result = $db->getEventNames($eventpartial);
     $response["error"] = false;
     $response["eventlist"] = array();
@@ -122,6 +123,7 @@ $app->get('/eventnames', 'authenticate', function() use ($app) {
         echoRespnse(200, $response);
     
 });
+
 
 $app->get('/eventdetails', 'authenticate', function() use($app){
 /**
@@ -2036,9 +2038,8 @@ $app->post('/emaillist', 'authenticate', function() use ($app) {
         echoRespnse(400, $response);
     }
 
-    
-
 });
+
 $app->delete('/emaillist','authenticate', function() use ($app) {
 
     $response = array();
@@ -2157,6 +2158,308 @@ $app->delete('/notification','authenticate', function() use ($app) {
                         
 
 });
+
+$app->post('/paid',   function() use($app, $ipn){
+    error_log( print_R("paid entered:\n ", TRUE), 3, LOG);
+
+
+
+//use PaypalIPN;
+
+
+// Use the sandbox endpoint during testing.
+//    $ipn->useSandbox();
+    error_log( print_R("use sand:\n", TRUE), 3, LOG);
+    $ipn->usePHPCerts();
+    error_log( print_R("use php certs:\n", TRUE), 3, LOG);
+
+    $verified = $ipn->verifyIPN();
+    error_log( print_R("after verify:\n $verified\n", TRUE), 3, LOG);
+
+    /*
+     * Process IPN
+     * A list of variables is available here:
+     * https://developer.paypal.com/webapps/developer/docs/classic/ipn/integration-guide/IPNandPDTVariables/
+     */
+
+if ($verified) {
+    error_log( print_R("verified\n", TRUE), 3, LOG);
+    error_log( print_R($ipn->getOutput(), TRUE), 3, LOG);
+    
+    $result = $ipn->getOutput();
+
+    if ($result) {
+        
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // creating payment
+        $paid = $db->createPayment( 
+    isset(                      $result['payment_type']) ? $result['payment_type'] : "" ,
+      isset(                    $result['payment_date']) ? $result['payment_date'] : "",          
+    isset(                      $result['payer_status']) ? $result['payer_status'] : "",          
+    isset(                      $result['first_name']) ? $result['first_name'] : "",          
+    isset(                      $result['last_name']) ? $result['last_name'] : "",          
+    isset(                      $result['payer_email']) ? $result['payer_email'] : "",          
+    isset(                      $result['address_name']) ? $result['address_name'] : "",          
+    isset(                      $result['address_country']) ? $result['address_country'] : "",          
+    isset(                      $result['address_country_code']) ? $result['address_country_code'] : "",          
+    isset(                      $result['address_zip']) ? $result['address_zip'] : "",          
+    isset(                      $result['address_state']) ? $result['address_state'] : "",          
+    isset(                      $result['address_city']) ?  $result['address_city']: "",          
+    isset(                      $result['address_street']) ? $result['address_street'] : "",          
+    isset(                       $result['payment_status']) ? $result['payment_status'] : "",          
+    isset(                      $result['mc_currency']) ? $result['mc_currency'] : "",          
+    isset(                      $result['mc_gross_1']) ?  $result['mc_gross_1']: "",          
+    isset(                      $result['item_name1']) ?  $result['item_name1']: "",          
+    isset(                      $result['txn_id']) ? $result['txn_id']  : "",          
+    isset(                      $result['reason_code']) ? $result['reason_code']: "",          
+    isset(                      $result['parent_txn_id']) ? $result['parent_txn_id'] : "",          
+    isset(                       $result['num_cart_items']) ? $result['num_cart_items'] : "",
+    isset(                       $result['quantity1']) ?   $result['quantity1'] : "",
+    isset(                       $result['quantity2']) ?  $result['quantity2'] : "",
+    isset(                       $result['quantity3']) ?  $result['quantity3'] : "",
+    isset(                       $result['quantity4']) ?  $result['quantity4'] : "",
+    isset(                       $result['quantity5']) ?  $result['quantity5'] : "",
+    isset(                      $result['item_name2']) ? $result['item_name2'] : "",          
+    isset(                      $result['item_name3']) ? $result['item_name3'] : "",          
+    isset(                      $result['item_name4']) ? $result['item_name4']: "",          
+    isset(                      $result['item_name5']) ? $result['item_name5']: "",          
+    isset(                      $result['mc_gross_2']) ? $result['mc_gross_2'] : "",          
+    isset(                      $result['mc_gross_3']) ? $result['mc_gross_3']: "",          
+    isset(                      $result['mc_gross_4']) ? $result['mc_gross_4'] : "",          
+    isset(                      $result['mc_gross_5']) ? $result['mc_gross_5'] : "",          
+    isset(                       $result['receipt_id']) ? $result['receipt_id'] : "",
+    isset(                       $result['payment_gross']) ? $result['payment_gross'] : "",
+    isset(                       $result['ipn_track_id']) ? $result['ipn_track_id'] : "",
+    isset(                       $result['custom']) ? $result['custom'] : ""
+            
+                                    );
+    
+            error_log( print_R("Payment created: $paid\n", TRUE ), 3, LOG);
+            $xn = $result['txn_id'];
+
+            $result = $db->getPayment($xn);
+
+            $row_cnt = $result->num_rows;
+
+            if ($row_cnt > 0) {
+
+                while ($slist = $result->fetch_assoc()) {
+                    $tmp = array();
+                    if (count($slist) > 0) {
+
+                        $tmp["LastName"] = (empty($slist["last_name"]) ? "NULL" : $slist["last_name"]);
+                        $tmp["FirstName"] = (empty($slist["first_name"]) ? "NULL" : $slist["first_name"]);
+                        $tmp["Email"] = (empty($slist["payer_email"]) ? "NULL" : $slist["payer_email"]);
+                        $tmp["Payment_gross"] = (empty($slist["payment_gross"]) ? "NULL" : $slist["payment_gross"]);
+                    } else {
+                        $tmp["LastName"] = "NULL";
+                        $tmp["FirstName"] = "NULL";
+                        $tmp["Email"] = "NULL";
+                        $tmp["Payment_gross"] = "NULL";
+                        
+                    }
+    
+                    $message = "
+                    <html>
+                    <head>
+                    <title>Invoice payment</title>
+                    </head>
+                    <body>
+                    <p>You have successfully paid.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
+                    <p>Email: " . $tmp["Email"] . "</p>
+                    <table>
+                    <tr>
+                    <th>Firstname</th>
+                    <th>Lastname</th>
+                    <th>Payment Total</th>
+                    </tr>
+                    <tr>
+                    <td>" . $tmp["FirstName"] . "</td>
+                    <td>" . $tmp["LastName"] . "</td>
+                    <td>" . $tmp["Payment_gross"] . "</td>
+                    </tr>
+                    </table>
+                    </body>
+                    </html>
+                    ";
+                    
+                    $subject = 'Invoice payment for ' . 
+                    $tmp["FirstName"] . ' ' . 
+                    $tmp["LastName"] . ' paid ';
+
+                    $to = $tmp["Email"];
+                emailnotify($to , $subject, $message);
+            //    emailnotify('villaris.us@gmail.com', $subject, $message);
+                error_log( print_R("email to send: $to, $subject, $message\n", TRUE ), 3, LOG);
+    
+                }
+                
+                
+            }
+
+    } // if result
+    else {
+            error_log( print_R("after createPayment  result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $result, TRUE), 3, LOG);
+        
+    }    
+
+} // verified     
+// else {
+    //email about the problem
+//}
+     
+// Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
+header("HTTP/1.1 200 OK");
+//        echoRespnse(200, $response);
+
+});
+
+$app->post('/invoice', 'authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("invoice before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+
+    $invoiceDate  = (isset($dataJsonDecode->thedata->invoiceDate) ? $dataJsonDecode->thedata->invoiceDate : "");
+    $status   = 'new';
+
+    error_log( print_R("invoice: $invoice\n", TRUE ), 3, LOG);
+    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+
+    $invoicegood=0;
+    $invoicebad=0;
+    $invoiceexists=0;
+
+    //get list of payers to invoice
+    $db = new StudentDbHandler();
+    $studentarr = array();
+
+    // creating invoices based on date and who is ready
+    $result = $db->getInvoiceList(
+        $invoiceDate
+                                );
+    if ($result != NULL) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+                $tmp["invoiceAmt"] =  $slist["id"];
+                $tmp["paymentid"] =  $slist["type"];
+                array_push($studentarr["InvoiceList"], $tmp);
+            }
+        }
+    } else {
+            error_log( print_R("after getInvoiceList result empty\n", TRUE), 3, LOG);
+            error_log( print_R( $result, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to find invoices. Please try again";
+            echoRespnse(404, $response);
+    }
+                                
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+     
+    for($i = 0; $i < count($studentarr); $i++ ) {
+
+        error_log( print_R($studentarr[$i]->InvoiceList->paymentid, TRUE ), 3, LOG);
+
+        $invoiceAmt  = $studentarr[$i]->InvoiceList->invoiceAmt;
+        $paymentid =   $studentarr[$i]->paymentid;
+        $invoice    = uniqid("lessons",true);                
+
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // creating invoices
+        $return = $db->createinvoice(
+            $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status
+                                    );
+    
+        if ($return > 0) {
+            error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
+
+            $response = array();
+            $result = $db->getPayerFromID($paymentid);
+        
+            if ($result != NULL) {
+                $response["LastName"] = $result["LastName"];
+                $response["FirstName"] = $result["FirstName"];
+                $response["Email"] = $result["Email"];
+                $response["payerName"] = $result["payerName"];
+
+$message = "
+<html>
+<head>
+<title>Invoice #: " . $invoice . "</title> 
+</head>
+<body>
+<p>Dear: " . $response["payerName"] . "</p>
+<p>You have and invoice for payment.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
+<p>Email: " . $response["Email"] . "</p>
+<p>Name: " . $response["Firstname"] . $response["LastName"] . "</p>
+<p>Amount: $ " . $invoiceAmt . "</p>
+<p>Date: $ " . $invoiceDate . "</p>
+<p>You will receive an email after you have paid.</p>
+</body>
+</html>
+";
+
+$subject = 'Invoice for ' . 
+                $response["FirstName"] . ' ' . 
+                $response["LastName"] ;
+
+                $to = $response["Email"];
+                
+        //    emailnotify($to, $subject, $message);
+            emailnotify('villaris.us@gmail.com', $subject, $message);
+            error_log( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
+
+            }
+            
+            $invoicegood += 1;
+        } else if ($invoice == RECORD_ALREADY_EXISTED) {
+            error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+            $invoiceexists += 1;
+        } else {
+            error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $invoice, TRUE), 3, LOG);
+            $invoicebad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($invoicegood > 0) {
+            $response["error"] = false;
+            $response["message"] = "invoice(s) $invoicegood created and notified successfully";
+            $response["invoice"] = $invoicegood;
+            error_log( print_R("invoice created: $invoicegood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($invoiceexists > 0) {
+            $response["error"] = true;
+            $response["message"] = "Sorry, this $invoiceexists invoice already existed";
+            error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+            echoRespnse(409, $response);
+        } else {
+            error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $invoicebad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $evendbad invoice. Please try again";
+            echoRespnse(400, $response);
+        }
+
+});
+
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();

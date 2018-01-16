@@ -220,9 +220,14 @@
             
             checkAttendance(item).then(function() {
                 $log.debug('checkAttendance returns');
-                b = moment(vm.attendancesum[0].lastPromoted);
+
+                b = moment((typeof(vm.attendancesum[0]) === 'undefined' ||
+                    vm.attendancesum[0].lastPromoted === null) ? '01-01-1900' : vm.attendancesum[0].lastPromoted);
+
                 card.daysSince = a.diff(b, 'days');
-                card.daysAttended = vm.attendancesum[0].daysAttended;
+                card.daysAttended = ((typeof(vm.attendancesum[0]) === 'undefined' ||
+                    vm.attendancesum[0].daysAttended === null) ? 0 : vm.attendancesum[0].daysAttended);
+                
 
                 for (var i=0, len=vm.attending.length; i < len; i++) {
                     $log.debug('is there?', item, vm.attending[i].attended);
@@ -256,8 +261,8 @@
                         daynum: card.theday,
                         rank: card.rank,
                         classid: card.classid,
-                        daysAttended: vm.attendancesum[0].daysAttended,
-                        daysSince: vm.attendancesum[0].daysSince
+                        daysAttended: card.daysAttended,
+                        daysSince: card.daysSince
                     };
                     vm.attending.push(carddata);
                 }

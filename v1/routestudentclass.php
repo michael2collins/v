@@ -17,6 +17,7 @@ $app->get('/studentclass/:id', 'authenticate', function($student_id) {
         $response["pgmclass"] = $result["pgmclass"];
         $response["class"] = $result["class"];
         $response["isTestFeeWaived"] = $result["isTestFeeWaived"];
+        $response["primaryContact"] = $result["primaryContact"];
         $response["classseq"] = $result["classseq"];
         $response["pgmseq"] = $result["pgmseq"];
         $response["studentclassstatus"] = $result["studentclassstatus"];
@@ -79,6 +80,7 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
             $tmp["isTestfeewaived"] = $slist["isTestfeewaived"];
             $tmp["payerName"] = $slist["payerName"];
             $tmp["payerid"] = $slist["payerid"];
+            $tmp["primaryContact"] = $slist["primaryContact"];
             
         } else {
             $tmp["contactID"] = "NULL";
@@ -92,6 +94,7 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
             $tmp["isTestfeewaived"] = "NULL";
             $tmp["payerName"] = "NULL";
             $tmp["payerid"] = "NULL";
+            $tmp["primaryContact"] = "NULL";
         }
         array_push($response["studentclasslist"], $tmp);
     }
@@ -255,6 +258,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     $changestatus = $studentclass->changestatus;
     $testfee = $studentclass->isTestfeewaived   ;
     $payer = $studentclass->payerid   ;
+    $primaryContact = $studentclass->primaryContact   ;
     $class = $studentclass->class   ;
     $pgmclass = $studentclass->pgmclass   ;
 
@@ -264,6 +268,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     error_log( print_R("pgmid: $pgmseq\n", TRUE ), 3, LOG);
     error_log( print_R("studentclassstatus: $studentclassstatus\n", TRUE ), 3, LOG);
     error_log( print_R("payer: $payer\n", TRUE ), 3, LOG);
+    error_log( print_R("primary: $primaryContact\n", TRUE ), 3, LOG);
     error_log( print_R("changestatus: $changestatus\n", TRUE ), 3, LOG);
     error_log( print_R("testfee: $testfee\n", TRUE ), 3, LOG);
     error_log( print_R("class: $class\n", TRUE ), 3, LOG);
@@ -286,7 +291,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
                                     $classseq,
                                     $pgmseq,
                                     $payer,
-                                    $testfee);
+                                    $testfee,$primaryContact);
     }
     
     if ( $result < 0) {
@@ -320,19 +325,9 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
         // updating task
         $result2 = createStudentHistory($contactID,$historytype,$dt1);
         
-/*        if ($result2) {
-            // task updated successfully
-            $response["error"] = false;
-            $response["message"] = " Student class updated successfully and history";
-            echoRespnse(200, $response);
-        } else {
-            // task failed to update
-            $response["error"] = true;
-            $response["message"] = " Student class successful but Student history failed to update. Please try again!";
-            echoRespnse(400, $response);
-        }
-        */
     }
+    $response["error"] = false;
+    $response["message"] = "Student Class updated successfully";
     
     echoRespnse(201, $response);
     

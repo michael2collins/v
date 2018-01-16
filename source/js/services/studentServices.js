@@ -473,7 +473,8 @@
         function getNotifications(path) {
             var request = $http({
                 method: "get",
-                url: path
+                url: path,
+                ignoreLoadingBar: true
             });
             return( request.then( handleSuccess, handleError ) );
         }
@@ -492,7 +493,8 @@
         function getEmailcount(path) {
             var request = $http({
                 method: "get",
-                url: path
+                url: path,
+                ignoreLoadingBar: true
             });
             return( request.then( handleSuccess, handleError ) );
         }

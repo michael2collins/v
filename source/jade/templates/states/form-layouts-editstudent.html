@@ -1094,6 +1094,7 @@
                                       <th>Status</th>
                                       <th>Payer</th>
                                       <th>Waive Test Fee?</th>
+                                      <th>Primary Acct?</th>
                                       <th>Picture</th>
                                       <th>Action</th>
                                     </tr>
@@ -1103,7 +1104,7 @@
                                       <td class="col-md-2">{{classlist.class}}</td>
                                       <td class="col-md-2">{{classlist.pgmclass}}</td>
 
-                                      <td class="col-md-2">
+                                      <td class="col-md-1">
                                         <div ng-class="{'has-error': editstudentclass['lstudentclassstatus' + $index].$invalid,
                                                         'has-success': !editstudentclass['lstudentclassstatus' + $index].$invalid}" class="form-group">
                                           <div class="input-icon right">
@@ -1155,6 +1156,23 @@
                                         </div>
                                       </td>
                                       <td class="col-md-2">
+                                        <div>
+                                          <div ng-class="{'has-error': editstudentclass['primaryContact' + $index].$invalid, 
+                                        'has-success': !editstudentclass['primaryContact' + $index].$invalid}" class="form-group">
+                                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['primaryContact' + $index].$dirty" ng-class="editstudentclass['primaryContact' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                                class="glyphicon tooltips"></i>
+
+                                              <toggle-switch on-label="Primary" off-label="Not" id="primaryContact{{$index}}" type="checkbox" name="primaryContact{{$index}}" ng-model="classlist.primaryContact" ng-change="vmclass.changeprimaryContact(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                class="switch-primary"></toggle-switch>
+
+                                            </div>
+                                            <div style="color:maroon" role="alert" ng-messages="editstudentclass['primaryContact' + $index].$error" class="has-error">
+                                              <div ng-message="required">You did not enter a field</div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </td>
+                                      <td class="col-md-2">
                                         <div class="gallery-pages">
                                           <div class="mix-grid">
                                             <div class="mix">
@@ -1170,7 +1188,7 @@
                                           </div>
                                         </div>
                                       </td>
-                                      <td class="col-md-2"><span> <a ng-click="vmclass.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></td>
+                                      <td class="col-md-1"><span> <a ng-click="vmclass.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp;</a></span></td>
                                     </tr>
                                   </tbody>
                                 </table>

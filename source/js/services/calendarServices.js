@@ -9,17 +9,14 @@
 
     function CalendarServices( $http, $q, $log, $window, moment ) {
         var apikey;
-        var thetasknamelist = '';
-        var response;
-        var code;
         var currentCalendarEvent;
         var notifylist = [];
         var intervalValue = 5000; //milli
         var okNotify;
         var checktime;
+        var notifyvlu;
 
         var service = {
-  //          getAlltasknamelists: getAlltasknamelists,
              setapikey: setapikey,
              saveCalendarEvent: saveCalendarEvent,
              getCalendarEvents: getCalendarEvents,
@@ -33,23 +30,40 @@
             getCurrentEvent: getCurrentEvent,
             setNotifyList: setNotifyList,
             getNotifyList: getNotifyList,
+            displaytime: displaytime,
             getIntervalValue: getIntervalValue,
-            displaytime: displaytime
+            setIntervalValue: setIntervalValue,
+            setOkNotify: setOkNotify,
+            getOkNotify: getOkNotify
         };
         return service;
         
-     function setapikey(key) {
-   //     $log.debug('setapikey', key);
+    function setapikey(key) {
+        //     $log.debug('setapikey', key);
          apikey = key;
-     }
-        function getIntervalValue() {
-            return intervalValue;
-        }
+    }
+    function setOkNotify(input) {
+        notifyvlu = input;
+    }
+    function getOkNotify() {
+        return notifyvlu;
+    }
+    function setIntervalValue(input) {
+        intervalValue = input;
+    }     
+    function getIntervalValue() {
+        return intervalValue;
+    }     
         function gettasknamelist(path) {
             $log.debug('gettasknamelist service entered');
             $log.debug('path',path);
+            var request = $http({
+                method: "GET",
+                url: path,
+                ignoreLoadingBar: true
+            });
+                return( request.then( handleSuccess, handleError ) );
 
-            return($http.get(path).then( handleSuccess, handleError) );
         }
         function getinstructorlist(path) {
             $log.debug('getinstructorlist service entered');

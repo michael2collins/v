@@ -29,6 +29,7 @@
         vmclass.updateStudentClass = updateStudentClass;
         vmclass.changeStudentStatus = changeStudentStatus;
         vmclass.changetestfee = changetestfee;
+        vmclass.changeprimaryContact = changeprimaryContact;
         vmclass.changeStudentPayer = changeStudentPayer;
         vmclass.getClassPgm = getClassPgm;
         vmclass.addStudentRegistration = addStudentRegistration;
@@ -230,7 +231,8 @@
                 for (var iter=0,len=vmclass.studentclazzlist.length;iter<len;iter++) {
                     vmclass.studentclazzlist[iter].payerList = {
                         payerName: vmclass.studentclazzlist[iter].payerName,
-                        payerid: vmclass.studentclazzlist[iter].payerid
+                        payerid: vmclass.studentclazzlist[iter].payerid,
+                        primaryContact: vmclass.studentclazzlist[iter].primaryContact
                     };
                 }
                 $log.debug('studentclazzlist returned data', vmclass.studentclazzlist);
@@ -312,6 +314,11 @@
             vmclass.changestatus = "testfee";
             updateStudentClass(clazzitem);
         }
+        function changeprimaryContact(clazzitem) {
+            $log.debug('about changeprimaryContact ',clazzitem);
+            vmclass.changestatus = "primaryContact";
+            updateStudentClass(clazzitem);
+        }
         function changeStudentPayer(clazzitem) {
             $log.debug('about changeStudentPayer ',clazzitem);
             vmclass.changestatus = "payer";
@@ -324,12 +331,22 @@
             clazzitem.changestatus = vmclass.changestatus;
             clazzitem.payerid = clazzitem.payerList.payerid;
             clazzitem.payerName = clazzitem.payerList.payerName;
+            clazzitem.primaryContact = clazzitem.primaryContact;
 
             $log.debug('about updateStudentClass ', clazzitem);
             return ClassServices.updateStudentClass(
                 path, clazzitem).then(function (data) {
                 $log.debug('updateStudentClass returned data');
                 $log.debug(data.data);
+                    $log.debug(data.data.message);
+                    if ((typeof data.data === 'undefined' || data.data.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: data.data.message , delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: data.data.message, delay: 5000});
+                    }
+                
                 getStudentClazzList();                
             },function(error) {
                     $log.debug('updateStudentClass ',error);

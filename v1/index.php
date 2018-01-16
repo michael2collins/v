@@ -20,8 +20,12 @@ require_once '../include/DBCalendar.php';
 require_once '../include/DBTesting.php';
 require_once '../include/DBStats.php';
 require_once '../include/PassHash.php';
+require_once '../include/PaypalIPN.php';
 require '.././libs/Slim/Slim.php';
+
 require '.././vendor/autoload.php';
+$ipn = new PaypalIPN();
+
 
 \Slim\Slim::registerAutoloader();
 

@@ -187,8 +187,8 @@
                     vm.message = vm.thisClass.message  ;
                     if ((typeof vm.thisClass === 'undefined' || vm.thisClass.error === true)  
                             && typeof data !== 'undefined') {  
-                        Notification.error({message: vm.message + 
-                            typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : "", delay: 5000});
+                        Notification.error({message: vm.message + ': ' + (
+                            typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""), delay: 5000});
                         $q.reject(data);
                     } else {
                         Notification.success({message: vm.message, delay: 5000});

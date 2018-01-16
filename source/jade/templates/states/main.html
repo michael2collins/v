@@ -206,7 +206,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="portlet portlet-green">
+<!--                <div class="portlet portlet-green">
                   <div class="portlet-header">
                     <div class="caption">Notifications</div>
                     <div class="tools"><i class="fa fa-chevron-up"></i></div>
@@ -216,11 +216,19 @@
                       <div class="panel-body">
                         <div>
                           <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-exclamation icons mrs"></i>Notification List</h4>
-                          <div class="form-group col-md-12">
-                            <label for="inputokNotify" class="control-label col-md-3">Notify Me?</label>
-                            <div class="col-md-9">
-                              <select id="inputokNotify" type="text" name="okNotify" ng-model="vm.okNotify" required placeholder="select" ng-options="o for o in vm.okoptions track by o" class="form-control">
-                              </select>
+                          <div class="form-group">
+                            <div class="row col-md-12">
+                              <label for="inputokNotify" class="col-md-3 control-label">Notify Me?</label>
+                              <div class="col-md-9">
+                                <select id="inputokNotify" type="text" name="okNotify" ng-model="vm.okNotify" ng-change="vm.cancelInterval()" required placeholder="select" ng-options="o for o in vm.okoptions track by o" class="form-control">
+                                </select>
+                              </div>
+                            </div>
+                            <div class="row col-md-12">
+                              <label for="mydelay" class="col-md-3 control-label">Delay</label>
+                              <div class="col-md-9">  
+                                <input id="mydelay" type="number" ng-model="vm.mydelay" ng-change="vm.setInterval()" class="form-control"/>
+                              </div>
                             </div>
                           </div>
 
@@ -235,7 +243,7 @@
                     </div>
                   </div>
                 </div>
-
+-->
               </div>
               <div class="col-md-9">
                 <div class="panel">

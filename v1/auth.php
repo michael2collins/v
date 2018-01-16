@@ -471,6 +471,70 @@ $app->get('/userdetails', 'authenticate', function() use ($app) {
 
 });
 
+$app->get('/useroptions', 'authenticate', function() use ($app) {
+
+    error_log( print_R("useroptions entered:\n ", TRUE), 3, LOG);
+
+    $response = array();
+
+    $db = new DbHandler();
+
+    $res = $db->getUserOptions();
+    
+    if (isset($res["options"]) ) {
+        $response["error"] = false;
+        $response["message"] = "Found user options successfully";
+        $response["options"] = $res["options"];
+        error_log( print_R("User options:\n", TRUE ), 3, LOG);
+        error_log( print_R($res, TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after User Options result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res, TRUE), 3, LOG);
+        $response["extra"] = $res;
+        $response["error"] = true;
+        $response["message"] = "Failed to get User Options. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+
+
+});
+$app->post('/useroptions', 'authenticate', function() use ($app) {
+     $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("useroptions before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);    
+
+    $options = (isset($dataJsonDecode->thedata->options) ? $dataJsonDecode->thedata->options : "");
+
+    error_log( print_R("options:\n", TRUE ), 3, LOG);    
+    error_log( print_R($options, TRUE ), 3, LOG);    
+
+    $db = new DbHandler();
+    $response = array();
+
+    $id = $db->setUserOptions($options 
+                                );
+    if ($id > 0) {
+        $response["error"] = false;
+        $response["message"] = "Options updated successfully";
+        error_log( print_R("Options updated: $id\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after options result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $id, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to update options. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+
 
 $app->get('/resetpassword',  function() use ($app) {
 

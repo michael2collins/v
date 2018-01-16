@@ -71,9 +71,6 @@ class StudentDbHandler {
 
     }
 
- /**
-     * Creating new payment
-     */
     public function createPayment( $payment_type ,          
                          $payment_date ,          
                         $payer_status ,          
@@ -114,6 +111,9 @@ class StudentDbHandler {
                          $custom
         
     ) {
+ /**
+     * Creating new payment
+     */
 
         error_log( print_R("createPayment entered\n", TRUE ),3, LOG);
 

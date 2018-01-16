@@ -152,13 +152,14 @@ class DbHandler {
     }
 
 
+    public function checkLogin($email, $password) {
     /**
      * Checking user login
      * @param String $email User login email id
      * @param String $password User login password
      * @return boolean User login status success/fail
      */
-    public function checkLogin($email, $password) {
+
         // fetching user by email
         $stmt = $this->conn->prepare("SELECT password_hash FROM users WHERE email = ?");
 
@@ -396,7 +397,69 @@ class DbHandler {
         return md5(uniqid(rand(), true));
     }
 
-  
+	public
+	function getUserOptions()
+	{
+		global $user_id;
+        $errormessage=array();
+		
+		$sql = "SELECT options from users where id = ?";
+		error_log(print_R("getUserOptions sql : $sql : $user_id \n", TRUE) , 3, LOG);
+		
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $user_id);
+            if ($stmt->execute()) {
+                $stmt->bind_result($options);
+                $stmt->fetch();
+                $stmt->close();
+            error_log( print_R("getoptions: $options\n ", TRUE), 3, LOG);
+                $opt = array();
+                $opt["options"] = $options;
+                
+                return $opt;
+            } 
+            else {
+				error_log(print_R("getUserOptions  execute failed", TRUE) , 3, LOG);
+                $errormessage["sqlerror"] = "getUserOptions failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+    		}
+		}
+		else {
+			error_log(print_R("getUserOptions  sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getUserOptions general failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+	}
+
+	public
+	function setUserOptions($options)
+	{
+		error_log(print_R("setUserOptions entered\n", TRUE) , 3, LOG);
+        global $user_id;
+		$response = array();
+		$sql = "update users set options = ? ";
+		$sql .= " where id = ? ";
+		$cont = json_encode($options);
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("ss", $cont, $user_id);
+
+			$stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+
+			return $num_affected_rows >= 0;
+		}
+        else {
+			error_log(print_R("setUserOptions  sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "setUserOptions failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+	}
+
 
 }
 ?>
