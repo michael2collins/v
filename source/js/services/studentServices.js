@@ -52,7 +52,8 @@
             getEmailLists: getEmailLists,
             getEmailViews: getEmailViews,
             removeEmailView: removeEmailView,
-            updateEmailView: updateEmailView
+            updateEmailView: updateEmailView,
+            getPayerStudent: getPayerStudent
         };
         return service;
 
@@ -94,6 +95,16 @@
           return response.data;
         });
       }
+     function getPayerStudent(path, thedata) {
+        var request = $http({
+            method: "get",
+            url: path,
+            params: thedata                
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+      
      function refreshEmails(input) {
         var params = {input: input};
         var request = $http({

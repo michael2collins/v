@@ -2460,6 +2460,60 @@ $subject = 'Invoice for ' .
 
 });
 
+$app->get('/payerstudent', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("payerstudent entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $theinput = '';
+    $thetype = '';
+
+    if(array_key_exists('theinput', $allGetVars)){
+        $theinput = $allGetVars['theinput'];
+    }
+    if(array_key_exists('thetype', $allGetVars)){
+        $thetype = $allGetVars['thetype'];
+    }
+
+    error_log( print_R("payerstudent params: theinput: $theinput thetype: $thetype\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getStudentGivePayer($theinput,$thetype);
+    $response["error"] = false;
+    $response["studentpayerlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result["slist"]->fetch_assoc()) {
+        $tmp = array();
+            $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
+            $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
+            $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+            $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+            $tmp["payername"] = (empty($slist["payername"]) ? "NULL" : $slist["payername"]);
+            $tmp["thetype"] = $thetype;
+            $tmp["theinput"] = $theinput;
+        array_push($response["studentpayerlist"], $tmp);
+    }
+
+    if ($result["success"] ) {
+        $response["error"] = false;
+        $response["message"] = "Found student payer successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after student payer result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["extra"] = $result;
+        $response["message"] = "Failed to get User Options. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<div id="table-basic-paymenttracking" class="row" ng-controller="PaymentTrackingController as vm">
+  <div class="portlet box portlet-green">
+    <div class="portlet-header">
+      <div class="row">
+        <div class="caption">Payment Tracking</div>
+      </div>
+    </div>
+    <div class="portlet-body">
+      <div class="panel panel-blue">
+        <div class="panel-heading">Payer/Student Selection</div>
+        <div class="panel-body ">
+          <form action="" novalidate name="edit" class="form-horizontal">
+            <div class="form-body ">
+              <div class="col-md-3" style="height: 80px;">
+                <div ng-class="{'has-error': editclass.payerName.$invalid, 'has-success': !editclass.payerName.$invalid}" class="form-group">
+                  <label for="payerName" class="control-label">Payer Name</label>
+                  <div class="">
+                    <i data-hover="tooltip" data-original-title="Correct" ng-show="editclass.payerName.$dirty" ng-class="editclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                    <div class="select-box">
+                      <ui-select ng-model="vm.payerName" theme="bootstrap" reset-search-input="false" style="width: 300px;" on-select="vm.getPayerStudent($item,'payer')" title="Pick Payer" append-to-body="false">
+                        <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
+                        <ui-select-choices repeat="item in vm.payers | filter: $select.search track by $index" refresh="vm.getPayersPartial($select.search)" refresh-delay="0">
+                          <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
+                        </ui-select-choices>
+                        <ui-select-no-choice>
+                          Dang! We couldn't find any choices...
+                        </ui-select-no-choice>
+                      </ui-select>
+                    </div>
+                  </div>
+                  <div style="color:maroon" role="alert" ng-messages="editclass.payerName.$error" class="has-error">
+                    <div ng-message="required">You did not enter a field</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3" style="height: 80px;">
+                <div ng-class="{'has-error': editclass.studentpick.$invalid, 'has-success': !editclass.studentpick.$invalid}" class="form-group">
+                  <label for="studentpick" class="control-label">Student Name</label>
+                  <div class="">
+                    <i data-hover="tooltip" data-original-title="Correct" ng-show="editclass.studentpick.$dirty" ng-class="editclass.studentpick.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                    <div class="select-box">
+                      <ui-select ng-model="vm.studentpick" theme="bootstrap" reset-search-input="false" style="width: 300px;" on-select="vm.getPayerStudent($item,'student')" title="Choose a student" append-to-body="false">
+                        <ui-select-match placeholder="Or Choose...">{{$select.selected.FullName}}</ui-select-match>
+                        <ui-select-choices repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="vm.refreshStudents($select.search)" refresh-delay="0">
+                          <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
+                        </ui-select-choices>
+                        <ui-select-no-choice>
+                          Dang! We couldn't find any choices...
+                        </ui-select-no-choice>
+                      </ui-select>
+                    </div>
+                  </div>
+                  <div style="color:maroon" role="alert" ng-messages="editclass.studentpick.$error" class="has-error">
+                    <div ng-message="required">You did not enter a field</div>
+                  </div>
+                </div>
+              </div>
+          </form>
+          </div>
+          <div class="panel-footer"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>

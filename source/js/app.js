@@ -331,6 +331,9 @@
             .when('/table-basic-basic', {
                 templateUrl: 'templates/states/table-basic-basic.php'
             })
+            .when('/table-basic-paymenttracking', {
+                templateUrl: 'templates/states/table-basic-paymenttracking.html'
+            })
             .when('/table-basic-rank', {
                 templateUrl: 'templates/states/table-basic-ranks.php'
             })

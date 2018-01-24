@@ -535,10 +535,15 @@ var studentpick = {};
             $log.debug('loadSidebar');
             //BEGIN SIDEBAR FIXED
             $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
-                "height": $(window).height() - 50,
-                'width': '250px',
-                'wheelStep': 5
-            });
+                height: $(window).height() - 100,
+                width: '250px',
+                size: '10px',
+                railVisible: true,
+                alwaysVisible: true,
+                color: 'gray',
+                railColor: 'gray',
+                wheelStep: 5
+            }); 
             $(window).scroll(function() {
                 if ($(this).scrollTop() > 50) {
                     if ($('body').hasClass('topbar-fixed')) {}

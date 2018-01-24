@@ -335,8 +335,9 @@ class StudentDbHandler
 	function getStudentNames($theinput)
 	{
 		$sql = "SELECT FirstName,LastName,ID FROM ncontacts ";
-		$sql.= " where LastName like '%" . $theinput . "%' ";
-		$sql.= " or FirstName like '%" . $theinput . "%' ";
+//		$sql.= " where LastName like '%" . $theinput . "%' ";
+//		$sql.= " or FirstName like '%" . $theinput . "%' ";
+		$sql.= " where CONCAT_WS(' ',`FirstName`,`LastName`)  like '%" . $theinput . "%' ";
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
 		error_log(print_R("getStudentNames sql after security: $sql", TRUE) , 3, LOG);
@@ -1688,6 +1689,60 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			and cp.primaryContact = 1
 	    ";
 	}
+
+	public
+	function getStudentGivePayer($theinput,$thetype)
+	{
+		
+	    $sql = "
+			select c.ID as contactid, c.firstname, c.lastname, p.id as payerid, p.payername
+            from ncontacts c
+			join nclasspays cp on (cp.contactid = c.ID)
+            join npayments pp on (pp.payerid = cp.payerid)
+            join payer p on (p.id = pp.payerid)
+            where
+            c.studentschool = p.school
+			and cp.primaryContact = 1
+	    	";	
+
+		if ($thetype == "payer" ) {
+			$sql .= " and p.id = ? ";
+		} else {
+			$sql .= " and c.ID = ? ";
+		}
+		
+		$schoolfield = "studentschool";
+		$sql = addSecurity($sql, $schoolfield);
+		error_log(print_R("getStudentGivePayer sql after security: $sql", TRUE) , 3, LOG);
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $theinput);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$res = array();
+				error_log(print_R("getStudentGivePayer list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+				$res["success"]=true;
+				$res["slist"]=$slists;
+				return $res;
+			}
+			else {
+				error_log(print_R("getStudentGivePayer list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getStudentGivePayer failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getStudentGivePayer list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getStudentGivePayer failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+	}
+	
+	
 }
 
 ?>
