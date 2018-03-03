@@ -2317,7 +2317,7 @@ header("HTTP/1.1 200 OK");
 
 });
 
-$app->post('/invoice', 'authenticate', function() use ($app) {
+$app->post('/invoice', 'authenticate',  function() use ($app) {
 
     $response = array();
 
@@ -2328,11 +2328,172 @@ $app->post('/invoice', 'authenticate', function() use ($app) {
     error_log( print_R("invoice before insert\n", TRUE ), 3, LOG);
     error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
 
+    $invoice    = uniqid("lessons",true);
 
-    $invoiceDate  = (isset($dataJsonDecode->thedata->invoiceDate) ? $dataJsonDecode->thedata->invoiceDate : "");
+    if (isset($dataJsonDecode->thedata->paymentid)) {
+        $paymentid =  $dataJsonDecode->thedata->paymentid;
+    } else { errorRequiredParams('paymentid'); }
+    
+    
+    $invoiceDate    = (isset($dataJsonDecode->thedata->invdate) ? $dataJsonDecode->thedata->invdate : "NULL");
+    $invoiceAmt     = (isset($dataJsonDecode->thedata->amt) ? $dataJsonDecode->thedata->amt : "NULL");
+    $to             = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "NULL");
+    $payerName      = (isset($dataJsonDecode->thedata->payername) ? $dataJsonDecode->thedata->payername : "NULL");
+    $status         = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "NULL");
+
+    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+
+    $invoicegood=0;
+    $invoicebad=0;
+    $invoiceexists=0;
+    $dayOfMonth = date("j");
+    $goodToInvoice = true;
+    
+    $db = new StudentDbHandler();
+
+    $result = $db->getCommunication();
+
+    if ($result) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $schEmail = (empty($slist["schoolReplyEmail"]) ? "NULL" : $slist["schoolReplyEmail"]);
+            $schSig = (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
+        }
+    }
+
+    $over = $db->getOverdue($paymentid);
+
+    if ($over) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $over->fetch_assoc()) {
+            $overduecnt = (empty($slist["overduecnt"]) ? "NULL" : $slist["overduecnt"]);
+        }
+    } else {
+        $overduecnt = 0;
+    }
+
+    
+    if ($overduecnt > 0) {
+    //todo: decide if we need overdue date logic too
+        genOverdueEmail($payerName,$to,$schEmail,$schSig);
+    }    
+
+    // creating invoices
+    $return = $db->createinvoice(
+        $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status
+                                );
+
+    if ($return > 0) {
+        error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
+        genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
+        
+        $invoicegood += 1;
+    } else if ($invoice == RECORD_ALREADY_EXISTED) {
+        error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+        $invoiceexists += 1;
+    } else {
+        error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $invoice, TRUE), 3, LOG);
+        $invoicebad += 1;
+    }
+    //as long as one worked, return success
+    if ($invoicegood > 0) {
+        $response["error"] = false;
+        $response["message"] = "invoice(s) $invoicegood created and notified successfully";
+        $response["invoice"] = $invoicegood;
+        error_log( print_R("invoice created: $invoicegood\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else if ($invoiceexists > 0) {
+        $response["error"] = true;
+        $response["message"] = "Sorry, this $invoiceexists invoice already existed";
+        error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+        echoRespnse(409, $response);
+    } else {
+        error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $invoicebad, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create $invoicebad invoice. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
+$app->put('/invoice','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("invoice before update\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $invoice = json_decode($body);
+    error_log( print_R($invoice, TRUE ), 3, LOG);
+
+    if (isset($invoice->thedata->id)) {
+        $id =  $invoice->thedata->id;
+    } else { errorRequiredParams('id'); }
+
+    $amt        = (isset($invoice->thedata->amt)     ? 
+                    $invoice->thedata->amt : "");
+    $invdate    = (isset($invoice->thedata->invdate)     ? 
+                    $invoice->thedata->invdate : "");
+    $status     = (isset($invoice->thedata->status)     ? 
+                    $invoice->thedata->status : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    error_log( print_R("amt: $amt\n", TRUE ), 3, LOG);
+    error_log( print_R("invdate: $invdate\n", TRUE ), 3, LOG);
+    error_log( print_R("status: $status\n", TRUE ), 3, LOG);
+
+
+    $invoicegood=0;
+    $invoicebad=0;
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // creating testings
+    $invoice = $db->updateInvoice(
+        $id, $amt, $invdate, $status
+                                );
+
+    if ($invoice > 0) {
+        error_log( print_R("invoice updated: $invoice\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "invoice updated successfully";
+        $invoicegood = 1;
+        $response["invoice"] = $invoicegood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after update invoice result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $invoice, TRUE), 3, LOG);
+        $invoicebad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to update invoice. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->post('/invoices',  function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("invoice before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
+
+    $invoiceDate  = (isset($dataJsonDecode->thedata->invoiceDate) ? $dataJsonDecode->thedata->invoiceDate : $today);
     $status   = 'new';
 
-    error_log( print_R("invoice: $invoice\n", TRUE ), 3, LOG);
     error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
 
     $invoicegood=0;
@@ -2341,7 +2502,7 @@ $app->post('/invoice', 'authenticate', function() use ($app) {
 
     //get list of payers to invoice
     $db = new StudentDbHandler();
-    $studentarr = array();
+    $studentarr["InvoiceList"] = array();
 
     // creating invoices based on date and who is ready
     $result = $db->getInvoiceList(
@@ -2351,10 +2512,36 @@ $app->post('/invoice', 'authenticate', function() use ($app) {
 
         // looping through result and preparing  arrays
         while ($slist = $result->fetch_assoc()) {
-            $tmp = array();
+            error_log( print_R("after getInvoiceList result cnt\n", TRUE), 3, LOG);
+            error_log( print_R( count($slist), TRUE), 3, LOG);
+            
             if (count($slist) > 0) {
-                $tmp["invoiceAmt"] =  $slist["id"];
-                $tmp["paymentid"] =  $slist["type"];
+                $tmp = array();
+                $tmp["ID"]                  =  (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+                $tmp["email"]               =  (empty($slist["email"]) ? "NULL" : $slist["email"]);
+                $tmp["payerid"]             =  (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+                $tmp["paymentid"]           =  (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
+                $tmp["paymenttype"]         =  (empty($slist["paymenttype"]) ? "NULL" : $slist["paymenttype"]);
+                $tmp["payondayofmonth"]     =  (empty($slist["payondayofmonth"]) ? "NULL" : $slist["payondayofmonth"]);
+                $tmp["paymentplan"]         =  (empty($slist["paymentplan"]) ? "NULL" : $slist["paymentplan"]);
+                $tmp["paymentamount"]       =  (empty($slist["paymentamount"]) ? "NULL" : $slist["paymentamount"]);
+                $tmp["lastpaymentdate"]     =  (empty($slist["lastpaymentdate"]) ? "NULL" : $slist["lastpaymentdate"]);
+                $tmp["nextpaymentdate"]     =  (empty($slist["nextpaymentdate"]) ? "NULL" : $slist["nextpaymentdate"]);
+                $tmp["payername"]           =  (empty($slist["payername"]) ? "NULL" : $slist["payername"]);
+                $tmp["leadTimeDays"]        =  (empty($slist["leadTimeDays"]) ? "NULL" : $slist["leadTimeDays"]);
+                $tmp["daysInPeriod"]        =  (empty($slist["daysInPeriod"]) ? "NULL" : $slist["daysInPeriod"]);
+                $tmp["batch1dayofmonth"]    =  (empty($slist["batch1dayofmonth"]) ? "NULL" : $slist["batch1dayofmonth"]);
+                $tmp["batch2dayofmonth"]    =  (empty($slist["batch2dayofmonth"]) ? "NULL" : $slist["batch2dayofmonth"]);
+                $tmp["overdueOnbatch1"]     =  (empty($slist["overdueOnbatch1"]) ? "NULL" : $slist["overdueOnbatch1"]);
+                $tmp["overdueOnbatch2"]     =  (empty($slist["overdueOnbatch2"]) ? "NULL" : $slist["overdueOnbatch2"]);
+                $tmp["leadlast"]            =  (empty($slist["leadlast"]) ? "NULL" : $slist["leadlast"]);
+                $tmp["payerEmail"]          =  (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+                $tmp["schoolReplyEmail"]    =  (empty($slist["schoolReplyEmail"]) ? "NULL" : $slist["schoolReplyEmail"]);
+                $tmp["schoolReplySignature"] =  (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
+                $tmp["overduecnt"]          = (empty($slist["overduecnt"]) ? 0 : $slist["overduecnt"]);
+
+       //     error_log( print_R( $tmp, TRUE), 3, LOG);
+
                 array_push($studentarr["InvoiceList"], $tmp);
             }
         }
@@ -2367,15 +2554,111 @@ $app->post('/invoice', 'authenticate', function() use ($app) {
     }
                                 
 
-    error_log( print_R($studentarr, TRUE ), 3, LOG);
+  //  error_log( print_R($studentarr, TRUE ), 3, LOG);
      
-    for($i = 0; $i < count($studentarr); $i++ ) {
+    for($i = 0; $i < count($studentarr["InvoiceList"]); $i++ ) {
 
-        error_log( print_R($studentarr[$i]->InvoiceList->paymentid, TRUE ), 3, LOG);
 
-        $invoiceAmt  = $studentarr[$i]->InvoiceList->invoiceAmt;
-        $paymentid =   $studentarr[$i]->paymentid;
-        $invoice    = uniqid("lessons",true);                
+		/*
+		npayments has the lastpaymentdate  to judge whether to add invoice, maybe more then one
+		invoice generation would have a service to run thru the whole db and update
+		invoice generation can be done manually for a payer
+		invoices are for monthly: 1, 4, 6, 12, possibly weekly
+		paymentplan indicates cycle, which has a leadtimedays to gen, plus a daysinperiod
+		paymenttype EFT are setup for autopayment.  maybe would have invoice, but isn't easy to close the invoice on payment
+		Cash, cheque, credit are for autogen invoicing.  special is not autogen
+		lastpaymentdate governs whether invoice(s) is needed
+		payment thru paypal updates payment table which has custom field to match invoice number, which allows the lastpaymentdate to get updated 
+		payment via cheque, cash requires user to update lastpaymentdate
+		nextpaymentdate has no use at this point, as open invoices would be the better view
+		
+		say lastpaymentdate is 12/12/2017 and today is feb 1, 2018
+			if user has monthly, and the payondate is 1, then jan would be due, and whether feb is generated depends on the leadtime
+			if user has 6month, then the next invoice won't be created until the leadtime
+			the batch process can be run on the first of every month, or perhaps on every monday
+			if on first, it would need to have leadtime to cover whole month
+			if weekly, then leadtime would cover the week and perhaps a longer
+			The leadtime allows to send email reminder to people, or to display calendar/notification to owner when people go to studio
+			
+		if the leadtime exceeds a week and we do weekly batches, then we need to not create an invoice when one already exists
+		if the payondate changes, we'd need to potentially deal with clearing an open invoice and recreating.  If every invoice is delete/create 
+		then it could do too many reminders
+		
+		mark: run invoices on 1st and 15th.  send invoice notice then for monthly.  cover those with dates between.  For 6mon,year, send 2week advance notice
+			overdue reminder send on next batch
+			thus. lead = 0 for month and 10 for others
+			mark will deal with price updates.  once invoice gen, is not updated
+			
+		cron job will run everyday, will call a wrapper function to call this.  Note this will go thru multiple schools.
+		One cron job for test site, One for main site.
+		
+		note change the npayments type to special if you need to suspend invoice generation due to change of registration status
+		*/
+
+        $goodToInvoice = false;
+        $dayOfMonth = date("j");
+        //check if the system dayofmonth = list batch1 or batch2 (1st and 15th is common)
+/*        
+        if (
+            ( $dayOfMonth == $studentarr["InvoiceList"][$i]["batch1dayofmonth"] ) ||
+            ( $dayOfMonth == $studentarr["InvoiceList"][$i]["batch2dayofmonth"] )  
+            ) {
+
+            //check if student payondate is = batch1 or batch2   
+            if ( 
+                  (  $studentarr["InvoiceList"][$i]["payondayofmonth"] == 
+                    $studentarr["InvoiceList"][$i]["batch1dayofmonth"] ) ||
+                  (  $studentarr["InvoiceList"][$i]["payondayofmonth"]  ==
+                    $studentarr["InvoiceList"][$i]["batch2dayofmonth"] )
+                ) {
+                $goodToInvoice = true;
+            }
+        }
+*/
+//temporary for testing
+        $goodToInvoice = true;
+        
+        $invoiceAmt = $studentarr["InvoiceList"][$i]["paymentamount"];
+        $paymentid  = $studentarr["InvoiceList"][$i]["paymentid"];
+        $to         = $studentarr["InvoiceList"][$i]["payerEmail"];
+        $invoice    = uniqid("lessons",true);
+        $payerName  = $studentarr["InvoiceList"][$i]["payername"];
+        $schEmail   = $studentarr["InvoiceList"][$i]["schoolReplyEmail"];
+        $schSig   = $studentarr["InvoiceList"][$i]["schoolReplySignature"];
+        
+        //check if overdue
+        if ($studentarr["InvoiceList"][$i]["overduecnt"] > 0) {
+         //   error_log( print_R("invoice overdue: $studentarr["InvoiceList"][$i]["paymentid"] \n", TRUE ), 3, LOG);
+        //todo: decide if we need overdue date logic too
+        genOverdueEmail($payerName,$to,$schEmail,$schSig);
+/*
+$message = "
+<html>
+<head>
+<title>Invoice Overdue</title> 
+</head>
+<body>
+<p>Dear: " . $payerName . "</p>
+<p>You have an overdue invoice for payment.  If you have any questions please contact mailto:" . $schEmail .  "</p>
+<p>Email: " . $to . "</p>
+<p>Please pay online or drop by the office to resolve</p>
+<p> " . $schSig . "</p>
+</body>
+</html>
+";
+
+        $subject = 'Overdue Invoice for ' . $payerName;
+
+        //    emailnotify($to, $subject, $message);
+            emailnotify('villaris.us@gmail.com', $subject, $message);
+            error_log( print_R("overdue email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
+*/
+
+            }
+
+        if ($goodToInvoice) {
+        error_log( print_R($studentarr["InvoiceList"][$i]["paymentid"], TRUE ), 3, LOG);
+
 
         $db = new StudentDbHandler();
         $response = array();
@@ -2387,15 +2670,7 @@ $app->post('/invoice', 'authenticate', function() use ($app) {
     
         if ($return > 0) {
             error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
-
-            $response = array();
-            $result = $db->getPayerFromID($paymentid);
-        
-            if ($result != NULL) {
-                $response["LastName"] = $result["LastName"];
-                $response["FirstName"] = $result["FirstName"];
-                $response["Email"] = $result["Email"];
-                $response["payerName"] = $result["payerName"];
+/*
 
 $message = "
 <html>
@@ -2403,28 +2678,24 @@ $message = "
 <title>Invoice #: " . $invoice . "</title> 
 </head>
 <body>
-<p>Dear: " . $response["payerName"] . "</p>
-<p>You have and invoice for payment.  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
-<p>Email: " . $response["Email"] . "</p>
-<p>Name: " . $response["Firstname"] . $response["LastName"] . "</p>
+<p>Dear: " . $payerName . "</p>
+<p>You have an invoice for payment.  If you have any questions please contact mailto:" . $schEmail .  "</p>
+<p>Email: " . $to . "</p>
 <p>Amount: $ " . $invoiceAmt . "</p>
 <p>Date: $ " . $invoiceDate . "</p>
 <p>You will receive an email after you have paid.</p>
+<p> " . $schSig . "</p>
 </body>
 </html>
 ";
 
-$subject = 'Invoice for ' . 
-                $response["FirstName"] . ' ' . 
-                $response["LastName"] ;
+        $subject = 'Invoice for ' . $payerName;
 
-                $to = $response["Email"];
-                
         //    emailnotify($to, $subject, $message);
             emailnotify('villaris.us@gmail.com', $subject, $message);
             error_log( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
-
-            }
+*/            
+            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
             
             $invoicegood += 1;
         } else if ($invoice == RECORD_ALREADY_EXISTED) {
@@ -2435,8 +2706,10 @@ $subject = 'Invoice for ' .
             error_log( print_R( $invoice, TRUE), 3, LOG);
             $invoicebad += 1;
         }
+
+      } //good to invoice
                         
-    }
+    } //loop array
 
     //as long as one worked, return success
         if ($invoicegood > 0) {
@@ -2454,10 +2727,9 @@ $subject = 'Invoice for ' .
             error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
             error_log( print_R( $invoicebad, TRUE), 3, LOG);
             $response["error"] = true;
-            $response["message"] = "Failed to create $evendbad invoice. Please try again";
+            $response["message"] = "Failed to create $invoicebad invoice. Please try again";
             echoRespnse(400, $response);
         }
-
 });
 
 $app->get('/payerstudent', 'authenticate', function() use ($app) {
@@ -2494,6 +2766,8 @@ $app->get('/payerstudent', 'authenticate', function() use ($app) {
             $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
             $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
             $tmp["payername"] = (empty($slist["payername"]) ? "NULL" : $slist["payername"]);
+            $tmp["payerEmail"] = (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+            $tmp["paymentid"] = (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
             $tmp["thetype"] = $thetype;
             $tmp["theinput"] = $theinput;
         array_push($response["studentpayerlist"], $tmp);
@@ -2508,6 +2782,257 @@ $app->get('/payerstudent', 'authenticate', function() use ($app) {
         $response["error"] = true;
         $response["extra"] = $result;
         $response["message"] = "Failed to get User Options. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+$app->get('/invoices', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("invoices entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $payerid = '';
+
+    if(array_key_exists('payerid', $allGetVars)){
+        $payerid = $allGetVars['payerid'];
+    }
+
+    error_log( print_R("invoices params: payerid: $payerid \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getInvoices($payerid);
+
+    $response["error"] = false;
+    $response["invoicelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result["slist"]->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["invoice"] = (empty($slist["invoice"]) ? "NULL" : $slist["invoice"]);
+            $tmp["paymentid"] = (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
+            $tmp["amt"] = (empty($slist["amt"]) ? "NULL" : $slist["amt"]);
+            $tmp["invdate"] = (empty($slist["invdate"]) ? "NULL" : $slist["invdate"]);
+            $tmp["status"] = (empty($slist["status"]) ? "NULL" : $slist["status"]);
+        }
+        array_push($response["invoicelist"], $tmp);
+    }
+
+    if ($result["success"] ) {
+        $response["error"] = false;
+        $response["message"] = "Found invoices successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after invoice list result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["extra"] = $result;
+        $response["message"] = "Failed to get Invoice List. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->get('/calcinvoice', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("calcinvoice entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $payer = '';
+
+    if(array_key_exists('payerid', $allGetVars)){
+        $payer = $allGetVars['payerid'];
+    }
+
+    $status   = 'new';
+
+    error_log( print_R("preinvoices params:  payer: $payer \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // creating invoices based on date and who is ready
+    $result = $db->calcInvoice(
+         $payer
+                                );
+
+    $response["error"] = false;
+    $response["InvoiceList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result["slist"]->fetch_assoc()) {
+        error_log( print_R("after calcInvoice result cnt\n", TRUE), 3, LOG);
+        error_log( print_R( count($slist), TRUE), 3, LOG);
+        
+        if (count($slist) > 0) {
+            $tmp = array();
+            $tmp["ID"]                  =  (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+            $tmp["email"]               =  (empty($slist["email"]) ? "NULL" : $slist["email"]);
+            $tmp["payerid"]             =  (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+            $tmp["paymentid"]           =  (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
+            $tmp["paymenttype"]         =  (empty($slist["paymenttype"]) ? "NULL" : $slist["paymenttype"]);
+            $tmp["payondayofmonth"]     =  (empty($slist["payondayofmonth"]) ? "NULL" : $slist["payondayofmonth"]);
+            $tmp["paymentplan"]         =  (empty($slist["paymentplan"]) ? "NULL" : $slist["paymentplan"]);
+            $tmp["paymentamount"]       =  (empty($slist["paymentamount"]) ? "NULL" : $slist["paymentamount"]);
+            $tmp["lastpaymentdate"]     =  (empty($slist["lastpaymentdate"]) ? "NULL" : $slist["lastpaymentdate"]);
+            $tmp["nextpaymentdate"]     =  (empty($slist["nextpaymentdate"]) ? "NULL" : $slist["nextpaymentdate"]);
+            $tmp["payername"]           =  (empty($slist["payername"]) ? "NULL" : $slist["payername"]);
+            $tmp["leadTimeDays"]        =  (empty($slist["leadTimeDays"]) ? "NULL" : $slist["leadTimeDays"]);
+            $tmp["daysInPeriod"]        =  (empty($slist["daysInPeriod"]) ? "NULL" : $slist["daysInPeriod"]);
+            $tmp["batch1dayofmonth"]    =  (empty($slist["batch1dayofmonth"]) ? "NULL" : $slist["batch1dayofmonth"]);
+            $tmp["batch2dayofmonth"]    =  (empty($slist["batch2dayofmonth"]) ? "NULL" : $slist["batch2dayofmonth"]);
+            $tmp["overdueOnbatch1"]     =  (empty($slist["overdueOnbatch1"]) ? "NULL" : $slist["overdueOnbatch1"]);
+            $tmp["overdueOnbatch2"]     =  (empty($slist["overdueOnbatch2"]) ? "NULL" : $slist["overdueOnbatch2"]);
+            $tmp["leadlast"]            =  (empty($slist["leadlast"]) ? "NULL" : $slist["leadlast"]);
+            $tmp["payerEmail"]          =  (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+            $tmp["schoolReplyEmail"]    =  (empty($slist["schoolReplyEmail"]) ? "NULL" : $slist["schoolReplyEmail"]);
+            $tmp["schoolReplySignature"] =  (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
+            $tmp["overduecnt"]          = (empty($slist["overduecnt"]) ? 0 : $slist["overduecnt"]);
+
+   //     error_log( print_R( $tmp, TRUE), 3, LOG);
+
+            array_push($response["InvoiceList"], $tmp);
+        }
+    }
+
+    if ($result["success"] ) {
+        $response["error"] = false;
+        $response["message"] = "Found calc invoice successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after calc invoice result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["extra"] = $result;
+        $response["message"] = "Failed to get invoice details. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+$app->delete('/invoice','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("invoice before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $invoice = json_decode($body);
+    error_log( print_R($invoice, TRUE ), 3, LOG);
+
+    if (isset($invoice->thedata->id)) {
+        $id =  $invoice->thedata->id;
+    } else { errorRequiredParams('id'); }
+
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+
+    $db = new StudentDbHandler();
+    $response = array();
+    $result = $db->removeInvoice(
+        $id );
+
+    if ($result > 0) {
+        error_log( print_R("invoice removed: $id\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "invoice removed successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after invoice result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to remove invoice. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->get('/payments', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("payments entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $payerid = '';
+
+    if(array_key_exists('payerid', $allGetVars)){
+        $payerid = $allGetVars['payerid'];
+    }
+
+    error_log( print_R("payments params: payerid: $payerid \n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getPayments($payerid);
+
+    $response["error"] = false;
+    $response["paymentlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result["slist"]->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+
+            $tmp["inv_status"] = (empty($slist["inv_status"]) ? "NULL" : $slist["inv_status"]);
+            $tmp["invdate"] = (empty($slist["invdate"]) ? "NULL" : $slist["invdate"]);
+            $tmp["inv_amt"] = (empty($slist["inv_amt"]) ? "NULL" : $slist["inv_amt"]);
+            $tmp["paymentid"] = (empty($slist["paymentid"]) ? "NULL" : $slist["paymentid"]);
+            $tmp["invoice"] = (empty($slist["invoice"]) ? "NULL" : $slist["invoice"]);
+            $tmp["invid"] = (empty($slist["invid"]) ? "NULL" : $slist["invid"]);
+            $tmp["npinvoice"] = (empty($slist["npinvoice"]) ? "NULL" : $slist["npinvoice"]);
+            $tmp["quantity1"] = (empty($slist["quantity1"]) ? "NULL" : $slist["quantity1"]);
+            $tmp["mc_gross_1"] = (empty($slist["mc_gross_1"]) ? "NULL" : $slist["mc_gross_1"]);
+            $tmp["item_name1"] = (empty($slist["item_name1"]) ? "NULL" : $slist["item_name1"]);
+            $tmp["quantity2"] = (empty($slist["quantity2"]) ? "NULL" : $slist["quantity2"]);
+            $tmp["mc_gross_2"] = (empty($slist["mc_gross_2"]) ? "NULL" : $slist["mc_gross_2"]);
+            $tmp["item_name2"] = (empty($slist["item_name2"]) ? "NULL" : $slist["item_name2"]);
+            $tmp["quantity3"] = (empty($slist["quantity3"]) ? "NULL" : $slist["quantity3"]);
+            $tmp["mc_gross_3"] = (empty($slist["mc_gross_3"]) ? "NULL" : $slist["mc_gross_3"]);
+            $tmp["item_name3"] = (empty($slist["item_name3"]) ? "NULL" : $slist["item_name3"]);
+            $tmp["quantity4"] = (empty($slist["quantity4"]) ? "NULL" : $slist["quantity4"]);
+            $tmp["mc_gross_4"] = (empty($slist["mc_gross_4"]) ? "NULL" : $slist["mc_gross_4"]);
+            $tmp["item_name4"] = (empty($slist["item_name4"]) ? "NULL" : $slist["item_name4"]);
+            $tmp["quantity5"] = (empty($slist["quantity5"]) ? "NULL" : $slist["quantity5"]);
+            $tmp["mc_gross_5"] = (empty($slist["mc_gross_5"]) ? "NULL" : $slist["mc_gross_5"]);
+            $tmp["item_name5"] = (empty($slist["item_name5"]) ? "NULL" : $slist["item_name5"]);
+            $tmp["payment_gross"] = (empty($slist["payment_gross"]) ? "NULL" : $slist["payment_gross"]);
+            $tmp["mc_gross"] = (empty($slist["mc_gross"]) ? "NULL" : $slist["mc_gross"]);
+            $tmp["mc_currency"] = (empty($slist["mc_currency"]) ? "NULL" : $slist["mc_currency"]);
+            $tmp["nptype"] = (empty($slist["nptype"]) ? "NULL" : $slist["nptype"]);
+            $tmp["npdate"] = (empty($slist["npdate"]) ? "NULL" : $slist["npdate"]);
+            $tmp["payer_status"] = (empty($slist["payer_status"]) ? "NULL" : $slist["payer_status"]);
+            $tmp["npfirst_name"] = (empty($slist["npfirst_name"]) ? "NULL" : $slist["npfirst_name"]);
+            $tmp["nplast_name"] = (empty($slist["nplast_name"]) ? "NULL" : $slist["nplast_name"]);
+            $tmp["payer_email"] = (empty($slist["payer_email"]) ? "NULL" : $slist["payer_email"]);
+            $tmp["npstatus"] = (empty($slist["npstatus"]) ? "NULL" : $slist["npstatus"]);
+            $tmp["ipn_track_id"] = (empty($slist["ipn_track_id"]) ? "NULL" : $slist["ipn_track_id"]);
+            $tmp["num_cart_items"] = (empty($slist["num_cart_items"]) ? "NULL" : $slist["num_cart_items"]);
+            $tmp["receipt_id"] = (empty($slist["receipt_id"]) ? "NULL" : $slist["receipt_id"]);
+            $tmp["txn_id"] = (empty($slist["txn_id"]) ? "NULL" : $slist["txn_id"]);
+            $tmp["npid"] = (empty($slist["npid"]) ? "NULL" : $slist["npid"]);
+            $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+        }
+        array_push($response["paymentlist"], $tmp);
+    }
+
+    if ($result["success"] ) {
+        $response["error"] = false;
+        $response["message"] = "Found payments successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after payments result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["extra"] = $result;
+        $response["message"] = "Failed to get Payments. Please try again";
         echoRespnse(400, $response);
     }
 
@@ -2542,6 +3067,61 @@ function createStudentHistory($contactid,$histtype,$histdate) {
     
 }
 
+function genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->info( print_R("genInvoiceEmail entered: $invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to", TRUE));
+
+$message = "
+<html>
+<head>
+<title>Invoice #: " . $invoice . "</title> 
+</head>
+<body>
+<p>Dear: " . $payerName . "</p>
+<p>You have an invoice for payment.  If you have any questions please contact mailto:" . $schEmail .  "</p>
+<p>Email: " . $to . "</p>
+<p>Amount: $ " . $invoiceAmt . "</p>
+<p>Date: $ " . $invoiceDate . "</p>
+<p>You will receive an email after you have paid.</p>
+<p> " . $schSig . "</p>
+</body>
+</html>
+";
+
+    $subject = 'Invoice for ' . $payerName;
+
+    //    emailnotify($to, $subject, $message);
+    emailnotify('villaris.us@gmail.com', $subject, $message);
+
+    $app->log->info( print_R("email to send: $to\n, $subject\n, $message\n", TRUE));
+
+}
+function genOverdueEmail($payerName, $to, $schEmail,$schSig) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->info( print_R("genOverdueEmail entered: $payerName, $to, $schEmail,$schSig", TRUE));
+
+$message = "
+<html>
+<head>
+<title>Invoice Overdue</title> 
+</head>
+<body>
+<p>Dear: " . $payerName . "</p>
+<p>You have an overdue invoice for payment.  If you have any questions please contact mailto:" . $schEmail .  "</p>
+<p>Email: " . $to . "</p>
+<p>Please pay online or drop by the office to resolve</p>
+<p> " . $schSig . "</p>
+</body>
+</html>
+";
+
+    $subject = 'Overdue Invoice for ' . $payerName;
+
+    //    emailnotify($to, $subject, $message);
+    emailnotify('villaris.us@gmail.com', $subject, $message);
+    $app->log->info( print_R("overdue email to send: $to\n, $subject\n, $message\n", TRUE));
+}
+
 function createNotification($type,$notifkey,$value) {
     $app = \Slim\Slim::getInstance();
     $app->log->info( print_R("createNotification entered: $type,$notifkey,$value", TRUE));
@@ -2568,11 +3148,12 @@ function createNotification($type,$notifkey,$value) {
     }
     
 }
-
+ 
+function validateEmail($email) {
 /**
  * Validating email address
  */
-function validateEmail($email) {
+    
     $app = \Slim\Slim::getInstance();
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $response["error"] = true;
@@ -2631,5 +3212,6 @@ function addSecurity($insql, $field, $override = 'false') {
     return $insql;
     
 }
+
 
 ?>

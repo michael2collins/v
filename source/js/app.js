@@ -332,7 +332,7 @@
                 templateUrl: 'templates/states/table-basic-basic.php'
             })
             .when('/table-basic-paymenttracking', {
-                templateUrl: 'templates/states/table-basic-paymenttracking.html'
+                templateUrl: 'templates/states/table-basic-paymenttracking.php'
             })
             .when('/table-basic-rank', {
                 templateUrl: 'templates/states/table-basic-ranks.php'

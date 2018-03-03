@@ -6,16 +6,18 @@
         <h4>Events</h4>
       </li>
       <li><a href="#/"><i class="icon-speedometer"></i><span class="menu-title">Main</span></a></li>
-      <li><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Tournaments</span><span class="fa arrow"></span></a>
-        <ul class="nav nav-second-level">
+      <li ng-hide="true"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Tournaments</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level" >
           <li ng-hide="vm.islogin()"><a href="#/page-signin">Login</a></li>
           <li ng-hide="vm.islogin()"><a href="#/page-signup">Create User</a></li> 
           <li ng-show="vm.islogin()"><a href="#/tournament">Tournament Registration</a></li>
           
         </ul>
       </li>
+      <!--
       <li><a href="#/info"><i class="icon-info"></i><span class="menu-title">Help</span></a></li>
       <li><a href="#/terms"><i class="icon-briefcase"></i><span class="menu-title">Terms of Use</span></a></li>
+      -->
     </ul>
   </div>
 </nav>

@@ -1571,6 +1571,75 @@ class StudentDbHandler
 	}
 
 	public
+	function getPayments($payer)
+	{
+		$sql = "SELECT 
+		payerid	,
+		p.id	as npid,
+		txn_id	,
+		receipt_id,	
+		num_cart_items,	
+		ipn_track_id,	
+		payment_gross,	
+		mc_gross	,
+		p.type as nptype, 	
+		p.date as npdate,	
+		payer_status	,
+		first_name	as npfirst_name,
+		last_name	as nplast_name,
+		payer_email	,
+		p.status	as npstatus,
+		mc_currency	,
+		item_name1	,
+		mc_gross_1	,
+		quantity1	,
+		item_name2	,
+		mc_gross_2	,
+		quantity2	,
+		item_name3	,
+		mc_gross_3	,
+		quantity3	,
+		item_name4	,
+		mc_gross_4	,
+		quantity4	,
+		item_name5	,
+		mc_gross_5	,
+		quantity5	,
+		custom	as npinvoice,
+		inv.id	as invid,
+		invoice	,
+		pp.paymentid,	
+		amt	as inv_amt,
+		invdate	,
+		inv.status	as inv_status	
+		FROM payment p
+		join invoice inv on (inv.invoice = p.custom)
+		join npayments pp on ( pp.paymentid = inv.paymentid )
+		where pp.payerid = ?
+";
+		error_log(print_R("getPayment sql: $sql $payer\n", TRUE) , 3, LOG);
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $payer);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				error_log(print_R("getPayment  returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+				return $slists;
+			}
+			else {
+				error_log(print_R("getPayment list execute failed", TRUE) , 3, LOG);
+				printf("Errormessage: %s\n", $this->conn->error);
+			}
+		}
+		else {
+			error_log(print_R("getPayment sql failed", TRUE) , 3, LOG);
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+	}
+
+	public
 	function createPayment($payment_type, $payment_date, $payer_status, $first_name, $last_name, $payer_email, $address_name, $address_country,
 	$address_country_code, $address_zip, $address_state, $address_city, $address_street, $payment_status, $mc_currency, $mc_gross_1, 
 	$item_name1, $txn_id, $reason_code, $parent_txn_id, $num_cart_items, $quantity1, $quantity2, $quantity3, $quantity4, $quantity5, 
@@ -1677,17 +1746,214 @@ class StudentDbHandler
 	
 	public
 	function getPayerFromID($paymendid) {
+	}
+
+	public
+	function getCommunication() {
+		global $school;
+	    $sql = "
+		select schoolReplyEmail, schoolReplySignature
+            from schoolCommunication 
+            where school = ?
+	    ";
+	    
+		error_log(print_R("sql for getCommunication is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $school);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+        
+	}
+
+	public
+	function getOverdue($paymentid) {
+	    $sql = "
+		select count(*) as overduecnt from invoice where status = 'new' and paymentid = ?
+	    ";
+	    
+		error_log(print_R("sql for getOverdue is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $paymentid);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+        
+	}
+	
+	public
+	function getInvoiceList($invoiceDate) {
+
 	    $sql = "
 select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmonth, 
-	    pp.paymentplan, pp.paymentamount, pp.lastpaymentdate, pp.nextpaymentdate, p.payername
+	    pp.paymentplan, pp.paymentamount, pp.lastpaymentdate, pp.nextpaymentdate, p.payername,
+		payp.leadTimeDays, payp.daysInPeriod, payp.batch1dayofmonth, payp.batch2dayofmonth, payp.overdueOnbatch1, payp.overdueOnbatch2,
+		c.studentschool, com.schoolReplyEmail, com.schoolReplySignature,
+		date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) as leadlast,
+		p.payerEmail,
+		overdue.overduecnt
             from ncontacts c
 			join nclasspays cp on (cp.contactid = c.ID)
             join npayments pp on (pp.payerid = cp.payerid)
-            join payer p on (p.id = pp.payerid)
+            join payer p on (p.id = pp.payerid and p.school = c.studentschool)
+            join schoolCommunication com on (com.school = c.studentschool)
+			left join paymentplan payp on (payp.type = pp.paymentplan)
+			left join (select count(*) as overduecnt, paymentid from invoice where status = 'new') as overdue on (overdue.paymentid = pp.paymentid)
             where
-            c.studentschool = p.school
-			and cp.primaryContact = 1
+			cp.primaryContact = 1
 	    ";
+	    
+	    /*
+	    SELECT distinct CONCAT(  'update payer set payerEmail = ''', c.email,  ''' where id = ', p.id, ';' ) 
+FROM ncontacts c
+JOIN nclasspays cp ON ( cp.contactid = c.ID ) 
+JOIN npayments pp ON ( pp.payerid = cp.payerid ) 
+JOIN payer p ON ( p.id = pp.payerid
+AND p.school = c.studentschool ) 
+WHERE cp.primaryContact =1
+
+	    */
+	    
+	    //lastpaymentdate is actually last generated date.  The payment is in payment table for paypal. and cash/cheque?
+        $sql .= "  and DATE_FORMAT(date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) , '%Y-%m-%d') 
+        	< DATE_FORMAT( ?, '%Y-%m-%d')  ";
+
+		error_log(print_R("sql for getInvoiceLIst is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $invoiceDate);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+        
+	}
+
+	public
+	function calcInvoice($payer) {
+//need to figure out overdue logic
+	    $sql = "
+select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmonth, 
+	    pp.paymentplan, pp.paymentamount, DATE_FORMAT(pp.lastpaymentdate, '%Y-%m-%d') as lastpaymentdate , pp.nextpaymentdate, p.payername,
+		payp.leadTimeDays, payp.daysInPeriod, payp.batch1dayofmonth, payp.batch2dayofmonth, payp.overdueOnbatch1, payp.overdueOnbatch2,
+		c.studentschool, com.schoolReplyEmail, com.schoolReplySignature,
+		date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) as leadlast,
+		p.payerEmail,
+		overdue.overduecnt
+            from ncontacts c
+			join nclasspays cp on (cp.contactid = c.ID)
+            join npayments pp on (pp.payerid = cp.payerid)
+            join payer p on (p.id = pp.payerid and p.school = c.studentschool)
+            join schoolCommunication com on (com.school = c.studentschool)
+			left join paymentplan payp on (payp.type = pp.paymentplan)
+			left join (select count(*) as overduecnt, paymentid from invoice where status = 'new' group by paymentid ) as overdue on (overdue.paymentid = pp.paymentid)
+            where
+			cp.primaryContact = 1
+			and pp.payerid = ?
+	    ";
+	    
+	    //lastpaymentdate is actually last generated date.  The payment is in payment table for paypal. and cash/cheque?
+      //  $sql .= "  and DATE_FORMAT(date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) , '%Y-%m-%d') 
+      //  	< DATE_FORMAT( ?, '%Y-%m-%d')  ";
+
+		error_log(print_R("sql for getPreInvoiceLIst is: " . $sql . "\n", TRUE) , 3, LOG);
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $payer);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$res = array();
+				error_log(print_R("calcinvoice list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+				$res["success"]=true;
+				$res["slist"]=$slists;
+				return $res;
+			}
+			else {
+				error_log(print_R("calcinvoice list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "calcinvoice failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("calcinvoice list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "calcinvoice failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+        
+        
+	}
+
+	public
+	function updateInvoice($id, $amt, $invdate, $status)
+	{
+	/**
+	 * Updating invoice
+	 */
+
+		$num_affected_rows = 0;
+		$sql = "UPDATE invoice set ";
+		$sql.= "  amt = ?, invdate = ?, status = ? ";
+		$sql.= "  where   id  = ? ";
+		error_log(print_R($sql, TRUE));
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("ssss",  $amt, $invdate, $status, $id);
+			$stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+			error_log(print_R("affected rows: $num_affected_rows\n", TRUE));
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+		}
+
+
+		return $num_affected_rows;
+	}
+
+	public
+	function getInvoices($payerid) {
+
+	    $sql = "
+	    select id, invoice, i.paymentid, amt, invdate, status
+	    from invoice i
+	    join npayments np on  (np.paymentid = i.paymentid)
+	    where np.payerid = ?
+	    ";
+	    
+		error_log(print_R("sql for getInvoices is: " . $sql . "\n", TRUE) , 3, LOG);
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $payerid);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$res = array();
+				error_log(print_R("getInvoices list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+				$res["success"]=true;
+				$res["slist"]=$slists;
+				return $res;
+			}
+			else {
+				error_log(print_R("getInvoices list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getInvoices failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getInvoices list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getInvoices failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+        
 	}
 
 	public
@@ -1695,7 +1961,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	{
 		
 	    $sql = "
-			select c.ID as contactid, c.firstname, c.lastname, p.id as payerid, p.payername
+			select c.ID as contactid, c.firstname, c.lastname, p.id as payerid, p.payername, p.payerEmail, pp.paymentid
             from ncontacts c
 			join nclasspays cp on (cp.contactid = c.ID)
             join npayments pp on (pp.payerid = cp.payerid)
@@ -1742,6 +2008,101 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		}
 	}
 	
+	private
+	function isInvoiceExists( $paymentid, $invdate)
+	{
+		/**
+		 * Checking for duplicate invoice 
+		 * @return boolean
+		 */
+		error_log(print_R("before isInvoiceExists\n", TRUE) , 3, LOG);
+		error_log(print_R("paymentid: $paymentid\n", TRUE) , 3, LOG);
+		error_log(print_R("invdate: $invdate\n", TRUE) , 3, LOG);
+		
+		$stmt = $this->conn->prepare("SELECT id from invoice WHERE paymentid = ? and invdate = ? ");
+		$stmt->bind_param("ss", $paymentid, $invdate);
+		$stmt->execute();
+		$stmt->store_result();
+		$num_rows = $stmt->num_rows;
+		$stmt->close();
+		$r = $num_rows > 0;
+		error_log(print_R("invoice exists: $r\n", TRUE) , 3, LOG);
+		return $r;
+	}
+	
+	public
+	function createInvoice($invoice, $invoiceDate, $invoiceAmt, $paymentid, $status)
+	{
+	/**
+	 * Creating new invoice
+	 */
+		error_log(print_R("createInvoice entered\n", TRUE) , 3, LOG);
+		$response = array();
+		global $school;
+		$sql = "INSERT into invoice (";
+		$sql.= " invoice ,";
+		$sql.= " invDate ,";
+		$sql.= " amt, ";
+		$sql.= " paymentid, ";
+		$sql.= " status )";
+		$sql.= " values ( ?, ?, ?, ?, ?)";
+
+		// First check if invoice already existed in db
+
+		if (!$this->isInvoiceExists(
+			 $paymentid, $invoiceDate
+			)) {
+			if ($stmt = $this->conn->prepare($sql)) {
+				$stmt->bind_param("sssss", $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status);
+				$result = $stmt->execute();
+				$stmt->close();
+
+				// Check for successful insertion
+
+				if ($result) {
+					$new_invoice_id = $this->conn->insert_id;
+
+					// User successfully inserted
+
+					return $new_invoice_id;
+				}
+				else {
+					// Failed to create invoice
+					return NULL;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return NULL;
+			}
+		}
+		else {
+			return RECORD_ALREADY_EXISTED;
+		}
+
+		return $response;
+	}
+
+	public
+	function removeInvoice($id)
+	{
+		error_log(print_R("removeInvoice entered\n", TRUE) , 3, LOG);
+		$sql = "DELETE from invoice  where id = ? ";
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $id);
+
+			// Check for success
+
+			$stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+			return $num_affected_rows >= 0;
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+	}
 	
 }
 

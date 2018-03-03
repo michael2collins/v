@@ -53,7 +53,13 @@
             getEmailViews: getEmailViews,
             removeEmailView: removeEmailView,
             updateEmailView: updateEmailView,
-            getPayerStudent: getPayerStudent
+            getPayerStudent: getPayerStudent,
+            getInvoices: getInvoices,
+            updateInvoice: updateInvoice,
+            addInvoice: addInvoice,
+            removeInvoice: removeInvoice,
+            calcInvoice: calcInvoice,
+            getPayments: getPayments
         };
         return service;
 
@@ -104,6 +110,67 @@
          
         return( request.then( handleSuccess, handleError ) );
       }
+     function getInvoices(path, thedata) {
+        var request = $http({
+            method: "get",
+            url: path,
+            params: thedata                
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function getPayments(path, thedata) {
+        var request = $http({
+            method: "get",
+            url: path,
+            params: thedata                
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function calcInvoice(path, thedata) {
+        var request = $http({
+            method: "get",
+            url: path,
+            params: thedata                
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+        function removeInvoice( thedata ) {
+            $log.debug('removeInvoice data before post :' , thedata);
+            var path = "../v1/invoice";
+            var request = $http({
+                method: "DELETE",
+                url: path,
+                data: {
+                    thedata: thedata
+                }
+            });
+            return( request.then( handleSuccess, handleError ) );
+        }        
+        function updateInvoice(path, thedata ) {
+                    $log.debug('updateInvoice data before post :' , thedata);
+                    var request = $http({
+                        method: "PUT",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        function addInvoice(path, thedata ) {
+                    $log.debug('addInvoice data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
       
      function refreshEmails(input) {
         var params = {input: input};

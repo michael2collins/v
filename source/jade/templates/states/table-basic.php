@@ -197,4 +197,41 @@ function btnColTemplate( $parameters = array() ) {
     <?php return ob_get_clean();
 }
 
+function dateColTemplate( $parameters = array() ) {
+
+    $def = array(
+        'required' => false,
+        'fieldtype' => 'text',
+        'dateFormat' => 'MM/dd/yyyy'
+     );
+     
+   $param = param_default( $def, $parameters );    
+   
+    ob_start(); ?>
+
+    <div class="form-group">
+        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label>
+
+      <div class="col-md-11" style="padding-right: 0px;">
+          <div class="input-icon right">
+            <input  id="<?=$param['field']?>" 
+                    type="<?=$param['fieldtype']?>" 
+                    placeholder="<?=$param['placeholder']?>" 
+                    is-open="<?=$param['isopen']?>"
+                    uib-datepicker-popup="<?=$param['dateFormat']?>" 
+                    name="<?=$param['field']?>" 
+                    ng-model="<?=$param['model']?>" 
+                    <?=($param['required']  ? 'required' : '')?> 
+                    class="form-control">
+            </div>
+        </div>
+      <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+          <button type="button" class="btn btn-default" ng-click="<?=$param['dopen']?>"><i class="glyphicon glyphicon-calendar"></i></button>
+        </div>
+
+    </div>
+
+<?php return ob_get_clean();
+}
+
 ?>

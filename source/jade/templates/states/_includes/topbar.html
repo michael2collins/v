@@ -1,29 +1,106 @@
 <!DOCTYPE html>
-<div ng-class="[header.layout_topbar]" class="navbar-header">
+<div ng-class="[vm.header.layout_topbar]" class="navbar-header">
    <a id="setting-toggle"><i class="icon-wrench"></i></a>
    <button type="button" data-toggle="offcanvas" class="navbar-toggle">
-   <span class="sr-only">Toggle navigation</span>
-   <span class="icon-bar"></span>
-   <span class="icon-bar"></span>
-   <span class="icon-bar"></span>
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
    </button>
    <a id="logo" href="#/main" class="navbar-brand">
-   <span class="icon-social-tumblr"></span>
-   <span class="logo-text">V Dojo</span></a>
+      <span class="icon-social-tumblr"></span>
+      <span class="logo-text">V Dojo</span>
+   </a>
 </div>
-
 <div id="top-menu" class="topbar-main">
+   <ul class="nav navbar-top-links" style="margin-left: 130px;">
+      <div class="container">
+         <ul class="nav navbar-top-links navbar-left">
+            <li class="mll mtl dropdown" ng-show="vm.isokf()">
+               <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+               <i class="fa fa-comments-o"></i>
+               <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
+               <span class="badge badge-yellow">{{vm.alertcount}}</span></a>
+               <ul class="dropdown-menu dropdown-alerts">
+                  <li class="dropdown-submenu">
+                     <a class="test" ng-hide="!vm.newstudents.length" tabindex="-1" href="javascript:void(0);"><span class="label label-green"><i class="fa fa-handshake-o fa-fw"></i></span><span class="menu-title">{{vm.newstudents.length}} New Students Last 2 weeks</span>
+                     <span class="caret"></span></a>
+                     <ul class="dropdown-menu">
+                        <li ng-repeat="stu in vm.newstudents"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
+                        <li><a tabindex="-1" ng-click="vm.clearNewStudents()" class="text-right">Clear All</a></li>
+                     </ul>
+                  </li>
+                  <li class="dropdown-submenu">
+                     <a class="test" ng-hide="!vm.teststudents.length" tabindex="-1" href="javascript:void(0);"><span class="label label-violet"><i class="fa fa-flag-checkered fa-fw"></i></span><span class="menu-title">{{vm.teststudents.length}} Students ready to test</span>
+                     <span class="caret"></span></a>
+                     <ul class="dropdown-menu">
+                        <li ng-repeat="stu in vm.teststudents"><a tabindex="-1" href="#/table-basic-testcandidate">{{stu.firstname}} {{stu.lastname}}</a></li>
+                        <li><a tabindex="-1" ng-click="vm.clearTestStudents()" class="text-right">Clear All</a></li>
+                     </ul>
+                  </li>
+                  <li class="dropdown-submenu">
+                     <a class="test" ng-hide="!vm.overduestudents.overdue.length" tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fa fa-fire fa-fw"></i></span><span class="menu-title">{{vm.overduestudents.overdue.length}} Overdue Payments</span>
+                     <span class="caret"></span></a>
+                     <ul class="dropdown-menu">
+                        <li ng-repeat="stu in vm.overduestudents.overdue"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
+                        <li><a tabindex="-1" ng-click="vm.clearOverdueStudents()" class="text-right">Clear All</a></li>
+                     </ul>
+                  </li>
+                  <li class="dropdown-submenu">
+                     <a class="test" ng-hide="!vm.noshowstudents.noshow.length" tabindex="-1" href="javascript:void(0);"><span class="label label-blue"><i class="fa fa-coffee fa-fw"></i></span><span class="menu-title">{{vm.noshowstudents.noshow.length}} No show Students +2wk</span>
+                     <span class="caret"></span></a>
+                     <ul class="dropdown-menu">
+                        <li ng-repeat="stu in vm.noshowstudents.noshow"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
+                        <li><a tabindex="-1" ng-click="vm.clearNoshowStudents()" href="javascript:void(0);" class="text-right">Clear All</a></li>
+                     </ul>
+                  </li>
+                  <li class="dropdown-submenu">
+                     <a class="test" ng-hide="!vm.thisTasknamelist.length" tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fa fa-tasks fa-fw"></i></span><span class="menu-title">{{vm.thisTasknamelist.length}} Tasks outstanding</span>
+                     <span class="caret"></span></a>
+                     <ul class="dropdown-menu">
+                        <li ng-repeat="task in vm.thisTasknamelist"><a tabindex="-1" href="javascript:void(0);">{{task.taskname}}</a></li>
+                        <li><a tabindex="-1" href="javascript:void(0);" class="text-right">End of tasks alerts</a></li>
+                     </ul>
+                  </li>
+                  <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear all alerts</a><span class="pull-right text-muted small">Last upd. 12min ago</span></li>
+               </ul>
+            </li>
+            <li class="mll mtl dropdown" ng-show="vm.isokf()">
+               <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+               <i ng-class="vm.emailcount > 0 ? ' icon-envelope-open' : ' icon-envelope '"></i>
+               <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
+               <span class="badge badge-yellow">{{vm.emailcount}}</span></a>
+               <ul class="dropdown-menu  pull-left" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                  <li>
+                     <div class="navbar-content">
+                        <div class="row">
+                           <div class="mll mtm col-md-12 col-xs-12"><a ng-click="vm.openEmail()" class="btn btn-default btn-sm btn-green">Open Email</a></div>
+                        </div>
+                        <div class="row">
+                           <div class="mll mtm col-md-12 col-xs-12"><a ng-click="vm.newEmail()" class="btn btn-default btn-sm btn-green">New Email</a></div>
+                        </div>
+                        <div class="navbar-footer">
+                           <div class="navbar-footer-content">
+                              <div class="row">
+                                 <div class="mbm mtm col-md-offset-5 col-xs-offset-5"><a href="javascript:void(0);" class="btn btn-default btn-sm">Close</a></div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </li>
+               </ul>
+            </li>
+         </ul>
    <ul class="nav navbar-top-links navbar-right mrxxl">
-
       <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="vm.isokf()">
-         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown" >
+         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
          <span class="img-responsive img-circle" ng-switch on="vm.userdta.pictureurl">
          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
          <img ng-switch-default   ng-src="{{vm.userdta.pictureurl}}"/>
          </span>
          <span>&nbsp;{{vm.userdta.username}}&nbsp;</span><span class="caret"></span>
          </a>
-         <ul class="dropdown-menu dropdown-user pull-right"  aria-labelledby="simple-dropdown">
+         <ul class="dropdown-menu dropdown-user pull-right" aria-labelledby="simple-dropdown">
             <li>
                <div class="navbar-content">
                   <div class="row">
@@ -32,7 +109,7 @@
                         <p class="text-muted small">{{vm.userdta.email}}</p>
                      </div>
                   </div>
-               </div>               
+               </div>
             </li>
             <li>
                <div class="row">
@@ -52,91 +129,6 @@
          </ul>
       </li>
    </ul>
-   <ul class="nav navbar-top-links"  style="margin-left: 130px;">
-      <div class="container">
-         <div class="dropdown">
-            <ul class="nav navbar-top-links navbar-left">
-               <li class="mll mtl dropdown" ng-show="vm.isokf()">
-                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-            <i class="fa fa-comments-o"></i>
-            <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
-            <span class="badge badge-yellow">{{vm.alertcount}}</span></a>
-                  <ul class="dropdown-menu dropdown-alerts">
-                     <li class="dropdown-submenu">
-                        <a class="test" ng-hide="!vm.newstudents.length" tabindex="-1" href="javascript:void(0);"><span class="label label-green"><i class="fa fa-handshake-o fa-fw"></i></span><span class="menu-title">{{vm.newstudents.length}} New Students Last 2 weeks</span>
-         <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                           <li ng-repeat="stu in vm.newstudents"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
-                           <li><a tabindex="-1" ng-click="vm.clearNewStudents()" class="text-right">Clear All</a></li>
-                        </ul>
-                     </li>
-                     <li class="dropdown-submenu">
-                        <a class="test" ng-hide="!vm.teststudents.length" tabindex="-1" href="javascript:void(0);"><span class="label label-violet"><i class="fa fa-flag-checkered fa-fw"></i></span><span class="menu-title">{{vm.teststudents.length}} Students ready to test</span>
-         <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                           <li ng-repeat="stu in vm.teststudents"><a tabindex="-1" href="#/table-basic-testcandidate">{{stu.firstname}} {{stu.lastname}}</a></li>
-                           <li><a tabindex="-1" ng-click="vm.clearTestStudents()" class="text-right">Clear All</a></li>
-                        </ul>
-                     </li>
-                     <li class="dropdown-submenu">
-                        <a class="test" ng-hide="!vm.overduestudents.overdue.length" tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fa fa-fire fa-fw"></i></span><span class="menu-title">{{vm.overduestudents.overdue.length}} Overdue Payments</span>
-         <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                           <li ng-repeat="stu in vm.overduestudents.overdue"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
-                           <li><a tabindex="-1" ng-click="vm.clearOverdueStudents()" class="text-right">Clear All</a></li>
-                        </ul>
-                     </li>
-                     <li class="dropdown-submenu">
-                        <a class="test" ng-hide="!vm.noshowstudents.noshow.length" tabindex="-1" href="javascript:void(0);"><span class="label label-blue"><i class="fa fa-coffee fa-fw"></i></span><span class="menu-title">{{vm.noshowstudents.noshow.length}} No show Students +2wk</span>
-         <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                           <li ng-repeat="stu in vm.noshowstudents.noshow"><a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">{{stu.firstname}} {{stu.lastname}}</a></li>
-                           <li><a tabindex="-1" ng-click="vm.clearNoshowStudents()" href="javascript:void(0);" class="text-right">Clear All</a></li>
-                        </ul>
-                     </li>
-                     <li class="dropdown-submenu">
-                        <a class="test" ng-hide="!vm.thisTasknamelist.length" tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fa fa-tasks fa-fw"></i></span><span class="menu-title">{{vm.thisTasknamelist.length}} Tasks outstanding</span>
-         <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
-                           <li ng-repeat="task in vm.thisTasknamelist"><a tabindex="-1" href="javascript:void(0);">{{task.taskname}}</a></li>
-                           <li><a tabindex="-1" href="javascript:void(0);" class="text-right">End of tasks alerts</a></li>
-                        </ul>
-                     </li>
-                     <li><a tabindex="-1" href="javascript:void(0);" class="text-right">Clear all alerts</a><span class="pull-right text-muted small">Last upd. 12min ago</span></li>
-
-
-                  </ul>
-               </li>
-               <li class="mll mtl dropdown" ng-show="vm.isokf()">
-                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
-            <i ng-class="vm.emailcount > 0 ? ' icon-envelope-open' : ' icon-envelope '"></i>
-            <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
-            <span class="badge badge-yellow">{{vm.emailcount}}</span></a>
-                  <ul class="dropdown-menu  pull-left" uib-dropdown-menu aria-labelledby="simple-dropdown">
-                     <li>
-                        <div class="navbar-content">
-                           <div class="row">
-                              <div class="mll mtm col-md-12 col-xs-12"><a ng-click="vm.openEmail()" class="btn btn-default btn-sm btn-green">Open Email</a></div>
-                           </div>
-                           <div class="row">
-                              <div class="mll mtm col-md-12 col-xs-12"><a ng-click="vm.newEmail()" class="btn btn-default btn-sm btn-green">New Email</a></div>
-                           </div>
-                           <div class="navbar-footer">
-                              <div class="navbar-footer-content">
-                                 <div class="row">
-                                    <div class="mbm mtm col-md-offset-5 col-xs-offset-5"><a href="javascript:void(0);" class="btn btn-default btn-sm">Close</a></div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                     </li>
-                  </ul>
-
-               </li>
-
-            </ul>
-         </div>
       </div>
-
    </ul>
 </div>

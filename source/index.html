@@ -128,33 +128,36 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular.js"></script>
+<!--    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.11/angular.js"></script> 
+
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-moment/1.2.0/angular-moment.min.js"></script>
 
     <!-- added for auth -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-cookies.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.11/angular-cookies.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-route.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.11/angular-route.min.js"></script>
 
 
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.11/angular-animate.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-messages.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.11/angular-messages.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.10/angular-resource.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.11/angular-resource.min.js"></script>
 
-
+<!--
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.0/ui-bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.0/ui-bootstrap-tpls.min.js"></script>
-
-
+-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui-ieshiv.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script>
@@ -265,7 +268,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/hint.css/2.1.0/hint.min.css" rel="stylesheet" type="text/css">
 
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.4.10/angular-sanitize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-sanitize/1.5.11/angular-sanitize.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css" />
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script>
@@ -621,30 +624,31 @@
 
     <script type="text/javascript" src="js/services/statsServices.js"></script>
     <script type="text/javascript" src="js/services/templateServices.js"></script>
-    <script type="text/javascript">
+<!--    <script type="text/javascript">
         //<![CDATA[ 
         var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
         document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
         //]]>
     </script>
+    -->
 </head>
 
-<body ng-app="ng-admin" ng-class="[header.header_topbar, header.boxed]" class="topbar-fixed sidebar-fixed" style="padding:  0px;">
+<body ng-app="ng-admin" ng-class="[vm.header.header_topbar, vm.header.boxed]" class="topbar-fixed sidebar-fixed" style="padding:  0px;">
     <!--V JS
     -->
-    <div ng-controller="MainController as vm" class="default-page">
+    <div ng-controller="MainController as vm" class="default-page"> 
         <!--BEGIN TO TOP-->
         <a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
         <!--END BACK TO TOP-->
-        <div id="wrapper" ng-class="header.layout_menu">
-            <!--BEGIN TOPBAR-->
+        <div id="wrapper" ng-class="vm.header.layout_menu"> 
+            <!--BEGIN TOPBAR -->
             <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
             <!--END TOPBAR-->
             <!--BEGIN SIDEBAR MENU-->
             <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
             <!--END SIDEBAR MENU-->
             <!--BEGIN PAGE WRAPPER-->
-            <div id="page-wrapper" ng-class="header.animation" class="animated">
+            <div id="page-wrapper" ng-class="vm.header.animation" class="animated">
                 <!--BEGIN PAGE HEADER & BREADCRUMB-->
                 <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
                 <!--END PAGE HEADER & BREADCRUMB-->
@@ -660,15 +664,16 @@
                 <div id="loading-bar-container"></div>
 
                 <!--BEGIN CONTENT-->
-                <div ng-view="" class="page-content"></div>
+                <div ng-view="" class="page-content"></div> 
                 <!--END CONTENT-->
                 <!--BEGIN FOOTER-->
                 <div class="page-footer">
-                    <div class="copyright">2016 © V - Dojo .</div>
-                    <script language="JavaScript" type="text/javascript">
+                    <div class="copyright">2015-2018 © V - Dojo .</div>
+<!--                    <script language="JavaScript" type="text/javascript">
                         TrustLogo("https://vdojo.villaris.us/v/images/comodo_secure_seal_76x26_transp.png", "CL1", "none");
                     </script>
                     <a href="https://ssl.comodo.com/wildcard-ssl-certificates.php" id="comodoTL">Wildcard SSL</a>
+-->                    
                 </div>
                 <!--END FOOTER-->
             </div>

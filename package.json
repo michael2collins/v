@@ -49,6 +49,7 @@
   "dependencies": {
     "dotenv": "^4.0.0",
     "mailparser": "^2.1.0",
+    "moment": "^2.20.1",
     "safe-json-stringify": "^1.0.4",
     "through": "^2.3.8",
     "ui-grid-auto-fit-columns": "^1.1.4"

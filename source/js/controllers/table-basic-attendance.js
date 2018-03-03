@@ -180,13 +180,21 @@
         function setMonday() {
             vm.MondayOfWeek = getMonday(new Date());
             var d2 = new Date(vm.MondayOfWeek);
-            var day = d2.getDay();
+/*            var day = d2.getDay();
             vm.SundayOfWeek    = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() - day ));
             vm.TuesdayOfWeek   = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day));
             vm.WednesdayOfWeek = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day));
             vm.ThursdayOfWeek  = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day + day));
             vm.FridayOfWeek    = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day + day + day));
             vm.SaturdayOfWeek  = getFormattedDate(d2.setDate(vm.MondayOfWeek.getDate() + day + day + day + day + day));
+        */
+            vm.SundayOfWeek    = moment(d2).add(-1, 'days').format('YYYY-MM-DD');
+            vm.TuesdayOfWeek   = moment(d2).add(1, 'days').format('YYYY-MM-DD');
+            vm.WednesdayOfWeek = moment(d2).add(2, 'days').format('YYYY-MM-DD');
+            vm.ThursdayOfWeek  = moment(d2).add(3, 'days').format('YYYY-MM-DD');
+            vm.FridayOfWeek    = moment(d2).add(4, 'days').format('YYYY-MM-DD');
+            vm.SaturdayOfWeek  = moment(d2).add(5, 'days').format('YYYY-MM-DD');
+        
         }
         
         function getMonday(d) {
