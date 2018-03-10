@@ -203,7 +203,7 @@
                                   </div>
                                 </div> -->
                                 <input class="form-control" id="picfile" name="picfile" ng-show="false" ng-model="vmpicmodal.picfile" placeholder="File Name" type="text">
-                                <button class="btn btn-default" ng-click="vmstudent.setStudentPIC(vmpicmodal.picfile); vmpicmodal.picfile=''" ng-show="vmpicmodal.picfile" type="button">Save Picture</button>
+                                <button class="btn btn-green" ng-click="vmstudent.setStudentPIC(vmpicmodal.picfile); vmpicmodal.picfile=''" ng-show="vmpicmodal.picfile" type="button">Save Picture</button>
 
                                 <div class="thumbnail" ng-show="vmpicmodal.picfile"><img ng-src="./images/students/{{vmstudent.students.oldpicfile}}.bkup" />
                                 </div>
@@ -725,7 +725,7 @@
                                         </td>
                                         <td class="col-md-4">{{item.currentrank}}
                                         </td>
-                                        <td class="col-md-4"><span> <a ng-click="vmstudent.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></td>
+                                        <td class="col-md-4"><span> <a ng-click="vmstudent.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></td>
                                       </tr>
                                     </tbody>
                                   </table>
@@ -893,7 +893,7 @@
                                                 <div class="col-md-12">
                                                   <div class="row">
                                                     <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-group">
-                                                      <button ok-sel="*" ng-click="vmsearch.vmclass.clearSelect()" class="btn btn-default">Show All</button>
+                                                      <button ok-sel="*" ng-click="vmsearch.vmclass.clearSelect()" class="btn btn-green">Show All</button>
                                                     </div>
                                                   </div>
                                                   <div class="row">
@@ -942,7 +942,7 @@
                                                           <div class="info">
                                                             <div class="form-control">{{x.class}} - {{x.pgm}}</div>
                                                             <div>
-                                                              <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-default btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
+                                                              <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-blue btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
                                                             </div>
                                                           </div>
                                                         </div>
@@ -1188,7 +1188,7 @@
                                           </div>
                                         </div>
                                       </td>
-                                      <td class="col-md-1"><span> <a ng-click="vmclass.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp;</a></span></td>
+                                      <td class="col-md-1"><span> <a ng-click="vmclass.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp;</a></span></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -1515,7 +1515,7 @@
                                               </div>
                                             </td>
                                             <td class="col-md-1">
-                                              <span> <a ng-click="vmpayment.removePaymentPlan(rowiter)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a>
+                                              <span> <a ng-click="vmpayment.removePaymentPlan(rowiter)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a>
                                     </span>
                                             </td>
                                           </tr>
@@ -1721,7 +1721,7 @@
                                                 </div>
                                               </td>
                                               <td class="col-md-2">
-                                                <span> <a ng-click="vmpayment.removePaymentPay(rowiterpcp)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="fa fa-trash-o"></i>&nbsp; Remove</a>
+                                                <span> <a ng-click="vmpayment.removePaymentPay(rowiterpcp)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a>
                                     </span>
                                               </td>
                                             </tr>

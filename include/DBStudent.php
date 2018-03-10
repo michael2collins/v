@@ -1618,25 +1618,34 @@ class StudentDbHandler
 		where pp.payerid = ?
 ";
 		error_log(print_R("getPayment sql: $sql $payer\n", TRUE) , 3, LOG);
+
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $payer);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getPayment  returns data", TRUE) , 3, LOG);
+				$res = array();
+				error_log(print_R("getPayments list returns data", TRUE) , 3, LOG);
 				error_log(print_R($slists, TRUE) , 3, LOG);
 				$stmt->close();
-				return $slists;
+				$res["success"]=true;
+				$res["slist"]=$slists;
+				return $res;
 			}
 			else {
-				error_log(print_R("getPayment list execute failed", TRUE) , 3, LOG);
-				printf("Errormessage: %s\n", $this->conn->error);
+				error_log(print_R("getPayments list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getPayments failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return $errormessage;
 			}
 		}
 		else {
-			error_log(print_R("getPayment sql failed", TRUE) , 3, LOG);
-			printf("Errormessage: %s\n", $this->conn->error);
-			return NULL;
+			error_log(print_R("getPayments list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getPayments failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
 		}
+		
+		
 	}
 
 	public

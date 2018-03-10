@@ -28,8 +28,8 @@
         </a>
     </div>
     <div style='text-align: center;'>
-        <button type="button" data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readyness = !card.readyness)" class="mbm btn btn-default btn-sm">Ready?</button>
-        <button type="button" data-ng-click="mother.vm.checkAttendanceStats(card.studentID)" class="mbm btn btn-default btn-sm">Stats?</button>
+        <button type="button" data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readyness = !card.readyness)" class="mbm btn btn-green btn-sm">Ready?</button>
+        <button type="button" data-ng-click="mother.vm.checkAttendanceStats(card.studentID)" class="mbm btn btn-green btn-sm">Stats?</button>
         <div ng-show="mother.vm.hasStats(card.studentID)">
             <p class="mls" data-ng-if="mother.vm.hasStats(card.studentID)">Time In?: {{mother.vm.daysSince}}</p>
             <p class="mls" data-ng-if="mother.vm.hasStats(card.studentID)">Attend: {{mother.vm.daysAttended}}</p>

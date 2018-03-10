@@ -352,7 +352,7 @@ App.controller('MainController', function($scope, $routeParams){
 
         $('#todos-list-add').click(function() {
             var index = $('#todos-list-sort > li').length;
-            $('ul#todos-list-sort').append('<li><input type="checkbox" id="task-item-' + index + '" /><label for="task-item-' + index + '" >' + $("#todos-list-input").val() + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="fa fa-trash-o"></span></a></li>');
+            $('ul#todos-list-sort').append('<li><input type="checkbox" id="task-item-' + index + '" /><label for="task-item-' + index + '" >' + $("#todos-list-input").val() + '</label><a class="delete" href="javascript:;" data-hover="tooltip" data-original-title="remove"><span class="far fa-trash-alt"></span></a></li>');
             $("[data-hover='tooltip']").tooltip();
         });
         $('#todos-list-sort li a.delete').live('click', function() {

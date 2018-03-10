@@ -11,7 +11,8 @@
                <div class="row col-md-12" style="height: 70px;">
                   <div class="col-md-7">
                      <div class="select-box ">
-                        <ui-select ng-model="vm.TestCandidateSelected" theme="bootstrap" reset-search-input="false" on-select="vm.getTestDates($item);" style="width: 300px;" title="Filter for a Test" append-to-body="false">
+                        <ui-select ng-model="vm.TestCandidateSelected" theme="bootstrap" reset-search-input="false" 
+                        on-select="vm.getTestDates($item);vm.setSlide('center')" style="width: 300px;" title="Filter for a Test" append-to-body="false">
                            <ui-select-match placeholder="Pick a test...">{{$select.selected.name}}</ui-select-match>
                            <ui-select-choices repeat="TestCandidate in vm.testcandidatenames | filter: $select.search track by $index" refresh="vm.gettestcandidateNames($select.search)" refresh-delay="0">
                               <div id="candidatepicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
@@ -23,7 +24,7 @@
                      </div>
                   </div>
                   <div class="col-md-5">
-                     <button ng-click="vm.gettestcandidateDetails(vm.TestCandidateSelected)" class="btn btn-green btn-default TestCandidateCreation">Refresh List</button>
+                     <button ng-click="vm.gettestcandidateDetails(vm.TestCandidateSelected)" class="btn btn-green TestCandidateCreation">Refresh List</button>
                   </div>
                </div>
                <div class="row">
@@ -38,14 +39,14 @@
                </div>
                <div class="row">
                   <div class="col-md-1 text-center">
-                     <button title="Slide Right" class="btn btn-default" ng-click="vm.setSlide('right')">
+                     <button title="Slide Right" class="btn btn-blue" ng-click="vm.setSlide('right')">
                         Slide Right<i class="glyphicon glyphicon-chevron-right"></i></button>
                   </div>
                   <div class="col-md-9 text-center">
-                     <button title="Center" class="btn btn-default" ng-click="vm.setSlide('center')">Center</button>
+                     <button title="Center" class="btn btn-blue" ng-click="vm.setSlide('center')">Center</button>
                   </div>
                   <div class="col-md-1 text-center">
-                     <button title="Slide Left" class="btn btn-default" ng-click="vm.setSlide('left')">
+                     <button title="Slide Left" class="btn btn-blue" ng-click="vm.setSlide('left')">
                         <i class="glyphicon glyphicon-chevron-left"></i>Slide Left</button>
                   </div>
                </div>
@@ -58,8 +59,8 @@
                   </div>
                   <div class="col-md-1 v-center text-center">
                      <div class="btn-group">
-                        <button title="Drop from test" class="btn btn-default" ng-click="vm.removeFromTest(vm.testdatelist.testingid)" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
-                        <button title="Add to test" class="btn btn-default" ng-click="vm.addToTest(vm.testdatelist.testingid)" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                        <button title="Drop from test" class="btn btn-blue" ng-click="vm.removeFromTest(vm.testdatelist.testingid)" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                        <button title="Add to test" class="btn btn-blue" ng-click="vm.addToTest(vm.testdatelist.testingid)" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
                      </div>
                      <h6 class="text-center">move from list-to-list</h6>
                   </div>

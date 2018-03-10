@@ -28,6 +28,7 @@
         vm.getInvoices = getInvoices;
         vm.getPayments = getPayments;
         vm.removeInvoice = removeInvoice;
+        vm.showPayDetails = showPayDetails;
         vm.calcInvoice = calcInvoice;
         vm.addInvoice = addInvoice;
         vm.dateopen = dateopen;
@@ -396,9 +397,21 @@
                         $q.reject(data);
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
+                        
+                        getPayments(vm.thispayer).then
+                            (function(zdata) {
+                             $log.debug('getPayments returned', zdata);
+                         },
+                        function (error) {
+                            $log.debug('Caught an error getPayments after updateInvoice:', error); 
+                            vm.thisInvoice = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
                     }
-
                     return vm.thisInvoice;
+
                 }).catch(function(e) {
                     $log.debug('updateInvoice failure:');
                     $log.debug("error", e);
@@ -443,6 +456,9 @@
 
         }
 
+        function showPayDetails(info) {
+            
+        }
         
         function setgridOptions() {
              
@@ -496,7 +512,7 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeInvoice(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeInvoice(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></div>'
                 }
 
                 ],
@@ -579,7 +595,7 @@
                     enableCellEdit: false
                   },
                   {
-                    field: 'np_status',
+                    field: 'npstatus',
                     displayName: 'Pay Status',
                     headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: false
@@ -591,7 +607,7 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeInvoice(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="fa fa-trash-o"></i>&nbsp; Remove</a></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.showPayDetails(row.entity)" role="button" class="btn btn-green" style="padding:  0px 14px;"  ><i class="fas fa-book"></i>&nbsp;Details</a></span></div>'
                 }
 
                 ],

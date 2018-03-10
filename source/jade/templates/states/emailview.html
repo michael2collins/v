@@ -10,14 +10,13 @@
       <h2 class="panel-title">Mail Box</h2>
      </div>
      <div class="panel-body">
-      {{vm.data}}
       <div class="col-lg-12">
        <div class="form-group">
-        <button type="button" ng-click="vm.ereply()" class="btn btn-default">Reply</button>
-        <button type="button" ng-click="vm.eforward()" class="btn btn-default">Forward</button>
-        <button type="button" ng-click="vm.removeEmailView()" class="btn btn-default">Delete</button>
-        <button type="button" ng-click="vm.markRead()" class="btn btn-default">Mark Read</button>
-        <button type="button" ng-click="vm.markUnread()" class="btn btn-default">Mark Unread</button>
+        <button type="button" ng-click="vm.ereply()" class="btn btn-green">Reply</button>
+        <button type="button" ng-click="vm.eforward()" class="btn btn-green">Forward</button>
+        <button type="button" ng-click="vm.removeEmailView()" class="btn btn-red">Delete</button>
+        <button type="button" ng-click="vm.markRead()" class="btn btn-green">Mark Read</button>
+        <button type="button" ng-click="vm.markUnread()" class="btn btn-green">Mark Unread</button>
        </div>
       </div>
 
@@ -48,7 +47,7 @@
    </div>
   </div>
   <div class="modal-footer">
-   <button type="button" class="btn btn-default" ng-click="vm.cancel()">Close</button>
+   <button type="button" class="btn btn-blue" ng-click="vm.cancel()">Close</button>
   </div>
  </form>
 </div>

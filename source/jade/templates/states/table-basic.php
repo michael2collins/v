@@ -226,7 +226,7 @@ function dateColTemplate( $parameters = array() ) {
             </div>
         </div>
       <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
-          <button type="button" class="btn btn-default" ng-click="<?=$param['dopen']?>"><i class="glyphicon glyphicon-calendar"></i></button>
+          <button type="button" class="btn btn-green" ng-click="<?=$param['dopen']?>"><i class="glyphicon glyphicon-calendar"></i></button>
         </div>
 
     </div>

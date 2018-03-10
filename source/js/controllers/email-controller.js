@@ -53,7 +53,7 @@
     $scope.eventResult ='';
     $scope.emailpick =  [];
     
-    if (myinitial) {
+    if (Object.keys(myinitial).length !== 0 ) {
       var item = tagTransform(myinitial.from);
       $scope.emailpick.push(item);
       setEmailFromPick([item]);

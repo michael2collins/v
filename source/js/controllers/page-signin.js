@@ -36,6 +36,7 @@
             pagevm.password;
             pagevm.dataLoading;
             pagevm.apiKey;
+            pagevm.save;
             
             $log.debug('enter PageSigninController');
             $log.debug('username', pagevm.username);
@@ -46,9 +47,9 @@
                 UserServices.ClearCredentials();
             })();
 
-        //    $("body>.default-page").hide();
-        //    $("body>.extra-page").html($(".page-content").html()).show();
-        //    $('body').attr('id', 'signin-page');
+//            $("body>.default-page").hide();
+//            $("body>.extra-page").html($(".page-content").html()).show();
+            $('body').attr('id', 'signin-page');
     
 
             function login() {
@@ -86,6 +87,7 @@
                         UserServices.setapikey(pagevm.apiKey);
                         TestingServices.setapikey(pagevm.apiKey);
                         TemplateServices.setapikey(pagevm.apiKey);
+
             $("body>.default-page").show();
             $("body>.extra-page").html($(".page-content").html()).hide();
             $('body').attr('id', '');
