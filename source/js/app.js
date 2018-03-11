@@ -37,7 +37,8 @@
             'angularSpectrumColorpicker', 'ui.bootstrap.dropdownToggle',
             'angular-loading-bar',
             'ngAnimate',
-            'ui.tinymce'
+            'ui.tinymce',
+            'ngmodel.format'
         ])
 
         // allow DI for use in controllers, unit tests for lodash
@@ -124,6 +125,33 @@
             cfpLoadingBarProvider.includeBar = true;
             cfpLoadingBarProvider.latencyThreshold = 100;
         }])
+        
+        .config(["modelFormatConfig",
+                function(modelFormatConfig) {
+                    modelFormatConfig["number"] = {
+                        "formatter": function(args) {
+                            var modelValue = args.$modelValue,
+                                filter = args.$filter;
+                            return filter("number")(modelValue);
+                        },
+                        "parser": function(args) {
+                            var val = parseInt(args.$viewValue.replace(/[^0-9\-]/g, ''), 10);
+                            return isNaN(val) ? undefined : val;
+                        },
+                        "isEmpty": function(value) {
+                            return !value.$modelValue;
+                        },
+                        "keyDown": function(args) {
+                            var event = args.$event;
+                            if (!(global.keyHelper.smallKeyBoard(event) || global.keyHelper.numberKeyBoard(event) || global.keyHelper.functionKeyBoard(event) || minus(event))) {
+                                event.stopPropagation();
+                                event.preventDefault();
+                            }
+                        }
+                    };
+                }
+            ])
+        
 
         .run(function($rootScope) {
             $rootScope._ = window._;
@@ -176,6 +204,10 @@
 
         .run(authrun);
 
+    var minus = function(event) {
+            var which = event.which;
+            return (which == 45 || which == 189);
+    };
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
 
     authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices', '$window', '$cookies'];

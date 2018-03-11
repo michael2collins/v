@@ -2340,6 +2340,7 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
     $to             = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "NULL");
     $payerName      = (isset($dataJsonDecode->thedata->payername) ? $dataJsonDecode->thedata->payername : "NULL");
     $status         = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "NULL");
+    $mailoption     = (isset($dataJsonDecode->thedata->mailoption) ? $dataJsonDecode->thedata->mailoption : "NULL");
 
     error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
 
@@ -2387,8 +2388,11 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
 
     if ($return > 0) {
         error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
-        genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
-        
+        if ($mailoption == "Email") {
+            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
+        } else {
+            error_log( print_R("invoice but no email option\n", TRUE ), 3, LOG);
+        }       
         $invoicegood += 1;
     } else if ($invoice == RECORD_ALREADY_EXISTED) {
         error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
@@ -2401,7 +2405,12 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
     //as long as one worked, return success
     if ($invoicegood > 0) {
         $response["error"] = false;
-        $response["message"] = "invoice(s) $invoicegood created and notified successfully";
+        if ($mailoption == "Email") {
+            $response["message"] = "invoice(s) $invoicegood created and notified successfully";
+        } else {
+            $response["message"] = "invoice(s) $invoicegood created with no email sent";
+        }       
+        
         $response["invoice"] = $invoicegood;
         error_log( print_R("invoice created: $invoicegood\n", TRUE ), 3, LOG);
         echoRespnse(201, $response);
@@ -2415,6 +2424,69 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
         error_log( print_R( $invoicebad, TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to create $invoicebad invoice. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
+$app->post('/invoiceemail', 'authenticate',  function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("invoiceemail before send\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $invoice    = uniqid("lessons",true);
+
+    if (isset($dataJsonDecode->thedata->paymentid)) {
+        $paymentid =  $dataJsonDecode->thedata->paymentid;
+    } else { errorRequiredParams('paymentid'); }
+    
+    
+    $invoiceDate    = (isset($dataJsonDecode->thedata->invdate) ? $dataJsonDecode->thedata->invdate : "NULL");
+    $invoiceAmt     = (isset($dataJsonDecode->thedata->amt) ? $dataJsonDecode->thedata->amt : "NULL");
+    $to             = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "NULL");
+    $payerName      = (isset($dataJsonDecode->thedata->payername) ? $dataJsonDecode->thedata->payername : "NULL");
+    $status         = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "NULL");
+    $invoice        = (isset($dataJsonDecode->thedata->invoice) ? $dataJsonDecode->thedata->invoice : "NULL");
+
+    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+
+    $invoicegood=1;
+    $dayOfMonth = date("j");
+    $goodToInvoice = true;
+    
+    $db = new StudentDbHandler();
+
+    $result = $db->getCommunication();
+
+    if ($result) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $schEmail = (empty($slist["schoolReplyEmail"]) ? "NULL" : $slist["schoolReplyEmail"]);
+            $schSig = (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
+        }
+    }
+
+    genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
+
+    //as long as one worked, return success
+    if ($invoicegood > 0) {
+        $response["error"] = false;
+        $response["message"] = "invoice notified successfully";
+        $response["invoice"] = $invoicegood;
+        error_log( print_R("invoice email sent: $invoicegood\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after invoice mail result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $invoicebad, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to email invoice. Please try again";
         echoRespnse(400, $response);
     }
     
@@ -3081,7 +3153,7 @@ $message = "
 <p>You have an invoice for payment.  If you have any questions please contact mailto:" . $schEmail .  "</p>
 <p>Email: " . $to . "</p>
 <p>Amount: $ " . $invoiceAmt . "</p>
-<p>Date: $ " . $invoiceDate . "</p>
+<p>Date: " . $invoiceDate . "</p>
 <p>You will receive an email after you have paid.</p>
 <p> " . $schSig . "</p>
 </body>

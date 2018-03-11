@@ -1,0 +1,57 @@
+<div class="modal-content">
+ <form name="form.read" novalidate>
+  <div class="modal-header">
+   <h1>Payment Details</h1>
+  </div>
+  <div class="modal-body">
+   <div class="col-md-12">
+    <div class="panel panel-default">
+     <div class="panel-heading">
+      <h2 class="panel-title">Payment</h2>
+     </div>
+     <div class="panel-body">
+      <h2>Invoice Number: {{vm.selectedRow.invoice}}</h2>
+      <div><b>Invoice Date: {{vm.selectedRow.invdate}}</b></div>
+<div><b>Amount: {{vm.selectedRow.inv_amt}}</b></div>
+<div><b>Status: {{vm.selectedRow.inv_status}}</b></div>
+<div><b>Id: {{vm.selectedRow.invid}}</b></div>
+<div><b>ipn Id: {{vm.selectedRow.ipn_track_id}}</b></div>
+<div><b>Item1: {{vm.selectedRow.item_name1}}</b></div>
+<div><b>Item2: {{vm.selectedRow.item_name2}}</b></div>
+<div><b>Item3: {{vm.selectedRow.item_name3}}</b></div>
+<div><b>Item4: {{vm.selectedRow.item_name4}}</b></div>
+<div><b>Item5: {{vm.selectedRow.item_name5}}</b></div>
+<div><b>Currency: {{vm.selectedRow.mc_currency}}</b></div>
+<div><b>Gross: {{vm.selectedRow.mc_gross}}</b></div>
+<div><b>gross1: {{vm.selectedRow.mc_gross_1}}</b></div>
+<div><b>gross2:{{vm.selectedRow.mc_gross_2}}</b></div>
+<div><b>gross3:{{vm.selectedRow.mc_gross_3}}</b></div>
+<div><b>gross4:{{vm.selectedRow.mc_gross_4}}</b></div>
+<div><b>gross5:{{vm.selectedRow.mc_gross_5}}</b></div>
+<div><b>Payment Date: {{vm.selectedRow.npdate}}</b></div>
+<div><b>Name: {{vm.selectedRow.npfirst_name}} {{vm.selectedRow.nplast_name}}</b></div>
+<div><b>Pay id: {{vm.selectedRow.npid}}</b></div>
+<div><b>Pay Invoice: {{vm.selectedRow.npinvoice}}</b></div>
+<div><b>Pay status: {{vm.selectedRow.npstatus}}</b></div>
+<div><b>Pay type: {{vm.selectedRow.nptype}}</b></div>
+<div><b>#Cart items: {{vm.selectedRow.num_cart_items}}</b></div>
+<div><b>Email: {{vm.selectedRow.payer_email}}</b></div>
+<div><b>Payer Status: {{vm.selectedRow.payer_status}}</b></div>
+<div><b>Payerid: {{vm.selectedRow.payerid}}</b></div>
+<div><b>Payment Gross:{{vm.selectedRow.payment_gross}}</b></div>
+<div><b>Payment id: {{vm.selectedRow.paymentid}}</b></div>
+<div><b>Quantity1: {{vm.selectedRow.quantity1}}</b></div>
+<div><b>Quantity2: {{vm.selectedRow.quantity2}}</b></div>
+<div><b>Quantity3: {{vm.selectedRow.quantity3}}</b></div>
+<div><b>Quantity4: {{vm.selectedRow.quantity4}}</b></div>
+<div><b>Quantity5: {{vm.selectedRow.quantity5}}</b></div>
+<div><b>Receipt Id: {{vm.selectedRow.receipt_id}}</b></div>
+<div><b>Txn id: {{vm.selectedRow.txn_id}}</b></div>
+     </div>
+    </div>
+   </div>
+   <div class="modal-footer">
+    <button type="button" class="btn btn-blue" ng-click="vm.cancel()">Close</button>
+   </div>
+ </form>
+ </div>

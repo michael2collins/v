@@ -44,6 +44,40 @@ function strColTemplate( $parameters = array() ) {
     <?php return ob_get_clean();
 }
 
+function numtypeColTemplate( $parameters = array() ) {
+
+//        <input type="text" ng-model="test1" model-format="currency" formatter="formatter($modelValue,$filter,'$0.00');" />
+//modelformats: digit, int, float.  check https://github.com/greengerong/ngmodel-format/blob/master/demo/demo.html for others
+    $def = array(
+        'required' => false,
+        'modelformat' => 'currency',
+        'placeholder' => '$0.00',
+        'classformat' => 'form-control currency'
+     );
+     
+   $param = param_default( $def, $parameters );    
+   
+    ob_start(); ?>
+
+    <div class="form-group">
+        <label for="<?=$param['field']?>" class="control-label"><?=$param['label']?></label>
+
+        <div>
+            <input  id="<?=$param['field']?>" 
+                    type="text" 
+                    placeholder="<?=$param['placeholder']?>" 
+                    name="<?=$param['field']?>" 
+                    model-format="<?=$param['modelformat']?>" 
+                    <?=($param['formatter']  ? 'formatter=' . $param['formatter'] : '')?> 
+                    ng-model="<?=$param['model']?>" 
+                    <?=($param['required']  ? 'required' : '')?> 
+                    class="<?=$param['classformat']?>"> 
+        </div>
+    </div>
+
+    <?php return ob_get_clean();
+}
+
 function textareaColTemplate( $parameters = array() ) {
 
     $def = array(

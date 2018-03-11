@@ -1,4 +1,4 @@
-(function() {
+(function (window,angular) {
     'use strict';
 
     angular
@@ -28,6 +28,31 @@
             console.log("error: " + e);
           }
         };
-        });
+        })
+        .filter('textDate', ['$filter', function ($filter) {
+          //https://github.com/Joiler/ui-grid-edit-datepicker
+              return function (input, format) {
+                  var date = new Date(input);
+                  return $filter('date')(date, format);
+              };
+          }])
+            .filter('fractionFilter', function () {
+              return function (value) {
+                return Number(value).toFixed(0);
+              };
+            })
+            
+            .filter('currencyFilter', function () {
+              var currencyMap = {
+                'dollar': '$',
+                'pound': '£',
+                'euro': '€'
+              };
+              
+              return function (value, scope) {
+                var curlookup = scope.row.entity.currency === undefined ? 'dollar' : scope.row.entity.currency;
+                return currencyMap[curlookup] + Number(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+              };
+            })
 
-})();
+;})(window,window.angular);

@@ -57,6 +57,7 @@
             getInvoices: getInvoices,
             updateInvoice: updateInvoice,
             addInvoice: addInvoice,
+            emailInvoice: emailInvoice,
             removeInvoice: removeInvoice,
             calcInvoice: calcInvoice,
             getPayments: getPayments
@@ -162,6 +163,17 @@
         }        
         function addInvoice(path, thedata ) {
                     $log.debug('addInvoice data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+        }        
+        function emailInvoice(path, thedata ) {
+                    $log.debug('emailInvoice data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,

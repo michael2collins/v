@@ -15,9 +15,10 @@
         'uiGridConstants',
         'moment',
         '$q',
+        '$uibModal'
     ];
 
-    function PaymentTrackingController($scope, $log, ClassServices, StudentServices, Notification, Util,uiGridConstants, moment, $q) {
+    function PaymentTrackingController($scope, $log, ClassServices, StudentServices, Notification, Util,uiGridConstants, moment, $q, $uibModal) {
         /* jshint validthis: true */
         var vm = this;
         vm.isCollapsed = true;
@@ -31,7 +32,9 @@
         vm.showPayDetails = showPayDetails;
         vm.calcInvoice = calcInvoice;
         vm.addInvoice = addInvoice;
+        vm.emailInvoice = emailInvoice;
         vm.dateopen = dateopen;
+        vm.formatter = formatter;
 
         vm.payers=[];
         vm.refreshstudentlist = [];
@@ -83,6 +86,14 @@
        $.fn.Data.Portlet('table-basic-paymenttracking.js');
         setgridOptions();
         setpaygridOptions();
+
+        function formatter(modelValue, filter, defaultValue) {
+          //  $log.debug("formatter arguments", arguments);
+            if (modelValue) {
+                return filter("currency")(modelValue);
+            }
+            return defaultValue;
+        }
 
 
         function dateopen($event) {
@@ -263,7 +274,7 @@
                 });
             
         }
-        function addInvoice(rowEntity) {
+        function addInvoice(rowEntity,mailoption) {
 	    // id, invoice, i.paymentid, amt, invdate, status
             
             var updpath = "../v1/invoice";
@@ -275,11 +286,12 @@
                 paymentid: vm.payerstudentlist[0].paymentid,
                 invoice: rowEntity.invoice,
                 updatetype: 'Add',
-                payerName: vm.payerstudentlist[0].payername,
+                payername: vm.payerstudentlist[0].payername,
                 payerEmail: vm.payerstudentlist[0].payerEmail,
                 payerid: vm.payerstudentlist[0].payerid,
                 payerfirstname: vm.payerstudentlist[0].firstname,
-                payerlastname: vm.payerstudentlist[0].lastname
+                payerlastname: vm.payerstudentlist[0].lastname,
+                mailoption: mailoption
             };
             
             $log.debug('about addInvoice ',thedata, updpath, 'Add');
@@ -360,6 +372,63 @@
                 }
             );
 
+        }
+        
+        function emailInvoice(rowEntity) {
+	    // id, invoice, i.paymentid, amt, invdate, status
+            
+            var updpath = "../v1/invoiceemail";
+
+            var thedata = {
+                amt: rowEntity.amt,
+                invdate: rowEntity.invdate,
+                status: rowEntity.status,
+                paymentid: vm.payerstudentlist[0].paymentid,
+                invoice: rowEntity.invoice,
+                updatetype: 'Add',
+                payername: vm.payerstudentlist[0].payername,
+                payerEmail: vm.payerstudentlist[0].payerEmail,
+                payerid: vm.payerstudentlist[0].payerid,
+                payerfirstname: vm.payerstudentlist[0].firstname,
+                payerlastname: vm.payerstudentlist[0].lastname
+            };
+            
+            $log.debug('about emailInvoice ',thedata, updpath, 'Add');
+            return StudentServices.emailInvoice(updpath, thedata)
+                .then(function(data){
+                    $log.debug('emailInvoice returned data');
+                    $log.debug(data);
+                    vm.thisInvoice = data;
+                    $log.debug(vm.thisInvoice);
+                    $log.debug(vm.thisInvoice.message);
+                    vm.message = vm.thisInvoice.message;
+                    if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: vm.message, delay: 5000});
+                    }
+                    getInvoices(vm.thispayer).then
+                        (function(zdata) {
+                             $log.debug('getInvoices returned', zdata);
+                         },
+                        function (error) {
+                            $log.debug('Caught an error getInvoices after remove:', error); 
+                            vm.thisInvoice = [];
+                            vm.message = error;
+                            Notification.error({message: error, delay: 5000});
+                            return ($q.reject(error));
+                        });
+
+                    return vm.thisInvoice;
+                }).catch(function(e) {
+                    $log.debug('emailInvoice failure:');
+                    $log.debug("error", e);
+                    vm.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
         }
 
         function updateInvoice(rowEntity) {
@@ -456,11 +525,33 @@
 
         }
 
-        function showPayDetails(info) {
+        function showPayDetails(row) {
+            var modalInstance = $uibModal.open({
+              controller: 'PaymentViewInstanceController as vm',
+              templateUrl: 'templates/states/paymentView.html',
+              resolve: {
+                selectedRow: function () {                    
+                    return row.entity;
+                }
+              }
+           });
+        
+           modalInstance.result.then(function (selectedItem) {
+             $log.log('modal selected Row: ' + selectedItem);
+           }, function () {
+             $log.info('Modal dismissed at: ' + new Date());
+          });
             
         }
-        
+
         function setgridOptions() {
+
+            var ctpl = '<div class="ui-grid-cell-contents">';
+            ctpl    += '<span> <a ng-click="grid.appScope.removeInvoice(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  >';
+            ctpl    += '<i class="far fa-trash-alt"></i>&nbsp;</a></span>';
+            ctpl    += '<span> <a ng-click="grid.appScope.emailInvoice(row.entity)" role="button" class="btn btn-green" style="padding:  0px 14px;"  >';
+            ctpl    += '<i class="far fa-envelope"></i>&nbsp;</a></span>';
+            ctpl    += '</div>';
              
             vm.gridOptions = {
                 enableFiltering: true,
@@ -482,13 +573,21 @@
                 {
                     field: 'amt',
                     displayName: 'Amount',
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    cellClass: 'currency',
+                    cellFilter: 'currencyFilter:this',
+                    cellEditableCondition: function( $scope ) { return $scope.row.entity.status !== 'closed'; } 
                 }, 
                 {
                     field: 'invdate',
                     displayName: 'Date',
                     headerCellClass: Util.highlightFilteredHeader,
-                    enableCellEdit: true
+                    enableCellEdit: true,
+                    type: 'date',
+                    cellEditableCondition: function( $scope ) { return $scope.row.entity.status !== 'closed'; } ,
+                    cellFilter: 'textDate:"MM/dd/yyyy"',
+                    editableCellTemplate: '<div><form name="inputForm"><div ui-grid-edit-datepicker ng-class="\'colt\' + col.uid"></div></form></div>'
+
                 }, 
                   {
                     field: 'status',
@@ -512,7 +611,8 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeInvoice(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></div>'
+                    cellTemplate: ctpl
+                    
                 }
 
                 ],
@@ -542,15 +642,19 @@
                     }
             };
         }
+        
         function setpaygridOptions() {
              
             vm.paygridOptions = {
                 enableFiltering: true,
-                enableCellEditOnFocus: true,
+                enableCellEditOnFocus: false,
                 paginationPageSizes: vm.limits,
                 paginationPageSize: vm.payinitialLength,
                 rowHeight: vm.payrowheight,
+enableRowSelection: true, 
                 appScopeProvider: vm,
+                   rowTemplate: "<div ng-dblclick=\"grid.appScope.showPayDetails(row)\" ng-repeat=\"(colRenderIndex, col) in colContainer.renderedColumns track by col.colDef.name\" class=\"ui-grid-cell\" ng-class=\"{ 'ui-grid-row-header-cell': col.isRowHeader }\" ui-grid-cell></div>",
+
             columnDefs: [
 	   // id, invoice, i.paymentid, amt, invdate, status
         //payerid	npid	txn_id	receipt_id	num_cart_items	ipn_track_id	payment_gross	mc_gross	nptype	npdate	
@@ -569,24 +673,33 @@
                 {
                     field: 'inv_amt',
                     displayName: ' Inv Amount',
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    cellClass: 'currency',
+                    cellFilter: 'currencyFilter:this'
                 }, 
                 {
                     field: 'invdate',
                     displayName: 'Inv Date',
                     headerCellClass: Util.highlightFilteredHeader,
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    type: 'date',
+                    cellFilter: 'date:"MM/dd/yyyy"'
                 }, 
                 {
                     field: 'payment_gross',
                     displayName: ' Pay Amount',
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    cellClass: 'currency',
+                    cellFilter: 'currencyFilter:this'
                 }, 
                 {
                     field: 'npdate',
                     displayName: 'Pay Date',
                     headerCellClass: Util.highlightFilteredHeader,
-                    enableCellEdit: false
+                    enableCellEdit: false,
+                    type: 'date',
+                    cellFilter: 'date:"MM/dd/yyyy"'
+
                 }, 
                   {
                     field: 'inv_status',
@@ -607,7 +720,7 @@
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.showPayDetails(row.entity)" role="button" class="btn btn-green" style="padding:  0px 14px;"  ><i class="fas fa-book"></i>&nbsp;Details</a></span></div>'
+                    cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.showPayDetails(row)" role="button" class="btn btn-green" style="padding:  0px 14px;"  ><i class="fas fa-book"></i>&nbsp;Details</a></span></div>'
                 }
 
                 ],

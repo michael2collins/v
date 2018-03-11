@@ -91,7 +91,7 @@
                                       </div>
 
                                         <form action="" novalidate name="editschedule2" class="form-action">
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <?php require_once('table-basic.php');
                                                     print dateColTemplate(
                                                         array(
@@ -107,22 +107,22 @@
                                                     );
                                                 ?>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <?php require_once('table-basic.php');
-                                                    print strColTemplate(
+                                                    print numtypeColTemplate(
                                                         array(
                                                             'field'=>'invoiceAmt',
                                                             'model'=>'vm.Invoice.amt',
                                                             'label'=>'Amount<br/> &nbsp;',
-                                                            'placeholder'=>0,
-                                                            'fieldtype'=>'number',
+                                                            'formatter'=>'"vm.formatter($modelValue,$filter,\'$0.00\');"',
+                                                            'modelformat'=>'currency',
                                                             'required'=>true
                                                             )
                                                     );
                                                     
                                                 ?>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <?php require_once('table-basic.php');
                                                   print selectColTemplate(
                                                       array(
@@ -139,17 +139,28 @@
                                                   );
                                                 ?>
                                             </div>
-                                        <div class="col-md-2" style="margin-top: 18px;">
-                                            <?php require_once('table-basic.php');
+                                            <div class="col-md-2" style="margin-top: 18px;">
+                                              <?php require_once('table-basic.php');
                                                     print btnColTemplate(
                                                         array(
                                                             'field'=>'invoicebtn',
-                                                            'label'=>'Add',
-                                                            'click'=>'vm.addInvoice(vm.Invoice)'
+                                                            'label'=>'Add/Email',
+                                                            'click'=>'vm.addInvoice(vm.Invoice,\'Email\')'
                                                             )
                                                     );
-                                            ?>
-                                        </div>
+                                                ?>
+                                            </div>
+                                            <div class="col-md-2" style="margin-top: 18px;">
+                                              <?php require_once('table-basic.php');
+                                                    print btnColTemplate(
+                                                        array(
+                                                            'field'=>'invoicebtn',
+                                                            'label'=>'Add/NoEmail',
+                                                            'click'=>'vm.addInvoice(vm.Invoice,\'NoEmail\')'
+                                                            )
+                                                    );
+                                              ?>
+                                            </div>
                                         </form> 
                                     </div>
                     
@@ -159,7 +170,9 @@
                     </div>
 
           </div>
+          
         <div class="panel-footer" ng-show="vm.studentpick">
+          <div class="control-label pam h4">Open Invoices</div>
             <div ui-grid="vm.gridOptions"  
                 ui-if="vm.gridOptions.data.length>0"
                 ui-grid-pagination 
@@ -175,6 +188,7 @@
             
         </div>
         <div class="panel-footer" ng-show="vm.studentpick">
+          <div class="control-label pam h4">Payments</div>
             <div ui-grid="vm.paygridOptions"  
                 ui-if="vm.paygridOptions.data.length>0"
                 ui-grid-pagination 
