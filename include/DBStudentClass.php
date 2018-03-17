@@ -28,14 +28,18 @@ class StudentClassDbHandler {
      * Fetching lookup lists for students class
      */
     public function getStudentClassStatus() {
-        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' " ;
-        $schoolfield = "t.school";
-        $sql = addSecurity($sql, $schoolfield);
+        global $school;
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' and t.school = ?" ;
+//        $schoolfield = "t.school";
+//        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by t.listtype, t.listorder";
         error_log( print_R("getStudentClassStatus sql after security: $sql", TRUE), 3, LOG);
 
         $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s",
+                           $school
+                             );
 
         $stmt->execute();
         $slists = $stmt->get_result();
@@ -44,7 +48,11 @@ class StudentClassDbHandler {
     }
 
     public function getClassAges() {
-        $stmt = $this->conn->prepare("SELECT listkey as agecat FROM studentlist where listtype = 'agecat' order by listorder");
+        global $school;
+        $stmt = $this->conn->prepare("SELECT listkey as agecat FROM studentlist where listtype = 'agecat' and school = ? order by listorder");
+            $stmt->bind_param("s",
+                              $school 
+                                 );
         $stmt->execute();
         $agelist = $stmt->get_result();
         $stmt->close();
@@ -52,7 +60,11 @@ class StudentClassDbHandler {
     }
 
     public function getClassPgms() {
-        $stmt = $this->conn->prepare("SELECT listkey as pgmcat FROM studentlist where listtype = 'pgmcat' order by listorder");
+        global $school;
+        $stmt = $this->conn->prepare("SELECT listkey as pgmcat FROM studentlist where listtype = 'pgmcat' and school = ? order by listorder");
+            $stmt->bind_param("s",
+                              $school 
+                                 );
                 $stmt->execute();
         $pgmlist = $stmt->get_result();
         $stmt->close();
@@ -60,7 +72,11 @@ class StudentClassDbHandler {
     }
     
     public function getClassCats() {
-        $stmt = $this->conn->prepare("SELECT listkey as classcat FROM studentlist where listtype = 'classcat' order by listorder");
+        global $school;
+        $stmt = $this->conn->prepare("SELECT listkey as classcat FROM studentlist where listtype = 'classcat' and school = ?  order by listorder");
+            $stmt->bind_param("s",
+                              $school 
+                                 );
         $stmt->execute();
         $catlist = $stmt->get_result();
         $stmt->close();
@@ -69,9 +85,15 @@ class StudentClassDbHandler {
 
 
     public function getStudentClassPgmList() {
-        $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat from nclass a, nclasslist b, nclasspgm c where a.id = c.classid and b.id = c.pgmid order by a.class ";
+        global $school;
+        $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat 
+        from nclass a, nclasslist b, nclasspgm c 
+        where a.id = c.classid and b.id = c.pgmid and a.school = ? and a.school = b.school and a.school = c.school order by a.class ";
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
             if ($stmt->execute()) {
                 error_log( print_R("studentclasspgm list stmt", TRUE ), 3, LOG);
                 error_log( print_R($stmt, TRUE ), 3, LOG);
@@ -94,9 +116,13 @@ class StudentClassDbHandler {
 
 
     public function getStudentClassList() {
-        $sql = "SELECT t.* FROM nclass t order by t.class ";
+        global $school;
+        $sql = "SELECT t.* FROM nclass t and t.school = ? order by t.class ";
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
             if ($stmt->execute()) {
                 error_log( print_R("studentclass list stmt", TRUE ), 3, LOG);
                 error_log( print_R($stmt, TRUE ), 3, LOG);
@@ -152,9 +178,13 @@ class StudentClassDbHandler {
 
 
     public function getStudentClassPicture($picID) {
-        $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? ";
+        global $school;
+        $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? and t.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
             $stmt->bind_param("i", $picID);
 
             if ($stmt->execute()) {
@@ -178,7 +208,8 @@ class StudentClassDbHandler {
     }
 
     public function getStudentClassPictureList($student_id) {
-        $sql = "SELECT t.pictureurl, t.id FROM nclass t, studentregistration sr where t.id = sr.classid and sr.studentid = ? ";
+        global $school;
+        $sql = "SELECT t.pictureurl, t.id FROM nclass t, studentregistration sr where t.id = sr.classid and sr.studentid = ? and t.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s", $student_id);
@@ -208,6 +239,7 @@ class StudentClassDbHandler {
      * @param String $student_id id of the student
      */
     public function getClassStudent($student_id) {
+        global $school;
         error_log( print_R("get class student for id", TRUE ), 3, LOG);
         error_log( print_R($student_id, TRUE ), 3, LOG);
         $stmt = $this->conn->prepare("Select
@@ -229,9 +261,9 @@ class StudentClassDbHandler {
         on sr.studentid = t.contactid)
     left join nclasslist p
     	On p.id = t.pgmseq)
-    Where sr.studentid = ?    
+    Where sr.studentid = ?    and p.school = ? and c.school = ?
         ");
-        $stmt->bind_param("i", $student_id);
+        $stmt->bind_param("sss", $student_id, $school, $school );
         error_log( print_R("get class student", TRUE ), 3, LOG);
         if ($stmt->execute()) {
             $res = array();
@@ -269,6 +301,7 @@ class StudentClassDbHandler {
     }
 
     public function getClassPgm($classseq, $pgmseq) {
+        global $school;
         error_log( print_R("get class pgm for class pgm", TRUE ), 3, LOG);
         error_log( print_R("classseq: $classseq pgmseq $pgmseq", TRUE ), 3, LOG);
         $stmt = $this->conn->prepare("Select
@@ -279,9 +312,9 @@ class StudentClassDbHandler {
             c.pictureurl
         from nclass c, nclasslist p, nclasspgm t
             where t.classid = c.id and t.pgmid = p.id
-            and c.id = ? and p.id = ?    
+            and c.id = ? and p.id = ?    and c.school = ? and p.school = ? and t.school = ?
         ");
-        $stmt->bind_param("ss", $classseq, $pgmseq);
+        $stmt->bind_param("sssss", $classseq, $pgmseq, $school, $school, $school);
         error_log( print_R("get class pgm for class pgm", TRUE ), 3, LOG);
         if ($stmt->execute()) {
             $res = array();
@@ -309,20 +342,20 @@ class StudentClassDbHandler {
     }
 
     public function getPayerPartial($theinput) {
-
+        global $school;
         $inp = '%' . $theinput . '%';
         
         $sql = "SELECT t.* FROM payer t  ";
-        $sql .= " where LOWER(t.payerName) like LOWER( ? ) ";
+        $sql .= " where LOWER(t.payerName) like LOWER( ? ) and t.school = ? ";
 
-        $schoolfield = "t.school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "t.school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getPayerPartial sql after security: $sql", TRUE), 3, LOG);
 
         $sql .= " order by t.payerName";
         
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $inp);
+            $stmt->bind_param("ss", $inp, $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getPayerPartial list returns data", TRUE), 3, LOG);
@@ -343,18 +376,18 @@ class StudentClassDbHandler {
     }
 
    public function getPayerDistinct($student_id) {
+        global $school;
 
+        $sql = "Select distinct payerName, payerid from payerPayments where contactid = ? and school = ?";
 
-        $sql = "Select distinct payerName, payerid from payerPayments where contactid = ? ";
-
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+    //    $schoolfield = "school";
+    //    $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getPayerDistinct sql after security: $sql", TRUE), 3, LOG);
 
         $sql .= " order by payerName";
         
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $student_id);
+            $stmt->bind_param("ss", $student_id, $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getPayerPartial list returns data", TRUE), 3, LOG);
@@ -377,7 +410,8 @@ class StudentClassDbHandler {
     public function getClassStudentlist($student_id) {
         error_log( print_R("get class student list for id", TRUE ), 3, LOG);
         error_log( print_R($student_id, TRUE ), 3, LOG);
-
+        global $school;
+        
         $sql = "select sr.studentid as contactid,
         sr.studentClassStatus, 
         l.class as pgmclass, 
@@ -407,16 +441,17 @@ class StudentClassDbHandler {
         Left outer join payer pp on pp.id = cpa.payerid)
                 Where sr.studentid = ?   and
                 cl.school = cp.school and cl.school = l.school
+                and cl.school = ?
 
                     ";
 
-        $schoolfield = "cl.school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "cl.school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getClassStudentlist sql after security: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql) ) {
-            $stmt->bind_param("s",
-                              $student_id
+            $stmt->bind_param("ss",
+                              $student_id, $school
                              );
             if ($stmt->execute() ) {
                 error_log( print_R("getClassStudentlist list stmt", TRUE ), 3, LOG);
@@ -665,7 +700,7 @@ class StudentClassDbHandler {
                                     $sc_pgmseq,
                                     $payer,
                                     $testfee,
-                                    $primaryContact
+                                    $primaryContact = 1
                                    ) {
         $num_affected_rows = 0;
 
@@ -735,16 +770,17 @@ class StudentClassDbHandler {
     private function isPayerExists($payerName) {
         error_log( print_R("before isPayerExists\n", TRUE ), 3, LOG);
         error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
-
+        global $school;
         
-        $sql = "SELECT id from payer WHERE payerName = ? ";
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+        $sql = "SELECT id from payer WHERE payerName = ? and school = ? ";
+
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("isPayerExists sql after security: $sql", TRUE), 3, LOG);
 
         $stmt = $this->conn->prepare($sql);
-        
-        $stmt->bind_param("s", $payerName);
+
+        $stmt->bind_param("ss", $payerName, $school);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;
@@ -806,7 +842,7 @@ class StudentClassDbHandler {
      * @param String $student_id id of the student
      */
     public function getFamily($payerid) {
-        
+        global $school;
         error_log( print_R("student for getfamily is: " . $payerid . "\n", TRUE ),3, LOG);
         
         $sql = "SELECT distinct 
@@ -819,10 +855,10 @@ class StudentClassDbHandler {
              FROM ncontacts t, payerPayments pp 
              WHERE t.ID = pp.contactid 
             and t.studentschool = pp.school
-            and pp.payerid = ?";
+            and pp.payerid = ? and t.studentschool = ? ";
 
-        $schoolfield = "t.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "t.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
         
         $sql = $sql . " ORDER BY t.firstname ";
@@ -831,7 +867,7 @@ class StudentClassDbHandler {
 
         $stmt = $this->conn->prepare($sql);
             
-        $stmt->bind_param("s", $payerid);
+        $stmt->bind_param("ss", $payerid, $school);
         
 
         $stmt->execute();
@@ -840,7 +876,7 @@ class StudentClassDbHandler {
         return $res;
     }
     public function getListPrices($payerid) {
-        
+        global $school;
         error_log( print_R("student for getListPrices is: " . $payerid . "\n", TRUE ),3, LOG);
         
 /*        $sql = "select pp.classname, pp.payerName, c.firstname, c.lastname, 
@@ -863,12 +899,12 @@ class StudentClassDbHandler {
                     join ncontacts c on c.id = pp.contactid )
                     left outer join paymentclasspay pcp on pcp.classpayid = pp.classpayid  )
                                 where c.studentschool = pp.school
-                                and pp.payerid = ?
+                                and pp.payerid = ? and c.studentschool = ?
                 ";
 
 
-        $schoolfield = "c.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "c.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getListPrices sql after security: $sql", TRUE), 3, LOG);
         
         $sql = $sql . " ORDER BY sortKey ";
@@ -877,7 +913,7 @@ class StudentClassDbHandler {
 
         $stmt = $this->conn->prepare($sql);
             
-        $stmt->bind_param("s", $payerid);
+        $stmt->bind_param("ss", $payerid, $school);
         
 
         $stmt->execute();
@@ -910,14 +946,18 @@ class StudentClassDbHandler {
         return $res;
     }
     public function getPaymentplans() {
-        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentPlan' " ;
-        $schoolfield = "t.school";
-        $sql = addSecurity($sql, $schoolfield);
+        global $school;
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentPlan' and t.school = ? " ;
+//        $schoolfield = "t.school";
+//        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by t.listtype, t.listorder";
         error_log( print_R("getPaymentplans sql after security: $sql", TRUE), 3, LOG);
 
         $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s",
+                           $school
+                             );
 
         $stmt->execute();
         $slists = $stmt->get_result();
@@ -925,14 +965,19 @@ class StudentClassDbHandler {
         return $slists;
     }
     public function getPaymenttypes() {
-        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentType' " ;
-        $schoolfield = "t.school";
-        $sql = addSecurity($sql, $schoolfield);
+        global $school;
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentType' and t.school = ? " ;
+//        $schoolfield = "t.school";
+//        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by t.listtype, t.listorder";
         error_log( print_R("getPaymentplans sql after security: $sql", TRUE), 3, LOG);
 
         $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s",
+                           $school
+                             );
+        
 
         $stmt->execute();
         $slists = $stmt->get_result();

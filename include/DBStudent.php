@@ -319,12 +319,17 @@ class StudentDbHandler
 	/**
 	 * Fetching lookup lists for students
 	 */
-		$sql = "SELECT t.* FROM studentlist t where (1=1) ";
-		$schoolfield = "t.school";
-		$sql = addSecurity($sql, $schoolfield);
+		global $school;
+		$sql = "SELECT t.* FROM studentlist t where t.school = ? ";
+//		$schoolfield = "t.school";
+//		$sql = addSecurity($sql, $schoolfield);
 		error_log(print_R("getStudentLists sql after security: $sql", TRUE) , 3, LOG);
 		$sql.= " order by t.listtype, t.listorder";
 		$stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s",
+                           $school
+                             );
+		
 		$stmt->execute();
 		$slists = $stmt->get_result();
 		$stmt->close();
@@ -366,14 +371,16 @@ class StudentDbHandler
 	public
 	function getRank($ranktype)
 	{
+		global $school;
 		$sql = "SELECT t.* FROM ranklist t  ";
-		$sql.= " where t.ranktype = ?  ";
-		$schoolfield = "t.school";
-		$sql = addSecurity($sql, $schoolfield);
+		$sql.= " where t.ranktype = ? and t.school = ? ";
+//		$schoolfield = "t.school";
+//		$sql = addSecurity($sql, $schoolfield);
+		
 		error_log(print_R("getRankList sql after security: $sql", TRUE) , 3, LOG);
 		$sql.= " order by t.sortkey";
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("s", $ranktype);
+			$stmt->bind_param("ss", $ranktype, $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				error_log(print_R("getRank list returns data", TRUE) , 3, LOG);
@@ -459,19 +466,23 @@ class StudentDbHandler
 	public
 	function getStudentRanktypeExcluded($student_id)
 	{
-		$sql = "select listvalue as ranktype from studentlist s where listtype = 'ranktypelist' ";
-		$schoolfield = "s.school";
-		$sql = addSecurity($sql, $schoolfield);
+		global $school;
+		$sql = "select listvalue as ranktype from studentlist s where listtype = 'ranktypelist' and s.school = ? ";
+//		$schoolfield = "s.school";
+//		$sql = addSecurity($sql, $schoolfield);
+		
 		$sql.= " and listvalue not in (";
 		$sql.= "SELECT  r.ranktype as ranktype FROM ncontactrank r, ncontacts c ";
-		$sql.= " where c.ID = r.ContactID ";
-		$schoolfield = "c.studentschool";
-		$sql = addSecurity($sql, $schoolfield);
+		$sql.= " where c.ID = r.ContactID and c.studentschool = ? ";
+
+//		$schoolfield = "c.studentschool";
+//		$sql = addSecurity($sql, $schoolfield);
+		
 		$sql.= " and c.ID = ? ) ";
 		$sql.= " order by ranktype";
 		error_log(print_R("getStudentRanktypeExcluded sql after security: $sql for $student_id\n", TRUE) , 3, LOG);
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("s", $student_id);
+			$stmt->bind_param("sss", $school, $school, $student_id );
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				error_log(print_R("getStudentRanktypeExcluded list returns data", TRUE) , 3, LOG);
@@ -498,12 +509,14 @@ class StudentDbHandler
 	 * Fetching all students filtered
 	 */
 		global $user_id;
+		global $school;
+		
 		error_log(print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank user: $user_id \n ", TRUE) , 3, LOG);
-		$sql = "SELECT c.*, sr.studentclassstatus, cr.ranktype, cr.currentrank, cr.LastPromoted from ncontacts  c ";
-		$sql.= " LEFT JOIN studentregistration sr ON c.id = sr.studentid ";
-		$sql.= " LEFT JOIN ncontactrank cr ON c.id = cr.contactid ";
-		$sql.= " Join nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype) ";
-		$sql.= " where (1 = 1)  ";
+		$sql = "SELECT c.*, sr.studentclassstatus, cr.ranktype, cr.currentrank, cr.LastPromoted from ncontacts  c 
+		 LEFT JOIN studentregistration sr ON c.id = sr.studentid 
+		LEFT JOIN ncontactrank cr ON c.id = cr.contactid 
+		LEFT JOIN nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype and c.studentschool = cl.school) 
+		where c.studentschool = ? ";
 		if (strlen($status) > 0 && $status != 'ALL') {
 			$sql.= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
 		}
@@ -516,8 +529,8 @@ class StudentDbHandler
 			$sql.= " and cr.currentrank = '" . $therank . "'";
 		}
 
-		$schoolfield = "c.studentschool";
-		$sql = addSecurity($sql, $schoolfield);
+//		$schoolfield = "c.studentschool";
+//		$sql = addSecurity($sql, $schoolfield);
 		error_log(print_R("getAllStudents sql after security: $sql", TRUE) , 3, LOG);
 		$sql.= "   order by cr.currentrank, LastName, FirstName ";
 		if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
@@ -526,6 +539,9 @@ class StudentDbHandler
 
 		error_log(print_R("getAllStudents sql: $sql", TRUE) , 3, LOG);
 		if ($stmt = $this->conn->prepare($sql)) {
+	        $stmt->bind_param("s",
+                           $school
+                             );
 			if ($stmt->execute()) {
 				error_log(print_R("getAllStudents list stmt", TRUE) , 3, LOG);
 				error_log(print_R($stmt, TRUE) , 3, LOG);
@@ -1247,7 +1263,7 @@ class StudentDbHandler
 		global $school;
 		global $user_id;
 		$sql = "SELECT          
-            n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname
+            n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname, c.ID as contactid
         FROM notification n, ncontacts c where n.userid = ? and n.school = ? and notifkey = 'student_id' 
         and c.ID = n.value and c.studentschool = n.school
         ";

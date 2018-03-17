@@ -348,33 +348,31 @@ class TestingDbHandler {
     }
 
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
-
-$sql = "Select p.classcat, p.pgmcat, p.agecat, p.nextClassid, p.nextPgmid, nextc.class as nextClassnm, nextp.class as nextPgmnm,
-c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid, cp.id as cpid from (
-           SELECT a.ContactId as contactid, cr.ranktype as ranktype, cr.currentrank, cr.id as crid, sum( a.attended ) as daysAttended
-            FROM attendance a
-        right outer join ncontactrank cr on (a.ContactId = cr.contactID )
-            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
-            group by a.ContactId, cr.ranktype, cr.currentrank, cr.id
-            ) j right outer join testcandidatelist x on (x.contactid = j.contactid and x.ranktype = j.ranktype )
-            inner join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist)
-Inner join nclass c on (x.classwas = c.id)
-Inner join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid )
-Inner join nclasspays cp on (x.pgmwas = cp.pgmseq and x.classwas = cp.classseq and x.contactid = cp.contactid)
-Inner join nclasslist l on (l.id = p.pgmid)
-left join nclass nextc on (p.nextClassid = nextc.id)
-left join nclasslist nextp on (p.nextPgmid = nextp.id)
+    global $school;
+//            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') >= DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
+    
+$sql = "Select  p.classcat, p.pgmcat, p.agecat, p.nextClassid, p.nextPgmid, nextc.class as nextClassnm, nextp.class as nextPgmnm,
+c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid, cp.id as cpid from testcandidatelist x
+left join daysattended j on (x.contactid = j.contactid and x.ranktype = j.ranktype  )
+left join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist and x.studentschool = r.school)
+left join nclass c on (x.classwas = c.id and x.studentschool = c.school)
+left join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid and x.studentschool = p.school and c.school = p.school )
+right join nclasspays cp on (x.pgmwas = cp.pgmseq and x.classwas = cp.classseq and x.contactid = cp.contactid)
+left join nclasslist l on (l.id = p.pgmid and l.school = p.school)
+left join nclass nextc on (p.nextClassid = nextc.id and p.school = nextc.school)
+left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.school)
         where x.testname = ? and x.testdescription = ?
+        and x.studentschool = ?
 ";
 
-        $schoolfield = "x.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
-        $schoolfield = "c.school";
-        $sql = addSecurity($sql, $schoolfield);
-        $schoolfield = "l.school";
-        $sql = addSecurity($sql, $schoolfield);
-        $schoolfield = "p.school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "x.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "c.school";
+//        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "l.school";
+//        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "p.school";
+//        $sql = addSecurity($sql, $schoolfield);
         
         
         if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
@@ -384,7 +382,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
         error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("ss", $testname, $testtype);
+            $stmt->bind_param("sss", $testname, $testtype, $school);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -406,16 +404,18 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
     }
 
     public function getTestcandidateNames($theinput) {
+        global $school;
         $sql = "SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name, eventtype FROM `ncalendar`  ";
-        $sql .= " where concat(`startdated` , ' ' , `eventtype`) like '%" . $theinput . "%' "; 
+        $sql .= " where studentschool = ? and concat(`startdated` , ' ' , `eventtype`) like '%" . $theinput . "%' "; 
 
-        $schoolfield = "studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= " order by startdated desc ";
         error_log( print_R("getTestcandidateNames sql after security: $sql", TRUE), 3, LOG);
 
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getTestcandidateNames list returns data", TRUE), 3, LOG);
@@ -436,30 +436,29 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
     }
 
     public function getTestcandidateDetails($testtype) {
-        $sql = " Select nr.ranklist as nextrank, r.ranklist, r.ranktype, r.rankid AS rankid, ";
-        $sql .= " r.sortkey AS ranksortkey,r.rankGroup AS rankGroup,r.alphasortkey AS rankalphasortkey, t.* ";
-        $sql .= " From ((( ";
-        $sql .= " testcandidatesource t ";
-        $sql .= " left join ncontactrank cr ";
-        $sql .= "  on cr.contactid = t.contactid) ";
-        $sql .= "     left join ranklist r ";
-        $sql .= " On r.ranklist = cr.currentrank and r.ranktype = cr.ranktype and r.school = t.studentschool)   ";
-        $sql .= " inner join ranklist nr ";
-        $sql .= " 	On nr.sortkey = r.nextsortkey and nr.school = r.school)  ";
-        $sql .= "         where t.testtype = ?  ";
+        global $school;
+        $sql = " Select nr.ranklist as nextrank, r.ranklist, r.ranktype, r.rankid AS rankid, 
+         r.sortkey AS ranksortkey,r.rankGroup AS rankGroup,r.alphasortkey AS rankalphasortkey, t.* 
+         From ((( 
+         testcandidatesource t 
+         left join ncontactrank cr 
+          on cr.contactid = t.contactid) 
+             left join ranklist r 
+         On r.ranklist = cr.currentrank and r.ranktype = cr.ranktype and r.school = t.studentschool)   
+         inner join ranklist nr 
+         	On nr.sortkey = r.nextsortkey and nr.school = r.school and nr.ranktype = r.ranktype )  
+                 where t.testtype = ?  and t.studentschool = ?";
 
-        $schoolfield = "t.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "t.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
 
         error_log( print_R("getTestcandidateDetails sql after security: $sql", TRUE), 3, LOG);
-
-
         $sql .= " order by lastname, firstname ";
         
         error_log( print_R("getTestcandidateDetails sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $testtype);
+            $stmt->bind_param("ss", $testtype, $school);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -575,38 +574,40 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
     }
 
     public function getGenColDefs($colkey, $colsubkey) {
-
+        global $school;
         error_log( print_R("getGenColDefs entered: $colkey, $colsubkey\n", TRUE ),3, LOG);
 
-        $sql  = " SELECT colcontent FROM generalcoldef ";
-        $sql .= " where ";
-        $sql .= " colkey = '" . $colkey . "'";
-        $sql .= " and colsubkey = '" . $colsubkey . "'";
+        $sql  = " SELECT colcontent FROM generalcoldef 
+         where school = ?  
+         and colkey = ?
+         and colsubkey = ? " ;
 
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getGenColDefs sql after security: $sql", TRUE), 3, LOG);
-        
-        if (!$stmt = $this->conn->prepare($sql) ) {
-            printf("Errormessage: %s\n", $this->conn->error);
-            return NULL;
-        } else {
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("sss", $school, $colkey, $colsubkey);
             $stmt->execute();
             //$slists = $stmt->bind_result($colcontent);
             $slists = $stmt->get_result();
 
             $stmt->close();
             return $slists;
+        } else {        
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
         }
     }
 
  
     public function getTemplateNames($theinput) {
+        global $school;
         $sql = "SELECT distinct templatename FROM pdftemplate ";
-        $sql .= " where templatename like '%" . $theinput . "%' "; 
+        $sql .= " where school = ? and templatename like '%" . $theinput . "%' "; 
 
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getTemplateNames sql after security: $sql", TRUE), 3, LOG);
 
         
@@ -614,6 +615,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
         error_log( print_R("getTemplateNames sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",  $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getTemplateNames list returns data", TRUE), 3, LOG);
@@ -634,19 +636,20 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
     }
 
     public function getTemplateDetails($theinput) {
+        global $school;
         $sql = "SELECT `id`, `htmlheader`, `htmlbody`, `htmlfooter`, `parsedheader`, `parsedbody`, `parsedfooter`, ";
         $sql .= " `headerimage`, `footerimage`, `backgroundimage`, `maxHeaderHeight`, `maxFooterHeight`, `pageMarginLeft`, ";
         $sql .= " `pageMarginRight`, `pageMarginTop`, `pageMarginBottom`, `pageSize`, `pageOrientation`, `templateName`, pagebreak ";
         $sql .= " from pdftemplate  ";
-        $sql .= " where templatename = ? "; 
+        $sql .= " where templatename = ? and school = ? "; 
 
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getTemplateDetails sql after security: $sql", TRUE), 3, LOG);
 
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $theinput);
+            $stmt->bind_param("ss", $theinput, $school);
             
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -673,15 +676,15 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id)
     error_log( print_R("template: $Template\n", TRUE ), 3, LOG);
 
         
-        $sql = "SELECT templatename from pdftemplate WHERE templatename = ? ";
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+        $sql = "SELECT templatename from pdftemplate WHERE templatename = ? and school = ? ";
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("isTemplateExists sql after security: $sql", TRUE), 3, LOG);
 
         $stmt = $this->conn->prepare($sql);
 
         
-        $stmt->bind_param("s", $Template);
+        $stmt->bind_param("ss", $Template, $school);
         $stmt->execute();
         $stmt->store_result();
         $num_rows = $stmt->num_rows;

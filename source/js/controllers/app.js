@@ -396,7 +396,8 @@ var studentpick = {};
                                 notifkey: data.NotificationList[i].notifkey,
                                 value: data.NotificationList[i].value,
                                 firstname: data.NotificationList[i].firstname,
-                                lastname: data.NotificationList[i].lastname
+                                lastname: data.NotificationList[i].lastname,
+                                contactid: data.NotificationList[i].contactid
                             };
                             vm.newstudents.push(newstu);
                         }
@@ -407,7 +408,8 @@ var studentpick = {};
                                 notifkey: data.NotificationList[i].notifkey,
                                 value: data.NotificationList[i].value,
                                 firstname: data.NotificationList[i].firstname,
-                                lastname: data.NotificationList[i].lastname
+                                lastname: data.NotificationList[i].lastname,
+                                contactid: data.NotificationList[i].contactid
                             };
                             vm.teststudents.push(teststu);
                         }

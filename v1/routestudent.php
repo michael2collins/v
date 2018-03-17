@@ -2100,6 +2100,7 @@ $app->get('/notification', 'authenticate', function() use($app) {
                 $tmp["value"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
                 $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
                 $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
+                $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
 
             } else {
                 $tmp["id"] = "NULL";
@@ -2108,6 +2109,7 @@ $app->get('/notification', 'authenticate', function() use($app) {
                 $tmp["value"] = "NULL";
                 $tmp["firstname"] = "NULL";
                 $tmp["lastname"] = "NULL";
+                $tmp["contactid"] = "NULL";
             }
             array_push($response["NotificationList"], $tmp);
         }

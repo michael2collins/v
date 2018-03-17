@@ -28,15 +28,19 @@ class AttendanceDbHandler {
      * Fetching lookup lists for students class
      */
     public function getAttendanceStatus() {
-        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' ";
+        global $school;
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' and t.school = ? ";
 
-        $schoolfield = "t.school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "t.school";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("updateStudent sql after security: $sql", TRUE), 3, LOG);
 
         $sql .= " order by t.listtype, t.listorder";
 
         $stmt = $this->conn->prepare($sql);
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
         $stmt->execute();
         $slists = $stmt->get_result();
@@ -78,15 +82,18 @@ class AttendanceDbHandler {
         
         global $school;
 
-        $sql = "SELECT s.*, c.class  FROM schedule s left outer join nclass c on (c.id = s.classid and c.school = s.school) where 1=1 ";
+        $sql = "SELECT s.*, c.class  FROM schedule s left outer join nclass c on (c.id = s.classid and c.school = s.school) where s.school = ? ";
         
-        $schoolfield = "s.school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "s.school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortorder";
         
         error_log( print_R("getClassScheduleAll sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $schedulelist = $stmt->get_result();
@@ -109,15 +116,18 @@ class AttendanceDbHandler {
         
         global $school;
 
-        $sql = "SELECT * FROM nclass where 1=1 ";
+        $sql = "SELECT * FROM nclass where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+ //       $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sort";
         
         error_log( print_R("getClasses sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $classlist = $stmt->get_result();
@@ -285,6 +295,7 @@ class AttendanceDbHandler {
 
 
     public function getAttendanceHistory($thedow = NULL, $theclass = NULL) {
+        global $school;
         error_log( print_R("getAttendanceHistory entered", TRUE), 3, LOG);
     error_log( print_R("getAttendanceHistory entered: thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
 
@@ -300,10 +311,10 @@ class AttendanceDbHandler {
         $sql .= ",sum(downum = 7   ) as day7 ";
         $sql .= " FROM attendance a, ncontacts c, nclass n "; 
         $sql .= " WHERE attended = 1 ";
-        $sql .= " and a.ContactId = c.ID  and a.classid = n.id ";
+        $sql .= " and a.ContactId = c.ID  and a.classid = n.id and c.studentschool = ? ";
 
-        $schoolfield = "c.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "c.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getAttendanceHistory sql after security: $sql", TRUE), 3, LOG);
 
 
@@ -320,6 +331,9 @@ class AttendanceDbHandler {
         error_log( print_R("getAttendanceHistory sql: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
             if ($stmt->execute()) {
                 error_log( print_R("getAttendanceHistory list stmt", TRUE), 3, LOG);
                 error_log( print_R($stmt, TRUE), 3, LOG);
@@ -387,26 +401,27 @@ class AttendanceDbHandler {
 */
 
     public function getAttendanceSum($contactid, $theclass) {
+        global $school;
         error_log( print_R("getAttendanceSum entered: cont: $contactid theclass: $theclass\n ", TRUE), 3, LOG);
 
         $sql = "SELECT a.ContactId as contactid, cr.lastpromoted, sum( a.attended ) as daysAttended ";
         $sql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt ";
         $sql .= " WHERE  r.studentid = c.ID and n.id = r.classid and cr.contactid = c.ID ";
         $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
-        $sql .= " and a.ContactId = c.ID and a.classid = n.id and a.ContactId = ? ";
+        $sql .= " and a.ContactId = c.ID and a.classid = n.id and c.studentschool = ? and a.ContactId = ? ";
 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
             $sql .= " and n.class = '" . $theclass . "'";
         }
 
-        $schoolfield = "c.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "c.studentschool";
+ //       $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("getAttendanceSum sql after security: $sql", TRUE), 3, LOG);
 
         $sql .= "  and DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d') group by a.ContactId, cr.lastpromoted ";
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s", $contactid);
+            $stmt->bind_param("ss", $school, $contactid);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -428,6 +443,7 @@ class AttendanceDbHandler {
 
 
     public function getRegistrationList($daynum, $thedow, $thelimit, $theclass) {
+        global $school;
         error_log( print_R("getRegistrationList entered", TRUE), 3, LOG);
     error_log( print_R("attendance entered: daynum: $daynum thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
 
@@ -439,14 +455,14 @@ class AttendanceDbHandler {
         $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, r.readyForNextRank, 0 as attended ";
         $sql .= " FROM  studentregistration  r, nclass n, ncontacts s , ncontactrank cr, notherclass no, testtypes tt ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid and cr.contactid = s.ID ";
-        $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
+        $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype and s.studentschool = ? ";
 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
             $sql .= " and n.class = '" . $theclass . "'";
         }
 
-        $schoolfield = "s.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "s.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
 
         error_log( print_R("getRegistrationList firstsql: $sql \n", TRUE), 3, LOG);
 
@@ -466,7 +482,7 @@ class AttendanceDbHandler {
         $heresql .= " WHERE  r.studentid = c.ID and n.id = r.classid and cr.contactid = c.ID ";
         $heresql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
         $heresql .= " and a.downum = " . $daynum;
-        $heresql .= " and a.attended = 1 and a.ContactId = c.ID and a.classid = n.id ";
+        $heresql .= " and a.attended = 1 and a.ContactId = c.ID and a.classid = n.id and c.studentschool = ? ";
 
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $heresql .= " and mondayofweek = '" . $thedow . "'";
@@ -476,8 +492,8 @@ class AttendanceDbHandler {
         }
 
 
-        $schoolfield = "c.studentschool";
-        $heresql = addSecurity($heresql, $schoolfield);
+//        $schoolfield = "c.studentschool";
+//        $heresql = addSecurity($heresql, $schoolfield);
 
         error_log( print_R("getRegistrationList secondsql: $heresql \n", TRUE), 3, LOG);
 
@@ -494,6 +510,9 @@ class AttendanceDbHandler {
         
         
         if ($stmt = $this->conn->prepare($finalsql)) {
+            $stmt->bind_param("ss",
+                              $school, $school 
+                                 );
             if ($stmt->execute()) {
                 error_log( print_R("getRegistrationList list stmt", TRUE), 3, LOG);
                 error_log( print_R($stmt, TRUE), 3, LOG);
@@ -516,16 +535,20 @@ class AttendanceDbHandler {
 
 
     public function getAttendancePayList() {
+        global $school;
         $sql = "SELECT distinct p.classPayName as classpaynametmp, ";
         $sql .= " c.LastName as lastname, c.FirstName as firstname, p.contactID as contactID ";
-        $sql .=" FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid ";
+        $sql .=" FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid and c.studentschool = ? ";
 
-        $schoolfield = "c.studentschool";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "c.studentschool";
+//        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by p.classPayName ";
 
         if ($stmt = $this->conn->prepare($sql) ) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
             if ($stmt->execute() ) {
                 error_log( print_R("Attendancepay list stmt", TRUE), 3, LOG);
                 error_log( print_R($sql, TRUE), 3, LOG);
@@ -690,7 +713,7 @@ class AttendanceDbHandler {
     private function isScheduleExists(
         $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
         ) {
-
+        global $school;
         error_log( print_R("isScheduleExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -703,7 +726,7 @@ class AttendanceDbHandler {
         $cntsql .= " where dayofweek = ? ";
         $cntsql .= " and TimeStart =   ? ";
         $cntsql .= " and TimeEnd = ? ";
-        $cntsql .= " and classid = ? ";
+        $cntsql .= " and classid = ? and school = ?";
 
         if (strlen($ID) > 0 ) {
             $cntsql = "select count(*) as schedulecount from schedule ";
@@ -712,14 +735,14 @@ class AttendanceDbHandler {
 
         error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
             if (strlen($ID) == 0 ) {
-                    $stmt->bind_param("ssss",
-                        $DayOfWeek,  $TimeStart, $TimeEnd, $classid
+                    $stmt->bind_param("sssss",
+                        $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $school
                                          );
             }
             $stmt->execute();
@@ -1068,7 +1091,7 @@ class AttendanceDbHandler {
     private function isClassExists(
         $class, $id
         ) {
-
+        global $school;
         error_log( print_R("isClassExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -1079,17 +1102,17 @@ class AttendanceDbHandler {
 
         $cntsql = "select count(*) as Classcount from nclass ";
         $cntsql .= " where class = ? ";
-        $cntsql .= " and id = ? ";
+        $cntsql .= " and id = ? and school = ? ";
 
         error_log( print_R("Class isClassExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClassExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("ss",
-                        $class, $id
+                $stmt->bind_param("sss",
+                        $class, $id, $school
                                      );
 
             $stmt->execute();
@@ -1292,15 +1315,18 @@ class AttendanceDbHandler {
         global $school;
 
         $sql = "SELECT *
-        FROM nclass where 1=1 ";
+        FROM nclass where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+ //       $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sort";
         
         error_log( print_R("getClassAll sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $Classlist = $stmt->get_result();
@@ -1324,17 +1350,17 @@ class AttendanceDbHandler {
         global $school;
 
         $sql = "SELECT *
-        FROM nclass where classtype = ? ";
+        FROM nclass where classtype = ? and school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sort";
         
         error_log( print_R("getClassbytype sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("s",
-                        $type       
+                $stmt->bind_param("ss",
+                        $type , $school      
                      );
 
             if ($stmt->execute()) {
@@ -1355,14 +1381,17 @@ class AttendanceDbHandler {
     }
 
     public function getStudentRanktype() {
-        
-        $sql = "select listvalue as value,listorder as id from studentlist s where listtype = 'ranktypelist' ";
-        $schoolfield = "s.school";
-        $sql = addSecurity($sql, $schoolfield);
+        global $school;
+        $sql = "select listvalue as value,listorder as id from studentlist s where listtype = 'ranktypelist' and s.school = ?";
+//        $schoolfield = "s.school";
+//        $sql = addSecurity($sql, $schoolfield);
 
         error_log( print_R("getStudentRanktype sql after security: $sql \n", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                           $school
+                             );
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
                 error_log( print_R("getStudentRanktype list returns data", TRUE), 3, LOG);
@@ -1382,17 +1411,17 @@ class AttendanceDbHandler {
 
     }
     public function getRanks($ranktype) {
-        
-        $sql = "select ranklist as value,rankid as id, ranktype from ranklist where ranktype = ?  ";
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+        global $school;      
+        $sql = "select ranklist as value,rankid as id, ranktype from ranklist where ranktype = ? and school = ? ";
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= " order by sortkey ";
 
         error_log( print_R("getRanks sql after security: $sql \n", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("s",
-                        $ranktype       
+                $stmt->bind_param("ss",
+                        $ranktype , $school      
                      );
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -1416,7 +1445,7 @@ class AttendanceDbHandler {
     private function isProgramExists(
         $class, $id
         ) {
-
+        global $school;
         error_log( print_R("isProgramExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -1427,17 +1456,17 @@ class AttendanceDbHandler {
 
         $cntsql = "select count(*) as Programcount from nclasslist ";
         $cntsql .= " where class = ? ";
-        $cntsql .= " and id = ? ";
+        $cntsql .= " and id = ? and school = ? ";
 
         error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("ss",
-                        $class, $id
+                $stmt->bind_param("sss",
+                        $class, $id, $school
                                      );
 
             $stmt->execute();
@@ -1637,15 +1666,18 @@ class AttendanceDbHandler {
             4thPersonDiscount as _4thPersonDiscount,
             MonthlyPrice, WeeklyPrice, 
             SpecialPrice, sortKey
-        FROM nclasslist where 1=1 ";
+        FROM nclasslist where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortKey";
         
         error_log( print_R("getProgramAll sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $Programlist = $stmt->get_result();
@@ -1669,15 +1701,18 @@ class AttendanceDbHandler {
 
         $sql = "SELECT          
             id, class as value
-        FROM nclasslist where 1=1 ";
+        FROM nclasslist where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortKey";
         
         error_log( print_R("getPrograms sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $Programlist = $stmt->get_result();
@@ -1701,15 +1736,18 @@ class AttendanceDbHandler {
 
         $sql = "SELECT          
             id, classid, pgmid, classcat,pgmcat,agecat,nextClassid, nextPgmid
-        FROM nclasspgm where 1=1 ";
+        FROM nclasspgm where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by pgmid";
         
         error_log( print_R("getClassPgms sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $ClassPgmList = $stmt->get_result();
@@ -1734,15 +1772,18 @@ class AttendanceDbHandler {
         global $school;
 
         $sql = "SELECT listvalue, listkey, listorder
-        FROM studentlist where listtype = 'Classtype' ";
+        FROM studentlist where listtype = 'Classtype' and school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+ //       $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by listorder";
         
         error_log( print_R("getClassTypes sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $results = $stmt->get_result();
@@ -1774,23 +1815,23 @@ class AttendanceDbHandler {
         }
 
         $cntsql = "select count(*) as Basiccount from studentlist ";
-        $cntsql .= " where id = ? ";
+        $cntsql .= " where id = ? and school = ? ";
 
         $cnt2sql = "select count(*) as Basiccount from studentlist ";
-        $cnt2sql .= " where listtype = ? and listkey = ?";
+        $cnt2sql .= " where listtype = ? and listkey = ? and school = ? ";
 
         error_log( print_R("Basic isBasicExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isBasicExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();
@@ -1813,8 +1854,8 @@ class AttendanceDbHandler {
                 return $row;
             } else {
                 if ($stmt = $this->conn->prepare($cnt2sql)) {
-                    $stmt->bind_param("ss",
-                             $listtype, $listkey
+                    $stmt->bind_param("sss",
+                             $listtype, $listkey, $school
                                          );
         
                     $stmt->execute();
@@ -1972,15 +2013,18 @@ $errormessage=array();
         where listtype in (
 'beltsize','ClassStatus','Classtype','ContactType','gisize','Instructor Title','PaymentType','PaymentType','ranktypelist','shirtsize', 
 'agecat','pgmcat','classcat'
-)        ";
+)    and school = ?    ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by listtype, listorder";
         
         error_log( print_R("getBasicAll sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+        $stmt->bind_param("s",
+                           $school
+                             );
 
             if ($stmt->execute()) {
                 $Basiclist = $stmt->get_result();
@@ -2002,7 +2046,7 @@ $errormessage=array();
     private function isRankExists(
         $ranklist, $ranktype
         ) {
-
+        global $school;
         error_log( print_R("isRankExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -2013,17 +2057,17 @@ $errormessage=array();
 
         $cntsql = "select count(*) as Rankcount from ranklist ";
         $cntsql .= " where ranklist = ? ";
-        $cntsql .= " and ranktype = ? ";
+        $cntsql .= " and ranktype = ?  and school = ?";
 
         error_log( print_R("Rank isRankExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isRankExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("ss",
-                        $ranklist, $ranktype
+                $stmt->bind_param("sss",
+                        $ranklist, $ranktype, $school
                                      );
 
             $stmt->execute();
@@ -2054,7 +2098,7 @@ $errormessage=array();
     private function isRankIDExists(
         $id
         ) {
-
+        global $school;
         error_log( print_R("isRankIDExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -2064,17 +2108,17 @@ $errormessage=array();
         }
 
         $cntsql = "select count(*) as Rankcount from ranklist ";
-        $cntsql .= " where rankid = ? ";
+        $cntsql .= " where rankid = ? and school = ?";
 
         error_log( print_R("Rank isRankIDExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isRankIDExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();
@@ -2260,15 +2304,18 @@ $errormessage=array();
 
         $sql = "SELECT 
         ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, nextsortkey, ranklist as value,rankid as id
-        FROM ranklist where 1=1 ";
+        FROM ranklist where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+        //$schoolfield = "school";
+        //$sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by alphasortkey";
         
         error_log( print_R("getRankAll sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $Ranklist = $stmt->get_result();
@@ -2292,15 +2339,18 @@ $errormessage=array();
         global $school;
 
         $sql = "SELECT listvalue, listkey, listorder
-        FROM studentlist where listtype = 'rankgroup' ";
+        FROM studentlist where listtype = 'rankgroup' and school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by listorder";
         
         error_log( print_R("getRankGroups sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+          $stmt->bind_param("s",
+                           $school
+                             );
 
             if ($stmt->execute()) {
                 $results = $stmt->get_result();
@@ -2322,7 +2372,7 @@ $errormessage=array();
     private function isClassPgmExists(
         $classid, $pgmid, $id
         ) {
-
+        global $school;
         error_log( print_R("isClassPgmExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -2332,23 +2382,23 @@ $errormessage=array();
         }
 
         $cntsql = "select count(*) as ClassPgmcount from nclasspgm ";
-        $cntsql .= " where id = ? ";
+        $cntsql .= " where id = ? and school = ? ";
 
         $cnt2sql = "select count(*) as ClassPgmcount from nclasspgm ";
-        $cnt2sql .= " where classid = ? and pgmid = ? ";
+        $cnt2sql .= " where classid = ? and pgmid = ? and school = ? ";
 
         error_log( print_R("ClassPgm isClassPgmExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClassPgmExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();
@@ -2371,8 +2421,8 @@ $errormessage=array();
                 return $row;
             } else {
                 if ($stmt = $this->conn->prepare($cnt2sql)) {
-                    $stmt->bind_param("ss",
-                             $classid, $pgmid
+                    $stmt->bind_param("sss",
+                             $classid, $pgmid, $school
                                          );
         
                     $stmt->execute();
@@ -2533,15 +2583,18 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, classid, rankid
-        FROM classrank where 1=1 ";
+        FROM classrank where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+    //    $schoolfield = "school";
+    //    $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by rankid";
         
         error_log( print_R("getClassRanks sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $ClassRankList = $stmt->get_result();
@@ -2562,7 +2615,7 @@ $errormessage=array();
     private function isClassRankExists(
         $classid, $rankid, $id
         ) {
-
+        global $school;
         error_log( print_R("isClassRankExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -2572,23 +2625,23 @@ $errormessage=array();
         }
 
         $cntsql = "select count(*) as ClassRankcount from classrank ";
-        $cntsql .= " where id = ? ";
+        $cntsql .= " where id = ? and school = ?";
 
         $cnt2sql = "select count(*) as ClassRankcount from classrank ";
-        $cnt2sql .= " where classid = ? and rankid = ? ";
+        $cnt2sql .= " where classid = ? and rankid = ? and school = ? ";
 
         error_log( print_R("ClassRank isClassRankExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+ //       $schoolfield = "school";
+ //       $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClassRankExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();
@@ -2611,8 +2664,8 @@ $errormessage=array();
                 return $row;
             } else {
                 if ($stmt = $this->conn->prepare($cnt2sql)) {
-                    $stmt->bind_param("ss",
-                             $classid, $rankid
+                    $stmt->bind_param("sss",
+                             $classid, $rankid, $school
                                          );
         
                     $stmt->execute();
@@ -2768,15 +2821,18 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, testtype, ranktype, testdescription
-        FROM testtypes where (1=1) ";
+        FROM testtypes where studentschool = ? ";
         
-        $schoolfield = "studentschool";
-        $sql = addSecurity($sql, $schoolfield, 'true');
+//        $schoolfield = "studentschool";
+//        $sql = addSecurity($sql, $schoolfield, 'true');
         $sql .= "   order by testtype ";
         
         error_log( print_R("getTesttypes sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $TesttypeList = $stmt->get_result();
@@ -2797,7 +2853,7 @@ $errormessage=array();
     private function isTesttypeExists(
         $testtype, $id
         ) {
-
+        global $school;
         error_log( print_R("isTesttypeExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -2807,23 +2863,23 @@ $errormessage=array();
         }
 
         $cntsql = "select count(*) as Testtypecount from testtypes ";
-        $cntsql .= " where id = ? ";
+        $cntsql .= " where id = ? and studentschool = ?";
 
         $cnt2sql = "select count(*) as Testtypecount from testtypes ";
-        $cnt2sql .= " where testtype = ? ";
+        $cnt2sql .= " where testtype = ? and studentschool = ? ";
 
         error_log( print_R("Testtype isTesttypeExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "studentschool";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+//        $schoolfield = "studentschool";
+//        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
-        $schoolfield = "studentschool";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "studentschool";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isTesttypeExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();
@@ -2846,8 +2902,8 @@ $errormessage=array();
                 return $row;
             } else {
                 if ($stmt = $this->conn->prepare($cnt2sql)) {
-                    $stmt->bind_param("s",
-                             $testtype
+                    $stmt->bind_param("ss",
+                             $testtype, $school
                                          );
         
                     $stmt->execute();
@@ -2976,7 +3032,7 @@ $errormessage=array();
                                       
         $sql = "DELETE from testtypes  where id = ?  ";
 
-        $schoolfield = "school";
+        $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
         error_log( print_R("removeTesttype sql after security: $sql", TRUE), 3, LOG);
 
@@ -3004,15 +3060,18 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, classid, testtypeid, sortorder
-        FROM notherclass where 1=1 ";
+        FROM notherclass where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+    //    $schoolfield = "school";
+    //    $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortorder";
         
         error_log( print_R("getClasstests sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $ClasstestList = $stmt->get_result();
@@ -3033,7 +3092,7 @@ $errormessage=array();
     private function isClasstestExists(
         $classid, $testtypeid, $id
         ) {
-
+        global $school;
         error_log( print_R("isClasstestExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -3043,23 +3102,23 @@ $errormessage=array();
         }
 
         $cntsql = "select count(*) as Classtestcount from notherclass ";
-        $cntsql .= " where id = ? ";
+        $cntsql .= " where id = ? and school = ? ";
 
         $cnt2sql = "select count(*) as Classtestcount from notherclass ";
-        $cnt2sql .= " where classid = ? and testtypeid = ? ";
+        $cnt2sql .= " where classid = ? and testtypeid = ? and school = ? ";
 
         error_log( print_R("Classtest isClasstestExists sql: $cntsql", TRUE), 3, LOG);
 
-        $schoolfield = "school";
-        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isClasstestExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();
@@ -3082,8 +3141,8 @@ $errormessage=array();
                 return $row;
             } else {
                 if ($stmt = $this->conn->prepare($cnt2sql)) {
-                    $stmt->bind_param("ss",
-                             $classid, $testtypeid
+                    $stmt->bind_param("sss",
+                             $classid, $testtypeid, $school
                                          );
         
                     $stmt->execute();
@@ -3233,14 +3292,17 @@ $errormessage=array();
     }
 
     public function getHtmlTemplates() {
-        
+        global $school;        
 
         $sql = "SELECT          
             id, title, description, url, content
-        FROM htmltemplate where 1=1 ";
+        FROM htmltemplate where school = ? ";
         
 
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $EmailTemplateList = $stmt->get_result();
@@ -3265,14 +3327,17 @@ $errormessage=array();
 
         $sql = "SELECT          
             id, title, description, url, content
-        FROM htmltemplate where 1=1 ";
+        FROM htmltemplate where school = ? ";
         
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
 
         error_log( print_R("getEmailTemplates sql after security: $sql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
 
             if ($stmt->execute()) {
                 $EmailTemplateList = $stmt->get_result();
@@ -3293,7 +3358,7 @@ $errormessage=array();
     private function isEmailTemplateExists(
          $id
         ) {
-
+        global $school;
         error_log( print_R("isEmailTemplateExists entered", TRUE), 3, LOG);
 
         $numargs = func_num_args();
@@ -3303,15 +3368,15 @@ $errormessage=array();
         }
 
         $cntsql = "select count(*) as EmailTemplatecount from htmltemplate ";
-        $cntsql .= " where id = ? ";
+        $cntsql .= " where id = ? and school = ? ";
 
-        $schoolfield = "school";
-        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
+//        $schoolfield = "school";
+//        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
         error_log( print_R("isEmailTemplateExists sql after security: $cntsql", TRUE), 3, LOG);
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("s",
-                         $id
+                $stmt->bind_param("ss",
+                         $id, $school
                                      );
 
             $stmt->execute();

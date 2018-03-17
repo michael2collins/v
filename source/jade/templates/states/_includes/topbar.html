@@ -31,7 +31,7 @@
                      <span class="caret"></span></a>
                      <ul class="dropdown-menu">
                         <li ng-repeat="stu in vm.newstudents">
-                           <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.id}}">
+                           <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-green">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
@@ -71,7 +71,7 @@
                      <ul class="dropdown-menu">
                         <li ng-repeat="stu in vm.overduestudents.overdue">
                            <a tabindex="-1" 
-                              href="#/form-layouts-editstudent/id/{{stu.id}}">
+                              href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-red">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
@@ -93,7 +93,7 @@
                      <ul class="dropdown-menu">
                         <li ng-repeat="stu in vm.noshowstudents.noshow">
                            <a tabindex="-1" 
-                              href="#/form-layouts-editstudent/id/{{stu.id}}">
+                              href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-blue">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
@@ -121,7 +121,7 @@
                               {{task.taskname}}
                            </span>
                            </a></li>
-                        <li><a tabindex="-1" ng-click="javascript:void(0);">
+                        <li><a tabindex="-1" href="javascript:void(0);">
                            <span class="label label-grey">
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
@@ -129,7 +129,7 @@
                         
                      </ul>
                   </li>
-                  <li><a tabindex="-1" ng-click="javascript:void(0);">
+                  <li><a tabindex="-1" href="javascript:void(0);">
                      <span class="label label-grey">
                         <i class="fas fa-eraser fa-fw"></i></span>                           
                      <span class="text-right">Clear All Alerts</span>
