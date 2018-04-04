@@ -122,11 +122,11 @@
             return "#" + (0x1000000 | rgb).toString(16).substring(1);
         }
 
-        function setEventOpen(calEvent,studentpick) {
-            $log.debug('eventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
+        function setEventOpen(calEvent,studentpick,vm) {
+            $log.debug('seteventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
             $("#eventpick").val(studentpick.FullName);
 
-            $("#eventStartd").val(moment(calEvent.start).tz('America/New_York').format('MM/DD/YYYY'));
+            $("#eventStartd").val(moment(calEvent.startd).tz('America/New_York').format('MM/DD/YYYY'));
 
             $("#eventStart").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('hh:mm A z'));
             $("#eventStarttz").val(moment(new Date(calEvent.start.toString())).tz('America/New_York').format('z'));
@@ -136,7 +136,28 @@
 
             $('#eventStart').timepicker('setTime', new Date(calEvent.start.toString()));
             $('#eventEnd').timepicker('setTime', new Date(calEvent.end.toString()));
-
+            $("#typepick").val(calEvent.eventtype);
+            if (calEvent.eventtype === 'ClassSchedule') {
+                $("#reminderCheckboxDiv").hide();
+                $("#userPickDiv").hide();
+                $("#classPickDiv").show();
+                $("#agerPickDiv").show();
+                $("#eventPickDiv").hide();
+            }
+            else if (calEvent.eventtype === 'event') {
+                $("#reminderCheckboxDiv").show();
+                $("#userPickDiv").show();
+                $("#classPickDiv").hide();
+                $("#agerPickDiv").hide();
+                $("#eventPickDiv").show();
+                                
+            } else {
+                $("#reminderCheckboxDiv").hide();
+                $("#userPickDiv").hide();
+                $("#classPickDiv").hide();
+                $("#agerPickDiv").hide();
+                $("#eventPickDiv").hide();
+            }
             if (calEvent.reminderCheckbox === 1 || calEvent.reminderCheckbox === true) {
                 $("#reminderCheckbox").val(calEvent.reminderCheckbox).prop('checked', true);
             }
@@ -146,7 +167,9 @@
             $("#reminderInterval").val(calEvent.reminderInterval);
             //            $("#userpick").val("number:" + calEvent.userpick);
             $("#userpick").val(calEvent.userpick);
-
+            $("#classpick").val(calEvent.classid);
+            $("#agerpick").val(calEvent.agerange);
+            
             $("#eventid").val(calEvent.eventid);
 
             $('#calEventDialog #eventTitle').val(calEvent.title);
@@ -225,6 +248,7 @@
                     copiedEventObject.title = desc;
                     copiedEventObject.description = innerJ;
 
+
                     //mlc todo, use a db inserted id 
                     vm.saveCalendarEvent(copiedEventObject).then(function() {
                         $log.debug("test looking for new eventid", vm.neweventid);
@@ -248,12 +272,16 @@
                     $log.debug('select entered', start, end);
                     $("#eventStartd").val(moment(start).tz('America/New_York').format('MM/DD/YYYY'));
                     $("#eventStart").val(moment(start).tz('America/New_York').format('hh:mm A z'));
-                    $("#eventEnd").val(moment(start).tz('America/New_York').format('hh:mm A z'));
+                    $("#eventEnd").val(moment(end).tz('America/New_York').format('hh:mm A z'));
                     $log.debug('start', $("#eventStart"), 'end', $("#eventEnd"));
                     //$('#calEventDialog').dialog('open');
                 },
                 eventClick: function(calEvent, jsEvent, view) {
                     $log.debug('eventClick entered', calEvent, jsEvent, view);
+                    vm.agerpick = calEvent.agerange;
+                    vm.userpick = calEvent.userpick;
+                    vm.typepick = calEvent.eventtype;
+                    vm.classpick = calEvent.classid;
 
                     //get stu name if contactid set
                     if (calEvent.contactid !== "" && calEvent.contactid !== "NULL") {
@@ -279,12 +307,20 @@
                     $log.debug('eventdrop', event, event.title + " was dropped on " + event.startd, delta);
 
                     var title = event.title;
-                    var startd = moment(event.startd).add(delta, 'seconds').tz('America/New_York').format('MM/DD/YYYY');
+                    //fullcalendar moment doesn't have the duration add yet
+                    var startd = window.moment(event.start).add(delta).tz('America/New_York').format('MM/DD/YYYY');
                     var start = moment(event.start).tz('America/New_York').format('hh:mm A z');
                     var end = moment(event.end).tz('America/New_York').format('hh:mm A z');
 
                     var reminderInterval = event.reminderInterval;
                     var userpick = event.userpick;
+
+                    var eventpick = event.eventpick;
+                    var typepick = event.typepick;
+                    var agerpick = event.agerpick;
+                    var classpick = event.classpick;
+                    
+                    
                     var reminderCheckbox = event.reminderCheckbox;
                     var contactid = event.contactid;
                     var eventid = event.eventid;
@@ -300,9 +336,17 @@
                     else {
 
                         $log.debug('save in eventdrop');
-                        $log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
+                    //    $log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
 
-                        vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
+                     //   vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
+
+                        $log.debug('before save in eventdrop', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+                        userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype,
+                        eventpick, typepick, agerpick, classpick);
+
+                        vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+                        userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype,
+                        eventpick, typepick, agerpick, classpick);
 
                     }
 
@@ -332,7 +376,7 @@
 
         function eventopen(calEvent,studentpick,vm,CalendarServices) {
             $log.debug('eventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
-            setEventOpen(calEvent,studentpick);
+            setEventOpen(calEvent,studentpick,vm);
             
             CalendarServices.setCurrentEvent(calEvent);
             $("#calEventDialog").dialog("option", "buttons", [{
@@ -352,11 +396,20 @@
 
                         var reminderInterval = $('#reminderInterval').val();
                         var userpick = $('#userpick').val();
+                        var eventpick = $('#eventpick').val();
+                        var typepick = $('#typepick').val();
+                        var agerpick = $('#agerpick').val();
+                        var classpick = $('#classpick').val();
+
                         var reminderCheckbox = $('#reminderCheckbox');
                         var screen = $(this);
-                        $log.debug('before calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype);
+                        $log.debug('before calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+                        userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype,
+                        eventpick, typepick, agerpick, classpick);
 
-                        vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype);
+                        vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+                        userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype,
+                        eventpick, typepick, agerpick, classpick);
                         $('#calendar').fullCalendar('unselect');
 
                         $(this).dialog("close");
@@ -458,9 +511,10 @@
                             }
                             */
                 var m = moment(thetime, "MM/DD/YYYY hh:mm A z");
-                $log.debug('convertToMoment: passed in: ', thetime,
+        /*        $log.debug('convertToMoment: passed in: ', thetime,
                     'isvalid?', m.isValid(),
                     'where invalid', m.invalidAt());
+        */            
                 return moment(thetime, "MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
                 //24 hr?    return moment(testtime).utc().format("YYYY-MM-DDThh:mm:ss.SSS[Z]");
             }

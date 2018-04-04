@@ -59,15 +59,20 @@
                                 <div class="col-md-4">
                                     <?php require_once('table-basic.php');
 //'agerange', 'vm.schedule.agerange', 'Age Range', 'All Ages', true, 'text'
-                                        print strColTemplate(
+                                        print selectColTemplate(
                                             array(
                                                 'field'=>'agerange',
                                                 'model'=>'vm.schedule.agerange',
                                                 'label'=>'Age<br/>Range',
-                                                'placeholder'=>'All Ages ',
-                                                'required'=>true
+                                                'placeholder'=>'Select',
+                                                'required'=>true,
+                                                'form'=>'editschedule2',
+                                                'repeatmodel'=>'vm.agerangelist',
+                                                'repeatvalue'=>'value',
+                                                'repeatid'=>'value'
                                                 )
                                         );
+                                        
                                     ?>
                                 </div>
                             </div>
@@ -109,6 +114,15 @@
                             <div class="col-md-3">
                                 <div class="col-md-6" style="margin-top: 10px;">
                                     <?php require_once('table-basic.php');
+                                        print strColTemplate(
+                                            array(
+                                                'field'=>'startT',
+                                                'label'=>'Start<br/>&nbsp;',
+                                                'model'=>'vm.schedule.startT',
+                                                'required'=>true
+                                                )
+                                        );
+/*                                    
                                         print timepickerColTemplate(
                                             array(
                                                 'field'=>'startT',
@@ -116,10 +130,20 @@
                                                 'required'=>true
                                             )
                                         );
+*/                                        
                                     ?>
                                 </div>
                                 <div class="col-md-6" style="margin-top: 10px;">
                                     <?php require_once('table-basic.php');
+                                        print strColTemplate(
+                                            array(
+                                                'field'=>'endT',
+                                                'label'=>'End<br/>&nbsp;',
+                                                'model'=>'vm.schedule.endT',
+                                                'required'=>true
+                                                )
+                                        );
+/*                                    
                                         print timepickerColTemplate(
                                             array(
                                                 'field'=>'endT',
@@ -127,6 +151,7 @@
                                                 'required'=>true
                                             )
                                         );
+*/                                        
                                     ?>
                                 </div>
                             </div>

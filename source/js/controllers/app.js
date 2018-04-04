@@ -40,6 +40,7 @@ var studentpick = {};
         'UserServices',
         'CalendarServices',
         'StudentServices',
+        'ClassServices',
         'Notification',
         '$uibModal',
         'uiGridConstants',
@@ -54,6 +55,7 @@ var studentpick = {};
         UserServices,
         CalendarServices,
         StudentServices,
+        ClassServices,
         Notification,
         $uibModal,
         uiGridConstants,
@@ -89,7 +91,6 @@ var studentpick = {};
           vm.userOptions = {};
           vm.okNotify;
           vm.mydelay;
-        
 
 //        vm.setInterval = setInterval;
 //        function setInterval(){
@@ -130,6 +131,7 @@ var studentpick = {};
             }, thedelay);
 */            
         }
+
         
     function getUserOptions() {
       $log.debug('getUserOptions entered');
@@ -712,6 +714,14 @@ var studentpick = {};
 
         vm.thisUserlist = {};
         vm.userpick;
+        vm.classList ={};
+        vm.classpick;
+        
+        vm.typepick;
+        vm.eventtypeOptions = ['event','ClassSchedule','movie']; //plus testtypes
+
+        vm.agerangelist ={};
+        vm.agerpick='';
 
         vm.initTime = moment();
         vm.checktime;
@@ -740,13 +750,28 @@ var studentpick = {};
         vm.refreshStudents = refreshStudents;
         vm.refreshstudentlist = [];
 
-
         vm.reminderOptions = ['15 min', '1 hour', '1 day'];
         vm.popinit = popinit;
         vm.calsave = calsave;
         vm.eventDrag = eventDrag;
         vm.saveCalendarEvent = saveCalendarEvent;
         vm.removeCalendarEvent = removeCalendarEvent;
+
+        vm.conversiondateopen = conversiondateopen;
+        vm.schedToCal = schedToCal;
+        vm.clearCal = clearCal;
+        vm.transferCal = transferCal;
+        vm.status = {
+            opened: false
+        };
+        vm.conversiondate='';
+          vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
+          vm.bdateformat = vm.formats[4];
+
+
+        function conversiondateopen($event) {
+            vm.status.opened = true;
+        }
         
 
         var adialog;
@@ -870,6 +895,15 @@ var studentpick = {};
                 $log.debug('todos external-events after drag', $(this));
 
             });
+
+            $('#calendar').fullCalendar('destroy');
+            getEventList(vm.forUser).then(function() {
+                $log.debug("refetch", vm.events);
+                initCalendar();
+            }).catch(function(e) {
+                $log.debug("resetCalendar error in activate", e);
+            });
+            
         });
 
         function activate() {
@@ -914,6 +948,9 @@ var studentpick = {};
                 getInstructorList().then(function() {
                     $log.debug("returned from getInstructorList");
                 });
+                getAgeRangeList().then(function() {
+                    $log.debug("returned from getAgeRangeList");
+                });
                 getTestTypes().then(function() {
                     $log.debug("returned from getTesttypes");
                 });
@@ -934,7 +971,98 @@ var studentpick = {};
             });
 
         }
+        function getAgeRangeList() {
+            var path="../v1/ageranges";
+            return CalendarServices.getAgeRangeList(path).then(function (data) {
+                $log.debug('getAgeRangeList returned data');
+                $log.debug(data.agerangelist);
+                vm.agerangelist = data.agerangelist;
 
+                return vm.agerangelist;
+            });
+        }
+
+        function schedToCal() {
+            $log.debug('schedToCal entered');
+            var thedata = {
+                'calendarscheduleDate': vm.ConversionDate
+            };
+            var path="../v1/calendarschedule";
+            return CalendarServices.schedToCal(path, thedata).then(function(data) {
+                    $log.debug("service schedToCal returned:", data);
+                    $('#calendar').fullCalendar('destroy');
+                    getEventList(vm.forUser).then(function() {
+                        $log.debug("refetch", vm.events);
+                        initCalendar();
+                    }).catch(function(e) {
+                        $log.debug("resetCalendar error in activate", e);
+                    });
+
+                    return;
+                },
+
+                function(error) {
+                    $log.debug('Caught an error schedToCal, going to notify:', error);
+                    vm.message = error;
+                    Notification.error({ message: error, delay: 5000 });
+                    return ($q.reject(error));
+                }).
+            finally(function() {});
+
+        }
+        function clearCal() {
+            $log.debug('clearCal entered');
+            var path="../v1/calendarschedule";
+            return CalendarServices.clearCal(path).then(function(data) {
+                    $log.debug("service clearCal returned:", data);
+                    $('#calendar').fullCalendar('destroy');
+                    getEventList(vm.forUser).then(function() {
+                        $log.debug("refetch", vm.events);
+                        initCalendar();
+                    }).catch(function(e) {
+                        $log.debug("resetCalendar error in activate", e);
+                    });
+
+                    return;
+                },
+
+                function(error) {
+                    $log.debug('Caught an error clearCal, going to notify:', error);
+                    vm.message = error;
+                    Notification.error({ message: error, delay: 5000 });
+                    return ($q.reject(error));
+                }).
+            finally(function() {});
+
+        }
+        function transferCal() {
+            $log.debug('transferCal entered');
+            var thedata = {
+                'calendarscheduleDate': vm.ConversionDate
+            };
+            var path="../v1/schedulecalendar";
+            return CalendarServices.transferCal(path, thedata).then(function(data) {
+                    $log.debug("service transferCal returned:", data);
+                    $('#calendar').fullCalendar('destroy');
+                    getEventList(vm.forUser).then(function() {
+                        $log.debug("refetch", vm.events);
+                        initCalendar();
+                    }).catch(function(e) {
+                        $log.debug("transferCal error in activate", e);
+                    });
+
+                    return;
+                },
+
+                function(error) {
+                    $log.debug('Caught an error transferCal, going to notify:', error);
+                    vm.message = error;
+                    Notification.error({ message: error, delay: 5000 });
+                    return ($q.reject(error));
+                }).
+            finally(function() {});
+
+        }
 
         function popinit() {
             $log.debug("popinit entered");
@@ -967,7 +1095,11 @@ var studentpick = {};
             $("#studentpick").val(item);
         }
 
-        function calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, updateflag, theevent, contactid, eventid, eventclass, color, textcolor, eventtype) {
+
+
+        function calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+            userpick, updateflag, theevent, contactid, eventid, eventclass, color, textcolor, eventtype,
+            eventpick, typepick, agerpick, classpick) {
             $log.debug('save cal',
                 screen,
                 title,
@@ -983,7 +1115,8 @@ var studentpick = {};
                 eventid,
                 eventclass,
                 color,
-                textcolor, eventtype);
+                textcolor, eventtype,
+                eventpick, typepick, agerpick, classpick);
             var reminderCheck;
             if (reminderCheckbox === undefined) {
                 reminderCheck = 0;
@@ -1025,7 +1158,10 @@ var studentpick = {};
                 theevent.eventtype = eventtype;
                 theevent.contactid = contactid;
                 theevent.eventid = eventid;
-
+                theevent.eventpick = eventpick;
+                theevent.typepick = typepick;
+                theevent.agerpick = agerpick;
+                theevent.classpick = classpick;
                 saveCalendarEvent(theevent);
 
                 $('#calendar').fullCalendar('updateEvent', theevent);
@@ -1047,7 +1183,11 @@ var studentpick = {};
                     textcolor: textcolor.val(),
                     eventtype: eventtype.val(),
                     eventid: eventid.val(),
-                    contactid: contactid.val()
+                    contactid: contactid.val(),
+                    eventpick: eventpick.val(),
+                    typepick: typepick.val(),
+                    agerpick: agerpick.val(),
+                    classpick: classpick.val()
                 };
                 $log.debug('isTitle yes', eventData);
                 $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
@@ -1075,7 +1215,12 @@ var studentpick = {};
                 color: theEvent.backgroundColor,
                 textcolor: theEvent.textColor,
                 eventtype: theEvent.eventtype,
-                classname: theEvent.className
+                classname: theEvent.className,
+                eventpick: theEvent.eventpick,
+                typepick: theEvent.typepick,
+                agerpick: theEvent.agerpick,
+                classpick: theEvent.classpick
+                
             };
 
 
@@ -1209,6 +1354,7 @@ var studentpick = {};
                     vm.message = data.message;
                     getEventList(vm.forUser).then(function(zdata) {
                             $log.debug('removeCalendarEvent getEventList returned', zdata);
+
                         },
                         function(error) {
                             $log.debug('Caught an error removeCalendarEvent getEventList:', error);
@@ -1273,6 +1419,27 @@ var studentpick = {};
                 vm.loadAttempted = true;
             });
 
+        }
+
+        function getClassList() {
+            $log.debug('getClassList entered');
+            var path='../v1/class';
+
+            return ClassServices.getClasses(path).then(function(data){
+                    $log.debug('getClasses returned data');
+                    $log.debug(data);
+
+                        vm.classList = data.Classlist; 
+
+                }, function(error) {
+                    $log.debug('Caught an error getClassList:', error); 
+                    vm.classList = [];
+                    vm.message = error;
+                    Notification.error({message: error, delay: 5000});
+                    return ($q.reject(error));
+                    
+                }
+                );
         }
 
         function gettheTasknamelist() {
@@ -1353,6 +1520,7 @@ var studentpick = {};
                                 vm.testtypelist[i].backgroundcolor = vm.colorlist[i];
                                 vm.testtypelist[i].textcolor = vm.colorlisthex[i];
                             }
+                            vm.eventtypeOptions.push(vm.testtypelist[i].testdescription);
                         }
                     }
                     return vm.testtypelist;
@@ -1457,6 +1625,9 @@ var studentpick = {};
                         getUserList().then(function() {
                             $log.debug('getUserList returned');
                         }),
+                        getClassList().then(function() {
+                            $log.debug('getClassList returned');
+                        }),
                         getStudentStatsMonths(getdatestr).then(function() {
                             $log.debug('getStudentStatsMonths returned');
                         }),
@@ -1488,7 +1659,7 @@ var studentpick = {};
         // initialize the calendar
         // -----------------------------------------------------------------
         function initCalendar() {
-            CalUtil.initCalendar(vm, studentpick);
+            CalUtil.initCalendar(vm, vm.forUser);
         }
 
         function settextcolor() {

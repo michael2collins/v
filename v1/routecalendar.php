@@ -63,13 +63,19 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
     $eventtype      = (isset($dataJsonDecode->thedata->eventtype) ? $dataJsonDecode->thedata->eventtype : "");
     $userpick      = (isset($dataJsonDecode->thedata->userpick) ? $dataJsonDecode->thedata->userpick : $user_id);
 
+    $eventpick      = (isset($dataJsonDecode->thedata->eventpick) ? $dataJsonDecode->thedata->eventpick : "");
+    $typepick      = (isset($dataJsonDecode->thedata->typepick) ? $dataJsonDecode->thedata->typepick : "");
+    $agerpick      = (isset($dataJsonDecode->thedata->agerpick) ? $dataJsonDecode->thedata->agerpick : "");
+    $classpick      = (isset($dataJsonDecode->thedata->classpick) ? $dataJsonDecode->thedata->classpick : "");
+
     $db = new CalendarDbHandler();
     $response = array();
 
     // updating task
     $new_eventid = $db->saveCalendarEvent( $eventID,
                                        $title, $startdated, $startdate, $enddate,
-                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color,$textcolor,$eventtype
+                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color,$textcolor,$eventtype,
+                                       $eventpick,$typepick,$agerpick,$classpick
                                      );
  
     if ($new_eventid > 1) {
@@ -194,6 +200,8 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
             $tmp["textColor"] = (empty($slist["textcolor"]) ? "NULL" : $slist["textcolor"]);
             $tmp["eventtype"] = (empty($slist["eventtype"]) ? "NULL" : $slist["eventtype"]);
             $tmp["userpick"] = (empty($slist["userid"]) ? "NULL" : $slist["userid"]);
+            $tmp["agerange"] = (empty($slist["agerange"]) ? "NULL" : $slist["agerange"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
 
         } else {
             $tmp["id"] = "NULL";
@@ -210,6 +218,8 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
             $tmp["textcolor"] = "NULL";
             $tmp["eventtype"] = "NULL";
             $tmp["userpick"] = "NULL";
+            $tmp["agerange"] = "NULL";
+            $tmp["classid"] = "NULL";
 
         }
         array_push($response["events"], $tmp);
@@ -427,6 +437,472 @@ $app->get('/tasknamelist', 'authenticate', function() use ($app) {
         echoRespnse(404, $response);
 //        echoRespnse(200, $response);
     }
+});
+
+$app->post('/calendarschedule', 'authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("calendarschedule before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
+
+    $calendarscheduleDate  = (isset($dataJsonDecode->thedata->calendarscheduleDate) ? $dataJsonDecode->thedata->calendarscheduleDate : $today);
+    $cal_dt = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    
+    error_log( print_R($cal_dt, TRUE ), 3, LOG);
+    error_log( print_R("calendarscheduleDate: $calendarscheduleDate \n", TRUE ), 3, LOG);
+
+    $asunday = $cal_dt;
+    if ($asunday->format('N') != 7) {
+        error_log( print_R(" createcalendarschedule not a sunday\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create  calendarschedule. Not a sunday";
+        echoRespnse(400, $response);
+        
+    }
+    $amonday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    $atuesday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    $awednesday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    $athursday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    $afriday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    $asaturday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+
+    $amonday->modify('+1 day');
+    $atuesday->modify('+2 day');
+    $awednesday->modify('+3 day');
+    $athursday->modify('+4 day');
+    $afriday->modify('+5 day');
+    $asaturday->modify('+6 day');
+
+    error_log( print_R(" tuesday and saturday\n", TRUE), 3, LOG);
+    error_log( print_R($atuesday, TRUE ), 3, LOG);
+    error_log( print_R($asaturday, TRUE ), 3, LOG);
+
+    $calendarschedulegood=0;
+    $calendarschedulebad=0;
+    $calendarscheduleexists=0;
+
+    //get list of payers to calendarschedule
+    $db = new CalendarDbHandler();
+    $resarr["calendarscheduleList"] = array();
+
+    // creating calendarschedules based on date and who is ready
+    $result = $db->getScheduleList();
+    error_log( print_R($result, TRUE), 3, LOG);
+
+    if ($result) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            
+            if (count($slist) > 0) {
+                $tmp = array();
+                $tmp["DayOfWeek"]       =  (empty($slist["DayOfWeek"]) ? "NULL" : $slist["DayOfWeek"]);
+                $tmp["TimeRange"]       =  (empty($slist["TimeRange"]) ? "NULL" : $slist["TimeRange"]);
+                $tmp["AgeRange"]        =  (empty($slist["AgeRange"]) ? "NULL" : $slist["AgeRange"]);
+                $tmp["Description"]     =  (empty($slist["Description"]) ? "NULL" : $slist["Description"]);
+                $tmp["TakeAttendance"]  =  (empty($slist["TakeAttendance"]) ? "NULL" : $slist["TakeAttendance"]);
+                $tmp["TimeStart"]       =  (empty($slist["TimeStart"]) ? "NULL" : $slist["TimeStart"]);
+                $tmp["TimeEnd"]         =  (empty($slist["TimeEnd"]) ? "NULL" : $slist["TimeEnd"]);
+                $tmp["sortorder"]       =  (empty($slist["sortorder"]) ? "NULL" : $slist["sortorder"]);
+                $tmp["class"]           =  (empty($slist["class"]) ? "NULL" : $slist["class"]);
+                $tmp["classid"]           =  (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+
+                array_push($resarr["calendarscheduleList"], $tmp);
+            }
+        }
+    } else {
+            error_log( print_R("after getcalendarscheduleList result empty\n", TRUE), 3, LOG);
+            error_log( print_R( $result, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to find calendarschedules. Please try again";
+            echoRespnse(404, $response);
+    }
+                                
+
+  //  error_log( print_R($resarr, TRUE ), 3, LOG);
+     
+    for($i = 0; $i < count($resarr["calendarscheduleList"]); $i++ ) {
+
+        $dayOfMonth = date("j");
+        //check if the system dayofmonth = list batch1 or batch2 (1st and 15th is common)
+
+        $tmp["DayOfWeek"]       =  (empty($slist["DayOfWeek"]) ? "NULL" : $slist["DayOfWeek"]);
+        $tmp["TimeRange"]       =  (empty($slist["TimeRange"]) ? "NULL" : $slist["TimeRange"]);
+        $tmp["AgeRange"]        =  (empty($slist["AgeRange"]) ? "NULL" : $slist["AgeRange"]);
+        $tmp["Description"]     =  (empty($slist["Description"]) ? "NULL" : $slist["Description"]);
+        $tmp["TakeAttendance"]  =  (empty($slist["TakeAttendance"]) ? "NULL" : $slist["TakeAttendance"]);
+        $tmp["TimeStart"]       =  (empty($slist["TimeStart"]) ? "NULL" : $slist["TimeStart"]);
+        $tmp["TimeEnd"]         =  (empty($slist["TimeEnd"]) ? "NULL" : $slist["TimeEnd"]);
+        $tmp["sortorder"]       =  (empty($slist["sortorder"]) ? "NULL" : $slist["sortorder"]);
+        $tmp["class"]           =  (empty($slist["class"]) ? "NULL" : $slist["class"]);
+        $tmp["classid"]         =  (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+        
+        $DayOfWeek  = $resarr["calendarscheduleList"][$i]["DayOfWeek"];
+        $TimeRange  = $resarr["calendarscheduleList"][$i]["TimeRange"];
+        $AgeRange   = $resarr["calendarscheduleList"][$i]["AgeRange"];
+        $Description  = $resarr["calendarscheduleList"][$i]["Description"];
+      //  $TakeAttendance   = $resarr["calendarscheduleList"][$i]["TakeAttendance"];
+        $TimeStart   = $resarr["calendarscheduleList"][$i]["TimeStart"];
+        $TimeEnd     = $resarr["calendarscheduleList"][$i]["TimeEnd"];
+        //$sortorder     = $resarr["calendarscheduleList"][$i]["sortorder"];
+        $aclass     = $resarr["calendarscheduleList"][$i]["class"];
+        $aclassid   = $resarr["calendarscheduleList"][$i]["classid"];
+//        $title      = 'class:' . $aclass . ':age:' . $AgeRange . ':Desc:' . $Description . ':classid:' . $aclassid . ':';
+        $title      =  $Description ;
+
+        //passed in date is a sunday, so we need to change based on DayOfWeek
+        if ($DayOfWeek == 'Sunday') {
+            $startdate = $asunday;
+        }
+        if ($DayOfWeek == 'Monday') {
+            error_log( print_R("found monday\n", TRUE), 3, LOG);
+            $startdate = $amonday;
+            error_log( print_R( $startdate, TRUE), 3, LOG);
+        }
+        if ($DayOfWeek == 'Tuesday') {
+            $startdate = $atuesday;
+            error_log( print_R("found tuesday\n", TRUE), 3, LOG);
+            error_log( print_R( $startdate, TRUE), 3, LOG);
+        }
+        if ($DayOfWeek == 'Wednesday') {
+            $startdate = $awednesday;
+        }
+        if ($DayOfWeek == 'Thursday') {
+            $startdate = $athursday;
+        }
+        if ($DayOfWeek == 'Friday') {
+            $startdate = $afriday;
+        }
+        if ($DayOfWeek == 'Saturday') {
+            $startdate = $asaturday;
+        }
+        $startdated = clone $startdate;
+        $enddate = clone $startdate;
+        $hh = substr($TimeStart, 0, 2);
+        $mm = substr($TimeStart, 3, 2);
+        $startdate->setTime($hh, $mm);
+
+        $hhe = substr($TimeEnd, 0, 2);
+        $mme = substr($TimeEnd, 3, 2);
+        $enddate->setTime($hhe, $mme);
+
+        error_log( print_R($resarr["calendarscheduleList"][$i]["DayOfWeek"], TRUE ), 3, LOG);
+        error_log( print_R($resarr["calendarscheduleList"][$i]["TimeRange"], TRUE ), 3, LOG);
+        error_log( print_R($resarr["calendarscheduleList"][$i]["TimeStart"], TRUE ), 3, LOG);
+        error_log( print_R($resarr["calendarscheduleList"][$i]["TimeEnd"], TRUE ), 3, LOG);
+        error_log( print_R($title, TRUE ), 3, LOG);
+        error_log( print_R("startdate b4 generateCalendarFromSchedule", TRUE ), 3, LOG);
+        error_log( print_R($startdate, TRUE ), 3, LOG);
+        error_log( print_R("enddate", TRUE ), 3, LOG);
+        error_log( print_R($enddate, TRUE ), 3, LOG);
+        error_log( print_R($hhe, TRUE ), 3, LOG);
+        error_log( print_R($mme, TRUE ), 3, LOG);
+
+
+        $db = new CalendarDbHandler();
+        $response = array();
+    
+        // creating calendarschedules
+        $return = $db->generateCalendarFromSchedule(
+            $startdated, $startdate, $enddate, $title, $AgeRange, $aclassid
+                                    );
+                                    $calendarschedulegood =1;
+
+    } //loop array
+
+    //as long as one worked, return success
+        if ($calendarschedulegood > 0) {
+            $response["error"] = false;
+            $response["message"] = "calendarschedule(s) $calendarschedulegood created and notified successfully";
+            $response["calendarschedule"] = $calendarschedulegood;
+            error_log( print_R("calendarschedule created: $calendarschedulegood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($calendarscheduleexists > 0) {
+            $response["error"] = true;
+            $response["message"] = "Sorry, this $calendarscheduleexists calendarschedule already existed";
+            error_log( print_R("calendarschedule already existed\n", TRUE ), 3, LOG);
+            echoRespnse(409, $response);
+        } else {
+            error_log( print_R("after createcalendarschedule result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $calendarschedulebad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $calendarschedulebad calendarschedule. Please try again";
+            echoRespnse(400, $response);
+        }
+});
+
+$app->delete('/calendarschedule','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("calendarschedule before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $schedulegood=0;
+    $schedulebad=0;
+
+    $db = new CalendarDbHandler();
+    $response = array();
+
+    // remove schedule
+    $schedule = $db->removeCalSchedule(
+                                );
+
+    if ($schedule > 0) {
+        error_log( print_R("schedule removed: $schedule\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "schedule removed successfully";
+        $schedulegood = 1;
+        $response["schedule"] = $schedulegood;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete schedule result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $schedule, TRUE), 3, LOG);
+        $schedulebad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove schedule. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->post('/schedulecalendar', 'authenticate', function() use ($app) {
+
+    $response = array();
+       //todo set this global
+        $tz = 'America/New_York';
+        $ISO = 'Y-m-d\TH:i:s.uO';
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("schedulecalendar before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
+
+    $calendarscheduleDate  = (isset($dataJsonDecode->thedata->calendarscheduleDate) ? $dataJsonDecode->thedata->calendarscheduleDate : $today);
+    $cal_dt = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    
+    error_log( print_R($cal_dt, TRUE ), 3, LOG);
+    error_log( print_R("calendarscheduleDate: $calendarscheduleDate \n", TRUE ), 3, LOG);
+
+    $asunday = $cal_dt;
+    if ($asunday->format('N') != 7) {
+        error_log( print_R(" createcalendarschedule not a sunday\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create  calendarschedule. Not a sunday";
+        echoRespnse(400, $response);
+        
+    }
+    $asaturday = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
+    $asaturday->modify('+6 day');
+
+    $calendarschedulegood=0;
+    $calendarschedulebad=0;
+    $calendarscheduleexists=0;
+
+    //get list of payers to calendarschedule
+    $db = new CalendarDbHandler();
+    $resarr["calendarscheduleList"] = array();
+
+    // creating calendarschedules based on date and who is ready
+    $result = $db->getCalendarList($asunday, $asaturday);
+
+    //error_log( print_R($result, TRUE), 3, LOG);
+
+    if ($result != NULL) {
+        error_log( print_R("getCalendarList has results", TRUE), 3, LOG);
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+    //        error_log( print_R($slist, TRUE), 3, LOG);
+            
+            if (count($slist) > 0) {
+                $tmp = array();
+                $tmp["title"]       =  (empty($slist["title"]) ? "NULL" : $slist["title"]);
+                $tmp["startdated"]  =  (empty($slist["startdated"]) ? "NULL" : $slist["startdated"]);
+                $tmp["startdate"]   =  (empty($slist["startdate"]) ? "NULL" : $slist["startdate"]);
+                $tmp["enddate"]     =  (empty($slist["enddate"]) ? "NULL" : $slist["enddate"]);
+                $tmp["ageRange"]    =  (empty($slist["ageRange"]) ? "NULL" : $slist["ageRange"]);
+                $tmp["classid"]     =  (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+
+                array_push($resarr["calendarscheduleList"], $tmp);
+            }
+        }
+
+        $result2 = $db->cleanSchedule();
+        error_log( print_R($result2, TRUE), 3, LOG);
+        if ($result2 > 0) {
+        } else {
+            error_log( print_R("after delete schedule result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $result2, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove schedule. Please try again";
+            echoRespnse(400, $response);
+        }
+
+
+    } else {
+            error_log( print_R("after getcalendarscheduleList result empty\n", TRUE), 3, LOG);
+            error_log( print_R( $result, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to find calendarschedules. Please try again";
+            echoRespnse(404, $response);
+    }
+                                
+
+  //  error_log( print_R($resarr, TRUE ), 3, LOG);
+     
+    for($i = 0; $i < count($resarr["calendarscheduleList"]); $i++ ) {
+        error_log( print_R("in loop\n", TRUE ), 3, LOG);
+
+        $dayOfMonth = date("j");
+        $sortorder = $i;
+        $startdated   = $resarr["calendarscheduleList"][$i]["startdated"];
+        
+        //check if the system dayofmonth = list batch1 or batch2 (1st and 15th is common)
+        $DayOfWeek ='';
+//        error_log( print_R($startdated, TRUE ), 3, LOG);
+        
+//        error_log( print_R("sunday:", TRUE ), 3, LOG);
+//        error_log( print_R($asunday, TRUE ), 3, LOG);
+//        error_log( print_R("\n", TRUE ), 3, LOG);
+
+        $t = date('N', strtotime($startdated));
+        if ($t == 7) {
+            $DayOfWeek = 'Sunday';
+        }
+        if ($t == 1) {
+            $DayOfWeek = 'Monday';
+        }
+        if ($t == 2) {
+            $DayOfWeek = 'Tuesday';
+        }
+        if ($t == 3) {
+            $DayOfWeek = 'Wednesday';
+        }
+        if ($t == 4) {
+            $DayOfWeek = 'Thursday';
+        }
+        if ($t == 5) {
+            $DayOfWeek = 'Friday';
+        }
+        if ($t == 6) {
+            $DayOfWeek = 'Saturday';
+        }
+        if ($DayOfWeek === '') {
+            error_log( print_R("replaceScheduleFromCalendar  bad DOW " , TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to replace calendarschedules. Please try again";
+            echoRespnse(404, $response);
+        }
+
+        $AgeRange   = $resarr["calendarscheduleList"][$i]["ageRange"];
+        $Description  = $resarr["calendarscheduleList"][$i]["title"];
+        $TakeAttendance   = 'Yes';
+        $aclassid   = $resarr["calendarscheduleList"][$i]["classid"];
+
+        $dt = $resarr["calendarscheduleList"][$i]["startdated"];
+
+        if ($dt === false) {
+            error_log( print_R("replaceScheduleFromCalendar  bad date " , TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to replace calendarschedules. Please try again";
+            echoRespnse(404, $response);
+        }
+
+        $startdatestr = $resarr["calendarscheduleList"][$i]["startdate"]; //->format($ISO);
+        $enddatestr = $resarr["calendarscheduleList"][$i]["enddate"]; //->format($ISO);
+
+        $startdatestrsub = substr($startdatestr,0,16);
+        $startdatehhmm = DateTime::createFromFormat('m/d/Y H:i', $startdatestrsub, new DateTimeZone($tz));
+        if ($startdatehhmm === false) {
+            error_log( print_R("generateCalendarFromSchedule  bad start date hhmm $startdatestr" , TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to replace calendarschedules.  bad start date hhmm $startdatestr. Please try again";
+            echoRespnse(404, $response);
+        }
+
+        $TimeStart =  $startdatehhmm->format('H:i');
+
+        $enddatestrsub = substr($enddatestr,0,16);
+        $enddatehhmm = DateTime::createFromFormat('m/d/Y H:i', $enddatestrsub, new DateTimeZone($tz));
+        if ($enddatehhmm === false) {
+            error_log( print_R("generateCalendarFromSchedule  bad end date hhmm $enddatestr" , TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to replace calendarschedules.  bad start date hhmm $enddatestr. Please try again";
+            echoRespnse(404, $response);
+        }
+
+        $TimeEnd = $enddatehhmm->format('H:i');
+        $TimeRange  = $TimeStart . ' to ' . $TimeEnd;
+
+        error_log( print_R("before replace dow: $DayOfWeek\n", TRUE), 3, LOG);
+        error_log( print_R("before replace st: $TimeStart\n", TRUE), 3, LOG);
+        error_log( print_R("before replace e: $TimeEnd\n", TRUE), 3, LOG);
+        error_log( print_R("before replace cl: $aclassid\n", TRUE), 3, LOG);
+        error_log( print_R("before replace desc: $Description\n", TRUE), 3, LOG);
+
+        $db = new CalendarDbHandler();
+        $response = array();
+    
+        // creating calendarschedules
+        $return3 = $db->replaceScheduleFromCalendar(
+            $DayOfWeek, $TimeRange, $AgeRange, $Description, 
+            $TakeAttendance, $TimeStart, $TimeEnd, $sortorder,
+            $aclassid
+            );
+        $calendarschedulegood +=1;
+
+    } //loop array
+
+    //as long as one worked, return success
+        if ($calendarschedulegood > 0) {
+            $response["error"] = false;
+            $response["message"] = "calendarschedule(s) $calendarschedulegood created and notified successfully";
+            $response["calendarschedule"] = $calendarschedulegood;
+            error_log( print_R("calendarschedule replaced: $calendarschedulegood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after createcalendarschedule result bad\n", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to replace $calendarschedulegood calendarschedule. Please try again";
+            echoRespnse(400, $response);
+        }
+});
+
+$app->get('/ageranges', 'authenticate', function() {
+    $response = array();
+    $db = new CalendarDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getAgeRangeList();
+
+    $response["error"] = false;
+    $response["agerangelist"] = array();
+
+    while ($ages = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["agerange"] = $ages["listvalue"];
+        array_push($response["agerangelist"], $tmp);
+    }
+
+    echoRespnse(200, $response);
 });
 
 /*

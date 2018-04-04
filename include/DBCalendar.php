@@ -114,17 +114,24 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
        
         $sql = " SELECT  cal.id as id,  title, startdated, startdate, enddate,
-                                       contactid, reminder, reminderInterval, classname, color, textcolor, eventtype, cal.userid as userid
+                                       contactid, reminder, reminderInterval, 
+                                       classname, color, textcolor, eventtype, cal.userid as userid,
+                                       agerange, classid
         FROM ncalendar cal
-        where cal.userid = " . $user_id ;
+        where cal.userid = ? and cal.studentschool = ?" ;
+//        where cal.userid = " . $user_id ;
 
         if ($auser == "ALL") {
             $sql .= " UNION all ";
 
             $sql .= "SELECT  cal.id as id,  title, startdated, startdate, enddate,
-                                           contactid, reminder, reminderInterval, classname, color, textcolor,eventtype, cal.userid as userid
+                                           contactid, reminder, reminderInterval, classname, color,
+                                           textcolor,eventtype, cal.userid as userid,
+                                       agerange, classid
             FROM ncalendar cal
-            where cal.userid  in (select userid from useraccessuser where  granteduserid = " . $user_id . " )";
+            where cal.userid  in (select userid from useraccessuser where  granteduserid = ? )
+            and cal.studentschool = ? ";
+//            where cal.userid  in (select userid from useraccessuser where  granteduserid = " . $user_id . " )";
 
         }
 
@@ -132,6 +139,11 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         
 
         if ($stmt = $this->conn->prepare($sql)) {
+            if ($auser == "ALL") {
+                $stmt->bind_param("ssss",  $user_id, $school, $user_id, $school);
+            } else {
+                $stmt->bind_param("ss",  $user_id, $school);
+            }        
             if ($stmt->execute()) {
                 $events = $stmt->get_result();
                 $stmt->close();
@@ -197,10 +209,310 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         }
 
     }
+    
+    public
+	function getScheduleList() {
+        global $school;
+		error_log(print_R("school for getScheduleList is: $school \n", TRUE) , 3, LOG);
+
+	    $sql = "
+        SELECT  `DayOfWeek`, `TimeRange`, `AgeRange`, `Description`, `TakeAttendance`, 
+        `TimeStart`, `TimeEnd`, `sortorder`, c.class, c.id as classid   
+        FROM `schedule` s left join nclass c on (s.classid = c.id and s.school = c.school) 
+        WHERE s.school = ? ";
+	    
+		error_log(print_R("sql for getScheduleList is: " . $sql . "\n", TRUE) , 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+    		$stmt->bind_param("s", $school);
+
+            if ($stmt->execute()) {
+                $result = $stmt->get_result();
+                $stmt->store_result();
+                $num_rows = $stmt->num_rows;
+                error_log( print_R("getScheduleList  num rows: $num_rows \n", TRUE), 3, LOG);
+                
+                $stmt->close();
+                return $result;
+            } else {
+                error_log( print_R("getScheduleList  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+
+    	} else {
+            printf("getScheduleList prep Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+	}
+    public
+	function getCalendarList($stdate, $endate) {
+        global $school;
+		$estr = $endate->format('Y-m-d');
+		$sstr = $stdate->format('Y-m-d');
+		error_log(print_R("school for getCalendarList is: $school $sstr $estr \n", TRUE) , 3, LOG);
+
+	    $sql = "
+        SELECT id, title, startdated, startdate, enddate, allDay, contactid, userid, reminder, reminderinterval,
+        classname, color, textcolor, eventtype, studentschool, ageRange, classid FROM ncalendar    
+        WHERE studentschool = ? and eventtype = 'ClassSchedule'
+        order by startdate asc
+        ";
+
+/*
+        startdated >= ? and 
+        startdated <= ?
+*/
+		error_log(print_R("sql for getCalendarList is: " . $sql . "\n", TRUE) , 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+//    		$stmt->bind_param("sss", $school, $sstr , $estr);
+    		$stmt->bind_param("s", $school);
+                error_log( print_R("getCalendarList after prep \n", TRUE), 3, LOG);
+
+            if ($stmt->execute()) {
+                error_log( print_R("getCalendarList after exec \n", TRUE), 3, LOG);
+                $slists = $stmt->get_result();
+                $num_rows = $slists->num_rows;
+                if ($num_rows > 0) {
+                    error_log( print_R("getCalendarList  num rows: $num_rows \n", TRUE), 3, LOG);
+            //        while ($row = $slists->fetch_assoc()) {
+            //            $results[] = $row;
+             //       }
+            //        error_log( print_R("getCalendarList after loop \n", TRUE), 3, LOG);
+            //        error_log( print_R($results, TRUE), 3, LOG);
+                    $stmt->close();
+            //        return $results;
+                    return $slists;
+                } else {
+                    error_log( print_R("getCalendarList bad num rows: $num_rows \n", TRUE), 3, LOG);
+                    return false;
+                }                
+                
+            } else {
+                error_log( print_R("getCalendarList  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+
+    	} else {
+            printf("getCalendarList prep Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+	}
+
+    public function getAgeRangeList() {
+        global $school;
+        $sql = "SELECT t.* FROM studentlist t where t.listtype = 'AgeRange' and t.school = ?" ;
+
+        $sql .= " order by t.listtype, t.listorder";
+        error_log( print_R("getAgeRangeList sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s",
+                           $school
+                             );
+
+        $stmt->execute();
+        $slists = $stmt->get_result();
+        $stmt->close();
+        return $slists;
+    }
+
+    
+    public function generateCalendarFromSchedule($startdated, $startdate, $enddate, $title, $agerange, $classid) {
+
+        global $school;
+        global $user_id;
+        //todo set this global
+        $tz = 'America/New_York';
+        $ISO = 'Y-m-d\TH:i:s.uO';
+
+        error_log( print_R("generateCalendarFromSchedule date" , TRUE), 3, LOG);
+        error_log( print_R($startdated , TRUE), 3, LOG);
+
+        $eventcolor = 'Orange';
+        $eventtextcolor = 'rgb(0, 0, 0)';
+        $eventtype = 'ClassSchedule';
+
+ //       $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $startdated, new DateTimeZone('Etc/Zulu'));
+         $dt = $startdated;
+        
+//        $dt = DateTime::createFromFormat('m/d/Y', $startdated);
+        if ($dt === false) {
+            error_log( print_R("generateCalendarFromSchedule  bad date $startdated" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $date = $dt->format('Y-m-d');
+        
+        $startdatestr = $startdate->format($ISO);
+        $enddatestr = $enddate->format($ISO);
+
+        $startdatehhmm = DateTime::createFromFormat($ISO, $startdatestr, new DateTimeZone($tz));
+        if ($startdatehhmm === false) {
+            error_log( print_R("generateCalendarFromSchedule  bad start date hhmm $startdate" , TRUE), 3, LOG);
+            return NULL;
+        }
+        
+        $startdatehhmmx = $startdatehhmm;
+      //  $startdatehhmmx->setTimezone(new DateTimeZone($tz));
+        $hhmm = $startdatehhmm->format('m/d/Y H:i A P ') . $startdatehhmmx->format('T');
+
+        $enddatehhmm = DateTime::createFromFormat($ISO, $enddatestr, new DateTimeZone($tz));
+        if ($enddatehhmm === false) {
+            error_log( print_R("generateCalendarFromSchedule  bad start date hhmm $enddate" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $enddatehhmmx = $enddatehhmm;
+        //$enddatehhmmx->setTimezone(new DateTimeZone($tz));
+        $endhhmm = $enddatehhmm->format('m/d/Y H:i A P ') . $enddatehhmmx->format('T');;
+        
+        $inssql = " 
+        INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, 
+        `enddate`,  `color`, textcolor, eventtype, studentschool, userid, agerange, classid) VALUES (?,?,?,?,?,?,?,?,?,?,?)
+        ";
+        
+        error_log( print_R("generateCalendarFromSchedule  sql: $inssql\n", TRUE), 3, LOG);
+        error_log( print_R("$title\n", TRUE), 3, LOG);
+        error_log( print_R("$date\n" , TRUE), 3, LOG);
+        error_log( print_R("$hhmm\n",  TRUE), 3, LOG);
+        error_log( print_R("$endhhmm\n",  TRUE), 3, LOG);
+        error_log( print_R("$eventcolor\n",  TRUE), 3, LOG);
+        error_log( print_R("$eventtextcolor\n",  TRUE), 3, LOG);
+        error_log( print_R("$eventtype\n", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($inssql)) {
+            $stmt->bind_param("sssssssssss",
+                            $title, $date , $hhmm, $endhhmm,
+                            $eventcolor, $eventtextcolor, $eventtype, $school, $user_id, $agerange, $classid
+                                 );
+            $result = $stmt->execute();
+
+            $stmt->close();
+            // Check for successful insertion
+            if ($result) {
+                $new_id = $this->conn->insert_id;
+                // User successfully inserted
+                return $new_id;
+            } else {
+                // Failed to create ncal
+                printf("generateCalendarFromSchedule Errormessage: %s\n", $this->conn->error);
+                return -1;
+            }
+
+        } else {
+            printf("generateCalendarFromSchedule Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+        
+    }
+
+    public function replaceScheduleFromCalendar(
+        $DayOfWeek, $TimeRange, $AgeRange, $Description, 
+        $TakeAttendance, $TimeStart, $TimeEnd, $sortorder,
+        $classid
+    ) {
+
+        global $school;
+        
+        $inssql = " 
+        INSERT INTO `schedule`( 
+        `DayOfWeek`, `TimeRange`, `AgeRange`, `Description`, 
+        `TakeAttendance`, `TimeStart`, `TimeEnd`, `sortorder`,
+        `school`, `classid`)
+        VALUES (?,?,?,?,?,?,?,?,?,?)
+        ";
+        
+        error_log( print_R("generateCalendarFromSchedule  sql: $inssql\n", TRUE), 3, LOG);
+        if ($stmt = $this->conn->prepare($inssql)) {
+            $stmt->bind_param("ssssssssss",
+                    $DayOfWeek, $TimeRange, $AgeRange, $Description, 
+                    $TakeAttendance, $TimeStart, $TimeEnd, $sortorder,
+                    $school, $classid
+                    );
+            $result = $stmt->execute();
+
+            // Check for successful insertion
+            if ($result) {
+                $new_id = $this->conn->insert_id;
+                $stmt->close();
+                return $new_id;
+            } else {
+                // Failed to create ncal
+                printf("generateCalendarFromSchedule insert Errormessage: %s\n", htmlspecialchars($stmt->error));
+                $stmt->close();
+                return -1;
+            }
+
+        } else {
+            printf("generateCalendarFromSchedule prep Errormessage: %s\n", htmlspecialchars($this->conn->error));
+                return -1;
+        }
+        
+    }
+
+    public function cleanSchedule(
+    ) {
+
+        error_log( print_R("cleanSchedule entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from schedule  where school = ? ";
+
+        error_log( print_R("cleanSchedule sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    
+    public function removeCalSchedule(
+    ) {
+
+        error_log( print_R("removeCalSchedule entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from ncalendar  where eventtype = 'ClassSchedule' and studentschool = ? ";
+
+        error_log( print_R("removeSchedule sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $school 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
 
     public function saveCalendarEvent($eventID,
                                        $title, $startdated, $startdate, $enddate,
-                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor, $eventtype
+                                       $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor, $eventtype,
+                                       $eventpick,$typepick,$agerpick,$classpick
                                       ) {
     /**
      * Updating or inserting calEvent
@@ -248,14 +560,21 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         $enddatehhmmx->setTimezone(new DateTimeZone($tz));
         $endhhmm = $enddatehhmm->format('m/d/Y H:i A P ') . $enddatehhmmx->format('T');;
         
-        $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, `reminderinterval`, `classname`, `color`, textcolor, eventtype, studentschool) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+        $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, 
+        `reminderinterval`, `classname`, `color`, textcolor, eventtype, 
+        agerange, classid,
+        studentschool) 
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
         
         if ($this->isCalendarEventExists($eventID) == 0 || $eventID == "" ) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("sssssssssssss",
+                $stmt->bind_param("sssssssssssssss",
                                   $title, $date , $hhmm, $endhhmm,
-                                       $contactid, $userpick, $reminder, $reminderInterval, $classname, $color, $textcolor, $eventtype, $school
+                                       $contactid, $userpick, $reminder, $reminderInterval, 
+                                       $classname, $color, $textcolor, $eventtype, 
+                                       $agerpick, $classpick,
+                                       $school
                                      );
                     $result = $stmt->execute();
 
@@ -287,18 +606,20 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
             // already existed in the db, update
             $updsql = " UPDATE ncalendar ";
-            $updsql .=                  " SET title = '"  . $title . "'," ;
-            $updsql .=                  " startdated = '" .    $date . "'," ;
-            $updsql .=                " startdate = '" .     $hhmm . "',";
-            $updsql .=                " enddate = '" .      $endhhmm . "',";
-            $updsql .=                " contactid = '" .      $contactid . "',";
-            $updsql .=                " reminder = "  .    $reminder . "," ;
-            $updsql .=                " reminderInterval = '" .     $reminderInterval . "'," ;
-            $updsql .=                " classname = '" .      $classname . "'," ;
-            $updsql .=                " color = '" .      $color . "',";
-            $updsql .=                " textcolor = '" .      $textcolor . "',";
-            $updsql .=                " eventtype = '" .      $eventtype . "',";
-            $updsql .=                " userid = '" .      $userpick . "'";
+            $updsql .=                  " SET title = ? , " ;
+            $updsql .=                  " startdated = ? , ";
+            $updsql .=                " startdate = ? ,";
+            $updsql .=                " enddate = ? ,";
+            $updsql .=                " contactid = ? ,";
+            $updsql .=                " userid = ? , ";
+            $updsql .=                " reminder = ? ," ;
+            $updsql .=                " reminderInterval = ? ," ;
+            $updsql .=                " classname = ? ," ;
+            $updsql .=                " color = ? ,";
+            $updsql .=                " textcolor = ? ,";
+            $updsql .=                " eventtype = ? ,";
+            $updsql .=                " ageRange = ? ,";
+            $updsql .=                " classid = ? ";
             
             $updsql .= " where id = " . $eventID ;
 //            $updsql .= " and userid =  " . $user_id;
@@ -306,6 +627,13 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             error_log( print_R("saveCalendarEvent update sql: $updsql", TRUE), 3, LOG);
             
             if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("ssssssssssssss",
+                                  $title, $date , $hhmm, $endhhmm,
+                                       $contactid, $userpick, $reminder, $reminderInterval, 
+                                       $classname, $color, $textcolor, $eventtype, 
+                                       $agerpick, $classpick
+                                     );
+                
                 $stmt->execute();
                 $num_affected_rows = $stmt->affected_rows;
 

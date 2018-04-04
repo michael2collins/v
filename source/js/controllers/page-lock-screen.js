@@ -1,4 +1,4 @@
-(function () {
+(function (window,angular,$) {
     'use strict';
 
     angular
@@ -34,8 +34,8 @@
             
             function init() {
                 $log.debug('PageLockScreenController init entered');
-                $("body>.default-page").hide();
-                $("body>.extra-page").html($(".page-content").html()).show();
+            //    $("body>.default-page").hide();
+            //    $("body>.extra-page").html($(".page-content").html()).show();
                 $('body').attr('id', 'lock-screen');
             }    
 
@@ -47,4 +47,4 @@
 
         }
 
-})();  
+})(window,window.angular,window.$);  

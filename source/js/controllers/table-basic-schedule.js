@@ -11,6 +11,7 @@
     '$scope',
     '$interval',
     'AttendanceServices',
+    'CalendarServices',
         'uiGridConstants',
     'Notification',
     'moment',
@@ -19,7 +20,7 @@
     ];
 
     function ScheduleTableBasicController(
-        $log, $q, $scope, $interval, AttendanceServices, uiGridConstants,  Notification, moment, iddropdownFilter, Util) {
+        $log, $q, $scope, $interval, AttendanceServices, CalendarServices, uiGridConstants,  Notification, moment, iddropdownFilter, Util) {
         /* jshint validthis: true */
         var $ = angular.element;
 
@@ -32,6 +33,7 @@
         vm.updSchedule = updSchedule;
         vm.changeclass = changeclass;
         vm.changetime = changetime;
+        vm.agerangelist ={};
 //        vm.highlightFilteredHeader = highlightFilteredHeader;
         vm.gridOptions={};
         vm.gridApi;
@@ -55,7 +57,8 @@
         vm.thisschedule=[];
         vm.gridLength={};
         vm.initialLength=3;
-        vm.rowheight=88;
+//        vm.rowheight=88;
+        vm.rowheight=25;
         vm.headerheight=140;
         vm.getGridLength = getGridLength;
         setGridLength(vm.initialLength);
@@ -85,8 +88,8 @@
                     vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
                     vm.schedule.TakeAttendance = 'Yes';
                     vm.schedule.dow = 'Monday';
-                    vm.schedule.startT = moment();
-                    vm.schedule.endT = moment().add(1, 'hours');
+                    vm.schedule.startT = moment().format('HH:mm');
+                    vm.schedule.endT = moment().add(1, 'hours').format('HH:mm');
                     vm.schedule.classid = String(vm.classhashlist[0].id);
                     
                     changeclass();                    
@@ -97,6 +100,10 @@
              },function(error) {
                  return ($q.reject(error));
              });
+             getAgeRangeList().then(function() {
+                    $log.debug("returned from getAgeRangeList");
+            });
+
              
         }
 
@@ -124,10 +131,32 @@
             changetime();
         }, true);
 
+        function getAgeRangeList() {
+            var path="../v1/ageranges";
+            return CalendarServices.getAgeRangeList(path).then(function (data) {
+                $log.debug('getAgeRangeList returned data');
+                $log.debug(data.agerangelist);
+                if ((typeof vm.agerangelist === 'undefined' || data.error === true)  
+                        && typeof data !== 'undefined') {  
+                    Notification.error({message: data.message, delay: 5000});
+                    $q.reject(data);
+                } else {
+                    vm.agerangelist = data.agerangelist;
+                    for (var iter=0,len=vm.agerangelist.length;iter<len;iter++) {
+                        vm.agerangelist[iter].value = String(vm.agerangelist[iter].agerange);
+                        vm.agerangelist[iter].id = String(vm.agerangelist[iter].agerange);
+                    }
+                    
+                }
+
+
+                return vm.agerangelist;
+            });
+        }
 
         function changetime() {
-            vm.schedule.timerange = moment(vm.schedule.startT).format('h:mm A') 
-                + ' to ' + moment(vm.schedule.endT).format('h:mm A');
+            vm.schedule.timerange = vm.schedule.startT
+                + ' to ' + vm.schedule.endT;
         }
         function removeSchedule(input) {
             $log.debug('removeSchedule entered',input);
@@ -165,6 +194,18 @@
 
         function updSchedule(input,type) {
             $log.debug('updSchedule entered',input);
+/*            var myDatea = new Date();
+            var myDateb = new Date();
+            
+            myDatea = new Date();
+            myDatea.setHours(parseInt(input.startT.split(":")[0],10));
+            myDatea.setMinutes(parseInt(input.startT.split(":")[1],10));
+            var startT = moment(myDatea).format('hh:mm').toString();
+            myDateb = new Date();
+            myDateb.setHours(parseInt(input.endT.split(":")[0],10));
+            myDateb.setMinutes(parseInt(input.endT.split(":")[1],10));
+            var endT = moment(myDateb).format('hh:mm').toString();
+ */           
             var output = {
                 ID: input.ID,
                 DayOfWeek: input.dow,
@@ -172,8 +213,8 @@
                 AgeRange: input.agerange,
                 Description: input.description,
                 TakeAttendance: (input.TakeAttendance ? "Yes" : "No"),
-                TimeStart: moment(input.startT).format('hh:mm'),
-                TimeEnd: moment(input.endT).format('hh:mm'),
+                TimeStart: input.startT,
+                TimeEnd: input.endT,
                 sortorder: input.sortorder,
                 classid: input.classid
             };
@@ -181,7 +222,18 @@
         }
         function updateSchedule(rowEntity,updatetype) {
             var updpath = "../v1/schedule";
-
+/*            var myDatea = new Date();
+            var myDateb = new Date();
+            
+            myDatea = new Date();
+            myDatea.setHours(parseInt(rowEntity.startT.split(":")[0],10));
+            myDatea.setMinutes(parseInt(rowEntity.startT.split(":")[1],10));
+            var startT = moment(myDatea).format('hh:mm').toString();
+            myDateb = new Date();
+            myDateb.setHours(parseInt(rowEntity.endT.split(":")[0],10));
+            myDateb.setMinutes(parseInt(rowEntity.endT.split(":")[1],10));
+            var endT = moment(myDateb).format('hh:mm').toString();
+*/
             var thedata = {
                 ID: rowEntity.ID,
                 DayOfWeek: rowEntity.DayOfWeek,
@@ -189,8 +241,8 @@
                 AgeRange: rowEntity.AgeRange,
                 Description: rowEntity.Description,
                 TakeAttendance: rowEntity.TakeAttendance,
-                TimeStart: moment(rowEntity.startT).format('hh:mm'),
-                TimeEnd: moment(rowEntity.endT).format('hh:mm'),
+                TimeStart: rowEntity.TimeStart,
+                TimeEnd: rowEntity.TimeEnd,
                 sortorder: rowEntity.sortorder,
                 classid: rowEntity.classid
             };
@@ -237,21 +289,22 @@
         function getSchedule() {
             $log.debug('getSchedule entered');
             var path='../v1/schedule';
-            var myDate = new Date();
+            var myDatea = new Date();
+            var myDateb = new Date();
 
             return AttendanceServices.getSchedules(path).then(function(data){
                     $log.debug('getSchedules returned data');
                     $log.debug(data);
                     
                     for(var iter=0,len = data.Schedulelist.length;iter<len;iter++) {
-                        myDate = new Date();
-                        myDate.setHours(parseInt(data.Schedulelist[iter].TimeStart.split(":")[0],10));
-                        myDate.setMinutes(parseInt(data.Schedulelist[iter].TimeStart.split(":")[1],10));
-                        data.Schedulelist[iter].startT = myDate;
-                        myDate = new Date();
-                        myDate.setHours(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[0],10));
-                        myDate.setMinutes(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[1],10));
-                        data.Schedulelist[iter].endT = myDate;
+                        myDatea = new Date();
+                        myDatea.setHours(parseInt(data.Schedulelist[iter].TimeStart.split(":")[0],10));
+                        myDatea.setMinutes(parseInt(data.Schedulelist[iter].TimeStart.split(":")[1],10));
+                        data.Schedulelist[iter].startT = moment(myDatea).format('hh:mm').toString();
+                        myDateb = new Date();
+                        myDateb.setHours(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[0],10));
+                        myDateb.setMinutes(parseInt(data.Schedulelist[iter].TimeEnd.split(":")[1],10));
+                        data.Schedulelist[iter].endT = moment(myDateb).format('hh:mm').toString();
                     }
                     vm.schedule.sortorder = parseInt(Util.maxObjArr(data.Schedulelist,'sortorder'),10) + 1;
 
@@ -326,7 +379,7 @@
                     field: 'DayOfWeek',
                     headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
-                    cellClass: 'ui-grid-3rowcenter',
+//                    cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
                     cellFilter: 'iddropdown:this',
@@ -341,7 +394,7 @@
                 {
                     field: 'TimeRange',
                     headerCellClass: Util.highlightFilteredHeader,
-                    cellClass: 'ui-grid-3rowcenter',
+//                    cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
                     enableFiltering: true
                 }, 
@@ -349,8 +402,14 @@
                     field: 'AgeRange',
                     headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
-                    cellClass: 'ui-grid-3rowcenter',
-                    enableFiltering: true
+//                    cellClass: 'ui-grid-3rowcenter',
+                    enableFiltering: true,
+                    editDropdownIdLabel: 'id',
+                    editDropdownValueLabel: 'value',
+                    editableCellTemplate: 'ui-grid/dropdownEditor', 
+                    cellFilter: 'iddropdown:this',
+                    editDropdownOptionsArray: vm.agerangelist
+                    
                 }, 
 //                { field: 'classid'
 //                },
@@ -361,7 +420,7 @@
                     enableCellEdit: true,
                     enableFiltering: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    cellClass: 'ui-grid-3rowcenter',
+//                    cellClass: 'ui-grid-3rowcenter',
                     cellFilter: 'iddropdown:this',
                     editDropdownIdLabel: 'id',
                     editDropdownValueLabel: 'value',
@@ -375,33 +434,38 @@
                     field: 'Description',
                     headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
-                    cellClass: 'ui-grid-3rowcenter',
+ //                   cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
                 {
-                    field: 'startT',
+                    field: 'TimeStart',
                     displayName: 'StartTime',
                     headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
-                    cellTemplate: ctpl_start
+                    type: 'string',
+//                    type: 'date',
+                    cellFilter: 'date:\'HH:mm\''
+                    
+//                    cellTemplate: ctpl_start
                 }, 
                 {
-                    field: 'endT',
+                    field: 'TimeEnd',
                     displayName: 'EndTime',
                     headerCellClass: Util.highlightFilteredHeader,
                     enableCellEdit: true,
                     enableFiltering: true,
-                    cellTemplate: ctpl_end
+//                    type: 'date',
+                    cellFilter: 'date:\'HH:mm\''
+//                    cellTemplate: ctpl_end
                 }, 
                 {
                     field: 'TakeAttendance',
                     displayName: 'TakeAttendance',
                     headerCellClass: Util.highlightFilteredHeader,
-                    cellClass: 'ui-grid-3rowcenter',
+ //                   cellClass: 'ui-grid-3rowcenter',
                     enableCellEdit: true,
                     editableCellTemplate: 'ui-grid/dropdownEditor', 
-                    cellClass: 'ui-grid-3rowcenter',
                     cellFilter: 'iddropdown:this',
                     editDropdownIdLabel: 'label',
                     editDropdownValueLabel: 'value',
@@ -417,7 +481,7 @@
                 {
                     field: 'sortorder',
                     enableCellEdit: true,
-                    cellClass: 'ui-grid-3rowcenter',
+//                    cellClass: 'ui-grid-3rowcenter',
                     enableFiltering: true
                 }, 
                 {
@@ -425,7 +489,7 @@
                     displayName: 'Action',
                     enableFiltering: false,
                     enableSorting: false,
-                    cellClass: 'ui-grid-3rowcenter',
+ //                   cellClass: 'ui-grid-3rowcenter',
                     enableHiding: false,
                     enableCellEdit: false,
                     cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeSchedule(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></div>'

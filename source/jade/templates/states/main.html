@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <div ng-controller="AppController as vm">
-  <div id="adialog" title="Student Picker" style="display: none" >
+  <div id="adialog" title="Student Picker" style="display: none">
     <form novalidate class="simple-form">
       <div class="select-box pal" id="calEventDialogpick">
         <ui-select ng-model="vm.studentpick2" theme="bootstrap" reset-search-input="true" style="width: 300px;" on-select="vm.setStudentFromPick($item)" title="Choose a student" append-to-body="true">
@@ -25,6 +25,7 @@
             <input type="text" name="eventTitle" id="eventTitle" class="form-control" />
           </div>
         </div>
+<!--        <div class="form-group" id="eventPickDiv" ng-hide="vm.typepick === 'ClassSchedule'"> -->
         <div class="form-group" id="eventPickDiv">
           <label for="eventpick" class="control-label col-md-3">Student</label>
           <div class="col-md-9">
@@ -36,7 +37,32 @@
             </div>
           </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="typePickDiv">
+          <label for="typepick" class="control-label col-md-3">Type</label>
+          <div class="col-md-9">
+            <select id="typepick" type="text" name="typepick" ng-model="vm.typepick" ng-options="t for t in vm.eventtypeOptions track by t" class="form-control">
+                     <option value="">-- Pick Type --</option>
+                  </select>
+          </div>
+        </div>
+        <div class="form-group" id="classPickDiv">
+          <label for="classpick" class="control-label col-md-3">Class</label>
+          <div class="col-md-9">
+            <select id="classpick" type="text" name="classpick" ng-model="vm.classpick" ng-options="u.id as u.class for u in vm.classList track by u.id" class="form-control">
+                     <option value="">-- Pick class --</option>
+                  </select>
+          </div>
+        </div>
+        <div class="form-group" id='agerPickDiv'>
+          <label for="agerpick" class="control-label col-md-3">Ages</label>
+          <div class="col-md-9">
+            <select id="agerpick" type="text" name="agerpick" ng-model="vm.agerpick" ng-options="a.agerange as a.agerange for a in vm.agerangelist track by a.agerange" class="form-control">
+                     <option value="">-- Pick Age Range --</option>
+                  </select>
+          </div>
+        </div>
+        
+        <div class="form-group" id="userPickDiv">
           <label for="userpick" class="control-label col-md-3">Assign</label>
           <div class="col-md-9">
             <select id="userpick" type="text" name="userpick" ng-model="vm.userpick" ng-options="u.user as u.fullname for u in vm.thisUserlist track by u.user" class="form-control">
@@ -62,7 +88,7 @@
               <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
-              <input id="eventStarttz" type="text" class="form-control" readonly style="border: 0px;" />
+              <input id="eventStarttz" type="text" class="form-control" readonly style="border: 0px; font-size: smaller;" />
             </div>
 
           </div>
@@ -75,12 +101,12 @@
               <span class="input-group-addon">
                         <i class="glyphicon glyphicon-time"></i>
                     </span>
-              <input id="eventEndtz" type="text" class="form-control" readonly style="border: 0px;" />
+              <input id="eventEndtz" type="text" class="form-control" readonly style="border: 0px; font-size: smaller;" />
             </div>
           </div>
         </div>
-        <div class="form-group">
 
+        <div class="form-group" id="reminderCheckboxDiv">
           <label for="reminderCheckbox" class="control-label col-md-3">Reminder
                 <div class="col-md-3">
                   <input id="reminderCheckbox" type="checkbox">&nbsp;
@@ -110,7 +136,7 @@
         <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
           <div class="panel" style="background-color: grey;">
             <div class="panel-body">
-              <div class="col-md-3" style="background-color: grey;">
+              <div class="col-md-4" style="background-color: grey;">
                 <div class="panel">
                   <div class="panel-body">
                     <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-exclamation icons mrs"></i>Filter</h4>
@@ -162,8 +188,11 @@
                                             {{item.testdescription}}</span>
                             </div>
                             <hr>
-                            <div class="external-event label label-default ui-draggable " id="movie" style="position: relative;background-color: cyan !important; color: black;">
+                            <div class="external-event label label-default ui-draggable " items-drag id="movie" style="position: relative;background-color: cyan !important; color: black;">
                               Movie Night</div>
+                            <hr>
+                            <div class="external-event label label-default ui-draggable " items-drag id="ClassSchedule" style="position: relative;background-color: orange !important; color: black;">
+                              Class Schedule</div>
                           </div>
                           <div id="event-block"></div>
                         </div>
@@ -206,46 +235,41 @@
                     </div>
                   </div>
                 </div>
-<!--                <div class="portlet portlet-green">
+                <div class="portlet portlet-green">
                   <div class="portlet-header">
-                    <div class="caption">Notifications</div>
-                    <div class="tools"><i class="fa fa-chevron-up"></i></div>
+                    <div class="caption">Class Schedule</div>
+                    <div class="tools"><i class="fa fa-chevron-down fa-chevron-init"></i></div>
                   </div>
                   <div class="portlet-body pbn ptl" style="display: block;   background-color: white;">
                     <div class="panel">
                       <div class="panel-body">
-                        <div>
-                          <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-exclamation icons mrs"></i>Notification List</h4>
+                        <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-directions mrs"></i>Schedule to Calendar</h4>
+                        <div class="col-md-12">
+                          <label for="inputeventdate" class="control-label">Event Date </label>
                           <div class="form-group">
-                            <div class="row col-md-12">
-                              <label for="inputokNotify" class="col-md-3 control-label">Notify Me?</label>
-                              <div class="col-md-9">
-                                <select id="inputokNotify" type="text" name="okNotify" ng-model="vm.okNotify" ng-change="vm.cancelInterval()" required placeholder="select" ng-options="o for o in vm.okoptions track by o" class="form-control">
-                                </select>
+                            <div class="col-md-9">
+                              <div class="input-icon right">
+                                <i ng-click="vm.conversiondateopen($event)" data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
+                                <input id="conversiondate" type="text" placeholder="mm/dd/yyyy" name="conversiondate" ng-model="vm.ConversionDate" is-open="vm.status.opened" uib-datepicker-popup="{{vm.bdateformat}}" class="form-control">
                               </div>
                             </div>
-                            <div class="row col-md-12">
-                              <label for="mydelay" class="col-md-3 control-label">Delay</label>
-                              <div class="col-md-9">  
-                                <input id="mydelay" type="number" ng-model="vm.mydelay" ng-change="vm.setInterval()" class="form-control"/>
-                              </div>
+                            <div class="">
+                              <button type="button" class="btn btn-default" ng-click="vm.conversiondateopen($event)">
+                                <i class="glyphicon glyphicon-calendar"></i></button>
                             </div>
                           </div>
-
-                          <ul class="nav nav-pills pull-left">
-                            <li>Time: {{vm.displayTime() | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}</li>
-                            <li class="row" ng-repeat="msg in vm.notifylist | filter:{reminderCheckbox:1 , reminderInterval: '!NULL'} ">
-                              {{msg.title}} at {{msg.start | amDateFormat:'dddd, MMMM Do YYYY, h:mm a'}}
-                            </li>
-                          </ul>
+                        </div>
+                        <div class="col-md-12">
+                          <button id="sched-to-calendar" ng-show="vm.ConversionDate" ng-click="vm.schedToCal()" type="button" class="btn btn-primary">Convert</button>
+                          <button id="clear-calendar" ng-click="vm.clearCal()" type="button" class="btn btn-primary">Clear Class Schedule</button>
+                          <button id="transfer-calendar" ng-show="vm.ConversionDate" ng-click="vm.transferCal()" type="button" class="btn btn-primary">Transfer Schedule<br/> to Calendar</button>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
--->
               </div>
-              <div class="col-md-9">
+              <div class="col-md-8">
                 <div class="panel">
                   <div class="panel-body">
                     <div id="calendar"></div>
@@ -279,7 +303,7 @@
           </div>
         </div>
       </div>
-<!--    
+      <!--    
     <div class="col-sm-12 col-lg-8">
       <div class="panel">
         <div class="panel-body">

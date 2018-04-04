@@ -405,8 +405,10 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
     public function getTestcandidateNames($theinput) {
         global $school;
-        $sql = "SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name, eventtype FROM `ncalendar`  ";
-        $sql .= " where studentschool = ? and concat(`startdated` , ' ' , `eventtype`) like '%" . $theinput . "%' "; 
+        $sql = "
+            SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name, eventtype, tt.testtype, tt.ranktype 
+            FROM `ncalendar` c join testtypes tt on (tt.testdescription = c.eventtype and tt.studentschool = c.studentschool)        
+             where c.studentschool = ? and concat(`startdated` , ' ' , `eventtype`) like '%" . $theinput . "%' "; 
 
 //        $schoolfield = "studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
