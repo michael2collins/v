@@ -529,6 +529,7 @@
             var modalInstance = $uibModal.open({
               controller: 'PaymentViewInstanceController as vm',
               templateUrl: 'templates/states/paymentView.html',
+              size: 'lg',
               resolve: {
                 selectedRow: function () {                    
                     return row.entity;

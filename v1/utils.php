@@ -58,22 +58,59 @@ function echoRespnse($status_code, $response) {
 
     function emailnotify($to,$subject,$message){
 
-        $from = 'From: <webmaster@villaris.us>' ;
-        $replyto = 'michael2collins@villaris.us' . "\r\n";
-      //  $cc = 'Cc: villaris.us@gmail.com, mark@natickmartialarts.com' . "\r\n";
+        // Fix any bare linefeeds in the message to make it RFC821 Compliant. 
+        $html_text = preg_replace("#(?<!\r)\n#si", "\r\n", $message); 
+
+        $wrap_text = quoted_printable_encode(wordwrap($html_text, 70, "\r\n"));
+
+        $encoding = "utf-8";
+    
+        // Preferences for Subject field
+        $subject_preferences = array(
+            "input-charset" => $encoding,
+            "output-charset" => $encoding,
+            "line-length" => 76,
+            "line-break-chars" => "\r\n"
+        );
+
+        $semi_rand = md5(time());        
+        $mime_boundary = "MULTIPART_BOUNDARY_$semi_rand";
+        $mime_boundary_header = chr(34) . $mime_boundary . chr(34);
+
+        $_from = 'From: <webmaster@villaris.us>' ;
         
+        $replyto = 'michael2collins@villaris.us' . "\r\n";
+
         // Always set content-type when sending HTML email
         $headers = "MIME-Version: 1.0" . "\r\n";
-        $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= "From: $from\r\nReply-to: $replyto";
-    //    $headers .= $cc;
+        $headers .= "From: $_from\r\nReply-to: $replyto";
+        $headers .= 'X-Mailer: PHP/' . phpversion() . "\r\n";
+        $headers .= "Content-Type: multipart/alternative;boundary=" . $mime_boundary_header . "\r\n";        
+        $headers .= "Content-type: text/html; charset=".$encoding." . \r\n";
+        $headers .= "Date: ".date("r (T)")."\r\n";
+//yahoo doesn't like?
+//        $headers .= iconv_mime_encode("Subject", $subject, $subject_preferences);
 
-        
-        // More headers
-        //$headers .= 'From: <webmaster@villaris.us>' . "\r\n";
-        //$headers .= 'Cc: myboss@example.com' . "\r\n";
-        
-        mail($to,$subject,$message,$headers);
+$body = "
+
+--$mime_boundary
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/html; charset=\"utf-8\"
+
+$wrap_text
+
+--$mime_boundary--";
+
+    
+// Make sure there are no bare linefeeds in the headers 
+$headers = preg_replace('#(?<!\r)\n#si', "\r\n", $headers); 
+
+$params = '-f"michael2collins@villaris.us" -F"Info Service"';
+
+//$clean = htmlspecialchars($body, ENT_QUOTES, "UTF-8");
+
+        mail($to,$subject,$body,$headers,$params);
     }
 
     

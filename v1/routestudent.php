@@ -67,8 +67,8 @@ $app->post('/picupload', function() use ($app) {
             $response["message"] = "Failed to upload. Cannot write to destination file";
             echoRespnse(400, $response);
         }        
-	#$uploadPath = "/home/michael2collins/test/x.jpg";
-	error_log( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ),3, LOG);
+   #$uploadPath = "/home/michael2collins/test/x.jpg";
+   error_log( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ),3, LOG);
 
         if(move_uploaded_file( $tempPath, $uploadPath )) {
             $response["error"] = false;
@@ -2494,6 +2494,98 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
     
 });
 
+$app->post('/paymentemail', 'authenticate',  function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("invoiceemail before send\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $invoice    = uniqid("lessons",true);
+
+    if (isset($dataJsonDecode->thedata->paymentid)) {
+        $paymentid =  $dataJsonDecode->thedata->paymentid;
+    } else { errorRequiredParams('paymentid'); }
+
+    $invoiceDate    = (isset($dataJsonDecode->thedata->invdate) ? $dataJsonDecode->thedata->invdate : "NULL");
+    $paymentDate    = (isset($dataJsonDecode->thedata->paymentdate) ? $dataJsonDecode->thedata->paymentdate : "NULL");
+    $invoiceAmt     = (isset($dataJsonDecode->thedata->amt) ? $dataJsonDecode->thedata->amt : "NULL");
+    $to             = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "NULL");
+    $payerid        = (isset($dataJsonDecode->thedata->payerid) ? $dataJsonDecode->thedata->payerid : "NULL");
+    $payerlastname  = (isset($dataJsonDecode->thedata->payerlastname) ? $dataJsonDecode->thedata->payerlastname : "NULL");
+    $payerfirstname = (isset($dataJsonDecode->thedata->payerfirstname) ? $dataJsonDecode->thedata->payerfirstname : "NULL");
+    $invstatus      = (isset($dataJsonDecode->thedata->invstatus) ? $dataJsonDecode->thedata->invstatus : "NULL");
+    $paymentstatus  = (isset($dataJsonDecode->thedata->paymentstatus) ? $dataJsonDecode->thedata->paymentstatus : "NULL");
+    $invoice        = (isset($dataJsonDecode->thedata->invoice) ? $dataJsonDecode->thedata->invoice : "NULL");
+    $txnid          = (isset($dataJsonDecode->thedata->txn_id) ? $dataJsonDecode->thedata->txn_id : "NULL");
+    $ipnid          = (isset($dataJsonDecode->thedata->ipn_track_id) ? $dataJsonDecode->thedata->ipn_track_id : "NULL");
+    $num_cart_items = (isset($dataJsonDecode->thedata->num_cart_items) ? $dataJsonDecode->thedata->num_cart_items : "NULL");
+    $shipping       = (isset($dataJsonDecode->thedata->shipping) ? $dataJsonDecode->thedata->shipping : "NULL");
+    $nptype         = (isset($dataJsonDecode->thedata->nptype) ? $dataJsonDecode->thedata->nptype : "NULL");
+         $mc_currency = (isset($dataJsonDecode->thedata->mc_currency) ? $dataJsonDecode->thedata->mc_currency : "NULL");
+         $item_name1  = (isset($dataJsonDecode->thedata->item_name1) ? $dataJsonDecode->thedata->item_name1 : "NULL");
+        $mc_gross_1  = (isset($dataJsonDecode->thedata->mc_gross_1) ? $dataJsonDecode->thedata->mc_gross_1 : "NULL");
+        $quantity1   = (isset($dataJsonDecode->thedata->quantity1) ? $dataJsonDecode->thedata->quantity1 : "NULL");
+        $item_name2   = (isset($dataJsonDecode->thedata->item_name2) ? $dataJsonDecode->thedata->item_name2 : "NULL");
+        $mc_gross_2   = (isset($dataJsonDecode->thedata->mc_gross_2) ? $dataJsonDecode->thedata->mc_gross_2 : "NULL");
+        $quantity2     = (isset($dataJsonDecode->thedata->quantity2) ? $dataJsonDecode->thedata->quantity2 : "NULL");
+        $item_name3   = (isset($dataJsonDecode->thedata->item_name3) ? $dataJsonDecode->thedata->item_name3 : "NULL");
+        $mc_gross_3   = (isset($dataJsonDecode->thedata->mc_gross_3) ? $dataJsonDecode->thedata->mc_gross_3 : "NULL");
+        $quantity3     = (isset($dataJsonDecode->thedata->quantity3) ? $dataJsonDecode->thedata->quantity3 : "NULL");
+        $item_name4   = (isset($dataJsonDecode->thedata->item_name4) ? $dataJsonDecode->thedata->item_name4 : "NULL");
+        $mc_gross_4   = (isset($dataJsonDecode->thedata->mc_gross_4) ? $dataJsonDecode->thedata->mc_gross_4 : "NULL");
+        $quantity4     = (isset($dataJsonDecode->thedata->quantity4) ? $dataJsonDecode->thedata->quantity4 : "NULL");
+        $item_name5   = (isset($dataJsonDecode->thedata->item_name5) ? $dataJsonDecode->thedata->item_name5 : "NULL");
+        $mc_gross_5   = (isset($dataJsonDecode->thedata->mc_gross_5) ? $dataJsonDecode->thedata->mc_gross_5 : "NULL");
+        $quantity5   = (isset($dataJsonDecode->thedata->quantity5) ? $dataJsonDecode->thedata->quantity5 : "NULL");
+        $payment_gross   = (isset($dataJsonDecode->thedata->payment_gross) ? $dataJsonDecode->thedata->payment_gross : "NULL");
+     
+    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+
+    $invoicegood=1;
+    $dayOfMonth = date("j");
+    $goodToInvoice = true;
+    
+    $db = new StudentDbHandler();
+
+    $result = $db->getCommunication();
+
+    if ($result) {
+
+        // looping through result and preparing  arrays
+        while ($slist = $result->fetch_assoc()) {
+            $schEmail = (empty($slist["schoolReplyEmail"]) ? "NULL" : $slist["schoolReplyEmail"]);
+            $schSig = (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
+        }
+    }
+
+    genPaymentEmail($invoiceDate,$paymentDate,$invoiceAmt,$to,$payerid,$payerlastname, $payerfirstname, 
+                    $invstatus ,$paymentstatus ,$invoice ,$txnid ,$ipnid,$num_cart_items, $shipping , $schEmail, $schSig, $nptype,
+                    $mc_currency, $item_name1, $mc_gross_1, $quantity1,$item_name2,$mc_gross_2,$quantity2,$item_name3,$mc_gross_3,
+                    $quantity3,$item_name4,$mc_gross_4,$quantity4,$item_name5,$mc_gross_5,$quantity5,$payment_gross
+    );
+
+    //as long as one worked, return success
+    if ($invoicegood > 0) {
+        $response["error"] = false;
+        $response["message"] = "payment notified successfully";
+        $response["invoice"] = $invoicegood;
+        error_log( print_R("payment email sent: $invoicegood\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after payment mail result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $invoicebad, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to email payment receipt. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+});
+
 $app->put('/invoice','authenticate', function() use ($app) {
 
     $response = array();
@@ -2633,41 +2725,41 @@ $app->post('/invoices',  function() use ($app) {
     for($i = 0; $i < count($studentarr["InvoiceList"]); $i++ ) {
 
 
-		/*
-		npayments has the lastpaymentdate  to judge whether to add invoice, maybe more then one
-		invoice generation would have a service to run thru the whole db and update
-		invoice generation can be done manually for a payer
-		invoices are for monthly: 1, 4, 6, 12, possibly weekly
-		paymentplan indicates cycle, which has a leadtimedays to gen, plus a daysinperiod
-		paymenttype EFT are setup for autopayment.  maybe would have invoice, but isn't easy to close the invoice on payment
-		Cash, cheque, credit are for autogen invoicing.  special is not autogen
-		lastpaymentdate governs whether invoice(s) is needed
-		payment thru paypal updates payment table which has custom field to match invoice number, which allows the lastpaymentdate to get updated 
-		payment via cheque, cash requires user to update lastpaymentdate
-		nextpaymentdate has no use at this point, as open invoices would be the better view
-		
-		say lastpaymentdate is 12/12/2017 and today is feb 1, 2018
-			if user has monthly, and the payondate is 1, then jan would be due, and whether feb is generated depends on the leadtime
-			if user has 6month, then the next invoice won't be created until the leadtime
-			the batch process can be run on the first of every month, or perhaps on every monday
-			if on first, it would need to have leadtime to cover whole month
-			if weekly, then leadtime would cover the week and perhaps a longer
-			The leadtime allows to send email reminder to people, or to display calendar/notification to owner when people go to studio
-			
-		if the leadtime exceeds a week and we do weekly batches, then we need to not create an invoice when one already exists
-		if the payondate changes, we'd need to potentially deal with clearing an open invoice and recreating.  If every invoice is delete/create 
-		then it could do too many reminders
-		
-		mark: run invoices on 1st and 15th.  send invoice notice then for monthly.  cover those with dates between.  For 6mon,year, send 2week advance notice
-			overdue reminder send on next batch
-			thus. lead = 0 for month and 10 for others
-			mark will deal with price updates.  once invoice gen, is not updated
-			
-		cron job will run everyday, will call a wrapper function to call this.  Note this will go thru multiple schools.
-		One cron job for test site, One for main site.
-		
-		note change the npayments type to special if you need to suspend invoice generation due to change of registration status
-		*/
+      /*
+      npayments has the lastpaymentdate  to judge whether to add invoice, maybe more then one
+      invoice generation would have a service to run thru the whole db and update
+      invoice generation can be done manually for a payer
+      invoices are for monthly: 1, 4, 6, 12, possibly weekly
+      paymentplan indicates cycle, which has a leadtimedays to gen, plus a daysinperiod
+      paymenttype EFT are setup for autopayment.  maybe would have invoice, but isn't easy to close the invoice on payment
+      Cash, cheque, credit are for autogen invoicing.  special is not autogen
+      lastpaymentdate governs whether invoice(s) is needed
+      payment thru paypal updates payment table which has custom field to match invoice number, which allows the lastpaymentdate to get updated 
+      payment via cheque, cash requires user to update lastpaymentdate
+      nextpaymentdate has no use at this point, as open invoices would be the better view
+      
+      say lastpaymentdate is 12/12/2017 and today is feb 1, 2018
+         if user has monthly, and the payondate is 1, then jan would be due, and whether feb is generated depends on the leadtime
+         if user has 6month, then the next invoice won't be created until the leadtime
+         the batch process can be run on the first of every month, or perhaps on every monday
+         if on first, it would need to have leadtime to cover whole month
+         if weekly, then leadtime would cover the week and perhaps a longer
+         The leadtime allows to send email reminder to people, or to display calendar/notification to owner when people go to studio
+         
+      if the leadtime exceeds a week and we do weekly batches, then we need to not create an invoice when one already exists
+      if the payondate changes, we'd need to potentially deal with clearing an open invoice and recreating.  If every invoice is delete/create 
+      then it could do too many reminders
+      
+      mark: run invoices on 1st and 15th.  send invoice notice then for monthly.  cover those with dates between.  For 6mon,year, send 2week advance notice
+         overdue reminder send on next batch
+         thus. lead = 0 for month and 10 for others
+         mark will deal with price updates.  once invoice gen, is not updated
+         
+      cron job will run everyday, will call a wrapper function to call this.  Note this will go thru multiple schools.
+      One cron job for test site, One for main site.
+      
+      note change the npayments type to special if you need to suspend invoice generation due to change of registration status
+      */
 
         $goodToInvoice = false;
         $dayOfMonth = date("j");
@@ -3196,6 +3288,401 @@ $message = "
     $app->log->info( print_R("overdue email to send: $to\n, $subject\n, $message\n", TRUE));
 }
 
+function genPaymentEmail($invoiceDate,$paymentDate,$invoiceAmt,$to,$payerid,$payerlastname, $payerfirstname, 
+                    $invstatus ,$paymentstatus ,$invoice ,$txnid ,$ipnid, $num_cart_items, $shipping , $schEmail, $schSig, $nptype,
+                    $mc_currency, $item_name1, $mc_gross_1, $quantity1,$item_name2,$mc_gross_2,$quantity2,$item_name3,$mc_gross_3,
+                    $quantity3,$item_name4,$mc_gross_4,$quantity4,$item_name5,$mc_gross_5,$quantity5,$payment_gross
+                    ) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->info( print_R("genPaymentEmail entered: $invoiceDate,$paymentDate,$invoiceAmt,$to,$payerid,$payerlastname, $payerfirstname, 
+                    $invstatus ,$paymentstatus ,$invoice ,$txnid ,$ipnid, $num_cart_items, $shipping , $schEmail, $schSig, $nptype", TRUE));
+
+//$css_File1 = file_get_contents('https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'); 
+//$css_File2 = file_get_contents('../app/css/themes/blue.css'); 
+
+/*
+    $css_File3 = file_get_contents('../app/css/style.css'); 
+    if ($css_File3 === false) {
+        // Handle the error
+        die("css file not read");
+}
+*/
+//$app->log->info( print_R("css file", TRUE));
+//$app->log->info( print_R($css_File3, TRUE));
+/*
+$message = $message . '<style type="text/css"> //adding style.css contents' . "\r\n";
+$message .= $css_File3;
+$message .= '</style>';
+  */  
+
+$mywid="98%";
+
+$message = '
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Payment for Invoice #: ' . $invoice . '</title> 
+
+	<style type="text/css">
+		#outlook a {padding:0;} /* Force Outlook to provide a "view in browser" menu link. */
+		body{width:100% !important; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0; padding:0;}
+		.ExternalClass {width:100%;} /* Force Hotmail to display emails at full width */
+		.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /* Force Hotmail to display normal line spacing.  More on that: http://www.emailonacid.com/forum/viewthread/43/ */
+		#backgroundTable {margin:0; padding:0; width:100% !important; line-height: 100% !important;}
+
+		img {outline:none; text-decoration:none; -ms-interpolation-mode: bicubic;}
+		a img {border:none;}
+		.image_fix {display:block;}
+		p {margin: 1em 0;}
+
+		h1, h2, h3, h4, h5, h6 {color: black !important;}
+
+		h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {color: blue !important;}
+
+		h1 a:active, h2 a:active,  h3 a:active, h4 a:active, h5 a:active, h6 a:active {
+			color: red !important; /* Preferably not the same color as the normal header link color.  There is limited support for psuedo classes in email clients, this was added just for good measure. */
+		 }
+
+		h1 a:visited, h2 a:visited,  h3 a:visited, h4 a:visited, h5 a:visited, h6 a:visited {
+			color: purple !important; /* Preferably not the same color as the normal header link color. There is limited support for psuedo classes in email clients, this was added just for good measure. */
+		}
+
+		table td {border-collapse: collapse;}
+
+		table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+
+		a:link { color: orange; }
+		a:visited { color: blue; }
+		a:hover { color: green; }
+
+		@media only screen and (max-device-width: 480px) {
+
+			a[href^="tel"], a[href^="sms"] {
+						text-decoration: none;
+						color: black; /* or whatever your want */
+						pointer-events: none;
+						cursor: default;
+					}
+
+			.mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {
+						text-decoration: default;
+						color: orange !important; /* or whatever your want */
+						pointer-events: auto;
+						cursor: default;
+					}
+		}
+
+		@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+			a[href^="tel"], a[href^="sms"] {
+						text-decoration: none;
+						color: blue; /* or whatever your want */
+						pointer-events: none;
+						cursor: default;
+					}
+
+			.mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {
+						text-decoration: default;
+						color: orange !important;
+						pointer-events: auto;
+						cursor: default;
+					}
+		}
+
+		@media only screen and (-webkit-min-device-pixel-ratio: 2) {
+			/* Put your iPhone 4g styles in here */
+		}
+
+		@media only screen and (-webkit-device-pixel-ratio:.75){
+			/* Put CSS for low density (ldpi) Android layouts in here */
+		}
+		@media only screen and (-webkit-device-pixel-ratio:1){
+			/* Put CSS for medium density (mdpi) Android layouts in here */
+		}
+		@media only screen and (-webkit-device-pixel-ratio:1.5){
+			/* Put CSS for high density (hdpi) Android layouts in here */
+		}
+.table-responsive {
+  overflow-x: auto;
+  min-height: 0.01%;
+}
+.table-condensed > thead > tr > th,
+.table-condensed > tbody > tr > th,
+.table-condensed > tfoot > tr > th,
+.table-condensed > thead > tr > td,
+.table-condensed > tbody > tr > td,
+.table-condensed > tfoot > tr > td {
+  padding: 5px;
+}
+
+@media screen and (max-width: 767px) {
+  .table-responsive {
+    width: 100%;
+    margin-bottom: 15px;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+    border: 1px solid #ddd;
+  }
+  .table-responsive > .table {
+    margin-bottom: 0;
+  }
+  .table-responsive > .table > thead > tr > th,
+  .table-responsive > .table > tbody > tr > th,
+  .table-responsive > .table > tfoot > tr > th,
+  .table-responsive > .table > thead > tr > td,
+  .table-responsive > .table > tbody > tr > td,
+  .table-responsive > .table > tfoot > tr > td {
+    white-space: nowrap;
+  }
+  .table-responsive > .table-bordered {
+    border: 0;
+  }
+  .table-responsive > .table-bordered > thead > tr > th:first-child,
+  .table-responsive > .table-bordered > tbody > tr > th:first-child,
+  .table-responsive > .table-bordered > tfoot > tr > th:first-child,
+  .table-responsive > .table-bordered > thead > tr > td:first-child,
+  .table-responsive > .table-bordered > tbody > tr > td:first-child,
+  .table-responsive > .table-bordered > tfoot > tr > td:first-child {
+    border-left: 0;
+  }
+  .table-responsive > .table-bordered > thead > tr > th:last-child,
+  .table-responsive > .table-bordered > tbody > tr > th:last-child,
+  .table-responsive > .table-bordered > tfoot > tr > th:last-child,
+  .table-responsive > .table-bordered > thead > tr > td:last-child,
+  .table-responsive > .table-bordered > tbody > tr > td:last-child,
+  .table-responsive > .table-bordered > tfoot > tr > td:last-child {
+    border-right: 0;
+  }
+  .table-responsive > .table-bordered > tbody > tr:last-child > th,
+  .table-responsive > .table-bordered > tfoot > tr:last-child > th,
+  .table-responsive > .table-bordered > tbody > tr:last-child > td,
+  .table-responsive > .table-bordered > tfoot > tr:last-child > td {
+    border-bottom: 0;
+  }
+}
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+.table > tbody > tr > .no-line {
+  border-top: none;
+}
+.table > thead > tr > .no-line {
+  border-bottom: none;
+}
+.table > tbody > tr > .thick-line {
+  border-top: 2px solid;
+}
+
+.invoice-title h2,
+.invoice-title h3 {
+  display: inline-block;
+}
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    box-shadow: none;
+}
+      .text-orange {
+        color: orange !important;
+      }
+      .label-success {
+        color: white !important;
+        background-color: green !important;
+      }
+		
+	</style>
+
+	<!-- Targeting Windows Mobile -->
+	<!--[if IEMobile 7]>
+	<style type="text/css">
+
+	</style>
+	<![endif]-->
+
+	<!--[if gte mso 9]>
+	<style>
+		/* Target Outlook 2007 and 2010 */
+	</style>
+	<![endif]-->
+</head>
+<body>
+	<table cellpadding="0" cellspacing="0" border="0" id="backgroundTable">
+	<tr>
+		<td>
+		<table cellpadding="0" cellspacing="0" border="0" align="center">
+			<tr>
+				<td width="' . $mywid . '" valign="top">
+
+<p>Dear: ' . $payerfirstname . ' ' . $payerlastname . '</p>
+<p>This is your payment receipt.  If you have any questions please contact mailto:' . $schEmail .  '</p>
+				</td>
+            </tr>
+		
+			<tr class="invoice-title">
+				<td width="' . $mywid . '" valign="top">
+<h2 class="text-primary">Invoice</h2>
+<h3>Order <span class="text-orange">' . $invoice . '</span></h3>
+
+				</td>
+            </tr>
+			<tr>
+				<td width="' . $mywid . '" valign="top">
+				<table>
+                <tr>
+                <td>
+                        <address><strong>Billed To:</strong>
+                          <br>' . $payerfirstname . ' ' . $payerlastname . '
+                          <br>Email: ' . $to . '
+                        </address>
+                </td>
+                <td>
+                        <address"><strong>Payment:</strong>
+                            <br>Payment Date: ' . $paymentDate . '
+                            <br>Txn id: ' . $txnid . '
+                       </address>
+                </td>
+                <tr>
+                <td>
+                        <address><strong>Payment Method:</strong>
+                          <br>Pay type: ' . $nptype . '
+                          <br>Pay Status: ' . $paymentstatus . '
+                        </address>
+                </td>
+                <td>
+                        <address><strong>Order:</strong>
+                          <br>Date: ' . $invoiceDate . '
+                          <br>Status:<span class=" label label-success">' . $invstatus . '</span>
+                         </address>
+                </td>
+                </tr>
+				</table>
+				</td>
+            </tr>
+
+            <tr>
+				<td width="' . $mywid . '" valign="top">
+                  <h4 class="block-heading">Order summary</h4>
+                  <div class="table-responsive">
+                    <table class="table table-condensed">
+                      <thead>
+                        <tr>
+                          <td><strong>Item</strong></td>
+                          <td class="text-center"><strong>Quantity</strong></td>
+                          <td class="text-right"><strong>Totals</strong></td>
+                        </tr>
+                      </thead>
+                      <tbody> ';
+                      if ($num_cart_items >= 1) {
+                          $message = $message . '
+                        <tr>
+                          <td>' . $item_name1 . ' </td>
+                          <td class="text-center">' . $quantity1 . ' </td>
+                          <td class="text-right">' . $mc_currency . ' '   . $mc_gross_1 . ' </td>
+                        </tr>
+                        ';
+                      }
+                      if ($num_cart_items >= 2) {
+                          $message = $message . '
+                        <tr>
+                          <td>' . $item_name2 . ' </td>
+                          <td class="text-center">' . $quantity2 . ' </td>
+                          <td class="text-right">' . $mc_currency . ' '   . $mc_gross_2 . ' </td>
+                        </tr>
+                        ';
+                      }
+                      if ($num_cart_items >= 3) {
+                          $message = $message . '
+                        <tr>
+                          <td>' . $item_name3 . ' </td>
+                          <td class="text-center">' . $quantity3 . ' </td>
+                          <td class="text-right">' . $mc_currency . ' '   . $mc_gross_3 . ' </td>
+                        </tr>
+                        ';
+                      }
+                      if ($num_cart_items >= 4) {
+                          $message = $message . '
+                        <tr>
+                          <td>' . $item_name4 . ' </td>
+                          <td class="text-center">' . $quantity4 . ' </td>
+                          <td class="text-right">' . $mc_currency . ' '   . $mc_gross_4 . ' </td>
+                        </tr>
+                        ';
+                      }
+                      if ($num_cart_items == 5) {
+                          $message = $message . '
+                        <tr>
+                          <td>' . $item_name5 . ' </td>
+                          <td class="text-center">' . $quantity5 . ' </td>
+                          <td class="text-right">' . $mc_currency . ' '   . $mc_gross_5 . ' </td>
+                        </tr>
+                        ';
+                      }
+                          $message = $message . '
+                        <tr>
+                          <td class="thick-line">&nbsp;</td>
+                          <td class="thick-line text-center">&nbsp;</td>
+                          <td class="thick-line text-right"><strong>Subtotal: </strong>' . $mc_currency . ' '   . $invoiceAmt . ' </td>
+                        </tr>
+                        ';
+                      if ($shipping > 0) {
+                          $message = $message . '
+                        <tr>
+                          <td class="no-line">&nbsp;</td>
+                          <td class="no-line text-center">&nbsp;</td>
+                          <td class="no-line text-right"><strong>Shipping: </strong>$15</td>
+                        </tr>
+                        ';
+                      }
+                          $message = $message . '
+                        <tr>
+                          <td class="no-line">&nbsp;</td>
+                          <td class="no-line text-center">&nbsp;</td>
+                          <td class="no-line text-right"><strong>Total: </strong>' . $mc_currency . ' '   . $invoiceAmt . ' </td>
+                        </tr>
+                        <tr>
+                          <td class="no-line">&nbsp;</td>
+                          <td class="no-line text-center">&nbsp;</td>
+                          <td class="no-line text-right"><strong>Payment: </strong>' . $mc_currency . ' '  . $payment_gross . ' </td>
+                        </tr>
+
+                      </tbody>
+                    </table>
+                  </div>
+</td>
+			</tr>
+		</table>
+
+		</td>
+	</tr>
+	</table>
+<p> ' . $schSig . '</p>
+	
+</body>
+</html>
+
+';
+
+    $subject = 'Payment for '   . $payerfirstname . ' ' . $payerlastname;
+$message = remove_spaces($message);
+//$message = remove_css_comments($message);
+
+
+    //    emailnotify($to, $subject, $message);
+//    emailnotify('villaris.us@gmail.com', $subject, $message);
+    emailnotify('michael.collins.natick@gmail.com', $subject, $message);
+
+    $app->log->info( print_R("email to send: $to\n, $subject\n, $message\n", TRUE));
+
+}
+
 function createNotification($type,$notifkey,$value) {
     $app = \Slim\Slim::getInstance();
     $app->log->info( print_R("createNotification entered: $type,$notifkey,$value", TRUE));
@@ -3287,5 +3774,15 @@ function addSecurity($insql, $field, $override = 'false') {
     
 }
 
+function remove_css_comments($css){
+    $file = preg_replace("/(\/\*[\w\'\s\r\n\*\+\,\"\-\.]*\*\/)/", "", $css);
+    return $file;
+}
+function remove_spaces($string){
+    $string = preg_replace("/\s{2,}/", " ", $string);
+//    $string = str_replace("\n", "", $string);
+//    $string = str_replace(', ', ",", $string);
+    return $string;
+}
 
 ?>

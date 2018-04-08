@@ -1,57 +1,249 @@
-<div class="modal-content">
- <form name="form.read" novalidate>
-  <div class="modal-header">
-   <h1>Payment Details</h1>
-  </div>
-  <div class="modal-body">
-   <div class="col-md-12">
-    <div class="panel panel-default">
-     <div class="panel-heading">
-      <h2 class="panel-title">Payment</h2>
-     </div>
-     <div class="panel-body">
-      <h2>Invoice Number: {{vm.selectedRow.invoice}}</h2>
-      <div><b>Invoice Date: {{vm.selectedRow.invdate}}</b></div>
-<div><b>Amount: {{vm.selectedRow.inv_amt}}</b></div>
-<div><b>Status: {{vm.selectedRow.inv_status}}</b></div>
-<div><b>Id: {{vm.selectedRow.invid}}</b></div>
-<div><b>ipn Id: {{vm.selectedRow.ipn_track_id}}</b></div>
-<div><b>Item1: {{vm.selectedRow.item_name1}}</b></div>
-<div><b>Item2: {{vm.selectedRow.item_name2}}</b></div>
-<div><b>Item3: {{vm.selectedRow.item_name3}}</b></div>
-<div><b>Item4: {{vm.selectedRow.item_name4}}</b></div>
-<div><b>Item5: {{vm.selectedRow.item_name5}}</b></div>
-<div><b>Currency: {{vm.selectedRow.mc_currency}}</b></div>
-<div><b>Gross: {{vm.selectedRow.mc_gross}}</b></div>
-<div><b>gross1: {{vm.selectedRow.mc_gross_1}}</b></div>
-<div><b>gross2:{{vm.selectedRow.mc_gross_2}}</b></div>
-<div><b>gross3:{{vm.selectedRow.mc_gross_3}}</b></div>
-<div><b>gross4:{{vm.selectedRow.mc_gross_4}}</b></div>
-<div><b>gross5:{{vm.selectedRow.mc_gross_5}}</b></div>
-<div><b>Payment Date: {{vm.selectedRow.npdate}}</b></div>
-<div><b>Name: {{vm.selectedRow.npfirst_name}} {{vm.selectedRow.nplast_name}}</b></div>
-<div><b>Pay id: {{vm.selectedRow.npid}}</b></div>
-<div><b>Pay Invoice: {{vm.selectedRow.npinvoice}}</b></div>
-<div><b>Pay status: {{vm.selectedRow.npstatus}}</b></div>
-<div><b>Pay type: {{vm.selectedRow.nptype}}</b></div>
-<div><b>#Cart items: {{vm.selectedRow.num_cart_items}}</b></div>
-<div><b>Email: {{vm.selectedRow.payer_email}}</b></div>
-<div><b>Payer Status: {{vm.selectedRow.payer_status}}</b></div>
-<div><b>Payerid: {{vm.selectedRow.payerid}}</b></div>
-<div><b>Payment Gross:{{vm.selectedRow.payment_gross}}</b></div>
-<div><b>Payment id: {{vm.selectedRow.paymentid}}</b></div>
-<div><b>Quantity1: {{vm.selectedRow.quantity1}}</b></div>
-<div><b>Quantity2: {{vm.selectedRow.quantity2}}</b></div>
-<div><b>Quantity3: {{vm.selectedRow.quantity3}}</b></div>
-<div><b>Quantity4: {{vm.selectedRow.quantity4}}</b></div>
-<div><b>Quantity5: {{vm.selectedRow.quantity5}}</b></div>
-<div><b>Receipt Id: {{vm.selectedRow.receipt_id}}</b></div>
-<div><b>Txn id: {{vm.selectedRow.txn_id}}</b></div>
-     </div>
+<!DOCTYPE html>
+<html>
+
+</html>
+
+<head>
+  <style>
+
+    @media screen {
+      #printSection {
+        display: none;
+      }
+.invoice-title h2,
+.invoice-title h3 {
+  display: inline-block;
+}
+.table > tbody > tr > .no-line {
+  border-top: none;
+}
+.table > thead > tr > .no-line {
+  border-bottom: none;
+}
+.table > tbody > tr > .thick-line {
+  border-top: 2px solid;
+}
+      
+    }
+
+
+    @media print {
+      body * {
+        display: none;
+      }
+
+      #printSection,
+      #printSection * {
+        display: inline-block;
+
+      }
+.pull-right {
+/*
+  float: right!important;
+*/
+}
+.invoice-title h2,
+.invoice-title h3 {
+  display: inline-block;
+}
+.table > tbody > tr > .no-line {
+  border-top: none;
+}
+.table > thead > tr > .no-line {
+  border-bottom: none;
+}
+.table > tbody > tr > .thick-line {
+  border-top: 2px solid;
+}
+table {
+    table-layout: auto;
+}
+td {
+    width: 160px;
+    height: auto;
+}
+th {
+    width: 160px;
+    height: auto;
+}
+th:nth-child(2) {
+    width: 210px;
+    height: auto;
+}
+/*
+td:nth-child(2) {
+    border: 1px solid #ccc;
+    width: 210px;
+    height: auto;
+}
+*/
+.col-md-6 {
+/*    width: 50%;
+    position: relative;
+    float: left;    
+*/  
+    min-height: 1px;
+    padding-right: 15px;
+    padding-left: 15px;
+  width: 300px;
+}
+.row {
+    margin-right: -15px;
+    margin-left: -15px;
+}
+.well {
+    min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #f5f5f5;
+    border: 1px solid #e3e3e3;
+    border-radius: 4px;
+    box-shadow: none;
+}
+      .text-orange {
+        color: orange !important;
+      }
+      .label-success {
+        color: white !important;
+        background-color: green !important;
+      }
+      #printSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div class="modal-content">
+      <div id="printInvoice">
+        <form name="form.read" novalidate>
+          <div class="modal-header">
+            <h1>Payment Details</h1>
+          </div>
+          <div class="modal-body" style="padding: 0px;">
+            <div class="col-md-12">
+              <div class="panel panel-default">
+                <div class="panel-heading">
+                  <h2 class="panel-title">Payment</h2>
+                </div>
+                <div class="panel-body">
+                  <div class="row invoice-title">
+                    <div class="col-md-4">
+                      <h2 class="text-primary">Invoice</h2>
+                    </div>
+                    <div class="col-md-8">
+                      <h3>Order <span class="text-orange">{{vm.selectedRow.invoice}}</span></h3>
+                    </div>
+                  </div>
+                  <hr>
+                  <div class="well">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <address><strong>Billed To:</strong>
+                          <br>{{vm.selectedRow.npfirst_name}} {{vm.selectedRow.nplast_name}}
+                          <br>Email: {{vm.selectedRow.payer_email}}
+                        </address>
+                      </div>
+                      <div class="col-md-6">
+                        <address><strong>Payment:</strong>
+                            <br>Payment Date: {{vm.selectedRow.npdate}}
+                            <br>Txn id: {{vm.selectedRow.txn_id}}
+                       </address>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6">
+                        <address><strong>Payment Method:</strong>
+                          <br>Pay type: {{vm.selectedRow.nptype}}
+                          <br>Pay Status: {{vm.selectedRow.npstatus}}
+                        </address>
+                      </div>
+                      <div class="col-md-6">
+                        <address><strong>Order:</strong>
+                          <br>Date: {{vm.selectedRow.invdate}}
+                          <br>Status:<span class=" label label-success">{{vm.selectedRow.inv_status}}</span>
+                         </address>
+                      </div>
+                    </div>
+                  </div>
+                  <h4 class="block-heading">Order summary</h4>
+                  <div class="table-responsive">
+                    <table class="table table-condensed">
+                      <thead>
+                        <tr>
+                          <td><strong>Item</strong></td>
+                          <td class="text-center"><strong>Quantity</strong></td>
+                          <td class="text-right"><strong>Totals</strong></td>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-show="{{vm.selectedRow.num_cart_items}} >= 1">
+                          <td>{{vm.selectedRow.item_name1}}</td>
+                          <td class="text-center">{{vm.selectedRow.quantity1}}</td>
+                          <td class="text-right">{{vm.selectedRow.mc_currency}} {{vm.selectedRow.mc_gross_1}}</td>
+                        </tr>
+                        <tr ng-show="{{vm.selectedRow.num_cart_items}} >= 2">
+                          <td>{{vm.selectedRow.item_name2}}</td>
+                          <td class="text-center">{{vm.selectedRow.quantity2}}</td>
+                          <td class="text-right">{{vm.selectedRow.mc_currency}} {{vm.selectedRow.mc_gross_2}}</td>
+                        </tr>
+                        <tr ng-show="{{vm.selectedRow.num_cart_items}} >= 3">
+                          <td>{{vm.selectedRow.item_name3}}</td>
+                          <td class="text-center">{{vm.selectedRow.quantity3}}</td>
+                          <td class="text-right">{{vm.selectedRow.mc_currency}} {{vm.selectedRow.mc_gross_3}}</td>
+                        </tr>
+                        <tr ng-show="{{vm.selectedRow.num_cart_items}} >= 4">
+                          <td>{{vm.selectedRow.item_name4}}</td>
+                          <td class="text-center">{{vm.selectedRow.quantity4}}</td>
+                          <td class="text-right">{{vm.selectedRow.mc_currency}} {{vm.selectedRow.mc_gross_4}}</td>
+                        </tr>
+                        <tr ng-show="{{vm.selectedRow.num_cart_items}} == 5">
+                          <td>{{vm.selectedRow.item_name5}}</td>
+                          <td class="text-center">{{vm.selectedRow.quantity5}}</td>
+                          <td class="text-right">{{vm.selectedRow.mc_currency}} {{vm.selectedRow.mc_gross_5}}</td>
+                        </tr>
+                        <tr>
+                          <td class="thick-line">&nbsp;</td>
+                          <td class="thick-line text-center">&nbsp;</td>
+                          <td class="thick-line text-right"><strong>Subtotal: </strong>{{vm.selectedRow.mc_currency}} {{vm.selectedRow.inv_amt}}</td>
+                        </tr>
+                        <tr ng-show="vm.selectedRow.shipping > 0">
+                          <td class="no-line">&nbsp;</td>
+                          <td class="no-line text-center">&nbsp;</td>
+                          <td class="no-line text-right"><strong>Shipping: </strong>$15</td>
+                        </tr>
+                        <tr>
+                          <td class="no-line">&nbsp;</td>
+                          <td class="no-line text-center">&nbsp;</td>
+                          <td class="no-line text-right"><strong>Total: </strong>{{vm.selectedRow.mc_currency}} {{vm.selectedRow.inv_amt}}</td>
+                        </tr>
+                        <tr>
+                          <td class="no-line">&nbsp;</td>
+                          <td class="no-line text-center">&nbsp;</td>
+                          <td class="no-line text-right"><strong>Payment: </strong>{{vm.selectedRow.mc_currency}} {{vm.selectedRow.payment_gross}}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </form>
+      </div>
+      <button type="button" class="btn btn-blue" ng-click="vm.cancel()">Close</button>
+      <button type="button" class="btn btn-blue" ng-click="vm.email()"><i class="far fa-share-square"></i> Email</button>
+      <button class="btn btn-primary" ng-print print-element-id="printInvoice"><i class="fas fa-print"></i> Print</button>
     </div>
-   </div>
-   <div class="modal-footer">
-    <button type="button" class="btn btn-blue" ng-click="vm.cancel()">Close</button>
-   </div>
- </form>
- </div>
+  </div>
+</body>
+
+</html>
