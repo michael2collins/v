@@ -63,6 +63,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/1.1.6/angularjs-color-picker.css" />
 
     <!--start of mlc -->
+    <link type="text/css" rel="stylesheet" href="css/stripecss.css" />
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script> 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
 
@@ -548,6 +550,41 @@ body > .dropdown-menu {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js"></script> 
 
+<!--
+	<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+    <script src="vendors/angular-payments/lib/angular-payments.js"></script>
+-->
+<style>
+/**
+ * The CSS shown here will not be introduced in the Quickstart guide, but shows
+ * how you can use CSS to style your Element's container.
+ */
+.StripeElement {
+  background-color: white;
+  height: 40px;
+  padding: 10px 12px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  box-shadow: 0 1px 3px 0 #e6ebf1;
+  -webkit-transition: box-shadow 150ms ease;
+  transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+  box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+  border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+  background-color: #fefde5 !important;
+}  
+</style>
+<script src="https://js.stripe.com/v3/"></script>
+
+
 <!-- conflicts with textangular sanitize
  <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.10/angular-sanitize.min.js'></script>
  -->
@@ -600,6 +637,7 @@ body > .dropdown-menu {
     <script type="text/javascript" src="js/controllers/table-basic-program.js"></script>
     <script type="text/javascript" src="js/controllers/table-basic-htmltemplate.js"></script>
     <script type="text/javascript" src="js/controllers/table-basic-testtype.js"></script>
+    <script type="text/javascript" src="js/controllers/stripe-onboard.js"></script>
     <script type="text/javascript" src="js/controllers/table-basic-basic.js"></script>
     <script type="text/javascript" src="js/controllers/table-basic-rank.js"></script>
     <script type="text/javascript" src="js/controllers/table-basic-class.js"></script>

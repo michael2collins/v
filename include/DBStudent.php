@@ -1945,7 +1945,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function getInvoices($payerid) {
 
 	    $sql = "
-	    select id, invoice, i.paymentid, amt, invdate, status
+	    select id, invoice, i.paymentid, amt, invdate, status, 'lessons' as payfor
 	    from invoice i
 	    join npayments np on  (np.paymentid = i.paymentid)
 	    where np.payerid = ?
@@ -2127,6 +2127,118 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
+	}
+	
+	public
+	function setsession($thisslim, $csrfstate)
+	{
+		error_log(print_R("setsession entered\n", TRUE) , 3, LOG);
+
+		$response = array();
+		global $school;
+
+		$cleansql = "delete from csrf_state where school = ?";
+
+		$sql = 'INSERT INTO `csrf_state`( `school`, `csrf_state`, `slim_session`) VALUES
+				 (?,?,?)
+				';
+		
+		if ($stmt = $this->conn->prepare($cleansql)) {
+			$stmt->bind_param("s", $school);
+			$result = $stmt->execute();
+			$stmt->close();
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("sss", $school,$csrfstate,$thisslim);
+			$result = $stmt->execute();
+			$stmt->close();
+
+			if ($result) {
+				$newid = $this->conn->insert_id;
+				return $newid;
+			}
+			else {
+				return NULL;
+			}
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+
+		return $response;
+	}
+	public
+	function checksession($thisslim, $csrfstate)
+	{
+		error_log(print_R("before checksession\n", TRUE) , 3, LOG);
+		error_log(print_R("session: $thisslim\n", TRUE) , 3, LOG);
+		error_log(print_R("csrfstate: $csrfstate\n", TRUE) , 3, LOG);
+		
+		$stmt = $this->conn->prepare("SELECT id from csrf_state WHERE csrf_state = ? and slim_session = ? ");
+		$stmt->bind_param("ss", $csrfstate, $thisslim);
+		$stmt->execute();
+		$stmt->store_result();
+		$num_rows = $stmt->num_rows;
+		$stmt->close();
+		return $num_rows;
+	}
+
+	public
+	function createAccount($invoice, $invoiceDate, $invoiceAmt, $paymentid, $status)
+	{
+	/**
+	 * Creating new invoice
+	 */
+		error_log(print_R("createInvoice entered\n", TRUE) , 3, LOG);
+		$response = array();
+		global $school;
+		$sql = "INSERT into invoice (";
+		$sql.= " invoice ,";
+		$sql.= " invDate ,";
+		$sql.= " amt, ";
+		$sql.= " paymentid, ";
+		$sql.= " status )";
+		$sql.= " values ( ?, ?, ?, ?, ?)";
+
+		// First check if invoice already existed in db
+
+		if (!$this->isInvoiceExists(
+			 $paymentid, $invoiceDate
+			)) {
+			if ($stmt = $this->conn->prepare($sql)) {
+				$stmt->bind_param("sssss", $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status);
+				$result = $stmt->execute();
+				$stmt->close();
+
+				// Check for successful insertion
+
+				if ($result) {
+					$new_invoice_id = $this->conn->insert_id;
+
+					// User successfully inserted
+
+					return $new_invoice_id;
+				}
+				else {
+					// Failed to create invoice
+					return NULL;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return NULL;
+			}
+		}
+		else {
+			return RECORD_ALREADY_EXISTED;
+		}
+
+		return $response;
 	}
 	
 }

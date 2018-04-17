@@ -46,6 +46,7 @@ module.exports = function (grunt) {
 		    //atpl: [ 'src/app/**/*.tpl.html', 'src/app/**/**/*.tpl.html' ],
 		    //ctpl: [ 'src/common/**/*.tpl.html' ],
 		    //translations: ['src/assets/languages/*.json'],
+	  css: [ 'source/less/*.css' ],
 	  apache: [ 'apache_setup/.htaccess' ],
 	  postjade: [ 'source/jade/templates/states/**/*.html', 'source/jade/templates/states/**/*.php'],
       html: [ 'source/index.html' ]
@@ -219,6 +220,22 @@ module.exports = function (grunt) {
 				rename: function(dest,src) {
 					grunt.log.writeln("index html:" + src.substring(6)); /* source = 12*/
 					return dest + src.substring(6);
+			}
+		  }
+		  ]
+	  },
+	  copy_css: {
+		  files: [
+		  {
+				expand: true,
+				nonull: true,
+				src: [ '<%= app_files.css %>' ],
+				cwd: '.',
+				dest: 'app/css/',
+				rename: function(dest,src) {
+				    grunt.log.writeln("post css copy src:" + src);
+					grunt.log.writeln("post css copy:" + dest + src.substring(11)); /* source/less = 11*/
+					return dest + src.substring(11);
 			}
 		  }
 		  ]
@@ -566,6 +583,7 @@ module.exports = function (grunt) {
 	  'copy:build_appjs',
 	  'copy:build_apache',
 	  'copy:copy_jade',
+	  'copy:copy_css',
 	  'index:build'
 //      'uglify',
 //      'karma:minified',
@@ -585,7 +603,8 @@ module.exports = function (grunt) {
 	  'copy:build_appjs',
 	  'copy:build_indexhtml',
 //	  'copy:build_apache',
-	  'copy:copy_jade'
+	  'copy:copy_jade',
+	  'copy:copy_css'
 //	  'index:build'
 //      'uglify',
 //      'karma:minified',

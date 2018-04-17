@@ -60,7 +60,10 @@
             emailInvoice: emailInvoice,
             removeInvoice: removeInvoice,
             calcInvoice: calcInvoice,
-            getPayments: getPayments
+            getPayments: getPayments,
+            payStripeInvoice: payStripeInvoice,
+            setsession: setsession,
+            storeusercred: storeusercred
         };
         return service;
 
@@ -653,6 +656,42 @@
                     });
                     return( request.then( handleSuccess, handleError ) );
         }        
+        function payStripeInvoice(path, thedata) {
+                    $log.debug('payStripeInvoice data before post :' , thedata);
+                    var request = $http({
+                        method: "POST",
+                        url: path,
+                        data: {
+                            thedata: thedata
+                        }
+                    });
+                    return( request.then( handleSuccess, handleError ) );
+            
+        }
+        
+     function setsession(path, thedata) {
+        var request = $http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function storeusercred(path, thedata) {
+        var request = $http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+        
 
         }
  })();

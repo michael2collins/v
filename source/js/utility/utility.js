@@ -1,4 +1,4 @@
-(function(window,angular) {
+(function(window,angular,crypto) {
     'use strict';
     angular
         .module('ng-admin')
@@ -10,6 +10,7 @@
         var utility = {
             maxObjArr: maxObjArr,
             getByValue: getByValue,
+            uuidv4: uuidv4,
             highlightFilteredHeader: highlightFilteredHeader
         };
         
@@ -22,7 +23,14 @@
                 return '';
             }
         }
-            
+
+        //https://gist.github.com/jed/982883
+        function uuidv4() {
+          return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+            (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+          )
+        }
+
         function maxObjArr(arr,attr) {
             $log.debug('maxObjArr entered', arr, attr);
             var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}));
@@ -38,4 +46,4 @@
         }
         
     }
-})(window,window.angular);
+})(window,window.angular,window.crypto);

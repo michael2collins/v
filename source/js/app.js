@@ -39,6 +39,7 @@
             'ngAnimate',
             'ui.tinymce',
             'ngmodel.format'
+//            'angularPayments'
         ])
 
         // allow DI for use in controllers, unit tests for lodash
@@ -118,7 +119,12 @@
                 positionY: 'bottom'
             });
         })
-
+/*	.config(function() {
+	    //test key
+		window.Stripe.setPublishableKey('pk_test_E3nCcNrj87kIuKzCcA8MNkgv');
+		//mlc prod pk_live_a9QRAQ6YXuntaJ7ScCLGxEGD
+	})
+*/	
         .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.includeSpinner = false;
@@ -272,7 +278,7 @@
 
 
             // redirect to login page if not logged in and trying to access a restricted page
-            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd', '/reset-pwd', '/forgot-pwd', '/page-lock-screen']) === -1;
+            var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd', '/reset-pwd', '/forgot-pwd', '/page-lock-screen', '/stripe-onboard']) === -1;
             var thekey = UserServices.isapikey();
             $log.debug('check logn next', restrictedPage, loggedIn);
             $log.debug('check userservices isapikey', thekey);
@@ -351,6 +357,9 @@
             .when('/table-basic-testtype', {
                 templateUrl: 'templates/states/table-basic-testtype.php'
             })
+            .when('/stripe-onboard', {
+                templateUrl: 'templates/states/stripe_onboard.php'
+            })
             .when('/table-basic-classpgm', {
                 templateUrl: 'templates/states/table-basic-classpgm.php'
             })
@@ -364,6 +373,9 @@
                 templateUrl: 'templates/states/table-basic-basic.php'
             })
             .when('/table-basic-paymenttracking', {
+                templateUrl: 'templates/states/table-basic-paymenttracking.php'
+            })
+            .when('/form-layouts-paymenttracking/id/:id', {
                 templateUrl: 'templates/states/table-basic-paymenttracking.php'
             })
             .when('/table-basic-rank', {

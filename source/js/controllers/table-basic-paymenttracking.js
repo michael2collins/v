@@ -1,4 +1,4 @@
-(function (window,angular,$) {
+(function (window,angular,$,Stripe) {
     'use strict';
 
     angular
@@ -15,10 +15,12 @@
         'uiGridConstants',
         'moment',
         '$q',
-        '$uibModal'
+        '$uibModal',
+        '$routeParams'
     ];
 
-    function PaymentTrackingController($scope, $log, ClassServices, StudentServices, Notification, Util,uiGridConstants, moment, $q, $uibModal) {
+    function PaymentTrackingController($scope, $log, ClassServices, StudentServices, Notification, 
+        Util,uiGridConstants, moment, $q, $uibModal, $routeParams) {
         /* jshint validthis: true */
         var vm = this;
         vm.isCollapsed = true;
@@ -35,12 +37,15 @@
         vm.emailInvoice = emailInvoice;
         vm.dateopen = dateopen;
         vm.formatter = formatter;
+//        vm.stripeCallback = stripeCallback;
+        vm.payStripeInvoice = payStripeInvoice;
 
         vm.payers=[];
         vm.refreshstudentlist = [];
         vm.invoicelist = [];
         vm.studentpick;
         vm.thisInvoice=[];
+        vm.stripe={};
         vm.Invoice={};
         vm.payerName;
         vm.thispayer='';
@@ -54,7 +59,7 @@
         vm.paygridLength={};
         vm.initialLength=3;
         vm.payinitialLength=3;
-        vm.rowheight=25;
+        vm.rowheight=50;
         vm.headerheight=140;
         vm.payrowheight=25;
         vm.payheaderheight=140;
@@ -156,8 +161,15 @@
 
         }
         function getPayerStudent(theinput,thetype) {
+            var optionalid = $routeParams.id;
+
             var thisid = (theinput.ID !== undefined) ? theinput.ID : ( theinput.payerid !== undefined ) ? theinput.payerid : undefined;
             if (thisid === undefined) {
+                if (optionalid !== undefined ) {
+                    thisid = optionalid;
+                } else {
+                    return;
+                }
                 return;
             }
             var thedata = {
@@ -180,10 +192,22 @@
                     if (data.studentpayerlist[0].thetype === 'payer') {
                         refreshStudents(data.studentpayerlist[0].firstname + ' ' + data.studentpayerlist[0].lastname).then(function() {
                             vm.studentpick = vm.refreshstudentlist.refreshstudentlist[0];
+                            getInvoices(theinput.payerid).then(function() {
+                               $log.debug("got invoices"); 
+                            });
+                            getPayments(theinput.payerid).then(function() {
+                               $log.debug("got payments"); 
+                            });
                         });
                     } else {
                         getPayersPartial(data.studentpayerlist[0].payername).then(function() {
                             vm.payerName = vm.payers[0];
+                            getInvoices(theinput.payerid).then(function() {
+                               $log.debug("got invoices"); 
+                            });
+                            getPayments(theinput.payerid).then(function() {
+                               $log.debug("got payments"); 
+                            });
                         });
                     }
                     Notification.success({message: vm.message, delay: 5000});
@@ -221,6 +245,13 @@
                     $q.reject(data);
                 } else {
                     vm.gridOptions.data = data.invoicelist;
+                    
+                    for(var i=0; i < vm.gridOptions.data.length; i++) {
+                        vm.gridOptions.data[i].studentname = vm.studentpick.FullName;
+                        vm.gridOptions.data[i].payername = vm.payerName;
+                        vm.gridOptions.data[i].optionalid = vm.thispayer;
+                    }
+                    
                     Notification.success({message: vm.message, delay: 5000});
                 }
             }, function(error) {
@@ -546,7 +577,81 @@
         }
 
         function setgridOptions() {
+            var paytbl ='',payviewtbl='';
+/*
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="business" value="herschelgomez@xyzzyu.com">
+  <input type="hidden" name="cmd" value="_xclick">
+  <input type="hidden" name="item_name" value="Hot Sauce-12oz. Bottle">
+  <input type="hidden" name="amount" value="5.95">
+  <input type="hidden" name="currency_code" value="USD">
+  <input type="image" name="submit" border="0"
+  src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif"
+  alt="Buy Now">
+  <img alt="" border="0" width="1" height="1"
+  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >
+</form>
+*/
+            paytbl = '<div class="ui-grid-cell-contents">';
+            paytbl += '<span>  '; 
+//            paytbl += '<div ng-hide="row.entity.Paid == 1">'; 
+            paytbl += '<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">';
+//            paytbl += '<input type="hidden" name="upload" value="1">';
+            paytbl += '<input type="hidden" name="cmd" value="_cart">';
+            paytbl += '<input type="hidden" name="add" value="1">';
+            paytbl += '  <input type="hidden" name="business" value="mark@natickmartialarts.com">';
+            paytbl += '  <input type="hidden" name="custom" value="{{row.entity.invoice}}">';
+            paytbl += '  <input type="hidden" name="invoice" value="{{row.entity.invoice}}">';
+            paytbl += '    <input type="hidden" name="item_name"';
+            paytbl += '        value="{{row.entity.payfor}} - for {{row.entity.studentname}}">';
+            paytbl += '   <input type="hidden" name="no_shipping" value="1">';
+            paytbl += '   <input type="hidden" name="amount" value="{{row.entity.amt}}">';
+            paytbl += '   <input type="hidden" name="quantity" value="1">';
+            paytbl += '    <input type="hidden" name="item_name_1"';
+            paytbl += '        value="{{row.entity.payfor}} - for {{row.entity.studentname}}">';
+//            paytbl += '   <input type="hidden" name="amount_1" value="{{row.entity.amt}}">';
+//            paytbl += '   <input type="hidden" name="quantity_1" value="1">';
+            paytbl += '   <input type="hidden" name="currency_code" value="USD">';
+            paytbl += '    <input type="hidden" name="shopping_url"';
+            paytbl += '        value="http://vdojotest.villaris.us/#/table-basic-paymenttracking/id/{{row.entity.optionalid}}">        ';
+//            paytbl += '<input type="submit" value="PayPal">';
+            paytbl += '     <input type="image" name="submit"' ;
+            paytbl += '           src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_SM.gif" style="width:50%;"  alt="Add to Cart">';
+            paytbl += '       <img alt="" width="1" height="1"  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >'
+            paytbl += '    </form>';
+//            paytbl    += ' role="button" class="btn" style="padding:  0px 14px;"  >';
+//            paytbl    += '<i class="fab fa-paypal"></i>&nbsp;</span>';
+            paytbl    += '</span></div>';
+            
+            payviewtbl = '<div class="ui-grid-cell-contents">';
+            payviewtbl += '<span>  '; 
+            payviewtbl += '<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">';
+            payviewtbl += '<input type="hidden" name="cmd" value="_cart">';
+            payviewtbl += '<input type="hidden" name="display" value="1">';
+            payviewtbl += '  <input type="hidden" name="business" value="mark@natickmartialarts.com">';
+            payviewtbl += '     <input type="image" name="submit"' ;
+            payviewtbl += '           src="https://www.paypalobjects.com/en_US/i/btn/btn_viewcart_SM.gif" style="width:50%;"  alt="View Cart">';
+            payviewtbl += '       <img alt="" width="1" height="1"  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >'
+            payviewtbl += '    </form>';
+            payviewtbl    += '</span></div>';
 
+/* view cart
+<form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+    <!-- Identify your business so that you can collect the payments. -->
+    <input type="hidden" name="business" value="kin@kinskards.com">
+
+    <!-- Specify a PayPal shopping cart View Cart button. -->
+    <input type="hidden" name="cmd" value="_cart">
+    <input type="hidden" name="display" value="1">
+
+    <!-- Display the View Cart button. -->
+    <input type="image" name="submit"
+        src="https://www.paypalobjects.com/en_US/i/btn/btn_viewcart_LG.gif"
+       alt="Add to Cart">
+    <img alt="" width="1" height="1"
+        src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >
+</form>
+*/
             var ctpl = '<div class="ui-grid-cell-contents">';
             ctpl    += '<span> <a ng-click="grid.appScope.removeInvoice(row.entity)" role="button" class="btn btn-red" style="padding:  0px 14px;"  >';
             ctpl    += '<i class="far fa-trash-alt"></i>&nbsp;</a></span>';
@@ -567,6 +672,10 @@
                 {
                     field: 'invoice',
                     displayName: 'Invoice'
+                }, 
+                {
+                    field: 'payfor',
+                    visible: false
                 }, 
                 {
                     field: 'paymentid'
@@ -613,6 +722,26 @@
                     enableHiding: false,
                     enableCellEdit: false,
                     cellTemplate: ctpl
+                    
+                },
+                {
+                    field: 'id',
+                    displayName: 'Payment',
+                    enableFiltering: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    enableCellEdit: false,
+                    cellTemplate: paytbl
+                    
+                },
+                {
+                    field: 'id',
+                    displayName: 'View Cart',
+                    enableFiltering: false,
+                    enableSorting: false,
+                    enableHiding: false,
+                    enableCellEdit: false,
+                    cellTemplate: payviewtbl
                     
                 }
 
@@ -752,7 +881,252 @@ enableRowSelection: true,
             };
         }
 
-        
+/*
+        function stripeCallback(code, result) {
+			if (result.error) {
+				window.alert('it failed! error: ' + result.error.message);
+			} else {
+				window.alert('success! token: ' + result.id);
+			}
+		};
+*/
+
+/*
+$(document).ready(function(){
+	
+	$('#creditCardNumber').click(function(){
+		
+		//document.getElementById('SwipeNowAlert').innerHTML = 'You may now swipe.';
+	
+	}).blur(function(){
+		
+		document.getElementById('SwipeNowAlert').innerHTML = 'Don\'t Swipe';
+	  
+	}).focus(function(){
+	  
+		document.getElementById('SwipeNowAlert').innerHTML = 'SWIPE NOW';
+	  
+	}).keyup(function(event) {
+		
+		if (event.keyCode == 13) {
+		  
+			var ccNum =  $('#credit-card-number').val();
+		
+			var isCaretPresent = false;
+			var isEqualPresent = false;
+	
+			if (ccNum.indexOf("^") != -1)
+				isCaretPresent = true
+			else
+				isCaretPresent = false;
+			
+			if (ccNum.indexOf("=") != -1)
+				isEqualPresent = true
+			else
+				isEqualPresent = false;
+	
+			//handle parsing differently depending on card format
+			if (isCaretPresent) {
+		    
+				var cardData = ccNum.split('^');
+				
+				$("#first-name").val(formatFirstName(cardData[1]));
+				$("#last-name").val(formatLastName(cardData[1]));
+			
+				var decryptedCardNumber = formatCardNumber(cardData[0]);
+				
+				$("#card-number").val(decryptedCardNumber);
+				$("#card-type").val(getCardType(decryptedCardNumber));
+				
+				$("#expiration-month").val(cardData[2].substring(2, 4));
+				$("#expiration-year").val(cardData[2].substring(0, 2));
+		
+			
+			} else if (isEqualPresent) {
+		    
+				var cardData = ccNum.split('=');
+				
+				var decryptedCardNumber = formatCardNumber(cardData[0]);
+				
+				$("#CardNumber").val(decryptedCardNumber);
+				$("#CardType").val(getCardType(decryptedCardNumber));
+				
+				$("#ExpirationMonth").val(cardData[2].substring(2, 4));
+				$("#ExpirationYear").val(cardData[2].substring(0, 2));
+			}
+		
+		} else {
+			return true;
+		}
+	}); 
+	
+	
+	function formatCardNumber(cardNum) {
+	  
+		var result = "";
+	
+		result = cardNum.replace(/[^0-9]* /, "");
+		
+		return result;
+	}
+	
+	function formatFirstName(name) {
+	  
+		if (name.indexOf("/") != -1) {
+		  
+			var nameSplit = name.split('/');
+	
+			return nameSplit[1];
+			
+		} else {
+			return "";
+		}
+	}
+	
+	function FormatLastName(name) {
+	  
+		if (name.indexOf("/") != -1) {
+		  
+			var nameSplit = name.split('/');
+	
+			return nameSplit[0];
+			
+		} else {
+			return "";
+		}
+	}
+	
+	function getCardType(number) {
+	  
+		var re = new RegExp("^4");
+		if (number.match(re) != null)
+			return "Visa";
+	
+		re = new RegExp("^(34|37)");
+		if (number.match(re) != null)
+			return "American Express";
+	
+		re = new RegExp("^5[1-5]");
+		if (number.match(re) != null)
+			return "MasterCard";
+	
+		re = new RegExp("^6011");
+		if (number.match(re) != null)
+			return "Discover";
+	
+		return "";
+	}
+
+});
+*/
+
+var stripe = Stripe('pk_test_E3nCcNrj87kIuKzCcA8MNkgv');
+
+// Create an instance of Elements.
+var elements = stripe.elements();
+
+// Custom styling can be passed to options when creating an Element.
+// (Note that this demo uses a wider set of styles than the guide below.)
+var style = {
+  base: {
+    color: '#32325d',
+    lineHeight: '18px',
+    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+    fontSmoothing: 'antialiased',
+    fontSize: '16px',
+    '::placeholder': {
+      color: '#aab7c4'
+    }
+  },
+  invalid: {
+    color: '#fa755a',
+    iconColor: '#fa755a'
+  }
+};
+
+// Create an instance of the card Element.
+var card = elements.create('card', {style: style});
+
+// Add an instance of the card Element into the `card-element` <div>.
+card.mount('#card-element');
+
+// Handle real-time validation errors from the card Element.
+card.addEventListener('change', function(event) {
+  var displayError = document.getElementById('card-errors');
+  if (event.error) {
+    displayError.textContent = event.error.message;
+  } else {
+    displayError.textContent = '';
+  }
+});
+
+// Handle form submission.
+var form = document.getElementById('payment-form');
+form.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  stripe.createToken(card).then(function(result) {
+    if (result.error) {
+      // Inform the user if there was an error.
+      var errorElement = document.getElementById('card-errors');
+      errorElement.textContent = result.error.message;
+    } else {
+      // Send the token to your server.
+      //stripeTokenHandler(result.token);
+      vm.payStripeInvoice(result.token);
+    }
+  });
+});  
+
+function stripeTokenHandler(token) {
+  // Insert the token ID into the form so it gets submitted to the server
+  var form = document.getElementById('payment-form');
+  var hiddenInput = document.createElement('input');
+  hiddenInput.setAttribute('type', 'hidden');
+  hiddenInput.setAttribute('name', 'stripeToken');
+  hiddenInput.setAttribute('value', token.id);
+  form.appendChild(hiddenInput);
+
+  // Submit the form
+  form.submit();
+}
+
+        function payStripeInvoice(token) {
+
+            var updpath = "../v1/paystripe";
+
+            var thedata = {
+                id: token.id
+            };
+            
+            $log.debug('about payStripeInvoice ',thedata, updpath, 'Update');
+            return StudentServices.payStripeInvoice(updpath, thedata)
+                .then(function(data){
+                    $log.debug('payStripeInvoice returned data');
+                    $log.debug(data);
+                    vm.stripe = data;
+                    $log.debug(vm.stripe);
+                    $log.debug(vm.stripe.message);
+                    vm.message = vm.stripe.message;
+                    if ((typeof vm.stripe === 'undefined' || vm.stripe.error === true)  
+                            && typeof data !== 'undefined') {  
+                        Notification.error({message: vm.message, delay: 5000});
+                        $q.reject(data);
+                    } else {
+                        Notification.success({message: vm.message, delay: 5000});
+                        
+                    }
+                    return vm.stripe;
+
+                }).catch(function(e) {
+                    $log.debug('payStripeInvoice failure:');
+                    $log.debug("error", e);
+                    vm.message = e;
+                    Notification.error({message: e, delay: 5000});
+                    throw e;
+                });
+        }
+
     }
 
-})(window,window.angular,window.$);
+})(window,window.angular,window.$,window.Stripe);

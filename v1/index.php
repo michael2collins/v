@@ -26,7 +26,6 @@ require '.././libs/Slim/Slim.php';
 require '.././vendor/autoload.php';
 $ipn = new PaypalIPN();
 
-
 \Slim\Slim::registerAutoloader();
 
 $app = new \Slim\Slim();

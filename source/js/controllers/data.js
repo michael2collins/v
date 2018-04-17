@@ -19,6 +19,7 @@ var jQuery;
         '/table-basic-program': {title:'Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-htmltemplate': {title:'Email Template Maintenance', 'breadcrumb':['Manage Studio', 'Email Template']},
         '/table-basic-testtype': {title:'Test type Maintenance', 'breadcrumb':['Manage Studio', 'Test Type']},
+        '/stripe-onboard': {title:'Onboard with Stripe for payments', 'breadcrumb':['Manage Studio', 'Stripe Onboard']},
         '/table-basic-classpgm': {title:'Class Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Program']},
         '/table-basic-classrank': {title:'Class Rank Maintenance', 'breadcrumb':['Manage Studio', 'Class Rank']},
         '/table-basic-classtest': {title:'Class Test Maintenance', 'breadcrumb':['Manage Studio', 'Class Test']},

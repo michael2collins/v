@@ -2986,6 +2986,7 @@ $app->get('/invoices', 'authenticate', function() use ($app) {
             $tmp["amt"] = (empty($slist["amt"]) ? "NULL" : $slist["amt"]);
             $tmp["invdate"] = (empty($slist["invdate"]) ? "NULL" : $slist["invdate"]);
             $tmp["status"] = (empty($slist["status"]) ? "NULL" : $slist["status"]);
+            $tmp["payfor"] = (empty($slist["payfor"]) ? "NULL" : $slist["payfor"]);
         }
         array_push($response["invoicelist"], $tmp);
     }
@@ -3200,6 +3201,236 @@ $app->get('/payments', 'authenticate', function() use ($app) {
         $response["extra"] = $result;
         $response["message"] = "Failed to get Payments. Please try again";
         echoRespnse(400, $response);
+    }
+
+
+});
+
+$app->post('/paystripe', 'authenticate',  function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("paystripe before send\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+
+    if (isset($dataJsonDecode->thedata->id)) {
+        $token =  $dataJsonDecode->thedata->id;
+    } else { errorRequiredParams('id'); }
+
+$invoicegood = 0;
+$err=[];
+$body =[];
+try {
+  // Use Stripe's library to make requests...
+\Stripe\Stripe::setApiKey("sk_test_6XRMjHEEa4R1RIBgoRGr48yE");
+
+// Token is created using Checkout or Elements!
+// Get the payment token ID submitted by the form:
+//22 char for statement_descriptor
+
+$charge = \Stripe\Charge::create([
+    'amount' => 999,
+    'currency' => 'usd',
+    'description' => 'Example charge',
+    'source' => $token,
+    'statement_descriptor' => 'Villaris Natick',
+    'metadata' => ['invoice' => 6735],
+]);
+
+    $invoicegood=1;
+    
+} catch(\Stripe\Error\Card $e) {
+  // Since it's a decline, \Stripe\Error\Card will be caught
+  $body = $e->getJsonBody();
+  $err  = $body['error'];
+
+  print('Status is:' . $e->getHttpStatus() . "\n");
+  print('Type is:' . $err['type'] . "\n");
+  print('Code is:' . $err['code'] . "\n");
+  // param is '' in this case
+  print('Param is:' . $err['param'] . "\n");
+  print('Message is:' . $err['message'] . "\n");
+  $invoicegood=-1;
+} catch (\Stripe\Error\RateLimit $e) {
+  // Too many requests made to the API too quickly
+  $invoicegood=-2;
+} catch (\Stripe\Error\InvalidRequest $e) {
+  // Invalid parameters were supplied to Stripe's API
+  $invoicegood=-3;
+} catch (\Stripe\Error\Authentication $e) {
+  // Authentication with Stripe's API failed
+  // (maybe you changed API keys recently)
+  $invoicegood=-4;
+} catch (\Stripe\Error\ApiConnection $e) {
+  // Network communication with Stripe failed
+  $invoicegood=-5;
+} catch (\Stripe\Error\Base $e) {
+  // Display a very generic error to the user, and maybe send
+  // yourself an email
+  $invoicegood=-6;
+} catch (Exception $e) {
+  // Something else happened, completely unrelated to Stripe
+  $invoicegood=-7;
+}
+    //as long as one worked, return success
+    if ($invoicegood > 0) {
+        $response["error"] = false;
+        $response["message"] = "payment successfull";
+        $response["invoice"] = $invoicegood;
+        $response["paymentbody"] = $charge;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after payment  result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["invoice"] = $invoicegood;
+        $response["message"] = "Failed to email payment receipt. Please try again";
+        $response["err"] = $err;
+        $response["paymentbody"] = $body; 
+        
+        
+        echoRespnse(400 , $response);
+    }
+    
+});
+
+$app->post('/setsession', 'authenticate', function() use ($app) {
+     $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("setsession before insert\n", TRUE ), 3, LOG);
+
+    $csrfstate = (isset($dataJsonDecode->thedata->csrfstate) ? $dataJsonDecode->thedata->csrfstate : "");
+    $inslim = (isset($dataJsonDecode->thedata->slim_session) ? $dataJsonDecode->thedata->slim_session : "");
+
+    error_log( print_R("csrfstate: $csrfstate\n", TRUE ), 3, LOG);
+    error_log( print_R("inslim: $inslim\n", TRUE ), 3, LOG);
+
+    $thisslim = $app->getCookie('slim_session');
+    
+    //check in and this match
+    if ($inslim != $thisslim) {
+        error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $inslim, TRUE), 3, LOG);
+        error_log( print_R( $thisslim, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to match session. Please try again";
+        echoRespnse(400, $response);
+    }
+    
+    $db = new StudentDbHandler();
+    $response = array();
+
+    // updating task
+    $res = $db->setsession($thisslim, 
+                                 $csrfstate
+                                );
+
+    if ($res > 0) {
+        $response["error"] = false;
+        $response["message"] = "stored state successfully";
+        error_log( print_R("State updated\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after state store result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to store state. Please try again";
+        echoRespnse(400, $response);
+    }
+
+    
+
+});
+$app->post('/storeusercred', 'authenticate',  function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("storeusercred before send\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    if (isset($dataJsonDecode->thedata->client)) {
+        $client =  $dataJsonDecode->thedata->client;
+    } else { errorRequiredParams('client'); }
+
+    if (isset($dataJsonDecode->thedata->code)) {
+        $code =  $dataJsonDecode->thedata->code;
+    } else { errorRequiredParams('code'); }
+    
+    if (isset($dataJsonDecode->thedata->csrfstate)) {
+        $csrfstate =  $dataJsonDecode->thedata->csrfstate;
+    } else { errorRequiredParams('csrfstate'); }
+    
+    if (isset($dataJsonDecode->thedata->slim_session)) {
+        $slim_session =  $dataJsonDecode->thedata->slim_session;
+    } else { errorRequiredParams('slim_session'); }
+    
+    if (isset($dataJsonDecode->thedata->grant_type)) {
+        $grant_type =  $dataJsonDecode->thedata->grant_type;
+    } else { errorRequiredParams('grant_type'); }
+
+    $thisslim = $app->getCookie('slim_session');
+    
+    //check in and this match
+    if ($slim_session != $thisslim) {
+        error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $slim_session, TRUE), 3, LOG);
+        error_log( print_R( $thisslim, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to match session. Please try again";
+        echoRespnse(400, $response);
+    }
+
+    $db = new StudentDbHandler();
+    $response = array();
+
+    //check if the request is part of the same user session that started the setup
+    $res = $db->checksession($thisslim, 
+                                 $csrfstate
+                                );
+    if ($res < 1) {
+        //failed to match session
+        error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to match session. Please try again";
+        echoRespnse(400, $response);
+    }    
+    
+    try {
+        \Stripe\Stripe::setApiKey("sk_test_6XRMjHEEa4R1RIBgoRGr48yE");
+        \Stripe\Stripe::setClientId($client);
+
+        $resp = \Stripe\OAuth::token([
+            'grant_type' => $grant_type,
+            'code' => $code,
+        ]);
+        $accountId = $resp->stripe_user_id;
+
+        //save it
+        
+        $response["error"] = false;
+        $response["message"] = "Create connection successfull";
+        $response["accountid"] = $accountId;
+        echoRespnse(201, $response);
+    
+    } catch (\Stripe\Error\OAuth\OAuthBase $e) {
+        error_log( print_R("after storeusercred  result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to store user credentials. Please try again";
+        $response["err"] = $e->getMessage();
+        echoRespnse(400 , $response);
     }
 
 

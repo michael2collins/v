@@ -1,0 +1,6 @@
+curl https://api.stripe.com/v1/charges \
+   -u sk_test_6XRMjHEEa4R1RIBgoRGr48yE: \
+   -d amount=999 \
+   -d currency=usd \
+   -d source=tok_visa \
+   -d receipt_email="jenny.rosen@example.com"
