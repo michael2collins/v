@@ -1,4 +1,65 @@
 <!DOCTYPE html>
+
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <style type="text/css">
+      /*Dropdown Css*/
+
+      .dropdown:hover>.dropdown-menu {
+         display: block;
+      }
+
+      .dropdown-submenu {
+         position: relative;
+      }
+
+      .dropdown-submenu>.dropdown-menu {
+         top: 0;
+         left: 100%;
+         margin-top: -6px;
+         margin-left: 1px;
+         -webkit-border-radius: 0 6px 6px 6px;
+         -moz-border-radius: 0 6px 6px;
+         border-radius: 0 6px 6px 6px;
+      }
+
+      .dropdown-submenu:hover>.dropdown-menu {
+         display: block;
+      }
+
+      .dropdown-submenu>a:after {
+         display: block;
+         content: " ";
+         float: right;
+         width: 0;
+         height: 0;
+         border-color: transparent;
+         border-style: solid;
+         border-width: 5px 0 5px 5px;
+         border-left-color: #ccc;
+         margin-top: 5px;
+         margin-right: -10px;
+      }
+
+      .dropdown-submenu:hover>a:after {
+         border-left-color: #fff;
+      }
+
+      .dropdown-submenu.pull-left {
+         float: none;
+      }
+
+      .dropdown-submenu.pull-left>.dropdown-menu {
+         left: -100%;
+         margin-left: 10px;
+         -webkit-border-radius: 6px 0 6px 6px;
+         -moz-border-radius: 6px 0 6px 6px;
+         border-radius: 6px 0 6px 6px;
+      }
+
+      /*./Dropdown Css*/
+   </style>
+</head>
 <div ng-class="[vm.header.layout_topbar]" class="navbar-header">
    <a id="setting-toggle"><i class="icon-wrench"></i></a>
    <button type="button" data-toggle="offcanvas" class="navbar-toggle">
@@ -14,7 +75,7 @@
 </div>
 <div id="top-menu" class="topbar-main">
    <ul class="nav navbar-top-links" style="margin-left: 130px;">
-<!--      <div class="container"> -->
+      <!--      <div class="container"> -->
       <div class="">
          <ul class="nav navbar-top-links navbar-left">
             <li class="mll mtl dropdown" ng-show="vm.isokf()">
@@ -47,7 +108,9 @@
                      </ul>
                   </li>
                   <li class="dropdown-submenu">
-                     <a class="test" ng-hide="!vm.teststudents.length" tabindex="-1" href="javascript:void(0);"><span class="label label-violet"><i class="fas fa-flag-checkered fa-fw"></i></span><span class="menu-title">{{vm.teststudents.length}} Students ready to test</span>
+                     <a class="test" ng-hide="!vm.teststudents.length" tabindex="-1" href="javascript:void(0);">
+                        <span class="label label-violet"><i class="fas fa-flag-checkered fa-fw"></i></span>
+                        <span class="menu-title">{{vm.teststudents.length}} Students ready to test</span>
                      <span class="caret"></span></a>
                      <ul class="dropdown-menu">
                         <li ng-repeat="stu in vm.teststudents">
@@ -70,8 +133,7 @@
                      <span class="caret"></span></a>
                      <ul class="dropdown-menu">
                         <li ng-repeat="stu in vm.overduestudents.overdue">
-                           <a tabindex="-1" 
-                              href="#/form-layouts-editstudent/id/{{stu.contactid}}">
+                           <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-red">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
@@ -83,7 +145,7 @@
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
                         </a></li>
-                        
+
                      </ul>
                   </li>
                   <li class="dropdown-submenu">
@@ -92,8 +154,7 @@
                      <span class="caret"></span></a>
                      <ul class="dropdown-menu">
                         <li ng-repeat="stu in vm.noshowstudents.noshow">
-                           <a tabindex="-1" 
-                              href="#/form-layouts-editstudent/id/{{stu.contactid}}">
+                           <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-blue">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
@@ -105,7 +166,7 @@
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
                         </a></li>
-                        
+
                      </ul>
                   </li>
                   <li class="dropdown-submenu">
@@ -113,8 +174,7 @@
                      <span class="caret"></span></a>
                      <ul class="dropdown-menu">
                         <li ng-repeat="task in vm.thisTasknamelist">
-                           <a tabindex="-1" 
-                              href="javascript:void(0);">
+                           <a tabindex="-1" href="javascript:void(0);">
                            <span class="label label-orange">
                               <i class="fas fa-pencil-alt fa-fw"></i></span>                           
                            <span class=""> 
@@ -126,7 +186,7 @@
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
                         </a></li>
-                        
+
                      </ul>
                   </li>
                   <li><a tabindex="-1" href="javascript:void(0);">
@@ -135,9 +195,9 @@
                      <span class="text-right">Clear All Alerts</span>
                      </a>
                      <span class="pull-right text-muted small">Last upd. 12min ago</span></li>
-                  </li>
+            </li>
 
-               </ul>
+            </ul>
             </li>
             <li class="mll mtl dropdown" ng-show="vm.isokf()">
                <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
@@ -165,44 +225,44 @@
                </ul>
             </li>
          </ul>
-   <ul class="nav navbar-top-links navbar-right mrxxl">
-      <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="vm.isokf()">
-         <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
+         <ul class="nav navbar-top-links navbar-right mrxxl">
+            <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="vm.isokf()">
+               <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
          <span class="img-responsive img-circle" ng-switch on="vm.userdta.pictureurl">
          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
          <img ng-switch-default   ng-src="{{vm.userdta.pictureurl}}"/>
          </span>
          <span>&nbsp;{{vm.userdta.username}}&nbsp;</span><span class="caret"></span>
          </a>
-         <ul class="dropdown-menu dropdown-user pull-right" aria-labelledby="simple-dropdown">
-            <li>
-               <div class="navbar-content">
-                  <div class="row">
-                     <div class="col-md-7 col-xs-5">
-                        <span>{{vm.userdta.firstname}} {{vm.userdta.lastname}}</span>
-                        <p class="text-muted small">{{vm.userdta.email}}</p>
+               <ul class="dropdown-menu dropdown-user pull-right" aria-labelledby="simple-dropdown">
+                  <li>
+                     <div class="navbar-content">
+                        <div class="row">
+                           <div class="col-md-7 col-xs-5">
+                              <span>{{vm.userdta.firstname}} {{vm.userdta.lastname}}</span>
+                              <p class="text-muted small">{{vm.userdta.email}}</p>
+                           </div>
+                        </div>
                      </div>
-                  </div>
-               </div>
-            </li>
-            <li>
-               <div class="row">
-                  <div class="mtm mlm mbm col-md-12 col-xs-12"><a ng-click="vm.openSettings()" class="btn btn-sm btn-green">Edit Settings</a></div>
-               </div>
-            </li>
-            <li>
-               <div class="navbar-footer">
-                  <div class="navbar-footer-content">
+                  </li>
+                  <li>
                      <div class="row">
-                        <div class="col-md-6 col-xs-6"><a href="#/change-pwd" class="btn btn-green btn-sm">Change Password</a></div>
-                        <div class="col-md-6 col-xs-6"><a href="#/page-lock-screen" class="btn btn-green btn-sm pull-right">Sign Out</a></div>
+                        <div class="mtm mlm mbm col-md-12 col-xs-12"><a ng-click="vm.openSettings()" class="btn btn-sm btn-green">Edit Settings</a></div>
                      </div>
-                  </div>
-               </div>
+                  </li>
+                  <li>
+                     <div class="navbar-footer">
+                        <div class="navbar-footer-content">
+                           <div class="row">
+                              <div class="col-md-6 col-xs-6"><a href="#/change-pwd" class="btn btn-green btn-sm">Change Password</a></div>
+                              <div class="col-md-6 col-xs-6"><a href="#/page-lock-screen" class="btn btn-green btn-sm pull-right">Sign Out</a></div>
+                           </div>
+                        </div>
+                     </div>
+                  </li>
+               </ul>
             </li>
          </ul>
-      </li>
-   </ul>
       </div>
    </ul>
 </div>

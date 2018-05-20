@@ -876,13 +876,28 @@ var studentpick = {};
 
         $(document).ready(function() {
 
+            $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+                // Avoid following the href location when clicking
+                event.preventDefault(); 
+                // Avoid having the menu to close when clicking
+                event.stopPropagation(); 
+                // Re-add .open to parent sub-menu item
+                $(this).parent().siblings().removeClass('open');
+                $(this).parent().toggleClass('open');
+            });
+/*
             $('.dropdown-menu a.test').on('click', function(event) {
     			event.preventDefault(); 
     			event.stopPropagation(); 
     			$(this).parent().siblings().removeClass('open');
     			$(this).parent().toggleClass('open');
     		});
-
+            $('.dropdown-submenu a.test').on('click', function(event) {
+                $(this).next('ul').toggle();
+    			event.preventDefault(); 
+    			event.stopPropagation(); 
+    		});
+*/
             $('#external-events div.external-event').each(function() {
 
                 CalUtil.EventDrag($(this));
