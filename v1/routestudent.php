@@ -2164,19 +2164,28 @@ $app->delete('/notification','authenticate', function() use ($app) {
 $app->post('/paid',   function() use($app, $ipn){
     error_log( print_R("paid entered:\n ", TRUE), 3, LOG);
 
+//only setup for natick at present
+    $school='Natick';
+    
+    try{
 
-
-//use PaypalIPN;
-
-
+    $ipn = new PaypalIPN();    
+    
 // Use the sandbox endpoint during testing.
-//    $ipn->useSandbox();
-    error_log( print_R("use sand:\n", TRUE), 3, LOG);
-    $ipn->usePHPCerts();
-    error_log( print_R("use php certs:\n", TRUE), 3, LOG);
+    $ipn->useSandbox();
+    $ipnurl = $ipn->getPaypalUri();
+    error_log( print_R("use sand: $ipnurl\n", TRUE), 3, LOG);
+    
+//    $ipn->usePHPCerts();
+//    error_log( print_R("use php certs:\n", TRUE), 3, LOG);
+
+    $paymentprocessor = 'paypal';
 
     $verified = $ipn->verifyIPN();
+//testing
+//    $verified = true;
     error_log( print_R("after verify:\n $verified\n", TRUE), 3, LOG);
+
 
     /*
      * Process IPN
@@ -2234,8 +2243,9 @@ if ($verified) {
     isset(                       $result['receipt_id']) ? $result['receipt_id'] : "",
     isset(                       $result['payment_gross']) ? $result['payment_gross'] : "",
     isset(                       $result['ipn_track_id']) ? $result['ipn_track_id'] : "",
-    isset(                       $result['custom']) ? $result['custom'] : ""
-            
+    isset(                       $result['custom']) ? $result['custom'] : "",
+            $paymentprocessor,
+            $school
                                     );
     
             error_log( print_R("Payment created: $paid\n", TRUE ), 3, LOG);
@@ -2312,6 +2322,12 @@ if ($verified) {
 // else {
     //email about the problem
 //}
+
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+        error_log( print_R("paypal paid exception\n ", TRUE), 3, LOG);
+        error_log( print_R($e, TRUE), 3, LOG);
+    }    
      
 // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
 header("HTTP/1.1 200 OK");
@@ -2343,6 +2359,7 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
     $payerName      = (isset($dataJsonDecode->thedata->payername) ? $dataJsonDecode->thedata->payername : "NULL");
     $status         = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "NULL");
     $mailoption     = (isset($dataJsonDecode->thedata->mailoption) ? $dataJsonDecode->thedata->mailoption : "NULL");
+    $payfor         = (isset($dataJsonDecode->thedata->payfor) ? $dataJsonDecode->thedata->payfor : "NULL");
 
     error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
 
@@ -2385,13 +2402,13 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
 
     // creating invoices
     $return = $db->createinvoice(
-        $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status
+        $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status, $payfor
                                 );
 
     if ($return > 0) {
         error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
         if ($mailoption == "Email") {
-            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
+            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
         } else {
             error_log( print_R("invoice but no email option\n", TRUE ), 3, LOG);
         }       
@@ -2455,6 +2472,7 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
     $payerName      = (isset($dataJsonDecode->thedata->payername) ? $dataJsonDecode->thedata->payername : "NULL");
     $status         = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "NULL");
     $invoice        = (isset($dataJsonDecode->thedata->invoice) ? $dataJsonDecode->thedata->invoice : "NULL");
+    $payfor         = (isset($dataJsonDecode->thedata->payfor) ? $dataJsonDecode->thedata->payfor : "NULL");
 
     error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
 
@@ -2475,7 +2493,7 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
         }
     }
 
-    genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
+    genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
 
     //as long as one worked, return success
     if ($invoicegood > 0) {
@@ -2607,11 +2625,14 @@ $app->put('/invoice','authenticate', function() use ($app) {
                     $invoice->thedata->invdate : "");
     $status     = (isset($invoice->thedata->status)     ? 
                     $invoice->thedata->status : "");
+    $payfor     = (isset($invoice->thedata->payfor)     ? 
+                    $invoice->thedata->payfor : "");
 
     error_log( print_R("id: $id\n", TRUE ), 3, LOG);
     error_log( print_R("amt: $amt\n", TRUE ), 3, LOG);
     error_log( print_R("invdate: $invdate\n", TRUE ), 3, LOG);
     error_log( print_R("status: $status\n", TRUE ), 3, LOG);
+    error_log( print_R("payfor: $payfor\n", TRUE ), 3, LOG);
 
 
     $invoicegood=0;
@@ -2622,7 +2643,7 @@ $app->put('/invoice','authenticate', function() use ($app) {
 
     // creating testings
     $invoice = $db->updateInvoice(
-        $id, $amt, $invdate, $status
+        $id, $amt, $invdate, $status, $payfor
                                 );
 
     if ($invoice > 0) {
@@ -2861,7 +2882,7 @@ $message = "
             emailnotify('villaris.us@gmail.com', $subject, $message);
             error_log( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
 */            
-            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to);
+            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,'lessons');
             
             $invoicegood += 1;
         } else if ($invoice == RECORD_ALREADY_EXISTED) {
@@ -3060,6 +3081,7 @@ $app->get('/calcinvoice', 'authenticate', function() use ($app) {
             $tmp["schoolReplyEmail"]    =  (empty($slist["schoolReplyEmail"]) ? "NULL" : $slist["schoolReplyEmail"]);
             $tmp["schoolReplySignature"] =  (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
             $tmp["overduecnt"]          = (empty($slist["overduecnt"]) ? 0 : $slist["overduecnt"]);
+            $tmp["payfor"]                = 'lessons';
 
    //     error_log( print_R( $tmp, TRUE), 3, LOG);
 
@@ -3206,9 +3228,22 @@ $app->get('/payments', 'authenticate', function() use ($app) {
 
 });
 
+$app->get('/stripepub', 'authenticate', function() use ($app) {
+
+    error_log( print_R("stripepub entered:" . PUBAPIKEY . "\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $response["stripepub"] = PUBAPIKEY;
+
+    echoRespnse(200, $response);
+    
+});
+
+
 $app->post('/paystripe', 'authenticate',  function() use ($app) {
 
     $response = array();
+    global $school;
 
     // reading post params
         $data               = file_get_contents("php://input");
@@ -3221,29 +3256,114 @@ $app->post('/paystripe', 'authenticate',  function() use ($app) {
     if (isset($dataJsonDecode->thedata->id)) {
         $token =  $dataJsonDecode->thedata->id;
     } else { errorRequiredParams('id'); }
+    if (isset($dataJsonDecode->thedata->amt)) {
+        $amt =  $dataJsonDecode->thedata->amt;
+    } else { errorRequiredParams('amt'); }
+    if (isset($dataJsonDecode->thedata->desc)) {
+        $desc =  $dataJsonDecode->thedata->desc;
+    } else { errorRequiredParams('desc'); }
+    if (isset($dataJsonDecode->thedata->invoice)) {
+        $invoice =  $dataJsonDecode->thedata->invoice;
+    } else { errorRequiredParams('invoice'); }
+    
+    if (isset($dataJsonDecode->thedata->address_city)) {
+        $address_city =  $dataJsonDecode->thedata->address_city;
+    } else { errorRequiredParams('address_city'); }
+    if (isset($dataJsonDecode->thedata->address_state)) {
+        $address_state =  $dataJsonDecode->thedata->address_state;
+    } else { errorRequiredParams('address_state'); }
+    if (isset($dataJsonDecode->thedata->address_zip)) {
+        $address_zip =  $dataJsonDecode->thedata->address_zip;
+    } else { errorRequiredParams('address_zip'); }
+    if (isset($dataJsonDecode->thedata->address_line1)) {
+        $address_line1 =  $dataJsonDecode->thedata->address_line1;
+    } else { errorRequiredParams('address_line1'); }
+    if (isset($dataJsonDecode->thedata->name)) {
+        $name =  $dataJsonDecode->thedata->name;
+    } else { errorRequiredParams('name'); }
 
 $invoicegood = 0;
 $err=[];
 $body =[];
+$excep=[];
+
+    error_log( print_R("paystripe before create amount => $amt currency => usd description => $desc source => $token statement_descriptor => $school metadata => [invoice => $invoice] \n", TRUE ), 3, LOG);
+
+    //get stripe account for school
+    $db = new StudentDbHandler();
+    $CONNECTED_STRIPE_ACCOUNT_ID = "invalid";
+
+    $result = $db->getStripeUser();
+    if ($result == NULL) {
+        error_log( print_R("after payment getStripeUser  result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to pay due to bad Stripe User setup. Please try again";
+
+        echoRespnse(400 , $response);
+        $app->stop();
+
+    }
+    
+    $CONNECTED_STRIPE_ACCOUNT_ID  =  $result['user_id'];
+
+    error_log( print_R("CONNECTED_STRIPE_ACCOUNT_ID: $CONNECTED_STRIPE_ACCOUNT_ID\n" , TRUE ), 3, LOG);
+//debug, remove later
+//    error_log( print_R("sec:" .  SECAPIKEY . "\n" , TRUE ), 3, LOG);
+
 try {
   // Use Stripe's library to make requests...
-\Stripe\Stripe::setApiKey("sk_test_6XRMjHEEa4R1RIBgoRGr48yE");
+\Stripe\Stripe::setApiKey(SECAPIKEY); //the platform secret key
 
 // Token is created using Checkout or Elements!
 // Get the payment token ID submitted by the form:
 //22 char for statement_descriptor
 
-$charge = \Stripe\Charge::create([
-    'amount' => 999,
-    'currency' => 'usd',
-    'description' => 'Example charge',
-    'source' => $token,
-    'statement_descriptor' => 'Villaris Natick',
-    'metadata' => ['invoice' => 6735],
-]);
+/* if we decide to swipe card, which comes with a much higher standard for PCI compliance
+$tok = \Stripe\Token::create(array(
+  "card" => array(
+    "number" => "4242424242424242",
+    "exp_month" => 5,
+    "exp_year" => 2019,
+    "cvc" => "314"
+  )
+));
+pass $tok in place of $token below
+*/
+
+
+$charge = \Stripe\Charge::create(array(
+    "amount" => $amt * 100,
+    "currency" => 'usd',
+    "description" => $desc,
+    "source" => $token,
+    "statement_descriptor" => $school . ' ' . $desc,
+    "metadata" => ["invoice" => $invoice, "school" => $school],
+    "receipt_email" => 'michael.collins.natick@gmail.com',
+    ), array("stripe_account" => $CONNECTED_STRIPE_ACCOUNT_ID)
+);
+
 
     $invoicegood=1;
-    
+    error_log( print_R("response:\n" , TRUE ), 3, LOG);
+    error_log( print_R($charge, TRUE ), 3, LOG);
+    error_log( print_R($charge['paid'] . PHP_EOL, TRUE ), 3, LOG);
+//can use the charge id to re-request the details for it
+    error_log( print_R($charge['id'] . PHP_EOL, TRUE ), 3, LOG);
+    error_log( print_R($charge['status'] . PHP_EOL, TRUE ), 3, LOG);
+    error_log( print_R($charge['source']['address_zip_check'] . PHP_EOL, TRUE ), 3, LOG);
+    error_log( print_R($charge['source']['cvc_check'] . PHP_EOL, TRUE ), 3, LOG);
+    error_log( print_R($charge['metadata']['invoice'] . PHP_EOL, TRUE ), 3, LOG);
+
+    stripepaid(
+        $charge,
+        $name,
+        $address_line1,
+        $address_city,
+        $address_zip,
+        $address_state,
+        $school
+        );
+
 } catch(\Stripe\Error\Card $e) {
   // Since it's a decline, \Stripe\Error\Card will be caught
   $body = $e->getJsonBody();
@@ -3253,28 +3373,34 @@ $charge = \Stripe\Charge::create([
   print('Type is:' . $err['type'] . "\n");
   print('Code is:' . $err['code'] . "\n");
   // param is '' in this case
-  print('Param is:' . $err['param'] . "\n");
-  print('Message is:' . $err['message'] . "\n");
+//  print('Param is:' . $err['param'] . "\n");
+//  print('Message is:' . $err['message'] . "\n");
   $invoicegood=-1;
 } catch (\Stripe\Error\RateLimit $e) {
   // Too many requests made to the API too quickly
+  $excep = $e;
   $invoicegood=-2;
 } catch (\Stripe\Error\InvalidRequest $e) {
   // Invalid parameters were supplied to Stripe's API
+  $excep = $e;
   $invoicegood=-3;
 } catch (\Stripe\Error\Authentication $e) {
   // Authentication with Stripe's API failed
   // (maybe you changed API keys recently)
+  $excep = $e;
   $invoicegood=-4;
 } catch (\Stripe\Error\ApiConnection $e) {
   // Network communication with Stripe failed
+  $excep = $e;
   $invoicegood=-5;
 } catch (\Stripe\Error\Base $e) {
   // Display a very generic error to the user, and maybe send
   // yourself an email
+  $excep = $e;
   $invoicegood=-6;
 } catch (Exception $e) {
   // Something else happened, completely unrelated to Stripe
+  $excep = $e;
   $invoicegood=-7;
 }
     //as long as one worked, return success
@@ -3288,8 +3414,9 @@ $charge = \Stripe\Charge::create([
         error_log( print_R("after payment  result bad\n", TRUE), 3, LOG);
         $response["error"] = true;
         $response["invoice"] = $invoicegood;
-        $response["message"] = "Failed to email payment receipt. Please try again";
+        $response["message"] = "Failed to pay. Please try again";
         $response["err"] = $err;
+        $response["exception"] = $excep;
         $response["paymentbody"] = $body; 
         
         
@@ -3308,28 +3435,17 @@ $app->post('/setsession', 'authenticate', function() use ($app) {
     error_log( print_R("setsession before insert\n", TRUE ), 3, LOG);
 
     $csrfstate = (isset($dataJsonDecode->thedata->csrfstate) ? $dataJsonDecode->thedata->csrfstate : "");
-    $inslim = (isset($dataJsonDecode->thedata->slim_session) ? $dataJsonDecode->thedata->slim_session : "");
+    $auth_session = (isset($dataJsonDecode->thedata->auth_session) ? $dataJsonDecode->thedata->auth_session : "");
 
     error_log( print_R("csrfstate: $csrfstate\n", TRUE ), 3, LOG);
-    error_log( print_R("inslim: $inslim\n", TRUE ), 3, LOG);
+    error_log( print_R("auth_session: $auth_session\n", TRUE ), 3, LOG);
 
-    $thisslim = $app->getCookie('slim_session');
-    
-    //check in and this match
-    if ($inslim != $thisslim) {
-        error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $inslim, TRUE), 3, LOG);
-        error_log( print_R( $thisslim, TRUE), 3, LOG);
-        $response["error"] = true;
-        $response["message"] = "Failed to match session. Please try again";
-        echoRespnse(400, $response);
-    }
-    
+
     $db = new StudentDbHandler();
     $response = array();
 
     // updating task
-    $res = $db->setsession($thisslim, 
+    $res = $db->setsession($auth_session, 
                                  $csrfstate
                                 );
 
@@ -3349,52 +3465,31 @@ $app->post('/setsession', 'authenticate', function() use ($app) {
     
 
 });
-$app->post('/storeusercred', 'authenticate',  function() use ($app) {
+$app->get('/storeusercred',  function() use ($app) {
+    $allGetVars = $app->request->get();
+    error_log( print_R("storeusercred entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
 
-    $response = array();
+    $db = new StudentDbHandler();
+    $dbu = new DbHandler();
 
-    // reading post params
-        $data               = file_get_contents("php://input");
-        $dataJsonDecode     = json_decode($data);
-
-    error_log( print_R("storeusercred before send\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
-
-    if (isset($dataJsonDecode->thedata->client)) {
-        $client =  $dataJsonDecode->thedata->client;
-    } else { errorRequiredParams('client'); }
-
-    if (isset($dataJsonDecode->thedata->code)) {
-        $code =  $dataJsonDecode->thedata->code;
+    $client = CLIENT_ID;
+    $redirecturi = REDIRECTURL;
+    
+    if(array_key_exists('code', $allGetVars)){
+        $code = $allGetVars['code'];
     } else { errorRequiredParams('code'); }
     
-    if (isset($dataJsonDecode->thedata->csrfstate)) {
-        $csrfstate =  $dataJsonDecode->thedata->csrfstate;
-    } else { errorRequiredParams('csrfstate'); }
+    if(array_key_exists('state', $allGetVars)){
+        $csrfstate = $allGetVars['state'];
+    } else { errorRequiredParams('state'); }
     
-    if (isset($dataJsonDecode->thedata->slim_session)) {
-        $slim_session =  $dataJsonDecode->thedata->slim_session;
-    } else { errorRequiredParams('slim_session'); }
-    
-    if (isset($dataJsonDecode->thedata->grant_type)) {
-        $grant_type =  $dataJsonDecode->thedata->grant_type;
-    } else { errorRequiredParams('grant_type'); }
+    if(array_key_exists('scope', $allGetVars)){
+        $scope = $allGetVars['scope'];
+    } else { errorRequiredParams('scope'); }
 
     $thisslim = $app->getCookie('slim_session');
     
-    //check in and this match
-    if ($slim_session != $thisslim) {
-        error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $slim_session, TRUE), 3, LOG);
-        error_log( print_R( $thisslim, TRUE), 3, LOG);
-        $response["error"] = true;
-        $response["message"] = "Failed to match session. Please try again";
-        echoRespnse(400, $response);
-    }
-
-    $db = new StudentDbHandler();
-    $response = array();
-
     //check if the request is part of the same user session that started the setup
     $res = $db->checksession($thisslim, 
                                  $csrfstate
@@ -3404,37 +3499,363 @@ $app->post('/storeusercred', 'authenticate',  function() use ($app) {
         error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
         error_log( print_R( $res, TRUE), 3, LOG);
         $response["error"] = true;
-        $response["message"] = "Failed to match session. Please try again";
-        echoRespnse(400, $response);
+        $response["message"] = "Failed to match session $thisslim. Please try again";
+        echoRedirect(400, $response, '/v/#/stripe-onboard');
+        $app->stop();
     }    
     
+    
+    $response = array();
+
+    
     try {
-        \Stripe\Stripe::setApiKey("sk_test_6XRMjHEEa4R1RIBgoRGr48yE");
-        \Stripe\Stripe::setClientId($client);
+        \Stripe\Stripe::setApiKey(SECAPIKEY);
+//        \Stripe\Stripe::setClientId($client);
 
         $resp = \Stripe\OAuth::token([
-            'grant_type' => $grant_type,
-            'code' => $code,
+            'grant_type' => 'authorization_code',
+            'code' => $code
         ]);
-        $accountId = $resp->stripe_user_id;
+        error_log( print_R("after auth result resp\n", TRUE), 3, LOG);
+        error_log( print_R( $resp, TRUE), 3, LOG);
+
+        $stripe_user_id = $resp->stripe_user_id;
+        $access_token = $resp->access_token;
+        $livemode = $resp->livemode;
+        $refresh_token = $resp->refresh_token;
+        $token_type = $resp->token_type;
+        $stripe_publishable_key = $resp->stripe_publishable_key;
+        $scope = $resp->scope;
+
+        $resp3 = \Stripe\Account::retrieve($stripe_user_id);
+        error_log( print_R("after acct retrieve result resp\n", TRUE), 3, LOG);
+        error_log( print_R( $resp3, TRUE), 3, LOG);
+        $stripe_useremail = $resp3->email;
+
+        error_log( print_R("after acct parse result resp\n", TRUE), 3, LOG);
+        error_log( print_R( $stripe_useremail, TRUE), 3, LOG);
+
+        $user = $dbu->getUserByEmail($stripe_useremail);
 
         //save it
+        $res2 = $db->createAuthcode(
+            $stripe_user_id,
+            $access_token,
+            $refresh_token,
+            $stripe_publishable_key,
+            $scope,
+            $client,
+            $code,
+            $redirecturi,
+            $stripe_useremail,
+            $user['school']
+                                );
+        error_log( print_R("after slim create auth result \n", TRUE), 3, LOG);
+        error_log( print_R( $res2, TRUE), 3, LOG);
+                                
+        if ($res2 !== 1) {
+            //failed to create auth
+            error_log( print_R("after slim create auth result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $res2, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create auth $code. Please try again";
+            //echoRespnse(400, $response);
+            echoRedirect(400, $response, url() . '/v/#/stripe-onboard');
+            $app->stop();
+        }    
         
-        $response["error"] = false;
-        $response["message"] = "Create connection successfull";
-        $response["accountid"] = $accountId;
-        echoRespnse(201, $response);
+        
+        
+        echoRedirect(201, $response, url() . '/v/#/stripe-onboard');
     
     } catch (\Stripe\Error\OAuth\OAuthBase $e) {
         error_log( print_R("after storeusercred  result bad\n", TRUE), 3, LOG);
         $response["error"] = true;
         $response["message"] = "Failed to store user credentials. Please try again";
         $response["err"] = $e->getMessage();
-        echoRespnse(400 , $response);
+        echoRedirect(400, $response, url() . '/v/#/stripe-onboard');
+        $app->stop();
     }
 
 
 });
+
+$app->get('/stripe', 'authenticate', function() use ($app) {
+
+    error_log( print_R("stripe entered:\n ", TRUE), 3, LOG);
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // creating invoices based on date and who is ready
+    $result = $db->getStripe(
+                                );
+
+    $response["error"] = false;
+    $response["StripeList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result["slist"]->fetch_assoc()) {
+
+        if (count($slist) > 0) {
+            $tmp = array();
+            $tmp["school"]  =  (empty($slist["school"]) ? "NULL" : $slist["school"]);
+            $tmp["user_id"]  =  (empty($slist["user_id"]) ? "NULL" : $slist["user_id"]);
+            $tmp["user_email"]  =  (empty($slist["user_email"]) ? "NULL" : $slist["user_email"]);
+
+            array_push($response["StripeList"], $tmp);
+        }
+    }
+
+    if ($result["success"] ) {
+        $response["error"] = false;
+        $response["message"] = "Found stripe successfully";
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after stripe result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["extra"] = $result;
+        $response["message"] = "Failed to get stripe details. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+$app->get('/revokestripe', 'authenticate',  function() use ($app) {
+    error_log( print_R("revokestripe entered:\n ", TRUE), 3, LOG);
+
+    $db = new StudentDbHandler();
+
+    //$client = CLIENT_ID; this is platform
+    $redirecturi = REDIRECTURL;
+    
+    $result = $db->getStripeUser();
+
+    $response["error"] = false;
+    $response["StripeList"] = array();
+
+    $tmp = array();
+    $tmp["school"]  =  (empty($result["school"]) ? "NULL" : $result["school"]);
+    $tmp["user_id"]  =  (empty($result["user_id"]) ? "NULL" : $result["user_id"]);
+    $tmp["client_id"]  =  (empty($result["client_id"]) ? "NULL" : $result["client_id"]);
+    $tmp["user_email"]  =  (empty($result["user_email"]) ? "NULL" : $result["user_email"]);
+    $stripe_user_id = $tmp["user_id"];
+    array_push($response["StripeList"], $tmp);
+
+    try {
+        \Stripe\Stripe::setApiKey(SECAPIKEY);
+    //    \Stripe\Stripe::setClientId($client);
+
+        \Stripe\OAuth::deauthorize([
+            'client_id' => $tmp["client_id"],
+            'stripe_user_id' => $stripe_user_id,
+        ]);
+
+        //save it
+        $res2 = $db->removeAuthcode(
+                                );
+        error_log( print_R("after slim remove auth result \n", TRUE), 3, LOG);
+        error_log( print_R( $res2, TRUE), 3, LOG);
+                                
+        if ($res2 !== 1) {
+            //failed to remove auth
+            error_log( print_R("after slim remove auth result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $res2, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove auth. Please try again";
+            //echoRespnse(400, $response);
+            echoRedirect(400, $response, url() . '/v/#/stripe-onboard');
+            $app->stop();
+        }    
+        
+        
+        
+        echoRedirect(201, $response, url() . '/v/#/stripe-onboard');
+    
+    } catch (\Stripe\Error\OAuth\OAuthBase $e) {
+        error_log( print_R("after remove auth  result bad\n", TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to remove user credentials. Please try again";
+        $response["err"] = $e->getMessage();
+        echoRedirect(400, $response, url() . '/v/#/stripe-onboard');
+        $app->stop();
+    }
+
+
+});
+
+function stripepaid(
+    $inbound,
+        $inname,
+        $address_line1,
+        $address_city,
+        $address_zip,
+        $address_state,
+        $school
+
+    ){
+    error_log( print_R("stripepaid entered:\n ", TRUE), 3, LOG);
+//    error_log( print_R($inbound, TRUE), 3, LOG);
+
+    $paymentprocessor = 'stripe';
+    $result = array();
+    global $PP;
+    global $tz;
+    try {
+        $dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
+        $dt->setTimestamp(substr($inbound['created'], 0, 10));
+        
+        $dd = $dt->format($PP);    
+        //$result['payment_date'] = date("Y-m-d H:i:s", substr($inbound['created'], 0, 10)); //convert from epoch
+        $result['payment_date'] = $dd;
+ 
+    $result['mc_gross_1'] = $inbound['amount'] / 100;
+    $result['mc_currency'] = $inbound['currency'];
+    $result['mc_gross_1'] = $inbound['amount'] / 100;
+    $result['payment_gross'] = $inbound['amount'] / 100;
+
+    $words = explode(' ', $inname);
+    $last_word = array_pop($words);
+    $first_chunk = implode(' ', $words);    
+
+    $result['payment_type'] = $inbound['source']['object'];
+    $result['item_name1'] = $inbound['description'];
+    $result['quantity1'] = 1;
+    $result['num_cart_items'] = 1;
+    $result['txn_id'] = $inbound['id'];
+    $result['custom'] = $inbound['metadata']['invoice'];
+    $result['payer_email'] = $inbound['receipt_email'];
+    $result['receipt_id'] = $inbound['receipt_number'];
+    $result['first_name'] =  $first_chunk;
+    $result['last_name'] =  $last_word;
+    $result['address_zip'] = $address_zip;     
+    $result['address_state'] = $address_state;          
+    $result['address_city'] =  $address_city;         
+    $result['address_street'] = $address_line1;
+    $sstatus = $inbound['status'];
+    $paidst = $inbound['paid'] == 1 ? "paid" : "notpaid";
+    $result['payment_status'] = $sstatus . ':' . $paidst;
+    error_log( print_R("before createPayment:\n ", TRUE), 3, LOG);
+    error_log( print_R($result, TRUE), 3, LOG);
+
+
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // creating payment
+        $paid = $db->createPayment( 
+    isset(                      $result['payment_type']) ? $result['payment_type'] : "" ,
+      isset(                    $result['payment_date']) ? $result['payment_date'] : "",          
+    isset(                      $result['payer_status']) ? $result['payer_status'] : "",          
+    isset(                      $result['first_name']) ? $result['first_name'] : "",          
+    isset(                      $result['last_name']) ? $result['last_name'] : "",          
+    isset(                      $result['payer_email']) ? $result['payer_email'] : "",          
+    isset(                      $result['address_name']) ? $result['address_name'] : "",          
+    isset(                      $result['address_country']) ? $result['address_country'] : "",          
+    isset(                      $result['address_country_code']) ? $result['address_country_code'] : "",          
+    isset(                      $result['address_zip']) ? $result['address_zip'] : "",          
+    isset(                      $result['address_state']) ? $result['address_state'] : "",          
+    isset(                      $result['address_city']) ?  $result['address_city']: "",          
+    isset(                      $result['address_street']) ? $result['address_street'] : "",          
+    isset(                       $result['payment_status']) ? $result['payment_status'] : "",          
+    isset(                      $result['mc_currency']) ? $result['mc_currency'] : "",          
+    isset(                      $result['mc_gross_1']) ?  $result['mc_gross_1']: "",          
+    isset(                      $result['item_name1']) ?  $result['item_name1']: "",          
+    isset(                      $result['txn_id']) ? $result['txn_id']  : "",          
+    isset(                      $result['reason_code']) ? $result['reason_code']: "",          
+    isset(                      $result['parent_txn_id']) ? $result['parent_txn_id'] : "",          
+    isset(                       $result['num_cart_items']) ? $result['num_cart_items'] : "",
+    isset(                       $result['quantity1']) ?   $result['quantity1'] : "",
+    isset(                       $result['quantity2']) ?  $result['quantity2'] : "",
+    isset(                       $result['quantity3']) ?  $result['quantity3'] : "",
+    isset(                       $result['quantity4']) ?  $result['quantity4'] : "",
+    isset(                       $result['quantity5']) ?  $result['quantity5'] : "",
+    isset(                      $result['item_name2']) ? $result['item_name2'] : "",          
+    isset(                      $result['item_name3']) ? $result['item_name3'] : "",          
+    isset(                      $result['item_name4']) ? $result['item_name4']: "",          
+    isset(                      $result['item_name5']) ? $result['item_name5']: "",          
+    isset(                      $result['mc_gross_2']) ? $result['mc_gross_2'] : "",          
+    isset(                      $result['mc_gross_3']) ? $result['mc_gross_3']: "",          
+    isset(                      $result['mc_gross_4']) ? $result['mc_gross_4'] : "",          
+    isset(                      $result['mc_gross_5']) ? $result['mc_gross_5'] : "",          
+    isset(                       $result['receipt_id']) ? $result['receipt_id'] : "",
+    isset(                       $result['payment_gross']) ? $result['payment_gross'] : "",
+    isset(                       $result['ipn_track_id']) ? $result['ipn_track_id'] : "",
+    isset(                       $result['custom']) ? $result['custom'] : "",
+            $paymentprocessor,
+            $school
+                                    );
+    
+            error_log( print_R("Stripe Payment created: $paid\n", TRUE ), 3, LOG);
+            $xn = $result['txn_id'];
+
+            $result = $db->getPayment($xn);
+    //todo: get email for school with getPayment
+    
+            $row_cnt = $result->num_rows;
+
+            if ($row_cnt > 0) {
+
+                while ($slist = $result->fetch_assoc()) {
+                    $tmp = array();
+                    if (count($slist) > 0) {
+
+                        $tmp["FirstName"] = (empty($slist["first_name"]) ? "NULL" : $slist["first_name"]);
+                        $tmp["Email"] = (empty($slist["payer_email"]) ? "NULL" : $slist["payer_email"]);
+                        $tmp["Payment_gross"] = (empty($slist["payment_gross"]) ? "NULL" : $slist["payment_gross"]);
+                        $tmp["invoice"] = (empty($slist["custom"]) ? "NULL" : $slist["custom"]);
+                    } else {
+                        $tmp["FirstName"] = "NULL";
+                        $tmp["Email"] = "NULL";
+                        $tmp["Payment_gross"] = "NULL";
+                        $tmp["invoice"] = "NULL";
+                        
+                    }
+    
+                    $message = "
+                    <html>
+                    <head>
+                    <title>Invoice payment</title>
+                    </head>
+                    <body>
+                    <p>You have successfully paid for invoice  " . $tmp["invoice"] . ".  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
+                    <p>Email: " . $tmp["Email"] . "</p>
+                    <table>
+                    <tr>
+                    <th>Name</th>
+                    <th>Payment Total</th>
+                    </tr>
+                    <tr>
+                    <td>" . $tmp["FirstName"] . "</td>
+                    <td>" . $tmp["Payment_gross"] . "</td>
+                    </tr>
+                    </table>
+                    </body>
+                    </html>
+                    ";
+                    
+                    $subject = 'Invoice ' . $tmp["invoice"] . ' payment for ' . 
+                    $tmp["FirstName"] . ' ' . ' paid ';
+
+                    $to = $tmp["Email"];
+                emailnotify($to , $subject, $message);
+            //    emailnotify('villaris.us@gmail.com', $subject, $message);
+                error_log( print_R("email to send: $to, $subject, $message\n", TRUE ), 3, LOG);
+    
+                }
+                
+                
+            }
+
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+        error_log( print_R("stripepaid dd:\n ", TRUE), 3, LOG);
+        error_log( print_R($e, TRUE), 3, LOG);
+    }    
+
+
+};
 
 
 function createStudentHistory($contactid,$histtype,$histdate) {
@@ -3464,9 +3885,9 @@ function createStudentHistory($contactid,$histtype,$histdate) {
     
 }
 
-function genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to) {
+function genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor) {
     $app = \Slim\Slim::getInstance();
-    $app->log->info( print_R("genInvoiceEmail entered: $invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to", TRUE));
+    $app->log->info( print_R("genInvoiceEmail entered: $invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor", TRUE));
 
 $message = "
 <html>
@@ -3477,6 +3898,7 @@ $message = "
 <p>Dear: " . $payerName . "</p>
 <p>You have an invoice for payment.  If you have any questions please contact mailto:" . $schEmail .  "</p>
 <p>Email: " . $to . "</p>
+<p>For: " . $payfor . "</p>
 <p>Amount: $ " . $invoiceAmt . "</p>
 <p>Date: " . $invoiceDate . "</p>
 <p>You will receive an email after you have paid.</p>

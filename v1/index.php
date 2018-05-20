@@ -20,10 +20,11 @@ require_once '../include/DBCalendar.php';
 require_once '../include/DBTesting.php';
 require_once '../include/DBStats.php';
 require_once '../include/PassHash.php';
-require_once '../include/PaypalIPN.php';
+require '../include/PaypalIPN.php';
 require '.././libs/Slim/Slim.php';
 
 require '.././vendor/autoload.php';
+
 $ipn = new PaypalIPN();
 
 \Slim\Slim::registerAutoloader();
@@ -78,8 +79,12 @@ $app->add(new \Slim\Middleware\SessionCookie(array(
 $user_id = NULL;
 global $rolelist;
 $rolelist = array("admin","operator");
-
-
+global $tz;
+global $ISO;
+global $PP;
+$tz = 'America/New_York';
+$ISO = 'Y-m-d\TH:i:s.uO';
+$PP = 'G:i:s M m, Y T';
 
 require_once dirname(__FILE__) . '/auth.php';
 require_once dirname(__FILE__) . '/routestudent.php';

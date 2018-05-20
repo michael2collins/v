@@ -1,4 +1,4 @@
-(function(window, angular, $, _, tinymce) {
+(function(window, angular, $, _, tinymce,Stripe) {
     'use strict';
     angular
         .module('ng-admin', [
@@ -39,7 +39,7 @@
             'ngAnimate',
             'ui.tinymce',
             'ngmodel.format'
-//            'angularPayments'
+            //            'angularPayments'
         ])
 
         // allow DI for use in controllers, unit tests for lodash
@@ -119,45 +119,40 @@
                 positionY: 'bottom'
             });
         })
-/*	.config(function() {
-	    //test key
-		window.Stripe.setPublishableKey('pk_test_E3nCcNrj87kIuKzCcA8MNkgv');
-		//mlc prod pk_live_a9QRAQ6YXuntaJ7ScCLGxEGD
-	})
-*/	
+
         .config(['cfpLoadingBarProvider', function(cfpLoadingBarProvider) {
             cfpLoadingBarProvider.parentSelector = '#loading-bar-container';
             cfpLoadingBarProvider.includeSpinner = false;
             cfpLoadingBarProvider.includeBar = true;
             cfpLoadingBarProvider.latencyThreshold = 100;
         }])
-        
+
         .config(["modelFormatConfig",
-                function(modelFormatConfig) {
-                    modelFormatConfig["number"] = {
-                        "formatter": function(args) {
-                            var modelValue = args.$modelValue,
-                                filter = args.$filter;
-                            return filter("number")(modelValue);
-                        },
-                        "parser": function(args) {
-                            var val = parseInt(args.$viewValue.replace(/[^0-9\-]/g, ''), 10);
-                            return isNaN(val) ? undefined : val;
-                        },
-                        "isEmpty": function(value) {
-                            return !value.$modelValue;
-                        },
-                        "keyDown": function(args) {
-                            var event = args.$event;
-                            if (!(global.keyHelper.smallKeyBoard(event) || global.keyHelper.numberKeyBoard(event) || global.keyHelper.functionKeyBoard(event) || minus(event))) {
-                                event.stopPropagation();
-                                event.preventDefault();
-                            }
+            function(modelFormatConfig) {
+                modelFormatConfig["number"] = {
+                    "formatter": function(args) {
+                        var modelValue = args.$modelValue,
+                            filter = args.$filter;
+                        return filter("number")(modelValue);
+                    },
+                    "parser": function(args) {
+                        var val = parseInt(args.$viewValue.replace(/[^0-9\-]/g, ''), 10);
+                        return isNaN(val) ? undefined : val;
+                    },
+                    "isEmpty": function(value) {
+                        return !value.$modelValue;
+                    },
+                    "keyDown": function(args) {
+                        var event = args.$event;
+                        if (!(global.keyHelper.smallKeyBoard(event) || global.keyHelper.numberKeyBoard(event) || global.keyHelper.functionKeyBoard(event) || minus(event))) {
+                            event.stopPropagation();
+                            event.preventDefault();
                         }
-                    };
-                }
-            ])
-        
+                    }
+                };
+            }
+        ])
+
 
         .run(function($rootScope) {
             $rootScope._ = window._;
@@ -211,14 +206,14 @@
         .run(authrun);
 
     var minus = function(event) {
-            var which = event.which;
-            return (which == 45 || which == 189);
+        var which = event.which;
+        return (which == 45 || which == 189);
     };
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
 
-    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices', '$window', '$cookies'];
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','StudentServices', '$window', '$cookies'];
 
-    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies) {
+    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, StudentServices, $window, $cookies) {
         $log.debug('authrun entered');
 
         $(document).ready(function() {
@@ -274,6 +269,7 @@
                 $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata;
                 $log.debug('in currentUser');
                 loggedIn = true;
+                stripeConfig(StudentServices,$log,$rootScope);
             }
 
 
@@ -291,6 +287,24 @@
         });
     }
 
+    function stripeConfig(StudentServices, $log, $rootScope) {
+        var path="../v1/stripepub";
+        StudentServices.getStripepub(path).then(function(data) {
+            /*	.config(function() {
+            	    //test key
+            		window.Stripe.setPublishableKey('pk_test_E3nCcNrj87kIuKzCcA8MNkgv');
+            		//mlc prod pk_live_a9QRAQ6YXuntaJ7ScCLGxEGD
+            	})
+            */
+            $log.debug('getStripepub returned', data);
+            $rootScope.stripe = Stripe(data.stripepub);
+
+        }, function(error) {
+            $log.debug('Caught an error getStripepub:', error);
+
+        });
+
+    }
 
     function routeConfig($routeProvider, $locationProvider) {
 
@@ -391,4 +405,4 @@
         $locationProvider.html5Mode(false);
         //    $locationProvider.hashPrefix('!');
     }
-})(window, window.angular, window.$, window._, window.tinymce);
+})(window, window.angular, window.$, window._, window.tinymce, window.Stripe);

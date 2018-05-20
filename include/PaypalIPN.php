@@ -167,7 +167,10 @@ class PaypalIPN
         }
         curl_setopt($ch, CURLOPT_FORBID_REUSE, 1);
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Connection: Close'));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+            'User-Agent: PHP-IPN-Verification-Script',
+            'Connection: Close',
+        ));
         $res = curl_exec($ch);
         if ( ! ($res)) {
             $errno = curl_errno($ch);
@@ -337,7 +340,10 @@ class PaypalIPN
         } else {
         //  echo "PaypalIPN The response from IPN was: <b>" . $res ."</b>";
               // IPN invalid, log for manual investigation
+                error_log( print_R("PIN error req:" . $this->getPaypalUri() . "\n", TRUE), 3, LOG);
+                error_log( print_R($req . "\n", TRUE), 3, LOG);
                 error_log( print_R("PIN error response to this request\n", TRUE), 3, LOG);
+                error_log( print_R($res . "\n", TRUE), 3, LOG);
 
                 foreach($myPost as $key => $value) {
                     error_log( print_R( $key . " = " . $value . "\n", TRUE), 3, LOG);

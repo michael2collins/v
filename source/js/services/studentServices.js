@@ -63,7 +63,10 @@
             getPayments: getPayments,
             payStripeInvoice: payStripeInvoice,
             setsession: setsession,
-            storeusercred: storeusercred
+            storeusercred: storeusercred,
+            getStripe: getStripe,
+            getStripepub: getStripepub,
+            removeStripe: removeStripe
         };
         return service;
 
@@ -687,6 +690,30 @@
             data: {
                 thedata: thedata
             }
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function getStripe(path) {
+        var request = $http({
+            method: "get",
+            url: path
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function getStripepub(path) {
+        var request = $http({
+            method: "get",
+            url: path
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+      }
+     function removeStripe(path) {
+        var request = $http({
+            method: "get",
+            url: path
         });
          
         return( request.then( handleSuccess, handleError ) );

@@ -1,1 +1,1 @@
-cp -R node_modules/angular-payments app/vendors
+cp -R node_modules/jquery.cardswipe  app/vendors

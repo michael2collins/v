@@ -249,11 +249,11 @@ class DbHandler {
      * @param String $email User email id
      */
     public function getUserByEmail($email) {
-        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at FROM users WHERE email = ?");
+        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at,school FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         if ($stmt->execute()) {
             // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at);
+            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $school);
             $stmt->fetch();
             $user = array();
             $user["name"] = $name;
@@ -263,6 +263,7 @@ class DbHandler {
             $user["api_key"] = $api_key;
             $user["status"] = $status;
             $user["created_at"] = $created_at;
+            $user["school"] = $school;
             $stmt->close();
             return $user;
         } else {

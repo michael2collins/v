@@ -22,7 +22,15 @@ function echoRespnse($status_code, $response) {
  //   fclose($fp);
 }
  // emailnotify
- 
+    function echoRedirect($status_code, $response, $url) {
+        $app = \Slim\Slim::getInstance();
+        $app->status($status_code);
+        $app->contentType('application/json');
+
+        echo json_encode($response);
+        $app->redirect($url, 301);
+    }
+    
     function emailnotify($to,$subject,$message){
 
         $from = 'From: <michael2collins@villaris.us>' ;

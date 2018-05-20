@@ -26,6 +26,44 @@ function echoRespnse($status_code, $response) {
  //   fwrite($fp, "\n");
  //   fclose($fp);
 }
+    function url(){
+      return sprintf(
+        "%s://%s",
+        isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http',
+        $_SERVER['SERVER_NAME']
+      );
+    }
+    function uri(){
+      return sprintf(
+        "%s://%s%s",
+        isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off' ? 'https' : 'http',
+        $_SERVER['SERVER_NAME'],
+        $_SERVER['REQUEST_URI']
+      );
+    }
+    
+    function redirect($url,$code) {
+        // needed?
+        //ob_start();
+        //ob_clean();
+        header('Location: '.$url,'',301);
+        ob_end_flush();
+//    $fp = fopen('/var/log/apache2/test/results.log', 'a+');
+//    fwrite($fp, $url . "\n" . $code . "\n");
+//    fwrite($fp, "\n");
+//    fclose($fp);
+        
+        die();
+    }
+
+    function echoRedirect($status_code, $response, $url) {
+        $app = \Slim\Slim::getInstance();
+        $app->status($status_code);
+        $app->contentType('application/json');
+
+        echo json_encode($response);
+        redirect($url, $status_code);
+    }
 
 
     function emailoutbound($to,$subject,$message,$_from,$_cc,$_bcc){

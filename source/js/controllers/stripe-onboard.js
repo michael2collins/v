@@ -1,4 +1,4 @@
-(function(window,angular) {
+(function(window,angular,_) {
     'use strict';
 
     angular
@@ -27,23 +27,24 @@
 
         var vm = this;
         var $ = angular.element; 
-/*
+
         vm.getStripe = getStripe;
         vm.removeStripe = removeStripe;
-        vm.addStripe = addStripe;
+/*        vm.addStripe = addStripe;
         vm.updateStripe = updateStripe;
 */        
         vm.Stripe={};
+        vm.stripedata=[];
         vm.rankTypes=[];
         vm.thisStripe=[];
         //test
         if ($location.$$host === 'vdojo.villaris.us') {
         //prod
             vm.client_id = 'ca_Cgc6QSWZsRjvzsGTm6yalB9b8L8YEJrD';
-            vm.redirectURI = 'https://vdojo.villaris.us/v/#/stripe-onboard';
+            vm.redirectURI = 'https://vdojo.villaris.us/v1/storeusercred';
         } else {
             vm.client_id = 'ca_Cgc6TWOkSRaJ3uagt0TJMsCXRXN3AtFJ';
-            vm.redirectURI = 'https://vdojotest.villaris.us/v/#/stripe-onboard';
+            vm.redirectURI = 'https://vdojotest.villaris.us/v1/storeusercred';
         }
         vm.send_state = Util.uuidv4();
         
@@ -51,33 +52,23 @@
         vm.stripe_code = $routeParams.code;
         vm.stripe_error = $routeParams.error;
         vm.stripe_error_description = $routeParams.error_description;
-        vm.slim_session = $cookies.get('slim_session') || {};
+        vm.auth_session = $cookies.get('slim_session');
+        
         vm.csrfcheckstate = {};
-
         vm.stripe_scope = $routeParams.scope;
         vm.stripe_state = $routeParams.state;
 
-        if (vm.stripe_code !== undefined) {
-            storeusercred().then(function() {
-                $log.debug('storeusercred done');
-                alert('save code:' + vm.stripe_code);
-                
-             },function(error) {
-                 return ($q.reject(error));
-             });
-        } else {
-            setsession().then(function() {
-                $log.debug('setsession done');
+        setsession().then(function() {
+            $log.debug('setsession done');
 
-             },function(error) {
-                 return ($q.reject(error));
-             });
-            
-        }
+         },function(error) {
+             return ($q.reject(error));
+         });
+
+
         $log.debug('Routeparam is:');
         $log.debug($routeParams.code, $routeParams.scope, $routeParams.state);
         $log.debug('location is:', $location);
-
 
   $scope.$on('$routeChangeSuccess', function(event, current, previous) {
 		$log.debugEnabled(true);
@@ -88,11 +79,11 @@
         $log.debug("stripe-onboard dismissed");
 		$log.debugEnabled(false);
     });
-//        activate();
+        activate();
 
        $.fn.Data.Portlet('stripe-onboard.js');
-    
-        function storeusercred() {
+  
+/*        function storeusercred() {
             $log.debug('storeusercred entered');
             var path='../v1/storeusercred';
             var thedata = {
@@ -104,7 +95,7 @@
             };
 
             vm.csrfcheckstate = {};
-            return StudentServices.storeusercred(thedata, path).then(function(data){
+            return StudentServices.storeusercred(path, thedata).then(function(data){
                     $log.debug('storeusercred returned data');
                     $log.debug(data);
                     vm.csrfcheckstate = data.csrfcheckstate;
@@ -119,16 +110,16 @@
                 }
                 );
         }
-    
+*/    
         function setsession() {
             $log.debug('setsession entered');
             var path='../v1/setsession';
             var thedata = {
-                csrfstate: vm.stripe_state,
-                slim_session: vm.slim_session
+                csrfstate: vm.send_state,
+                auth_session: vm.auth_session
             };
 
-            return StudentServices.setsession(thedata, path).then(function(data){
+            return StudentServices.setsession(path, thedata).then(function(data){
                     $log.debug('setsession returned data');
                     $log.debug(data);
                     return;
@@ -142,7 +133,7 @@
                 );
         }
     
-/*
+
         function activate() {
 
             getStripe().then(function() {
@@ -153,16 +144,11 @@
              
         }
 
-        function removeStripe(input) {
-            $log.debug('removeStripe entered',input);
-            var path = "../v1/Stripe";
-            var thedata = {
-                id: input.id
-            };
-            var data = {};
-            data.StripeExistsList = {};
+        function removeStripe() {
+            $log.debug('removeStripe entered');
+            var path = "../v1/revokestripe";
 
-            return StudentServices.removeStripe( thedata, path)
+            return StudentServices.removeStripe( path)
                 .then(function(data){
                     $log.debug('removeStripe returned data');
                     $log.debug(data);
@@ -170,7 +156,6 @@
                     if ((typeof data === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                //        vm.StripeFKExists = data.StripeExistsList;
                         $q.reject(data);
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
@@ -182,7 +167,7 @@
                      },
                         function (error) {
                             $log.debug('Caught an error getStripe after remove:', error); 
-                            vm.thisStripe = [];
+                            vm.stripedata  = [];
                             vm.message = error;
                             Notification.error({message: error, delay: 5000});
                             return ($q.reject(error));
@@ -196,10 +181,11 @@
                 });
             
         }
-
+/*
         function addStripe(rowEntity) {
             updateStripe(rowEntity,'Add');
         }
+        
         function updateStripe(rowEntity,updatetype) {
             var updpath = "../v1/Stripe";
 
@@ -251,20 +237,20 @@
                     throw e;
                 });
         }
-        
+*/        
         function getStripe() {
             $log.debug('getStripe entered');
-            var path='../v1/Stripe';
+            var path='../v1/stripe';
 
             return StudentServices.getStripe(path).then(function(data){
                     $log.debug('getStripes returned data');
                     $log.debug(data);
 
-                        vm.gridOptions.data = data.StripeList; 
-                    return data.StripeList;
+                        vm.stripedata = data.StripeList; 
+                    return vm.stripedata;
                 }, function(error) {
                     $log.debug('Caught an error getStripes:', error); 
-                    vm.StripeList = [];
+                    vm.stripedata = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -272,7 +258,7 @@
                 }
                 );
         }
-*/
+
     }
 
-})(window,window.angular);
+})(window,window.angular,window._);

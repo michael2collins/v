@@ -15,11 +15,18 @@ VDojo uses Stripe to get you paid quickly and keep your personal and payment inf
 Thousands of companies around the world trust Stripe to process payments for their users. 
 Set up a Stripe account to get paid with VDojo.                    
 </p>
-client_id {{vm.client_id}}
-<p>
+<p ng-show="vm.stripedata.length > 0 ">
+User {{vm.stripedata[0].user_id}} has registered a stripe account for {{vm.stripedata[0].school}} using {{vm.stripedata[0].user_email}}
+</p>
+<p ng-show="vm.stripedata.length == 0 " >
 <a href="https://connect.stripe.com/oauth/authorize?response_type=code&amp;client_id={{vm.client_id}}&amp;scope=read_write&amp;state={{vm.send_state}}" 
  class="stripe-connect"><span>Connect with Stripe</span></a>
 </p>
+<p ng-hide="vm.stripedata.length == 0 " >
+<a ng-click="vm.removeStripe()" 
+ class="stripe-connect"><span>Revoke Stripe</span></a>
+</p>
+
 </div>
 
                 <div class="panel-footer" >

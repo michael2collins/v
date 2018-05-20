@@ -1,36 +1,7 @@
 <!DOCTYPE html>
 <div id="table-basic-paymenttracking" class="row" ng-controller="PaymentTrackingController as vm">
 
-<form action="/charge" method="post" id="payment-form">
-  <div class="form-row">
-    <label for="card-element">
-      Credit or debit card
-    </label>
-    <div id="card-element">
-      <!-- A Stripe Element will be inserted here. -->
-    </div>
 
-    <!-- Used to display form errors. -->
-    <div id="card-errors" role="alert"></div>
-  </div>
-
-  <button>Submit Payment</button>
-</form>
-<form action="your-server-side-code" method="POST">
-  <script
-    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-    data-key="pk_test_E3nCcNrj87kIuKzCcA8MNkgv"
-    data-amount="999"
-    data-name="vdojo"
-    data-description="Widget"
-    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
-    data-locale="auto">
-    data-zip-code="true"
-    data-panel-label="vdojo"
-    data-email="customer@x.com"
-    
-  </script>
-</form>
   <div class="portlet box portlet-green">
     <div class="portlet-header">
       <div class="row">
@@ -124,6 +95,20 @@
                                         <form action="" novalidate name="editschedule2" class="form-action">
                                             <div class="col-md-3">
                                                 <?php require_once('table-basic.php');
+                                                    print strColTemplate(
+                                                        array(
+                                                            'field'=>'payfor',
+                                                            'model'=>'vm.Invoice.payfor',
+                                                            'label'=>'Description<br/>&nbsp;',
+                                                            'placeholder'=>'Enter Description',
+                                                            'required'=>true
+                                                            )
+                                                    );
+                                                ?>
+                                            </div>
+                                          
+                                            <div class="col-md-3">
+                                                <?php require_once('table-basic.php');
                                                     print dateColTemplate(
                                                         array(
                                                             'field'=>'invoiceDate',
@@ -207,6 +192,7 @@
             <div ui-grid="vm.gridOptions"  
                 ui-if="vm.gridOptions.data.length>0"
                 ui-grid-pagination 
+                ui-grid-selection
                 ui-grid-cellNav  
                 ui-grid-pinning  
                 ui-grid-move-columns 
@@ -223,6 +209,7 @@
             <div ui-grid="vm.paygridOptions"  
                 ui-if="vm.paygridOptions.data.length>0"
                 ui-grid-pagination 
+                ui-grid-selection
                 ui-grid-cellNav  
                 ui-grid-pinning  
                 ui-grid-move-columns 

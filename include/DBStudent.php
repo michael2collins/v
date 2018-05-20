@@ -1669,7 +1669,7 @@ class StudentDbHandler
 	$address_country_code, $address_zip, $address_state, $address_city, $address_street, $payment_status, $mc_currency, $mc_gross_1, 
 	$item_name1, $txn_id, $reason_code, $parent_txn_id, $num_cart_items, $quantity1, $quantity2, $quantity3, $quantity4, $quantity5, 
 	$item_name2, $item_name3, $item_name4, $item_name5, $mc_gross_2, $mc_gross_3, $mc_gross_4, $mc_gross_5, $receipt_id, $payment_gross,
-	$ipn_track_id, $custom)
+	$ipn_track_id, $custom, $paymentprocessor, $school)
 	{
 		/**
 		 * Creating new payment
@@ -1682,15 +1682,19 @@ class StudentDbHandler
 		}
 
 		$response = array();
-		$sql = "INSERT INTO payment ( ";
-		$sql.= " `txn_id`, `receipt_id`, `num_cart_items`, `ipn_track_id`, `payment_gross`,  `type`, `date`, `payer_status`, `first_name`, `last_name`, ";
-		$sql.= "`payer_email`, `status`, `mc_currency`, ";
-		$sql.= "`item_name1`, `mc_gross_1`, `quantity1`, ";
-		$sql.= "`item_name2`, `mc_gross_2`, `quantity2`, ";
-		$sql.= "`item_name3`, `mc_gross_3`, `quantity3`, ";
-		$sql.= "`item_name4`, `mc_gross_4`, `quantity4`, ";
-		$sql.= "`item_name5`, `mc_gross_5`, `quantity5`, ";
-		$sql.= " custom           ) VALUES (";
+		$sql = 'INSERT INTO payment ( 
+		 `txn_id`, `receipt_id`, `num_cart_items`, `ipn_track_id`, `payment_gross`,  
+		 `type`, `date`, `payer_status`, `first_name`, `last_name`, 
+		`payer_email`, `status`, `mc_currency`, 
+		`item_name1`, `mc_gross_1`, `quantity1`, 
+		`item_name2`, `mc_gross_2`, `quantity2`, 
+		`item_name3`, `mc_gross_3`, `quantity3`, 
+		`item_name4`, `mc_gross_4`, `quantity4`, 
+		`item_name5`, `mc_gross_5`, `quantity5`, 
+		 custom  , paymentprocessor , school        ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+		 ';
+		
+/*		(";
 		$sql.= "'" . $txn_id . "','" . $receipt_id . "','" . $num_cart_items . "','" . $ipn_track_id . "','" . $payment_gross . "',";
 		$sql.= "'" . $payment_type . "','" . $payment_date . "','" . $payer_status . "','" . $first_name . "','" . $last_name . "',";
 		$sql.= "'" . $payer_email . "','" . $payment_status . "','" . $mc_currency . "',";
@@ -1698,14 +1702,24 @@ class StudentDbHandler
 		$sql.= "'" . $item_name2 . "','" . $mc_gross_2 . "','" . $quantity2 . "',";
 		$sql.= "'" . $item_name3 . "','" . $mc_gross_3 . "','" . $quantity3 . "',";
 		$sql.= "'" . $item_name4 . "','" . $mc_gross_4 . "','" . $quantity4 . "',";
-		$sql.= "'" . $item_name5 . "','" . $mc_gross_5 . "','" . $quantity5 . "','" . $custom . "'  )";
-
+		$sql.= "'" . $item_name5 . "','" . $mc_gross_5 . "','" . $quantity5 . "','" . $custom . "','" . $paymentprocessor . "'  )";
+*/
 		// First check if user already existed in db
 
 		if (!$this->isPaymentExists($txn_id)) {
 			error_log(print_R("proceed with create payment: $sql\n", TRUE) , 3, LOG);
 			if ($stmt = $this->conn->prepare($sql)) {
-
+				$stmt->bind_param("sssssssssssssssssssssssssssssss", 
+					$txn_id , $receipt_id , $num_cart_items , $ipn_track_id , $payment_gross ,
+					$payment_type , $payment_date , $payer_status , $first_name , $last_name ,
+					$payer_email , $payment_status , $mc_currency ,
+					$item_name1 , $mc_gross_1 , $quantity1 ,
+					$item_name2 , $mc_gross_2 , $quantity2 ,
+					$item_name3 , $mc_gross_3 , $quantity3 ,
+					$item_name4 , $mc_gross_4 , $quantity4 ,
+					$item_name5 , $mc_gross_5 , $quantity5 , 
+					$custom , $paymentprocessor, $school   );
+				
 				// Check for successful insertion
 
 				$stmt->execute();
@@ -1726,7 +1740,7 @@ class StudentDbHandler
 			$address_country, $address_country_code, $address_zip, $address_state, $address_city, $address_street, $payment_status,
 			$mc_currency, $mc_gross_1, $item_name1, $txn_id, $reason_code, $parent_txn_id, $num_cart_items, $quantity1, $quantity2,
 			$quantity3, $quantity4, $quantity5, $item_name2, $item_name3, $item_name4, $item_name5, $mc_gross_2, $mc_gross_3, $mc_gross_4, 
-			$mc_gross_5, $receipt_id, $payment_gross, $ipn_track_id, $custom);
+			$mc_gross_5, $receipt_id, $payment_gross, $ipn_track_id, $custom, $paymentprocessor,$school);
 		}
 	}
 
@@ -1735,13 +1749,25 @@ class StudentDbHandler
 	$address_country_code, $address_zip, $address_state, $address_city, $address_street, $payment_status, $mc_currency, $mc_gross_1, 
 	$item_name1, $txn_id, $reason_code, $parent_txn_id, $num_cart_items, $quantity1, $quantity2, $quantity3, $quantity4, $quantity5, 
 	$item_name2, $item_name3, $item_name4, $item_name5, $mc_gross_2, $mc_gross_3, $mc_gross_4, $mc_gross_5, $receipt_id, $payment_gross,
-	$ipn_track_id, $custom)
+	$ipn_track_id, $custom, $paymentprocessor, $school)
 	{
 	/**
 	 * Updating payment
 	 */
 
 		$num_affected_rows = 0;
+		$sql = 'UPDATE payment set 
+		receipt_id = ?, num_cart_items = ?, ipn_track_id = ?, payment_gross = ? ,
+		type = ?, date ?, payer_status = ?, first_name = ?, last_name = ?,
+		payer_email = ?, status = ?, mc_currency = ?,
+		item_name1 = ?, mc_gross_1 = ?, quantity1 = ?,
+		item_name2 = ?, mc_gross_2 = ?, quantity2 = ?,
+		item_name3 = ?, mc_gross_3 = ?, quantity3 = ?,
+		item_name4 = ?, mc_gross_4 = ?, quantity4 = ?,
+		item_name5 = ?, mc_gross_5 = ?, quantity5 = ?, 
+		custom = ?, paymentprocessor = ? , school = ?
+		 where               txn_id  = ? ';
+/*
 		$sql = "UPDATE payment set ";
 		$sql.= " txn_id = '" . $txn_id . "', receipt_id = '" . $receipt_id . "', num_cart_items = '" . $num_cart_items . "', ipn_track_id = '" . $ipn_track_id . "', payment_gross = '" . $payment_gross . "',";
 		$sql.= " type = '" . $payment_type . "', date = '" . $payment_date . "', payer_status = '" . $payer_status . "', first_name = '" . $first_name . "', last_name = '" . $last_name . "',";
@@ -1750,12 +1776,23 @@ class StudentDbHandler
 		$sql.= " item_name2 = '" . $item_name2 . "', mc_gross_2 = '" . $mc_gross_2 . "', quantity2 = '" . $quantity2 . "',";
 		$sql.= " item_name3 = '" . $item_name3 . "', mc_gross_3 = '" . $mc_gross_3 . "', quantity3 = '" . $quantity3 . "',";
 		$sql.= " item_name4 = '" . $item_name4 . "', mc_gross_4 = '" . $mc_gross_4 . "', quantity4 = '" . $quantity4 . "',";
-		$sql.= " item_name5 = '" . $item_name5 . "', mc_gross_5 = '" . $mc_gross_5 . "', quantity5 = '" . $quantity5 . "', custom = '" . $custonm . "'";
+		$sql.= " item_name5 = '" . $item_name5 . "', mc_gross_5 = '" . $mc_gross_5 . "', quantity5 = '" . $quantity5 . "', custom = '" . $custonm . "', paymentprocessor = '" . $paymentprocessor . "' " ;
 		$sql.= "  where               txn_id  = ? ";
+*/
+
 		error_log(print_R($sql, TRUE));
 
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("s", $txn_id);
+				$stmt->bind_param("sssssssssssssssssssssssssssssss", 
+					 $receipt_id , $num_cart_items , $ipn_track_id , $payment_gross ,
+					$payment_type , $payment_date , $payer_status , $first_name , $last_name ,
+					$payer_email , $payment_status , $mc_currency ,
+					$item_name1 , $mc_gross_1 , $quantity1 ,
+					$item_name2 , $mc_gross_2 , $quantity2 ,
+					$item_name3 , $mc_gross_3 , $quantity3 ,
+					$item_name4 , $mc_gross_4 , $quantity4 ,
+					$item_name5 , $mc_gross_5 , $quantity5 , 
+					$custom , $paymentprocessor, $school, $txn_id   );
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
@@ -1914,7 +1951,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	}
 
 	public
-	function updateInvoice($id, $amt, $invdate, $status)
+	function updateInvoice($id, $amt, $invdate, $status, $payfor)
 	{
 	/**
 	 * Updating invoice
@@ -1922,12 +1959,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 		$num_affected_rows = 0;
 		$sql = "UPDATE invoice set ";
-		$sql.= "  amt = ?, invdate = ?, status = ? ";
+		$sql.= "  amt = ?, invdate = ?, status = ? , payfor = ?";
 		$sql.= "  where   id  = ? ";
 		error_log(print_R($sql, TRUE));
 
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("ssss",  $amt, $invdate, $status, $id);
+			$stmt->bind_param("sssss",  $amt, $invdate, $status, $payfor, $id);
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
@@ -1945,7 +1982,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function getInvoices($payerid) {
 
 	    $sql = "
-	    select id, invoice, i.paymentid, amt, invdate, status, 'lessons' as payfor
+	    select id, invoice, i.paymentid, amt, invdate, status, payfor
 	    from invoice i
 	    join npayments np on  (np.paymentid = i.paymentid)
 	    where np.payerid = ?
@@ -2056,7 +2093,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	}
 	
 	public
-	function createInvoice($invoice, $invoiceDate, $invoiceAmt, $paymentid, $status)
+	function createInvoice($invoice, $invoiceDate, $invoiceAmt, $paymentid, $status, $payfor)
 	{
 	/**
 	 * Creating new invoice
@@ -2069,8 +2106,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$sql.= " invDate ,";
 		$sql.= " amt, ";
 		$sql.= " paymentid, ";
+		$sql.= " payfor, ";
 		$sql.= " status )";
-		$sql.= " values ( ?, ?, ?, ?, ?)";
+		$sql.= " values ( ?, ?, ?, ?, ?, ?)";
 
 		// First check if invoice already existed in db
 
@@ -2078,7 +2116,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			 $paymentid, $invoiceDate
 			)) {
 			if ($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param("sssss", $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status);
+				$stmt->bind_param("ssssss", $invoice, $invoiceDate, $invoiceAmt, $paymentid, $payfor, $status);
 				$result = $stmt->execute();
 				$stmt->close();
 
@@ -2130,7 +2168,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	}
 	
 	public
-	function setsession($thisslim, $csrfstate)
+	function setsession($auth_session, $csrfstate)
 	{
 		error_log(print_R("setsession entered\n", TRUE) , 3, LOG);
 
@@ -2139,7 +2177,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 		$cleansql = "delete from csrf_state where school = ?";
 
-		$sql = 'INSERT INTO `csrf_state`( `school`, `csrf_state`, `slim_session`) VALUES
+		$sql = 'INSERT INTO `csrf_state`( `school`, `csrf_state`, `auth_session`) VALUES
 				 (?,?,?)
 				';
 		
@@ -2153,7 +2191,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			return NULL;
 		}
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("sss", $school,$csrfstate,$thisslim);
+			$stmt->bind_param("sss", $school,$csrfstate,$auth_session);
 			$result = $stmt->execute();
 			$stmt->close();
 
@@ -2173,14 +2211,14 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		return $response;
 	}
 	public
-	function checksession($thisslim, $csrfstate)
+	function checksession($auth_session, $csrfstate)
 	{
 		error_log(print_R("before checksession\n", TRUE) , 3, LOG);
-		error_log(print_R("session: $thisslim\n", TRUE) , 3, LOG);
+		error_log(print_R("session: $auth_session\n", TRUE) , 3, LOG);
 		error_log(print_R("csrfstate: $csrfstate\n", TRUE) , 3, LOG);
 		
-		$stmt = $this->conn->prepare("SELECT id from csrf_state WHERE csrf_state = ? and slim_session = ? ");
-		$stmt->bind_param("ss", $csrfstate, $thisslim);
+		$stmt = $this->conn->prepare("SELECT id from csrf_state WHERE csrf_state = ? and auth_session = ? ");
+		$stmt->bind_param("ss", $csrfstate, $auth_session);
 		$stmt->execute();
 		$stmt->store_result();
 		$num_rows = $stmt->num_rows;
@@ -2240,7 +2278,215 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 		return $response;
 	}
-	
+
+	public
+	function createAuthcode(
+            $stripe_user_id,
+            $access_token,
+            $refresh_token,
+            $stripe_publishable_key,
+            $scope,
+            $client,
+            $code,
+            $redirecturi,
+            $useremail,
+            $school
+		)
+	{
+		error_log(print_R("createAuthcode entered\n", TRUE) , 3, LOG);
+
+		$numargs = func_num_args();
+		$arg_list = func_get_args();
+		for ($i = 0; $i < $numargs; $i++) {
+			error_log(print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE) , 3, LOG);
+		}
+
+		//find bugs
+		//mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+		$delsql = 'delete from oauth_authorization_codes where user_id = ?';
+		
+		$sql = 'INSERT INTO `oauth_authorization_codes`
+		(`authorization_code`, `client_id`, `user_id`, `redirect_uri`, `scope`, `id_token`, `school`, `refresh_token`, `access_token`, `user_email`) 
+		VALUES (?,?,?,?,?,?,?,?,?,?)
+		';
+		 error_log(print_R(  $sql , TRUE), 3, LOG);
+		try {
+			//cleanup the old
+			$stmt = $this->conn->prepare($delsql);
+			$stmt->bind_param("s", 
+	            $stripe_user_id);
+            $stmt->execute();
+	        
+			$stmt = $this->conn->prepare($sql);
+			$stmt->bind_param("ssssssssss", 
+	            $code,
+	            $client,
+	            $stripe_user_id,
+	            $redirecturi,
+	            $scope,
+	            $stripe_publishable_key,
+	            $school,
+	            $refresh_token,
+	            $access_token,
+	            $useremail
+			);
+
+            $stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+			return $num_affected_rows;
+		} catch(exception $e) {
+			 error_log(print_R( "sql error in createAuthcode\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+			return NULL;
+		}
+	}
+
+	public
+	function getStripe() {
+
+	    $sql = "
+	    select * from oauth_authorization_codes where school = ?
+	    ";
+	    
+	    global $school;
+	    
+		error_log(print_R("sql for getStripe is: " . $sql . "\n", TRUE) , 3, LOG);
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$res = array();
+				error_log(print_R("getStripe list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+				$res["success"]=true;
+				$res["slist"]=$slists;
+				return $res;
+			}
+			else {
+				error_log(print_R("getStripe list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getStripe failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getStripe list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getStripe failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+        
+	}
+
+
+ public function getUserByUsername($username) {
+        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash, id as userid, school, pictureurl FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        if ($stmt->execute()) {
+            // $user = $stmt->get_result()->fetch_assoc();
+            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash, $userid, $school, $pictureurl);
+            $stmt->fetch();
+            $user = array();
+            $user["name"] = $name;
+            $user["lastname"] = $lastname;
+            $user["username"] = $username;
+            $user["email"] = $email;
+            $user["pictureurl"] = $pictureurl;
+            $user["api_key"] = $api_key;
+            $user["status"] = $status;
+            $user["created_at"] = $created_at;
+            $user["token_hash"] = $token_hash;
+            $user["userid"] = $userid;
+            $user["school"] = $school;
+            $stmt->close();
+            return $user;
+        } else {
+            return NULL;
+        }
+    }
+
+
+	public
+	function getStripeUser() {
+
+		global $school;
+	    $sql = "
+	    select 
+		    `authorization_code`, `client_id`, `user_id`, `redirect_uri`, `expires`, 
+		    `scope`, `id_token`,`refresh_token`, `access_token`, `user_email` 
+	    from oauth_authorization_codes where school = ? 
+	    ";
+
+		error_log(print_R("sql for getStripeUser is: " . $sql . "\n" . $school . "\n", TRUE) , 3, LOG);
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+
+	            $stmt->bind_result(
+	            	$authorization_code, $client_id, $user_id, $redirect_uri, $expires, 
+	            	$scope, $id_token, $refresh_token, $access_token, $user_email           
+	            );
+	            $stmt->fetch();
+	            $user = array();
+	            $user["authorization_code"] = 	$authorization_code;
+	            $user["client_id"] = 	$client_id;
+	            $user["user_id"] = 	$user_id;
+	            $user["redirect_uri"] = 	$redirect_uri; 
+	            $user["expires"] = 	$expires; 
+	            $user["scope"] = 	$scope;
+	            $user["id_token"] = 	$id_token;
+	            $user["refresh_token"] = 	$refresh_token;
+	            $user["access_token"] = 	$access_token;
+	            $user["user_email"] = 	$user_email;        
+	            $stmt->close();
+				return $user;
+			}
+			else {
+				error_log(print_R("getStripeUser list execute failed", TRUE) , 3, LOG);
+//	            $errormessage["sqlerror"] = "getStripeUser failure: ";
+//	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return NULL;
+			}
+		}
+		else {
+			error_log(print_R("getStripeUser list sql failed", TRUE) , 3, LOG);
+//            $errormessage["sqlerror"] = "getStripeUser failure: ";
+//            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return NULL;
+		}
+        
+	}
+
+	public
+	function removeAuthcode(
+		)
+	{
+		error_log(print_R("removeAuthcode entered\n", TRUE) , 3, LOG);
+		global $school;
+		
+		$delsql = 'delete from oauth_authorization_codes where school = ?';
+		
+		try {
+			//cleanup the old
+			$stmt = $this->conn->prepare($delsql);
+			$stmt->bind_param("s", 
+	            $school);
+            $stmt->execute();
+	        
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+			return $num_affected_rows;
+		} catch(exception $e) {
+			 error_log(print_R( "sql error in removeAuthcode\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+			return NULL;
+		}
+	}
+
 }
 
 ?>
