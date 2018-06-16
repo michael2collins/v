@@ -47,6 +47,8 @@
     "node": ">=0.8.0"
   },
   "dependencies": {
+    "angular-idle-service": "^1.0.0",
+    "angular-ui-notification": "^0.3.6",
     "dotenv": "^4.0.0",
     "mailparser": "^2.1.0",
     "moment": "^2.20.1",

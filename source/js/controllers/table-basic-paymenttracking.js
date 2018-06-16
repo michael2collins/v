@@ -797,7 +797,6 @@
             modalInstance.rendered.then(
                 function(success) {
                     $log.debug('showCreditCard ui rendered:', success);
-                    //var stripe = Stripe('pk_test_E3nCcNrj87kIuKzCcA8MNkgv');
                     var stripe = $rootScope.stripe;
                     var elements = stripe.elements({
                         fonts: [{

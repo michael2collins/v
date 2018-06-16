@@ -276,8 +276,8 @@
 
       return StudentServices.renameStudentPicFile(vmpicselect.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
-        $log.debug(data.data);
-        vmpicselect.newpicfile = data.data.newpicfile;
+        $log.debug(data);
+        vmpicselect.newpicfile = data.newpicfile;
         return vmpicselect.newpicfile;
       });
     }
@@ -332,9 +332,9 @@
       $log.debug('getfiles');
       return StudentServices.getstudentPicFiles(vmpicsearch.picpath).then(function (data) {
         $log.debug('getstudentPicFiles returned data');
-        $log.debug(data.data);
-        vmpicsearch.picfileList = data.data;
-        vmpicsearch.gridOptions.data = data.data.files;
+        $log.debug(data);
+        vmpicsearch.picfileList = data;
+        vmpicsearch.gridOptions.data = data.files;
         $timeout(function() {
             $log.debug('getfiles timeout');
    //         $log.debug(vmpicsearch.gridApi);
@@ -357,8 +357,8 @@
 
       return StudentServices.renameStudentPicFile(vmpicsearch.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
-        $log.debug(data.data);
-        vmpicsearch.newpicfile = data.data.newpicfile;
+        $log.debug(data);
+        vmpicsearch.newpicfile = data.newpicfile;
         return vmpicsearch.newpicfile;
       });
     }

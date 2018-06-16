@@ -116,8 +116,8 @@
             var path='../v1/ranklist'
             return StudentServices.getRankList(path).then(function (data) {
                 $log.debug('getRankList returned data');
-                $log.debug(data.data);
-                vm.RankList = data.data;
+                $log.debug(data);
+                vm.RankList = data;
 
                 return vm.RankList;
             });
@@ -127,8 +127,8 @@
             var path = '../v1/studentlists';
             return StudentServices.getStudentLists(path).then(function (data) {
                 $log.debug('getStudentLists returned data');
-                $log.debug(data.data);
-                vm.StudentList = data.data;
+                $log.debug(data);
+                vm.StudentList = data;
 
                 return vm.StudentList;
             });
@@ -137,8 +137,8 @@
         function getContactTypes() {
             return StudentServices.getContactTypeCounts().then(function(data){
                     $log.debug('controller getContactTypes returned data');
-                    $log.debug(data.data.contacttypes);
-                    vm.contacttypes = data.data.contacttypes;
+                    $log.debug(data.contacttypes);
+                    vm.contacttypes = data.contacttypes;
                     $log.debug('controller contacttypes service data',vm.contacttypes);
                     return vm.contacttypes;
                 });
@@ -265,7 +265,7 @@
             $log.debug('getUserPrefCols entered');
             return StudentServices.getUserPrefCols(vmDual.userprefpath).then(function(data){
                     $log.debug('getUserPrefCols returned data');
-                    vmDual.userprefcols = data.data.userprefcols;
+                    vmDual.userprefcols = data.userprefcols;
                     $log.debug(vmDual.userprefcols);
                     var foundit;
                     for(var j = 0, lenu = vmDual.userData.length; j < lenu; j++) {
@@ -380,7 +380,7 @@
 
             return StudentServices.getAllStudents(refreshpath).then(function(data){
                //     $log.debug('getAllStudents returned data');
-                    vmDual.gridOptions.data = data.data.students;
+                    vmDual.gridOptions.data = data.students;
 
                     return vmDual.gridOptions.data;
                 });

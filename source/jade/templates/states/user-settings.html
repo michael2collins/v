@@ -17,7 +17,7 @@
                <label for="inputokNotify" class="col-md-3 control-label">Notify Me?</label>
                <div class="col-md-9">
                   <select id="inputokNotify" type="text" name="okNotify" ng-model="vm.okNotify" ng-change="vm.setUserOptions()" required placeholder="select" ng-options="o for o in vm.okoptions track by o" class="form-control">
-</select>
+                  </select>
                </div>
             </div>
             <div class="row col-md-12">
@@ -26,6 +26,22 @@
                   <input id="mydelay" type="number" ng-model="vm.mydelay" ng-change="vm.setUserOptions()" class="form-control" />
                </div>
             </div>
+            <div class="row col-md-12">
+               <label for="mydelay" class="col-md-3 control-label">Idle</label>
+               <div class="col-md-9">
+                  <input id="myidle"  type="number" ng-model="idle" ng-change="vm.setUserOptions()" class="form-control"/>
+                  </div>
+               </div>
+            </div>
+            <div class="row col-md-12">
+               <label for="mydelay" class="col-md-3 control-label">Timeout</label>
+               <div class="col-md-9">
+                   <input id="mytimeout" type="number" ng-model="timeout" ng-change="vm.setUserOptions()" class="form-control" />
+               </div>
+            </div>
+            
+            
+            
          </div>
       </form>
 

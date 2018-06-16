@@ -73,10 +73,10 @@
       <span class="logo-text">V Dojo</span>
    </a>
 </div>
-<div id="top-menu" class="topbar-main">
+<div id="top-menu" class="topbar-main" title>
    <ul class="nav navbar-top-links" style="margin-left: 130px;">
       <!--      <div class="container"> -->
-      <div class="">
+<!--      <div class=""> -->
          <ul class="nav navbar-top-links navbar-left">
             <li class="mll mtl dropdown" ng-show="vm.isokf()">
                <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
@@ -224,6 +224,14 @@
                   </li>
                </ul>
             </li>
+            <li class="mll mtl dropdown" ng-show="vm.isokf()">
+              <div class="panel panel-warning" style="margin-top: -18px;">
+                 <div class="panel-heading" ng-show="vm.showTimeout()">Timeout!</div>
+                  <div class="pandel-body" idle-countdown="countdown" ng-show="vm.showTimeout()">
+                     You have {{minutes}} minutes and {{seconds}} seconds until your session expires!
+                  </div>
+               </div>
+            </li>
          </ul>
          <ul class="nav navbar-top-links navbar-right mrxxl">
             <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="vm.isokf()">
@@ -263,6 +271,6 @@
                </ul>
             </li>
          </ul>
-      </div>
+<!--      </div> -->
    </ul>
 </div>

@@ -173,9 +173,9 @@
         function getStudent() {
             return StudentServices.getStudent(vmstudent.path).then(function (data) {
                 $log.debug('getStudent returned data');
-                $log.debug(data.data);
+                $log.debug(data);
 
-                vmstudent.students = data.data;
+                vmstudent.students = data;
 
                 $log.debug(vmstudent.students.message);
                 vmstudent.message = vmstudent.students.message;
@@ -185,7 +185,7 @@
                     $q.reject(data);
                 } else {
                     Notification.success({message: vmstudent.message, delay: 5000});
-                    StudentServices.setTheStudent(data.data);
+                    StudentServices.setTheStudent(data);
                     $log.debug('studen pic url', vmstudent.students.pictureurl);
                     if (_.isEmpty(vmstudent.students.pictureurl)) {
                         $log.debug('empty picture');
@@ -220,14 +220,14 @@
 
             return StudentServices.getStudentRanks(thepath).then(function (data) {
                 $log.debug('getStudentRanks returned data');
-                $log.debug(data, data.data.studentranklist);
-                if (typeof(data.data.studentranklist) !== 'undefined' && data.data.error === false) {
-                    $log.debug('studentranklist', data.data.studentranklist);
-                    vmstudent.studentranks = data.data.studentranklist;
+                $log.debug(data, data.studentranklist);
+                if (typeof(data.studentranklist) !== 'undefined' && data.error === false) {
+                    $log.debug('studentranklist', data.studentranklist);
+                    vmstudent.studentranks = data.studentranklist;
                 } else {
                     vmstudent.studentranks={};
-                    if (typeof(data.data.studentranklist) !== 'undefined') {
-                        Notification.error({message: typeof(data.data.message) !== 'undefined' ? data.data.message : 'error getstudentranks', delay: 5000});
+                    if (typeof(data.studentranklist) !== 'undefined') {
+                        Notification.error({message: typeof(data.message) !== 'undefined' ? data.message : 'error getstudentranks', delay: 5000});
                     } //else ok to have no ranklist
                 }
                 return vmstudent.studentranks;
@@ -246,14 +246,14 @@
 
             return StudentServices.getStudentRankTypes(thepath).then(function (data) {
                 $log.debug('getStudentRankTypes returned data');
-                $log.debug(data, data.data.ranktypelist);
-                if (typeof(data.data.ranktypelist) !== 'undefined' && data.data.error === false) {
-                    $log.debug('studentranktypelist', data.data.ranktypelist);
-                    vmstudent.RankTypeList = data.data.ranktypelist;
+                $log.debug(data, data.ranktypelist);
+                if (typeof(data.ranktypelist) !== 'undefined' && data.error === false) {
+                    $log.debug('studentranktypelist', data.ranktypelist);
+                    vmstudent.RankTypeList = data.ranktypelist;
                 } else {
                     vmstudent.RankTypeList={};
-                    if (typeof(data.data.ranktypelist) !== 'undefined') {
-                        Notification.error({message: typeof(data.data.message) !== 'undefined' ? data.data.message : 'error ranktypelist', delay: 5000});
+                    if (typeof(data.ranktypelist) !== 'undefined') {
+                        Notification.error({message: typeof(data.message) !== 'undefined' ? data.message : 'error ranktypelist', delay: 5000});
                     } //else ok to have no ranklist
                 }
                 return vmstudent.RankTypeList;
@@ -320,7 +320,7 @@
 
             return StudentServices.updateStudentRank(thepath, thedata).then(function (data) {
                 $log.debug('updateStudentRank returned data:');
-                $log.debug(data.data);
+                $log.debug(data);
                 getStudentRanks(item.ContactID);
             },function(error) {
                     $log.debug('updateStudent',error);
@@ -335,8 +335,8 @@
             
             return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
                 $log.debug('updateStudent returned data: goto', vmstudent.path);
-                $log.debug(data.data);
-                vmstudent.students = data.data;
+                $log.debug(data);
+                vmstudent.students = data;
                 //          $log.debug('set route', $routeParams);
                 //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
                 //          return vmstudent.students;
@@ -354,8 +354,8 @@
             $log.debug('about setStudentPIC ', vmstudent.students);
 //            return StudentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
  //               $log.debug('setStudentPIC returned data: goto', vmstudent.path);
-  //              $log.debug(data.data);
-//                vmstudent.students = data.data;
+  //              $log.debug(data);
+//                vmstudent.students = data;
 //                //          $log.debug('set route', $routeParams);
 //                //            $location.url('#/form-layouts-editstudent?id=' + $routeParams.id );
 //                //          return vmstudent.students;
@@ -367,8 +367,8 @@
         function getAllZips() {
             return StudentServices.getAllZips(vmstudent.zippath).then(function (data) {
                 $log.debug('getAllZips returned data');
-                $log.debug(data.data);
-                vmstudent.zipList = data.data;
+                $log.debug(data);
+                vmstudent.zipList = data;
 
                 return vmstudent.zipList;
             },function(error) {
@@ -382,8 +382,8 @@
         function getStudentLists() {
             return StudentServices.getStudentLists(vmstudent.sListPath).then(function (data) {
                 $log.debug('controller getStudentLists returned data');
-                $log.debug(data.data);
-                vmstudent.StudentList = data.data;
+                $log.debug(data);
+                vmstudent.StudentList = data;
 
                 return vmstudent.StudentList;
             },function(error) {
@@ -396,8 +396,8 @@
         function getRankList() {
             return StudentServices.getRankList(vmstudent.rankListPath).then(function (data) {
                 $log.debug('getRankList returned data');
-                $log.debug(data.data);
-                vmstudent.RanksList = data.data;
+                $log.debug(data);
+                vmstudent.RanksList = data;
 
                 return vmstudent.RanksList;
             },function(error) {

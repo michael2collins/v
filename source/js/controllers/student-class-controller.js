@@ -211,8 +211,8 @@
         function getStudentClass() {
             return ClassServices.getStudentClass(vmclass.path).then(function (data) {
                 $log.debug('getStudentClass returned data', data);
-                vmclass.studentclass = data.data;
-                vmclass.classpictureurl = data.data.pictureurl;
+                vmclass.studentclass = data;
+                vmclass.classpictureurl = data.pictureurl;
 
                 return vmclass.studentclass;
             },function(error) {
@@ -227,7 +227,7 @@
             $log.debug('getStudentClazzList entered:' + $routeParams.id);
             var path = '../v1/studentclasslist/' + $routeParams.id;
             return ClassServices.getStudentClassList(path).then(function (data) {
-                vmclass.studentclazzlist = data.data.studentclasslist;
+                vmclass.studentclazzlist = data.studentclasslist;
                 for (var iter=0,len=vmclass.studentclazzlist.length;iter<len;iter++) {
                     vmclass.studentclazzlist[iter].payerList = {
                         payerName: vmclass.studentclazzlist[iter].payerName,
@@ -262,8 +262,8 @@
                 vmclass.classpicpath + '/' +
                 vmclass.picID).then(function (data) {
                 $log.debug('getStudentClassPicture returned data');
-                $log.debug(data.data);
-                vmclass.classpictureurl = data.data;
+                $log.debug(data);
+                vmclass.classpictureurl = data;
 
                 return vmclass.classpictureurl;
             });
@@ -282,8 +282,8 @@
         function getStudentClassList() {
             return ClassServices.getStudentClassList(vmclass.classlistpath).then(function (data) {
                 $log.debug('getStudentClassList returned data');
-                $log.debug(data.data);
-                vmclass.xlistnew = data.data;
+                $log.debug(data);
+                vmclass.xlistnew = data;
                 ClassServices.setxlist(vmclass.xlistnew);
                 return vmclass.xlistnew;
             },function(error) {
@@ -297,8 +297,8 @@
             return ClassServices.getStudentClassStatuses(
                 vmclass.classstatuspath).then(function (data) {
                 $log.debug('getStudentClassStatuses returned data');
-                $log.debug(data.data);
-                vmclass.classstatuses = data.data;
+                $log.debug(data);
+                vmclass.classstatuses = data;
 
                 return vmclass.classstatuses;
             });
@@ -337,14 +337,14 @@
             return ClassServices.updateStudentClass(
                 path, clazzitem).then(function (data) {
                 $log.debug('updateStudentClass returned data');
-                $log.debug(data.data);
-                    $log.debug(data.data.message);
-                    if ((typeof data.data === 'undefined' || data.data.error === true)  
+                $log.debug(data);
+                    $log.debug(data.message);
+                    if ((typeof data === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
-                        Notification.error({message: data.data.message , delay: 5000});
+                        Notification.error({message: data.message , delay: 5000});
                         $q.reject(data);
                     } else {
-                        Notification.success({message: data.data.message, delay: 5000});
+                        Notification.success({message: data.message, delay: 5000});
                     }
                 
                 getStudentClazzList();                
@@ -427,7 +427,7 @@
             return ClassServices.setStudentClass(
                 setclasspath, mystudent, myclassid, mypgmid).then(function (data) {
                 $log.debug('setStudentClass returned data: ');
-                $log.debug(data.data);
+                $log.debug(data);
             });
         }
     }

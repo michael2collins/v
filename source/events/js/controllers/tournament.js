@@ -103,9 +103,9 @@
         function getStudent() {
             return TournamentServices.getStudent(vmstudent.path).then(function (data) {
                 $log.debug('getStudent returned data');
-                $log.debug(data.data);
-                //TournamentServices.setTheStudent(data.data);
-                vmstudent.students = data.data;
+                $log.debug(data);
+                //TournamentServices.setTheStudent(data);
+                vmstudent.students = data;
                 $log.debug('get Birthday:', vmstudent.students.Birthday);
                 if (_.isEmpty(vmstudent.students.Birthday)) {
                     vmstudent.students.Birthday = getBirthday(new Date());
@@ -121,9 +121,9 @@
             $log.debug('about updateStudent ', vmstudent.students);
             return TournamentServices.updateStudent(vmstudent.path, vmstudent.students).then(function (data) {
                 $log.debug('updateStudent returned data: goto', vmstudent.path);
-                $log.debug(data.data);
+                $log.debug(data);
                 //data returned is not the student
-       //         vmstudent.students = data.data;
+       //         vmstudent.students = data;
                 getStudent();
             });
         }
@@ -131,8 +131,8 @@
         function getAllZips() {
             return TournamentServices.getAllZips(vmstudent.zippath).then(function (data) {
                 $log.debug('getAllZips returned data');
-                $log.debug(data.data);
-                vmstudent.zipList = data.data;
+                $log.debug(data);
+                vmstudent.zipList = data;
 
                 return vmstudent.zipList;
             });
@@ -141,8 +141,8 @@
         function getStudentLists() {
             return TournamentServices.getStudentLists(vmstudent.sListPath).then(function (data) {
                 $log.debug('getStudentLists returned data');
-                $log.debug(data.data);
-                vmstudent.StudentList = data.data;
+                $log.debug(data);
+                vmstudent.StudentList = data;
 
                 return vmstudent.StudentList;
             });
@@ -151,8 +151,8 @@
         function getRankList() {
             return TournamentServices.getRankList(vmstudent.rankListPath).then(function (data) {
                 $log.debug('getRankList returned data');
-                $log.debug(data.data);
-                vmstudent.RankList = data.data;
+                $log.debug(data);
+                vmstudent.RankList = data;
 
                 return vmstudent.RankList;
             });

@@ -365,6 +365,8 @@
                 .then(function() {
                      return refreshtheAttendance().then(function(zdata) {
                          $log.debug('refreshtheAttendance returned', zdata);
+                     },function(error) {
+                         return ($q.reject(error));
                      });
             });
         }

@@ -361,35 +361,24 @@
         }
         
         function getStudentClass(path) {
-            return $http({method: 'GET', url: path}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getStudentClass success:' + path);
-                    $log.debug(data);
-                    //mlc do i need this? getStudentClassPicture(path);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getStudentClass failure:' + path);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
+        var request = $http({
+            method: "get",
+            url: path
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+            
         }
         function updateStudentClass(path, studentclass) {
                     $log.debug('vm.data before put :', studentclass);
-            return $http({method: 'PUT', url: path, data: studentclass}).
-                success(function(data, status, headers, config) {
-                    $log.debug('updateStudentClass success:' + path);
-                    $log.debug(data);
-                  
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('updateStudentClass failure:' + path);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
+        var request = $http({
+            method: "PUT",
+            url: path,
+            data: studentclass                
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+                    
         }
         function setStudentClass(path, mystudent, myclassid, mypgmid) {
                     $log.debug('service set student class :' + myclassid);
@@ -400,74 +389,50 @@
                         "mypgmid": mypgmid,
                     };
                     $log.debug('service set studentx class mydata:' + JSON.stringify({data: mydata}) + ' sent to:' + path);
-            return $http({method: 'PUT', url: path, data: mydata  }).
-                success(function(data, status, headers, config) {
-                    $log.debug('setStudentClass success:' + data);
-                    $log.debug(data);
-                  
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('setStudentClass failure:' + JSON.stringify({data: data}));
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
+        var request = $http({
+            method: "PUT",
+            url: path,
+            data: mydata                
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+                    
         }        
         function getStudentClassPicture(classpicturepath) {
-            return $http({method: 'GET', url: classpicturepath}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getStudentClassPicture success:' + classpicturepath);
-                    $log.debug(data);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getStudentClassPicture failure:' + classpicturepath);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
+        var request = $http({
+            method: "get",
+            url: classpicturepath
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+            
         }        
         function getStudentClassPictureList(classpicturepath) {
-            return $http({method: 'GET', url: classpicturepath}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getStudentClassPictureList success:' + classpicturepath);
-                    $log.debug(data);
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getStudentClassPictureList failure:' + classpicturepath);
-                });
+        var request = $http({
+            method: "get",
+            url: classpicturepath
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+
         }        
-        function getStudentClassList(classlistpath) {
-            return $http({method: 'GET', url: classlistpath}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getStudentClassList success:' + classlistpath);
-                    $log.debug(data);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getStudentClassList failure:' + classlistpath);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
+        function getStudentClassList(path) {
+        var request = $http({
+            method: "get",
+            url: path
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+            
         }
-        function getStudentClassStatuses(classstatuspath) {
-            return $http({method: 'GET', url: classstatuspath}).
-                success(function(data, status, headers, config) {
-                    $log.debug('getStudentClassStatuses success:' + classstatuspath);
-                    $log.debug(data);
-                    // this callback will be called asynchronously
-                    // when the response is available
-                    return data;
-                }).
-                error(function(data, status, headers, config) {
-                    $log.debug('getStudentClassStatuses failure:' + classstatuspath);
-                    // called asynchronously if an error occurs
-                    // or server returns response with an error status.
-                });
+        function getStudentClassStatuses(path) {
+        var request = $http({
+            method: "get",
+            url: path
+        });
+         
+        return( request.then( handleSuccess, handleError ) );
+            
         }
         function addStudentRegistration(path, thedata ) {
                     $log.debug('addStudentRegistration data before post :' , thedata);

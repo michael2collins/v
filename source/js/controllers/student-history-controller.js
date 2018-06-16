@@ -47,8 +47,8 @@
         function getStudentHistory() {
             return StudentServices.getStudentHistory(vmHistory.path).then(function(data){
                     $log.debug('getStudentHistory returned data');
-                    $log.debug(data.data);
-                    vmHistory.gridOptions.data = data.data.StudentHistoryList;
+                    $log.debug(data);
+                    vmHistory.gridOptions.data = data.StudentHistoryList;
                //     $log.debug($scope.gridOptions.data);
                     return vmHistory.gridOptions.data;
                 });
@@ -90,8 +90,8 @@
             $log.debug('about updateStudentHistory ', vmHistory.StudentHistory);
             return HistoryServices.updateStudentHistory(vmHistory.updateclasspaylistpath, vmHistory.StudentHistory).then(function (data) {
                 $log.debug('updateStudentHistory returned data: goto', vmHistory.path);
-                $log.debug(data.data);
-            //    vmHistory.StudentHistory = data.data;
+                $log.debug(data);
+            //    vmHistory.StudentHistory = data;
                 getStudentHistory();
             });
         }

@@ -38,10 +38,16 @@
             'angular-loading-bar',
             'ngAnimate',
             'ui.tinymce',
-            'ngmodel.format'
+            'ngmodel.format',
+            'ngIdle'
             //            'angularPayments'
         ])
 
+        .config(['$locationProvider', function($locationProvider) {
+            //came with angularjs 1.6
+          $locationProvider.hashPrefix('');
+        }])
+        
         // allow DI for use in controllers, unit tests for lodash
         .constant('_', window._)
 
@@ -153,6 +159,22 @@
             }
         ])
 
+        .config(function(IdleProvider, KeepaliveProvider, TitleProvider) {
+           // KeepaliveProvider.interval(1);
+            //KeepaliveProvider.http("../v1/keepalive");
+            IdleProvider.idle(20*60);
+            IdleProvider.keepalive(false);
+            IdleProvider.timeout(5*60);
+            IdleProvider.windowInterrupt('focus');
+            TitleProvider.enabled(true);
+        })
+        /* trigger on auth
+        .run(function($rootScope, Idle, $log, Keepalive){
+            Idle.watch();
+            $log.debug('app started.');
+   
+        })
+        */
 
         .run(function($rootScope) {
             $rootScope._ = window._;
@@ -190,6 +212,7 @@
 
         .config(routeConfig)
 
+/* debug
         .run(function($rootScope, $location, $route, $routeParams, $log) {
             $log.debug('locationpath', $location.path());
             $log.debug('$routeParams', $routeParams);
@@ -199,9 +222,9 @@
                 $log.debug('routecurrent', $route.current);
             });
         })
-
+*/
         // Initialize the application
-        .run(['$location', function AppRun($location) {}])
+  //?      .run(['$location', function AppRun($location) {}])
 
         .run(authrun);
 
@@ -211,9 +234,9 @@
     };
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
 
-    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','StudentServices', '$window', '$cookies'];
+    authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','StudentServices', '$window', '$cookies', 'Idle'];
 
-    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, StudentServices, $window, $cookies) {
+    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, StudentServices, $window, $cookies, Idle) {
         $log.debug('authrun entered');
 
         $(document).ready(function() {
@@ -245,8 +268,9 @@
 
         });
 
+        //disable timeout if not logged in
+        Idle.unwatch();
 
-        var loggedIn = false;
         // keep user logged in after page refresh
         var huh3 = $cookies.get('globals') || {};
         $log.debug('authrun globals orig', huh3);
@@ -261,41 +285,37 @@
 
             // keep user logged in after page refresh
             var huh = $cookies.get('globals') || {};
+            var tim = $cookies.get('slim_session') || {};
             huh3 = _.isEmpty(huh) ? null : JSON.parse(huh);
 
             $log.debug('authrun globals on $locationChangeStart', huh, huh3);
 
-            if (huh3 !== null) {
-                $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata;
-                $log.debug('in currentUser');
-                loggedIn = true;
-                stripeConfig(StudentServices,$log,$rootScope);
-            }
 
 
             // redirect to login page if not logged in and trying to access a restricted page
             var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd', '/reset-pwd', '/forgot-pwd', '/page-lock-screen', '/stripe-onboard']) === -1;
             var thekey = UserServices.isapikey();
-            $log.debug('check logn next', restrictedPage, loggedIn);
             $log.debug('check userservices isapikey', thekey);
 
-            if (restrictedPage && !loggedIn && !thekey) {
+            if (restrictedPage && !thekey) {
                 $log.debug('restricted and not logged in');
                 //    alert('restricted page');
+                Idle.unwatch();
                 $location.path('/page-signin');
             }
+            if (huh3 !== null && thekey) {
+                $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata;
+                $log.debug('in currentUser');
+                stripeConfig(StudentServices,$log,$rootScope);
+                Idle.watch();
+            }
+
         });
     }
 
     function stripeConfig(StudentServices, $log, $rootScope) {
         var path="../v1/stripepub";
         StudentServices.getStripepub(path).then(function(data) {
-            /*	.config(function() {
-            	    //test key
-            		window.Stripe.setPublishableKey('pk_test_E3nCcNrj87kIuKzCcA8MNkgv');
-            		//mlc prod pk_live_a9QRAQ6YXuntaJ7ScCLGxEGD
-            	})
-            */
             $log.debug('getStripepub returned', data);
             $rootScope.stripe = Stripe(data.stripepub);
 

@@ -47,7 +47,12 @@ var studentpick = {};
         '$q',
         '$log',
         '$interval',
-        '$timeout'
+        '$timeout',
+        'Idle',
+        'Title',
+        '$location',
+        '$cookies',
+        '$window'
     ];
 
 
@@ -62,8 +67,12 @@ var studentpick = {};
         $q,
         $log,
         $interval,
-        $timeout
-
+        $timeout,
+        Idle,
+        Title,
+        $location,
+        $cookies,
+        $window
     ) {
         var vm = this;
         vm.loadTopbar = loadTopbar;
@@ -91,12 +100,57 @@ var studentpick = {};
           vm.userOptions = {};
           vm.okNotify;
           vm.mydelay;
+        vm.showTimeout = showTimeout;  
+          vm.showTimeoutv=false;
 
 //        vm.setInterval = setInterval;
 //        function setInterval(){
 //            CalendarServices.setIntervalValue(vm.mydelay *1000);
 //        }
         vm.openSettings = openSettings;
+        vm.origtitle='V Dojo';
+        Title.store(vm.origtitle);
+        Title.idleMessage(vm.origtitle);
+
+        $scope.$on('IdleStart', function() {
+            $log.debug('IdleStart');
+            Title.original();
+            $scope.$apply();
+        });
+        $scope.$on('IdleEnd', function() {
+            $log.debug('IdleEnd');
+            Title.restore();
+            vm.showTimeoutv=false;
+            $scope.$apply();
+        });
+        $scope.$on('IdleWarn', function(e, countdown) {
+            $log.debug('IdleWarn',countdown);
+            $scope.remaining = { totalSeconds: countdown };
+            $scope.remaining.minutes = Math.floor(countdown/60);
+            $scope.remaining.seconds = padLeft(countdown - $scope.remaining.minutes * 60, 2);            
+            $scope.minutes = $scope.remaining.minutes;
+            $scope.seconds = $scope.remaining.seconds;
+            Title.setAsIdle(countdown);            
+            Title.idleMessage('Timeout in {{minutes}}:{{seconds}} ');
+            Title.timedOutMessage("Whoops you've pretimedout");
+            vm.showTimeoutv=true;
+            $scope.$apply();
+        });
+        $scope.$on('IdleTimeout', function() {
+            $log.debug('IdleTimeout');
+            Title.setAsTimedOut();
+            //give login 60 seconds
+            Idle.setIdle(30);
+            Idle.setTimeout(30);
+            vm.showTimeoutv=false;
+            UserServices.ClearCredentials();
+            $scope.$apply();
+
+            $location.path('/page-lock-screen');
+        });
+        $scope.$on('Keepalive', function() {
+            $log.debug('Keepalive');
+        });
 
 
         $scope.$on('$destroy', function iVeBeenDismissed() {
@@ -117,9 +171,16 @@ var studentpick = {};
             
             intervalChecker();
         });
+            
 
         $.fn.Data.Portlet('app.js');
-
+        
+        function padLeft(nr, n, str){
+          return new Array(n-String(nr).length+1).join(str||'0')+nr;
+        }
+        function showTimeout() {
+            return vm.showTimeoutv;
+        }
         function intervalChecker() {
             $log.debug('main controller intervalChecker entered' );
             var thedelay = CalendarServices.getIntervalValue();
@@ -132,7 +193,7 @@ var studentpick = {};
 */            
         }
 
-        
+    //todo: move this to a common class    
     function getUserOptions() {
       $log.debug('getUserOptions entered');
       var path = "../v1/useroptions";
@@ -153,6 +214,14 @@ var studentpick = {};
               vm.userOptions = JSON.parse(data.options);
               vm.okNotify = (vm.userOptions.notify ? vm.userOptions.notify : false);
               vm.mydelay = (vm.userOptions.delay ? vm.userOptions.delay : 30);
+              $scope.idle = (vm.userOptions.idle ? vm.userOptions.idle : 5);
+              $scope.timeout = (vm.userOptions.timeout ? vm.userOptions.timeout : 5);
+              Title.setAsIdle($scope.idle);
+              Idle.setIdle($scope.idle);
+              Idle.setTimeout($scope.timeout);
+
+              Idle.watch();
+              
               CalendarServices.setIntervalValue(vm.mydelay);
               CalendarServices.setOkNotify(vm.okNotify);
               //Notification.success({message: vm.message, delay: 5000});
@@ -197,7 +266,7 @@ var studentpick = {};
                 animation: thisModal.animationsEnabled,
                 templateUrl: 'templates/states/user-settings.html',
                 controller: 'ModalUserSettingsInstanceController as vm',
-                size: 'sm',
+                size: 'md',
                 windowClass: 'my-modal-popup',
                 resolve: {
                     classname: function() {
@@ -654,12 +723,14 @@ var studentpick = {};
         $rootScope,
         moment,
         $timeout,
-        CalUtil
+        CalUtil,
+        Idle
     ) {
         /* jshint validthis: true */
         var vm = this;
         vm.data = {};
         vm.userdta = {};
+
 
         vm.header = {
             layout_menu: '',
@@ -796,6 +867,8 @@ var studentpick = {};
         $scope.$on('$routeChangeSuccess', function(event, current, previous) {
             $log.debugEnabled(true);
             $log.debug('routechange in app for success');
+            islogin();
+
             vm.header.animation = 'fadeInUp';
             setTimeout(function() {
                 vm.header.animation = '';
@@ -885,19 +958,7 @@ var studentpick = {};
                 $(this).parent().siblings().removeClass('open');
                 $(this).parent().toggleClass('open');
             });
-/*
-            $('.dropdown-menu a.test').on('click', function(event) {
-    			event.preventDefault(); 
-    			event.stopPropagation(); 
-    			$(this).parent().siblings().removeClass('open');
-    			$(this).parent().toggleClass('open');
-    		});
-            $('.dropdown-submenu a.test').on('click', function(event) {
-                $(this).next('ul').toggle();
-    			event.preventDefault(); 
-    			event.stopPropagation(); 
-    		});
-*/
+
             $('#external-events div.external-event').each(function() {
 
                 CalUtil.EventDrag($(this));
@@ -1344,8 +1405,8 @@ var studentpick = {};
         function getStudent(path) {
             return StudentServices.getStudent(path).then(function(data) {
                 $log.debug('getStudent returned data');
-                $log.debug(data.data);
-                return data.data;
+                $log.debug(data);
+                return data;
             }, function(error) {
                 $log.debug('getStudent', error);
                 Notification.error({ message: error, delay: 5000 });

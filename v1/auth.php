@@ -1,10 +1,10 @@
 <?php
 
+function authenticate(\Slim\Route $route) {
 /**
  * Adding Middle Layer to authenticate every request
  * Checking if the request has valid api key in the 'Authorization' header
  */
-function authenticate(\Slim\Route $route) {
     error_log( print_R("authenticate entered:\n ", TRUE), 3, LOG);
 
     // Getting request headers
@@ -49,6 +49,8 @@ function authenticate(\Slim\Route $route) {
     }
 }
 
+
+$app->post('/register', function() use ($app) {
 /**
  * ----------- METHODS WITHOUT AUTHENTICATION ---------------------------------
  */
@@ -58,7 +60,6 @@ function authenticate(\Slim\Route $route) {
  * method - POST
  * params - name, email, password
  */
-$app->post('/register', function() use ($app) {
     // check for required params
     error_log( print_R("register entered:\n ", TRUE), 3, LOG);
  
@@ -120,12 +121,6 @@ $app->post('/register', function() use ($app) {
     }
 });
 
-/**
- * User Login
- * url - /login
- * method - POST
- * params - email, password
- */
 $app->post('/login', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('username', 'password'));
@@ -213,6 +208,10 @@ $app->post('/login', function() use ($app) {
         $response['message'] = 'Login failed. Incorrect credentials';
         echoRespnse(403, $response);
     }
+
+});
+
+$app->get('/keepalive', function() use ($app) {
 
 });
 
@@ -638,10 +637,10 @@ if (PassHash::check_password($user['token_hash'], $token)) {
 });
 
 
+function verifyRequiredParams($required_fields) {
 /**
  * Verifying required params posted or not
  */
-function verifyRequiredParams($required_fields) {
     $error = false;
     $error_fields = "";
     $request_params = array();

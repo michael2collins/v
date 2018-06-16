@@ -16,11 +16,13 @@
     '$q',
     '$sce',
     'moment',
-    '$uibModal'
+    '$uibModal',
+    'Idle',
+    'Title'
   ];
 
   function ModalUserSettingsInstanceController($log, $uibModalInstance, UserServices, $window, Notification,
-    $scope, Util, $q, $sce, moment, $uibModal) {
+    $scope, Util, $q, $sce, moment, $uibModal, Idle, Title) {
     /* jshint validthis: true */
     var vm = this;
     vm.cancel = cancel;
@@ -31,10 +33,17 @@
     vm.okoptions = [true, false];
     vm.okNotify = true;
     vm.mydelay = 10;
+//        $scope.idle = 20*60;
+//        $scope.timeout = 5*60;
 
     getUserOptions();
 
-
+    $scope.$watch('idle', function(value) {
+      if (Boolean(value) ) Idle.setIdle(value);
+    });
+    $scope.$watch('timeout', function(value) {
+      if (Boolean(value)) Idle.setTimeout(value);
+    });         
     $scope.$on('$routeChangeSuccess', function(event, current, previous) {
       $log.debugEnabled(true);
       $log.debug("ModalUserSettingsInstanceController started");
@@ -67,6 +76,14 @@
               vm.userOptions = JSON.parse(data.options);
               vm.okNotify = (vm.userOptions.notify ? vm.userOptions.notify : false);
               vm.mydelay = (vm.userOptions.delay ? vm.userOptions.delay : 30);
+              $scope.idle = (vm.userOptions.idle ? vm.userOptions.idle : 20*60);
+              $scope.timeout = (vm.userOptions.timeout ? vm.userOptions.timeout : 5*60);
+              Title.setAsIdle($scope.idle);
+              Idle.setIdle($scope.idle);
+              Idle.setTimeout($scope.timeout);
+              //reset the timer
+              Idle.watch();
+
               //Notification.success({message: vm.message, delay: 5000});
             }
             catch (e) {
@@ -102,7 +119,9 @@
       var thedata = { 
         "options": {
          "delay": vm.mydelay,
-         "notify": vm.okNotify
+         "notify": vm.okNotify,
+         "idle": $scope.idle,
+         "timeout": $scope.timeout
         }
       };
       $log.debug('about setUserOptions ', thedata, updpath);
@@ -122,6 +141,7 @@
           }
           else {
             Notification.success({ message: data.message, delay: 5000 });
+            getUserOptions();
           }
 
           return data;
@@ -141,4 +161,4 @@
   }
 
 
-})(window, window.angular, window.$);
+})(window, window.angular, window.$, window.Title);
