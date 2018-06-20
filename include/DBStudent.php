@@ -1979,6 +1979,34 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	}
 
 	public
+	function updateInvoiceStatus($status, $invoice)
+	{
+	/**
+	 * Updating invoice status after payment
+	 */
+
+		$num_affected_rows = 0;
+		$sql = "UPDATE invoice set ";
+		$sql.= "   status = ? ";
+		$sql.= "  where   invoice  = ? ";
+		error_log(print_R($sql, TRUE));
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("ss",  $status, $invoice);
+			$stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+			error_log(print_R("affected rows: $num_affected_rows\n", TRUE));
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+		}
+
+
+		return $num_affected_rows;
+	}
+
+	public
 	function getInvoices($payerid) {
 
 	    $sql = "

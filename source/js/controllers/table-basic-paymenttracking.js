@@ -70,7 +70,8 @@
         setpayGridLength(vm.payinitialLength);
         vm.invStatuses = [
             { "id": "closed", "value": "closed", "order": 1 },
-            { "id": "new", "value": "new", "order": 2 },
+            { "id": 'succeeded:paid', "value": 'succeeded:paid', "order": 2 },
+            { "id": "new", "value": "new", "order": 3 },
         ];
         vm.status = {
             opened: false
@@ -959,6 +960,32 @@
                         $q.reject(data);
                     }
                     else {
+                        getInvoices(vm.thispayer).then(function(zdata) {
+                            $log.debug('getInvoices returned', zdata);
+                            vm.gridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+                        },
+                        function(error) {
+                            $log.debug('Caught an error getPayments after remove:', error);
+                            vm.thisInvoice = [];
+                            vm.message = error;
+                            Notification.error({ message: error, delay: 5000 });
+                            return ($q.reject(error));
+                        });
+                        
+                        getPayments(vm.thispayer).then(function(zdata) {
+                                $log.debug('getPayments returned', zdata);
+                                vm.paygridApi.core.notifyDataChange(uiGridConstants.dataChange.ALL);
+
+                            },
+                            function(error) {
+                                $log.debug('Caught an error getPayments after payStripeInvoice:', error);
+                                vm.thisInvoice = [];
+                                vm.message = error;
+                                Notification.error({ message: error, delay: 5000 });
+                                return ($q.reject(error));
+                            });
+                        
                         Notification.success({ message: vm.message, delay: 5000 });
 
                     }
@@ -1002,7 +1029,7 @@
             //            paytbl += '<input type="submit" value="PayPal">';
             paytbl += '     <input type="image" name="submit"';
             paytbl += '           src="https://www.paypalobjects.com/en_US/i/btn/btn_cart_SM.gif" style="width:50%;"  alt="Add to Cart">';
-            paytbl += '       <img alt="" width="1" height="1"  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >'
+            paytbl += '       <img alt="" width="1" height="1"  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >';
             paytbl += '    </form>';
             //            paytbl    += ' role="button" class="btn" style="padding:  0px 14px;"  >';
             //            paytbl    += '<i class="fab fa-paypal"></i>&nbsp;</span>';
@@ -1016,7 +1043,7 @@
             payviewtbl += '  <input type="hidden" name="business" value="mark@natickmartialarts.com">';
             payviewtbl += '     <input type="image" name="submit"';
             payviewtbl += '           src="https://www.paypalobjects.com/en_US/i/btn/btn_viewcart_SM.gif" style="width:50%;"  alt="View Cart">';
-            payviewtbl += '       <img alt="" width="1" height="1"  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >'
+            payviewtbl += '       <img alt="" width="1" height="1"  src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" >';
             payviewtbl += '    </form>';
             payviewtbl += '</span></div>';
 

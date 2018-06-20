@@ -3786,6 +3786,10 @@ function stripepaid(
             $paymentprocessor,
             $school
                                     );
+                                    
+            //mark invoice status
+            $invresult = $db->updateInvoiceStatus($result['payment_status'],$result['custom']);
+            //todo: should we assess result and interupt this if the update fails
     
             error_log( print_R("Stripe Payment created: $paid\n", TRUE ), 3, LOG);
             $xn = $result['txn_id'];
