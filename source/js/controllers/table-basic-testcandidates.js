@@ -134,8 +134,10 @@
         vm.htmlcontentdata.htmlcontentfooter;
         vm.styleleft="400px";
         vm.styleright="400px";
-        vm.gridright=5;
-        vm.gridleft=5;
+        vm.gridright=10;  //5
+        vm.gridleft=10;  //5
+        vm.gridleftcnt = 0;
+        vm.gridrightcnt = 0;
 
         $scope.$on('$routeChangeSuccess', function(event, current, previous) {
             $log.debugEnabled(true);
@@ -171,12 +173,10 @@
                 vm.showleft = true;
             }
             if (direction == 'center') {
-//                vm.styleright = "col-md-1";
-//                vm.styleleft = 'col-md-9';                
-                vm.styleright = "400px";
-                vm.styleleft = "400px";                
-                vm.gridright = 5;
-                vm.gridleft = 5;
+//                vm.styleright = "400px";
+//                vm.styleleft = "400px";                
+//                vm.gridright = 5;
+//                vm.gridleft = 5;
                 vm.showright = true;
                 vm.showleft = true;
             }
@@ -1068,6 +1068,7 @@
                         $log.debug(msg);
 
                         var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                        vm.gridleftcnt = selectedStudentarr.length;
                         $log.debug('selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
 
@@ -1075,6 +1076,7 @@
                     gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
                         $log.debug("grid batch");
                         var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                        vm.gridleftcnt = selectedStudentarr.length;
                         $log.debug('batch selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
 
@@ -1150,6 +1152,7 @@
                         $log.debug(msg);
 
                         var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                        vm.gridrightcnt = selectedStudentarr.length;
 
                         $log.debug('selected', selectedStudentarr);
                         setresSelectedArray(selectedStudentarr);
@@ -1158,6 +1161,7 @@
                     gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
                         $log.debug("grid batch");
                         var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                        vm.gridrightcnt = selectedStudentarr.length;
                         $log.debug('batch selected', selectedStudentarr);
                         setresSelectedArray(selectedStudentarr);
 
@@ -1767,7 +1771,7 @@
             $log.debug('doc json', myJsonString);
 
 
-            pdfMake.createPdf(docDefinition).open();
+            window.pdfMake.createPdf(docDefinition).open();
         }
 
     }

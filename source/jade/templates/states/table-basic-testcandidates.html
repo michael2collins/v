@@ -6,13 +6,18 @@
    <uib-tabset type="pills">
       <uib-tab id="tab-test" heading="Select Candidates" active="active.TestCandidate" select="vm.changeTab('tab-test')">
          <div class="panel panel-green">
-            <div class="panel-heading">Filters</div>
+            <div class="panel-heading">Test Candidates Pick List</div>
             <div class="panel-body ">
+               <div class="col-md-12 text-left">
+                  <h3>Select Test date</h3>
+               </div>
+
                <div class="row col-md-12" style="height: 70px;">
                   <div class="col-md-7">
                      <div class="select-box ">
-                        <ui-select ng-model="vm.TestCandidateSelected" theme="bootstrap" reset-search-input="false" 
-                        on-select="vm.getTestDates($item);vm.setSlide('center')" style="width: 300px;" title="Filter for a Test" append-to-body="false">
+
+                        <ui-select ng-model="vm.TestCandidateSelected" theme="bootstrap" reset-search-input="false" on-select="vm.getTestDates($item);vm.setSlide('center')" style="width: 300px;" title="Filter for a Test" append-to-body="false">
+
                            <ui-select-match placeholder="Pick a test...">{{$select.selected.name}}</ui-select-match>
                            <ui-select-choices repeat="TestCandidate in vm.testcandidatenames | filter: $select.search track by $index" refresh="vm.gettestcandidateNames($select.search)" refresh-delay="0">
                               <div id="candidatepicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
@@ -23,21 +28,20 @@
                         </ui-select>
                      </div>
                   </div>
-                  <div class="col-md-5">
+<!--                  <div class="col-md-5">
                      <button ng-click="vm.gettestcandidateDetails(vm.TestCandidateSelected)" class="btn btn-green TestCandidateCreation">Refresh List</button>
                   </div>
+-->                  
                </div>
-               <div class="row">
-                  <div class="col-md-12" ng-show="vm.testdateshow()">
-                     <h3 class="block-heading"> {{vm.testdatelist.eventtype}} from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-md-12 text-center">
-                     <h3>Test Candidate Pick List</h3>
-                     </div>
-               </div>
-               <div class="row">
+            </div>
+         </div>
+         <div class="row">
+
+            <div class="col-md-12" ng-show="vm.testdateshow()">
+               <h3 class="block-heading"> {{vm.testdatelist.testtype}} Test from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
+            </div>
+         </div>
+         <!--               <div class="row">
                   <div class="col-md-1 text-center">
                      <button title="Slide Right" class="btn btn-blue" ng-click="vm.setSlide('right')">
                         Slide Right<i class="glyphicon glyphicon-chevron-right"></i></button>
@@ -50,25 +54,74 @@
                         <i class="glyphicon glyphicon-chevron-left"></i>Slide Left</button>
                   </div>
                </div>
+-->
+         <div class="panel panel-green" ng-show="vm.testdateshow()">
+            <div class="panel-heading">Test Candidates</div>
+            <div class="panel-body ">
+
+               <div class="panel panel-blue" ng-show="vm.testdateshow()">
+                  <div class="panel-heading">Test Candidate Mover</div>
+                  <div class="panel-body ">
+
+                     <div class="row col-md-12 text-left">
+                        <h3>Select Candidates to move</h3>
+                        <div class="btn-group">
+                           <button ng-show="vm.gridrightcnt > 0" title="Drop from test" class="btn btn-blue" ng-click="vm.removeFromTest(vm.testdatelist.testingid)" id="btnA">Drop {{vm.gridrightcnt}} from test<i class="glyphicon glyphicon-chevron-left"></i></button>
+                           <button ng-show="vm.gridleftcnt > 0" title="Add to test" class="btn btn-blue" ng-click="vm.addToTest(vm.testdatelist.testingid)" id="btnB">Add {{vm.gridleftcnt}} to test<i class="glyphicon glyphicon-chevron-right"></i></button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="panel-footer"></div>
+               </div>
+
                <div class="row">
-                  <div class="col-md-{{vm.gridleft}}" ng-show="vm.showleft" >
-                     <div ui-grid="vm.gridOptions" ng-style="{'height' : (30*11)+140+'px', 'width' : vm.styleleft}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter
-                        class="mygrid ">
+                  <div class="col-md-{{vm.gridleft}}" ng-show="vm.showleft">
+                     <!--                     <div ui-grid="vm.gridOptions" ng-style="{'height' : (30*11)+140+'px', 'width' : vm.styleleft}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter
+-->
+                     <div ui-grid="vm.gridOptions" ng-style="{'height' : (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter class="mygrid ">
                         <div class="watermark" ng-show="!vm.gridOptions.data.length">No data available</div>
                      </div>
                   </div>
-                  <div class="col-md-1 v-center text-center">
+                  <!--                  <div class="col-md-1 v-center text-center">
                      <div class="btn-group">
                         <button title="Drop from test" class="btn btn-blue" ng-click="vm.removeFromTest(vm.testdatelist.testingid)" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
                         <button title="Add to test" class="btn btn-blue" ng-click="vm.addToTest(vm.testdatelist.testingid)" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
                      </div>
                      <h6 class="text-center">move from list-to-list</h6>
                   </div>
-                  <div class="col-md-{{vm.gridright}}" ng-show="vm.showright">
-                     <div ui-grid="vm.resgridOptions" ng-style="{'height' : (30*11)+140+'px', 'width' : vm.styleright}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter
-                        class="mygrid">
-                        <div class="watermark" ng-show="!vm.resgridOptions.data.length">No data available</div>
+-->
+
+               </div>
+            </div>
+         </div>
+         <div class="panel panel-green" ng-show="vm.testdateshow()">
+            <div class="panel-heading">Candidates on test</div>
+            <div class="panel-body ">
+
+               <div class="panel panel-blue" ng-show="vm.testdateshow()">
+                  <div class="panel-heading">Test Candidates</div>
+                  <div class="panel-body ">
+
+                     <div class="row col-md-12 text-left" ng-show="vm.testdateshow()">
+                        <h3>Select Candidates to move</h3>
+                        <div class="btn-group">
+                           <button ng-show="vm.gridrightcnt > 0" title="Drop from test" class="btn btn-blue" ng-click="vm.removeFromTest(vm.testdatelist.testingid)" id="btnA">Drop {{vm.gridrightcnt}} from test<i class="glyphicon glyphicon-chevron-left"></i></button>
+                           <button ng-show="vm.gridleftcnt > 0" title="Add to test" class="btn btn-blue" ng-click="vm.addToTest(vm.testdatelist.testingid)" id="btnB">Add {{vm.gridleftcnt}} to test<i class="glyphicon glyphicon-chevron-right"></i></button>
+                        </div>
                      </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12 text-left">
+                  <h3>Test Candidates Selected List</h3>
+               </div>
+
+               <div class="row col-md-{{vm.gridright}}" ng-show="vm.showright">
+                  <!--                     <div ui-grid="vm.resgridOptions" ng-style="{'height' : (30*11)+140+'px', 'width' : vm.styleright}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter
+-->
+
+                  <div ui-grid="vm.resgridOptions" ng-style="{'height' : (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter class="mygrid">
+                     <div class="watermark" ng-show="!vm.resgridOptions.data.length">No data available</div>
                   </div>
                </div>
             </div>
@@ -131,7 +184,7 @@
                               </div>
                            </div>
                            <div class="">
-                              <h3 class="block-heading" ng-show="vm.testdateshow()"> {{vm.testdatelist.eventtype}} from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
+                              <h3 class="block-heading" ng-show="vm.testdateshow()"> {{vm.testdatelist.testtype}} Test from: {{vm.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{vm.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
                               <div class="row">
                                  <div class="col-md-3">
                                     <div ng-class="{'has-error': edittest.tester1.$invalid, 'has-success': !edittest.tester1.$invalid}" class="form-group">
