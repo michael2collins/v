@@ -30,7 +30,7 @@
     
 
         
-        vm.refreshtheAttendance = refreshtheAttendance;
+        vm.refreshtheAttendanceClick = refreshtheAttendanceClick;
         vm.getAttendanceHistory = getAttendanceHistory;
         vm.setStudentReadyNextRank = setStudentReadyNextRank;
         vm.setLimit = setLimit;
@@ -119,6 +119,12 @@
             vm.todayDOW = aDay;
             $log.debug('settoday',aDay, vm.todayDOW);
         }
+        function refreshtheAttendanceClick() {
+                refreshtheAttendance().then(function(){
+                }).catch(function(err) {
+                   $log.debug(err); 
+                });
+        }
         function setday(aDay) {
             vm.photos=[];
             settoday(weekday[aDay]);
@@ -131,7 +137,9 @@
                 else {
                     setClass('All');
                 }
-                refreshtheAttendance();
+                refreshtheAttendance().then(function(){
+                    
+                }).catch(angular.noop);
                 $log.debug('setClass', vm.theclass);
              },function(error) {
                  vm.photos=[];
@@ -174,7 +182,8 @@
         function requery() {
             $log.debug('requery entered');
             vm.attending=[];
-            refreshtheAttendance();
+            refreshtheAttendanceClick();
+            
         }
 
         function setMonday() {
@@ -367,7 +376,7 @@
                          $log.debug('refreshtheAttendance returned', zdata);
                      },function(error) {
                          return ($q.reject(error));
-                     });
+                     }).catch(angular.noop);
             });
         }
         
@@ -385,7 +394,7 @@
                     if ((typeof vm.thisattendance === 'undefined' || vm.thisattendance.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return ($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -401,7 +410,7 @@
                             vm.message = error;
                             Notification.error({message: error, delay: 5000});
                             return ($q.reject(error));
-                        });
+                        }).catch(angular.noop);
 
                     return vm.thisattendance;
                 }).catch(function(e) {
@@ -435,7 +444,9 @@
                     if ((typeof vm.data === 'undefined' || vm.data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.warning({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        vm.data = [];
+                        vm.photos = [];
+                        return ($q.reject(data));
                     } else {
                 //        Notification.success({message: vm.message, delay: 5000});
                     }
@@ -659,7 +670,7 @@
                     if ((typeof vm.attendancesum === 'undefined' || vm.attendancesum.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.warning({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                 //        Notification.success({message: vm.message, delay: 5000});
                     }

@@ -106,7 +106,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                         vm.programFKExists = data.ProgramExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -166,7 +166,7 @@
                     if ((typeof vm.thisProgram === 'undefined' || vm.thisProgram.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }

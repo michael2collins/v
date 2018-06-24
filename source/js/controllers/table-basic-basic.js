@@ -113,7 +113,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                         vm.BasicFKExists = data.BasicExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -166,7 +166,7 @@
                     if ((typeof vm.thisBasic === 'undefined' || vm.thisBasic.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }

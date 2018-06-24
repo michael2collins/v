@@ -142,7 +142,7 @@
                     typeof data !== 'undefined') {
                     vm.message = data.message;
                     Notification.error({ message: vm.message, delay: 5000 });
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
                 else {
                     vm.payers = data.payerlist;
@@ -164,7 +164,7 @@
                     typeof data !== 'undefined') {
                     vm.message = data.message;
                     Notification.error({ message: vm.message, delay: 5000 });
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
                 else {
                     vm.refreshstudentlist = data;
@@ -205,7 +205,7 @@
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
                         delay: 5000
                     });
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
                 else {
                     vm.payerstudentlist = data.studentpayerlist;
@@ -266,7 +266,7 @@
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
                         delay: 5000
                     });
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
                 else {
                     vm.gridOptions.data = data.invoicelist;
@@ -305,7 +305,7 @@
                     if ((typeof data === 'undefined' || data.error === true) &&
                         typeof data !== 'undefined') {
                         Notification.error({ message: vm.message, delay: 5000 });
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     else {
                         Notification.success({ message: vm.message, delay: 5000 });
@@ -364,7 +364,7 @@
                     if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
                         typeof data !== 'undefined') {
                         Notification.error({ message: vm.message, delay: 5000 });
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     else {
                         Notification.success({ message: vm.message, delay: 5000 });
@@ -410,7 +410,7 @@
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
                         delay: 5000
                     });
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
                 else {
                     vm.Invoice.status = 'new';
@@ -469,7 +469,7 @@
                     if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
                         typeof data !== 'undefined') {
                         Notification.error({ message: vm.message, delay: 5000 });
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     else {
                         Notification.success({ message: vm.message, delay: 5000 });
@@ -528,7 +528,7 @@
                     if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
                         typeof data !== 'undefined') {
                         Notification.error({ message: vm.message, delay: 5000 });
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     else {
                         Notification.success({ message: vm.message, delay: 5000 });
@@ -576,7 +576,7 @@
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
                         delay: 5000
                     });
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
                 else {
                     vm.paygridOptions.data = data.paymentlist;
@@ -957,7 +957,7 @@
                     if ((typeof vm.stripe === 'undefined' || vm.stripe.error === true) &&
                         typeof data !== 'undefined') {
                         Notification.error({ message: vm.message, delay: 5000 });
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     else {
                         getInvoices(vm.thispayer).then(function(zdata) {

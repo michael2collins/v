@@ -342,7 +342,7 @@
                     if ((typeof data === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: data.message , delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: data.message, delay: 5000});
                     }
@@ -373,7 +373,7 @@
                 if ((typeof data.message === 'undefined' || data.error === true)  
                         && typeof data !== 'undefined') {  
                     Notification.error({message: data.message , delay: 5000});
-                    $q.reject(data);
+                    return($q.reject(data));
                 } else {
                     Notification.success({message: data.message, delay: 5000});
                 }

@@ -139,7 +139,7 @@
                 if ((typeof vm.agerangelist === 'undefined' || data.error === true)  
                         && typeof data !== 'undefined') {  
                     Notification.error({message: data.message, delay: 5000});
-                    $q.reject(data);
+                    return($q.reject(data));
                 } else {
                     vm.agerangelist = data.agerangelist;
                     for (var iter=0,len=vm.agerangelist.length;iter<len;iter++) {
@@ -259,7 +259,7 @@
                     if ((typeof vm.thisschedule === 'undefined' || vm.thisschedule.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }

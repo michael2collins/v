@@ -133,7 +133,7 @@
                     if ((typeof vm.rankTypes === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
 //                        vm.ClassRank.rankType = String(vm.rankTypes[0].id);
 //                        vm.ClassRank.rankTypeVlu = String(vm.rankTypes[0].value);
@@ -169,7 +169,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
 //                        vm.ClassRankFKExists = data.ClassRankExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -220,7 +220,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message + ': ' + (
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""), delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -282,7 +282,7 @@
                     if ((typeof vm.Ranks === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vm.Ranks.length;iter<len;iter++) {
                             vm.Ranks[iter].value = String(vm.Ranks[iter].id);
@@ -315,7 +315,7 @@
                     if ((typeof ranks === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     return ranks;
                 }, function(error) {
@@ -342,7 +342,7 @@
                     if ((typeof vm.classes === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vm.classes.length;iter<len;iter++) {
                             vm.classes[iter].id = vm.classes[iter].classid;

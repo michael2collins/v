@@ -116,7 +116,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                         vm.RankFKExists = data.RankExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -173,7 +173,7 @@
                     if ((typeof vm.thisRank === 'undefined' || vm.thisRank.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }

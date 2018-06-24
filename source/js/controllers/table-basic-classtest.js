@@ -113,7 +113,7 @@
                     if ((typeof vm.classes === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data))();
                     } else {
                         for (var iter=0,len=vm.classes.length;iter<len;iter++) {
                             vm.classes[iter].id = vm.classes[iter].classid;
@@ -175,7 +175,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                 //        vm.ClassTestFKExists = data.ClassTestExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -231,7 +231,7 @@
                     if ((typeof vm.thisClassTest === 'undefined' || vm.thisClassTest.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }

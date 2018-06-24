@@ -61,7 +61,7 @@
         if ((typeof data === 'undefined' || data.error === true) &&
           typeof data !== 'undefined') {
           Notification.error({ message: vm.message, delay: 5000 });
-          $q.reject(data);
+          return($q.reject(data));
         }
         else {
           Notification.success({ message: vm.message, delay: 5000 });
@@ -106,7 +106,7 @@
             typeof data !== 'undefined') {
             Notification.error({ message: vm.message, delay: 5000 });
             vm.EmailViewFKExists = data.EmailViewExistsList;
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             Notification.success({ message: vm.message, delay: 5000 });
@@ -152,7 +152,7 @@
           if ((typeof vm.thisEmailView === 'undefined' || vm.thisEmailView.error === true) &&
             typeof data !== 'undefined') {
             Notification.error({ message: vm.message, delay: 5000 });
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             getEmailView(vm.data).then(function(zdata) {

@@ -69,7 +69,7 @@
               delay: 5000
             };
             Notification.error(themsg);
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             try {
@@ -95,7 +95,7 @@
               $log.debug(e.columnNumber); // 4
               $log.debug(e.stack); // "@Scratchpad/1:2:3\n"
               Notification.error(e.message);
-              $q.reject(data);
+              return($q.reject(data));
             }
 
           }
@@ -137,7 +137,7 @@
               delay: 5000
             };
             Notification.error(themsg);
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             Notification.success({ message: data.message, delay: 5000 });

@@ -103,7 +103,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                 //        vm.TesttypeFKExists = data.TesttypeExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -155,7 +155,7 @@
                     if ((typeof vm.thisTesttype === 'undefined' || vm.thisTesttype.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -218,7 +218,7 @@
                     if ((typeof vm.rankTypes === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                     }
                     return vm.rankTypes;

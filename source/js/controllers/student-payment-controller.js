@@ -180,7 +180,7 @@
                     if ((typeof data.payerlist === 'undefined' || data.payerlist.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.payerlist = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         vmpayment.payerlist = data.payerlist; 
                         if (data.payerlist.length > 0) {
@@ -215,7 +215,7 @@
                     if ((typeof data.FamilyList === 'undefined' || data.FamilyList.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.FamilyList = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     return vmpayment.FamilyList;
                 },
@@ -244,7 +244,7 @@
                     if ((typeof data.PriceList === 'undefined' || data.PriceList.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.PriceList = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vmpayment.PriceList.length;iter<len;iter++) {
                                 vmpayment.PriceList[iter].d2ndPersonDiscount12 = vmpayment.PriceList[iter].p12MonthPrice + 
@@ -298,7 +298,7 @@
                     if ((typeof data.PaymentPlanList === 'undefined' || data.PaymentPlanList.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.PaymentPlanList = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vmpayment.PaymentPlanList.length;iter<len;iter++) {
                             if (_.isEmpty(vmpayment.PaymentPlanList[iter].Pricesetdate)) {
@@ -339,7 +339,7 @@
                     if ((typeof data.paymenttypes === 'undefined' || data.paymenttypes.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.PaymentTypes = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     return vmpayment.PaymentTypes;
                 },
@@ -367,7 +367,7 @@
                     if ((typeof data.paymentplans === 'undefined' || data.paymentplans.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.PaymentPlans = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     return vmpayment.PaymentPlans;
                 },
@@ -430,7 +430,7 @@
                 $log.debug(data);
                 if ( data.error === true  || typeof data === 'undefined') {  
                     Notification.error({message: data.error === true ? data.error : "data error", delay: 5000});
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
 
                 getPaymentplan();
@@ -452,7 +452,7 @@
                     if ((typeof data.PaymentPaysList === 'undefined' || data.PaymentPaysList.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.PaymentPaysList = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vmpayment.PaymentPaysList.length;iter<len;iter++) {
                             vmpayment.PaymentPaysList[iter].paymentidstr = vmpayment.PaymentPaysList[iter].paymentid.toString();
@@ -486,7 +486,7 @@
                     if ((typeof data.PayerPaymentList === 'undefined' || data.PayerPaymentList.error === true)  && typeof data !== 'undefined') {  
                         vmpayment.PayerPaymentList = [];
                         Notification.error({message: data, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vmpayment.PayerPaymentList.length;iter<len;iter++) {
                             vmpayment.PayerPaymentList[iter].classpayidstr = vmpayment.PayerPaymentList[iter].classpayid.toString();
@@ -570,7 +570,7 @@
                 $log.debug(data);
                 if ( data.error === true  || typeof data === 'undefined') {  
                     Notification.error({message: data.error === true ? data.error : "data error", delay: 5000});
-                    $q.reject(data);
+                    return($q.reject(data));
                 }
 
                 getPaymentpays();

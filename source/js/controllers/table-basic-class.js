@@ -128,7 +128,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                         vm.ClassFKExists = data.ClassExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -189,7 +189,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message + ': ' + (
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""), delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -276,7 +276,7 @@
                     if ((typeof vm.rankTypes === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         vm.Class.registrationType = String(vm.rankTypes[0].id);
                         vm.Class.registrationTypeVlu = String(vm.rankTypes[0].value);
@@ -327,7 +327,7 @@
                     if ((typeof ranks === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     }
                     return ranks;
                 }, function(error) {
@@ -360,7 +360,7 @@
                     if ((typeof vm.ranks === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         vm.Class.rankForNextClass = String(data.Ranklist[0].value);
                     }

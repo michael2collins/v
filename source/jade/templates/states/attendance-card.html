@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <div class="col-md-12">
-    <div class="photo" style='height: 300px;'>
+  <div class="photo" style='min-height: 300px;'>
         <a href="" data-ng-click="card.showIndex = !card.showIndex;mother.vm.selectItem(card.studentID,card.showIndex, card, true)">
 
             <div class="mls photo-index" data-ng-if="card.showIndex" style='text-align: left; font-size: small;'>
@@ -17,13 +17,13 @@
             </div>
 
             <div class="mls photo-wrapper">
-                <!--            <img src="" style='height:auto; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+<!--                <img src="" style='height:auto; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
 -->
-                <img src="" style='height:200px; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+                <img src="" style='min-height:200px; max-width:100%;' data-ng-src="{{card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+
             </div>
-            <div class="photo-description" style='text-align: center;'>
-                <p style='font-size: large; line-height: 7px;'>{{card.firstname}}</p><br>
-                <p style='font-size: large; line-height: 7px;'>{{card.lastname}}</p>
+            <div class="photo-description" style='text-align: center; font-size: large;'>
+                {{card.firstname}}<br>{{card.lastname}}
             </div>
         </a>
     </div>

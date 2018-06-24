@@ -283,7 +283,7 @@
             typeof data !== 'undefined') {
             Notification.error({ message: vm.message, delay: 5000 });
             vm.EmailListFKExists = data.EmailListExistsList;
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             Notification.success({ message: vm.message, delay: 5000 });
@@ -329,7 +329,7 @@
           if ((typeof vm.thisEmailList === 'undefined' || vm.thisEmailList.error === true) &&
             typeof data !== 'undefined') {
             Notification.error({ message: vm.message, delay: 5000 });
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             Notification.success({ message: vm.message, delay: 5000 });

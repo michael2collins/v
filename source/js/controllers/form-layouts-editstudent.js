@@ -182,7 +182,7 @@
                 if ((typeof vmstudent.students === 'undefined' || vmstudent.students.error === true)  
                         && typeof data !== 'undefined') {  
                     Notification.error({message: vmstudent.message, delay: 5000});
-                    $q.reject(data);
+                    return($q.reject(data));
                 } else {
                     Notification.success({message: vmstudent.message, delay: 5000});
                     StudentServices.setTheStudent(data);

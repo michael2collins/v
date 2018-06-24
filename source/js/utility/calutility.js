@@ -125,6 +125,8 @@
         function setEventOpen(calEvent,studentpick,vm) {
             $log.debug('seteventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
             $("#eventpick").val(studentpick.FullName);
+            if (!calEvent.start) calEvent.start = moment();
+            if (!calEvent.end) calEvent.end = moment();
 
             $("#eventStartd").val(moment(calEvent.startd).tz('America/New_York').format('MM/DD/YYYY'));
 

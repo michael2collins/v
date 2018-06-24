@@ -138,7 +138,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
                         vm.ClassPgmFKExists = data.ClassPgmExistsList;
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -197,7 +197,7 @@
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message + ': ' + (
                             typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""), delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         Notification.success({message: vm.message, delay: 5000});
                     }
@@ -259,7 +259,7 @@
                     if ((typeof vm.programs === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         vm.ClassPgm.pgmid = String(vm.programs[0].id);
                         vm.ClassPgm.pgmVlu = String(vm.programs[0].value);
@@ -288,7 +288,7 @@
                     if ((typeof vm.classes === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vm.classes.length;iter<len;iter++) {
                             vm.classes[iter].id = vm.classes[iter].classid;
@@ -320,7 +320,7 @@
                     if ((typeof vm.pgmcats === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vm.pgmcats.length;iter<len;iter++) {
 //                            vm.pgmcats[iter].id = iter;
@@ -354,7 +354,7 @@
                     if ((typeof vm.classcats === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vm.classcats.length;iter<len;iter++) {
 //                            vm.classcats[iter].id = iter;
@@ -387,7 +387,7 @@
                     if ((typeof vm.agecats === 'undefined' || data.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                         for (var iter=0,len=vm.agecats.length;iter<len;iter++) {
 //                            vm.agecats[iter].id = iter;

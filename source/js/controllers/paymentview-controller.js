@@ -101,7 +101,7 @@
           if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
             typeof data !== 'undefined') {
             Notification.error({ message: vm.message, delay: 5000 });
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             Notification.success({ message: vm.message, delay: 5000 });

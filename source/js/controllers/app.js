@@ -207,7 +207,7 @@ var studentpick = {};
               delay: 5000
             };
             Notification.error(themsg);
-            $q.reject(data);
+            return($q.reject(data));
           }
           else {
             try {
@@ -235,7 +235,7 @@ var studentpick = {};
               $log.debug(e.columnNumber); // 4
               $log.debug(e.stack); // "@Scratchpad/1:2:3\n"
               Notification.error(e.message);
-              $q.reject(data);
+              return($q.reject(data));
             }
 
           }
@@ -541,7 +541,7 @@ var studentpick = {};
                     if ((typeof vm.emailcount === 'undefined' || vm.emailcount.error === true)  
                             && typeof data !== 'undefined') {  
                         Notification.error({message: vm.message, delay: 5000});
-                        $q.reject(data);
+                        return($q.reject(data));
                     } else {
                     //    Notification.success({message: vm.message, delay: 5000});
                         vm.emailcount = ( data.emailcount[0].count > 0 ? data.emailcount[0].count : '' ); 

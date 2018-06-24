@@ -11,7 +11,7 @@
                         <div class="form-group">
                             <label for="inputclass" class="control-label attendance">Class</label>
                             <div class="input-icon right">
-                                <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.setClass(vm.theclass);vm.refreshtheAttendance()" class="form-control attendance">
+                                <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.setClass(vm.theclass);vm.refreshtheAttendanceClick()" class="form-control attendance">
                         <option ng-repeat="g in vm.classes" ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  value="{{g.Description}}">{{g.Description}} {{g.TimeRange}}</option> 
                         <option>All</option>
                       </select>
@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <label for="inputlimit" class="control-label attendance">Limit</label>
                             <div class="input-icon right">
-                                <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit);vm.refreshtheAttendance()" class="form-control attendance">
+                                <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit);vm.refreshtheAttendanceClick()" class="form-control attendance">
                         <option ng-repeat="lim in vm.limits" ng-selected="lim == vm.limit"  
                             value="{{lim}}">{{lim}}</option>
                       </select>
@@ -33,7 +33,7 @@
                         <div class="form-group">
                             <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
                             <div class="input-icon right">
-                                <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendance();vm.getAttendanceHistory()" class="form-control attendance">
+                                <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendanceClick();vm.getAttendanceHistory()" class="form-control attendance">
                         <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option>
                         <option ng-repeat="iter in vm.DOWlist" 
                             ng-selected="iter.MondayOfWeek === vm.dowChoice" 
@@ -75,7 +75,7 @@
                             <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>
                         </div>
                         <div class="col-md-2">
-                            <button ng-click="vm.refreshtheAttendance()" class="btn btn-blue  attendance">Attendee List</button>
+                            <button ng-click="vm.refreshtheAttendanceClick()" class="btn btn-blue  attendance">Attendee List</button>
                         </div>
                     </div>
                     <div class="row">
