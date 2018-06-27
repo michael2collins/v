@@ -829,6 +829,8 @@ var studentpick = {};
         vm.removeCalendarEvent = removeCalendarEvent;
 
         vm.conversiondateopen = conversiondateopen;
+        vm.openSchedule = openSchedule;
+        vm.closeSchedule = closeSchedule;
         vm.schedToCal = schedToCal;
         vm.clearCal = clearCal;
         vm.transferCal = transferCal;
@@ -838,7 +840,8 @@ var studentpick = {};
         vm.conversiondate='';
           vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
           vm.bdateformat = vm.formats[4];
-
+        vm.open=true;
+        vm.close=false;
 
         function conversiondateopen($event) {
             vm.status.opened = true;
@@ -981,7 +984,16 @@ var studentpick = {};
             });
             
         });
-
+        function openSchedule() {
+            $.fn.Data.slideDown();
+            vm.open = false;
+            vm.close = true;
+        }
+        function closeSchedule() {
+            $.fn.Data.slideDown();
+            vm.open = true;
+            vm.close = false;
+        }
         function activate() {
             $log.debug('app.js activate entered');
             vm.textcolor = CalUtil.getColorByBgColor(vm.mycolor); // Set to complement of textColor.

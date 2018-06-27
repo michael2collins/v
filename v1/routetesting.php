@@ -566,6 +566,11 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
     if(array_key_exists('testtype', $allGetVars)){
         $testtype = $allGetVars['testtype'];
     }
+    if(array_key_exists('supplement', $allGetVars)){
+        $supplement = $allGetVars['supplement'];
+    } else {
+        $supplement = NULL;
+    }
 
     $picroot = './images/students/';
 
@@ -573,7 +578,7 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
     $db = new TestingDBHandler();
 
     // fetch task
-    $result = $db->getTestcandidateDetails($testtype);
+    $result = $db->getTestcandidateDetails($testtype,$supplement);
     $response["error"] = false;
     $response["testcandidatedetails"] = array();
 

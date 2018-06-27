@@ -43,7 +43,10 @@ var jQuery;
             return $this.pages[id];
         }
     };
-
+    $.fn.Data.slideDown = function() {
+        $(".portlet >.portlet-header>.tools>i").click();
+    };
+    
     $.fn.Data.Portlet = function(src){
         $(".portlet").each(function(index, element) {
             var me = $(this);

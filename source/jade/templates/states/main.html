@@ -128,8 +128,13 @@
   <div id="tab-general" ng-show="vm.isok">
 
     <div class="col-lg-12">
+      <button type="button" class="btn btn-green" ng-hide="vm.close" ng-click="vm.openSchedule()">Open Calendar
+        <i class="glyphicon glyphicon-calendar"></i></button>
+      <button type="button" class="btn btn-green" ng-hide="vm.open" ng-click="vm.closeSchedule()">Close Calendar
+        <i class="glyphicon glyphicon-calendar"></i></button>
       <div class="portlet portlet-blue">
         <div class="portlet-header">
+          
           <div class="caption">Calendar and Task Lists</div>
           <div class="tools"><i class="fa fa-chevron-init fa-chevron-down"></i></div>
         </div>

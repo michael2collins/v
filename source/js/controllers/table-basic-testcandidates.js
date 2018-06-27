@@ -138,6 +138,7 @@
         vm.gridleft=10;  //5
         vm.gridleftcnt = 0;
         vm.gridrightcnt = 0;
+        vm.restricted = true;
 
         $scope.$on('$routeChangeSuccess', function(event, current, previous) {
             $log.debugEnabled(true);
@@ -199,6 +200,8 @@
                 var rptGridOptions = {};
                 //            rptGridOptions.data = vm.resgridOptions.data;
                 rptGridOptions = saveResgridOptions;
+                rptGridOptions.data = vm.selectedStudents;
+                
                 rptGridOptions.enableGridMenu = true;
                 rptGridOptions.columnDefs = vm.checklistcoldef.columns;
                 //        rptGridOptions.exporterPdfTableLayout = {fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }} ;
@@ -279,6 +282,8 @@
                 var rptGridOptions = {};
                 //            rptGridOptions.data = vm.resgridOptions.data;
                 rptGridOptions = saveResgridOptions;
+                rptGridOptions.data = vm.selectedStudents;
+
                 rptGridOptions.enableGridMenu = true;
                 rptGridOptions.columnDefs = vm.promopostcard.columns;
                 rptGridOptions.exporterPdfDefaultStyle = { fontSize: 7 };
@@ -348,6 +353,8 @@
             var colarr = [];
             var rowstr;
             var colcounter = 0;
+            //rare, but if there are more cols then selected rows
+            numOfCols = datalen < numOfCols ? datalen : numOfCols;
             //convert fields to rows
             for (var i = 0; i < datalen; i++) {
                 var fieldstr = [];
@@ -363,7 +370,7 @@
                 }
                 colarr.push(fieldstr);
                 //now we can output
-                if (colcounter === numOfCols) {
+                if (colcounter === numOfCols ) {
                     //for the field row loop, we need to realign rows into columns
                     for (var m = 0; m < fieldlen; m++) {
                         rowstr = '{';
@@ -398,7 +405,7 @@
                 //            var half_length = Math.ceil(vm.resgridOptions.data.length / 2);    
                 rptGridOptions = saveResgridOptions;
                 rptGridOptions.data = convertDataToColumns(
-                    vm.resgridOptions.data, ['FullName', 'RankAchievedInTest', 'BeltSize'], ['Name:', 'Rank:', 'Size:'],
+                    vm.selectedStudents, ['FullName', 'RankAchievedInTest', 'BeltSize'], ['Name:', 'Rank:', 'Size:'],
                     2);
                 rptGridOptions.exporterHeaderFilter = myexpHeaderFilter;
 
@@ -957,9 +964,13 @@
         }
 
         function gettestcandidateDetails(thetesttype) {
+            
             //called by gettestdates
             $log.debug('gettestcandidateDetails entered:', thetesttype);
             var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype);
+            if (vm.restricted !== undefined) {
+                path = path + '&supplement=' + vm.restricted;                
+            }
             var messagetxt;
             //view testcandidatesource
             $log.debug('gettestcandidateDetails path:', path);
@@ -1237,6 +1248,8 @@
                 var testTime = vmTestRptmodal.testdatelist.starttime;
                 var rptGridOptions = {};
                 rptGridOptions = saveResgridOptions;
+                rptGridOptions.data = vm.selectedStudents;
+                
                 rptGridOptions.enableGridMenu = true;
                 rptGridOptions.columnDefs = vm.promotioncoldef.columns;
                 //        rptGridOptions.exporterPdfTableLayout = {fillColor: function (i, node) { return (i % 2 === 0) ?  '#CCCCCC' : null; }} ;
@@ -1370,9 +1383,11 @@
             if (inputArray.length > 0) {
                 vm.selected = true;
                 for (var i = 0, len = inputArray.length; i < len; i++) {
+
                     var info = {
                         ContactID: inputArray[i].contactID,
                         studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName,
+                        FullName: inputArray[i].FullName,
                         FirstName: inputArray[i].FirstName,
                         LastName: inputArray[i].LastName,
                         rankType: inputArray[i].ranktype,

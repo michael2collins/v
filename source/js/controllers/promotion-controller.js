@@ -149,6 +149,7 @@
             recommendedPgmid: inputArray[i].recommendedPgmid,
             recommendedClassnm: inputArray[i].recommendedClassnm,
             recommendedPgmnm: inputArray[i].recommendedPgmnm,
+
             classWas: inputArray[i].classWas,
             pgmWas: inputArray[i].pgmWas,
             crid: inputArray[i].crid,

@@ -357,13 +357,14 @@ left join daysattended j on (x.contactid = j.contactid and x.ranktype = j.rankty
 left join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist and x.studentschool = r.school)
 left join nclass c on (x.classwas = c.id and x.studentschool = c.school)
 left join nclasspgm p on (x.pgmwas = p.pgmid and c.id = p.classid and x.studentschool = p.school and c.school = p.school )
-right join nclasspays cp on (x.pgmwas = cp.pgmseq and x.classwas = cp.classseq and x.contactid = cp.contactid)
+left join nclasspays cp on (x.pgmwas = cp.pgmseq and x.classwas = cp.classseq and x.contactid = cp.contactid)
 left join nclasslist l on (l.id = p.pgmid and l.school = p.school)
 left join nclass nextc on (p.nextClassid = nextc.id and p.school = nextc.school)
 left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.school)
-        where x.testname = ? and x.testdescription = ?
+        where x.testname = ? 
         and x.studentschool = ?
 ";
+//        where x.testname = ? and x.testdescription = ?
 
 //        $schoolfield = "x.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
@@ -382,7 +383,8 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
         error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sss", $testname, $testtype, $school);
+//            $stmt->bind_param("sss", $testname, $testtype, $school);
+            $stmt->bind_param("ss", $testname,  $school);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -437,7 +439,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
     }
 
-    public function getTestcandidateDetails($testtype) {
+    public function getTestcandidateDetails($testtype,$supplement) {
         global $school;
         $sql = " Select nr.ranklist as nextrank, r.ranklist, r.ranktype, r.rankid AS rankid, 
          r.sortkey AS ranksortkey,r.rankGroup AS rankGroup,r.alphasortkey AS rankalphasortkey, t.* 
@@ -448,8 +450,14 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
              left join ranklist r 
          On r.ranklist = cr.currentrank and r.ranktype = cr.ranktype and r.school = t.studentschool)   
          inner join ranklist nr 
-         	On nr.sortkey = r.nextsortkey and nr.school = r.school and nr.ranktype = r.ranktype )  
-                 where t.testtype = ?  and t.studentschool = ?";
+         	On nr.sortkey = r.nextsortkey and nr.school = r.school and nr.ranktype = r.ranktype ) "; 
+        if ($supplement == "true") {
+            $sql .=   "  where t.testtype = ?  and t.studentschool = ? ";
+        }
+        else {
+            $sql .=   " where   t.studentschool = ? ";
+    
+        }
 
 //        $schoolfield = "t.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
@@ -460,7 +468,11 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
         error_log( print_R("getTestcandidateDetails sql: $sql", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("ss", $testtype, $school);
+            if ($supplement == "true") {
+                $stmt->bind_param("ss", $testtype, $school);
+            } else {
+                $stmt->bind_param("s", $school);
+            }
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
