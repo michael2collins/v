@@ -21,7 +21,6 @@
           </span>
 
        <div class="row row-icons">
-<!--        <div ng-controller="ModalPicUploadController"> -->
        <div>
         {{vmpicmodal.dataToPass.picfile}}
          <div class="row">
@@ -142,9 +141,8 @@
          </script>
          <script id="myPicksearch.html" type="text/ng-template">
           <div class="modal-header">
-           <h3 class="modal-title">Select Student Picture</h3>
+           <h3 class="modal-title">Select Picture</h3>
           </div>
-          {{vmpicsearch.dataToPass.picfile}}
           <div class="modal-body">
            <div ui-grid="vmpicsearch.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-selection ui-grid-auto-resize class="mygrid" ng-style="{height: (3*128)+132+'px'}"></div>
 
@@ -167,9 +165,6 @@
          <div class="col-md-4">
           <a href ng-click="vmpicmodal.openpick()"><i class=
                               "glyphicon glyphicon-upload"></i></a>
-          <!--    <button type="button" class="btn btn-default" ng-click="vmpickmodal.open()">Open me!</button> -->
-
-          <!--    <div ng-show="vmpicmodal.picfile">Selection from a modal: {{ vmpicmodal.picfile }}</div> -->
           <a href ng-click="vmpicmodal.opensearch()"><i class=
                               "glyphicon glyphicon-search"></i></a>
           <a href ng-click="vmpicmodal.openCamera()"><i class=

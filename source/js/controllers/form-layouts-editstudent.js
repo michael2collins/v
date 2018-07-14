@@ -121,7 +121,7 @@
             photoModal.modalInstance = $uibModal.open({
                 animation: photoModal.animationsEnabled,
                 templateUrl: 'templates/states/photos/photo.html',
-                controller: 'ModalPicUploadController',
+                controller: 'ModalCameraController',
                 controllerAs: 'vmpicmodal',
                 size: 'md',
                 windowClass: 'my-modal-popup',
