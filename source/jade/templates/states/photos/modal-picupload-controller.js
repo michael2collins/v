@@ -15,7 +15,7 @@
       '$uibModal',
       '$document',
       '$window',
-      'StudentServices',
+      'PhotoServices',
       'Notification',
       'dataToPass'
     ];
@@ -24,7 +24,7 @@
       '$log',
       '$uibModalInstance',
       'picfile',
-      'StudentServices',
+      'PhotoServices',
       '$route'
     ];
   ModalPicInstance2Controller.$inject = [
@@ -32,14 +32,14 @@
       '$log',
       '$uibModalInstance',
       'picfile',
-      'StudentServices',
+      'PhotoServices',
       'uiGridConstants',
       '$timeout',
       '$route'
     ];
 
 
-  function ModalPicUploadController($scope,  $log, $uibModalInstance, $uibModal, $document, $window, StudentServices, Notification,dataToPass) {
+  function ModalPicUploadController($scope,  $log, $uibModalInstance, $uibModal, $document, $window, PhotoServices, Notification,dataToPass) {
     /* jshint validthis: true */
     $log.debug('thisvm',dataToPass);
     var vmpicmodal = this;
@@ -63,7 +63,7 @@
     vmpicmodal.saveStudentPic = saveStudentPic;
     
     vmpicmodal.pic = ''; //or should we get this from the db
-    vmpicmodal.student = StudentServices.setTheStudent(vmpicmodal.dataToPass);
+    vmpicmodal.student = PhotoServices.setTheStudent(vmpicmodal.dataToPass);
     
   //  vmpicmodal.modalInstance = undefined;
 
@@ -147,7 +147,7 @@
 			posttakeon();
 		}
 		function saveStudentPic(student,picnm) {
-       StudentServices.saveStudentPic(student,picnm).then(function (data) {
+       PhotoServices.saveStudentPic(student,picnm).then(function (data) {
           $log.debug('saveStudentPic returned data:');
           $log.debug(data);
           vmpicmodal.dataToPass.pictureurldecache = picnm +  '?decache=' + Math.random();
@@ -167,19 +167,9 @@
 
                 vmpicmodal.data_uri = data_uri;            
 
-    			//var lname = document.getElementById('inputLastName').value;
-    			//var fname = document.getElementById('inputFirstName').value;
-    			//var stuid = document.getElementById('studentid').innerHTML;
-                //var picnm = lname + "." + fname + "." + stuid + ".jpg";
                 var ur = '../v1/picupload?picnm=' + picnm;
                 $log.debug("picnm",ur);
                 
-    			// display results in page
-    		//	document.getElementById('results').innerHTML = 
-    		//		'<h2>Here is your large, cropped image:</h2>' + 
-    		//		'<img src="'+data_uri+'"/><br/></br>' + 
-    			//	'<a href="'+data_uri+'" target="_blank">Open image in new window...</a>';
-			
 			// shut down camera, stop capturing
 			    vmpicmodal.Webcam.reset();
     		  vmpicmodal.cameraIsOn = 'off';
@@ -195,14 +185,6 @@
                     // 'code' will be the HTTP response code from the server, e.g. 200
                     // 'text' will be the raw response content
                     $log.debug("uploaded",code,text);
-        //            var em = angular.element(document.getElementById('form-layouts-editstudent'));
-                    //$log.debug("em", em);
-          //          var emscope = em.scope();
-        //            $log.debug("emscope", emscope);
-         //           setTimeout(function() {
-          //              emscope.vmstudent.setStudentPIC(picnm);
-        //                $log.debug("finished setpic");
-         //           }, 1000);    
                     //call services to save pic
                     saveStudentPic(student,picnm);
                     
@@ -264,7 +246,7 @@
     }
   }
 
-  function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile, StudentServices, $route) {
+  function ModalPicInstanceController($scope, $log, $uibModalInstance, picfile, PhotoServices, $route) {
     /* jshint validthis: true */
     var vmpicselect = this;
     vmpicselect.ok = ok;
@@ -274,7 +256,7 @@
     vmpicselect.renameFile = renameFile;
     vmpicselect.picpath = '../v1/studentfiles';
     vmpicselect.renamepath = '../v1/renamefile';
-    vmpicselect.student = StudentServices.getTheStudent();
+    vmpicselect.student = PhotoServices.getTheStudent();
     vmpicselect.newpicfile = '';
     vmpicselect.okpicFile = '';
 
@@ -294,7 +276,7 @@
       $log.debug('pic');
       $log.debug(currentpicfile);
 
-      return StudentServices.renameStudentPicFile(vmpicselect.renamepath, student, currentpicfile).then(function (data) {
+      return PhotoServices.renameStudentPicFile(vmpicselect.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
         $log.debug(data);
         vmpicselect.newpicfile = data.newpicfile;
@@ -305,8 +287,8 @@
 
     function ok() {
       $log.debug('hit ok');
-      var thisstudent = StudentServices.getTheStudent();
-      vmpicselect.okpicFile = StudentServices.getstudentPicFile();
+      var thisstudent = PhotoServices.getTheStudent();
+      vmpicselect.okpicFile = PhotoServices.getstudentPicFile();
       vmpicselect.okpicFile = renameFile(thisstudent, vmpicselect.okpicFile);
       $log.debug('got file for ok:', vmpicselect.okpicFile);
       $log.debug('for student:' ,thisstudent);
@@ -321,7 +303,7 @@
   }
 
 
-  function ModalPicInstance2Controller($scope, $log, $uibModalInstance, picfile, StudentServices, uiGridConstants, $timeout, $route) {
+  function ModalPicInstance2Controller($scope, $log, $uibModalInstance, picfile, PhotoServices, uiGridConstants, $timeout, $route) {
     /* jshint validthis: true */
     var vmpicsearch = this;
     vmpicsearch.ok = ok;
@@ -332,7 +314,7 @@
     vmpicsearch.renameFile = renameFile;
     vmpicsearch.picpath = '../v1/studentfiles';
     vmpicsearch.renamepath = '../v1/renamefile';
-    vmpicsearch.student = StudentServices.getTheStudent();
+    vmpicsearch.student = PhotoServices.getTheStudent();
     vmpicsearch.newpicfile = '';
     vmpicsearch.okpicFile = '';
     vmpicsearch.highlightFilteredHeader = highlightFilteredHeader;
@@ -350,7 +332,7 @@
 
     function getFiles() {
       $log.debug('getfiles');
-      return StudentServices.getstudentPicFiles(vmpicsearch.picpath).then(function (data) {
+      return PhotoServices.getstudentPicFiles(vmpicsearch.picpath).then(function (data) {
         $log.debug('getstudentPicFiles returned data');
         $log.debug(data);
         vmpicsearch.picfileList = data;
@@ -375,7 +357,7 @@
       $log.debug('pic');
       $log.debug(currentpicfile);
 
-      return StudentServices.renameStudentPicFile(vmpicsearch.renamepath, student, currentpicfile).then(function (data) {
+      return PhotoServices.renameStudentPicFile(vmpicsearch.renamepath, student, currentpicfile).then(function (data) {
         $log.debug('renameFile returned data');
         $log.debug(data);
         vmpicsearch.newpicfile = data.newpicfile;
@@ -401,7 +383,7 @@
                     gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'row selected ' + row.entity.name;
                         $log.debug(msg);
-                        StudentServices.setstudentPicFile(row.entity.name);
+                        PhotoServices.setstudentPicFile(row.entity.name);
       
                   });
             },
@@ -443,8 +425,8 @@
 
     function ok() {
       $log.debug('hit ok');
-      var thisstudent = StudentServices.getTheStudent();
-      vmpicsearch.okpicFile = StudentServices.getstudentPicFile();
+      var thisstudent = PhotoServices.getTheStudent();
+      vmpicsearch.okpicFile = PhotoServices.getstudentPicFile();
       vmpicsearch.okpicFile = renameFile(thisstudent, vmpicsearch.okpicFile);
       $log.debug('got file for ok:', vmpicsearch.okpicFile);
       $log.debug('for student:' ,thisstudent);

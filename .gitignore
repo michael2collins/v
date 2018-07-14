@@ -6,6 +6,8 @@ app/js
 app/css
 app/index.html
 app/templates/*
+app/*.js
+app/content
 doc/*
 doc
 dist

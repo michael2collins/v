@@ -15,11 +15,12 @@
     'ClassServices',
     '_',
     '$q',
+    'PhotoServices',
     '$uibModal'
     ];
 
     function FormLayoutsControllerEditStudent(StudentServices, $scope, $rootScope, $routeParams, 
-        $log, $location,Notification,ClassServices,_,$q,$uibModal) {
+        $log, $location,Notification,ClassServices,_,$q,PhotoServices,$uibModal) {
         /* jshint validthis: true */
         var vmstudent = this;
         var $ = angular.element;
@@ -33,7 +34,7 @@
         vmstudent.updateStudentRank = updateStudentRank;
         vmstudent.addStudentRank = addStudentRank;
         vmstudent.removeStudentRank = removeStudentRank;
-        vmstudent.setStudentPIC = setStudentPIC;
+//        vmstudent.setStudentPIC = setStudentPIC;
         vmstudent.rankremove = rankremove;
         vmstudent.getRankPartial = getRankPartial;
         vmstudent.getStudentRankTypes = getStudentRankTypes;
@@ -105,8 +106,13 @@
        $.fn.Data.Portlet('form-layouts-editstudent.js');
     
         function openPhoto() {
-            var photoModal = vmstudent;
-            photoModal.dataToPass = vmstudent.students;
+            openPhotoModal(vmstudent,vmstudent.students);
+
+
+        }
+        function openPhotoModal(vm, dataToPass) {
+            var photoModal = vm;
+            photoModal.dataToPass = dataToPass;
             photoModal.animationsEnabled = true;
 
             photoModal.modalInstance = undefined;
@@ -117,7 +123,6 @@
                 templateUrl: 'templates/states/photos/photo.html',
                 controller: 'ModalPicUploadController',
                 controllerAs: 'vmpicmodal',
-              //  scope: $scope,
                 size: 'md',
                 windowClass: 'my-modal-popup',
                 resolve: {
@@ -151,8 +156,7 @@
                 function(retvlu) {
                     $log.debug('search modalInstance result :', retvlu);
                     activate();
-                    
-                    photoModal.retvlu = retvlu;
+    
             }, function(error) {
                 $log.debug('photomodal ui failed to result, reason : ', error);
                 $log.info('Modal dismissed at: ' + new Date());
@@ -160,6 +164,7 @@
             });
 
         }
+        
 
         function dateopen($event) {
             vmstudent.status.opened = true;
@@ -243,7 +248,7 @@
                     return($q.reject(data));
                 } else {
                     Notification.success({message: vmstudent.message, delay: 5000});
-                    StudentServices.setTheStudent(data);
+                    PhotoServices.setTheStudent(data);
                     $log.debug('studen pic url', vmstudent.students.pictureurl);
                     if (_.isEmpty(vmstudent.students.pictureurl)) {
                         $log.debug('empty picture');
@@ -406,6 +411,7 @@
             });
         }
 
+/*
         function setStudentPIC(pic) {
             $log.debug('about setStudentPIC ', encodeURI(pic));
             vmstudent.students.pictureurl = encodeURI(pic);
@@ -421,7 +427,7 @@
 //            });
               updateStudent();
         }
-
+*/
         function getAllZips() {
             return StudentServices.getAllZips(vmstudent.zippath).then(function (data) {
                 $log.debug('getAllZips returned data');

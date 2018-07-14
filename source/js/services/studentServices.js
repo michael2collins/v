@@ -1,4 +1,4 @@
-(function () {
+(function (window, angular) {
     'use strict';
 
     angular
@@ -10,8 +10,6 @@
     function StudentServices( $http, $q, $log ) {
         var apikey;
         
-        var picFile = '';
-        var theStudent = '';
         var activeTab = 1; //default
         var service = {
              setapikey: setapikey,
@@ -26,14 +24,8 @@
             getStudentRankTypes: getStudentRankTypes,
             updateStudent: updateStudent,
             getStudent: getStudent,
-            getstudentPicFile: getstudentPicFile,
-            getstudentPicFiles: getstudentPicFiles,
-            setstudentPicFile: setstudentPicFile,
-            renameStudentPicFile: renameStudentPicFile,
             getRankPartial: getRankPartial,
             getRank: getRank,
-            setTheStudent: setTheStudent,
-            getTheStudent: getTheStudent,
             setActiveTab: setActiveTab,
             getContactTypeCounts: getContactTypeCounts,
             getActiveTab: getActiveTab,
@@ -41,7 +33,6 @@
             getUserPrefCols: getUserPrefCols,
             refreshStudents: refreshStudents,
             createUserPrefCols: createUserPrefCols,
-            saveStudentPic: saveStudentPic,
             getNotifications: getNotifications,
             removeNotification: removeNotification,
             sendEmail: sendEmail,
@@ -85,17 +76,6 @@
      }
 
         
-        function getstudentPicFile() {
-          $log.debug('getStuPicfile: ' + picFile);
-          return picFile;
-        }
-        function setTheStudent(student) {
-            theStudent = student;
-        }
-        function getTheStudent(){
-            $log.debug('getTheStudent', theStudent);
-            return theStudent;
-        }
 
      function refreshStudents(input) {
         var params = {input: input};
@@ -239,54 +219,6 @@
         });
       }
 
-      function getstudentPicFiles(path) {
-          $log.debug('getStuPicfiles ');
-        var request = $http({
-            method: "get",
-            url: path
-        });
-         
-        return( request.then( handleSuccess, handleError ) );
-          
-        }
-
-      function renameStudentPicFile(path, student, oldpicfile) {
-          $log.debug('renameStudentPicFile ');
-          $log.debug(student);
-          $log.debug('pic');
-          $log.debug(oldpicfile);
-          $log.debug('path');
-          $log.debug(path);
-          student.oldpicfile = oldpicfile;
-
-        var request = $http({
-            method: "PUT",
-            url: path,
-            data: student
-        });
-         
-        return( request.then( handleSuccess, handleError ) );
-          
-        }
-
-      function saveStudentPic( student, picnm) {
-          $log.debug('saveStudentPic :',student,picnm);
-          student.picnm = picnm;
-          var path = '../v1/pic';
-        var request = $http({
-            method: "PUT",
-            url: path,
-            data: student                
-        });
-         
-        return( request.then( handleSuccess, handleError ) );
-
-        }
-
-      function setstudentPicFile(pic) {
-          $log.debug('setStuPicfile: ' + pic);
-          picFile = pic;
-        } 
 
         function getAllStudents(path) {
             $log.debug('getAllStudents service entered');
@@ -637,4 +569,4 @@
         
 
         }
- })();
+ })(window, window.angular);
