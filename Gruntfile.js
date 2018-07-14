@@ -48,7 +48,7 @@ module.exports = function (grunt) {
 		    //translations: ['src/assets/languages/*.json'],
 	  css: [ 'source/less/*.css' ],
 	  apache: [ 'apache_setup/.htaccess' ],
-	  postjade: [ 'source/jade/templates/states/**/*.html', 'source/jade/templates/states/**/*.php'],
+	  postjade: [ 'source/jade/templates/states/**/*.html', 'source/jade/templates/states/**/*.php', 'source/jade/templates/states/**/*.js'],
       html: [ 'source/index.html' ]
 			//less: ['src/less/main.less', 'src/common/**/*.less']
 	},

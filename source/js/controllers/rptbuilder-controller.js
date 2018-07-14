@@ -794,14 +794,7 @@
                 } else {
                     pagebreak = {};
                 }
-            contentdtl.push(
-             [
-                certtext,
-              	{
-              	    columns
-              	}, 
-              	  pagebreak 
-            ]);
+            contentdtl.push([certtext, "{", columns, "}", pagebreak ]);
           }
           return contentdtl;
         }
@@ -1471,11 +1464,7 @@ $log.debug('school', vm.userdta);
                 calcsizes();
                 var rptwidth = vm.pagewidthpx;
                 var rptheight = vm.pageheightpx;
-                background = {      
-           			image: vm.backgroundimages[0],
-                   width: rptwidth,
-                   height: rptheight
-                };
+                background = { image: vm.backgroundimages[0],width: rptwidth,height: rptheight};
             } else {
                 background = '';
             }
@@ -1489,12 +1478,12 @@ $log.debug('school', vm.userdta);
                       vm.pageMarginB
                     ],
                   pageSize: vm.pageSize,
-                  background,
                     header: mycontentheader,
                     content: contentdtl,
                     footer: mycontentfooter,    
                     styles: getStyles()
                   };
+            docDefinition.background = background;
                   
             var myJsonString = JSON.stringify(docDefinition);
             $log.debug('doc json',myJsonString);
@@ -2309,15 +2298,6 @@ $log.debug('school', vm.userdta);
 
                   var docDefinition = {
                   pageOrientation: vm.pageOrientation,
-                  // [left, top, right, bottom] or [horizontal, vertical] or just a number for equal margins
-//                  pageMargins: vm.pageMargins,
-/*                  pageMargins: [
-                      vm.pageMarginL,
-                      hheight > vm.pageMarginT ? hheight : vm.pageMarginT,
-                      vm.pageMarginR,
-                      fheight > vm.pageMarginB ? fheight : vm.pageMarginB
-                    ],
-*/
                   pageMargins: [
                       vm.pageMarginL,
                       vm.pageMarginT,
@@ -2325,8 +2305,6 @@ $log.debug('school', vm.userdta);
                       vm.pageMarginB
                     ],
                   pageSize: vm.pageSize,
-                  background,
-    //note the page margin needs enough height to fit the header, and the first set of content should deal with the height topMargin
                     header: mycontentheader,
                     content: contentdtl,
                     footer: mycontentfooter,    
@@ -2406,6 +2384,7 @@ $log.debug('school', vm.userdta);
             	}
             
                   };
+            docDefinition.background = background;
                   
             var myJsonString = JSON.stringify(docDefinition);
             $log.debug('doc json',myJsonString);

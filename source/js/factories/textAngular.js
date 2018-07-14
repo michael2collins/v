@@ -7,7 +7,7 @@ Version 1.2.0
 See README.md or https://github.com/fraywing/textAngular/wiki for requirements and use.
 */
 
-(function(){ // encapsulate all variables so they don't become global vars
+(function(window,angular){ // encapsulate all variables so they don't become global vars
 	"Use Strict";
 
 	
@@ -267,7 +267,7 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 			],
 			setActive: function(font) {
 				// Convert to string if not already
-				if (typeof font !== 'string') { font = String(font) };
+				if (typeof font !== 'string') { font = String(font) }
 
 				angular.forEach(this.options, function(option) {
 					option['active'] = font === option.value ? true : false;
@@ -1340,7 +1340,7 @@ See README.md or https://github.com/fraywing/textAngular/wiki for requirements a
 			}
 		};
 	}]);
-})();
+})(window,window.angular);
 
 /**
  * @license AngularJS v1.2.8-build.2102+sha.5a9cb8b

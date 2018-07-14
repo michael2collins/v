@@ -7,9 +7,8 @@
  *                                        *
  ******************************************/
 
-'use strict';
 
-(function(global, angular) {
+(function(window, angular, navigator) {
     angular.module('ngmodel.format', [])
         .constant("modelFormatConfig", {
             "currency": {
@@ -259,7 +258,7 @@
     var floatKeyBoard = function(event, viewValue) {
         var which = event.which;
         return [188].indexOf(which) != -1 || (which === 190 || which === 110) && viewValue.toString().indexOf('.') === -1;
-    }
+    };
 
     global.keyHelper = {
         smallKeyBoard: smallKeyBoard,
@@ -269,4 +268,4 @@
         floatKeyBoard: floatKeyBoard
     };
 
-})(this, angular);
+})( window, window.angular, window.navigator);

@@ -118,6 +118,7 @@
             b = Math.round(b * 255);
 
             // Convert r b and g values to hex
+
             rgb = b | (g << 8) | (r << 16);
             return "#" + (0x1000000 | rgb).toString(16).substring(1);
         }
@@ -338,9 +339,11 @@
                     else {
 
                         $log.debug('save in eventdrop');
-                    //    $log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
+                    //    $log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, 
+                    //reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
 
-                     //   vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
+                     //   vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, 
+                     //true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
 
                         $log.debug('before save in eventdrop', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
                         userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype,

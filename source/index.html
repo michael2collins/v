@@ -31,39 +31,48 @@
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Oswald:400,700,300" />
     <link rel="stylesheet"   href="//fonts.googleapis.com/css?family=Droid+Sans" type="text/css" />
 
+
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
-    <!-- used -->
-<!--
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
--->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css" >
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css" />
 
+<!-- needed ?
+    <link rel="stylesheet" href="vendors/bootstrap-clockface/css/clockface.css" />
+    <link rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css" />
 
-    <link rel="stylesheet" href="vendors/angular-bootstrap-toggle-switch/style/bootstrap3/angular-toggle-switch-bootstrap-3.css" />
+-->
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/css/bootstrap3/bootstrap-switch.css">
 
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.css" />
 
+<!-- vendor:css -->
+    <link type="text/css" rel="stylesheet" href="css/stripecss.css" />
+<!-- endinject -->
 
-    <link rel="stylesheet" href="vendors/bootstrap-clockface/css/clockface.css" />
-    <link rel="stylesheet" href="vendors/calendar/zabuto_calendar.min.css" />
 
-    <!--CORE CSS -->
+
+<!-- inject:css -->
     <link type="text/css" rel="stylesheet" href="css/bootstrap-custom.css" />
     <link type="text/css" rel="stylesheet" href="css/themes/default.css" />
     <link type="text/css" rel="stylesheet" href="css/themes/blue.css" id="color-style" />
     <link type="text/css" rel="stylesheet" href="css/style.css" />
     <link type="text/css" rel="stylesheet" href="css/wysiwyg.css" />
-    <!--CORE JS -->
+<!-- endinject -->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/1.1.6/angularjs-color-picker.css" />
 
-    <!--start of mlc -->
-    <link type="text/css" rel="stylesheet" href="css/stripecss.css" />
+<script>
+  if (global === undefined) {
+    var global = window;
+  }
+</script>
+
     <!-- 2.1.4 ? -->
     <script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script> 
     <!-- 1.11.4 ?-->
@@ -74,24 +83,22 @@
     <!-- for logout -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.min.js"></script>
 
-    <!--slimscroll for mobile hamburger menu-->
-    <script src="vendors/slimScroll/jquery.slimscroll.min.js"></script>
 
-
-    <!--            not needed for event app -->
-    <script src="vendors/jquery-jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+<!-- needed ?
+    <link href="vendors/zoomPan-master/css/zoomPan.css" rel="stylesheet" type="text/css">
     <script src="vendors/jquery-jvectormap/jquery-jvectormap-world-mill-en.js"></script>
     <script src="vendors/jquery-jvectormap/gdp-data.js"></script>
-    <!--  not needed for event app -->
+old?
+    <script src="vendors/jquery-jvectormap/jquery-jvectormap-1.2.2.min.js"></script>
+-->
 
-    <link href="vendors/zoomPan-master/css/zoomPan.css" rel="stylesheet" type="text/css">
-
+    <!--slimscroll for mobile hamburger menu -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js"></script>
 
-    <script src="vendors/jquery-animateNumber/jquery.animateNumber.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.js"></script>
     <!-- not needed for event        -->
@@ -100,13 +107,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.fillbetween.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.stack.js"></script>
-    <script src="vendors/flot-chart/jquery.flot.tooltip.js"></script>
-    <script src="vendors/flot-chart/jquery.flot.spline.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.js"></script>
 
     <!-- not needed for event end            -->
 
-    <script src="vendors/calendar/zabuto_calendar.min.js"></script>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
@@ -160,6 +165,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.0/ui-bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/1.2.0/ui-bootstrap-tpls.min.js"></script>
 -->
+<script src="https://cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script>
 
@@ -168,27 +175,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script>
-
-    <script src="vendors/angular-ui-utils/ui-utils-ieshiv.min.js"></script>
-
-    <script src="vendors/angular-bootstrap-toggle-switch/angular-toggle-switch.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-mask/1.7.2/mask.min.js"></script>
 
-    <script src="vendors/CSV-JS/csv.js"></script>
-    <!-- do i need these?
-    <script src="vendors/pdfmake/build/pdfmake.min.js"></script>
-    <script src="vendors/pdfmake/build/vfs_fonts.js"></script>
-    -->
-    <!-- 4.0.7 ?-->
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.4.11/ui-grid.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.4.11/ui-grid.min.css" />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/classie/1.0.1/classie.min.js"></script>
-
-    <script src="vendors/angular-isotope/dist/angular-isotope.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script>
 
@@ -200,75 +198,10 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-file-upload/2.2.0/angular-file-upload.min.js"></script>
 
-    <style>
-        .my-drop-zone {
-            border: dotted 3px lightgray;
-        }
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-notification/0.3.6/angular-ui-notification.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-notification/0.3.6/angular-ui-notification.min.css" />
 
-        .nv-file-over {
-            border: dotted 3px red;
-        }
-
-        /* Default class applied to drop zones on over */
-
-        .another-file-over-class {
-            border: dotted 3px green;
-        }
-
-        html,
-        body {
-            height: 100%;
-        }
-
-        canvas {
-            /*  background-color: #f3f3f3; */
-            -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;
-            -moz-box-shadow: 3px 3px 3px 0 #e3e3e3;
-            box-shadow: 3px 3px 3px 0 #e3e3e3;
-            border: 1px solid #c3c3c3;
-            height: 100px;
-            margin: 6px 0 0 6px;
-        }
-    </style>
-
-    <link rel="stylesheet" href="vendors/angular-ui-notification/dist/angular-ui-notification.css">
-    <script src="vendors/angular-ui-notification/dist/angular-ui-notification.js"></script>
-
-    <script src="vendors/lvlDragDrop/script/lvl-drag-drop.js"></script>
-    <script src="vendors/lvlDragDrop/script/lvl-uuid.js"></script>
-    <style>
-        .lvl-over {
-            border: 1px dashed #555 !important;
-        }
-
-        .lvl-target {
-            background-color: #ddd;
-            opacity: .5;
-        }
-
-        [draggable] {
-            cursor: move;
-        }
-    </style>
-    <style>
-        .attendance {
-            font-size: x-large;
-            height: 70px;
-        }
-
-        .watermark {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            opacity: 0.25;
-            font-size: 3em;
-            width: 100%;
-            text-align: center;
-            z-index: 1000;
-        }
-    </style>
-    <script src="vendors/angular-deckgrid/angular-deckgrid.js"></script>
-    <script src="vendors/webcam/webcam.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css" rel="stylesheet">
 
@@ -286,81 +219,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.3/css/selectize.default.min.css" />
-    <style>
-        body {
-            padding: 15px;
-        }
 
-        .ui-select-bootstrap>.ui-select-match>.btn {
-            /*      max-width: 205px;*/
-            background-color: white;
-            color: black;
-        }
-
-        .select2>.select2-choice.ui-select-match {
-            /* Because of the inclusion of Bootstrap */
-            height: 29px;
-        }
-
-        .selectize-control>.selectize-dropdown {
-            top: 36px;
-        }
-
-        .select-box {
-            background: #fff;
-            position: relative;
-            /*      z-index: 10001; causing problems on student class tab payer box*/
-        }
-
-        .alert-info.positioned {
-            margin-top: 1em;
-            position: relative;
-            z-index: 10000;
-            /* The select2 dropdown has a z-index of 9999 */
-        }
-
-        .ui-select-choices {
-            position: fixed;
-            top: auto;
-            left: auto;
-            width: auto !important;
-            z-index: 10002;
-        }
-    </style>
-
-
-
-
-    <style>
-        .chosen-choices,
-        .chosen-container {
-            width: 500px !important;
-        }
-    </style>
-
-    <style>
-        #calendar .fc-day-number {
-            text-decoration: underline;
-            width: 15px;
-            height: 16px;
-            text-align: right;
-        }
-
-        /*
-    #calendar .fc-day-number:hover {
-        cursor: pointer;
-    }
-    */
-
-        #calendar .my-cell-overlay-day-corner {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 19px;
-            height: 16px;
-            cursor: pointer;
-        }
-    </style>
+    
 <!-- 2.7.3? -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.css">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.js"></script>
@@ -373,6 +233,8 @@
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.js"></script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.css" />
     <script src='https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-rangy.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-sanitize.js'></script>
@@ -384,219 +246,43 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js"></script>
 
-    <style>
-
-        .red {
-            color: red;
-        }
-
-        .statictoolbar {
-            position: fixed;
-            top: 12px;
-            z-index: 200;
-            left: 0;
-            right: 0;
-        }
-
-        .btn-blue {
-            background-color: #6acaff;
-            color: #fff;
-            border-color: #4c7889;
-        }
-
-        .btn-blue:hover,
-        .btn-blue:focus,
-        .btn-blue.focus,
-        .btn-blue:active,
-        .btn-blue.active,
-        .open>.dropdown-toggle.btn-blue {
-            border-color: #33505b;
-        }
-
-        .btn-blue:active,
-        .btn-blue.active,
-        .open>.dropdown-toggle.btn-blue {
-            background-image: none;
-        }
-
-        .btn-blue.disabled,
-        .btn-blue[disabled],
-        fieldset[disabled] .btn-blue,
-        .btn-blue.disabled:hover,
-        .btn-blue[disabled]:hover,
-        fieldset[disabled] .btn-blue:hover,
-        .btn-blue.disabled:focus,
-        .btn-blue[disabled]:focus,
-        fieldset[disabled] .btn-blue:focus,
-        .btn-blue.disabled.focus,
-        .btn-blue[disabled].focus,
-        fieldset[disabled] .btn-blue.focus,
-        .btn-blue.disabled:active,
-        .btn-blue[disabled]:active,
-        fieldset[disabled] .btn-blue:active,
-        .btn-blue.disabled.active,
-        .btn-blue[disabled].active,
-        fieldset[disabled] .btn-blue.active {
-            border-color: #4c7889;
-        }
-
-
-        [ta-button] {
-            height: 44px;
-            margin-bottom: 5px;
-        }
-
-        .full-height {
-            height: calc(100vh - 2px - 30px);
-        }
-
-        .ui-grid-3rowcenter div {
-            position: relative;
-            top: 33%;
-        }
-
-        .ui-grid-vcenter div {
-            position: relative;
-            text-align: center;
-            top: 50%;
-            -webkit-transform: translateY(-50%);
-            -moz-transform: translateY(-50%);
-            -o-transform: translateY(-50%);
-            -ms-transform: translateY(-50%);
-            transform: translateY(-50%);
-        }
-    </style>
     <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css' type='text/css' media='all' />
     <script type='text/javascript' src='//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js'></script>
-    <style type="text/css">
-        #loading-bar .bar {
-            position: relative;
-            width: 100%;
-            height: 20px;
-        }
-    </style>
-    <style type="text/css">
-        .btn-wrap {
-            white-space: normal !important;
-            word-wrap: break-word !important;
-            word-break: normal !important;
-        }
-    </style>
-    <style type="text/css">
-        span.bigcheck-target {
-            font-family: FontAwesome;
-            /* use an icon font for the checkbox */
-        }
 
-        input.bigcheck {
-            position: relative;
-            left: -999em;
-            /* hide the real checkbox */
-            display: none;
-        }
-
-        input.bigcheck+span.bigcheck-target:after {
-            content: "\f096";
-            /* In fontawesome, is an open square (fa-square-o) */
-        }
-
-        input.bigcheck:checked+span.bigcheck-target:after {
-            content: "\f046";
-            /* fontawesome checked box (fa-check-square-o) */
-        }
-
-        .toggle input.bigcheck+span.bigcheck-target:after {
-            content: "\f204";
-            /* In fontawesome, is an open square (fa-square-o) */
-        }
-
-        .toggle input.bigcheck:checked+span.bigcheck-target:after {
-            content: "\f205";
-            /* fontawesome checked box (fa-check-square-o) */
-        }
-
-        span.bigcheck {
-            background-color: white;
-            color: green;
-            font-family: sans-serif;
-            font-weight: 500;
-            display: block;
-            padding: 0.5em;
-            ;
-        }
-
-        .grid-align {
-            text-align: center;
-        }
-    </style>
-    
-    <style>
-.dropdown-submenu {
-    position: relative;
-}
-
-.dropdown-submenu .dropdown-menu {
-    top: 0;
-    left: 100%;
-    margin-top: -1px;
-
-}
-body > .dropdown-menu {
-    visibility: hidden;
-    overflow: visible;
-}
-.currency{
-    text-align:right;
-}
-
-</style>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js"></script> 
 
-<!--
-	<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-    <script src="vendors/angular-payments/lib/angular-payments.js"></script>
--->
-<style>
-/**
- * The CSS shown here will not be introduced in the Quickstart guide, but shows
- * how you can use CSS to style your Element's container.
- */
-.StripeElement {
-  background-color: white;
-  height: 40px;
-  padding: 10px 12px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  box-shadow: 0 1px 3px 0 #e6ebf1;
-  -webkit-transition: box-shadow 150ms ease;
-  transition: box-shadow 150ms ease;
-}
-
-.StripeElement--focus {
-  box-shadow: 0 1px 3px 0 #cfd7df;
-}
-
-.StripeElement--invalid {
-  border-color: #fa755a;
-}
-
-.StripeElement--webkit-autofill {
-  background-color: #fefde5 !important;
-}  
-</style>
 <script src="https://js.stripe.com/v3/"></script>
-<script src="vendors/jquery.cardswipe/dist/jquery.cardswipe.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ng-idle/1.3.2/angular-idle.min.js"></script>
 
-<!-- conflicts with textangular sanitize
- <script type="text/javascript" src='https://ajax.googleapis.com/ajax/libs/angularjs/1.4.10/angular-sanitize.min.js'></script>
- -->
-    <!-- the other sections can get out of date, so this is for testing only, else use the main.js, lib.js -->
-    <!--    <script src="js/main.js"></script>    -->
 
-    <!-- compiled JavaScript -->
+<!-- last:css -->
+<!-- endinject -->
+
+<!-- needed ?
+    <script src="vendors/calendar/zabuto_calendar.min.js"></script>
+-->
+
+<!-- vendor:js -->
+
+    <script src="vendors/jquery-animateNumber/jquery.animateNumber.min.js"></script>
+    <script src="vendors/flot-chart/jquery.flot.tooltip.js"></script>
+    <script src="vendors/flot-chart/jquery.flot.spline.js"></script>
+    <script src="vendors/CSV-JS/csv.js"></script>
+    <script src="vendors/angular-isotope/dist/angular-isotope.js"></script>
+    <script src="vendors/lvlDragDrop/script/lvl-drag-drop.js"></script>
+    <script src="vendors/lvlDragDrop/script/lvl-uuid.js"></script>
+    <script src="vendors/angular-deckgrid/angular-deckgrid.js"></script>
+    <script src="vendors/jquery.cardswipe/dist/jquery.cardswipe.js"></script>
+
+<!-- endinject -->
+
+
+<!-- inject:js -->
+
+
     <script type="text/javascript" src="js/app.js"></script>
+    <script type="text/javascript" src="js/core/core.module.js"></script>
     <script type="text/javascript" src="js/utility/utility.js"></script>
     <script type="text/javascript" src="js/utility/calutility.js"></script>
     <script type="text/javascript" src="js/controllers/app.js"></script>
@@ -618,8 +304,6 @@ body > .dropdown-menu {
     <script type="text/javascript" src="js/controllers/form-validation.js"></script>
     <script type="text/javascript" src="js/controllers/page-404.js"></script>
     <script type="text/javascript" src="js/controllers/page-500.js"></script>
-    <!-- <script type="text/javascript" src="js/controllers/page-fullcalendar.js"></script>
- -->
     <script type="text/javascript" src="js/controllers/page-lock-screen.js"></script>
     <script type="text/javascript" src="js/controllers/page-signin.js"></script>
     <script type="text/javascript" src="js/controllers/page-signup.js"></script>
@@ -665,7 +349,7 @@ body > .dropdown-menu {
     <script type="text/javascript" src="js/controllers/student-class-controller.js"></script>
     <script type="text/javascript" src="js/controllers/student-upload-controller.js"></script>
     <script type="text/javascript" src="js/directives/ngThumbupload.js"></script>
-    <script type="text/javascript" src="js/controllers/model-picupload-controller.js"></script>
+    <script type="text/javascript" src="templates/states/photos/model-picupload-controller.js"></script>
     <script type="text/javascript" src="js/controllers/student-classmodal-controller.js"></script>
     <script type="text/javascript" src="js/controllers/student-history-controller.js"></script>
     <script type="text/javascript" src="js/controllers/newstudent-controller.js"></script>
@@ -683,6 +367,8 @@ body > .dropdown-menu {
 
     <script type="text/javascript" src="js/services/statsServices.js"></script>
     <script type="text/javascript" src="js/services/templateServices.js"></script>
+<!-- endinject -->    
+
 <!--    <script type="text/javascript">
         //<![CDATA[ 
         var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");

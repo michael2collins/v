@@ -1775,12 +1775,12 @@
                     vm.pageMarginB
                 ],
                 pageSize: vm.pageSize,
-                background,
                 header: mycontentheader,
                 content: contentdtl,
                 footer: mycontentfooter,
                 styles: getStyles()
             };
+            docDefinition.background = background;
 
             var myJsonString = JSON.stringify(docDefinition);
             $log.debug('doc json', myJsonString);

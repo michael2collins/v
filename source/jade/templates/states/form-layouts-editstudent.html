@@ -57,7 +57,10 @@
                                 </span>
                             </div>
                           </div>
-
+                        <div class="row">
+                           <div class="col-md-12 col-xs-12"><a ng-click="vmstudent.openPhoto()" class="btn  btn-sm btn-green">Manage Photo</a></div>
+                        </div>
+                          <!--
                           <div class="row row-icons">
                             <div ng-controller="ModalPicUploadController as vmpicmodal">
                               <div class="row">
@@ -89,13 +92,13 @@
                                       
                                       </div>
                                       <div id="results" style="display:none">
-                                      		<!-- Your captured image will appear here... -->
+                                      		<!-- Your captured image will appear here... - - >
                                       </div>
 	
                                     </div>
                                   </span>
                                 </div>
-                                <!--end photowrapper                       -->
+                                <!--end photowrapper                       - - >
                               </div>
 
                               <script id="myPickupload.html" type="text/ng-template">
@@ -115,7 +118,7 @@
 
                                         <div class="col-md-9" style="margin-bottom: 40px">
                                           <!--                               <pre>{{vmpicselect | json}}</pre>
-                            -->
+                            - - >
                                           <table class="table">
                                             <thead>
                                               <tr>
@@ -130,13 +133,13 @@
                                               <tr ng-repeat="item in vmstupicupload.uploader.queue">
                                                 <td>
                                                   <strong>{{ item.file.name }}</strong>
-                                                  <!-- Image preview -->
-                                                  <!--auto height-->
-                                                  <!--<div ng-thumb="{ file: item.file, width: 100 }"></div>-->
-                                                  <!--auto width-->
+                                                  <!-- Image preview - - >
+                                                  <!--auto height- - >
+                                                  <!--<div ng-thumb="{ file: item.file, width: 100 }"></div>- - >
+                                                  <!--auto width- - >
                                                   <div ng-show="vmstupicupload.uploader.isHTML5" ng-thumbupload="{ file: item._file, height: 100 }"></div>
-                                                  <!--fixed width and height -->
-                                                  <!--<div ng-thumb="{ file: item.file, width: 100, height: 100 }"></div>-->
+                                                  <!--fixed width and height - - >
+                                                  <!--<div ng-thumb="{ file: item.file, width: 100, height: 100 }"></div>- - >
                                                 </td>
                                                 <td ng-show="vmstupicupload.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
                                                 <td ng-show="vmstupicupload.uploader.isHTML5">
@@ -201,7 +204,7 @@
                                   </div>
                                   <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
                                   </div>
-                                </div> -->
+                                </div> - - >
                                 <input class="form-control" id="picfile" name="picfile" ng-show="false" ng-model="vmpicmodal.picfile" placeholder="File Name" type="text">
                                 <button class="btn btn-green" ng-click="vmstudent.setStudentPIC(vmpicmodal.picfile); vmpicmodal.picfile=''" ng-show="vmpicmodal.picfile" type="button">Save Picture</button>
 
@@ -213,9 +216,9 @@
                               <div class="col-md-4">
                                 <a href ng-click="vmpicmodal.openpick()"><i class=
                               "glyphicon glyphicon-upload"></i></a>
-                                <!--    <button type="button" class="btn btn-default" ng-click="vmpickmodal.open()">Open me!</button> -->
+                                <!--    <button type="button" class="btn btn-default" ng-click="vmpickmodal.open()">Open me!</button> - - >
 
-                                <!--    <div ng-show="vmpicmodal.picfile">Selection from a modal: {{ vmpicmodal.picfile }}</div> -->
+                                <!--    <div ng-show="vmpicmodal.picfile">Selection from a modal: {{ vmpicmodal.picfile }}</div> - - >
                                 <a href ng-click="vmpicmodal.opensearch()"><i class=
                               "glyphicon glyphicon-search"></i></a>
                                 <a href ng-click="vmpicmodal.openCamera()"><i class=
@@ -225,6 +228,7 @@
                               </div>
                             </div>
                           </div>
+                          -->
                         </div>
 
 

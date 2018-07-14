@@ -142,48 +142,51 @@
             return moment(checktime).format('MM/DD/YYYY hh:mm A') + ' ' + moment(checktime).tz('America/New_York').format('Z z');
         }
 
-
+        function elseSendNotification (title, options) {
+            console.log('fallback notify');
+            alert(title + ": " + options.body);
+        }
+        function sendWindowNotification(title, options, optionssyn) {
+            console.log('in window');
+            try {
+                $window.Notification.requestPermission().then(function(permission) {
+                    console.log('requestPermission', permission);
+                    if (permission !== 'granted') {
+                        console.log('fallback notify from incognito');
+                        alert(title + ": " + options.body);
+                    }
+                    else {
+                        return new $window.Notification(title, optionssyn);
+                    }
+                });
+            }
+            catch (e) {
+                console.log('notification requestPermission error', e);
+            }
+            
+        }
+        function sendMozNotification(title, options, optionssyn) {
+            // Gecko < 22
+            console.log('in moz');
+            return $window.navigator.mozNotification
+                .createNotification(title, optionssyn.body, optionssyn.icon)
+                .show();
+            
+        }
         function sendNotification(title, options, optionssyn) {
             // Memoize based on feature detection.
             if ("Notification" in $window) {
-                sendNotification = function(title, options, optionssyn) {
-                    console.log('in window');
-                    try {
-                        $window.Notification.requestPermission().then(function(permission) {
-                            console.log('requestPermission', permission);
-                            if (permission !== 'granted') {
-                                console.log('fallback notify from incognito');
-                                alert(title + ": " + options.body);
-                            }
-                            else {
-                                return new $window.Notification(title, optionssyn);
-                            }
-                        });
-                    }
-                    catch (e) {
-                        console.log('notification requestPermission error', e);
-                    }
-
-                };
+                   sendWindowNotification(title, options, optionssyn);
             }
             else if ("mozNotification" in $window.navigator) {
-                sendNotification = function(title, options, optionssyn) {
-                    // Gecko < 22
-                    console.log('in moz');
-                    return $window.navigator.mozNotification
-                        .createNotification(title, optionssyn.body, optionssyn.icon)
-                        .show();
-                };
+                   sendMozNotification(title, options, optionssyn);
             }
             else {
-                sendNotification = function(title, options) {
-                    console.log('fallback notify');
-                    alert(title + ": " + options.body);
-                };
+                  elseSendNotification(title, options);
             }
             return sendNotification(title, options, optionssyn);
         }
-
+/*
         function syntaxHighlight(json) {
             if (typeof json != 'string') {
                 json = JSON.stringify(json, undefined, 2);
@@ -208,21 +211,21 @@
                 return '<span class="' + cls + '">' + match + '</span>';
             });
         }
-
+*/
         function mynotify(msg) {
             $log.debug('notify entered', msg);
             var title = msg.title;
-            var output = {
+  /*          var output = {
                 title: msg.title,
                 start: msg.start,
                 now: moment()
                 //             assignee: msg.userpick,
                 //             reminder: msg.reminderInterval,
                 //             type: msg.eventtype
-            };
+            }; */
             //var str = JSON.stringify(output, undefined, 4);
             var str = 'check calendar for: ' + msg.title + ' at: ' + msg.start;
-            var iconstr = 'https://natick.villaris.us/images/notifyicon.jpg';
+            var iconstr = 'https://vdojo.villaris.us/images/notifyicon.jpg';
             sendNotification(title, {
                 body: str,
                 icon: iconstr,

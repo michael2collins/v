@@ -1,4 +1,5 @@
-(function(window,angular,crypto) {
+/*jshint esversion: 6 */
+(function(window,angular,crypto,Uint8Array) {
     'use strict';
     angular
         .module('ng-admin')
@@ -26,9 +27,10 @@
 
         //https://gist.github.com/jed/982883
         function uuidv4() {
+/*jslint bitwise: true */            
           return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
             (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-          )
+          );
         }
 
         function maxObjArr(arr,attr) {
@@ -46,4 +48,4 @@
         }
         
     }
-})(window,window.angular,window.crypto);
+})(window,window.angular,window.crypto,window.Uint8Array);

@@ -350,6 +350,7 @@ var studentpick = {};
 
             $log.debug('islogin main controller');
             vm.isok = UserServices.isapikey();
+            vm.userdta={};
 
             if (vm.isok) {
                 $log.debug('setting apikey for services in main controller');
@@ -1822,6 +1823,42 @@ var studentpick = {};
 
             });
         }
+        
+        function gety(x, seriesIndex) {
+            $log.debug('gety:', x, seriesIndex);
+            var retvl = [];
+            if (getYType(seriesIndex) !== 'Net') {
+                var d2_1a = contentForGraph(vm.studentstats,
+                    'month',
+                    'summaryvalue',
+                    'ContactType',
+                    getYType(seriesIndex),
+                    getYStatus(seriesIndex)
+                );
+                $log.debug('gety d2_1a', d2_1a, x);
+                for (var iter = 0, len = d2_1a.length; iter < len; iter++) {
+                    for (var diter = 0, dlen = d2_1a[iter].length; diter < dlen; diter++) {
+                        if (d2_1a[iter][diter].month === x) {
+                            $log.debug('d2_1a content', d2_1a[iter][diter].details);
+                            var dta = {
+                                "item": {
+                                    "firstname": d2_1a[iter][diter].details.firstname,
+                                    "lastname": d2_1a[iter][diter].details.lastname,
+                                    "contactid": d2_1a[iter][diter].details.contactid,
+                                    "fulldate": d2_1a[iter][diter].details.fulldate
+                                }
+                            };
+                            retvl.push(dta);
+                        }
+                    }
+                }
+            }
+            else {
+                retvl = 'no text';
+            }
+            $log.debug('gety x', JSON.stringify(retvl));
+            return (JSON.stringify(retvl));
+        }
 
         function genGraph() {
             //      $log.debug('genGraph entered');
@@ -1846,61 +1883,29 @@ var studentpick = {};
                     //       var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
 
                     // Add a SumArray method to all arrays by expanding the Array prototype(do this once in a general place)
-                    Array.prototype.SumArray = function(arr) {
-                        //    $log.debug('sum:',arr,this);
-                        var sum = [];
-                        var sumx, sumy;
-                        if (arr !== null && this.length === arr.length) {
-                            for (var i = 0; i < arr.length; i++) {
-                                sumy = parseFloat(this[i][1]) + parseFloat(arr[i][1]);
-                                sumx = this[i][0];
-                                sum.push([sumx, sumy]);
-                            }
-                            return sum;
-                        }
-                        else {
-                            //          $log.debug('sum: nothing to add');
-                            return this;
-                        }
-
-                    };
-
-
-                    function gety(x, seriesIndex) {
-                        $log.debug('gety:', x, seriesIndex);
-                        var retvl = [];
-                        if (getYType(seriesIndex) !== 'Net') {
-                            var d2_1a = contentForGraph(vm.studentstats,
-                                'month',
-                                'summaryvalue',
-                                'ContactType',
-                                getYType(seriesIndex),
-                                getYStatus(seriesIndex)
-                            );
-                            $log.debug('gety d2_1a', d2_1a, x);
-                            for (var iter = 0, len = d2_1a.length; iter < len; iter++) {
-                                for (var diter = 0, dlen = d2_1a[iter].length; diter < dlen; diter++) {
-                                    if (d2_1a[iter][diter].month === x) {
-                                        $log.debug('d2_1a content', d2_1a[iter][diter].details);
-                                        var dta = {
-                                            "item": {
-                                                "firstname": d2_1a[iter][diter].details.firstname,
-                                                "lastname": d2_1a[iter][diter].details.lastname,
-                                                "contactid": d2_1a[iter][diter].details.contactid,
-                                                "fulldate": d2_1a[iter][diter].details.fulldate
-                                            }
-                                        };
-                                        retvl.push(dta);
-                                    }
+                    Object.defineProperty(Array.prototype, "SumArray", {
+                        value: function(arr) {
+                        //Array.prototype.SumArray = function(arr) {
+                            //    $log.debug('sum:',arr,this);
+                            var sum = [];
+                            var sumx, sumy;
+                            if (arr !== null && this.length === arr.length) {
+                                for (var i = 0; i < arr.length; i++) {
+                                    sumy = parseFloat(this[i][1]) + parseFloat(arr[i][1]);
+                                    sumx = this[i][0];
+                                    sum.push([sumx, sumy]);
                                 }
+                                return sum;
                             }
+                            else {
+                                //          $log.debug('sum: nothing to add');
+                                return this;
+                            }
+
                         }
-                        else {
-                            retvl = 'no text';
-                        }
-                        $log.debug('gety x', JSON.stringify(retvl));
-                        return (JSON.stringify(retvl));
-                    }
+                    });
+
+
 
                     var d2_sum = d2_1.SumArray(d2_2).SumArray(d2_3).SumArray(d2_4);
                     //   $log.debug('sumarr',d2_sum); // [6,8,10,12]

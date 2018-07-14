@@ -2,10 +2,11 @@
     'use strict';
     angular
         .module('ng-admin', [
+            'ng-admin.core',
+            'ngRoute',
             'ui.grid',
             'ui.utils',
             'ui.mask',
-            'ngRoute',
             'ui.bootstrap',
             'ui-notification',
             'lvl.directives.dragdrop',

@@ -1,5 +1,4 @@
-var jQuery;
-(function($){
+(function(window,$){
     $.fn.Data = function(){};
     var $this = $.fn.Data;
 
@@ -83,4 +82,4 @@ var jQuery;
             
         });
     };
-})(jQuery);
+})(window,window.$);
