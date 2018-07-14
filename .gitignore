@@ -6,7 +6,7 @@ app/js
 app/css
 app/index.html
 app/templates/*
-app/*.js
+app/*.js*
 app/content
 app/content/*
 doc/*
