@@ -8,6 +8,7 @@ app/index.html
 app/templates/*
 app/*.js
 app/content
+app/content/*
 doc/*
 doc
 dist
