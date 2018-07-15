@@ -61,6 +61,7 @@ gulp.task('templatecache', function() {
     return gulp
         .src(paths.htmltemplates)
         // .pipe(bytediff.start())
+        .pipe(using({prefix:'templatecache Using file', path:'relative', color:'blue', filesize:true}))        
         .pipe(minifyHtml({
             empty: true
         }))
