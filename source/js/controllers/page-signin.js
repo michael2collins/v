@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .controller('PageSigninController', PageSigninController);
         
         PageSigninController.$inject = [

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
     .factory('TemplateServices', TemplateServices);
 
     TemplateServices.$inject = ['$http', '$q', '$log', '$window'];

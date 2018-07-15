@@ -3,7 +3,7 @@
 
 
   angular
-    .module('ng-admin')
+    .module('ng-admin.all')
     .controller('PaymentViewInstanceController', PaymentViewInstanceController);
 
   PaymentViewInstanceController.$inject = [

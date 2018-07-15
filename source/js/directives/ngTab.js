@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .directive("ngTab", function($parse, $compile) {
             return {
                 link: function(scope, element, attrs) {

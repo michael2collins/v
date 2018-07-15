@@ -1,7 +1,7 @@
 (function(window,angular,$,moment) {
     'use strict';
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .factory('CalUtil', CalUtil);
 
     CalUtil.$inject = ['$log'];

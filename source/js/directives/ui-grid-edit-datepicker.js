@@ -3,7 +3,7 @@
           //https://github.com/Joiler/ui-grid-edit-datepicker
 
 angular
-    .module('ng-admin')
+    .module('ng-admin.all')
     .directive('uiGridEditDatepicker', ['$timeout', '$document', 'uiGridConstants', 'uiGridEditConstants', function($timeout, $document, uiGridConstants, uiGridEditConstants) {
     return {
         template: function(element, attrs) {	

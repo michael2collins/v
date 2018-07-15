@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')    
+        .module('ng-admin.all')    
     .factory('PaymentServices', PaymentServices);
     
     PaymentServices.$inject = ['_', '$http', '$log', "$q"];

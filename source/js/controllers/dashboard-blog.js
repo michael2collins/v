@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
     .controller('DashboardBlogController', function($scope, $routeParams){
     var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 

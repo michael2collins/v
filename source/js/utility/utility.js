@@ -2,7 +2,7 @@
 (function(window,angular,crypto,Uint8Array) {
     'use strict';
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .factory('Util', Util);
 
     Util.$inject = ['$log'];

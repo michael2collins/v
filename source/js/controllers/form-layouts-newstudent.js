@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
 .controller('FormLayoutsControllerNewStudent', function($scope, $routeParams){
     var menu_h = $('#sidebar').height();
     $('#form-layouts-newstudent ul.nav-pills li a').live('click', function() {

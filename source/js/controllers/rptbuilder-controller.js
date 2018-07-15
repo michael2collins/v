@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .controller('RptBuilderController', RptBuilderController)
             .config(function($provide) {
                 // this demonstrates how to register a new tool and add it to the default toolbar

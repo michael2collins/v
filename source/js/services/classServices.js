@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')    
+        .module('ng-admin.all')    
     .factory('ClassServices', ClassServices);
     
     ClassServices.$inject = ['_', '$http', '$q', '$log'];

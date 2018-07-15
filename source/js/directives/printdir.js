@@ -3,7 +3,7 @@
 //https://github.com/gilf/ngPrint
 
 angular
-    .module('ng-admin')
+    .module('ng-admin.all')
     .directive('ngPrint', function() {
         var printSection = document.getElementById('printSection');
 

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .controller('ChangepwdController', ChangepwdController);
         
         ChangepwdController.$inject = [

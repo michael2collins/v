@@ -7,7 +7,7 @@ var studentpick = {};
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .controller('AppController', AppController)
         .controller('MainController', MainController);
 

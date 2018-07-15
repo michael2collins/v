@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .factory('CalendarServices', CalendarServices);
 
     CalendarServices.$inject = ['$http', '$q', '$log', '$window', 'moment'];

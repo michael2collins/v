@@ -11,7 +11,7 @@
  *
  */
 
-angular.module('ng-admin')
+angular.module('ng-admin.all')
 .directive('imageloaded', [
 
     function () {

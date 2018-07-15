@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .controller('StudentHistoryController', StudentHistoryController);
     StudentHistoryController.$inject = [
     '$routeParams',

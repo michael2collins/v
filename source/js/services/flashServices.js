@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .factory('FlashService', FlashService);
 
     FlashService.$inject = ['$rootScope'];

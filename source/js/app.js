@@ -3,7 +3,9 @@
     angular
         .module('ng-admin', [
             'ng-admin.core',
-            'ngRoute',
+            'ng-admin.all'
+/*
+          //  'ngRoute',
             'ui.grid',
             'ui.utils',
             'ui.mask',
@@ -28,7 +30,7 @@
             'ui.grid.saveState',
             'ui.select',
             'iso.directives',
-            'ngSanitize',
+     //       'ngSanitize',
             'angularFileUpload',
             'akoenig.deckgrid',
             'color.picker',
@@ -37,18 +39,20 @@
             'appFilereader',
             'angularSpectrumColorpicker', 'ui.bootstrap.dropdownToggle',
             'angular-loading-bar',
-            'ngAnimate',
+     //       'ngAnimate',
             'ui.tinymce',
             'ngmodel.format',
             'ngIdle'
             //            'angularPayments'
-        ])
-
+*/            
+        ]);
+/*
         .config(['$locationProvider', function($locationProvider) {
             //came with angularjs 1.6
           $locationProvider.hashPrefix('');
         }])
-        
+*/
+/*        
         // allow DI for use in controllers, unit tests for lodash
         .constant('_', window._)
 
@@ -169,13 +173,6 @@
             IdleProvider.windowInterrupt('focus');
             TitleProvider.enabled(true);
         })
-        /* trigger on auth
-        .run(function($rootScope, Idle, $log, Keepalive){
-            Idle.watch();
-            $log.debug('app started.');
-   
-        })
-        */
 
         .run(function($rootScope) {
             $rootScope._ = window._;
@@ -207,11 +204,13 @@
                 }
             ]);
         }])
+        
         .run(['$log', function($log) {
             $log.debugEnabled(false);
         }])
 
         .config(routeConfig)
+*/        
 
 /* debug
         .run(function($rootScope, $location, $route, $routeParams, $log) {
@@ -223,9 +222,6 @@
                 $log.debug('routecurrent', $route.current);
             });
         })
-*/
-        // Initialize the application
-  //?      .run(['$location', function AppRun($location) {}])
 
         .run(authrun);
 
@@ -233,6 +229,7 @@
         var which = event.which;
         return (which == 45 || which == 189);
     };
+    
     routeConfig.$inject = ['$routeProvider', '$locationProvider'];
 
     authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','StudentServices', '$window', '$cookies', 'Idle'];
@@ -326,7 +323,6 @@
         });
 
     }
-
     function routeConfig($routeProvider, $locationProvider) {
 
         $routeProvider
@@ -426,4 +422,5 @@
         $locationProvider.html5Mode(false);
         //    $locationProvider.hashPrefix('!');
     }
+*/    
 })(window, window.angular, window.$, window._, window.tinymce, window.Stripe);

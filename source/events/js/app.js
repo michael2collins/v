@@ -1,7 +1,7 @@
 (function () {
     'use strict';
     angular
-        .module('ng-admin', [
+        .module('vdojo', [
         'ui.grid',
         'ui.utils',
         'ui.mask',

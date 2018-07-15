@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ng-admin.all')
         .controller('StudentClassController', StudentClassController);
 
     StudentClassController.$inject = [
