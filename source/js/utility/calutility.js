@@ -388,11 +388,12 @@
                     text: "Update",
                     click: function() {
                         $log.debug('save in edit. note need to update', $('#eventpick'), $('#contactpicklist'), studentpick, $('#studentpick'));
+                        $log.debug('save in edit: studentpick',vm.studentpick2);
                         var title = $('#eventTitle').val();
                         var startd = $('#eventStartd').val();
                         var start = $('#eventStart').val();
                         var end = $('#eventEnd').val();
-                        var contactid = studentpick.ID;
+                        var contactid = vm.studentpick2.ID;
                         var eventid = $('#eventid').val();
                         var eventclass = calEvent.className;
                         var color = calEvent.backgroundColor;

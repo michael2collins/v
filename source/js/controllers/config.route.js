@@ -28,11 +28,11 @@
                 }
             },
 */
-            {
+/*            {
                 url: '/main',
                 config: { templateUrl: 'templates/states/main.html', settings: {} }
             },
-            {
+ */           {
                 url: '/page-signin',
                 config: { templateUrl: 'templates/states/page-signin.html', settings: {} }
             },

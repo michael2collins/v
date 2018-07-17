@@ -3,7 +3,8 @@
     angular
         .module('ng-admin', [
             'ng-admin.core',
-            'ng-admin.all'
+            'ng-admin.all',
+            'ng-admin.main'
 /*
           //  'ngRoute',
             'ui.grid',
