@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('ng-admin.all')
+    .module('ng-admin.email')
     .controller('ModalEmailViewInstanceController', ModalEmailViewInstanceController);
 
   ModalEmailViewInstanceController.$inject = [
@@ -56,6 +56,7 @@
       return StudentServices.getEmailViews(input).then(function(data) {
         $log.debug('getEmailViews returned data');
         $log.debug(data);
+        var testdate;
 
         vm.message = data.message;
         if ((typeof data === 'undefined' || data.error === true) &&
@@ -67,12 +68,15 @@
           Notification.success({ message: vm.message, delay: 5000 });
           vm.data = data.EmailView[0];
           vm.data.body = $sce.trustAsHtml(data.EmailView[0].body);
-          if (!moment(vm.data.emaildate || moment()).isBefore(moment().subtract(1,'days').endOf('day')) ) {
+
+          testdate = Util.datecheckconvert(vm.data.emaildate);
+          
+          if (!moment(testdate || moment()).isBefore(moment().subtract(1,'days').endOf('day')) ) {
               // They are on the same day
-              vm.data.datef = moment(vm.data.emaildate || moment()).format("HH:mm");
+              vm.data.datef = moment(testdate || moment()).format("HH:mm");
           } else {
               // They are not on the same day
-              vm.data.datef = moment(vm.data.emaildate || moment()).format("MMM DD, YYYY");
+              vm.data.datef = moment(testdate || moment()).format("MMM DD, YYYY");
           }          
         }
         return vm.data;
@@ -200,7 +204,7 @@
 
       emailModal.modalInstance = $uibModal.open({
         animation: emailModal.animationsEnabled,
-        templateUrl: 'templates/states/email.html',
+        templateUrl: 'templates/email/email.html',
         controller: 'ModalEmailInstanceController as vm',
         size: 'md',
         scope: $scope,

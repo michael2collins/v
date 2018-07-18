@@ -4,6 +4,7 @@
         .module('ng-admin', [
             'ng-admin.core',
             'ng-admin.all',
+            'ng-admin.email',
             'ng-admin.main'
 /*
           //  'ngRoute',

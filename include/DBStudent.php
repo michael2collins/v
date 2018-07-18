@@ -1197,7 +1197,7 @@ class StudentDbHandler
 	{
 		error_log(print_R("getEmailFromUser entered with $user\n", TRUE) , 3, LOG);
 		$response = array();
-		$usql = "select email from users where id = ?";
+		$usql = "select systememail,email from users where id = ?";
 		if ($stmt = $this->conn->prepare($usql)) {
 			$stmt->bind_param("s", $user);
 			if ($stmt->execute()) {

@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('ng-admin.all')
+    .module('ng-admin.email')
     .controller('ModalEmailInstanceController', ModalEmailInstanceController);
 
   ModalEmailInstanceController.$inject = [

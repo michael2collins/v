@@ -264,7 +264,7 @@
 
             emailModal.modalInstance = $uibModal.open({
                 animation: emailModal.animationsEnabled,
-                templateUrl: 'templates/states/email.html',
+                templateUrl: 'templates/email/email.html',
                 controller: 'ModalEmailInstanceController as vm',
                 size: 'md',
                 scope: $scope,
@@ -294,7 +294,7 @@
 
             emailModal.modalInstance = $uibModal.open({
                 animation: emailModal.animationsEnabled,
-                templateUrl: 'templates/states/emaillist.html',
+                templateUrl: 'templates/email/emaillist.html',
                 controller: 'ModalEmailListInstanceController as vm',
                 size: 'lg',
                 windowClass: 'my-modal-popup',

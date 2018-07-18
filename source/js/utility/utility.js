@@ -12,7 +12,8 @@
             maxObjArr: maxObjArr,
             getByValue: getByValue,
             uuidv4: uuidv4,
-            highlightFilteredHeader: highlightFilteredHeader
+            highlightFilteredHeader: highlightFilteredHeader,
+            datecheckconvert: datecheckconvert
         };
         
         return utility;
@@ -33,6 +34,16 @@
           );
         }
 
+        function datecheckconvert(indate) {
+          var testdatetimestamp = Date.parse(indate);
+
+          if (isNaN(testdatetimestamp) == false) {
+            return  new Date(indate);
+          } else {
+            return new Date();
+          }
+            
+        }
         function maxObjArr(arr,attr) {
             $log.debug('maxObjArr entered', arr, attr);
             var res = Math.max.apply(Math,arr.map(function(o){return o[attr];}));

@@ -2,7 +2,7 @@
   'use strict';
 
   angular
-    .module('ng-admin.all')
+    .module('ng-admin.email')
     .controller('ModalEmailListInstanceController', ModalEmailListInstanceController);
 
   ModalEmailListInstanceController.$inject = [
@@ -100,13 +100,17 @@
       return StudentServices.getEmailLists(path).then(function(data) {
         $log.debug('getEmailLists returned data');
         $log.debug(data);
+        var testdate;
         for(var i=0;i<data.EmailList.length;i++) {
-          if (!moment(data.EmailList[i].emaildate || moment() ).isBefore(moment().subtract(1,'days').endOf('day')) ) {
+
+          testdate = Util.datecheckconvert(data.EmailList[i].emaildate);
+          
+          if (!moment(testdate || moment() ).isBefore(moment().subtract(1,'days').endOf('day')) ) {
               // They are on the same day
-              data.EmailList[i].datef = moment(data.EmailList[i].emaildate || moment()).format("HH:mm");
+              data.EmailList[i].datef = moment(testdate || moment()).format("HH:mm");
           } else {
               // They are not on the same day
-              data.EmailList[i].datef = moment(data.EmailList[i].emaildate || moment()).format("MMM DD, YYYY");
+              data.EmailList[i].datef = moment(testdate || moment()).format("MMM DD, YYYY");
           }          
           
         }

@@ -1598,7 +1598,8 @@ $app->post('/email', 'authenticate', function() use ($app) {
         while ($slist = $result->fetch_assoc()) {
             //expecting 1 result
             
-            $from = (empty($slist["email"]) ? "NULL" : $slist["email"]);
+//            $from = (empty($slist["email"]) ? "NULL" : $slist["email"]);
+            $from = (empty($slist["systememail"]) ? "NULL" : $slist["systememail"]);
 
         } 
         $row_cnt = $result->num_rows;
