@@ -9,6 +9,8 @@ app/templates/*
 app/*.js*
 app/content
 app/content/*
+app/testdata/*
+source/jso/*
 doc/*
 doc
 dist

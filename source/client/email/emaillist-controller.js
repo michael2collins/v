@@ -70,7 +70,7 @@
 
       emailModal.modalInstance = $uibModal.open({
         animation: emailModal.animationsEnabled,
-        templateUrl: 'templates/states/emailview.html',
+        templateUrl: 'templates/email/emailview.html',
         controller: 'ModalEmailViewInstanceController as vm',
         size: 'lg',
         windowClass: 'my-modal-popup',
@@ -158,7 +158,6 @@
             editDropdownIdLabel: 'id',
             editDropdownValueLabel: 'value',
             editDropdownOptionsArray: vm.listStatus,
-            //            filterHeaderTemplate: 'templates/states/filtercoltemplate.html',
             filter: {
               options: vm.listStatus
             }

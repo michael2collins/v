@@ -340,7 +340,7 @@ App.controller('NoneController', function($scope, $routeParams){
 
 });
 
-App.controller('MainController', function($scope, $routeParams){
+App.controller('HeaderController', function($scope, $routeParams){
     setTimeout(function(){
         var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 

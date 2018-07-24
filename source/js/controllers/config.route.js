@@ -1,4 +1,4 @@
-(function(window, angular, Stripe) {
+(function(window, angular, Stripe, $, _) {
     'use strict';
 
     angular
@@ -14,141 +14,7 @@
 
     function getRoutes() {
         return [
-/*            {
-                url: '/avengers',
-                config: {
-                    templateUrl: 'app/avengers/avengers.html',
-                    controller: 'Avengers',
-                    controllerAs: 'vm',
-                    title: 'avengers',
-                    settings: {
-                        nav: 2,
-                        content: '<i class="fa fa-lock"></i> Avengers'
-                    }
-                }
-            },
-*/
-/*            {
-                url: '/main',
-                config: { templateUrl: 'templates/states/main.html', settings: {} }
-            },
- */           {
-                url: '/page-signin',
-                config: { templateUrl: 'templates/states/page-signin.html', settings: {} }
-            },
-            {
-                url: '/page-signup',
-                config: { templateUrl: 'templates/states/page-signup.html', settings: {} }
-            },
-            {
-                url: '/change-pwd',
-                config: { templateUrl: 'templates/states/change-pwd.html', settings: {} }
-            },
-            {
-                url: '/reset-pwd',
-                config: { templateUrl: 'templates/states/reset-pwd.html', settings: {} }
-            },
-            {
-                url: '/forgot-pwd',
-                config: { templateUrl: 'templates/states/forgot-pwd.html', settings: {} }
-            },
-            {
-                url: '/page-lock-screen',
-                config: {
-                    templateUrl: 'templates/states/page-lock-screen.html',
-                    controller: 'PageLockScreenController',
-                    settings: {}
-                }
-            },
-            {
-                url: '/layout-left-sidebar',
-                config: { templateUrl: 'templates/states/layout-left-sidebar.html', settings: {} }
-                //            controller: 'NoneController'
-            },
-            {
-                url: '/table-basic-students',
-                config: { templateUrl: 'templates/states/table-basic-students.html', settings: {} }
-            },
-            {
-                url: '/form-layouts-newstudent',
-                config: { templateUrl: 'templates/states/form-layouts-newstudent.html', settings: {} }
-            },
-            {
-                url: '/form-layouts-editstudent/id/:id',
-                config: { templateUrl: 'templates/states/form-layouts-editstudent.html', settings: {} }
-            },
-            {
-                url: '/form-layouts-editstudent/id/:id/myclass/:myclass',
-                config: { templateUrl: 'templates/states/form-layouts-editstudent.html', settings: {} }
-            },
-            {
-                url: '/table-basic-attendance',
-                config: { templateUrl: 'templates/states/table-basic-attendance.html', settings: {} }
-            },
-            {
-                url: '/table-basic-eventcreation',
-                config: { templateUrl: 'templates/states/table-basic-eventcreation.html', settings: {} }
-            },
-            {
-                url: '/table-basic-testcandidates',
-                config: { templateUrl: 'templates/states/table-basic-testcandidates.html', settings: {} }
-            },
-            {
-                url: '/table-basic-rptbuilder',
-                config: { templateUrl: 'templates/states/table-basic-rptbuilder.html', settings: {} }
-            },
-            {
-                url: '/table-basic-schedule',
-                config: { templateUrl: 'templates/states/table-basic-schedule.php', settings: {} }
-            },
-            {
-                url: '/table-basic-program',
-                config: { templateUrl: 'templates/states/table-basic-program.php', settings: {} }
-            },
-            {
-                url: '/table-basic-htmltemplate',
-                config: { templateUrl: 'templates/states/table-basic-htmltemplate.php', settings: {} }
-            },
-            {
-                url: '/table-basic-testtype',
-                config: { templateUrl: 'templates/states/table-basic-testtype.php', settings: {} }
-            },
-            {
-                url: '/stripe-onboard',
-                config: { templateUrl: 'templates/states/stripe_onboard.php', settings: {} }
-            },
-            {
-                url: '/table-basic-classpgm',
-                config: { templateUrl: 'templates/states/table-basic-classpgm.php', settings: {} }
-            },
-            {
-                url: '/table-basic-classrank',
-                config: { templateUrl: 'templates/states/table-basic-classrank.php', settings: {} }
-            },
-            {
-                url: '/table-basic-classtest',
-                config: { templateUrl: 'templates/states/table-basic-classtest.php', settings: {} }
-            },
-            {
-                url: '/table-basic-basic',
-                config: { templateUrl: 'templates/states/table-basic-basic.php', settings: {} }
-            },
-            {
-                url: '/table-basic-paymenttracking',
-                config: { templateUrl: 'templates/states/table-basic-paymenttracking.php', settings: {} }
-            },
-            {
-                url: '/form-layouts-paymenttracking/id/:id',
-                config: { templateUrl: 'templates/states/table-basic-paymenttracking.php', settings: {} }
-            },
-            {
-                url: '/table-basic-rank',
-                config: { templateUrl: 'templates/states/table-basic-ranks.php', settings: {} }
-            },
-            {
-                url: '/table-basic-class',
-                config: { templateUrl: 'templates/states/table-basic-class.php', settings: {} }
-            },
+  
         ];
     }
     
@@ -245,4 +111,4 @@
 
     }
     
-})(window, window.angular, window.Stripe);
+})(window, window.angular, window.Stripe, window.$, window._);

@@ -2083,21 +2083,6 @@ $app->delete('/classtest','authenticate', function() use ($app) {
 
 $app->get('/emailtemplates',   function() use($app) {
 
-/*
-    $response = array();
-    $tmp = array();
-
-    $tmp["title"] = 'Test template 1';
-    $tmp["content"] = 'Test 1 {$name}';
-    array_push($response, $tmp);
-
-    $tmp = array();
-    $tmp["title"] = 'Test template 2';
-    $tmp["url"] = 'templates/states/mailtemplate.html' ;
-    array_push($response, $tmp);
-
-    echoRespnse(200, $response);
-*/
     $response = array();
     $db = new AttendanceDbHandler();
 

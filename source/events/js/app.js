@@ -195,7 +195,7 @@
         $routeProvider
             .when('/', {
                 templateUrl: 'templates/states/main.html',
-                controller: 'MainController'
+                controller: 'HeaderController'
             })
             .when('/page-signin', {
                 templateUrl: 'templates/states/page-signin.html'

@@ -597,14 +597,14 @@ module.exports = function (grunt) {
 //      'concat',
 //      'jade',
 //      'karma:dist',
-	  'clean:js',
-	  'clean:html',
+//	  'clean:js',
+//	  'clean:html',
 //	  'clean:apache',
-	  'copy:build_appjs',
-	  'copy:build_indexhtml',
+//	  'copy:build_appjs',
+//	  'copy:build_indexhtml',
 //	  'copy:build_apache',
 	  'copy:copy_jade',
-	  'copy:copy_css'
+//	  'copy:copy_css'
 //	  'index:build'
 //      'uglify',
 //      'karma:minified',

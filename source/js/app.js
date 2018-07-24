@@ -4,8 +4,18 @@
         .module('ng-admin', [
             'ng-admin.core',
             'ng-admin.all',
+            'ng-admin.login',
+            'ng-admin.events',
+            'ng-admin.cc',
+            'ng-admin.attendance',
             'ng-admin.email',
-            'ng-admin.main'
+            'ng-admin.main',
+            'ng-admin.student',
+            'ng-admin.portal',
+            'ng-admin.photo',
+            'ng-admin.testmgmt',
+            'ng-admin.admin',
+            'ng-admin.payment'
 /*
           //  'ngRoute',
             'ui.grid',

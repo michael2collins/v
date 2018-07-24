@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin.all')
+        .module('ng-admin.photo')
   /**
     * The ng-thumb directive
     * @author: nerv

@@ -1,5 +1,0 @@
-mixin formerr(fielderr)
-    .has-error(style='color:maroon', role='alert', ng-messages= fielderr)
-        .ng-message(required) You did not enter a field
-        .ng-message(minlength) Your field is too short
-        .ng-message(maxlength) Your field is too long

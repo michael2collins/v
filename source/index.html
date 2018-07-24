@@ -317,7 +317,7 @@ old?
 
     <script type="text/javascript" src="js/utility/utility.js"></script>
     <script type="text/javascript" src="js/utility/calutility.js"></script>
-    <script type="text/javascript" src="js/controllers/main-controller.js"></script>
+    <script type="text/javascript" src="js/controllers/header-controller.js"></script>
     <script type="text/javascript" src="js/factories/textAngularExtra.js"></script>
     <script type="text/javascript" src="js/filters/dropdown.js"></script>
     <script type="text/javascript" src="js/factories/textAngular-dropdownToggle.js"></script>
@@ -413,21 +413,21 @@ old?
 <body ng-app="ng-admin" ng-class="[vm.header.header_topbar, vm.header.boxed]" class="topbar-fixed sidebar-fixed" style="padding:  0px;">
     <!--V JS
     -->
-    <div ng-controller="MainController as vm" class="default-page"> 
+    <div ng-controller="HeaderController as vm" class="default-page"> 
         <!--BEGIN TO TOP-->
         <a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
         <!--END BACK TO TOP-->
         <div id="wrapper" ng-class="vm.header.layout_menu"> 
             <!--BEGIN TOPBAR -->
-            <div id="topbar" role="navigation" ng-include="'templates/states/_includes/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+            <div id="topbar" role="navigation" ng-include="'templates/portal/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
             <!--END TOPBAR-->
             <!--BEGIN SIDEBAR MENU-->
-            <div id="sidebar-wrapper" ng-include="'templates/states/_includes/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
+            <div id="sidebar-wrapper" ng-include="'templates/portal/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
             <!--END SIDEBAR MENU-->
             <!--BEGIN PAGE WRAPPER-->
             <div id="page-wrapper" ng-class="vm.header.animation" class="animated">
                 <!--BEGIN PAGE HEADER & BREADCRUMB-->
-                <div ng-include="'templates/states/_includes/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
+                <div ng-include="'templates/portal/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
                 <!--END PAGE HEADER & BREADCRUMB-->
 
                 <div class="jumbotron" ng-if="flash">

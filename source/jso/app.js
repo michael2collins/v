@@ -2,7 +2,7 @@ var App = angular.module('ng-admin', ['ngRoute', 'ui.bootstrap']);
 
 App.config(function ($routeProvider) {
     $routeProvider
-        .when('/', {templateUrl: 'templates/states/main.html', controller: 'MainController'})
+        .when('/', {templateUrl: 'templates/states/main.html', controller: 'HeaderController'})
         .when('/charts', {templateUrl: 'templates/states/charts.html', controller: 'ChartsController'})
         .when('/form-components', {templateUrl: 'templates/states/form-components.html', controller: 'FormComponentsController'})
         .when('/form-dropzone-file-upload', {templateUrl: 'templates/states/form-dropzone-file-upload.html', controller: 'NoneController'})

@@ -6,7 +6,7 @@
  
     .controller('AppController', AppControllerFirst)
     .controller('NoneController', AppControllerNone)
-	.controller('MainController', AppControllerMain);
+	.controller('HeaderController', AppControllerMain);
 
 
     AppControllerFirst.$inject = ['$scope', 

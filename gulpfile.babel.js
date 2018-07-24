@@ -22,6 +22,8 @@ var taskListing = require('gulp-task-listing');
 var inject = require('gulp-inject');
 const using = require('gulp-using')
 
+var php2html = require("gulp-php2html");
+
 var less = require('gulp-less');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -139,6 +141,20 @@ gulp.task('css', function() {
 });
 
 /**
+ * Create html from php templates
+ * @return {Stream}
+ */
+gulp.task('phphtml', function() {
+    var dest = paths.build + 'phphtml';
+    log('Converting php to html');
+    return gulp
+        .src(paths.phphtmltemplates)
+        .pipe(php2html())
+        .pipe(gulp.dest(dest));
+});
+
+
+/**
  * Minify and bundle the override CSS
  * @return {Stream}
  */
@@ -186,6 +202,7 @@ gulp.task('fonts', function() {
         .pipe(gulp.dest(dest));
 });
 
+
 /**
  * Compress images
  * @return {Stream}
@@ -223,7 +240,7 @@ gulp.task('img', function() {
  * @return {Stream}
  */
 //gulp.task('rev-and-inject', ['js', 'vendorjs', 'css', 'vendorcss'], function() {
-gulp.task('rev-and-inject', gulp.series(gulp.parallel('js', 'vendorjs', 'css', 'lastcss', 'vendorcss'),  function() {
+gulp.task('rev-and-inject', gulp.series('phphtml',gulp.parallel( 'js', 'vendorjs', 'css', 'lastcss', 'vendorcss'),  function() {
     log('Rev\'ing files and building index.html');
 
     var minified = paths.build + '**/*.min.*';
@@ -283,13 +300,13 @@ gulp.task('rev-and-inject', gulp.series(gulp.parallel('js', 'vendorjs', 'css', '
  * @return {Stream}
  */
 //gulp.task('build', ['rev-and-inject', 'images', 'img', 'fonts'], function() {
-gulp.task('build', gulp.series('rev-and-inject', function() {
+gulp.task('build', gulp.series(['rev-and-inject'], function() {
     log('Building the optimized app');
     var index = paths.client + 'index.html';
 
     return gulp.src(index).pipe(notify({
         onLast: true,
-        message: 'Deployed code!'
+        message: 'built code!'
     }));
 }));
 
@@ -307,6 +324,40 @@ gulp.task('clean', function(cb) {
     return del(delPaths, cb);
 });
 
+gulp.task('cleanphp', function(cb) {
+    log('Cleaning php: ' + util.colors.blue(paths.phpbuild));
+
+    return del(paths.phpbuild, cb);
+});
+
+gulp.task('special1', function() {
+    var dest = paths.specialcopydest1 ;
+    log('Copying special1');
+    return gulp
+        .src(paths.specialcopysrc1)
+        .pipe(gulp.dest(dest));
+});
+
+gulp.task('special2', function() {
+    var dest = paths.specialcopydest2 ;
+    log('Copying special2');
+    return gulp
+        .src(paths.specialcopysrc2)
+        .pipe(gulp.dest(dest));
+});
+
+/**
+ * Copy final from build to app
+ * @return {Stream}
+ */
+gulp.task('final', function() {
+    var dest = paths.destfinal ;
+    log('Copying from build to app as final');
+    return gulp
+        .src(paths.srcfinal)
+        .pipe(using({prefix:'final copy Using file', path:'relative', color:'blue', filesize:true}))        
+        .pipe(gulp.dest(dest));
+});
 
 ////////////////
 
