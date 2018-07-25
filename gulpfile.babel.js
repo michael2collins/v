@@ -5,6 +5,7 @@ let babel = require('gulp-babel');
 var del = require('del');
 var merge = require('merge-stream');
 var paths = require('./gulp.config.json');
+var less = require('gulp-less');
 
 var angularTemplatecache = require('gulp-angular-templatecache');
 var minifyHtml = require('gulp-minify-html');
@@ -123,11 +124,19 @@ gulp.task('vendorjs', function() {
         .pipe(gulp.dest(paths.build));
 });
 
+
+gulp.task('less', function () {
+    log('convert less to css');
+  return gulp.src(paths.less)
+    .pipe(less({}))
+    .pipe(gulp.dest(paths.destcss));
+});
 /**
  * Minify and bundle the CSS
  * @return {Stream}
  */
-gulp.task('css', function() {
+gulp.task('css', gulp.series(gulp.parallel('less'), function() {
+//gulp.task('css', function() {
     log('Bundling, minifying, and copying the app\'s CSS');
 
     return gulp.src(paths.css)
@@ -138,7 +147,7 @@ gulp.task('css', function() {
 //        .pipe(bytediff.stop(bytediffFormatter))
         //        .pipe(concat('all.min.css')) // Before bytediff or after
         .pipe(gulp.dest(paths.build + 'content'));
-});
+}));
 
 /**
  * Create html from php templates
@@ -320,7 +329,7 @@ gulp.task('build', gulp.series(['rev-and-inject'], function() {
 gulp.task('clean', function(cb) {
     log('Cleaning: ' + util.colors.blue(paths.build));
 
-    var delPaths = [].concat(paths.build, paths.report);
+    var delPaths = [].concat(paths.build, paths.report, paths.appclean);
     return del(delPaths, cb);
 });
 

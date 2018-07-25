@@ -1,4 +1,5 @@
-(function(window, angular, $, _, tinymce,Stripe) {
+//(function(window, angular, $, _, tinymce,Stripe) {
+(function(window,angular) {
     'use strict';
     angular
         .module('ng-admin', [
@@ -6,13 +7,10 @@
             'ng-admin.all',
             'ng-admin.login',
             'ng-admin.events',
-            'ng-admin.cc',
             'ng-admin.attendance',
-            'ng-admin.email',
             'ng-admin.main',
             'ng-admin.student',
             'ng-admin.portal',
-            'ng-admin.photo',
             'ng-admin.testmgmt',
             'ng-admin.admin',
             'ng-admin.payment'
@@ -435,4 +433,5 @@
         //    $locationProvider.hashPrefix('!');
     }
 */    
-})(window, window.angular, window.$, window._, window.tinymce, window.Stripe);
+})(window, window.angular);
+//})(window, window.angular, window.$, window._, window.tinymce, window.Stripe);
