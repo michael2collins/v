@@ -1,9 +1,0 @@
-<?php
-$moviepic1="http://1015theeagle.com/wp-content/uploads/2015/06/150622_AllStations_Minions2000x1200.jpg";
-$moviepic2="http://blogs-images.forbes.com/erikkain/files/2015/07/orlando.jpg";
-$sliderarr = array($moviepic1 , $moviepic2);
-$moviename="Minions";
-$moviedate="12/11/2015";
-$dropoff="6pm";
-$pickup="9pm";
-?>
