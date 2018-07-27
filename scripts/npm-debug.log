@@ -1,0 +1,49 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/nix/store/ajr6i77s89gjfjm59aazc16b5rvb39n7-nodejs-4.3.1/bin/node',
+1 verbose cli   '/mnt/shared/sbin/npm',
+1 verbose cli   'uninstall',
+1 verbose cli   'ungit' ]
+2 info using npm@2.14.12
+3 info using node@v4.3.1
+4 verbose unbuild node_modules/ungit
+5 info preuninstall ungit@1.4.31
+6 info uninstall ungit@1.4.31
+7 verbose unbuild rmStuff ungit@1.4.31 from /home/ubuntu/workspace/node_modules
+8 silly gentlyRm /home/ubuntu/workspace/node_modules/.bin/ungit is being gently removed
+9 silly gentlyRm verifying /home/ubuntu/workspace is an npm working directory
+10 silly gentlyRm /home/ubuntu/workspace/node_modules/.bin/0ungit-credentials-helper is being gently removed
+11 silly gentlyRm verifying /home/ubuntu/workspace is an npm working directory
+12 silly gentlyRm containing path /home/ubuntu/workspace is under npm's control, in /home/ubuntu/workspace
+13 silly gentlyRm deletion target /home/ubuntu/workspace/node_modules/.bin/ungit is under /home/ubuntu/workspace
+14 verbose gentlyRm vacuuming from /home/ubuntu/workspace/node_modules/.bin/ungit up to /home/ubuntu/workspace
+15 silly gentlyRm containing path /home/ubuntu/workspace is under npm's control, in /home/ubuntu/workspace
+16 silly gentlyRm deletion target /home/ubuntu/workspace/node_modules/.bin/0ungit-credentials-helper is under /home/ubuntu/workspace
+17 verbose gentlyRm vacuuming from /home/ubuntu/workspace/node_modules/.bin/0ungit-credentials-helper up to /home/ubuntu/workspace
+18 silly vacuum-fs removing /home/ubuntu/workspace/node_modules/.bin/ungit
+19 silly vacuum-fs removing /home/ubuntu/workspace/node_modules/.bin/0ungit-credentials-helper
+20 silly vacuum-fs quitting because other entries in /home/ubuntu/workspace/node_modules/.bin
+21 silly vacuum-fs quitting because other entries in /home/ubuntu/workspace/node_modules/.bin
+22 info postuninstall ungit@1.4.31
+23 silly gentlyRm /home/ubuntu/workspace/node_modules/ungit is being purged from base /home/ubuntu/workspace
+24 verbose gentlyRm don't care about contents; nuking /home/ubuntu/workspace/node_modules/ungit
+25 silly vacuum-fs purging /home/ubuntu/workspace/node_modules/ungit
+26 verbose stack Error: EACCES: permission denied, unlink '/home/ubuntu/workspace/node_modules/ungit/node_modules/.bin/getmac-node'
+26 verbose stack     at Error (native)
+27 verbose cwd /home/ubuntu/workspace/scripts
+28 error Linux 4.9.80-c9
+29 error argv "/nix/store/ajr6i77s89gjfjm59aazc16b5rvb39n7-nodejs-4.3.1/bin/node" "/mnt/shared/sbin/npm" "uninstall" "ungit"
+30 error node v4.3.1
+31 error npm  v2.14.12
+32 error path /home/ubuntu/workspace/node_modules/ungit/node_modules/.bin/getmac-node
+33 error code EACCES
+34 error errno -13
+35 error syscall unlink
+36 error Error: EACCES: permission denied, unlink '/home/ubuntu/workspace/node_modules/ungit/node_modules/.bin/getmac-node'
+36 error     at Error (native)
+36 error  { [Error: EACCES: permission denied, unlink '/home/ubuntu/workspace/node_modules/ungit/node_modules/.bin/getmac-node']
+36 error   errno: -13,
+36 error   code: 'EACCES',
+36 error   syscall: 'unlink',
+36 error   path: '/home/ubuntu/workspace/node_modules/ungit/node_modules/.bin/getmac-node' }
+37 error Please try running this command again as root/Administrator.
+38 verbose exit [ -13, true ]

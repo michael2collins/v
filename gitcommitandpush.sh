@@ -1,3 +1,3 @@
-git commit -a -m "latest changes"
-git push
-
+#!/bin/bash
+message=${0}
+git ca "$message"
