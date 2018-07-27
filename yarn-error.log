@@ -1,25 +1,20 @@
 Arguments: 
-  /home/ubuntu/.nvm/versions/node/v6.11.5/bin/node /home/ubuntu/.nvm/versions/node/v6.11.5/bin/yarn start
+  /home/ubuntu/.nvm/versions/node/v8.11.3/bin/node /home/ubuntu/.nvm/versions/node/v8.11.3/bin/yarn
 
 PATH: 
-  /home/ubuntu/.nvm/versions/node/v6.11.5/bin:/usr/local/rvm/gems/ruby-2.3.0/bin:/usr/local/rvm/gems/ruby-2.3.0@global/bin:/usr/local/rvm/rubies/ruby-2.3.0/bin:/mnt/shared/bin:/home/ubuntu/workspace/node_modules/.bin:/home/ubuntu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mnt/shared/sbin:/opt/gitl:/opt/go/bin:/mnt/shared/c9/app.nw/bin:/usr/local/rvm/bin
+  /home/ubuntu/.nvm/versions/node/v8.11.3/bin:/usr/local/rvm/gems/ruby-2.3.0/bin:/usr/local/rvm/gems/ruby-2.3.0@global/bin:/usr/local/rvm/rubies/ruby-2.3.0/bin:/mnt/shared/bin:/home/ubuntu/workspace/node_modules/.bin:/home/ubuntu/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/mnt/shared/sbin:/opt/gitl:/opt/go/bin:/mnt/shared/c9/app.nw/bin:/usr/local/rvm/bin
 
 Yarn version: 
   1.7.0
 
 Node version: 
-  6.11.5
+  8.11.3
 
 Platform: 
   linux x64
 
 Trace: 
-  SyntaxError: /home/ubuntu/workspace/package.json: Unexpected string in JSON at position 1841
-      at Object.parse (native)
-      at /home/ubuntu/.nvm/versions/node/v6.11.5/lib/node_modules/yarn/lib/cli.js:1130:59
-      at next (native)
-      at step (/home/ubuntu/.nvm/versions/node/v6.11.5/lib/node_modules/yarn/lib/cli.js:98:30)
-      at /home/ubuntu/.nvm/versions/node/v6.11.5/lib/node_modules/yarn/lib/cli.js:109:13
+  Error: EACCES: permission denied, unlink '/home/ubuntu/workspace/node_modules/ungit/node_modules/.bin/getmac-node'
 
 npm manifest: 
   {
@@ -80,7 +75,7 @@ npm manifest:
       "oldinit": "npm install",
       "oldstart": "node src/server/app.js",
       "oldtest": "gulp test",
-      "start": "webpack-dev-server --public vdojo9v-c9-vdojo.c9users.io --host $IP --port $PORT --hot --inline --"
+      "start": "webpack-dev-server -d --watch --inline --progress --public $C9_HOSTNAME  --host $IP --port $PORT --disable-host-check ",
       "test": "echo \"Error: no test specified\" && exit 1"
       
     },
