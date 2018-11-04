@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
 .controller('FormComponentsController', function($scope, $routeParams){
     $.fn.Data.Portlet();
     setTimeout(function(){

@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
         .controller('PageSignupController', PageSignupController);
         
         PageSignupController.$inject = [
@@ -63,7 +63,7 @@
                     $log.debug('register returned data');
                     $log.debug(data);
                             FlashService.Success('Registration successful', true);
-                            $location.path('/page-signin');
+                            $location.path('#/page-signin');
                         return data;
                 },
                 function (error) {

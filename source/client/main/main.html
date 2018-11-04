@@ -1,11 +1,10 @@
-<!DOCTYPE html>
-<div ng-controller="AppController as vm">
+<div ng-controller="AppController as $ctrl"> 
   <div id="adialog" title="Student Picker" style="display: none">
     <form novalidate class="simple-form">
       <div class="select-box pal" id="calEventDialogpick">
-        <ui-select ng-model="vm.studentpick2" theme="bootstrap" reset-search-input="true" style="width: 300px;" on-select="vm.setStudentFromPick($item)" title="Choose a student" append-to-body="true">
+        <ui-select ng-model="$ctrl.studentpick2" theme="bootstrap" reset-search-input="true" style="width: 300px;" on-select="$ctrl.setStudentFromPick($item)" title="Choose a student" append-to-body="true">
           <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
-          <ui-select-choices repeat="stu in vm.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="vm.refreshStudents($select.search)" refresh-delay="0">
+          <ui-select-choices repeat="stu in $ctrl.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="$ctrl.refreshStudents($select.search)" refresh-delay="0">
             <div id="contactpicklist" ng-bind-html="stu.FullName | highlight: $select.search"></div>
           </ui-select-choices>
           <ui-select-no-choice>
@@ -25,7 +24,7 @@
             <input type="text" name="eventTitle" id="eventTitle" class="form-control" />
           </div>
         </div>
-<!--        <div class="form-group" id="eventPickDiv" ng-hide="vm.typepick === 'ClassSchedule'"> -->
+<!--        <div class="form-group" id="eventPickDiv" ng-hide="$ctrl.typepick === 'ClassSchedule'"> -->
         <div class="form-group" id="eventPickDiv">
           <label for="eventpick" class="control-label col-md-3">Student</label>
           <div class="col-md-9">
@@ -40,7 +39,7 @@
         <div class="form-group" id="typePickDiv">
           <label for="typepick" class="control-label col-md-3">Type</label>
           <div class="col-md-9">
-            <select id="typepick" type="text" name="typepick" ng-model="vm.typepick" ng-options="t for t in vm.eventtypeOptions track by t" class="form-control">
+            <select id="typepick" type="text" name="typepick" ng-model="$ctrl.typepick" ng-options="t for t in $ctrl.eventtypeOptions track by t" class="form-control">
                      <option value="">-- Pick Type --</option>
                   </select>
           </div>
@@ -48,7 +47,7 @@
         <div class="form-group" id="classPickDiv">
           <label for="classpick" class="control-label col-md-3">Class</label>
           <div class="col-md-9">
-            <select id="classpick" type="text" name="classpick" ng-model="vm.classpick" ng-options="u.id as u.class for u in vm.classList track by u.id" class="form-control">
+            <select id="classpick" type="text" name="classpick" ng-model="$ctrl.classpick" ng-options="u.id as u.class for u in $ctrl.classList track by u.id" class="form-control">
                      <option value="">-- Pick class --</option>
                   </select>
           </div>
@@ -56,7 +55,7 @@
         <div class="form-group" id='agerPickDiv'>
           <label for="agerpick" class="control-label col-md-3">Ages</label>
           <div class="col-md-9">
-            <select id="agerpick" type="text" name="agerpick" ng-model="vm.agerpick" ng-options="a.agerange as a.agerange for a in vm.agerangelist track by a.agerange" class="form-control">
+            <select id="agerpick" type="text" name="agerpick" ng-model="$ctrl.agerpick" ng-options="a.agerange as a.agerange for a in $ctrl.agerangelist track by a.agerange" class="form-control">
                      <option value="">-- Pick Age Range --</option>
                   </select>
           </div>
@@ -65,7 +64,7 @@
         <div class="form-group" id="userPickDiv">
           <label for="userpick" class="control-label col-md-3">Assign</label>
           <div class="col-md-9">
-            <select id="userpick" type="text" name="userpick" ng-model="vm.userpick" ng-options="u.user as u.fullname for u in vm.thisUserlist track by u.user" class="form-control">
+            <select id="userpick" type="text" name="userpick" ng-model="$ctrl.userpick" ng-options="u.user as u.fullname for u in $ctrl.thisUserlist track by u.user" class="form-control">
                      <option value="">-- Assign user --</option>
                   </select>
           </div>
@@ -113,7 +112,7 @@
                 </div>                  
                 </label>
           <div class="col-md-9">
-            <select id="reminderInterval" type="text" name="reminderInterval" ng-model="vm.reminderInterval" ng-options="r for r in vm.reminderOptions track by r" class="form-control">
+            <select id="reminderInterval" type="text" name="reminderInterval" ng-model="$ctrl.reminderInterval" ng-options="r for r in $ctrl.reminderOptions track by r" class="form-control">
                   </select>
           </div>
         </div>
@@ -125,12 +124,12 @@
     </form>
   </div>
 
-  <div id="tab-general" ng-show="vm.isok">
+  <div id="tab-general" ng-show="$ctrl.isok">
 
     <div class="col-lg-12">
-      <button type="button" class="btn btn-green" ng-hide="vm.close" ng-click="vm.openSchedule()">Open Calendar
+      <button type="button" class="btn btn-green" ng-hide="$ctrl.close" ng-click="$ctrl.openSchedule()">Open Calendar
         <i class="glyphicon glyphicon-calendar"></i></button>
-      <button type="button" class="btn btn-green" ng-hide="vm.open" ng-click="vm.closeSchedule()">Close Calendar
+      <button type="button" class="btn btn-green" ng-hide="$ctrl.open" ng-click="$ctrl.closeSchedule()">Close Calendar
         <i class="glyphicon glyphicon-calendar"></i></button>
       <div class="portlet portlet-blue">
         <div class="portlet-header">
@@ -148,8 +147,8 @@
                     <div class="form-group col-md-12">
                       <label for="inputForUser" class="control-label col-md-3">User</label>
                       <div class="col-md-9">
-                        <select id="inputForUser" type="text" name="forUser" ng-model="vm.forUser" required placeholder="Schedule/Tasks for?" class="form-control">
-                            <option ng-repeat="iter in vm.forUsers.userlist" value="{{iter.user}}">{{iter.user}}</option>
+                        <select id="inputForUser" type="text" name="forUser" ng-model="$ctrl.forUser" required placeholder="Schedule/Tasks for?" class="form-control">
+                            <option ng-repeat="iter in $ctrl.forUsers.userlist" value="{{iter.user}}">{{iter.user}}</option>
                           </select>
                       </div>
                     </div>
@@ -168,12 +167,12 @@
                           <h4 class="block-heading" style="font-family: " oswald ";"><i class="icon-event icons mrs"></i>Event List</h4>
                           <div class="col-md-12 input-group">
                             <div class="col-md-2">
-                              <color-picker ng-model="vm.mycolor" color-picker-format="'hex'" color-picker-swatch="true" color-picker-swatch-pos="'right'" color-picker-swatch-only="true" color-picker-on-change="vm.settextcolor()">
+                              <color-picker ng-model="$ctrl.mycolor" color-picker-format="'hex'" color-picker-swatch="true" color-picker-swatch-pos="'right'" color-picker-swatch-only="true" color-picker-on-change="$ctrl.settextcolor()">
 
                               </color-picker>
                             </div>
                             <div class="col-md-9 input-group">
-                              <input id="event-name" type="text" class="form-control" value="" placeholder="Create an Event..." style="background-color: {{vm.mycolor}} !important; color: {{vm.textcolor}} !important">
+                              <input id="event-name" type="text" class="form-control" value="" placeholder="Create an Event..." style="background-color: {{$ctrl.mycolor}} !important; color: {{$ctrl.textcolor}} !important">
                               <span class="input-group-btn">
                                         <a id="event-add" 
                                           href="javascript:;" 
@@ -184,12 +183,12 @@
                           <div class="col-md-12">
                             <hr>
                             <div id="items">
-                              <span ng-repeat="item in vm.instructorlist" items-drag class="external-event label label-default" id="event" style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important">
+                              <span ng-repeat="item in $ctrl.instructorlist" items-drag class="external-event label label-default" id="event" style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important">
                                             {{item.firstname}} {{item.lastname}}</span>
                             </div>
                             <hr>
                             <div id="testtype">
-                              <span ng-repeat="item in vm.testtypelist" items-drag class="external-event label label-default" id="{{item.testdescription}}" style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important">
+                              <span ng-repeat="item in $ctrl.testtypelist" items-drag class="external-event label label-default" id="{{item.testdescription}}" style="position: relative;background-color: {{item.backgroundcolor}} !important; color: {{item.textcolor}} !important">
                                             {{item.testdescription}}</span>
                             </div>
                             <hr>
@@ -229,9 +228,9 @@
                             </li>
                           </ul>
                           <ul id="todos-list-gen" class="list-unstyled">
-                            <li class="row" ng-repeat="task in vm.thisTasknamelist " style="padding: 0px 10px 0px 20px;">
-                              <input type="checkbox" id="{{task.taskid}}" ng-model="task.taskstatus" ng-change="vm.updateTasknamelist(task.taskname, task.taskstatus)" ng-true-value="1" ng-false-value="0" />
-                              <label for="{{task.taskid}}">{{task.taskname}}</label><a href="" ng-click="vm.removeTasknamelist(task.taskname)" data-hover="tooltip" data-original-title="remove" class="delete"><span class="far fa-trash-alt"></span></a>
+                            <li class="row" ng-repeat="task in $ctrl.thisTasknamelist " style="padding: 0px 10px 0px 20px;">
+                              <input type="checkbox" id="{{task.taskid}}" ng-model="task.taskstatus" ng-change="$ctrl.updateTasknamelist(task.taskname, task.taskstatus)" ng-true-value="1" ng-false-value="0" />
+                              <label for="{{task.taskid}}">{{task.taskname}}</label><a href="" ng-click="$ctrl.removeTasknamelist(task.taskname)" data-hover="tooltip" data-original-title="remove" class="delete"><span class="far fa-trash-alt"></span></a>
                             </li>
 
                           </ul>
@@ -254,20 +253,20 @@
                           <div class="form-group">
                             <div class="col-md-9">
                               <div class="input-icon right">
-                                <i ng-click="vm.conversiondateopen($event)" data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
-                                <input id="conversiondate" type="text" placeholder="mm/dd/yyyy" name="conversiondate" ng-model="vm.ConversionDate" is-open="vm.status.opened" uib-datepicker-popup="{{vm.bdateformat}}" class="form-control">
+                                <i ng-click="$ctrl.conversiondateopen($event)" data-hover="tooltip" data-original-title="Correct" class="glyphicon tooltips"></i>
+                                <input id="conversiondate" type="text" placeholder="mm/dd/yyyy" name="conversiondate" ng-model="$ctrl.ConversionDate" is-open="$ctrl.status.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}" class="form-control">
                               </div>
                             </div>
                             <div class="">
-                              <button type="button" class="btn btn-default" ng-click="vm.conversiondateopen($event)">
+                              <button type="button" class="btn btn-default" ng-click="$ctrl.conversiondateopen($event)">
                                 <i class="glyphicon glyphicon-calendar"></i></button>
                             </div>
                           </div>
                         </div>
                         <div class="col-md-12">
-                          <button id="sched-to-calendar" ng-show="vm.ConversionDate" ng-click="vm.schedToCal()" type="button" class="btn btn-primary">Transfer Schedule to Calendar</button>
-                          <button id="clear-calendar"  ng-show="vm.ConversionDate" ng-click="vm.clearCal()" type="button" class="btn btn-primary">Clear Class on Calendar</button>
-                          <button id="transfer-calendar" ng-show="vm.ConversionDate" ng-click="vm.transferCal()" type="button" class="btn btn-primary">Transfer Calendar<br/> to Schedule</button>
+                          <button id="sched-to-calendar" ng-show="$ctrl.ConversionDate" ng-click="$ctrl.schedToCal()" type="button" class="btn btn-primary">Transfer Schedule to Calendar</button>
+                          <button id="clear-calendar"  ng-show="$ctrl.ConversionDate" ng-click="$ctrl.clearCal()" type="button" class="btn btn-primary">Clear Class on Calendar</button>
+                          <button id="transfer-calendar" ng-show="$ctrl.ConversionDate" ng-click="$ctrl.transferCal()" type="button" class="btn btn-primary">Transfer Calendar<br/> to Schedule</button>
                         </div>
                       </div>
                     </div>
@@ -297,10 +296,10 @@
         <div class="panel">
           <div class="panel-body">
             <h4 class="block-heading"><i class="icon-cursor mrs"></i>Student Makeup</h4>
-            <div ng-repeat="stats in vm.studentstats | orderBy: 'timeint':true | filter: vm.filterstat ">
+            <div ng-repeat="stats in $ctrl.studentstats | orderBy: 'timeint':true | filter: $ctrl.filterstat ">
               <div ng-repeat="d in stats.details">
                 {{d.details.firstname}} {{d.details.lastname}} became {{d.details.classstatus}} on {{d.details.month}}
-                <a ng-href="./#/form-layouts-editstudent/id/{{d.details.contactid}}" class="btn btn-blue ">Edit {{d.details.firstname}}</a>
+                <a ng-href="/#/form-layouts-editstudent/id/{{d.details.contactid}}" class="btn btn-blue ">Edit {{d.details.firstname}}</a>
               </div>
             </div>
             <div id="line-chart-spline" style="height:300px" class="col-lg-12"></div>

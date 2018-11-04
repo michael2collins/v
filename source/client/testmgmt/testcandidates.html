@@ -1,0 +1,292 @@
+<div ng-controller="TestCandidateTableBasicController as $ctrl" ng-init="active[$ctrl.getActiveTab()]= true" ngcloak>
+   <div class="panel panel-orange">
+      <div class="panel-heading">Test Candidates</div>
+   </div>
+  <uib-tabset type="pills" active="$ctrl.active">
+
+      <uib-tab index="1" id="tab-test" heading="Select Candidates" 
+      select="$ctrl.setActiveTab(1,'tab-test'); testtabShown = !testtabShown" 
+      deselect="testtabShown = !testtabShown" 
+      >
+      
+         <div class="panel panel-green">
+            <div class="panel-heading">Test Candidates Pick List</div>
+            <div class="panel-body ">
+               <div class="col-md-12 text-left">
+                  <h3>Select Test date</h3>
+               </div>
+
+               <div class="row col-md-12" style="height: 70px;">
+                  <div class="col-md-7">
+                     <div class="select-box ">
+
+                        <ui-select ng-model="$ctrl.TestCandidateSelected" theme="bootstrap" reset-search-input="false" on-select="$ctrl.getTestDates($item);$ctrl.setSlide('center')" style="width: 300px;" title="Filter for a Test" append-to-body="false">
+
+                           <ui-select-match placeholder="Pick a test...">{{$select.selected.name}}</ui-select-match>
+                           <ui-select-choices repeat="TestCandidate in $ctrl.testcandidatenames | filter: $select.search track by $index" refresh="$ctrl.gettestcandidateNames($select.search)" refresh-delay="0">
+                              <div id="candidatepicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
+                           </ui-select-choices>
+                           <ui-select-no-choice>
+                              Dang! We couldn't find any choices...
+                           </ui-select-no-choice>
+                        </ui-select>
+                     </div>
+                  </div>
+
+
+                  <div class="col-md-5" >
+                  Restrict Candidates?
+                  <toggle-switch on-label="Restrict" off-label="No" id="Restrict" type="checkbox" 
+                  name="Restrict" ng-model="$ctrl.restricted" 
+                  class="switch-primary" style="min-width: 200px;"></toggle-switch>
+                  
+                  </div>
+
+<!--                  <div class="col-md-5">
+                     <button ng-click="$ctrl.gettestcandidateDetails($ctrl.TestCandidateSelected)" class="btn btn-green TestCandidateCreation">Refresh List</button>
+                  </div>
+-->                  
+               </div>
+            </div>
+         </div>
+         <div class="row">
+
+            <div class="col-md-12" ng-show="$ctrl.testdateshow()">
+               <h3 class="block-heading"> {{$ctrl.testdatelist.testtype}} Test from: {{$ctrl.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{$ctrl.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
+            </div>
+         </div>
+         <!--               <div class="row">
+                  <div class="col-md-1 text-center">
+                     <button title="Slide Right" class="btn btn-blue" ng-click="$ctrl.setSlide('right')">
+                        Slide Right<i class="glyphicon glyphicon-chevron-right"></i></button>
+                  </div>
+                  <div class="col-md-9 text-center">
+                     <button title="Center" class="btn btn-blue" ng-click="$ctrl.setSlide('center')">Center</button>
+                  </div>
+                  <div class="col-md-1 text-center">
+                     <button title="Slide Left" class="btn btn-blue" ng-click="$ctrl.setSlide('left')">
+                        <i class="glyphicon glyphicon-chevron-left"></i>Slide Left</button>
+                  </div>
+               </div>
+-->
+         <div class="panel panel-green" ng-show="$ctrl.testdateshow()">
+            <div class="panel-heading">Test Candidates</div>
+            <div class="panel-body ">
+
+               <div class="panel panel-blue" ng-show="$ctrl.testdateshow()">
+                  <div class="panel-heading">Test Candidate Mover</div>
+                  <div class="panel-body ">
+
+                     <div class="row col-md-12 text-left">
+                        <h3>Select Candidates to move</h3>
+                        <div class="btn-group">
+                           <button ng-show="$ctrl.gridrightcnt > 0" title="Drop from test" class="btn btn-blue" ng-click="$ctrl.removeFromTest($ctrl.testdatelist.testingid)" id="btnA">Drop {{$ctrl.gridrightcnt}} from test<i class="glyphicon glyphicon-chevron-left"></i></button>
+                           <button ng-show="$ctrl.gridleftcnt > 0" title="Add to test" class="btn btn-blue" ng-click="$ctrl.addToTest($ctrl.testdatelist.testingid)" id="btnB">Add {{$ctrl.gridleftcnt}} to test<i class="glyphicon glyphicon-chevron-right"></i></button>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="panel-footer"></div>
+               </div>
+
+               <div class="row">
+                  <div class="col-md-{{$ctrl.gridleft}}" ng-show="$ctrl.showleft">
+                     <!--                     <div ui-grid="$ctrl.gridOptions" ng-style="{'height' : (30*11)+140+'px', 'width' : $ctrl.styleleft}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter
+-->
+                     <div ui-grid="$ctrl.gridOptions" ng-style="{'height' : (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter class="mygrid ">
+                        <div class="watermark" ng-show="!$ctrl.gridOptions.data.length">No data available</div>
+                     </div>
+                  </div>
+                  <!--                  <div class="col-md-1 v-center text-center">
+                     <div class="btn-group">
+                        <button title="Drop from test" class="btn btn-blue" ng-click="$ctrl.removeFromTest($ctrl.testdatelist.testingid)" id="btnA"><i class="glyphicon glyphicon-chevron-left"></i></button>
+                        <button title="Add to test" class="btn btn-blue" ng-click="$ctrl.addToTest($ctrl.testdatelist.testingid)" id="btnB"><i class="glyphicon glyphicon-chevron-right"></i></button>
+                     </div>
+                     <h6 class="text-center">move from list-to-list</h6>
+                  </div>
+-->
+
+               </div>
+            </div>
+         </div>
+         <div class="panel panel-green" ng-show="$ctrl.testdateshow()">
+            <div class="panel-heading">Candidates on test</div>
+            <div class="panel-body ">
+
+               <div class="panel panel-blue" ng-show="$ctrl.testdateshow()">
+                  <div class="panel-heading">Test Candidates</div>
+                  <div class="panel-body ">
+
+                     <div class="row col-md-12 text-left" ng-show="$ctrl.testdateshow()">
+                        <h3>Select Candidates to move</h3>
+                        <div class="btn-group">
+                           <button ng-show="$ctrl.gridrightcnt > 0" title="Drop from test" class="btn btn-blue" ng-click="$ctrl.removeFromTest($ctrl.testdatelist.testingid)" id="btnA">Drop {{$ctrl.gridrightcnt}} from test<i class="glyphicon glyphicon-chevron-left"></i></button>
+                           <button ng-show="$ctrl.gridleftcnt > 0" title="Add to test" class="btn btn-blue" ng-click="$ctrl.addToTest($ctrl.testdatelist.testingid)" id="btnB">Add {{$ctrl.gridleftcnt}} to test<i class="glyphicon glyphicon-chevron-right"></i></button>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               <div class="col-md-12 text-left">
+                  <h3>Test Candidates Selected List</h3>
+               </div>
+
+               <div class="row col-md-{{$ctrl.gridright}}" ng-show="$ctrl.showright">
+                  <!--                     <div ui-grid="$ctrl.resgridOptions" ng-style="{'height' : (30*11)+140+'px', 'width' : $ctrl.styleright}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter
+-->
+
+                  <div ui-grid="$ctrl.resgridOptions" ng-style="{'height' : (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter class="mygrid">
+                     <div class="watermark" ng-show="!$ctrl.resgridOptions.data.length">No data available</div>
+                  </div>
+               </div>
+            </div>
+            <div class="panel-footer"></div>
+         </div>
+      </uib-tab>
+      <uib-tab index="2" id="tab-testmanage" heading="Manage Test" 
+      select="$ctrl.setActiveTab(1,'tab-manage'); managetabShown = !managetabShown" 
+      deselect="managetabShown = !managetabShown" 
+      >
+         <div class="panel panel-green">
+            <div class="panel-heading">Test Attendees</div>
+            <div class="panel-body ">
+               <div class="col-md-12">
+                  <form action="" novalidate name="edittest" class="form-horizontal">
+                     <div class="form-body pal">
+                        <div class="col-lg-12">
+                           <div class="panel panel-primary" ng-show="$ctrl.testdateshow()">
+                              <div class="panel-heading">Select the test candidates</div>
+                           </div>
+                           <div class="row col-md-12" style="height: 70px;">
+                              <div class="col-md-3">
+                                 <div class="select-box ">
+                                    <ui-select ng-model="$ctrl.TestCandidateSelected" theme="bootstrap" reset-search-input="false" on-select="$ctrl.getTestDates($item);" style="width: 300px;" title="Filter for a Test" append-to-body="false">
+                                       <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
+                                       <ui-select-choices repeat="TestCandidate in $ctrl.testcandidatenames | filter: $select.search track by $index" refresh="$ctrl.gettestcandidateNames($select.search)" refresh-delay="0">
+                                          <div id="testerpicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
+                                       </ui-select-choices>
+                                       <ui-select-no-choice>
+                                          Dang! We couldn't find any choices...
+                                       </ui-select-no-choice>
+                                    </ui-select>
+                                 </div>
+                              </div>
+                              <div class="col-md-5" style="height: 70px;" ng-show="!!$ctrl.selected">
+                                 <div class="col-md-7">
+                                    <div class="select-box">
+                                       <ui-select ng-model="$ctrl.templatenameSelected" theme="bootstrap" reset-search-input="false" on-select="$ctrl.gettemplateDetails($item)" style="width: 180px;" title="Choose a test doc" append-to-body="false">
+                                          <ui-select-match placeholder="Pick test document...">{{$select.selected.templatename}}</ui-select-match>
+                                          <ui-select-choices repeat="template in $ctrl.templatelist | filter: $select.search track by $index" refresh="$ctrl.getTemplateNames($select.search)" refresh-delay="0">
+                                             <div ng-bind-html="template.templatename | highlight: $select.search"></div>
+                                          </ui-select-choices>
+                                       </ui-select>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-5">
+                                    <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="$ctrl.genPDF()">Download {{$ctrl.templatenameSelected.templatename}}</button>
+                                 </div>
+                              </div>
+                              <div class="col-md-4">
+                                 <div class="col-md-3" style="height: 70px;" ng-show="!!$ctrl.selected">
+                                    <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="$ctrl.createTestChecklist()">Test Checklist</button>
+                                 </div>
+                                 <div class="col-md-3" style="height: 70px;" ng-show="!!$ctrl.selected">
+                                    <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="$ctrl.createBeltLabels()">Belt Labels</button>
+                                 </div>
+                                 <div class="col-md-3" style="height: 70px;" ng-show="!!$ctrl.selected">
+                                    <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="$ctrl.promotetestcandidate()">Promote Students</button>
+                                 </div>
+                                 <div class="col-md-3" style="height: 70px;" ng-show="!!$ctrl.selected">
+                                    <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="$ctrl.createPromoPostcards()">Promo Postcard</button>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="">
+                              <h3 class="block-heading" ng-show="$ctrl.testdateshow()"> {{$ctrl.testdatelist.testtype}} Test from: {{$ctrl.testdatelist.starttime |amDateFormat:'h:mm a'}} to: {{$ctrl.testdatelist.endtime |amDateFormat:'h:mm a'}}</h3>
+                              <div class="row">
+                                 <div class="col-md-3">
+                                    <div ng-class="{'has-error': edittest.tester1.$invalid, 'has-success': !edittest.tester1.$invalid}" class="form-group">
+                                       <label for="inputtester1" class="control-label">Tester </label>
+                                       <div class="input-icon right">
+                                          <i data-hover="tooltip" data-original-title="Correct" ng-show="edittest.tester1.$dirty" ng-class="edittest.tester1.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                          <select id="inputtester1" type="text" name="tester1" ng-model="$ctrl.testdatelist.tester1" ng-change="$ctrl.updateTest()" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                          <option ng-repeat="instructor in $ctrl.instructorlist" ng-selected="{{instructor.name==$ctrl.testdatelist.tester1}}" placeholder="Select" value="{{instructor.name}}">{{instructor.name}}</option>
+                                       </select>
+                                       </div>
+                                       <div style="color:maroon" role="alert" ng-messages="edittest.tester1.$error" class="has-error">
+                                          <div ng-message="required">You did not enter a field</div>
+                                          <div ng-message="minlength">Your field is too short</div>
+                                          <div ng-message="maxlength">Your field is too long</div>
+                                          <div ng-message="email">Your email is missing @ and/or a period</div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-3">
+                                    <div ng-class="{'has-error': edittest.tester2.$invalid, 'has-success': !edittest.tester2.$invalid}" class="form-group">
+                                       <label for="inputtester2" class="control-label">Tester </label>
+                                       <div class="input-icon right">
+                                          <i data-hover="tooltip" data-original-title="Correct" ng-show="edittest.tester2.$dirty" ng-class="edittest.tester2.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                          <select id="inputtester2" type="text" name="tester2" ng-model="$ctrl.testdatelist.tester2" ng-change="$ctrl.updateTest()" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                          <option ng-repeat="instructor in $ctrl.instructorlist" ng-selected="{{instructor.name==$ctrl.testdatelist.tester2}}" placeholder="Select" value="{{instructor.name}}">{{instructor.name}}</option>
+                                       </select>
+                                       </div>
+                                       <div style="color:maroon" role="alert" ng-messages="edittest.tester2.$error" class="has-error">
+                                          <div ng-message="required">You did not enter a field</div>
+                                          <div ng-message="minlength">Your field is too short</div>
+                                          <div ng-message="maxlength">Your field is too long</div>
+                                          <div ng-message="email">Your email is missing @ and/or a period</div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-3">
+                                    <div ng-class="{'has-error': edittest.tester3.$invalid, 'has-success': !edittest.tester3.$invalid}" class="form-group">
+                                       <label for="inputtester3" class="control-label">Tester </label>
+                                       <div class="input-icon right">
+                                          <i data-hover="tooltip" data-original-title="Correct" ng-show="edittest.tester3.$dirty" ng-class="edittest.tester3.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                          <select id="inputtester3" type="text" name="tester3" ng-model="$ctrl.testdatelist.tester3" ng-change="$ctrl.updateTest()" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                          <option ng-repeat="instructor in $ctrl.instructorlist" ng-selected="{{instructor.name==$ctrl.testdatelist.tester3}}" placeholder="Select" value="{{instructor.name}}">{{instructor.name}}</option>
+                                       </select>
+                                       </div>
+                                       <div style="color:maroon" role="alert" ng-messages="edittest.tester3.$error" class="has-error">
+                                          <div ng-message="required">You did not enter a field</div>
+                                          <div ng-message="minlength">Your field is too short</div>
+                                          <div ng-message="maxlength">Your field is too long</div>
+                                          <div ng-message="email">Your email is missing @ and/or a period</div>
+                                       </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-md-3">
+                                    <div ng-class="{'has-error': edittest.tester4.$invalid, 'has-success': !edittest.tester4.$invalid}" class="form-group">
+                                       <label for="inputtester4" class="control-label">Tester </label>
+                                       <div class="input-icon right">
+                                          <i data-hover="tooltip" data-original-title="Correct" ng-show="edittest.tester4.$dirty" ng-class="edittest.tester4.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                          <select id="inputtester4" type="text" name="tester4" ng-model="$ctrl.testdatelist.tester4" ng-change="$ctrl.updateTest()" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                          <option ng-repeat="instructor in $ctrl.instructorlist" ng-selected="{{instructor.name==$ctrl.testdatelist.tester4}}" placeholder="Select" value="{{instructor.name}}">{{instructor.name}}</option>
+                                       </select>
+                                       </div>
+                                       <div style="color:maroon" role="alert" ng-messages="edittest.tester4.$error" class="has-error">
+                                          <div ng-message="required">You did not enter a field</div>
+                                          <div ng-message="minlength">Your field is too short</div>
+                                          <div ng-message="maxlength">Your field is too long</div>
+                                          <div ng-message="email">Your email is missing @ and/or a period</div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="row col-md-12">
+                           <div ui-grid="$ctrl.resgridOptions" id="grid1" ng-style="{height: (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-auto-fit-columns
+                              class="mygrid">
+                              <div class="watermark" ng-show="!$ctrl.resgridOptions.data.length">No data available</div>
+                           </div>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+            <div class="panel-footer"></div>
+         </div>
+      </uib-tab>
+   </uib-tabset>
+
+</div>

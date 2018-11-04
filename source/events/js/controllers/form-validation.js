@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
 .controller('FormValidationController', function($scope, $routeParams){
     //BEGIN SUBMIT FORM VALIDATION
     $('#btn-valdation-text').live('click', function() {

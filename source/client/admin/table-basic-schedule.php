@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <div ng-controller="ScheduleTableBasicController as vm">
     <div class="portlet box portlet-green">
         <div class="portlet-header">

@@ -1,40 +1,23 @@
-(function(window,angular,$,moment) {
-    'use strict';
-    angular
-        .module('ng-admin.all')
-        .factory('CalUtil', CalUtil);
+const { jQuery: $ } = window;
+const { moment: moment } = window;
 
-    CalUtil.$inject = ['$log'];
-
-    function CalUtil( $log ) {
-        var utility = {
-            calActivate: calActivate,
-            EventDrag: EventDrag,
-            aDialog: aDialog,
-            setEventOpen: setEventOpen,
-            eventopen: eventopen,
-            uid: uid,
-            onCalendarDayClick: onCalendarDayClick,
-            initCalendar: initCalendar,
-            convertToMoment: convertToMoment,
-            convertToMomentDST: convertToMomentDST,
-            getColorByBgColor: getColorByBgColor,
-            hexToComplimentary: hexToComplimentary
-        };
+export class CalUtil {
+    constructor($log) {
+        'ngInject';
+    this.$log = $log;
+}
         
-        return utility;
-        
-        function getColorByBgColor(bgColor) {
+        getColorByBgColor(bgColor) {
         //
         // * Get color (black/white) depending on bgColor so it would be clearly seen.
         // * @param bgColor
         // * @returns {string}
         //
-            $log.debug('getColorByBgColor', bgColor);
+            this.$log.debug('getColorByBgColor', bgColor);
             if (!bgColor) { return ''; }
             return (parseInt(bgColor.replace('#', ''), 16) > 0xffffff / 2) ? '#000' : '#fff';
         }
-        function hexToComplimentary(hex) {
+        hexToComplimentary(hex) {
         // hexToComplimentary : Converts hex value to HSL, shifts
         // hue by 180 degrees and then converts hex, giving complimentary color
         // as a hex value
@@ -123,8 +106,8 @@
             return "#" + (0x1000000 | rgb).toString(16).substring(1);
         }
 
-        function setEventOpen(calEvent,studentpick,vm) {
-            $log.debug('seteventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
+        setEventOpen(calEvent,studentpick,vm) {
+            vm.$log.debug('seteventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
             $("#eventpick").val(studentpick.FullName);
             if (!calEvent.start) calEvent.start = moment();
             if (!calEvent.end) calEvent.end = moment();
@@ -183,9 +166,9 @@
 
         // initialize the calendar
         // -----------------------------------------------------------------
-        function initCalendar(vm,studentpick) {
+        initCalendar(vm,studentpick) {
             //  $(document).ready(function() {
-            $log.debug("callendar ready");
+            vm.$log.debug("callendar ready");
             $('#calendar').fullCalendar({
                 header: {
                     left: 'prev,next today',
@@ -206,13 +189,13 @@
                 selectable: true,
                 selectHelper: true,
                 //    viewRender : onCalendarViewRender,
-                dayClick: onCalendarDayClick,
+                dayClick: vm.CalUtil.onCalendarDayClick,
                 editable: true,
                 droppable: true, // this allows things to be dropped onto the calendar !!!
 
                 drop: function(date, jsEvent, ui, resourceId) { // this function is called when something is dropped
-                    $log.debug('drop entered', date, jsEvent, ui, resourceId);
-                    //       $log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
+                    vm.$log.debug('drop entered', date, jsEvent, ui, resourceId);
+                    //       vm.$log.debug('drop entered',jsEvent.target.style.backgroundColor,date._ambigTime);
 
                     // retrieve the dropped element's stored Event Object
                     var originalEventObject = $(this).data('eventObject');
@@ -231,19 +214,19 @@
                     }
 
                     copiedEventObject.end = moment(copiedEventObject.start).add(2, 'hours');
-                    $log.debug("copied end", copiedEventObject.end);
+                    vm.$log.debug("copied end", copiedEventObject.end);
                     copiedEventObject.backgroundColor = jsEvent.target.style.backgroundColor;
                     copiedEventObject.textColor = jsEvent.target.style.color;
                     copiedEventObject.eventtype = jsEvent.target.id;
                     var inner = jsEvent.target.innerText;
-                    //        $log.debug('drop parsing',inner);
+                    //        vm.$log.debug('drop parsing',inner);
                     var innerJ, desc;
                     try {
                         innerJ = JSON.parse(inner);
                         desc = innerJ.details.name;
                     }
                     catch (e) {
-                        //            $log.debug('json parse err',e);
+                        //            vm.$log.debug('json parse err',e);
                         innerJ = inner;
                         desc = inner;
                     }
@@ -254,7 +237,7 @@
 
                     //mlc todo, use a db inserted id 
                     vm.saveCalendarEvent(copiedEventObject).then(function() {
-                        $log.debug("test looking for new eventid", vm.neweventid);
+                        vm.$log.debug("test looking for new eventid", vm.neweventid);
                         copiedEventObject.id = vm.neweventid;
                         copiedEventObject.eventid = vm.neweventid;
 
@@ -272,15 +255,15 @@
 
                 },
                 select: function(start, end) {
-                    $log.debug('select entered', start, end);
+                    vm.$log.debug('select entered', start, end);
                     $("#eventStartd").val(moment(start).tz('America/New_York').format('MM/DD/YYYY'));
                     $("#eventStart").val(moment(start).tz('America/New_York').format('hh:mm A z'));
                     $("#eventEnd").val(moment(end).tz('America/New_York').format('hh:mm A z'));
-                    $log.debug('start', $("#eventStart"), 'end', $("#eventEnd"));
+                    vm.$log.debug('start', $("#eventStart"), 'end', $("#eventEnd"));
                     //$('#calEventDialog').dialog('open');
                 },
                 eventClick: function(calEvent, jsEvent, view) {
-                    $log.debug('eventClick entered', calEvent, jsEvent, view);
+                    vm.$log.debug('eventClick entered', calEvent, jsEvent, view);
                     vm.agerpick = calEvent.agerange;
                     vm.userpick = calEvent.userpick;
                     vm.typepick = calEvent.eventtype;
@@ -290,10 +273,10 @@
                     if (calEvent.contactid !== "" && calEvent.contactid !== "NULL") {
                         var path = '../v1/students/' + calEvent.contactid;
                         vm.getStudent(path).then(function(data) {
-                            $log.debug("eventclick get studentname returned", data);
+                            vm.$log.debug("eventclick get studentname returned", data);
                             var fullname = data.FirstName + " " + data.LastName;
                             vm.setstudent({ ID: data.ID, FirstName: data.FirstName, LastName: data.LastName, FullName: fullname });
-                            $log.debug("student exit in eventclick", studentpick);
+                            vm.$log.debug("student exit in eventclick", studentpick);
                             vm.eventopen(calEvent);
 
                         });
@@ -307,7 +290,7 @@
 
                 eventDrop: function(event, delta, revertFunc) {
 
-                    $log.debug('eventdrop', event, event.title + " was dropped on " + event.startd, delta);
+                    vm.$log.debug('eventdrop', event, event.title + " was dropped on " + event.startd, delta);
 
                     var title = event.title;
                     //fullcalendar moment doesn't have the duration add yet
@@ -338,14 +321,14 @@
                     }
                     else {
 
-                        $log.debug('save in eventdrop');
-                    //    $log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, 
+                        vm.$log.debug('save in eventdrop');
+                    //    vm.$log.debug('before eventdrop calsave', screen, title, startd, start, end, reminderCheckbox, 
                     //reminderInterval, userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
 
                      //   vm.calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval, userpick, 
                      //true, event, contactid, eventid, eventclass, color, textcolor, eventtype);
 
-                        $log.debug('before save in eventdrop', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+                        vm.$log.debug('before save in eventdrop', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
                         userpick, true, event, contactid, eventid, eventclass, color, textcolor, eventtype,
                         eventpick, typepick, agerpick, classpick);
 
@@ -367,28 +350,28 @@
                     thecolor + '!important; color:' + thetextcolor + ' !important;">' + name + '</div>');
                 $('#event-block').append(html);
                 vm.eventDrag(html);
-                $log.debug('after addEvent drag', html);
+                vm.$log.debug('after addEvent drag', html);
 
             };
 
             $('#event-add').on('click', function() {
                 var name = $('#event-name').val();
                 addEvent(name);
-                $log.debug('after addEvent click', name);
+                vm.$log.debug('after addEvent click', name);
             });
             // });
         }
 
-        function eventopen(calEvent,studentpick,vm,CalendarServices) {
-            $log.debug('eventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
-            setEventOpen(calEvent,studentpick,vm);
+        eventopen(calEvent,studentpick,vm,CalendarServices) {
+            vm.$log.debug('eventopen enter', studentpick, $("#calEventDialogpick")[0], $("#reminderCheckbox").val(calEvent.reminderCheckbox));
+            this.setEventOpen(calEvent,studentpick,vm);
             
             CalendarServices.setCurrentEvent(calEvent);
             $("#calEventDialog").dialog("option", "buttons", [{
                     text: "Update",
                     click: function() {
-                        $log.debug('save in edit. note need to update', $('#eventpick'), $('#contactpicklist'), studentpick, $('#studentpick'));
-                        $log.debug('save in edit: studentpick',vm.studentpick2);
+                        vm.$log.debug('save in edit. note need to update', $('#eventpick'), $('#contactpicklist'), studentpick, $('#studentpick'));
+                        vm.$log.debug('save in edit: studentpick',vm.studentpick2);
                         var title = $('#eventTitle').val();
                         var startd = $('#eventStartd').val();
                         var start = $('#eventStart').val();
@@ -409,7 +392,7 @@
 
                         var reminderCheckbox = $('#reminderCheckbox');
                         var screen = $(this);
-                        $log.debug('before calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
+                        vm.$log.debug('before calsave', screen, title, startd, start, end, reminderCheckbox, reminderInterval, 
                         userpick, true, calEvent, contactid, eventid, eventclass, color, textcolor, eventtype,
                         eventpick, typepick, agerpick, classpick);
 
@@ -424,7 +407,7 @@
                 {
                     text: "Delete",
                     click: function() {
-                        $log.debug('delete event entered', calEvent);
+                        vm.$log.debug('delete event entered', calEvent);
 
                         vm.removeCalendarEvent(calEvent.id);
                         $('#calendar').fullCalendar('removeEvents', calEvent._id);
@@ -443,8 +426,8 @@
 
         }
 
-        function uid() {
-            $log.debug("uid");
+        uid() {
+            this.$log.debug("uid");
             var id = 0; return function() { 
                 if (arguments[0] === 0) 
                     id = 0; 
@@ -452,19 +435,20 @@
             }; 
         }
         
-        function EventDrag() {
+        EventDrag() {
+            var self=this;
             return function(el) {
-                $log.debug("eventdrag entered", el);
+                self.$log.debug("eventdrag entered", el);
                 // create an Event Object (http://arshaw.com/fullcalendar/docs/event_data/Event_Object/)
                 // it doesn't need to have a start or end
                 var eventObject = {
                     title: $.trim(el.text()), // use the element's text as the event title
-                    id: uid()
+                    id: self.uid()
                 };
     
                 // store the Event Object in the DOM element so we can get to it later
                 el.data('eventObject', eventObject);
-                $log.debug('drag after EventObject', el);
+                self.$log.debug('drag after EventObject', el);
     
                 // make the event draggable using jQuery UI
                 el.draggable({
@@ -475,7 +459,8 @@
             };
         }
         
-        function aDialog(vm) {
+        aDialog(vm) {
+            var self=this;
             return $('#adialog').dialog({
                 resizable: false,
                 autoOpen: false,
@@ -484,13 +469,13 @@
                 modal: true,
                 buttons: {
                     "Close": function() {
-                        $log.debug("picked is", vm.studentpick2);
+                        self.$log.debug("picked is", vm.studentpick2);
                         $(this).dialog("close");
                     }
                 }
             });
         }
-        function onCalendarDayClick(date, jsEvent, view) {
+        onCalendarDayClick(date, jsEvent, view) {
             // Check to see whether the mouse was hovering over our day corner overlay 
             // that is itself applied to the fullCalendar's selection overlay div.
             // If it is, then we know we clicked on the day number and not some other 
@@ -498,7 +483,7 @@
             //    if ($('.my-cell-overlay-day-corner').is(':hover')) {
             //        alert('Click!');
             //    }
-            $log.debug('onCalendarDayClick entered', date, jsEvent, view);
+            console.log('onCalendarDayClick entered', date, jsEvent, view);
             if ($(jsEvent.target).is('td')) {
                 // Clicked on the day number in the month view 
                 $('#calendar').fullCalendar('changeView', 'agendaDay');
@@ -506,7 +491,8 @@
             }
 
         }
-        function convertToMoment(thetime) {
+/*
+        convertToMoment(thetime) {
             var testtime;
             //it has DST on the end
             if (typeof(thetime) !== 'undefined') {
@@ -515,17 +501,17 @@
                             } else {
                                 testtime = thetime;
                             }
-                            */
+                            * /
                 var m = moment(thetime, "MM/DD/YYYY hh:mm A z");
-        /*        $log.debug('convertToMoment: passed in: ', thetime,
+        /*        self.$log.debug('convertToMoment: passed in: ', thetime,
                     'isvalid?', m.isValid(),
                     'where invalid', m.invalidAt());
-        */            
+        * /            
                 return moment(thetime, "MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
                 //24 hr?    return moment(testtime).utc().format("YYYY-MM-DDThh:mm:ss.SSS[Z]");
             }
         }
-        function convertToMomentDST(thetime) {
+        convertToMomentDST(thetime) {
             if (typeof(thetime) === 'undefined') {
                 return;
             }
@@ -533,13 +519,13 @@
             //           return moment(thetime).tz('America/New_York').format('z');              
             //         } else {
             //      var testtime = thetime.slice(-3, thetime.length);
-            //         $log.debug('convertToMomentDST',thetime,testtime);
+            //         self.$log.debug('convertToMomentDST',thetime,testtime);
             //        return testtime;
             return moment(thetime).tz('America/New_York').format('z');
             //         }
         }
-
-        function calActivate() {
+*/
+        calActivate() {
             $('#calEventDialog').dialog({
                 resizable: false,
                 autoOpen: false,
@@ -584,4 +570,3 @@
             
 
     }
-})(window,window.angular,window.$, window.moment);

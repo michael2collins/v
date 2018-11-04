@@ -1,0 +1,36 @@
+<div class="modal-header">
+    <h3 class="modal-title">Create New Student</h3>
+</div>
+<div class="modal-body">
+    <form action="" novalidate name="newstudent" class="form-horizontal">
+        <div class="form-body pal">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="inputFirstName" class="control-label">First Name </label>
+                        <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" ng-model="vmnew.FirstName" minLength="2" maxLength="30" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="inputLastName" class="control-label">LastName </label>
+                        <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" ng-model="vmnew.LastName" minLength="2" maxLength="30" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label for="inputEmail" class="control-label">Email </label>
+                        <input id="inputEmail" type="text" placeholder="Email" name="Email" ng-model="vmnew.Email" minLength="2" maxLength="30" class="form-control">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
+</div>
+                      

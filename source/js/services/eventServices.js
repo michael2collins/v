@@ -1,148 +1,132 @@
-(function () {
-    'use strict';
+import angular from 'angular';
 
-    angular
-        .module('ng-admin.all')
-    .factory('EventServices', EventServices);
+export class EventServices {
+    constructor($http, $q, $log) {
+        'ngInject';
 
-    EventServices.$inject = ['$http', '$q', '$log'];
+        this.$http = $http;
+        this.$q = $q;
+        this.$log = $log;
+        //       this.apikey = {};
+        this.activeTab = 1; //default
+        this.response;
+    }
 
-    function EventServices( $http, $q, $log ) {
-        var apikey;
-        var activeTab = 'Event Information'; //default
-        var response;
-        var service = {
-  //          getAllEvents: getAllEvents,
-//            refreshEvents: refreshEvents,
-             setapikey: setapikey,
-            getEventSource: getEventSource,
-            getColDefs: getColDefs,
-            getColDefList: getColDefList,
-            getEventNames: getEventNames,
-            getEventDetails: getEventDetails,
-            setColDefs: setColDefs,
-            createEvent: createEvent,
-            updateEvent: updateEvent,
-//            getEvent: getEvent,
-            setActiveTab: setActiveTab,
-            getActiveTab: getActiveTab
-        };
-        return service;
-        
-        function getActiveTab() {
-            return activeTab;
-        }
-        function setActiveTab(thetab) {
-            activeTab = thetab;
-        }
+    getActiveTab() {
+        return this.activeTab;
+    }
+    setActiveTab(thetab, thecaller) {
+        this.$log.debug('EventServices setActiveTab called', thetab, thecaller);
+        this.activeTab = thetab;
+    }
 
-     function setapikey(key) {
-      //  $log.debug('setapikey', key);
-         apikey = key;
-     }
-        
-        function getEventNames(path) {
-            $log.debug('getEventNames service entered');
-            $log.debug('path',path);
+    /*     setapikey(key) {
+          //  $log.debug('setapikey', key);
+             this.apikey = key;
+         }
+      */
+    getEventNames(path) {
+        var self = this;
+        self.$log.debug('getEventNames service entered');
+        self.$log.debug('path', path);
 
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
 
-        function getEventDetails(path) {
-            $log.debug('getEventDetails service entered');
-            $log.debug('path',path);
+    getEventDetails(path) {
+        var self = this;
+        self.$log.debug('getEventDetails service entered');
+        self.$log.debug('path', path);
 
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-        
-
-        function getEventSource(path) {
-            $log.debug('getEventSource service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-        
-        function getColDefs(path) {
-            $log.debug('getColDefs service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-
-        function getColDefList(path) {
-            $log.debug('getColDefList service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
 
 
-        function setColDefs(path, thedata) {
-            $log.debug('setColDefs service entered before post:', thedata);
-            $log.debug('path',path);
+    getEventSource(path) {
+        var self = this;
+        self.$log.debug('getEventSource service entered');
+        self.$log.debug('path', path);
 
-            var request = $http({
-                method: "POST",
-                url: path,
-                data: {
-                    thedata: thedata
-                }
-            });
-            return( request.then( handleSuccess, handleError ) );
-        }
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
 
-        function createEvent(path, thedata ) {
-                    $log.debug('createEvent data before post :' , thedata);
-                    var request = $http({
-                        method: "POST",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-        
-        function updateEvent(path, thedata ) {
-                    $log.debug('updateEvent data before post :' , thedata);
-                    var request = $http({
-                        method: "PUT",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-        
-        // ---
-        // PRIVATE METHODS.
-        // ---
-        function handleError( response ) {
-            $log.debug('EventServices failure:');
-            $log.debug(response);
-            $log.debug('status',response.status);
-            $log.debug('config',response.config);
-            //debugger;
-            if (
-                ! angular.isObject( response.data ) ||
-                ! response.data.message
-                ) {
-                return( $q.reject( "An unknown error occurred." ) );
-              //return(null);
+    getColDefs(path) {
+        var self = this;
+        self.$log.debug('getColDefs service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+
+    getColDefList(path) {
+        var self = this;
+        self.$log.debug('getColDefList service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+
+
+    setColDefs(path, thedata) {
+        var self = this;
+        self.$log.debug('setColDefs service entered before post:', thedata);
+        self.$log.debug('path', path);
+
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
             }
-            // Otherwise, use expected error message.
-            return( $q.reject( response.data.message ) );
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    createEvent(path, thedata) {
+        var self = this;
+        self.$log.debug('createEvent data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    updateEvent(path, thedata) {
+        var self = this;
+        self.$log.debug('updateEvent data before post :', thedata);
+        var request = self.$http({
+            method: "PUT",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    // ---
+    // PRIVATE METHODS.
+    // ---
+    handleError(response) {
+        //debugger;
+        if (!angular.isObject(response.data) ||
+            !response.data.message
+        ) {
+            return (this.$q.reject("An unknown error occurred."));
+            //return(null);
         }
-        // I transform the successful response, unwrapping the application data
-        // from the API response payload.
-        function handleSuccess( response ) {
-            $log.debug('EventServices success:');
-            $log.debug(response);
-            return( response.data );
-        }
+        // Otherwise, use expected error message.
+        return (this.$q.reject(response.data.message));
+    }
+    // I transform the successful response, unwrapping the application data
+    // from the API response payload.
+    handleSuccess(response) {
+        return (response.data);
+    }
 
 
-        }
- })();
+}

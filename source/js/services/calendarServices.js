@@ -1,162 +1,145 @@
-(function(window, angular) {
-    'use strict';
+import angular from 'angular';
 
-    angular
-        .module('ng-admin.all')
-        .factory('CalendarServices', CalendarServices);
+export class CalendarServices {
+    constructor($http, $q, $log, $window, moment) {
+        'ngInject';
 
-    CalendarServices.$inject = ['$http', '$q', '$log', '$window', 'moment'];
-
-    function CalendarServices($http, $q, $log, $window, moment) {
-        var apikey;
-        var currentCalendarEvent;
-        var notifylist = [];
-        var intervalValue = 5000; //milli
-        var okNotify;
-        var checktime;
-        var notifyvlu;
-
-        var service = {
-            setapikey: setapikey,
-            saveCalendarEvent: saveCalendarEvent,
-            getCalendarEvents: getCalendarEvents,
-            getUsers: getUsers,
-            removeCalendarEvent: removeCalendarEvent,
-            updateTasknamelist: updateTasknamelist,
-            removeTasknamelist: removeTasknamelist,
-            gettasknamelist: gettasknamelist,
-            getinstructorlist: getinstructorlist,
-            setCurrentEvent: setCurrentEvent,
-            getCurrentEvent: getCurrentEvent,
-            setNotifyList: setNotifyList,
-            getNotifyList: getNotifyList,
-            displaytime: displaytime,
-            getIntervalValue: getIntervalValue,
-            setIntervalValue: setIntervalValue,
-            setOkNotify: setOkNotify,
-            getOkNotify: getOkNotify,
-            schedToCal: schedToCal,
-            clearCal: clearCal,
-            transferCal: transferCal,
-            getAgeRangeList: getAgeRangeList
-        };
-        return service;
-
-        function setapikey(key) {
-            //     $log.debug('setapikey', key);
-            apikey = key;
+//        this.apikey={};
+        this.currentCalendarEvent={};
+        this.notifylist = [];
+        this.intervalValue = 5000; //milli
+        this.okNotify=false;
+        this.checktime=null;
+        this.notifyvlu=null;
+        this.$http = $http;
+        this.$q = $q;
+        this.$log = $log;
+        this.$window = $window;
+        this.moment = moment;
+    }        
+/*        setapikey(key) {
+            //     this.$log.debug('setapikey', key);
+            this.apikey = key;
+        }
+*/
+        setOkNotify(input) {
+            this.notifyvlu = input;
         }
 
-        function setOkNotify(input) {
-            notifyvlu = input;
+        getOkNotify() {
+            return this.notifyvlu;
         }
 
-        function getOkNotify() {
-            return notifyvlu;
+        setIntervalValue(input) {
+            this.intervalValue = input;
         }
 
-        function setIntervalValue(input) {
-            intervalValue = input;
+        getIntervalValue() {
+            return this.intervalValue;
         }
 
-        function getIntervalValue() {
-            return intervalValue;
-        }
-
-        function schedToCal(path, thedata) {
-            $log.debug('schedToCal data before post :', thedata);
-            var request = $http({
+        schedToCal(path, thedata) {
+            var self=this;
+            self.$log.debug('schedToCal data before post :', thedata);
+            var request = self.$http({
                 method: "POST",
                 url: path,
                 data: {
                     thedata: thedata
                 }
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
-        function clearCal(path) {
-            $log.debug('clearCal  before delete :');
-            var request = $http({
+        clearCal(path) {
+            var self=this;
+            self.$log.debug('clearCal  before delete :');
+            var request = self.$http({
                 method: "DELETE",
                 url: path
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
-        function transferCal(path, thedata) {
-            $log.debug('transferCal data before post :', thedata);
-            var request = $http({
+        transferCal(path, thedata) {
+            var self=this;
+            self.$log.debug('transferCal data before post :', thedata);
+            var request = self.$http({
                 method: "POST",
                 url: path,
                 data: {
                     thedata: thedata
                 }
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
-        function getAgeRangeList(path) {
-            $log.debug('getAgeRangeList service entered');
-            $log.debug('path', path);
-            var request = $http({
+        getAgeRangeList(path) {
+            var self=this;
+            self.$log.debug('getAgeRangeList service entered');
+            self.$log.debug('path', path);
+            var request = self.$http({
                 method: "GET",
                 url: path,
                 ignoreLoadingBar: true
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
 
         }
 
-        function gettasknamelist(path) {
-            $log.debug('gettasknamelist service entered');
-            $log.debug('path', path);
-            var request = $http({
+        gettasknamelist(path) {
+            var self=this;
+            self.$log.debug('gettasknamelist service entered');
+            self.$log.debug('path', path);
+            var request = self.$http({
                 method: "GET",
                 url: path,
                 ignoreLoadingBar: true
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
 
         }
 
-        function getinstructorlist(path) {
-            $log.debug('getinstructorlist service entered');
-            $log.debug('path', path);
+        getinstructorlist(path) {
+            var self=this;
+            self.$log.debug('getinstructorlist service entered');
+            self.$log.debug('path', path);
 
-            return ($http.get(path).then(handleSuccess, handleError));
+            return (self.$http.get(path).then(self.handleSuccess, self.handleError));
         }
 
-        function setNotifyList(list) {
-            $log.debug('entered setnotifylist', list);
-            notifylist = list;
+        setNotifyList(list) {
+            var self=this;
+            self.$log.debug('entered setnotifylist', list);
+            self.notifylist = list;
         }
 
-        function getNotifyList(notify) {
-            //    $log.debug('entered getnotif', notifylist);
-            timeCleaner(notify);
-            return notifylist;
+        getNotifyList(notify) {
+            //    this.$log.debug('entered getnotif', notifylist);
+            this.timeCleaner(notify);
+            return this.notifylist;
         }
 
-        function displaytime() {
-            return moment(checktime).format('MM/DD/YYYY hh:mm A') + ' ' + moment(checktime).tz('America/New_York').format('Z z');
+        displaytime() {
+            return this.moment(this.checktime).format('MM/DD/YYYY hh:mm A') + ' ' + 
+                this.moment(this.checktime).tz('America/New_York').format('Z z');
         }
 
-        function elseSendNotification (title, options) {
+        elseSendNotification (title, options) {
             console.log('fallback notify');
             alert(title + ": " + options.body);
         }
-        function sendWindowNotification(title, options, optionssyn) {
+        sendWindowNotification(title, options, optionssyn) {
             console.log('in window');
             try {
-                $window.Notification.requestPermission().then(function(permission) {
+                this.$window.Notification.requestPermission().then(function(permission) {
                     console.log('requestPermission', permission);
                     if (permission !== 'granted') {
                         console.log('fallback notify from incognito');
                         alert(title + ": " + options.body);
                     }
                     else {
-                        return new $window.Notification(title, optionssyn);
+                        return new this.$window.Notification(title, optionssyn);
                     }
                 });
             }
@@ -165,72 +148,37 @@
             }
             
         }
-        function sendMozNotification(title, options, optionssyn) {
+        sendMozNotification(title, options, optionssyn) {
             // Gecko < 22
             console.log('in moz');
-            return $window.navigator.mozNotification
+            return this.$window.navigator.mozNotification
                 .createNotification(title, optionssyn.body, optionssyn.icon)
                 .show();
             
         }
-        function sendNotification(title, options, optionssyn) {
+        sendNotification(title, options, optionssyn) {
             // Memoize based on feature detection.
-            if ("Notification" in $window) {
-                   sendWindowNotification(title, options, optionssyn);
+            if ("Notification" in this.$window) {
+                   this.sendWindowNotification(title, options, optionssyn);
             }
-            else if ("mozNotification" in $window.navigator) {
-                   sendMozNotification(title, options, optionssyn);
+            else if ("mozNotification" in this.$window.navigator) {
+                   this.sendMozNotification(title, options, optionssyn);
             }
             else {
-                  elseSendNotification(title, options);
+                  this.elseSendNotification(title, options);
             }
-            return sendNotification(title, options, optionssyn);
+            return this.sendNotification(title, options, optionssyn);
         }
-/*
-        function syntaxHighlight(json) {
-            if (typeof json != 'string') {
-                json = JSON.stringify(json, undefined, 2);
-            }
-            json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-            return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function(match) {
-                var cls = 'number';
-                if (/^"/.test(match)) {
-                    if (/:$/.test(match)) {
-                        cls = 'key';
-                    }
-                    else {
-                        cls = 'string';
-                    }
-                }
-                else if (/true|false/.test(match)) {
-                    cls = 'boolean';
-                }
-                else if (/null/.test(match)) {
-                    cls = 'null';
-                }
-                return '<span class="' + cls + '">' + match + '</span>';
-            });
-        }
-*/
-        function mynotify(msg) {
-            $log.debug('notify entered', msg);
+        mynotify(msg) {
+            this.$log.debug('notify entered', msg);
             var title = msg.title;
-  /*          var output = {
-                title: msg.title,
-                start: msg.start,
-                now: moment()
-                //             assignee: msg.userpick,
-                //             reminder: msg.reminderInterval,
-                //             type: msg.eventtype
-            }; */
-            //var str = JSON.stringify(output, undefined, 4);
             var str = 'check calendar for: ' + msg.title + ' at: ' + msg.start;
             var iconstr = 'https://vdojo.villaris.us/images/notifyicon.jpg';
-            sendNotification(title, {
+            this.sendNotification(title, {
                 body: str,
                 icon: iconstr,
                 lang: 'en-US',
-                tag: generateTag(),
+                tag: this.generateTag(),
                 onclick: function() {
                     console.log("On Click Triggered");
                 },
@@ -245,7 +193,7 @@
                 body: str,
                 icon: iconstr,
                 lang: 'en-US',
-                tag: generateTag(),
+                tag: this.generateTag(),
                 onclick: function() {
                     console.log("On Click Triggered");
                 },
@@ -262,13 +210,15 @@
         // *  Generate a random UUID string.
         // *  @return {String} A randomly-generated UUID string.
         //
-        function generateTag() {
-            return [s4() + s4(), s4(), s4(), s4(), s4() + s4() + s4()].join('-');
+        generateTag() {
+            return [this.s4() + this.s4(), this.s4(), 
+                this.s4(), this.s4(), this.s4() + this.s4()
+                + this.s4()].join('-');
         }
         //
         //  Generate a random four-digit hex value.
         //
-        function s4() {
+        s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
                 .toString(16).substring(1);
         }
@@ -276,52 +226,52 @@
 
 
 
-        function timeCleaner(notify) {
-            okNotify = notify;
-            checktime = moment();
-            for (var iter = 0, len = notifylist.length; iter < len; iter++) {
-                /*                    $log.debug('intervalChecker: b4 if', 
+        timeCleaner(notify) {
+            this.okNotify = notify;
+            this.checktime = this.moment();
+            for (var iter = 0, len = this.notifylist.length; iter < len; iter++) {
+                /*                    this.$log.debug('intervalChecker: b4 if', 
                                         checktime, 
                                         okNotify, 
                                         intervalValue,
                                         listOfTimes[iter],
                                         iter, len);
                   */
-                if (moment(checktime) <= moment(notifylist[iter].start).add(intervalValue / 1000, 'seconds') &&
-                    moment(checktime) > moment(notifylist[iter].start)) {
-                    $log.debug('intervalChecker: found in interval',
-                        checktime,
-                        okNotify,
-                        intervalValue,
-                        notifylist[iter]);
-                    if (okNotify === true) {
-                        $log.debug('going to notify', notifylist[iter]);
-                        mynotify(notifylist[iter]);
+                if (this.moment(this.checktime) <= this.moment(this.notifylist[iter].start).add(this.intervalValue / 1000, 'seconds') &&
+                    this.moment(this.checktime) > this.moment(this.notifylist[iter].start)) {
+                    this.$log.debug('intervalChecker: found in interval',
+                        this.checktime,
+                        this.okNotify,
+                        this.intervalValue,
+                        this.notifylist[iter]);
+                    if (this.okNotify === true) {
+                        this.$log.debug('going to notify', this.notifylist[iter]);
+                        this.mynotify(this.notifylist[iter]);
                     }
-                    notifylist[iter].remove = true;
+                    this.notifylist[iter].remove = true;
                 }
-                // $log.debug("checking deleted event from list", listOfTimes[iter]);
+                // this.$log.debug("checking deleted event from list", listOfTimes[iter]);
 
-                notifylist[iter].remove = false;
+                this.notifylist[iter].remove = false;
             }
-            for (var niter = 0, nlen = notifylist.length; niter < nlen; niter++) {
-                /*            $log.debug('intervalChecker: b4 removal if', 
+            for (var niter = 0, nlen = this.notifylist.length; niter < nlen; niter++) {
+                /*            this.$log.debug('intervalChecker: b4 removal if', 
                                 checktime, 
                                 okNotify, 
                                 intervalValue,
                                 listOfTimes[niter],
                                 niter,nlen);
                  */
-                if (typeof(notifylist[niter]) !== 'undefined') {
+                if (typeof(this.notifylist[niter]) !== 'undefined') {
                     //i think there is a transitional period where it is in 
                     // process of being cleared that the count is wrong
                     if (
-                        moment(checktime) > moment(notifylist[niter].start).add(intervalValue / 1000, 'seconds') ||
-                        notifylist[niter].remove === true
+                        this.moment(this.checktime) > this.moment(this.notifylist[niter].start).add(this.intervalValue / 1000, 'seconds') ||
+                        this.notifylist[niter].remove === true
                     ) {
-                        //            $log.debug('dropping too old ones',notifylist[niter], checktime);
+                        //            this.$log.debug('dropping too old ones',this.notifylist[niter], checktime);
                         //remove if they were passed by in the loop above
-                        notifylist.splice(niter, 1);
+                        this.notifylist.splice(niter, 1);
                     }
                 }
             }
@@ -329,87 +279,93 @@
         }
 
 
-        function getCurrentEvent() {
-            return currentCalendarEvent;
+        getCurrentEvent() {
+            return this.currentCalendarEvent;
         }
 
-        function setCurrentEvent(event) {
-            $log.debug("setCurrentEvent", event);
-            currentCalendarEvent = event;
+        setCurrentEvent(event) {
+            this.$log.debug("setCurrentEvent", event);
+            this.currentCalendarEvent = event;
         }
 
-        function getCalendarEvents(path) {
-            $log.debug('getCalendarEvents service entered');
-            $log.debug('path', path);
+        getCalendarEvents(path) {
+            var self=this;
+            self.$log.debug('getCalendarEvents service entered');
+            self.$log.debug('path', path);
 
-            return ($http.get(path).then(handleSuccess, handleError));
+            return (self.$http.get(path).then(self.handleSuccess, self.handleError));
         }
 
-        function getUsers(path) {
-            $log.debug('getUsers service entered');
-            $log.debug('path', path);
+        getUsers(path) {
+            var self=this;
+            self.$log.debug('getUsers service entered');
+            self.$log.debug('path', path);
 
-            return ($http.get(path).then(handleSuccess, handleError));
+            return (self.$http.get(path).then(self.handleSuccess, self.handleError));
         }
 
         //add or update
-        function saveCalendarEvent(path, thedata) {
-            $log.debug('saveCalendarEvent data before post :', thedata);
-            var request = $http({
+        saveCalendarEvent(path, thedata) {
+            var self=this;
+            self.$log.debug('saveCalendarEvent data before post :', thedata);
+            var request = self.$http({
                 method: "POST",
                 url: path,
                 data: {
                     thedata: thedata
                 }
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
-        function removeCalendarEvent(path, thedata) {
-            $log.debug('removeCalendarEvent data before delete :', thedata);
-            var request = $http({
+        removeCalendarEvent(path, thedata) {
+            var self=this;
+            self.$log.debug('removeCalendarEvent data before delete :', thedata);
+            var request = self.$http({
                 method: "POST",
                 url: path,
                 data: {
                     thedata: thedata
                 }
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
-        function updateTasknamelist(path, thedata) {
-            $log.debug('updatetasknamelist data before post :', thedata);
-            var request = $http({
+        updateTasknamelist(path, thedata) {
+            var self=this;
+            self.$log.debug('updatetasknamelist data before post :', thedata);
+            var request = self.$http({
                 method: "POST",
                 url: path,
                 data: {
                     thedata: thedata
                 }
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
-        function removeTasknamelist(path, thedata) {
-            $log.debug('removeTasknamelist data before delete :', thedata);
-            var request = $http({
+        removeTasknamelist(path, thedata) {
+            var self=this;
+            self.$log.debug('removeTasknamelist data before delete :', thedata);
+            var request = self.$http({
                 method: "POST",
                 url: path,
                 data: {
                     thedata: thedata
                 }
             });
-            return (request.then(handleSuccess, handleError));
+            return (request.then(self.handleSuccess, self.handleError));
         }
 
 
         // ---
         // PRIVATE METHODS.
         // ---
-        function handleError(response) {
-            $log.debug('failure:');
-            $log.debug(response);
-            $log.debug('status', response.status);
-            $log.debug('config', response.config);
+        handleError(response) {
+//            this.$log.debug('failure:');
+ //           this.$log.debug(response);
+  //          this.$log.debug('status', response.status);
+//            this.$log.debug('config', response.config);
             //debugger;
             if (!angular.isObject(response.data) ||
                 !response.data.message
@@ -418,16 +374,15 @@
                 return (null);
             }
             // Otherwise, use expected error message.
-            return ($q.reject(response.data.message));
+            return (response.data.message);
         }
         // I transform the successful response, unwrapping the application data
         // from the API response payload.
-        function handleSuccess(response) {
-            $log.debug(' success:');
-            $log.debug(response);
+        handleSuccess(response) {
+//            this.$log.debug(' success:');
+  //          this.$log.debug(response);
             return (response.data);
         }
 
 
     }
-})(window, window.angular);

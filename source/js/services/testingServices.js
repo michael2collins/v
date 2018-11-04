@@ -1,216 +1,198 @@
-(function () {
-    'use strict';
+import angular from 'angular';
 
-    angular
-        .module('ng-admin.all')
-    .factory('TestingServices', TestingServices);
+export class TestingServices {
+    constructor($http, $q, $log) {
+        'ngInject';
 
-    TestingServices.$inject = ['$http', '$q', '$log', '$window'];
+        this.$http = $http;
+        this.$q = $q;
+        this.$log = $log;
+    //    this.apikey ={};
+        this.thetasknamelist = '';
+        this.code={};
+        this.currentCalendarEvent={};
+        this.notifylist = [];
+        this.intervalValue = 5000; //milli
+        this.okNotify={};
+        this.checktime={};
+        this.thisgrid={};
+        this.thisapi={};
+        this.thissrcgrid={};
+        this.thissrcapi={};
+        this.thisrptlayout={};
+        this.testDate={};
+        this.testTime={};
+    }
 
-    function TestingServices( $http, $q, $log, $window ) {
-        var apikey;
-        var thetasknamelist = '';
-        var response;
-        var code;
-        var currentCalendarEvent;
-        var notifylist = [];
-        var intervalValue = 5000; //milli
-        var okNotify;
-        var checktime;
-        var thisgrid;
-        var thisapi;
-        var thissrcgrid;
-        var thissrcapi;
-        var thisrptlayout;
-        var testDate;
-        var testTime;
+    getActiveTab() {
+        return this.activeTab;
+    }
+    setActiveTab(thetab, thecaller) {
+        this.$log.debug('TestingServices setActiveTab called', thetab, thecaller);
+        this.activeTab = thetab;
+    }
 
-        var service = {
-  //          getAlltasknamelists: getAlltasknamelists,
-             setapikey: setapikey,
-             getTestTypes: getTestTypes,
-             gettestcandidateDetails: gettestcandidateDetails,
-             gettestcandidateList: gettestcandidateList,
-             gettestcandidateNames: gettestcandidateNames,
-             createtestcandidate: createtestcandidate,
-             removetestcandidate: removetestcandidate,
-             updatetestcandidate: updatetestcandidate,
-             promotetestcandidate: promotetestcandidate,
-             updateTesting: updateTesting,
-             getTestDates: getTestDates,
-             setGrid: setGrid,
-             getGrid: getGrid,
-             getGridApi: getGridApi,
-             setsrcGrid: setsrcGrid,
-             getsrcGrid: getsrcGrid,
-             getsrcGridApi: getsrcGridApi,
-             getRptLayout: getRptLayout,
-             getTestDate: getTestDate,
-             getTestTime: getTestTime,
-             getGeneralColDefs: getGeneralColDefs
-        };
-        return service;
+    setGrid(input, api, thedate, thestart, thelayout) {
+        this.thisgrid = input;
+        this.thisapi = api;
+        this.testDate = thedate;
+        this.testTime = thestart;
+        this.thisrptlayout = thelayout;
+    }
+    setsrcGrid(input, api, thedate, thestart) {
+        this.thissrcgrid = input;
+        this.thissrcapi = api;
+        this.testDate = thedate;
+        this.testTime = thestart;
+    }
+    getGrid() {
+        return this.thisgrid;
+    }
+    getsrcGrid() {
+        return this.thissrcgrid;
+    }
+    getGridApi() {
+        return this.thisapi;
+    }
+    getsrcGridApi() {
+        return this.thissrcapi;
+    }
+    getTestDate() {
+        return this.testDate;
+    }
+    getRptLayout() {
+        return this.thisrptlayout;
+    }
+    getTestTime() {
+        return this.testTime;
+    }
+/*    setapikey(key) {
+        this.apikey = key;
+    }
+*/
+    getTestTypes(path) {
+        var self = this;
+        self.$log.debug('getTestTypes service entered');
+        self.$log.debug('path', path);
 
-        function setGrid(input,api,thedate,thestart,thelayout) {
-            thisgrid = input;
-            thisapi = api;
-            testDate = thedate;
-            testTime = thestart;
-            thisrptlayout = thelayout;
-        }
-        function setsrcGrid(input,api,thedate,thestart) {
-            thissrcgrid = input;
-            thissrcapi = api;
-            testDate = thedate;
-            testTime = thestart;
-        }
-        function getGrid() {
-            return thisgrid;
-        }
-        function getsrcGrid() {
-            return thissrcgrid;
-        }
-        function getGridApi() {
-            return thisapi;
-        }
-        function getsrcGridApi() {
-            return thissrcapi;
-        }
-        function getTestDate() {
-            return testDate;
-        }
-        function getRptLayout(){
-            return thisrptlayout;
-        }
-        function getTestTime() {
-            return testTime;
-        }
-         function setapikey(key) {
-       //     $log.debug('setapikey', key);
-             apikey = key;
-        }
-        
-        function getTestTypes(path) {
-            $log.debug('getTestTypes service entered');
-            $log.debug('path',path);
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+    getGeneralColDefs(path) {
+        var self = this;
+        self.$log.debug('getGeneralColDefs service entered');
+        self.$log.debug('path', path);
 
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-        function getGeneralColDefs(path) {
-            $log.debug('getGeneralColDefs service entered');
-            $log.debug('path',path);
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
 
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-
-        function createtestcandidate(path, thedata ) {
-                    $log.debug('createtestcandidate data before post :' , thedata);
-                    var request = $http({
-                        method: "POST",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-
-        function removetestcandidate(path, thedata ) {
-                    $log.debug('removetestcandidate data before delete :' , thedata);
-                    var request = $http({
-                        method: "DELETE",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-
-        function updateTesting(path, thedata ) {
-                    $log.debug('updateTesting data before put :' , thedata);
-                    var request = $http({
-                        method: "PUT",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-        
-        function updatetestcandidate(path) {
-            $log.debug('updatetestcandidate service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-        function promotetestcandidate(path, thedata ) {
-                    $log.debug('promotetestcandidate data before post :' , thedata);
-                    var request = $http({
-                        method: "POST",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-
-        function getTestDates(path) {
-            $log.debug('getTestDates service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-
-        function gettestcandidateDetails(path) {
-            $log.debug('gettestcandidateDetails service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-
-        function gettestcandidateNames(path) {
-            $log.debug('gettestcandidateNames service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-        function gettestcandidateList(path) {
-            $log.debug('gettestcandidateList service entered');
-            $log.debug('path',path);
-
-            return($http.get(path).then( handleSuccess, handleError) );
-        }
-
-        // ---
-        // PRIVATE METHODS.
-        // ---
-        function handleError( response ) {
-            $log.debug('failure:');
-            $log.debug(response);
-            $log.debug('status',response.status);
-            $log.debug('config',response.config);
-            //debugger;
-            if (
-                ! angular.isObject( response.data ) ||
-                ! response.data.message
-                ) {
-              //  return( $q.reject( "An unknown error occurred." ) );
-              return(null);
+    createtestcandidate(path, thedata) {
+        var self = this;
+        self.$log.debug('createtestcandidate data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
             }
-            // Otherwise, use expected error message.
-            return( $q.reject( response.data.message ) );
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    removetestcandidate(path, thedata) {
+        var self = this;
+        self.$log.debug('removetestcandidate data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    updateTesting(path, thedata) {
+        var self = this;
+        self.$log.debug('updateTesting data before put :', thedata);
+        var request = self.$http({
+            method: "PUT",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    updatetestcandidate(path) {
+        var self = this;
+        self.$log.debug('updatetestcandidate service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+    promotetestcandidate(path, thedata) {
+        var self = this;
+        self.$log.debug('promotetestcandidate data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    getTestDates(path) {
+        var self = this;
+        self.$log.debug('getTestDates service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+
+    gettestcandidateDetails(path) {
+        var self = this;
+        self.$log.debug('gettestcandidateDetails service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+
+    gettestcandidateNames(path) {
+        var self = this;
+        self.$log.debug('gettestcandidateNames service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+    gettestcandidateList(path) {
+        var self = this;
+        self.$log.debug('gettestcandidateList service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+
+    // ---
+    // PRIVATE METHODS.
+    // ---
+    handleError(response) {
+        if (!angular.isObject(response.data) ||
+            !response.data.message
+        ) {
+            //  return( $q.reject( "An unknown error occurred." ) );
+            return (null);
         }
-        // I transform the successful response, unwrapping the application data
-        // from the API response payload.
-        function handleSuccess( response ) {
-            $log.debug(' success:');
-            $log.debug(response);
-            return( response.data );
-        }
+        // Otherwise, use expected error message.
+        return (response.data.message);
+    }
+    // I transform the successful response, unwrapping the application data
+    // from the API response payload.
+    handleSuccess(response) {
+        return (response.data);
+    }
 
 
-        }
- })();
+}

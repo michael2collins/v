@@ -1,54 +1,53 @@
-(function () {
-    'use strict';
+import angular from 'angular';
 
-    angular
-        .module('ng-admin.all')
-        .factory('FlashService', FlashService);
+export class FlashService {
+    constructor($rootScope) {
+        'ngInject';
 
-    FlashService.$inject = ['$rootScope'];
-    function FlashService($rootScope) {
-        var service = {};
+//        this.apikey={};
+        this.$rootScope=$rootScope;
+        this.service = {};
 
-        service.Success = Success;
-        service.Err = Err;
+        this.service.Success = this.Success;
+        this.service.Err = this.Err;
 
-        initService();
+        this.initService();
 
-        return service;
+    }
+    initService() {
+        var self=this;
+        this.$rootScope.$on('$locationChangeStart', function() {
+            self.clearFlashMessage(self);
+        });
+    }
 
-        function initService() {
-            $rootScope.$on('$locationChangeStart', function () {
-                clearFlashMessage();
-            });
-
-            function clearFlashMessage() {
-                var flash = $rootScope.flash;
-                if (flash) {
-                    if (!flash.keepAfterLocationChange) {
-                        delete $rootScope.flash;
-                    } else {
-                        // only keep for a single location change
-                        flash.keepAfterLocationChange = false;
-                    }
-                }
+    clearFlashMessage(self) {
+        var flash = self.$rootScope.flash;
+        if (flash) {
+            if (!flash.keepAfterLocationChange) {
+                delete self.$rootScope.flash;
             }
-        }
-
-        function Success(message, keepAfterLocationChange) {
-            $rootScope.flash = {
-                message: message,
-                type: 'success', 
-                keepAfterLocationChange: keepAfterLocationChange
-            };
-        }
-
-        function Err(message, keepAfterLocationChange) {
-            $rootScope.flash = {
-                message: message,
-                type: 'error',
-                keepAfterLocationChange: keepAfterLocationChange
-            };
+            else {
+                // only keep for a single location change
+                flash.keepAfterLocationChange = false;
+            }
         }
     }
 
-})();
+
+    Success(message, keepAfterLocationChange) {
+        this.$rootScope.flash = {
+            message: message,
+            type: 'success',
+            keepAfterLocationChange: keepAfterLocationChange
+        };
+    }
+
+    Err(message, keepAfterLocationChange) {
+        this.$rootScope.flash = {
+            message: message,
+            type: 'error',
+            keepAfterLocationChange: keepAfterLocationChange
+        };
+    }
+}

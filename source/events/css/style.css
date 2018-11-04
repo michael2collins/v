@@ -184,7 +184,7 @@ input[type="checkbox"],
 }
 /* END FLIP SCROLL RESPONSIVE TABLE */
 /****************************/
-/********* TopBar **********/
+/********* TopBar **********
 @media only screen and (max-width: 767px) {
   #topbar {
     height: auto;
@@ -255,6 +255,7 @@ input[type="checkbox"],
   #wrapper.right-sidebar #page-wrapper {
     margin-right: 0px;
   }
+  */
   /* badges only on small screens */
   .bwizard-steps li,
   .bwizard-steps li.active,
@@ -292,7 +293,7 @@ input[type="checkbox"],
   #rootwizard-tabdetail2 ul li a p {
     display: none;
   }
-}
+
 @media only screen and (min-width: 480px) and (max-width: 767px) {
   #sidebar-wrapper {
     z-index: 9999;
@@ -310,9 +311,10 @@ input[type="checkbox"],
   #rootwizard-custom-oval:before {
     height: 0px;
   }
-  .navbar {
+/*  .navbar {
     border-radius: 4px;
   }
+  */
   .pricing-table.pricing-static {
     width: auto;
   }

@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<div class="animated slideInLeft">
-  <div id="lock-screen-content"><img id="lock-screen-avatar" src="images/avatar/128.jpg" alt="" class="img-responsive img-circle" ng-controller="PageLockScreenController as pagevm">
+<div class="animated slideInLeft" >
+  <div id="lock-screen-content" ng-controller="PageLockScreenController as vmlock">
+    <img id="lock-screen-avatar" ng-src="{{vmlock.$routeParams.pictureurl}}"  alt="" class="img-responsive img-circle">
+<!--src="images/avatar/128.jpg" -->
+
     <div id="lock-screen-info">
       <form action="" class="mbm">
         <div class="input-group">
           <span class="input-group-btn">
-            <a href="/#/"  class="btn btn-primary">Logged out - Return to Default Site?</a></span>
+            <a href="/"  class="btn btn-primary">Logged out - Return to Default Site?</a></span>
         </div>
       </form>
     </div>

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <div ng-controller="ProgramTableBasicController as vm">
 
     <div class="portlet box portlet-green">

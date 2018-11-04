@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <div ng-controller="ClassRankTableBasicController as vm">
 
     <div class="portlet box portlet-green">

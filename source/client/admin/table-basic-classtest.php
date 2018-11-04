@@ -1,7 +1,4 @@
-<!DOCTYPE html>
 <div ng-controller="ClassTestTableBasicController as vm">
-{{vm.dataLoading}}
-
     <img ng-if="vm.dataLoading" ng-src="/images/Spinner.gif"/>
     <img id="spinner" ng-src="/images/Spinner.gif" style="display:none;">
     <div class="portlet box portlet-green" ng-hide="vm.dataLoading">

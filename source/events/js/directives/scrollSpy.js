@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
 .directive("scrollSpy", function($window){
     return {
         restrict: 'A',

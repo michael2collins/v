@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
     .factory('UserServices', UserServices);
 
     UserServices.$inject = ['$http', '$q', '$log', '$rootScope', '$cookieStore','$cookies', 'Notification'];

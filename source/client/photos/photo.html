@@ -1,190 +1,89 @@
-<!DOCTYPE html>
-<html lang="en">
-<head></head>
-<body>
 <div class="modal-content">
- <form name="form.read" novalidate>
-  <div class="modal-header">
-   <h1>Photo Form</h1>
-  </div>
-  <div class="modal-body">
-   <div class="col-md-12">
-    <div class="panel panel-default">
-     <div class="panel-heading">
-      <h2 class="panel-title">Photo</h2>
-     </div>
-     <div class="panel-body">
-      <div class="col-lg-12">
-        <span class="thumbnail" ng-switch on="vmpicmodal.dataToPass.pictureurldecache">
-             <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
-             <img ng-switch-default   ng-src='../images/students/{{vmpicmodal.dataToPass.pictureurldecache}}'/>
-          </span>
+   <form name="form.read" novalidate>
+      <div class="modal-header">
+         <h1>Photo Form</h1>
+      </div>
+      <div class="modal-body">
+         <div class="col-md-12">
+            <div class="panel panel-default">
+               <div class="panel-heading">
+                  <h2 class="panel-title">Photo</h2>
+               </div>
+               <div class="panel-body">
+                  <div class="col-lg-12">
+                     <span class="thumbnail" ng-switch on="vmpicmodal.dataToPass.pictureurldecache">
+                         <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
+                         <img ng-switch-default   ng-src='../images/students/{{vmpicmodal.dataToPass.pictureurldecache}}'/>
+                      </span>
 
-       <div class="row row-icons">
-       <div>
-         <div class="row">
-          <div id="photowrapper">
-           <span>
-            <div>
-              <div id="my_photo_booth">
-                  <div id="my_camera" style="width:320px; "
-              ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vmpicmodal.checkCameraIsOn() === false ) && {'height':'0px'}">
-                  </div>
-              
-                      <form>
-              			<div id="pre_take_buttons" >
-              				<input type=button value="Take Snapshot" ng-click="vmpicmodal.preview_snapshot()">
-              				<input type=button value="Camera On" ng-click="vmpicmodal.camera_on()">
-              			</div>
-              			<div id="post_take_buttons" ng-show="vmpicmodal.post_take_buttons">
-              				<input type=button value="&lt; Take Another" ng-click="vmpicmodal.cancel_preview()">
-              				<input type=button value="Save Photo &gt;" ng-click="vmpicmodal.save_photo(
+                     <div class="row row-icons">
+                        <div>
+                           <div class="row">
+                              <div id="photowrapper">
+                                 <span>
+                                 <div>
+                                    <div id="my_photo_booth">
+                                       <div id="my_camera" style="width:320px; " ng-style="(vmpicmodal.checkCameraIsOn() === true ) && {'height':'240px'}  || (vmpicmodal.checkCameraIsOn() === false ) && {'height':'0px'}">
+                                       </div>
+
+                                       <form>
+                                          <div id="pre_take_buttons">
+                                             <input type=button value="Take Snapshot" ng-click="vmpicmodal.preview_snapshot()">
+                                             <input type=button value="Camera On" ng-click="vmpicmodal.camera_on()">
+                                          </div>
+                                          <div id="post_take_buttons" ng-show="vmpicmodal.post_take_buttons">
+                                             <input type=button value="&lt; Take Another" ng-click="vmpicmodal.cancel_preview()">
+                                             <input type=button value="Save Photo &gt;" ng-click="vmpicmodal.save_photo(
                   vmpicmodal.dataToPass.LastName + '.'
               				+ vmpicmodal.dataToPass.FirstName + '.' 
               				+ vmpicmodal.dataToPass.ID + '.jpg',vmpicmodal.dataToPass 		)" style="font-weight:bold;">
-              				<input type=button value="Camera Off" ng-click="vmpicmodal.camera_off()">
-              			</div>
-              		</form>
-              
-              </div>
-              <div id="results" style="display:none">
-              		<!-- Your captured image will appear here... -->
-              </div>
+                                             <input type=button value="Camera Off" ng-click="vmpicmodal.camera_off()">
+                                          </div>
+                                       </form>
 
-            </div>
-          </span>
-          </div>
-          <!--end photowrapper                       -->
-         </div>
+                                    </div>
+                                    <div id="results" style="display:none">
+                                       <!-- Your captured image will appear here... -->
+                                    </div>
 
-         <script id="myPickupload.html" type="text/ng-template">
-          <div class="modal-header">
-           <h3 class="modal-title">Select Picture</h3>
-          </div>
-          <div class="modal-body">
-           <div class="row" ng-controller="PhotoUploadController as vmstupicupload" nv-file-drop="" uploader="vmstupicupload.uploader">
-            <div class="col-lg-12">
-             <div>
-
-              <div class="col-md-3">
-               <input type="file" nv-file-select="" uploader="vmstupicupload.uploader" single />
-               <br/>
-
-              </div>
-
-              <div class="col-md-9" style="margin-bottom: 40px">
-               <!--                               <pre>{{vmpicselect | json}}</pre>
-                            -->
-               <table class="table">
-                <thead>
-                 <tr>
-                  <th width="20%">Name</th>
-                  <th ng-show="vmstupicupload.uploader.isHTML5">Size</th>
-                  <th ng-show="vmstupicupload.uploader.isHTML5">Progress</th>
-                  <th>Status</th>
-                  <th>Actions</th>
-                 </tr>
-                </thead>
-                <tbody>
-                 <tr ng-repeat="item in vmstupicupload.uploader.queue">
-                  <td>
-                   <strong>{{ item.file.name }}</strong>
-                   <!-- Image preview -->
-                   <!--auto height-->
-                   <!--<div ng-thumb="{ file: item.file, width: 100 }"></div>-->
-                   <!--auto width-->
-                   <div ng-show="vmstupicupload.uploader.isHTML5" ng-thumbupload="{ file: item._file, height: 100 }"></div>
-                   <!--fixed width and height -->
-                   <!--<div ng-thumb="{ file: item.file, width: 100, height: 100 }"></div>-->
-                  </td>
-                  <td ng-show="vmstupicupload.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                  <td ng-show="vmstupicupload.uploader.isHTML5">
-                   <div class="progress" style="margin-bottom: 0;">
-                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                   </div>
-                  </td>
-                  <td class="text-center">
-                   <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                   <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                   <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
-                  </td>
-                  <td nowrap>
-                   <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                                    <span class="glyphicon glyphicon-upload"></span> Upload
-                                                  </button>
-                   <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                                    <span class="glyphicon glyphicon-ban-circle"></span> Cancel
-                                                  </button>
-                   <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
-                                                    <span class="glyphicon glyphicon-trash"></span> Remove
-                                                  </button>
-                  </td>
-                 </tr>
-                </tbody>
-               </table>
-
-              </div>
+                                 </div>
+                                 </span>
+                              </div>
+                              <!--end photowrapper                       -->
+                           </div>
 
 
+                           <div class="col-md-8">
+                              <input class="form-control" id="picfile" name="picfile" ng-show="false" ng-model="vmpicmodal.dataToPass.picfile" placeholder="File Name" type="text">
+                              <button class="btn btn-green" ng-click="vmpicmodal.saveStudentPic(vmpicmodal.dataToPass,vmpicmodal.dataToPass.picfile);" ng-show="vmpicmodal.dataToPass.picfile" type="button">Save Picture</button>
 
-             </div>
-            </div>
-           </div>
-
-
-          </div>
-          <div class="modal-footer">
-           <button class="btn btn-primary" type="button" ng-click="vmpicselect.ok()">OK</button>
-           <button class="btn btn-warning" type="button" ng-click="vmpicselect.cancel()">Cancel</button>
-          </div>
-         </script>
-         <script id="myPicksearch.html" type="text/ng-template">
-          <div class="modal-header">
-           <h3 class="modal-title">Select Picture</h3>
-          </div>
-          <div class="modal-body">
-           <div ui-grid="vmpicsearch.gridOptions" ui-grid-pagination ui-grid-cellNav ui-grid-selection ui-grid-auto-resize class="mygrid" ng-style="{height: (3*128)+132+'px'}"></div>
-
-          </div>
-          <div class="modal-footer">
-           <button class="btn btn-primary" type="button" ng-click="vmpicsearch.ok()">OK</button>
-           <button class="btn btn-warning" type="button" ng-click="vmpicsearch.cancel()">Cancel</button>
-          </div>
-         </script>
-
-         <div class="col-md-8">
-          <input class="form-control" id="picfile" name="picfile" ng-show="false" ng-model="vmpicmodal.dataToPass.picfile" placeholder="File Name" type="text">
-          <button class="btn btn-green" ng-click="vmpicmodal.saveStudentPic(vmpicmodal.dataToPass,vmpicmodal.dataToPass.picfile);" ng-show="vmpicmodal.dataToPass.picfile" type="button">Save Picture</button>
-
-          <div class="thumbnail" ng-show="vmpicmodal.dataToPass.picfile"><img ng-src="./images/students/{{vmpicmodal.dataToPass.oldpicfile}}.bkup" />
-          </div>
-         </div>
+                              <div class="thumbnail" ng-show="vmpicmodal.dataToPass.picfile"><img ng-src="./images/students/{{vmpicmodal.dataToPass.oldpicfile}}.bkup" />
+                              </div>
+                           </div>
 
 
-         <div class="col-md-4">
-          <a href ng-click="vmpicmodal.openpick()"><i class=
+                           <div class="col-md-4">
+                              <a href ng-click="vmpicmodal.openpick()"><i class=
                               "glyphicon glyphicon-upload"></i></a>
-          <a href ng-click="vmpicmodal.opensearch()"><i class=
+                              <a href ng-click="vmpicmodal.opensearch()"><i class=
                               "glyphicon glyphicon-search"></i></a>
-          <a href ng-click="vmpicmodal.openCamera()"><i class=
+                              <a href ng-click="vmpicmodal.openCamera()"><i class=
                               "glyphicon glyphicon-camera"></i></a>
 
 
+                           </div>
+                        </div>
+                     </div>
+
+
+                  </div>
+
+               </div>
+            </div>
          </div>
-        </div>
-       </div>
-
-
       </div>
-
-     </div>
-    </div>
-   </div>
-  </div>
-  <div class="modal-footer">
-   <button type="button" class="btn btn-blue" ng-click="vmpicmodal.cancel()">Close</button>
-  </div>
- </form>
+      <div class="modal-footer">
+         <button type="button" class="btn btn-blue" ng-click="vmpicmodal.cancel()">Close</button>
+      </div>
+   </form>
 </div>
-</body>
-</html>

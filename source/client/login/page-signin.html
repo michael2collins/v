@@ -1,59 +1,45 @@
-<!DOCTYPE html>
-<div class="animated bounceInDown col-md-3 col-md-offset-3" >
-  <div id="signin-page-content" ng-controller="PageSigninController as pagevm">
-    <form name="form" ng-submit="form.$valid && pagevm.login()" class="form" role="form" novalidate> 
+<div class="animated bounceInDown col-md-3 col-md-offset-3">
+  <div id="signin-page-content" ng-controller="PageSigninController as vm">
+    <!--<div id="signin-page-content" >    -->
+    <form name="form" ng-submit="form.$valid && vm.login()" class="form" role="form" novalidate>
       <h1 class="block-heading">Sign In</h1>
       <p>Dear user, log in to access the registration area!</p>
-        <div class="form-group" 
-        ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">        
+      <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
         <div class="input-iconx"><i class="fa fa-user"></i>
-          <input type="text" 
-            placeholder="Username" 
-            name="username" 
-            autocomplete="on"
-            required
-            id="username" 
-            ng-model="pagevm.username"
-            class="form-control"/>
-            <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
+          <input type="text" placeholder="Username" name="username" autocomplete="on" required id="username" ng-model="vm.username" class="form-control" />
+          <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
 
         </div>
       </div>
-        <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
+      <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
 
         <div class="input-iconx"><i class="fa fa-key"></i>
-            <input 
-                type="password"
-                placeholder="Password"
-                name="password" 
-                autocomplete="on"
-                id="password" 
-                class="form-control" 
-                ng-model="pagevm.password" 
-                required />
-            <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
+          <input type="password" placeholder="Password" name="password" autocomplete="on" id="password" class="form-control" ng-model="vm.password" required />
+          <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
 
         </div>
       </div>
-        <div class="form-actions">
-            <button type="submit" 
-                ng-disabled="form.$invalid || pagevm.dataLoading" 
-                class="btn btn-primary">
+      <div class="form-actions">
+        <!--                ng-disabled="form.$invalid || vm.dataLoading"  -->
+
+        <button type="submit" class="btn btn-primary">
                   Login
                   &nbsp;<i class="fa fa-chevron-circle-right"></i>
             </button>
-            <a id="btn-forgot-pwd" href="#/forgot-pwd" class="mlm">Forgot your password?</a>       
-            <img ng-if="pagevm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
-        </div>
+        <a id="btn-forgot-pwd" href="/#/forgot-pwd" class="mlm">Forgot your password?</a>
+        <img ng-if="vm.dataLoading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA=="
+        />
+      </div>
 
       <hr/>
       <div class="create-account">
         <p>
-          Don't have an account yet?
-          &nbsp;<a id="btn-register" href="#/page-signup">Create an account</a>
+          Don't have an account yet? &nbsp;
+          <a id="btn-register" href="/#/page-signup">Create an account</a>
         </p>
       </div>
 
     </form>
   </div>
+
 </div>

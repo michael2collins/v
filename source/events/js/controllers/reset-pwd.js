@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
         .controller('ResetpwdController', ResetpwdController);
         
         ResetpwdController.$inject = [

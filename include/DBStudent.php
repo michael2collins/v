@@ -2515,6 +2515,82 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		}
 	}
 
+    public function isStudentFKExists($id) {
+
+        error_log( print_R("isStudentFKExists entered", TRUE), 3, LOG);
+
+        global $school;
+        
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+//todo
+//attendance contactID
+//studentregistration studentID
+//testcandidates contactid
+
+        $cntsql = "select count(*) as cnt, 'attendance for student' as type from attendance where contactid = ? group by 2
+            union
+            select count(*) as cnt, 'students registered ' as type from studentregistration where studentID = ? group by 2
+            union
+            select count(*) as cnt, 'test candidates for student' as type from testcandidates where contactid = ? group by 2";
+
+        error_log( print_R("Student isStudentFKExists sql: $cntsql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("sss",
+                         $id, $id,  $id
+                                     );
+
+            if ($stmt->execute()) {
+                $results = $stmt->get_result();
+                $stmt->close();
+                return $results;
+            } else {
+                error_log( print_R("isStudentFKExists  execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+    public function removeStudent($id
+    ) {
+
+        error_log( print_R("removeStudent entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql = "DELETE from ncontacts where ID = ?  ";
+
+        $schoolfield = "school";
+        $sql = addSecurity($sql, $schoolfield);
+        error_log( print_R("removeStudent sql after security: $sql", TRUE), 3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
+
 }
 
 ?>

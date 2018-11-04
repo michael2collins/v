@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <title >V Dojo</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <base href="/v/">
+      <link rel="icon" href="/images/favicon.ico" type="image/vnd.microsoft.icon">
+      <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+      <link rel="apple-touch-icon" sizes="57x57" href="/images/apple-icon-57x57.png">
+      <link rel="apple-touch-icon" sizes="60x60" href="/images/apple-icon-60x60.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="/images/apple-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-icon-76x76.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="/images/apple-icon-114x114.png">
+      <link rel="apple-touch-icon" sizes="120x120" href="/images/apple-icon-120x120.png">
+      <link rel="apple-touch-icon" sizes="144x144" href="/images/apple-icon-144x144.png">
+      <link rel="apple-touch-icon" sizes="152x152" href="/images/apple-icon-152x152.png">
+      <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-180x180.png">
+      <link rel="icon" type="image/png" sizes="192x192" href="/images/android-icon-192x192.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+      <meta name="msapplication-TileColor" content="#ffffff">
+      <meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png">
+      <meta name="theme-color" content="#ffffff">
+      <script>
+         if (global === undefined) {
+           var global = window;
+         }
+      </script>
+   </head>
+   <body  ng-class="[vm.header.header_topbar, vm.header.boxed]" class="topbar-fixed sidebar-fixed" style="padding:  0px;">
+      <!--V JS
+         -->
+      <div ng-controller="HeaderController as vm" class="default-page">
+         <!--BEGIN TO TOP-->
+         <a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
+         <!--END BACK TO TOP-->
+         <div id="wrapper" ng-class="vm.header.layout_menu">
+            <!--BEGIN TOPBAR -->
+            <div id="topbar" role="navigation" ng-include="'templates/portal/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+            <!--END TOPBAR-->
+            <!--BEGIN SIDEBAR MENU-->
+            <div id="sidebar-wrapper" ng-include="'templates/portal/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
+            <!--END SIDEBAR MENU-->
+            <!--BEGIN PAGE WRAPPER-->
+            <div id="page-wrapper" ng-class="vm.header.animation" class="animated">
+               <!--BEGIN PAGE HEADER & BREADCRUMB-->
+               <div ng-include="'templates/portal/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
+               <!--END PAGE HEADER & BREADCRUMB-->
+               <div class="jumbotron" ng-if="flash">
+                  <div class="container">
+                     <div class="col-sm-8 col-sm-offset-2">
+                        <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-bind="flash.message"></div>
+                     </div>
+                  </div>
+               </div>
+               <div id="loading-bar-container"></div>
+               <!--BEGIN CONTENT-->
+               <div ng-view="" class="page-content"></div>
+               <!--END CONTENT-->
+               <!--BEGIN FOOTER-->
+               <div class="page-footer">
+                  <div class="copyright">2015-2018 © V - Dojo .</div>
+                  <!--                    <script language="JavaScript" type="text/javascript">
+                     TrustLogo("https://vdojo.villaris.us/v/images/comodo_secure_seal_76x26_transp.png", "CL1", "none");
+                     </script>
+                     <a href="https://ssl.comodo.com/wildcard-ssl-certificates.php" id="comodoTL">Wildcard SSL</a>
+                     -->                    
+               </div>
+               <!--END FOOTER-->
+            </div>
+            <!--END PAGE WRAPPER-->
+         </div>
+      </div>
+      <div hide="hide" class="extra-page"></div>
+   </body>
+   <footer>
+      <% if (htmlWebpackPlugin.options.isDev) { %>
+      <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+      <script src="<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+      <% } %>
+      <% } else { %>
+      <script>
+         (function() {
+             var el;
+             var prefix = '/';
+             <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+                 el = document.createElement('script');
+                 el.setAttribute('src', prefix + '<%= htmlWebpackPlugin.files.chunks[chunk].entry %>');
+                 document.head.appendChild(el);
+                 <% } %>
+         })();
+      </script>    
+      <% } %>
+   </footer>
+</html>

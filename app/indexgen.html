@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <title >V Dojo</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <base href="/v/">
+      <link rel="icon" href="/images/favicon.ico" type="image/vnd.microsoft.icon">
+      <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon" />
+      <link rel="apple-touch-icon" sizes="57x57" href="/images/apple-icon-57x57.png">
+      <link rel="apple-touch-icon" sizes="60x60" href="/images/apple-icon-60x60.png">
+      <link rel="apple-touch-icon" sizes="72x72" href="/images/apple-icon-72x72.png">
+      <link rel="apple-touch-icon" sizes="76x76" href="/images/apple-icon-76x76.png">
+      <link rel="apple-touch-icon" sizes="114x114" href="/images/apple-icon-114x114.png">
+      <link rel="apple-touch-icon" sizes="120x120" href="/images/apple-icon-120x120.png">
+      <link rel="apple-touch-icon" sizes="144x144" href="/images/apple-icon-144x144.png">
+      <link rel="apple-touch-icon" sizes="152x152" href="/images/apple-icon-152x152.png">
+      <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-icon-180x180.png">
+      <link rel="icon" type="image/png" sizes="192x192" href="/images/android-icon-192x192.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="96x96" href="/images/favicon-96x96.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+      <meta name="msapplication-TileColor" content="#ffffff">
+      <meta name="msapplication-TileImage" content="/images/ms-icon-144x144.png">
+      <meta name="theme-color" content="#ffffff">
+      <script>
+         if (global === undefined) {
+           var global = window;
+         }
+      </script>
+   <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,300,700" rel="stylesheet"/><link href="//fonts.googleapis.com/css?family=Oswald:400,700,300" rel="stylesheet"/><link href="//fonts.googleapis.com/css?family=Droid+Sans" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" rel="stylesheet"/><link href="//use.fontawesome.com/releases/v5.2.0/css/all.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css" rel="stylesheet"/><link href="//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/1.1.6/angularjs-color-picker.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/css/bootstrap-timepicker.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.4.11/ui-grid.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/angular-ui-notification/0.3.6/angular-ui-notification.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/hint.css/2.1.0/hint.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/selectize.js/0.12.3/css/selectize.default.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.css" rel="stylesheet"/><link href="//cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.css" rel="stylesheet"/><link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/></head>
+   <body ng-app="ng-admin" ng-class="[vm.header.header_topbar, vm.header.boxed]" class="topbar-fixed sidebar-fixed" style="padding:  0px;">
+      <!--V JS
+         -->
+      <div ng-controller="HeaderController as vm" class="default-page">
+         <!--BEGIN TO TOP-->
+         <a id="totop" href="#"><i class="fa fa-angle-up"></i></a>
+         <!--END BACK TO TOP-->
+         <div id="wrapper" ng-class="vm.header.layout_menu">
+            <!--BEGIN TOPBAR -->
+            <div id="topbar" role="navigation" ng-include="'templates/portal/topbar.html'" style="margin-bottom: 0;" onload="vm.loadTopbar()" class="navbar navbar-default navbar-static-top"></div>
+            <!--END TOPBAR-->
+            <!--BEGIN SIDEBAR MENU-->
+            <div id="sidebar-wrapper" ng-include="'templates/portal/sidebar.html'" ng-menu="" onload="vm.loadSidebar()"></div>
+            <!--END SIDEBAR MENU-->
+            <!--BEGIN PAGE WRAPPER-->
+            <div id="page-wrapper" ng-class="vm.header.animation" class="animated">
+               <!--BEGIN PAGE HEADER & BREADCRUMB-->
+               <div ng-include="'templates/portal/header-breadcrumb.html'" onload="vm.loadPageHeader()" class="page-header-breadcrumb"></div>
+               <!--END PAGE HEADER & BREADCRUMB-->
+               <div class="jumbotron" ng-if="flash">
+                  <div class="container">
+                     <div class="col-sm-8 col-sm-offset-2">
+                        <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-bind="flash.message"></div>
+                     </div>
+                  </div>
+               </div>
+               <div id="loading-bar-container"></div>
+               <!--BEGIN CONTENT-->
+               <div ng-view="" class="page-content"></div>
+               <!--END CONTENT-->
+               <!--BEGIN FOOTER-->
+               <div class="page-footer">
+                  <div class="copyright">2015-2018 © V - Dojo .</div>
+                  <!--                    <script language="JavaScript" type="text/javascript">
+                     TrustLogo("https://vdojo.villaris.us/v/images/comodo_secure_seal_76x26_transp.png", "CL1", "none");
+                     </script>
+                     <a href="https://ssl.comodo.com/wildcard-ssl-certificates.php" id="comodoTL">Wildcard SSL</a>
+                     -->                    
+               </div>
+               <!--END FOOTER-->
+            </div>
+            <!--END PAGE WRAPPER-->
+         </div>
+      </div>
+      <div hide="hide" class="extra-page"></div>
+   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.12/jquery.knob.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.resize.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.fillbetween.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.stack.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.14.0/jquery.validate.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.10.11/js/jquery.dataTables.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables/1.10.11/js/dataTables.bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/datatables-tabletools/2.1.5/js/TableTools.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jeditable.js/1.7.3/jeditable.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-bootgrid/1.3.1/jquery.bootgrid.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mixitup/2.1.11/jquery.mixitup.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.7.5/js/bootstrap-select.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-moment/1.2.0/angular-moment.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-cookies.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-route.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-animate.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-messages.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-resource.min.js"></script><script type="text/javascript" src="//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui-ieshiv.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-utils/0.1.1/angular-ui-utils.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-mask/1.7.2/mask.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.4.11/ui-grid.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/classie/1.0.1/classie.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.0/imagesloaded.pkgd.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.jquery.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.4.2/chosen.proto.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-file-upload/2.2.0/angular-file-upload.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-notification/0.3.6/angular-ui-notification.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/fullcalendar.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/2.9.1/gcal.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/tinycolor/1.3.0/tinycolor.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/1.1.6/angularjs-color-picker.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-rangy.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-sanitize.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngularSetup.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-loading-bar/0.9.0/loading-bar.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js"></script><script type="text/javascript" src="//js.stripe.com/v3/"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/ng-idle/1.3.2/angular-idle.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script><script type="text/javascript" src="/vendor/bower_components/jquery-animateNumber/jquery.animateNumber.min.js"></script><script type="text/javascript" src="/vendor/vendors/flot-chart/jquery.flot.tooltip.js"></script><script type="text/javascript" src="/vendor/vendors/flot-chart/jquery.flot.spline.js"></script><script type="text/javascript" src="/vendor/bower_components/CSV-JS/csv.js"></script><script type="text/javascript" src="/vendor/bower_components/angular-isotope/dist/angular-isotope.js"></script><script type="text/javascript" src="/vendor/bower_components/lvlDragDrop/script/lvl-drag-drop.js"></script><script type="text/javascript" src="/vendor/bower_components/lvlDragDrop/script/lvl-uuid.js"></script><script type="text/javascript" src="/vendor/bower_components/angular-deckgrid/angular-deckgrid.js"></script><script type="text/javascript" src="/vendor/jquery.cardswipe/dist/jquery.cardswipe.js"></script><script type="text/javascript" src="/vendor/vendors/zoomPan-master/js/zoomPan.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script><script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.app.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.admin.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.attendance.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.main.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.photos.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.student.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.portal.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.payment.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.login.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.events.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.email.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.cc.js"></script><script type="text/javascript" src="/VDOJO-1.0.0.testmgmt.js"></script></body>
+   <footer>
+      
+      
+      <script src="/VDOJO-1.0.0.app.js"></script>
+      
+      <script src="/VDOJO-1.0.0.admin.js"></script>
+      
+      <script src="/VDOJO-1.0.0.attendance.js"></script>
+      
+      <script src="/VDOJO-1.0.0.main.js"></script>
+      
+      <script src="/VDOJO-1.0.0.photos.js"></script>
+      
+      <script src="/VDOJO-1.0.0.student.js"></script>
+      
+      <script src="/VDOJO-1.0.0.portal.js"></script>
+      
+      <script src="/VDOJO-1.0.0.payment.js"></script>
+      
+      <script src="/VDOJO-1.0.0.login.js"></script>
+      
+      <script src="/VDOJO-1.0.0.events.js"></script>
+      
+      <script src="/VDOJO-1.0.0.email.js"></script>
+      
+      <script src="/VDOJO-1.0.0.cc.js"></script>
+      
+      <script src="/VDOJO-1.0.0.testmgmt.js"></script>
+      
+      
+   </footer>
+</html>

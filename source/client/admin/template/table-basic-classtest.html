@@ -1,0 +1,134 @@
+<div ng-controller="ClassTestTableBasicController as vm">
+    <img ng-if="vm.dataLoading" ng-src="/images/Spinner.gif"/>
+    <img id="spinner" ng-src="/images/Spinner.gif" style="display:none;">
+    <div class="portlet box portlet-green" ng-hide="vm.dataLoading">
+        <div class="portlet-header">
+                <div class="caption">Maintain Class Test</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Class Test</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-11 mbs">
+                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container" >
+                <form action="" novalidate name="editschedule2" class="form-horizontal">
+                                <div class="col-md-2">
+                                    
+    <div ng-class="{'has-error': editClasstest2.classid.$invalid, 
+                    'has-success': !editClasstest2.classid.$invalid}" class="form-group">
+        <label for="classid" class="control-label">Class<br/>&nbsp;</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClasstest2.classid.$dirty" 
+            ng-class="editClasstest2.classid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="classid" type="text" 
+                name="classid" 
+                ng-model="vm.Classtest.classid" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.classes" 
+                    ng-selected="{{iter.id==vm.Classtest.classid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClasstest2.classid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div ng-class="{'has-error': editClasstest2.testtypeid.$invalid, 
+                    'has-success': !editClasstest2.testtypeid.$invalid}" class="form-group">
+        <label for="testtypeid" class="control-label">Test<br/>Type</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClasstest2.testtypeid.$dirty" 
+            ng-class="editClasstest2.testtypeid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="testtypeid" type="text" 
+                name="testtypeid" 
+                ng-model="vm.Classtest.testtypeid" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.testTypes" 
+                    ng-selected="{{iter.id==vm.Classtest.testtypeid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClasstest2.testtypeid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                            <div class="col-md-1">
+                                
+    <div class="form-group">
+        <label for="sortorder" class="control-label">Sort<br/> Order</label>
+
+        <div>
+            <input  id="sortorder" 
+                    type="number" 
+                    placeholder="" 
+                    name="sortorder" 
+                    ng-model="vm.Classtest.sortorder" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                </div>
+
+                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addClassTest(vm.Classtest)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

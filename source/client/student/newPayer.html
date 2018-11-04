@@ -1,0 +1,22 @@
+    <div class="modal-header">
+        <h3 class="modal-title">Create New Payer</h3>
+    </div>
+    <div class="modal-body">
+        <pre>{{$ctrl.message}}</pre>
+        <form action="" novalidate name="newPayer" class="form-horizontal">
+            <div class="form-body pal">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="inputPayerName" class="control-label">Payer Name </label>
+                            <input id="inputPayerName" type="text" placeholder="Payer Name" name="PayerName" ng-model="$ctrl.payerName" minLength="2" maxLength="30" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" type="button" ng-click="$ctrl.submit()">Submit</button>
+        <button class="btn btn-warning" type="button" ng-click="$ctrl.cancel()">Cancel</button>
+    </div>

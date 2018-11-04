@@ -1,0 +1,120 @@
+//@import "../../../less/style";
+//@import "../../../less/bootstrap-custom";
+//@import "../../../less/style-responsive";
+//@import "../../../less/vendors.less";
+@import "../../less/global/_variables.less";
+
+#lock-screen{
+  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-03.jpg') center center fixed;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  #lock-screen-content{
+    width: 250px;
+    margin: 10% auto 0 auto;
+    text-align: center;
+    #lock-screen-avatar{
+      display: inline-block;
+      border: 5px solid @brand-primary;
+    }
+    #lock-screen-info{
+      h1{
+        font-family: 'oswald';
+        font-size: 30px;
+        font-weight: bold;
+        color: #FFFFFF;
+      }
+      .email{
+        margin-bottom: 20px;
+        color: #FFFFFF;
+      }
+      input{
+        font-size: 20px;
+        font-weight: bold;
+      }
+    }
+  }
+}
+#signin-page{
+  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-01.jpg') center center fixed;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+ 
+  #signin-page-content{
+    width: 360px;
+    margin: 10% auto 0 auto;
+    background: #ffffff;
+    padding: 15px 20px;
+    h1{
+      font-family: 'oswald';
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 0;
+      color: @brand-primary;
+    }
+    .create-account{
+      a{
+        color: @color-orange;
+        &:hover,
+        &:focus{
+          text-decoration: uppercase;
+        }
+      }
+    }
+  }
+}
+#signup-page{
+  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-02.jpg') center center fixed;
+  -moz-background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  #signup-page-content{
+    width: 480px;
+    margin: 20px auto 0 auto;
+    background: #ffffff;
+    padding: 15px 20px;
+    h1{
+      font-family: 'oswald';
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 0;
+      color: @brand-primary;
+    }
+  }
+}
+/* todo move */
+/****************************/
+/******** Page Sign In *******
+#signin-page{
+  #signin-page-content{
+    width: 360px;
+    margin: 10% auto 0 auto;
+    background: #ffffff;
+    padding: 15px 20px;
+    h1{
+      font-family: 'oswald';
+      font-size: 30px;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 0;
+      color: @brand-primary;
+    }
+    .create-account{
+      a{
+        color: @color-orange;
+        &:hover,
+        &:focus{
+          text-decoration: uppercase;
+        }
+      }
+    }
+  }
+}
+******* Page Sign In ********/
+/****************************/

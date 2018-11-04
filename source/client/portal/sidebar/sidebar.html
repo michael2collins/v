@@ -1,0 +1,56 @@
+<div id="sidebar-wrapper" ng-menu="" ng-cloak>
+<nav id="sidebar" role="navigation" class="navbar-default navbar-static-side">
+  <div class="sidebar-collapse menu-scroll">
+    <ul id="side-menu" ng-menu="" class="nav">
+      <li class="sidebar-heading">
+        <h4>Main</h4>
+      </li>
+      <li><a href="/#/main"><i class="icon-speedometer"></i><span class="menu-title">Studio Dashboard</span></a>
+          
+      </li>
+      <li ng-hide="$ctrl.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Login</span><span class="fa arrow"></span>
+      </a>
+        <ul class="nav nav-second-level">
+          <li ng-hide="$ctrl.isokf()"><a href="/#/page-signin">Login</a></li>
+          <li ng-hide="$ctrl.isokf()"><a href="/#/page-signup">Create User</a></li> 
+        </ul>
+      </li>
+      <li ng-show="$ctrl.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Students</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li><a href="/#/table-basic-students">Student List</a></li>
+          <li><a href="/#/table-basic-attendance">Attendance List</a></li>
+          <li><a href="/#/table-basic-eventcreation">Create Events</a></li>
+        </ul>
+      </li>
+      <li ng-show="$ctrl.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Testing</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li><a href="/#/table-basic-testcandidates">Create Test</a></li>
+        </ul>
+      </li>
+      <li ng-show="$ctrl.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Manage Studio</span><span class="fa arrow"></span></a>
+        <ul class="nav nav-second-level">
+          <li><a href="/#/table-basic-paymenttracking">Payment Tracking</a></li>
+          <li ng-show="$ctrl.isokf()"><a href="javascript:void(0);"><i class="icon-screen-desktop"></i><span class="menu-title">Setup Data</span><span class="fa arrow"></span></a>
+            <ul class="nav nav-third-level">
+              <li><a href="/#/table-basic-basic">Basic Info</a></li>
+              <li><a href="/#/stripe-onboard">Stripe Onboard</a></li>
+              <li><a href="/#/table-basic-rank">Ranks</a></li>
+              <li><a href="/#/table-basic-program">Program</a></li>
+              <li><a href="/#/table-basic-class">Class</a></li>
+              <li><a href="/#/table-basic-classpgm">Class Program</a></li>
+              <li><a href="/#/table-basic-classrank">Class Rank</a></li>
+              <li><a href="/#/table-basic-schedule">Class Schedule</a></li>
+              <li><a href="/#/table-basic-testtype">Test Type</a></li>
+              <li><a href="/#/table-basic-classtest">Class Test</a></li>
+              <li><a href="/#/table-basic-rptbuilder">Report Builder</a></li>
+              <li><a href="/#/table-basic-htmltemplate">Email Templates</a></li>
+            </ul>
+          </li>
+          <li role="separator" class="divider">&nbsp;</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+</div>

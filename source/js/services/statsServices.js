@@ -1,76 +1,59 @@
-(function () {
-    'use strict';
+import angular from 'angular';
 
-    angular
-        .module('ng-admin.all')
-    .factory('StatsServices', StatsServices);
+export class StatsServices {
+    constructor( $http, $q, $log) {
+        'ngInject';
+        this.$http = $http;
+        this.$q = $q;
+        this.$log = $log;
 
-    StatsServices.$inject = ['$http', '$q', '$log'];
-
-    function StatsServices( $http, $q, $log ) {
-        var apikey;
-
-        var service = {
-            getStudentStats: getStudentStats,
-            getStudentStatsMonths: getStudentStatsMonths,
-            setapikey: setapikey
-        };
-        return service;
-
-        function setapikey(key) {
-        //        $log.debug('StatsServices setapikey', key);
-         apikey = key;
-        }
-
-        function getStudentStats( thedata ) {
-                    $log.debug('getStudentStats data before post :' , thedata);
-                    var path = '../v1/studentstats';
-                    var request = $http({
-                        method: "POST",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return(request.then( handleSuccess, handleError ) );
-        }        
-
-        function getStudentStatsMonths( thedata ) {
-                    $log.debug('getStudentStatsMonths data before post :' , thedata);
-                    var path = '../v1/studentstatsmonths';
-                    var request = $http({
-                        method: "POST",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }        
-
-
-        function handleError( response ) {
-            // The API response from the server should be returned in a
-            // nomralized format. However, if the request was not handled by the
-            // server (or what not handles properly - ex. server error), then we
-            // may have to normalize it on our end, as best we can.
-            $log.debug('failure:');
-
-            if (
-                ! angular.isObject( response.data ) ||
-                ! response.data.message
-                ) {
-                return( $q.reject( "An unknown error occurred." ) );
-            }
-            // Otherwise, use expected error message.
-            return( $q.reject( response.data.message ) );
-        }
-        // I transform the successful response, unwrapping the application data
-        // from the API response payload.
-        function handleSuccess( response ) {
-            $log.debug(' success:');
-            $log.debug(response.data);
-            return( response );
-        }
+//        this.apikey={};
     }
- })();
+/*    setapikey(key) {
+        //        self.$log.debug('StatsServices setapikey', key);
+        this.apikey = key;
+    }
+*/
+    getStudentStats(thedata) {
+        var self = this;
+        self.$log.debug('getStudentStats data before post :', thedata);
+        var path = '../v1/studentstats';
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+    getStudentStatsMonths(thedata) {
+        var self = this;
+        self.$log.debug('getStudentStatsMonths data before post :', thedata);
+        var path = '../v1/studentstatsmonths';
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+
+    handleError(response) {
+
+        if (!angular.isObject(response.data) ||
+            !response.data.message
+        ) {
+            return (this.$q.reject("An unknown error occurred."));
+        }
+        // Otherwise, use expected error message.
+        return (response.data.message);
+    }
+    handleSuccess(response) {
+        return (response);
+    }
+}

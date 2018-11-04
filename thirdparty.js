@@ -1,13 +1,13 @@
  const path = require('path');
 let thirdparty = [
-    {
+/*    {
         module: 'google-roboto', 
         entry: {
             path: '//fonts.googleapis.com/css?family=Roboto:400,400italic,300,700',
             type: 'css',
             }
     },
-    {
+ */   {
         module: 'google-oswald',
         entry: {
             path: '//fonts.googleapis.com/css?family=Oswald:400,700,300',
@@ -20,6 +20,27 @@ let thirdparty = [
             path: '//fonts.googleapis.com/css?family=Droid+Sans',
             type: 'css'
         }
+    },
+    {
+        module: 'google-roboto', 
+        entry: {
+            path: '//fonts.googleapis.com/css?family=Roboto',
+            type: 'css',
+            }
+    },
+    {
+        module: 'google-guicksand', 
+        entry: {
+            path: '//fonts.googleapis.com/css?family=Quicksand',
+            type: 'css',
+            }
+    },
+    {
+        module: 'google-sourcecodepro', 
+        entry: {
+            path: '//fonts.googleapis.com/css?family=Source+Code+Pro',
+            type: 'css',
+            }
     },
     {
         module: 'jqueryui', entry: '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css'
@@ -42,7 +63,7 @@ let thirdparty = [
     {
         module: 'jvectormap', entry: '//cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.css'
     },
-    {
+/*    {
         module: 'less', entry: {
             path: 'stripecss.css',
             cwpPatternConfig: {
@@ -99,14 +120,17 @@ let thirdparty = [
             },
         }
     },
+*/    
     {
         module: 'angularjs-color-picker', entry: '//cdnjs.cloudflare.com/ajax/libs/angularjs-color-picker/1.1.6/angularjs-color-picker.min.css'
     },
     {
-        module: 'jquery', entry: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js'
+        module: 'jquery', 
+        entry: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js',
+        global: 'jQuery'
     },
     {
-        module: 'jqueryui', entry: '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
+        module: 'jqueryui', entry: '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js'
     },
     {
         module: 'html5shiv', entry: '//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js'
@@ -181,7 +205,7 @@ let thirdparty = [
         module: 'underscore', entry: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'
     },
     {
-        module: 'angularjs', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular.min.js'
+        module: 'angularjs', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.js'
     },
     {
         module: 'momentjs', entry: '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js'
@@ -193,31 +217,31 @@ let thirdparty = [
         module: 'angular-moment', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-moment/1.2.0/angular-moment.min.js'
     },
     {
-        module: 'angular-cookies', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-cookies.min.js'
+        module: 'angular-cookies', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-cookies.min.js'
     },
     {
         module: 'lodash', entry: '//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js'
     },
     {
-        module: 'angular-route', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-route.min.js'
+        module: 'angular-route', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.js'
     },
     {
-        module: 'angular-animate', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-animate.min.js'
+        module: 'angular-animate', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-animate.min.js'
     },
     {
-        module: 'angular-messages', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-messages.min.js'
+        module: 'angular-messages', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-messages.min.js'
     },
     {
-        module: 'angular-resource', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.10/angular-resource.min.js'
+        module: 'angular-resource', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-resource.min.js'
     },
     {
         module: 'angular-boostrap-toggle', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js'
     },
     {
-        module: 'angular-ui-bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js'
+        module: 'angular-ui-bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js'
     },
     {
-        module: 'angular-ui-bootstrap-tpls', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js'
+        module: 'angular-ui-bootstrap-tpls', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.js'
     },
     {
         module: 'angular-ui-ieshiv', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui-ieshiv.min.js'
@@ -283,7 +307,7 @@ let thirdparty = [
         module: 'angular-ui-select', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.css'
     },
     {
-        module: 'angular-ui-select', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.min.js'
+        module: 'angular-ui-select', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-select/0.20.0/select.js'
     },
     {
         module: 'select2', entry: '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css'
@@ -312,24 +336,26 @@ let thirdparty = [
     {
         module: 'jvectormap', entry: '//cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.js'
     },
-    {
-        module: 'textAngular', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.css'
-    },
-    {
-        module: 'rangy', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-rangy.min.js'
-    },
-    {
-        module: 'textAngular-sanitize', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-sanitize.min.js'
-    },
-    {
-        module: 'textAngular', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.js'
-    },
+// 1.5.16 doesn't support newer angular 1.7+    
+//    {
+//        module: 'textAngular', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.css'
+//    },
+//    {
+//        module: 'rangy', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-rangy.min.js'
+//    },
+//    {
+//        module: 'textAngular-
+//        ', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular-sanitize.min.js'
+//    },
+//    {
+//        module: 'textAngular', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngular.min.js'
+//    },
     {
         module: 'themify-icons', entry: '//cdn.jsdelivr.net/themify-icons/0.1.2/css/themify-icons.css'
     },
-    {
-        module: 'textAngularSetup', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngularSetup.min.js'
-    },
+ //   {
+ //       module: 'textAngularSetup', entry: '//cdnjs.cloudflare.com/ajax/libs/textAngular/1.5.16/textAngularSetup.min.js'
+ //   },
     {
         module: 'spectrum', entry: '//cdnjs.cloudflare.com/ajax/libs/spectrum/1.7.0/spectrum.min.css'
     },
@@ -346,7 +372,14 @@ let thirdparty = [
         module: 'tinymce', entry: '//cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js'
     },
     {
-        module: 'tinymce', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js'
+        module: 'pdfMake', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js'
+    },
+    {
+        module: 'vfs_fonts', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js'
+    },
+    
+    {
+        module: 'angular-ui-tinymce', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js'
     },
     {
         module: 'stripe', 
@@ -398,7 +431,7 @@ let thirdparty = [
     },
     {
         module: 'bower_components', entry: {
-            path: 'angular-isotope/dist/angular-isotope.js',
+            path: 'angular-isotope/dist2/angular-isotope.js',
             cwpPatternConfig: {
                 context: path.resolve(__dirname, '.'),
             },
@@ -430,13 +463,94 @@ let thirdparty = [
             
     },
     {
+        module: 'bower_components', entry: {
+            path: 'textAngularJs/dist2/textAngular-rangy.min.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+            
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'textAngularJs/dist2/textAngular.min.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+            
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'textAngularJs/dist2/textAngular-sanitize.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+            
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'textAngularJs/dist2/textAngular.css',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+            
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'textAngularJs/dist2/textAngularSetup.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+            
+    },
+    {
         module: 'jquery.cardswipe', entry: {
-            path: 'dist/jquery.cardswipe.js',
+            path: 'dist2/jquery.cardswipe.js',
         }
     },
     {
         module: 'vendors', entry: {
             path: 'zoomPan-master/js/zoomPan.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, 'source'),
+            },
+        }
+            
+    },
+    {
+        module: 'vendors', entry: {
+            path: 'ngmodel-format/ngmodel.format.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, 'source'),
+            },
+        }
+            
+    },
+    {
+        module: 'vendors', entry: {
+            path: 'factories/angular-spectrum-colorpicker.min.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, 'source'),
+            },
+        }
+            
+    },
+    {
+        module: 'vendors', entry: {
+            path: 'factories/textAngular-dropdownToggle.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, 'source'),
+            },
+        }
+            
+    },
+    {
+        module: 'vendors', entry: {
+            path: 'factories/textAngularExtra.js',
             cwpPatternConfig: {
                 context: path.resolve(__dirname, 'source'),
             },

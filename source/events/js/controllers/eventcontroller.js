@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
         .filter('mapEventType', mapEventType)
         .controller('EventController', EventController);
 

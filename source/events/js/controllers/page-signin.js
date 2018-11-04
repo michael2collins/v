@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
         .controller('PageSigninController', PageSigninController);
         
         PageSigninController.$inject = [
@@ -22,9 +22,9 @@
 
             var pagevm = this;
             pagevm.login = login;
-            pagevm.username;
-            pagevm.password;
-            pagevm.dataLoading;
+            pagevm.username = null;
+            pagevm.password = null;
+            pagevm.dataLoading = false;
             pagevm.apiKey;
 //            pagevm.init = init;
             
@@ -59,7 +59,7 @@
             $("body>.extra-page").html($(".page-content").html()).hide();
 //            $('body').attr('id', 'signin-page');
 
-                        $location.path('/');
+                        $location.path('/#');
                         return data;
                 },
                 function (error) {

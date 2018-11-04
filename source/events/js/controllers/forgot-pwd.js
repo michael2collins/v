@@ -3,7 +3,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
         .controller('ForgotpwdController', ForgotpwdController);
         
         ForgotpwdController.$inject = [
@@ -53,7 +53,7 @@
         //    $('body').attr('id', '');
                         alert("Check your email for reset information");
 
-                        $location.path('/');
+                        $location.path('/#');
                         return data;
                 },
                 function (error) {

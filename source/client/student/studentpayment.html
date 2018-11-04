@@ -1,0 +1,535 @@
+<div class="row">
+   <div class="col-lg-12">
+      <div class="panel panel-blue">
+         <div class="panel-heading">Payment</div>
+         <div class="panel-body pan">
+            <div class="col-md-12 form-body pal">
+               <form action="" novalidate name="editPaymentPlan" class="form-horizontal">
+                  <div class="row">
+                     <h3 class="block-heading">Payer</h3>
+                     <div class="col-md-2">
+                        <div class="mlm form-group">
+                           <div class="input-icon right">
+                              <select id="inputsc_payer" type="text" name="studentpayer" ng-model="$ctrl.studentpayer" ng-change="$ctrl.payerSet($ctrl.studentpayer);" class="form-control" ng-options="iter.payerid as iter.payername for iter in $ctrl.payerlist">
+                              </select>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-2">
+                        <a role="button" class="btn btn-red form-control" ng-click="$ctrl.removePayer()"><i class="fa fa-minus"></i>&nbsp; Remove {{$ctrl.studentpayer.payername}}</a>
+                     </div>
+                     <div class="col-md-2">
+                        <a role="button" class="btn btn-blue form-control" ng-click="$ctrl.activate()"><i class="fa fa-refresh"></i>&nbsp; Refresh</a>
+                     </div>
+                     <div class="col-md-6"></div>
+                  </div>
+                  <div class="row col-md-12">
+                     <div>
+                        <div class="form-body pal">
+                           <div class="row">
+                              <div class="portlet portlet-primary col-md-12">
+                                 <div class="portlet-header">
+                                    <div class="caption">Payment Plan</div>
+                                 </div>
+                                 <div class="portlet-body">
+                                    <div class="table-tools">
+                                       <div class="row col-md-offset-11 mbs">
+                                          <button type="button" class="btn btn-blue mrs" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">New</button>
+                                       </div>
+                                    </div>
+                                    <div class="row col-md-12">
+                                       <div uib-collapse="$ctrl.isCollapsed">
+                                          <div class="well well-lg">
+                                             <div class="container-fluid">
+                                                <div class="container col-md-12">
+                                                   <div class="row">
+                                                      <div class="col-md-2">
+                                                         <div ng-class="{'has-error': editPaymentPlan['PaymentPlanHead'].$invalid, 
+                                                      'has-success': !editPaymentPlan['PaymentPlanHead'].$invalid}" class="form-group">
+                                                            <label for="PaymentPlanHead" class="control-label">Plan</label>
+                                                            <div class="input-icon right">
+                                                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentPlanHead'].$dirty" ng-class="editPaymentPlan['PaymentPlanHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                               <select id="PaymentPlanHead" type="text" name="PaymentPlanHead" ng-model="$ctrl.head.PaymentPlan" ng-change="" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                              <option ng-repeat="iter in $ctrl.PaymentPlans" ng-selected="{{iter.paymentplan==$ctrl.head.PaymentPlan}}" 
+                                              placeholder="Select" value="{{iter.paymentplan}}">{{iter.paymentplan}}</option>
+                                            </select>
+                                                            </div>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentPlanHead'].$error" class="has-error">
+                                                            <div ng-message="required">You did not enter a field</div>
+                                                            <div ng-message="minlength">Your field is too short</div>
+                                                            <div ng-message="maxlength">Your field is too long</div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-2">
+                                                         <div ng-class="{'has-error': editPaymentPlan['PaymentTypeHead'].$invalid, 
+                                      'has-success': !editPaymentPlan['PaymentTypeHead'].$invalid}" class="form-group">
+                                                            <label for="PaymentTypeHead" class="control-label">Type</label>
+                                                            <div class="input-icon right">
+                                                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentTypeHead'].$dirty" ng-class="editPaymentPlan['PaymentTypeHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                               <select id="PaymentTypeHead" type="text" name="PaymentTypeHead" ng-model="$ctrl.head.paymenttype" ng-change="" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                              <option ng-repeat="iter in $ctrl.PaymentTypes" ng-selected="{{iter.paymenttype==$ctrl.head.paymenttype}}" 
+                                              placeholder="Select" value="{{iter.paymenttype}}">{{iter.paymenttype}}</option>
+                                            </select>
+                                                            </div>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentTypeHead'].$error" class="has-error">
+                                                            <div ng-message="required">You did not enter a field</div>
+                                                            <div ng-message="minlength">Your field is too short</div>
+                                                            <div ng-message="maxlength">Your field is too long</div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-2">
+                                                         <label for="PricesetdateHead" class="control-label">Date Set</label>
+                                                         <div ng-class="{'has-error': editPaymentPlan['PricesetdateHead'].$invalid, 
+                                      'has-success': !editPaymentPlan['PricesetdateHead'].$invalid}" class="form-group">
+                                                            <div class="col-md-9" style="padding-right: 0px;">
+                                                               <div class="input-icon right">
+                                                                  <i ng-click="$ctrl.dateopen($event, 'head')" data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PricesetdateHead'].$dirty" ng-class="editPaymentPlan['PricesetdateHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                                  <input id="PricesetdateHead" type="text" placeholder="mm/dd/yyyy" name="PricesetdateHead" required ng-model="$ctrl.head.Pricesetdate" ng-change="" is-open="$ctrl.statushead.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                     class="form-control">
+                                                               </div>
+                                                            </div>
+                                                            <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+                                                               <button type="button" class="btn btn-default" ng-click="$ctrl.dateheadopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                            </div>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PricesetdateHead'].$error" class=" has-error">
+                                                            <div ng-message="required">You did not enter a field</div>
+                                                            <div ng-message="minlength">Your field is too short</div>
+                                                            <div ng-message="maxlength">Your field is too long</div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-1">
+                                                         <div class="form-group" ng-class="{'has-error': editPaymentPlan['PaymentAmountHead'].$invalid, 
+                                                                        'has-success': !editPaymentPlan['PaymentAmountHead'].$invalid}">
+                                                            <label for="PaymentAmountHead" class="control-label">Amount</label>
+                                                            <div class="input-icon right">
+                                                               <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editPaymentPlan['PaymentAmountHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editPaymentPlan['PaymentAmountHead'].$dirty"></i>
+                                                               <input class="form-control" id="PaymentAmountHead" maxlength="20" name="PaymentAmountHead" ng-change="" min="0" ng-model="$ctrl.head.PaymentAmount" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" placeholder="99"
+                                                                  type="number">
+                                                            </div>
+                                                         </div>
+                                                         <div class="has-error" ng-messages="editPaymentPlan['PaymentAmountHead'].$error" role="alert" style="color:maroon">
+                                                            <div ng-message="required">
+                                                               You did not enter a field
+                                                            </div>
+                                                            <div ng-message="maxlength">
+                                                               Your field is too long
+                                                            </div>
+                                                            <div ng-message="min">Your field value is less than minimum value 1</div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-1">
+                                                         <div class="form-group" ng-class="{'has-error': editPaymentPlan['payOnDayOfMonthHead'].$invalid, 
+                                      'has-success': !editPaymentPlan['payOnDayOfMonthHead'].$invalid}">
+                                                            <label for="payOnDayOfMonthHead" class="control-label">Pay on</label>
+                                                            <div class="input-icon right">
+                                                               <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editPaymentPlan['payOnDayOfMonthHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editPaymentPlan['payOnDayOfMonthHead'].$dirty"></i>                                                               <input class="form-control" id="payOnDayOfMonthHead" minlength="1" maxlength="2" name="payOnDayOfMonthHead" min="1" max="31" ng-model="$ctrl.head.payOnDayOfMonth" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                  placeholder="99" type="number">
+                                                            </div>
+                                                         </div>
+                                                         <div class="has-error" ng-messages="editPaymentPlan['payOnDayOfMonthHead'].$error" role="alert" style="color:maroon">
+                                                            <div ng-message="required">
+                                                               You did not enter a field
+                                                            </div>
+                                                            <div ng-message="minlength">
+                                                               Your field is too short
+                                                            </div>
+                                                            <div ng-message="maxlength">
+                                                               Your field is too long
+                                                            </div>
+                                                            <div ng-message="min">Your field value is less than minimum value 1</div>
+                                                            <div ng-message="max">Your field value is greater than max value 31</div>
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-2">
+                                                         <div ng-class="{'has-error': editPaymentPlan['PaymentNotesHead'].$invalid, 
+                                      'has-success': !editPaymentPlan['PaymentNotesHead'].$invalid}" class="form-group">
+                                                            <label for="PaymentNotesHead" class="control-label">Notes</label>
+                                                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentNotesHead'].$dirty" ng-class="editPaymentPlan['PaymentNotesHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                                                  class="glyphicon tooltips"></i>
+                                                               <textarea id="PaymentNotesHead" type="text" placeholder="Enter Payment Notes" name="PaymentNotesHead" ng-model="$ctrl.head.PaymentNotes" ng-change="" ng-keyup="$ctrl.autoExpand($event)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                  class="form-control">
+                                          </textarea>
+                                                            </div>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentNotesHead'].$error" class="has-error">
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-1 btn">
+                                                         <div class="row">
+                                                            <label for="PaymentBtnHead" class="control-label">Action</label>
+                                                         </div>
+                                                         <div class="row">
+                                                            <a role="button" class="btn btn-green form-control" ng-click="$ctrl.updatePaymentPlan($ctrl.head,'insert')"><i class="fa fa-plus"></i>&nbsp; Add</a>
+
+                                                         </div>
+                                                      </div>
+
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                       <div class="">
+                                          <table class="col-md-12 table-striped table-hover table-bordered">
+                                             <thead>
+                                                <tr>
+                                                   <th>Plan</th>
+                                                   <th>Type</th>
+                                                   <th>Date Set</th>
+                                                   <th>Set by?</th>
+                                                   <th>Amount</th>
+                                                   <th>Pay on<br/>DayOfMonth</th>
+                                                   <th>Notes</th>
+                                                   <th>Action</th>
+                                                </tr>
+                                             </thead>
+                                             <tbody>
+
+                                                <tr ng-repeat="rowiter in $ctrl.PaymentPlanList track by $index">
+                                                   <td class="col-md-1">
+                                                      <div ng-class="{'has-error': editPaymentPlan['PaymentPlan' + $index].$invalid, 
+                                                    'has-success': !editPaymentPlan['PaymentPlan' + $index].$invalid}" class="form-group">
+                                                         <div class="input-icon right">
+                                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentPlan' + $index].$dirty" ng-class="editPaymentPlan['PaymentPlan' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                            <select id="PaymentPlan{{$index}}" type="text" name="PaymentPlan{{$index}}" ng-model="rowiter.PaymentPlan" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                               class="form-control">
+                                            <option ng-repeat="iter in $ctrl.PaymentPlans" ng-selected="{{iter.paymentplan==rowiter.PaymentPlan}}" 
+                                            placeholder="Select" value="{{iter.paymentplan}}">{{iter.paymentplan}}</option>
+                                          </select>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentPlan' + $index].$error" class="has-error">
+                                                            <div ng-message="required">You did not enter a field</div>
+                                                            <div ng-message="minlength">Your field is too short</div>
+                                                            <div ng-message="maxlength">Your field is too long</div>
+                                                         </div>
+                                                      </div>
+                                                   </td>
+                                                   <td class="col-md-1">
+                                                      <div ng-class="{'has-error': editPaymentPlan['PaymentType' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['PaymentType' + $index].$invalid}" class="form-group">
+                                                         <div class="input-icon right">
+                                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentType' + $index].$dirty" ng-class="editPaymentPlan['PaymentType' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                            <select id="PaymentType{{$index}}" type="text" name="PaymentType{{$index}}" ng-model="rowiter.paymenttype" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                               class="form-control">
+                                            <option ng-repeat="iter in $ctrl.PaymentTypes" ng-selected="{{iter.paymenttype==rowiter.paymenttype}}" 
+                                            placeholder="Select" value="{{iter.paymenttype}}">{{iter.paymenttype}}</option>
+                                          </select>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentType' + $index].$error" class="has-error">
+                                                            <div ng-message="required">You did not enter a field</div>
+                                                            <div ng-message="minlength">Your field is too short</div>
+                                                            <div ng-message="maxlength">Your field is too long</div>
+                                                         </div>
+                                                      </div>
+                                                   </td>
+                                                   <td class="col-md-2">
+                                                      <div ng-class="{'has-error': editPaymentPlan['Pricesetdate' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['Pricesetdate' + $index].$invalid}" class="form-group">
+                                                         <div class="col-md-9" style="padding-right: 0px;">
+                                                            <div class="input-icon right">
+                                                               <i ng-click="$ctrl.dateopen($event, $index)" data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['Pricesetdate' + $index].$dirty" ng-class="editPaymentPlan['Pricesetdate' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                                                  class="glyphicon tooltips"></i>
+                                                               <input id="Pricesetdate{{$index}}" type="text" placeholder="mm/dd/yyyy" name="Pricesetdate{{$index}}" required ng-model="rowiter.Pricesetdate" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')" is-open="$ctrl.status[$index].opened" uib-datepicker-popup="{{$ctrl.bdateformat}}"
+                                                                  ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                                            </div>
+                                                         </div>
+                                                         <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+                                                            <button type="button" class="btn btn-default" ng-click="$ctrl.dateopen($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                         </div>
+                                                      </div>
+                                                      <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['Pricesetdate' + $index].$error" class="has-error">
+                                                         <div ng-message="required">You did not enter a field</div>
+                                                         <div ng-message="minlength">Your field is too short</div>
+                                                         <div ng-message="maxlength">Your field is too long</div>
+                                                      </div>
+                                                   </td>
+                                                   <td class="col-md-1">
+                                                      {{rowiter.PriceSetby}}
+                                                   </td>
+                                                   <td class="col-md-1">
+                                                      <div class="form-group" ng-class="{'has-error': editPaymentPlan['PaymentAmount' + $index].$invalid, 
+                                                                      'has-success': !editPaymentPlan['PaymentAmount' + $index].$invalid}">
+                                                         <div class="input-icon right">
+                                                            <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editPaymentPlan['PaymentAmount' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editPaymentPlan['PaymentAmount' + $index].$dirty"></i>
+                                                            <input class="form-control" id="PaymentAmount{{$index}}" maxlength="20" name="PaymentAmount{{$index}}" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')" min="0" ng-model="rowiter.PaymentAmount" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                               placeholder="99" type="number">
+                                                         </div>
+                                                         <div class="has-error" ng-messages="editPaymentPlan['PaymentAmount' + $index].$error" role="alert" style="color:maroon">
+                                                            <div ng-message="required">
+                                                               You did not enter a field
+                                                            </div>
+                                                            <div ng-message="maxlength">
+                                                               Your field is too long
+                                                            </div>
+                                                            <div ng-message="min">Your field value is less than minimum value 1</div>
+                                                         </div>
+                                                      </div>
+                                                   </td>
+                                                   <td class="col-md-1">
+                                                      <div class="form-group" ng-class="{'has-error': editPaymentPlan['payOnDayOfMonth' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['payOnDayOfMonth' + $index].$invalid}">
+                                                         <div class="input-icon right">
+                                                            <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editPaymentPlan['payOnDayOfMonth' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editPaymentPlan['payOnDayOfMonth' + $index].$dirty"></i>                                                            <input class="form-control" id="payOnDayOfMonth{{$index}}" minlength="1" maxlength="2" name="payOnDayOfMonth{{$index}}" min="1" max="31" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')"
+                                                               ng-model="rowiter.payOnDayOfMonth" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" placeholder="99" type="number">
+                                                         </div>
+                                                         <div class="has-error" ng-messages="editPaymentPlan['payOnDayOfMonth' + $index].$error" role="alert" style="color:maroon">
+                                                            <div ng-message="required">
+                                                               You did not enter a field
+                                                            </div>
+                                                            <div ng-message="minlength">
+                                                               Your field is too short
+                                                            </div>
+                                                            <div ng-message="maxlength">
+                                                               Your field is too long
+                                                            </div>
+                                                            <div ng-message="min">Your field value is less than minimum value 1</div>
+                                                            <div ng-message="max">Your field value is greater than max value 31</div>
+                                                         </div>
+                                                      </div>
+                                                   </td>
+                                                   <td class="col-md-2">
+                                                      <div ng-class="{'has-error': editPaymentPlan['PaymentNotes' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['PaymentNotes' + $index].$invalid}" class="form-group">
+                                                         <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentNotes' + $index].$dirty" ng-class="editPaymentPlan['PaymentNotes' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                                               class="glyphicon tooltips"></i>
+                                                            <textarea id="PaymentNotes{{$index}}" type="text" placeholder="Enter Payment Notes" name="PaymentNotes{{$index}}" ng-model="rowiter.PaymentNotes" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')" ng-keyup="$ctrl.autoExpand($event)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                               class="form-control">
+                                        </textarea>
+                                                         </div>
+                                                         <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentNotes' + $index].$error" class="has-error">
+                                                         </div>
+                                                      </div>
+                                                   </td>
+                                                   <td class="col-md-1">
+                                                      <span> <a ng-click="$ctrl.removePaymentPlan(rowiter)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a>
+                                    </span>
+                                                   </td>
+                                                </tr>
+                                             </tbody>
+                                          </table>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-3">
+                        <div class="panel panel-blue">
+                           <div class="panel-body pan">
+                              <div class=" form-body pal">
+                                 <h3 class="block-heading">Family Members</h3>
+                                 <div class="row" ng-repeat="family in $ctrl.FamilyList">
+                                    <div class="col-md-6">Name: {{ family.firstname }} {{family.lastname}}</div>
+                                    <div class="col-md-6">
+                                       <span class="fixheight100" ng-switch on="family.pictureurl === 'NULL' ">
+                         <img ng-switch-when="true" height="100px" ng-src='../images/students/missingstudentpicture.png'/>
+                         <img ng-switch-when="false" height="100px"  ng-src='../images/students/{{family.pictureurl}}'/>
+                      </span>
+
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="col-md-9">
+                        <div class="panel panel-blue">
+                           <div class="panel-body pan">
+                              <div class="col-md-12 form-body pal">
+                                 <h3 class="block-heading">List Prices</h3>
+                                 <table class="col-md-12 table table-striped table-hover table-bordered">
+                                    <thead>
+                                       <tr>
+                                          <th>Name</th>
+                                          <th>Class/Program/Type</th>
+                                          <th>12/6/1 Month</th>
+                                          <th>Weekly</th>
+                                          <th>Special</th>
+                                          <th>Discount 2nd/3rd/4th</th>
+                                          <th>Match?</th>
+                                       </tr>
+                                    </thead>
+                                    <tbody>
+                                       <tr ng-repeat="item in $ctrl.PriceList track by $index">
+                                          <td class="col-md-2 ">{{ item.firstname }} {{item.lastname}} </td>
+                                          <td class="col-md-2 ">{{ item.classname}} <br/>{{ item.classlistclass}} <br/> {{ item.classType}}</td>
+                                          <td class="col-md-1 ">{{ item.p12MonthPrice}} <br/> {{ item.p6MonthPrice}} <br/> {{ item.pMonthlyPrice}}</td>
+                                          <td class="col-md-1 ">{{ item.pWeeklyPrice}}</td>
+                                          <td class="col-md-1 ">{{ item.pSpecialPrice}}</td>
+                                          <td class="col-md-2 " style="font-size: smaller;">
+                                             12( {{ item.d2ndPersonDiscount12 }} / {{ item.d3rdPersonDiscount12 }} / {{ item.d4thPersonDiscount12 }})
+                                             <br/> 6( {{ item.d2ndPersonDiscount6 }} / {{ item.d3rdPersonDiscount6 }} / {{ item.d4thPersonDiscount6 }})
+                                             <br/> 1( {{ item.d2ndPersonDiscount1 }} / {{ item.d3rdPersonDiscount1 }} / {{ item.d4thPersonDiscount1 }})
+                                          </td>
+                                          <td class="col-md-1 ">
+                                             <div ng-class="{'has-error': item.covered == 0, 
+                                          'has-success': item.covered != 0 }" class="form-group">
+                                                <div class="input-icon">
+                                                   <i data-hover="tooltip" data-original-title="Correct" ng-class="(item.covered == '0') ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                </div>
+                                             </div>
+                                          </td>
+
+                                       </tr>
+                                    </tbody>
+                                 </table>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="col-md-12">
+                        <div>
+                           <div class="form-body pal">
+                              <div class="row">
+                                 <div class="portlet portlet-primary col-md-12">
+                                    <div class="portlet-header">
+                                       <div class="caption">Payment Plan Coverage</div>
+                                    </div>
+                                    <div class="portlet-body">
+                                       <div class="table-tools">
+                                          <div class="row col-md-offset-11 mbs">
+                                             <button type="button" class="btn btn-blue mrs" ng-click="$ctrl.isCollapsed2 = !$ctrl.isCollapsed2">New</button>
+                                          </div>
+                                       </div>
+                                       <div class="row col-md-12">
+                                          <div uib-collapse="$ctrl.isCollapsed2">
+                                             <div class="well well-lg">
+                                                <div class="container-fluid">
+                                                   <div class="container col-md-12">
+
+                                                      <div class="row">
+                                                         <div class="col-md-5">
+                                                            <div ng-class="{'has-error': editPaymentPlan['PaymentidHeadCoverage'].$invalid, 
+                                                    'has-success': !editPaymentPlan['PaymentidHeadCoverage'].$invalid}" class="form-group">
+                                                               <label for="PaymentidHeadCoverage" class="control-label">Payment Plan</label>
+                                                               <div class="input-icon right">
+                                                                  <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentidHeadCoverage'].$dirty" ng-class="editPaymentPlan['PaymentidHeadCoverage'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                                  <select id="PaymentidHeadCoverage" type="text" name="PaymentidHeadCoverage" ng-model="$ctrl.headcoverage.paymentid" ng-change="" minLength="1" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                     class="form-control">
+                                            <option ng-repeat="iter in $ctrl.PaymentPlanList" ng-selected="{{iter.paymentid==$ctrl.headcoverage.paymentid}}" 
+                                            placeholder="Select" value="{{iter.paymentid}}">
+                                              Plan: {{iter.PaymentPlan}} Type: {{iter.paymenttype}} Amount: {{iter.PaymentAmount}}
+                                              </option>
+                                          </select>
+                                                               </div>
+                                                            </div>
+                                                            <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentidHeadCoverage'].$error" class="has-error">
+                                                               <div ng-message="required">You did not enter a field</div>
+                                                               <div ng-message="minlength">Your field is too short</div>
+                                                               <div ng-message="maxlength">Your field is too long</div>
+                                                            </div>
+                                                         </div>
+                                                         <div class="col-md-5">
+                                                            <div ng-class="{'has-error': editPaymentPlan['ClasspayidHeadCoverage'].$invalid, 
+                                    'has-success': !editPaymentPlan['ClasspayidHeadCoverage'].$invalid}" class="form-group">
+                                                               <label for="ClasspayidHeadCoverage" class="control-label">Coverage</label>
+                                                               <div class="input-icon right">
+                                                                  <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['ClasspayidHeadCoverage'].$dirty" ng-class="editPaymentPlan['ClasspayidHeadCoverage'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                                  <select id="ClasspayidHeadCoverage" type="text" name="ClasspayidHeadCoverage" ng-model="$ctrl.headcoverage.classpayid" ng-change="" minLength="1" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                     class="form-control">
+                                            <option ng-repeat="iter in $ctrl.PayerPaymentList" ng-selected="{{iter.classpayid==$ctrl.headcoverage.classpayid}}" 
+                                            placeholder="Select" value="{{iter.classpayid}}">
+                                              Class: {{iter.classname}} Program: {{iter.pgmclass}} Status: {{iter.studentClassStatus}}
+                                              </option>
+                                          </select>
+                                                               </div>
+                                                            </div>
+                                                            <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['ClasspayidHeadCoverage'].$error" class="has-error">
+                                                               <div ng-message="required">You did not enter a field</div>
+                                                               <div ng-message="minlength">Your field is too short</div>
+                                                               <div ng-message="maxlength">Your field is too long</div>
+                                                            </div>
+                                                         </div>
+                                                         <div class="col-md-2 btn">
+                                                            <div class="row">
+                                                               <label for="PayerPaymentBtnHead" class="control-label">Action</label>
+                                                            </div>
+                                                            <div class="row">
+                                                               <a role="button" class="btn btn-green form-control" ng-click="$ctrl.updatePaymentPay($ctrl.headcoverage,'insert')"><i class="fa fa-plus"></i>&nbsp; Add</a>
+
+                                                            </div>
+                                                         </div>
+                                                      </div>
+                                                   </div>
+                                                </div>
+                                             </div>
+                                          </div>
+                                          <div class="">
+                                             <table class="col-md-12 table-striped table-hover table-bordered">
+                                                <thead>
+                                                   <tr>
+                                                      <th>Payment Plan</th>
+                                                      <th>Coverage</th>
+                                                      <th>Action</th>
+                                                   </tr>
+                                                </thead>
+                                                <tbody>
+                                                   <tr ng-repeat="rowiterpcp in $ctrl.PaymentPaysList track by rowiterpcp.pcpid">
+                                                      <td class="col-md-5">
+                                                         <div ng-class="{'has-error': editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$invalid, 
+                                                    'has-success': !editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$invalid}" class="form-group">
+                                                            <div class="input-icon right">
+                                                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$dirty" ng-class="editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                               <select id="PaymentID{{rowiterpcp.pcpid}}" type="text" name="PaymentID{{rowiterpcp.pcpid}}" ng-model="rowiterpcp.paymentidstr" ng-change="$ctrl.updatePaymentPays(rowiterpcp,'update')" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                  class="form-control">
+                                            <option ng-repeat="iter1 in $ctrl.PaymentPlanList" value="{{ iter1.paymentid-0 }}"  
+                                            ng-selected="{{(iter1.paymentidstr == rowiterpcp.paymentidstr) && 'true' || 'false' }}" 
+                                            placeholder="Select" >Plan: {{iter1.PaymentPlan}} Type: {{iter1.paymenttype}} Amount: {{iter1.PaymentAmount}}</option>
+                                          </select>
+                                                            </div>
+                                                            <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$error" class="has-error">
+                                                               <div ng-message="required">You did not enter a field</divPaymentID <div ng-message="minlength">Your field is too short</div>
+                                                               <div ng-message="maxlength">Your field is too long</div>
+                                                            </div>
+                                                         </div>
+                                                      </td>
+                                                      <td class="col-md-5">
+                                                         <div ng-class="{'has-error': editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$invalid, 
+                                    'has-success': !editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$invalid}" class="form-group">
+                                                            <div class="input-icon right">
+                                                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$dirty" ng-class="editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                               <select id="ClassPayID{{rowiterpcp.pcpid}}" type="text" name="ClassPayID{{rowiterpcp.pcpid}}" ng-model="rowiterpcp.classpayidstr" ng-change="$ctrl.updatePaymentPays(rowiterpcp,'update')" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                                  class="form-control">
+                                            <option ng-repeat="iter2 in $ctrl.PayerPaymentList" ng-selected="{{iter2.classpayidstr==rowiterpcp.classpayidstr}}" 
+                                            placeholder="Select" value="{{iter2.classpayid}}">
+                                              Class: {{iter2.classname}} Program: {{iter2.pgmclass}} Status: {{iter2.studentClassStatus}}
+                                              </option>
+                                          </select>
+                                                            </div>
+                                                            <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$error" class="has-error">
+                                                               <div ng-message="required">You did not enter a field</div>
+                                                               <div ng-message="minlength">Your field is too short</div>
+                                                               <div ng-message="maxlength">Your field is too long</div>
+                                                            </div>
+                                                         </div>
+                                                      </td>
+                                                      <td class="col-md-2">
+                                                         <span> <a ng-click="$ctrl.removePaymentPay(rowiterpcp)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a>
+                                    </span>
+                                                      </td>
+                                                   </tr>
+                                                </tbody>
+                                             </table>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </form>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

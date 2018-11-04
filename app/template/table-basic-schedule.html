@@ -1,0 +1,267 @@
+<div ng-controller="ScheduleTableBasicController as vm">
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+            <div class="row">
+                <div class="caption">Maintain Schedule</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Schedule</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-11 mbs">
+                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container" >
+            <div class="col-md-12" style="height: 110px;">
+                <form action="" novalidate name="editschedule2" class="form-horizontal">
+                            <div class="col-md-3">
+                                <div class="col-md-4">
+                                    
+    <div ng-class="{'has-error': editschedule2.dow.$invalid, 
+                    'has-success': !editschedule2.dow.$invalid}" class="form-group">
+        <label for="dow" class="control-label">Day of<br/>Week</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.dow.$dirty" 
+            ng-class="editschedule2.dow.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="dow" type="text" 
+                name="dow" 
+                ng-model="vm.schedule.dow" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.weekschedule" 
+                    ng-selected="{{iter.value==vm.schedule.dow}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.dow.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-4">
+                                    
+    <div class="form-group">
+        <label for="timerange" class="control-label">Time<br/>Range</label>
+
+        <div>
+            <input  id="timerange" 
+                    type="text" 
+                    placeholder="0:00AM to 0:00" 
+                    name="timerange" 
+                    ng-model="vm.schedule.timerange" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-4">
+                                    
+    <div ng-class="{'has-error': editschedule2.agerange.$invalid, 
+                    'has-success': !editschedule2.agerange.$invalid}" class="form-group">
+        <label for="agerange" class="control-label">Age<br/>Range</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.agerange.$dirty" 
+            ng-class="editschedule2.agerange.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="agerange" type="text" 
+                name="agerange" 
+                ng-model="vm.schedule.agerange" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.agerangelist" 
+                    ng-selected="{{iter.value==vm.schedule.agerange}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.agerange.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-6">
+                                    
+    <div ng-class="{'has-error': editschedule2.classid.$invalid, 
+                    'has-success': !editschedule2.classid.$invalid}" class="form-group">
+        <label for="classid" class="control-label">Class<br/>&nbsp;</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.classid.$dirty" 
+            ng-class="editschedule2.classid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="classid" type="text" 
+                name="classid" 
+                ng-model="vm.schedule.classid" 
+                ng-change="vm.changeclass()"                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.classhashlist" 
+                    ng-selected="{{iter.id==vm.schedule.classid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.classid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-6">
+                                    
+    <div class="form-group">
+        <label for="description" class="control-label">Description<br/>&nbsp;</label>
+
+        <div>
+            <input  id="description" 
+                    type="text" 
+                    placeholder="Enter Class Name" 
+                    name="description" 
+                    ng-model="vm.schedule.description" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="col-md-6" style="margin-top: 10px;">
+                                    
+    <div class="form-group">
+        <label for="startT" class="control-label">Start<br/>&nbsp;</label>
+
+        <div>
+            <input  id="startT" 
+                    type="text" 
+                    placeholder="" 
+                    name="startT" 
+                    ng-model="vm.schedule.startT" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-6" style="margin-top: 10px;">
+                                    
+    <div class="form-group">
+        <label for="endT" class="control-label">End<br/>&nbsp;</label>
+
+        <div>
+            <input  id="endT" 
+                    type="text" 
+                    placeholder="" 
+                    name="endT" 
+                    ng-model="vm.schedule.endT" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                            </div>
+                            <div class="col-md-1">
+                                    <div ng-class="{'has-error': editschedule2.TakeAttendance.$invalid, 
+                    'has-success': !editschedule2.TakeAttendance.$invalid}" class="form-group">
+        <label for="TakeAttendance" class="control-label">Take<br/>Attendance</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.TakeAttendance.$dirty" 
+            ng-class="editschedule2.TakeAttendance.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <toggle-switch 
+                    on-label="Yes" 
+                    off-label="No" 
+                    id="TakeAttendance" 
+                    type="checkbox" 
+                    name="TakeAttendance" 
+                    ng-model="vm.schedule.TakeAttendance" 
+                required                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="switch-primary">
+            </toggle-switch>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.TakeAttendance.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+                                </div>
+                            <div class="col-md-1">
+                                
+    <div class="form-group">
+        <label for="sortorder" class="control-label">Sort<br/>Order</label>
+
+        <div>
+            <input  id="sortorder" 
+                    type="number" 
+                    placeholder="" 
+                    name="sortorder" 
+                    ng-model="vm.schedule.sortorder" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                </div>
+                            <div class="col-md-1 btn" style="margin-top: 36px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.updSchedule(vm.schedule)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

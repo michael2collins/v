@@ -779,6 +779,76 @@ $app->delete('/studentrank','authenticate', function() use ($app) {
 
 });
 
+$app->delete('/student','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Student before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+    $Studentgood=0;
+    $Studentbad=0;
+
+    $db = new StudentDbHandler();
+
+    $result = $db->isStudentFKExists($ID);
+    $response["error"] = false;
+    $response["StudentExistsList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
+        } else {
+            $tmp["type"] = "NULL";
+            $tmp["cnt"] = "0";
+        }
+        array_push($response["StudentExistsList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+
+    if ($row_cnt == 0) {
+
+        // remove Student
+        $Student = $db->removeStudent(
+            $ID
+                                    );
+    
+        if ($Student > 0) {
+            error_log( print_R("Student removed: $Student\n", TRUE ), 3, LOG);
+            $response["error"] = false;
+            $response["message"] = "Student removed successfully";
+            $Studentgood = 1;
+            $response["Student"] = $Studentgood;
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after delete Student result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $Student, TRUE), 3, LOG);
+            $Studentbad = 1;
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Student. Please try again";
+            echoRespnse(400, $response);
+        }
+    } else {
+            error_log( print_R("before delete Student result bad\n", TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Student. There are records that are still attached to the Student. Please remove those first";
+            echoRespnse(400, $response);
+    }
+});
+
 $app->get('/students', 'authenticate', function() use($app){
 /**
  * Listing all tasks of particual user

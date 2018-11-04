@@ -1,127 +1,112 @@
-(function () {
-    'use strict';
+import angular from 'angular';
 
-    angular
-        .module('ng-admin.all')    
-    .factory('PaymentServices', PaymentServices);
-    
-    PaymentServices.$inject = ['_', '$http', '$log', "$q"];
+export class PaymentServices {
+    constructor( $http, $q, $log) {
+        'ngInject';
 
-    function PaymentServices( _ , $http, $log, $q ) {
-        var apikey;
- 
+//        this.apikey={};
+        this.$http = $http;
+        this.$q = $q;
+        this.$log = $log;
 
-    var service = {
-             setapikey: setapikey,
-			getStudentPaymentList: getStudentPaymentList,
-            updateStudentPayment: updateStudentPayment,
-            createPayer: createPayer,
-            getStudentPayment: getStudentPayment,			
-            setStudentPayment: setStudentPayment,
-			getClassPayList: getClassPayList			
-        };
-        return service;
-        
-       function setapikey(key) {
-       // $log.debug('setapikey', key);
-         apikey = key;
-       }
+    }
+/*    setapikey(key) {
+        // $log.debug('setapikey', key);
+        this.apikey = key;
+    }
+*/
 
-
-        function getStudentPayment(path) {
-        var request = $http({
+    getStudentPayment(path) {
+        var self = this;
+        var request = self.$http({
             method: "get",
             url: path
         });
-         
-        return( request.then( handleSuccess, handleError ) );
-            
-        }
-        function updateStudentPayment(path, StudentPayment) {
-                    $log.debug('enter updateStudentPayment before put :' , StudentPayment);
-        var request = $http({
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    updateStudentPayment(path, StudentPayment) {
+        var self = this;
+        self.$log.debug('enter updateStudentPayment before put :', StudentPayment);
+        var request = self.$http({
             method: "PUT",
             url: path,
             data: StudentPayment
         });
-        return( request.then( handleSuccess, handleError ) );
-                    
-        }	  
-        function setStudentPayment(path, mystudent, myclassid, mypgmid) {
-                    $log.debug('service set student class :' + myclassid);
-                    $log.debug('service set student pgm :' + mypgmid);
-					var mydata = {
-						"mystudent": mystudent,
-						"myclassid": myclassid,
-						"mypgmid": mypgmid,
-					};
-                    $log.debug('service set studentx class mydata:' + JSON.stringify({data: mydata}) + ' sent to:' + path);
-        var request = $http({
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    setStudentPayment(path, mystudent, myclassid, mypgmid) {
+        var self = this;
+        self.$log.debug('service set student class :' + myclassid);
+        self.$log.debug('service set student pgm :' + mypgmid);
+        var mydata = {
+            "mystudent": mystudent,
+            "myclassid": myclassid,
+            "mypgmid": mypgmid,
+        };
+        self.$log.debug('service set studentx class mydata:' + JSON.stringify({ data: mydata }) + ' sent to:' + path);
+        var request = self.$http({
             method: "PUT",
             url: path,
             data: mydata
         });
-        return( request.then( handleSuccess, handleError ) );
-                    
-        }		
-        function getStudentPaymentList(path) {
-        var request = $http({
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    getStudentPaymentList(path) {
+        var self = this;
+        var request = self.$http({
             method: "GET",
             url: path
         });
-        return( request.then( handleSuccess, handleError ) );
-            
-        }
-        function getClassPayList(path) {
-        var request = $http({
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    getClassPayList(path) {
+        var self = this;
+        var request = self.$http({
             method: "GET",
             url: path
         });
-        return( request.then( handleSuccess, handleError ) );
-            
-        }
-        
-        function createPayer(path, thedata ) {
-                    $log.debug('createPayer data before :' , thedata);
-                    var request = $http({
-                        method: "POST",
-                        url: path,
-                        data: {
-                            thedata: thedata
-                        }
-                    });
-                    return( request.then( handleSuccess, handleError ) );
-        }          
-       // ---
-        // PRIVATE METHODS.
-        // ---
-        function handleError( response ) {
-            $log.debug('failure:');
-            $log.debug(response);
-            $log.debug('status',response.status);
-            $log.debug('config',response.config);
-            //debugger;
-            if (
-                ! angular.isObject( response.data ) ||
-                ! response.data.message
-                ) {
-              //  return( $q.reject( "An unknown error occurred." ) );
-              return(null);
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+
+    createPayer(path, thedata) {
+        var self = this;
+        self.$log.debug('createPayer data before :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
             }
-            // Otherwise, use expected error message.
-            return( $q.reject( response.data.message ) );
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    // ---
+    // PRIVATE METHODS.
+    // ---
+    handleError(response) {
+        if (!angular.isObject(response.data) ||
+            !response.data.message
+        ) {
+            //  return( $q.reject( "An unknown error occurred." ) );
+            return (null);
         }
-        // I transform the successful response, unwrapping the application data
-        // from the API response payload.
-        function handleSuccess( response ) {
-            $log.debug(' success:');
-            $log.debug(response);
-            if (response.data.error === true) {
-                return( $q.reject( response.data.message ) ); 
-            }
-            return( response.data );
+        // Otherwise, use expected error message.
+        return (response.data.message);
+    }
+    // I transform the successful response, unwrapping the application data
+    // from the API response payload.
+    handleSuccess(response) {
+        if (response.data.error === true) {
+            return (response.data.message);
         }
-        
-        
-        }
- })();  
+        return (response.data);
+    }
+
+
+}

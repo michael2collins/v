@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
     .factory('TournamentServices', TournamentServices);
 
     TournamentServices.$inject = ['$http', '$q', '$log'];

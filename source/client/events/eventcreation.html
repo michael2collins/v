@@ -1,0 +1,253 @@
+<div ng-controller="EventTableBasicController as $ctrl" ng-init="active[$ctrl.getActiveTab()]= true" ngcloak>
+
+  <div class="panel panel-orange">
+    <div class="panel-heading">Events</div>
+  </div>
+
+  <uib-tabset type="pills" active="$ctrl.active">
+    <uib-tab index="1" id="tab-attendhist" heading="Manage" 
+    select="$ctrl.setActiveTab(1,'eventhistory');
+    eventhistorytabShown = !eventhistorytabShown" 
+    deselect="eventhistorytabShown = !eventhistorytabShown">
+
+      <div class="panel panel-green">
+        <div class="panel-heading">Filters</div>
+        <div class="panel-body pan">
+          <div class="col-lg-12">
+            <div class="row">
+              <div class="col-md-7" style="height: 70px;">
+                <div class="select-box">
+                  <div class="col-md-6">
+                    <label for="query" class="control-label">Pick Event</label>
+                    <ui-select ng-model="$ctrl.eventSelected" theme="bootstrap" reset-search-input="false" ng-disabled="$ctrl.disabled" on-select="$ctrl.getEventDetails($item)" style="width: 300px;" title="Choose an event" append-to-body="false">
+                      <ui-select-match placeholder="Filter the events...">{{$select.selected.event}}</ui-select-match>
+                      <ui-select-choices repeat="event in $ctrl.eventlist | filter: $select.search track by $index" refresh="$ctrl.getEventNames($select.search)" refresh-delay="0">
+                        <div ng-bind-html="event.event | highlight: $select.search"></div>
+                      </ui-select-choices>
+                    </ui-select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-5">
+                <button ng-click="$ctrl.getEventDetails($ctrl.eventSelected)" class="btn btn-green EventCreation">Refresh List</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12">
+                <div class="panel panel-blue">
+                  <div class="panel-body pan">
+                    <div class="col-md-12 form-body pal">
+                      <h3 class="block-heading">Event Details</h3>
+                      <table class="col-md-12 table table-striped table-hover table-bordered">
+                        <thead>
+                          <tr>
+                            <th>Event</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Start time</th>
+                            <th>End time</th>
+                            <th>Location</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>{{$ctrl.Event}} </td>
+                            <td>{{$ctrl.EventType}} </td>
+                            <td>{{$ctrl.EventDate | date:'yyyy-MM-dd'}}</td>
+                            <td>{{$ctrl.EventStart | date:'hh:mm'}} </td>
+                            <td>{{$ctrl.EventEnd | date:'hh:mm'}} </td>
+                            <td>{{$ctrl.Location}}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div ui-grid="$ctrl.gridHistOptions" ng-style="{height: (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-edit ui-grid-selection ui-grid-move-columns ui-grid-exporter class="mygrid"
+                    ng-if="eventhistorytabShown">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="panel-footer"></div>
+      </div>
+    </uib-tab>
+    <uib-tab index="2" id="tab-event" heading="Create" 
+    select="$ctrl.setActiveTab(2,'event'); eventtabShown = !eventtabShown" 
+    deselect="eventtabShown = !eventtabShown">
+      <div class="panel panel-blue">
+        <div class="panel-heading">Form</div>
+        <div class="panel-body pan">
+          <div class="col-md-12">
+            <form action="" novalidate name="editevent" class="form-horizontal">
+              <div class="form-body pal">
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div ng-class="{'has-error': editevent.inputevent.$invalid, 'has-success': !editevent.inputevent.$invalid}" class="">
+                      <label for="input_event" class="control-label">New Event</label>
+                      <div class="input-icon right col-md-12">
+                        <i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.inputevent.$dirty" ng-class="editevent.inputevent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                        <input id="input_event" type="text" placeholder="Event" name="inputevent" ng-model="$ctrl.colsubkey" ng-change="$ctrl.changeColDef($ctrl.colsubkey)" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 2500, 'blur': 0 } }"
+                          class="form-control">
+                      </div>
+                      <div style="color:maroon" role="alert" ng-messages="editevent.inputevent.$error" class="has-error">
+                        <div ng-message="required">You did not enter a field</div>
+                        <div ng-message="minlength">Your field is too short</div>
+                        <div ng-message="maxlength">Your field is too long</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-7">
+                    <div class="col-md-6">
+
+                      <label for="query" class="control-label">Previous Grid Query</label>
+                      <ui-select tagging tagging-label="(custom 'new' label)" ng-model="$ctrl.colsubkey" on-select="$ctrl.changeColDef($item)" theme="bootstrap" ng-disabled="disabled" class="col-md-12" title="Choose a query" append-to-body="false">
+                        <ui-select-match allow-clear placeholder="Select the columns...">{{$select.selected.col}}</ui-select-match>
+                        <ui-select-choices repeat="colkeyitem.col as colkeyitem in $ctrl.colsubkeys| filter: $select.search ">
+                          <small>
+                Name: <span ng-bind-html="colkeyitem.col | highlight: $select.search"></span>                    <hr style="margin-top: 0.2em; margin-bottom: 0.2em; border-top-color: #ef6c00"/>
+                        </small>
+                        </ui-select-choices>
+                      </ui-select>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="save btn" class="control-label">Save Grid Setting</label>
+                      <button type="button" ng-click="$ctrl.saveState()" class="btn  btn-blue col-md-12">For: {{$ctrl.colsubkey}}</button>
+                    </div>
+                  </div>
+                  <div class="col-md-1">
+                    <label for="inputlimit" class="control-label">Limit</label>
+                    <div class="input-icon right">
+                      <select id="inputlimit" type="text" name="limit" ng-model="$ctrl.limit" ng-change="$ctrl.setLimit($ctrl.limit)" class="form-control EventCreation">
+                        <option ng-repeat="lim in $ctrl.limits" ng-selected="lim == $ctrl.limit"  
+                            value="{{lim}}">{{lim}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-3">
+                    <label for="inputeventdate" class="control-label">Event Date </label>
+                    <div ng-class="{'has-error': editevent.eventdate.$invalid, 
+                                'has-success': !editevent.eventdate.$invalid}" class="form-group">
+                      <div class="col-md-9">
+                        <div class="input-icon right">
+                          <i ng-click="$ctrl.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editevent.eventdate.$dirty" ng-class="editevent.eventdate.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                          <input id="inputeventdate" type="text" placeholder="mm/dd/yyyy" name="eventdate" ng-model="$ctrl.EventDate" is-open="$ctrl.status.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}" ng-model-options="{ updateOn: 'default blur', 
+                                        debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                        </div>
+                      </div>
+                      <div style="color:maroon" role="alert" ng-messages="editevent.eventdate.$error" class="has-error">
+                        <div ng-message="required">You did not enter a field</div>
+                        <div ng-message="minlength">Your field is too short</div>
+                        <div ng-message="maxlength">Your field is too long</div>
+                      </div>
+                      <div class="">
+                        <button type="button" class="btn btn-default" ng-click="$ctrl.dateopen($event)">
+                                <i class="glyphicon glyphicon-calendar"></i></button>
+                      </div>
+
+                    </div>
+
+                  </div>
+                  <div class="col-md-2">
+                    <div ng-class="{'has-error': editevent.EventType.$invalid, 'has-success': !editevent.EventType.$invalid}" class="form-group">
+                      <label for="inputEventType" class="control-label">Event Type </label>
+                      <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventType.$dirty" ng-class="editevent.EventType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                        <input id="inputEventType" type="text" placeholder="Event Type" name="EventType" ng-model="$ctrl.EventType" ng-change="$ctrl.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                          class="form-control">
+                      </div>
+                      <div style="color:maroon" role="alert" ng-messages="editevent.EventType.$error" class="has-error">
+                        <div ng-message="required">You did not enter a field</div>
+                        <div ng-message="minlength">Your field is too short</div>
+                        <div ng-message="maxlength">Your field is too long</div>
+                        <div ng-message="email">Your email is missing @ and/or a period</div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                  <div class="col-md-2">
+                    <div ng-class="{'has-error': editevent.EventStart.$invalid, 'has-success': !editevent.EventStart.$invalid}" class="form-group">
+                      <label for="inputEventStart" class="control-label">Event Start </label>
+                      <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventStart.$dirty" ng-class="editevent.EventStart.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                        <input id="inputEventStart" type="time" step="60" placeholder="Event Start" name="EventStart" ng-model="$ctrl.EventStart" ng-change="$ctrl.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                          class="form-control">
+                      </div>
+                      <div style="color:maroon" role="alert" ng-messages="editevent.EventStart.$error" class="has-error">
+                        <div ng-message="required">You did not enter a field</div>
+                        <div ng-message="minlength">Your field is too short</div>
+                        <div ng-message="maxlength">Your field is too long</div>
+                        <div ng-message="email">Your email is missing @ and/or a period</div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col-md-2">
+                    <div ng-class="{'has-error': editevent.EventEnd.$invalid, 'has-success': !editevent.EventEnd.$invalid}" class="form-group">
+                      <label for="inputEventEnd" class="control-label">Event End </label>
+                      <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.EventEnd.$dirty" ng-class="editevent.EventEnd.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                        <input id="inputEventEnd" type="time" step="60" placeholder="Event End" name="EventEnd" ng-model="$ctrl.EventEnd" ng-change="$ctrl.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                          class="form-control">
+                      </div>
+                      <div style="color:maroon" role="alert" ng-messages="editevent.EventEnd.$error" class="has-error">
+                        <div ng-message="required">You did not enter a field</div>
+                        <div ng-message="minlength">Your field is too short</div>
+                        <div ng-message="maxlength">Your field is too long</div>
+                        <div ng-message="email">Your email is missing @ and/or a period</div>
+                      </div>
+                    </div>
+
+                  </div>
+                  <div class="col-md-2">
+                    <div ng-class="{'has-error': editevent.Location.$invalid, 'has-success': !editevent.Location.$invalid}" class="form-group">
+                      <label for="inputLocation" class="control-label">Location </label>
+                      <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editevent.Location.$dirty" ng-class="editevent.Location.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                        <input id="inputLocation" type="text" placeholder="Location" name="Location" ng-model="$ctrl.Location" ng-change="$ctrl.updateStudent()" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                          class="form-control">
+                      </div>
+                      <div style="color:maroon" role="alert" ng-messages="editevent.Location.$error" class="has-error">
+                        <div ng-message="required">You did not enter a field</div>
+                        <div ng-message="minlength">Your field is too short</div>
+                        <div ng-message="maxlength">Your field is too long</div>
+                        <div ng-message="email">Your email is missing @ and/or a period</div>
+                      </div>
+                    </div>
+
+                  </div>
+
+
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <button type="button" ng-click="$ctrl.createEvent($ctrl.colsubkey); active['eventhistory']= true" class="btn btn-blue">Create Event for: {{$ctrl.colsubkey}}</button>
+
+                  </div>
+
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12">
+              <div ui-grid="$ctrl.gridOptions" ng-style="{height: (30*11)+140+'px'}" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-pinning ui-grid-selection ui-grid-move-columns ui-grid-exporter ui-grid-grouping ui-grid-save-state
+                class="mygrid" ng-if="eventtabShown">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-footer"></div>
+      </div>
+    </uib-tab>
+  </uib-tabset>
+</div>

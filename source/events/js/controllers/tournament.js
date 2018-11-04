@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('ng-admin')
+        .module('ngadmin')
 
     .controller('TournamentController', TournamentController);
     TournamentController.$inject = ['TournamentServices',

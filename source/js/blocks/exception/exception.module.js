@@ -1,5 +1,5 @@
-(function(window,angular) {
-    'use strict';
+import { LoggerModule } from '../logger/logger.module';
 
-    angular.module('blocks.exception', ['blocks.logger']);
-})(window,window.angular);
+export  const ExceptionModule =     angular.
+    module('blocks.exception', [LoggerModule])
+    .name;

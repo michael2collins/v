@@ -1,0 +1,238 @@
+<div ng-controller="ClassTableBasicController as vm">
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Class</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Class</div>
+                <div class="control-label attendance">Filter by Registration Type</div>
+                <div class="col-md-6">
+                    
+    <div ng-class="{'has-error': editClass2.registrationType.$invalid, 
+                    'has-success': !editClass2.registrationType.$invalid}" class="form-group">
+        <label for="registrationType" class="control-label">Registration<br/>Type</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClass2.registrationType.$dirty" 
+            ng-class="editClass2.registrationType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="registrationType" type="text" 
+                name="registrationType" 
+                ng-model="vm.Class.registrationType" 
+                ng-change="vm.changeRanktype()"                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.rankTypes" 
+                    ng-selected="{{iter.id==vm.Class.registrationType}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClass2.registrationType.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                    </div>
+
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-11 mbs">
+                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container" >
+                    
+            <div class="col-md-12" style="height: 88px;">
+                <form action="" novalidate name="editClass2" class="form-horizontal">
+                            <div class="col-md-2">
+                                <div class="col-md-12">
+                                    
+    <div class="form-group">
+        <label for="class" class="control-label">Class<br/>&nbsp;</label>
+
+        <div>
+            <input  id="class" 
+                    type="text" 
+                    placeholder="Enter Name" 
+                    name="class" 
+                    ng-model="vm.Class.class" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="nextclass" class="control-label">Next<br/> Class</label>
+
+        <div>
+            <input  id="nextclass" 
+                    type="text" 
+                    placeholder="Enter" 
+                    name="nextclass" 
+                    ng-model="vm.Class.nextclass" 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="ageForNextClass" class="control-label">Age for<br/>Next Class</label>
+
+        <div>
+            <input  id="ageForNextClass" 
+                    type="number" 
+                    placeholder="0" 
+                    name="ageForNextClass" 
+                    ng-model="vm.Class.ageForNextClass" 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div ng-class="{'has-error': editClass2.ranklistForNextClass.$invalid, 
+                    'has-success': !editClass2.ranklistForNextClass.$invalid}" class="form-group">
+        <label for="ranklistForNextClass" class="control-label">Type of<br/>Next Class</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClass2.ranklistForNextClass.$dirty" 
+            ng-class="editClass2.ranklistForNextClass.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="ranklistForNextClass" type="text" 
+                name="ranklistForNextClass" 
+                ng-model="vm.Class.ranklistForNextClass" 
+                ng-change="vm.changeRanklisttype()"                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.rankTypes" 
+                    ng-selected="{{iter.id==vm.Class.ranklistForNextClass}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClass2.ranklistForNextClass.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div ng-class="{'has-error': editClass2.rankForNextClass.$invalid, 
+                    'has-success': !editClass2.rankForNextClass.$invalid}" class="form-group">
+        <label for="rankForNextClass" class="control-label">Rank For<br/>Next Class</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClass2.rankForNextClass.$dirty" 
+            ng-class="editClass2.rankForNextClass.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="rankForNextClass" type="text" 
+                name="rankForNextClass" 
+                ng-model="vm.Class.rankForNextClass" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.ranks" 
+                    ng-selected="{{iter.value==vm.Class.rankForNextClass}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.label }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClass2.rankForNextClass.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                            </div>
+                            <div class="col-md-1">
+                                
+    <div class="form-group">
+        <label for="sort" class="control-label">Sort<br/> Order</label>
+
+        <div>
+            <input  id="sort" 
+                    type="number" 
+                    placeholder="" 
+                    name="sort" 
+                    ng-model="vm.Class.sort" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                </div>
+                            <div class="col-md-2">
+                                
+    <div class="form-group">
+        <label for="pictureurl" class="control-label">Class<br/> Picture</label>
+
+        <div>
+            <input  id="pictureurl" 
+                    type="text" 
+                    placeholder="" 
+                    name="pictureurl" 
+                    ng-model="vm.Class.pictureurl" 
+                    required 
+                    class="form-control">
+        </div>
+    </div>
+
+                                </div>
+                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addClass(vm.Class)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

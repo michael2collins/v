@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <div id="table-basic-paymenttracking" class="row" ng-controller="PaymentTrackingController as vm">
 
 
@@ -186,7 +185,6 @@
                     </div>
 
           </div>
-          
         <div class="panel-footer" ng-show="vm.studentpick">
           <div class="control-label pam h4">Open Invoices</div>
             <div ui-grid="vm.gridOptions"  

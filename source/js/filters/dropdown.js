@@ -1,8 +1,9 @@
+/*
 (function (window,angular) {
     'use strict';
 
     angular
-        .module('ng-admin.all')
+        .module('ngadmin.all')
         .filter('iddropdown', function() {
           return function (input, context) {
             
@@ -56,3 +57,4 @@
             })
 
 ;})(window,window.angular);
+*/
