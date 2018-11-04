@@ -541,6 +541,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["nextPgmnm"] = (empty($slist["nextPgmnm"]) ? "NULL" : $slist["nextPgmnm"]);
         $tmp["crid"] = (empty($slist["crid"]) ? "NULL" : $slist["crid"]);
         $tmp["cpid"] = (empty($slist["cpid"]) ? "NULL" : $slist["cpid"]);
+        $tmp["testdescription"] = (empty($slist["testdescription"]) ? "NULL" : $slist["testdescription"]);
         }
                 array_push($response["testcandidateList"], $tmp);
             }

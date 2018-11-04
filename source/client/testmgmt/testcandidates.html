@@ -37,7 +37,7 @@
                   <div class="col-md-5" >
                   Restrict Candidates?
                   <toggle-switch on-label="Restrict" off-label="No" id="Restrict" type="checkbox" 
-                  name="Restrict" ng-model="$ctrl.restricted" 
+                  name="Restrict" ng-model="$ctrl.restricted" ng-change="$ctrl.refreshList();" 
                   class="switch-primary" style="min-width: 200px;"></toggle-switch>
                   
                   </div>

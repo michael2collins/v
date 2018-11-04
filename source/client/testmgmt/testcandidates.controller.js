@@ -10,7 +10,7 @@ export class TestCandidateTableBasicController {
         portalDataService, Util
     ) {
         'ngInject';
-//        this.textAngularManager = textAngularManager;
+        //        this.textAngularManager = textAngularManager;
         this.$routeParams = $routeParams;
         this.$log = $log;
         this.TestingServices = TestingServices;
@@ -827,6 +827,31 @@ export class TestCandidateTableBasicController {
 
     }
 
+    refreshList() {
+        var vm = this;
+
+        vm.gettestcandidateList(vm.testname, vm.testtype).then(function(zdata) {
+                vm.$log.debug('gettestcandidateList returned', zdata);
+            },
+            function(error) {
+                vm.$log.debug('Caught an error gettestcandidateList after update:', error);
+                vm.data = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            });
+        vm.gettestcandidateDetails(vm.testdatelist.testtype).then(function(zdata) {
+                vm.$log.debug('gettestcandidateDetails returned', zdata);
+            },
+            function(error) {
+                vm.$log.debug('Caught an error gettestcandidateDetails after update:', error);
+                vm.data = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            });
+    }
+    
     testdateshow() {
         var vm = this;
         var show = false;
@@ -937,7 +962,7 @@ export class TestCandidateTableBasicController {
         vm.$log.debug('gettestcandidateList entered', thetestname, thetesttype);
         var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype);
         var mom;
-        var now = moment();
+        var now = vm.moment();
 
         vm.$log.debug('gettestcandidateList path:', refreshpath);
 
@@ -946,7 +971,7 @@ export class TestCandidateTableBasicController {
                 vm.$log.debug(data);
                 if (typeof(data) !== 'undefined' && data.testcandidateList.error !== false) {
                     for (var iter = 0; iter < data.testcandidateList.length; iter++) {
-                        mom = moment(data.testcandidateList[iter].lastpromoted);
+                        mom = vm.moment(data.testcandidateList[iter].lastpromoted);
                         data.testcandidateList[iter].daysSinceLastTest = now.diff(mom, 'days');
                         if (data.testcandidateList[iter].age >= data.testcandidateList[iter].ageForNextClass &&
                             data.testcandidateList[iter].RankAchievedInTest == data.testcandidateList[iter].rankForNextClass) {
@@ -1316,8 +1341,8 @@ export class TestCandidateTableBasicController {
 
             vmTestRptmodal.modalInstance = vmTestRptmodal.$uibModal.open({
                 animation: vmTestRptmodal.animationsEnabled,
-//                templateUrl: 'templates/testmgmt/promotion.html',
-//                controller: 'ModalPromotionInstanceController as vm',
+                //                templateUrl: 'templates/testmgmt/promotion.html',
+                //                controller: 'ModalPromotionInstanceController as vm',
                 component: 'promotionComponent',
                 size: 'lg',
                 windowClass: 'my-modal-popup',
@@ -1682,8 +1707,8 @@ export class TestCandidateTableBasicController {
 
                 tmp = tmp.replace(/{studentname}/g, students[i].studentname);
                 tmp = tmp.replace(/{nextRank}/g, students[i].RankAchievedInTest);
-                tmp = tmp.replace(/{certDate}/g, moment(certdata.certDate).format("MMM DD, YYYY"));
-                tmp = tmp.replace(/{teststarttime}/g, moment(certdata.teststarttime).format("hh:mm A"));
+                tmp = tmp.replace(/{certDate}/g, vm.moment(certdata.certDate).format("MMM DD, YYYY"));
+                tmp = tmp.replace(/{teststarttime}/g, vm.moment(certdata.teststarttime).format("hh:mm A"));
                 tmp = tmp.replace(/{testfee}/g, certdata.testfee);
                 tmp = tmp.replace(/{school}/g, certdata.school);
                 tmp = tmp.replace(/{program}/g, certdata.program);
