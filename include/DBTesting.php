@@ -347,12 +347,12 @@ class TestingDbHandler {
         return $num_affected_rows;
     }
 
-    public function gettestcandidateList($thelimit = NULL, $testname, $testtype) {
+    public function gettestcandidateList($thelimit = NULL, $testname, $testtype, $ranktype) {
     global $school;
 //            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') >= DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
     
 $sql = "Select  p.classcat, p.pgmcat, p.agecat, p.nextClassid, p.nextPgmid, nextc.class as nextClassnm, nextp.class as nextPgmnm,
-c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid, cp.id as cpid from testcandidatelist x
+c.class, c.registrationtype, l.class as pgm, l.classtype  , x.*, j.daysAttended, r.alphasortkey, j.crid, cp.id as cpid, r.ranktype from testcandidatelist x
 left join daysattended j on (x.contactid = j.contactid and x.ranktype = j.ranktype  )
 left join ranklist r on (x.ranktype = r.ranktype and j.currentrank = r.ranklist and x.studentschool = r.school)
 left join nclass c on (x.classwas = c.id and x.studentschool = c.school)
@@ -363,6 +363,7 @@ left join nclass nextc on (p.nextClassid = nextc.id and p.school = nextc.school)
 left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.school)
         where x.testname = ? 
         and x.studentschool = ?
+        and r.ranktype = ?
 ";
 //        where x.testname = ? and x.testdescription = ?
 
@@ -380,11 +381,11 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
             $sql .= "  LIMIT " . $thelimit ;
         }
 
-        error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype", TRUE), 3, LOG);
+        error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype  : and ranktype: $ranktype", TRUE), 3, LOG);
 
         if ($stmt = $this->conn->prepare($sql)) {
 //            $stmt->bind_param("sss", $testname, $testtype, $school);
-            $stmt->bind_param("ss", $testname,  $school);
+            $stmt->bind_param("sss", $testname,  $school, $ranktype);
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
@@ -439,7 +440,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
     }
 
-    public function getTestcandidateDetails($testtype,$supplement) {
+    public function getTestcandidateDetails($testtype,$supplement,$ranktype) {
         global $school;
         $sql = " Select nr.ranklist as nextrank, r.ranklist, r.ranktype, r.rankid AS rankid, 
          r.sortkey AS ranksortkey,r.rankGroup AS rankGroup,r.alphasortkey AS rankalphasortkey, t.* 
@@ -452,10 +453,10 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
          inner join ranklist nr 
          	On nr.sortkey = r.nextsortkey and nr.school = r.school and nr.ranktype = r.ranktype ) "; 
         if ($supplement == "true") {
-            $sql .=   "  where t.testtype = ?  and t.studentschool = ? ";
+            $sql .=   "  where t.testtype = ?  and t.studentschool = ?  and r.ranktype = ?";
         }
         else {
-            $sql .=   " where   t.studentschool = ? ";
+            $sql .=   " where   t.studentschool = ? and r.ranktype = ?";
     
         }
 
@@ -469,9 +470,9 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
         if ($stmt = $this->conn->prepare($sql)) {
             if ($supplement == "true") {
-                $stmt->bind_param("ss", $testtype, $school);
+                $stmt->bind_param("sss", $testtype, $school, $ranktype);
             } else {
-                $stmt->bind_param("s", $school);
+                $stmt->bind_param("ss", $school, $ranktype);
             }
 
             if ($stmt->execute()) {
@@ -514,6 +515,32 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
         } else {
             error_log( print_R("getTestTypes  sql failed, $sql", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+    }
+
+    public function getRankTypes() {
+
+        global $school;
+
+        $sql = "SELECT  distinct ranktype FROM ranklist WHERE school = ? ";
+        $sql .= " order by alphasortkey";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s", $school);
+            if ($stmt->execute()) {
+                $typelist = $stmt->get_result();
+                $stmt->close();
+                return $typelist;
+            } else {
+                error_log( print_R("getRankTypes  execute failed, $sql", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getRankTypes  sql failed, $sql", TRUE), 3, LOG);
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }

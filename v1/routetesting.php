@@ -426,6 +426,26 @@ $app->get('/testdates', 'authenticate', function() use($app){
     echoRespnse(200, $response);
 });
 
+$app->get('/ranktypes', 'authenticate', function() use($app){
+
+    $response = array();
+    $db = new TestingDbHandler();
+
+    // fetch task
+    $result = $db->getRankTypes();
+    $response["error"] = false;
+    $response["ranktypelist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+        array_push($response["ranktypelist"], $tmp);
+    }
+
+    echoRespnse(200, $response);
+});
+
 $app->get('/testcandidatenames', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
@@ -480,11 +500,14 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $testtype = $allGetVars['testtype'];
     }
 
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    }
 
     $response = array();
     $db = new TestingDBHandler();
 
-    $result = $db->gettestcandidateList($limit,$testname,$testtype);
+    $result = $db->gettestcandidateList($limit,$testname,$testtype,$ranktype);
 
     $response["error"] = false;
     $response["testcandidateList"] = array();
@@ -541,6 +564,7 @@ $app->get('/testcandidatelist', 'authenticate', function() use($app) {
         $tmp["nextPgmnm"] = (empty($slist["nextPgmnm"]) ? "NULL" : $slist["nextPgmnm"]);
         $tmp["crid"] = (empty($slist["crid"]) ? "NULL" : $slist["crid"]);
         $tmp["cpid"] = (empty($slist["cpid"]) ? "NULL" : $slist["cpid"]);
+        $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
         $tmp["testdescription"] = (empty($slist["testdescription"]) ? "NULL" : $slist["testdescription"]);
         }
                 array_push($response["testcandidateList"], $tmp);
@@ -572,6 +596,9 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
     } else {
         $supplement = NULL;
     }
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    }
 
     $picroot = './images/students/';
 
@@ -579,7 +606,7 @@ $app->get('/testcandidatedetails', 'authenticate', function() use($app){
     $db = new TestingDBHandler();
 
     // fetch task
-    $result = $db->getTestcandidateDetails($testtype,$supplement);
+    $result = $db->getTestcandidateDetails($testtype,$supplement,$ranktype);
     $response["error"] = false;
     $response["testcandidatedetails"] = array();
 

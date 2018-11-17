@@ -151,6 +151,13 @@ export class TestingServices {
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
+    getRankTypes(path) {
+        var self = this;
+        self.$log.debug('getRankTypes service entered');
+        self.$log.debug('path', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
 
     gettestcandidateDetails(path) {
         var self = this;

@@ -71,6 +71,7 @@ export class TestCandidateTableBasicController {
         vm.TestCandidateSelected = '';
         vm.testcandidatenames = [];
         vm.instructorlist = [];
+        vm.ranktypelist =[];
         vm.testcandidate = '';
         vm.ContactID = '';
         vm.selected = false;
@@ -126,6 +127,7 @@ export class TestCandidateTableBasicController {
         vm.gridleftcnt = 0;
         vm.gridrightcnt = 0;
         vm.restricted = true;
+        vm.ranktypeselected = '';
 
 
         vm.activate();
@@ -536,6 +538,12 @@ export class TestCandidateTableBasicController {
                 }
         }
     }
+    
+    changeRankType(){
+        var vm=this;
+        vm.$log.debug("changeRankType", vm.ranktypeselected);
+        vm.refreshList();
+    }
 
     setLimit(thelimit) {
         var vm = this;
@@ -567,6 +575,7 @@ export class TestCandidateTableBasicController {
 
 
         vm.getTestDates();
+        vm.getRankTypes();
         vm.initGridOptions();
         vm.initResGridOptions();
         vm.getUserDetails();
@@ -827,6 +836,43 @@ export class TestCandidateTableBasicController {
 
     }
 
+    getRankTypes() {
+        var vm = this;
+        vm.$log.debug('getRankTypes entered');
+        var path = encodeURI("../v1/ranktypes");
+        var error;
+
+        return vm.TestingServices.getRankTypes(path).then(function(data) {
+                vm.$log.debug('getRankTypes returned data');
+                vm.$log.debug(data);
+                if (data.ranktypelist.length > 0) {
+                    vm.ranktypelist = data.ranktypelist;
+                    vm.ranktypeselected = vm.ranktypelist[0].ranktype;
+                }
+                else {
+                    error = "No ranktpes found" ;
+                    vm.message = error;
+                    vm.Notification.error({ message: error, delay: 5000 });
+                    vm.ranktypelist = [];
+                    return (vm.$q.reject(error));
+
+                }
+                return vm.ranktypelist;
+            },
+            function(error) {
+                vm.$log.debug('Caught an error ranktypelist, going to notify:', error);
+                vm.ranktypelist = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+
     refreshList() {
         var vm = this;
 
@@ -960,7 +1006,7 @@ export class TestCandidateTableBasicController {
     gettestcandidateList(thetestname, thetesttype) {
         var vm = this;
         vm.$log.debug('gettestcandidateList entered', thetestname, thetesttype);
-        var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype);
+        var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype+ '&ranktype=' + vm.ranktypeselected);
         var mom;
         var now = vm.moment();
 
@@ -1008,7 +1054,7 @@ export class TestCandidateTableBasicController {
 
         //called by gettestdates
         vm.$log.debug('gettestcandidateDetails entered:', thetesttype);
-        var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype);
+        var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype + '&ranktype=' + vm.ranktypeselected);
         if (vm.restricted !== undefined) {
             path = path + '&supplement=' + vm.restricted;
         }

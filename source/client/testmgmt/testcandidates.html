@@ -2,13 +2,10 @@
    <div class="panel panel-orange">
       <div class="panel-heading">Test Candidates</div>
    </div>
-  <uib-tabset type="pills" active="$ctrl.active">
+   <uib-tabset type="pills" active="$ctrl.active">
 
-      <uib-tab index="1" id="tab-test" heading="Select Candidates" 
-      select="$ctrl.setActiveTab(1,'tab-test'); testtabShown = !testtabShown" 
-      deselect="testtabShown = !testtabShown" 
-      >
-      
+      <uib-tab index="1" id="tab-test" heading="Select Candidates" select="$ctrl.setActiveTab(1,'tab-test'); testtabShown = !testtabShown" deselect="testtabShown = !testtabShown">
+
          <div class="panel panel-green">
             <div class="panel-heading">Test Candidates Pick List</div>
             <div class="panel-body ">
@@ -34,18 +31,26 @@
                   </div>
 
 
-                  <div class="col-md-5" >
-                  Restrict Candidates?
-                  <toggle-switch on-label="Restrict" off-label="No" id="Restrict" type="checkbox" 
-                  name="Restrict" ng-model="$ctrl.restricted" ng-change="$ctrl.refreshList();" 
-                  class="switch-primary" style="min-width: 200px;"></toggle-switch>
-                  
+                  <div class="col-md-5">
+                     Restrict Candidates?
+                     <toggle-switch on-label="Restrict" off-label="No" id="Restrict" type="checkbox" name="Restrict" ng-model="$ctrl.restricted" ng-change="$ctrl.refreshList();" class="switch-primary" style="min-width: 200px;"></toggle-switch>
+
                   </div>
 
-<!--                  <div class="col-md-5">
+                  <!--                  <div class="col-md-5">
                      <button ng-click="$ctrl.gettestcandidateDetails($ctrl.TestCandidateSelected)" class="btn btn-green TestCandidateCreation">Refresh List</button>
                   </div>
--->                  
+-->
+               </div>
+               <div class="row col-md-12" style="height: 70px;">
+                  <div class="input-icon right col-md-7">
+                     <label for="ranktype">Rank Type</label>
+                     <select id="ranktype" type="text" name="ranktype" ng-model="$ctrl.ranktypeselected" required ng-change="$ctrl.changeRankType()" class="form-control">
+                     <option ng-repeat="iter in $ctrl.ranktypelist" ng-selected="{{iter.ranktype==$ctrl.ranktypeselected}}" placeholder="Select" value="{{iter.ranktype}}">{{iter.ranktype}}</option>
+                     </select>
+                  </div>
+
+                  <div class="col-md-5"></div>
                </div>
             </div>
          </div>
@@ -142,10 +147,7 @@
             <div class="panel-footer"></div>
          </div>
       </uib-tab>
-      <uib-tab index="2" id="tab-testmanage" heading="Manage Test" 
-      select="$ctrl.setActiveTab(1,'tab-manage'); managetabShown = !managetabShown" 
-      deselect="managetabShown = !managetabShown" 
-      >
+      <uib-tab index="2" id="tab-testmanage" heading="Manage Test" select="$ctrl.setActiveTab(1,'tab-manage'); managetabShown = !managetabShown" deselect="managetabShown = !managetabShown">
          <div class="panel panel-green">
             <div class="panel-heading">Test Attendees</div>
             <div class="panel-body ">
