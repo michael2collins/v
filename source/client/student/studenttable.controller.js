@@ -2,19 +2,22 @@
 
 export class StudentsTableBasicController {
     constructor(
-        $scope, $log, StudentServices, Util, $routeParams, uiGridConstants, $window, Notification, $controller, $timeout, $q
+        $scope, $log, StudentServices, Util, $routeParams, uiGridConstants,
+        $window, Notification, $controller, $timeout, $q, TestingServices
     ) {
         'ngInject';
         this.$scope = $scope;
         this.$log = $log;
         this.StudentServices = StudentServices;
-        this.$q = $q;
+        this.Util = Util;
         this.$routeParams = $routeParams;
+        this.uiGridConstants = uiGridConstants;
         this.$window = $window;
         this.Notification = Notification;
         this.$timeout = $timeout;
-        this.uiGridConstants = uiGridConstants;
-        this.Util = Util;
+        this.$controller = $controller;
+        this.$q = $q;
+        this.TestingServices = TestingServices;
     }
 
     $onInit() {
@@ -24,10 +27,10 @@ export class StudentsTableBasicController {
         vm.Rank = '';
         vm.status = 'Active';
         vm.statuses = [];
-        vm.contacttypes;
+        vm.contacttypes = [];
         vm.RankList = [];
         vm.StudentList = [];
-        vm.thecontacttype = 'Student';
+        vm.thecontacttype = 'All';
         vm.doneActivate = false;
         vm.refreshstudentlist = [];
         vm.studentpick;
@@ -75,25 +78,35 @@ export class StudentsTableBasicController {
 
         vm.gridLength = {};
         vm.limits = [5, 10, 20, 50, 100, 200];
-        vm.limits2 = ["All","5", "10", "20", "50", "100", "200"];
-        vm.limit = "10";
+        vm.limits2 = ["All", "5", "10", "20", "50", "100", "200"];
+        vm.limit = "All";
         vm.initialLength = 10;
         vm.rowheight = 25;
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
-
-        //        if (!vm.doneActivate) {
-            vm.setGridOptions();
-        
+        vm.ranktypeselected = '';
+        vm.ranktypeparent = {};
         vm.activate();
-        //        }
-
-
     }
 
     $onDestroy() {
         this.$log.debug("StudentsTableBasicController dismissed");
         this.$log.debugEnabled(false);
+    }
+
+    updateRankType(ranktypeparent, prop, value) {
+        var vm = this;
+        vm.ranktypeparent[prop] = value;
+        vm.ranktypeselected = vm.ranktypeparent.ranktype;
+        vm.getRankList();
+        vm.setRank('All');
+        vm.$log.debug('setRank', vm.Rank);
+        vm.requery();
+
+    }
+    isOkRT() {
+        var vm = this;
+        return (Object.keys(vm.ranktypeparent).length === 0 && vm.ranktypeparent.constructor === Object) ? false : true;
     }
 
     setContactType(thetype) {
@@ -136,8 +149,6 @@ export class StudentsTableBasicController {
     }
     activate() {
         var vm = this;
-        vm.setRank('All');
-        vm.$log.debug('setRank', vm.Rank);
 
         vm.$q.all([
                 vm.getUserPrefCols().then(function() {
@@ -146,24 +157,35 @@ export class StudentsTableBasicController {
                 vm.getStudentLists().then(function() {
                     vm.$log.debug('getStudentLists ContactTypeList', vm.StudentList.ContactTypeList);
                     vm.$log.debug('getStudentLists ClassStatusList', vm.StudentList.ClassStatusList);
-                    vm.setContactType(vm.StudentList.ContactTypeList[0].listvalue);
+                    //   vm.setContactType(vm.StudentList.ContactTypeList[0].listvalue);
                     vm.setStatus(vm.StudentList.ClassStatusList[0].listvalue);
                     //vm.setLimit(vm.limits[1]);
                 }),
                 vm.getRankList().then(function() {
                     vm.$log.debug('getRankList', vm.RankList);
+                    vm.setRank('All');
+                    vm.$log.debug('setRank', vm.Rank);
                 })
+                /*                vm.getRankTypes().then(function() {
+                                    vm.$log.debug('getRankTypes', vm.ranktypelist);
+                                })
+                */
             ])
             .then(function() {
                 vm.$log.debug('getAllStudents activate returned');
                 //                vm.doneActivate = true;
+                //vm.requery();
             });
     }
 
     getRankList() {
         var vm = this;
         var path = '../v1/ranklist';
-        return vm.StudentServices.getRankList(path).then(function(data) {
+        var data = {
+            ranktype: vm.ranktypeselected
+        };
+
+        return vm.StudentServices.getRankList(data, path).then(function(data) {
             vm.$log.debug('getRankList returned data');
             vm.$log.debug(data);
             vm.RankList = data;
@@ -207,7 +229,6 @@ export class StudentsTableBasicController {
 
     }
 
-
     editStudentFromPick(item) {
         var vm = this;
         vm.eventResult = { item: item };
@@ -233,11 +254,11 @@ export class StudentsTableBasicController {
             height: (size * vm.rowheight) + vm.headerheight + 'px'
         };
     }
+
     getGridLength() {
         var vm = this;
         return vm.gridLength;
     }
-
 
     getUserPrefCols() {
         var vm = this;
@@ -279,13 +300,13 @@ export class StudentsTableBasicController {
 
             }
 
-            var ctpl= '<div class="ui-grid-cell-contents"><span>';
+            var ctpl = '<div class="ui-grid-cell-contents"><span>';
             ctpl += '<a role="button" class="btn btn-blue" style="padding:  0px 14px;" ';
             ctpl += ' href="/#/form-layouts-editstudent/id/{{COL_FIELD}}" ><i class="fa fa-edit"></i>&nbsp; Edit</a></span>';
             ctpl += '<span> <a role="button" class="btn btn-red" style="padding:  0px 14px;" ';
-            ctpl += 'ng-click="grid.appScope.removeStudent(row.entity)" >';
+            ctpl += 'ng-click="grid.appScope.$ctrl.removeStudent(row.entity)" >';
             ctpl += '<i class="fa fa-trash"></i>&nbsp; Delete</a></span></div>';
-            
+
             vm.gcolumns.push({
                 name: 'ID',
                 displayName: 'Edit',
@@ -361,12 +382,13 @@ export class StudentsTableBasicController {
     getAllStudents() {
         var vm = this;
         vm.$log.debug('getAllStudents tb grid');
-        vm.gridOptions.data=[];
+        vm.gridOptions.data = [];
 
         var refreshpath = encodeURI(vm.path +
             '?contacttype=' + vm.getContactType() +
             '&thelimit=' + vm.getLimit() +
             '&status=' + vm.getStatus() +
+            '&ranktype=' + vm.ranktypeselected +
             '&therank=' + vm.getRank());
 
         vm.$log.debug('refreshtheAttendance path:', refreshpath);
@@ -375,25 +397,25 @@ export class StudentsTableBasicController {
             vm.setGridOptions();
             vm.gridOptions.data = data.students;
 
-            vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
-            
+            //    vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+
             return vm.gridOptions.data;
         });
     }
 
     setGridOptions() {
         var vm = this;
-    
+
 
         vm.gridOptions = {
             showGridFooter: true,
-//            enableFiltering: true,
+            //            enableFiltering: true,
             enableGridMenu: true,
-//            paginationPageSizes: vm.limits,
-            paginationPageSizes: [5,10,100],
-//            paginationPageSize: vm.initialLength,
+            //            paginationPageSizes: vm.limits,
+            paginationPageSizes: [5, 10, 100],
+            //            paginationPageSize: vm.initialLength,
             paginationPageSize: 10,
-//            rowHeight: vm.rowheight,
+            //            rowHeight: vm.rowheight,
             enableCellEditOnFocus: true,
             columnDefs: vm.gcolumns,
             appScopeProvider: vm,

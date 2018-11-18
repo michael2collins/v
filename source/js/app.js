@@ -1,6 +1,7 @@
 import  angular from 'angular';
 
 //import { AllModule } from './controllers/all.module';
+import { CommonModule } from '../client/common/common.module';
 import { AdminModule } from '../client/admin/admin.module';
 import { EventsModule } from '../client/events/events.module';
 import { MainModule } from '../client/main/main.module';
@@ -37,6 +38,7 @@ export const ngadmin =    angular
         .module('ngadmin', [
             CoreModule,
             DirectiveModule,
+            CommonModule,
 //            AllModule,
             LoginModule,
             EventsModule,

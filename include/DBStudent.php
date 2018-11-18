@@ -503,7 +503,7 @@ class StudentDbHandler
 	}
 
 	public
-	function getAllStudents($contacttype = NULL, $thelimit, $therank = NULL, $status = NULL)
+	function getAllStudents($contacttype = NULL, $thelimit, $therank = NULL, $status = NULL, $ranktype = NULL)
 	{
 	/**
 	 * Fetching all students filtered
@@ -516,7 +516,7 @@ class StudentDbHandler
 		 LEFT JOIN studentregistration sr ON c.id = sr.studentid 
 		LEFT JOIN ncontactrank cr ON c.id = cr.contactid 
 		LEFT JOIN nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype and c.studentschool = cl.school) 
-		where c.studentschool = ? ";
+		where c.studentschool = ?  and cl.registrationtype = ? ";
 		if (strlen($status) > 0 && $status != 'ALL') {
 			$sql.= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
 		}
@@ -539,8 +539,8 @@ class StudentDbHandler
 
 		error_log(print_R("getAllStudents sql: $sql", TRUE) , 3, LOG);
 		if ($stmt = $this->conn->prepare($sql)) {
-	        $stmt->bind_param("s",
-                           $school
+	        $stmt->bind_param("ss",
+                           $school, $ranktype
                              );
 			if ($stmt->execute()) {
 				error_log(print_R("getAllStudents list stmt", TRUE) , 3, LOG);
@@ -2566,28 +2566,73 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         error_log( print_R("removeStudent entered\n", TRUE ),3, LOG);
         global $school;
                                       
-        $sql = "DELETE from ncontacts where ID = ?  ";
+        $sql1 = "DELETE from ncontacts where ID = ?  ";
+        $sql2 = "DELETE from attendance where contactID = ?  ";
+        $sql3 = "DELETE from nclasspays where contactid = ?  "; //this has payer todo remove children
+        $sql4 = "DELETE from ncontactmgmt where contactid = ?  ";
+        $sql5 = "DELETE from studentregistration where studentid = ?  ";
+        $sql6 = "DELETE from testcandidates where contactid = ?  ";
 
-        $schoolfield = "school";
-        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeStudent sql after security: $sql", TRUE), 3, LOG);
-
-        if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("s",
-                              $id 
-                                 );
-                // Check for success
+//        $schoolfield = "school";
+//        $sql = addSecurity($sql, $schoolfield);
+//        error_log( print_R("removeStudent sql after security: $sql", TRUE), 3, LOG);
+		$totaldel=0;
+		
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$id);
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
-
             $stmt->close();
-            return $num_affected_rows >= 0;
-
+            $totaldel += $num_affected_rows ;
         } else {
-            printf("Errormessage: %s\n", $this->conn->error);
-                return NULL;
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
         }
-
+        if ($stmt = $this->conn->prepare($sql2)) {
+            $stmt->bind_param("s",$id);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            $totaldel += $num_affected_rows ;
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+        if ($stmt = $this->conn->prepare($sql3)) {
+            $stmt->bind_param("s",$id);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            $totaldel += $num_affected_rows ;
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+        if ($stmt = $this->conn->prepare($sql4)) {
+            $stmt->bind_param("s",$id);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            $totaldel += $num_affected_rows ;
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+        if ($stmt = $this->conn->prepare($sql5)) {
+            $stmt->bind_param("s",$id);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            $totaldel += $num_affected_rows ;
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+        if ($stmt = $this->conn->prepare($sql6)) {
+            $stmt->bind_param("s",$id);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            $totaldel += $num_affected_rows ;
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+		return $num_affected_rows >=0;
     }
 
 

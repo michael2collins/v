@@ -25,7 +25,6 @@ export class FormLayoutsControllerEditStudent {
         this.portalDataService = portalDataService;
     }
 
-
     $onInit() {
         console.log('entering FormLayoutsControllerEditStudent oninit');
         this.$ = angular.element;
@@ -54,13 +53,12 @@ export class FormLayoutsControllerEditStudent {
         vmstudent.instructorTitleList = [];
         vmstudent.studentclass = {};
         vmstudent.students.pictureurldecache = undefined;
- 
+
         vmstudent.active = [];
         vmstudent.path = '../v1/students/' + vmstudent.$routeParams.id;
         vmstudent.zippath = '../v1/zips';
 
         vmstudent.sListPath = '../v1/studentlists';
-        vmstudent.rankListPath = '../v1/ranklist';
         vmstudent.status = {
             opened: false
         };
@@ -75,7 +73,6 @@ export class FormLayoutsControllerEditStudent {
         vmstudent.activate();
 
     }
-
 
     $onDestroy() {
         this.$log.debug("editstudent dismissed");
@@ -117,8 +114,8 @@ export class FormLayoutsControllerEditStudent {
 
         photoModal.modalInstance = this.$uibModal.open({
             animation: photoModal.animationsEnabled,
-        //    templateUrl: 'templates/photos/photo.html',
-        //    controller: 'ModalCameraController',
+            //    templateUrl: 'templates/photos/photo.html',
+            //    controller: 'ModalCameraController',
             component: 'photoComponent',
             //todo create photocomponent
             //controllerAs: 'vmpicmodal',
@@ -165,11 +162,9 @@ export class FormLayoutsControllerEditStudent {
 
     }
 
-
     dateopen($event) {
         this.status.opened = true;
     }
-
 
     rankremove(ranktype) {
         this.$log.debug('rankremove entered', ranktype);
@@ -364,137 +359,142 @@ export class FormLayoutsControllerEditStudent {
         };
         return self.StudentServices.removeStudentRank(thedata)
             .then(function(data) {
-                    self.$log.debug('removeStudentRank returned data');
-                    self.$log.debug(data);
-                    self.getStudentRanks(self.students.ID);
-                    self.getStudentRankTypes(self.students.ID);
+                self.$log.debug('removeStudentRank returned data');
+                self.$log.debug(data);
+                self.getStudentRanks(self.students.ID);
+                self.getStudentRankTypes(self.students.ID);
                 return data;
             }).catch(function(e) {
-        self.$log.debug('removeStudentRank failure:');
-        self.$log.debug("error", e);
-        self.Notification.error({ message: e, delay: 5000 });
-        throw e;
-    });
+                self.$log.debug('removeStudentRank failure:');
+                self.$log.debug("error", e);
+                self.Notification.error({ message: e, delay: 5000 });
+                throw e;
+            });
 
-}
+    }
 
-updateStudentRank(item) {
-    var self = this;
-    self.$log.debug('about updateStudentRank ', item);
+    updateStudentRank(item) {
+        var self = this;
+        self.$log.debug('about updateStudentRank ', item);
 
-    var thepath = "../v1/studentrank";
-    var thedata = {
-        ContactID: item.ContactID,
-        ranktype: item.ranktype,
-        currentrank: item.currentrank
-    };
+        var thepath = "../v1/studentrank";
+        var thedata = {
+            ContactID: item.ContactID,
+            ranktype: item.ranktype,
+            currentrank: item.currentrank
+        };
 
-    return self.StudentServices.updateStudentRank(thepath, thedata).then(function(data) {
-        self.$log.debug('updateStudentRank returned data:');
-        self.$log.debug(data);
-        self.getStudentRanks(item.ContactID);
-    }, function(error) {
-        self.$log.debug('updateStudent', error);
-        self.Notification.error({ message: error, delay: 5000 });
-        return (error);
-    });
-}
+        return self.StudentServices.updateStudentRank(thepath, thedata).then(function(data) {
+            self.$log.debug('updateStudentRank returned data:');
+            self.$log.debug(data);
+            self.getStudentRanks(item.ContactID);
+        }, function(error) {
+            self.$log.debug('updateStudent', error);
+            self.Notification.error({ message: error, delay: 5000 });
+            return (error);
+        });
+    }
 
-updateStudent() {
-    var self = this;
-    self.$log.debug('about updateStudent ', self.students);
-    self.$log.debug('with Birthday', self.students.Birthday);
+    updateStudent() {
+        var self = this;
+        self.$log.debug('about updateStudent ', self.students);
+        self.$log.debug('with Birthday', self.students.Birthday);
 
-    return self.StudentServices.updateStudent(self.path, self.students).then(function(data) {
-        self.$log.debug('updateStudent returned data: goto', self.path);
-        self.$log.debug(data);
-        self.students = data;
-        self.getStudent();
-    }, function(error) {
-        self.$log.debug('updateStudent', error);
-        self.Notification.error({ message: error, delay: 5000 });
-        return (error);
-    });
-}
+        return self.StudentServices.updateStudent(self.path, self.students).then(function(data) {
+            self.$log.debug('updateStudent returned data: goto', self.path);
+            self.$log.debug(data);
+            self.students = data;
+            self.getStudent();
+        }, function(error) {
+            self.$log.debug('updateStudent', error);
+            self.Notification.error({ message: error, delay: 5000 });
+            return (error);
+        });
+    }
 
-getAllZips() {
-    var self = this;
+    getAllZips() {
+        var self = this;
 
-    return self.StudentServices.getAllZips(self.zippath).then(function(data) {
-        self.$log.debug('getAllZips returned data');
-        self.$log.debug(data);
-        self.zipList = data;
+        return self.StudentServices.getAllZips(self.zippath).then(function(data) {
+            self.$log.debug('getAllZips returned data');
+            self.$log.debug(data);
+            self.zipList = data;
 
-        return self.zipList;
-    }, function(error) {
-        self.$log.debug('getAllZips', error);
-        self.Notification.error({ message: error, delay: 5000 });
-        return (error);
-    });
+            return self.zipList;
+        }, function(error) {
+            self.$log.debug('getAllZips', error);
+            self.Notification.error({ message: error, delay: 5000 });
+            return (error);
+        });
 
-}
+    }
 
-getStudentLists() {
-    var self = this;
+    getStudentLists() {
+        var self = this;
 
-    return self.StudentServices.getStudentLists(self.sListPath).then(function(data) {
-        self.$log.debug('controller getStudentLists returned data');
-        self.$log.debug(data);
-        self.StudentList = data;
+        return self.StudentServices.getStudentLists(self.sListPath).then(function(data) {
+            self.$log.debug('controller getStudentLists returned data');
+            self.$log.debug(data);
+            self.StudentList = data;
 
-        return self.StudentList;
-    }, function(error) {
-        self.$log.debug('getStudentLists ', error);
-        self.Notification.error({ message: error, delay: 5000 });
-        return (error);
-    });
-}
+            return self.StudentList;
+        }, function(error) {
+            self.$log.debug('getStudentLists ', error);
+            self.Notification.error({ message: error, delay: 5000 });
+            return (error);
+        });
+    }
 
-getRankList() {
-    var self = this;
+    getRankList() {
+        var self = this;
+        var path = '../v1/ranklist';
+        var data = {
+            ranktype: self.ranktypepick
+        };
 
-    return self.StudentServices.getRankList(self.rankListPath).then(function(data) {
-        self.$log.debug('getRankList returned data');
-        self.$log.debug(data);
-        self.RanksList = data;
+        return self.StudentServices.getRankList(data, path).then(function(data) {
 
-        return self.RanksList;
-    }, function(error) {
-        self.$log.debug('getRankList ', error);
-        self.Notification.error({ message: error, delay: 5000 });
-        return (error);
-    });
-}
+            self.$log.debug('getRankList returned data');
+            self.$log.debug(data);
+            self.RanksList = data;
 
-setHeight() {
-    var self = this;
+            return self.RanksList;
+        }, function(error) {
+            self.$log.debug('getRankList ', error);
+            self.Notification.error({ message: error, delay: 5000 });
+            return (error);
+        });
+    }
 
-    self.$('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
-        self.$log.debug('set height');
-        var tab_id = self.$(this).attr('href');
-        var tab_h = self.$(tab_id).height();
-        if (tab_h < self.menu_h) {
-            self.$(tab_id).css('height', '960px');
-        }
-    });
-}
+    setHeight() {
+        var self = this;
 
-setLists() {
-    this.genders = ['Female', 'Male', 'Unknown'];
-}
+        self.$('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
+            self.$log.debug('set height');
+            var tab_id = self.$(this).attr('href');
+            var tab_h = self.$(tab_id).height();
+            if (tab_h < self.menu_h) {
+                self.$(tab_id).css('height', '960px');
+            }
+        });
+    }
 
-setActiveTab(activeTab, thecaller) {
-    var self=this;
-    self.$log.debug('set activetab as:', activeTab, thecaller);
-    self.StudentServices.setActiveTab(activeTab, thecaller);
+    setLists() {
+        this.genders = ['Female', 'Male', 'Unknown'];
+    }
 
-}
+    setActiveTab(activeTab, thecaller) {
+        var self = this;
+        self.$log.debug('set activetab as:', activeTab, thecaller);
+        self.StudentServices.setActiveTab(activeTab, thecaller);
 
-getActiveTab() {
-    var atab = self.StudentServices.getActiveTab();
-    self.$log.debug('get activetab is:', atab);
-    return atab;
-}
+    }
+
+    getActiveTab() {
+        var atab = self.StudentServices.getActiveTab();
+        self.$log.debug('get activetab is:', atab);
+        return atab;
+    }
 
 
 }

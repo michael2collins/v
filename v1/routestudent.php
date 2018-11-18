@@ -818,8 +818,8 @@ $app->delete('/student','authenticate', function() use ($app) {
         array_push($response["StudentExistsList"], $tmp);
     }
     $row_cnt = $result->num_rows;
-
-    if ($row_cnt == 0) {
+//todo fix the check later
+ //   if ($row_cnt == 0) {
 
         // remove Student
         $Student = $db->removeStudent(
@@ -841,12 +841,13 @@ $app->delete('/student','authenticate', function() use ($app) {
             $response["message"] = "Failed to remove Student. Please try again";
             echoRespnse(400, $response);
         }
-    } else {
+ /*   } else {
             error_log( print_R("before delete Student result bad\n", TRUE), 3, LOG);
             $response["error"] = true;
             $response["message"] = "Failed to remove Student. There are records that are still attached to the Student. Please remove those first";
             echoRespnse(400, $response);
     }
+    */
 });
 
 $app->get('/students', 'authenticate', function() use($app){
@@ -869,6 +870,7 @@ $app->get('/students', 'authenticate', function() use($app){
     $thelimit = '';
     $therank = '';
     $status = '';
+    $ranktype = '';
     
     if(array_key_exists('contacttype', $allGetVars)){
         $contacttype = $allGetVars['contacttype'];
@@ -882,8 +884,13 @@ $app->get('/students', 'authenticate', function() use($app){
     if(array_key_exists('status', $allGetVars)){
         $status = $allGetVars['status'];
     }
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    }
 
-    error_log( print_R("students params: contacttype: $contacttype thelimit: $thelimit therank: $therank\n status: $status ", TRUE), 3, LOG);
+    error_log( print_R("students params: contacttype: $contacttype 
+    thelimit: $thelimit therank: $therank\n status: $status ranktype: $ranktype
+    ", TRUE), 3, LOG);
 
     $response = array();
     $fieldlist = array();
@@ -904,7 +911,7 @@ $app->get('/students', 'authenticate', function() use($app){
     }
 
     //going to get all fields and filter them on the array push
-    $result = $db->getAllStudents($contacttype, $thelimit, $therank, $status);
+    $result = $db->getAllStudents($contacttype, $thelimit, $therank, $status, $ranktype);
 
     $response["error"] = false;
     $response["students"] = array();

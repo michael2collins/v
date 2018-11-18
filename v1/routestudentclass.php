@@ -256,11 +256,12 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
     $pgmseq = $studentclass->pgmseq;
     $studentclassstatus = $studentclass->studentclassstatus;
     $changestatus = $studentclass->changestatus;
-    $testfee = $studentclass->isTestfeewaived   ;
     $payer = $studentclass->payerid   ;
-    $primaryContact = $studentclass->primaryContact   ;
     $class = $studentclass->class   ;
     $pgmclass = $studentclass->pgmclass   ;
+
+    $testfee = (isset($studentclass->isTestfeewaived ) ? $studentclass->isTestfeewaived : 0  );
+    $primaryContact = (isset($studentclass->primaryContact ) ? $studentclass->primaryContact : 0 ) ;
 
     error_log( print_R("studentclass and history update\n", TRUE ), 3, LOG);
     error_log( print_R("student_id: $contactID\n", TRUE ), 3, LOG);

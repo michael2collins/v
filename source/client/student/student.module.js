@@ -36,18 +36,21 @@ import { StudentServices } from '../../js/services/studentServices';
 import { ClassServices } from '../../js/services/classServices';
 import { PhotoServices } from '../../js/services/photoServices';
 import { PaymentServices } from '../../js/services/paymentServices';
+import { TestingServices } from '../../js/services/testingServices';
 import { Util } from '../../js/utility/utility';
 
+import { CommonModule } from '../common/common.module';
 import { PhotoModule } from '../photos/photo.module';
 import { DirectiveModule } from '../../js/directives/directive.module';
 import { CoreModule } from '../../js/core/core.module';
 
 export const StudentModule = angular
- .module('ngadmin.student', [PhotoModule, CoreModule, DirectiveModule])
+ .module('ngadmin.student', [PhotoModule, CoreModule, DirectiveModule, CommonModule])
  .service('StudentServices', StudentServices)
  .service('ClassServices', ClassServices)
  .service('PhotoServices', PhotoServices)
  .service('PaymentServices', PaymentServices)
+ .service('TestingServices', TestingServices)
  .service('Util', Util)
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ModalNewPayerController', ModalNewPayerController)

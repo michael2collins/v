@@ -358,11 +358,12 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
-    getRankList(path) {
+    getRankList(data,path) {
         var self = this;
         var request = self.$http({
             method: "get",
-            url: path
+            url: path,
+            params: data
         });
 
         return (request.then(self.handleSuccess, self.handleError));

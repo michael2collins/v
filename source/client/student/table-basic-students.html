@@ -1,18 +1,4 @@
 <div ng-controller="StudentsTableBasicController as $ctrl" ng-cloak>
-<!--
-                    <div ui-grid="$ctrl.gridOptions" ui-if="$ctrl.gridOptions.data.length>0"
-                      
-                    class="mygrid" ng-style="$ctrl.getGridLength()">
-                      <div class="watermark" ng-show="!$ctrl.gridOptions.data.length">No data available</div>
-                    </div>
-</div>
--->
-          <!--          
-                    ui-grid-pagination ui-grid-cellNav ui-grid-pinning ui-grid-move-columns
-                    ui-grid-exporter ui-grid-auto-resize ui-grid-resize-columns ui-grid-edit 
-            -->
-
-
   <div class="row">
     <div class="col-lg-12">
       <div class="portlet box portlet-green">
@@ -38,11 +24,24 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-                  <div class="col-md-5">
+<!--
+                  <div class="input-icon right col-md-3">
+                     <label for="ranktype">Rank Type</label>
+                     <select id="ranktype" type="text" name="ranktype" ng-model="$ctrl.ranktypeselected" required ng-change="$ctrl.changeRankType()" class="form-control">
+                     <option ng-repeat="iter in $ctrl.ranktypelist" ng-selected="{{iter.ranktype==$ctrl.ranktypeselected}}" placeholder="Select" value="{{iter.ranktype}}">{{iter.ranktype}}</option>
+                     </select>
+                  </div>
+-->
+                  <ranktype-component 
+                    on-update="$ctrl.updateRankType($ctrl.ranktypeparent, prop, value)"
+                  >
+                  </ranktype-component>
+                  <div class="col-md-2" ng-show="$ctrl.isOkRT()">
                     <div class="form-group">
                       <label for="inputcontacttype" class="control-label ">Student Type</label>
                       <div class="input-icon right">
-                        <select id="inputcontacttype" type="text" name="contacttype" ng-model="$ctrl.thecontacttype" ng-change="$ctrl.setContactType($ctrl.thecontacttype);$ctrl.requery()" class="form-control ">
+                        <select id="inputcontacttype" type="text" name="contacttype" ng-model="$ctrl.thecontacttype" 
+                        ng-change="$ctrl.setContactType($ctrl.thecontacttype);$ctrl.requery()" class="form-control ">
                         <option>All</option>
                         <option ng-repeat="g in $ctrl.StudentList.ContactTypeList" 
                         ng-selected="{{(g.listvalue === $ctrl.thecontacttype) && 'selected' || 'not' }}"  
@@ -51,7 +50,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-3">
+                  <div class="col-md-3" ng-show="$ctrl.isOkRT()">
                     <div class="form-group">
                       <label for="inputRank" class="control-label ">Rank </label>
                       <div class="input-icon right">
@@ -63,11 +62,11 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2" ng-show="$ctrl.isOkRT()">
                     <div class="form-group">
                       <label for="inputStatus" class="control-label ">Status </label>
                       <div class="input-icon right">
-                        <select id="inputStatus" type="text" name="Status" ng-model="$ctrl.status" ng-change="$ctrl.setStatus($ctrl.status)" class="form-control">
+                        <select id="inputStatus" type="text" name="Status" ng-model="$ctrl.status" ng-change="$ctrl.setStatus($ctrl.status);$ctrl.requery()" class="form-control">
                         <option>All</option>
                         <option ng-repeat="g in $ctrl.StudentList.ClassStatusList" 
                         ng-selected="{{(g.listvalue === $ctrl.status) && 'selected' || 'not' }}"  
@@ -76,7 +75,7 @@
                       </div>
                     </div>
                   </div>
-                  <div class="col-md-2">
+                  <div class="col-md-2" ng-show="$ctrl.isOkRT()">
                     <div class="form-group">
                       <label for="inputlimit" class="control-label ">Limit</label>
                       <div class="input-icon right">
@@ -89,7 +88,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row col-md-12" style="height: 70px;">
+              <div class="row col-md-12" style="height: 70px;"  ng-show="$ctrl.isOkRT()">
 
                 <div class="col-md-4">
                   <div class="select-box">
@@ -107,7 +106,7 @@
                 </div>
                 <div class="col-md-4">&nbsp;</div>
               </div>
-              <div>
+              <div  ng-show="$ctrl.isOkRT()">
                 <div class="row">
                   <div class=" col-md-4">
                     <button ng-click="$ctrl.requery()" class="btn btn-blue ">Refresh List</button>

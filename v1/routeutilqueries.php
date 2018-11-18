@@ -27,12 +27,26 @@ $app->get('/zips', 'authenticate', function() {
 });
 
 
-$app->get('/ranklist', 'authenticate', function() {
+//$app->get('/ranklist', 'authenticate', function() {
+$app->get('/ranklist', 'authenticate', function() use ($app) {
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("util ranklist entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $ranktype = '';
+
+    if(array_key_exists('ranktype', $allGetVars)){
+        $ranktype = $allGetVars['ranktype'];
+    }
+
+    error_log( print_R("ranklist params: ranktype: $ranktype \n ", TRUE), 3, LOG);
+
     $response = array();
     $db = new UtilDbHandler();
 
     // fetching all user tasks
-    $result = $db->getRankList();
+    $result = $db->getRankList($ranktype);
 
     $response["error"] = false;
     $response["rankList"] = array();

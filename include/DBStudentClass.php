@@ -699,8 +699,8 @@ class StudentClassDbHandler {
                                     $sc_classseq,
                                     $sc_pgmseq,
                                     $payer,
-                                    $testfee,
-                                    $primaryContact = 1
+                                    $testfee = 0,
+                                    $primaryContact = 0
                                    ) {
         $num_affected_rows = 0;
 
