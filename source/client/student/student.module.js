@@ -10,8 +10,6 @@ import { newpayerinstComponent } from './newpayerinst.component';
 import { newstudentComponent } from './newstudent.component';
 import { newstudentinstComponent } from './newstudentinst.component';
 import { studentclassComponent } from './studentclass.component';
-import { studentclassmodalComponent } from './studentclassmodal.component';
-import { studentclassmodalinstComponent } from './studentclassmodalinst.component';
 import { studentdualComponent } from './studentdual.component';
 import { studentdualgridComponent } from './studentdual.component';
 import { studenthistoryComponent } from './studenthistory.component';
@@ -25,11 +23,8 @@ import { ModalNewStudentController } from './newstudent.controller';
 import { ModalNewStudentInstanceController } from './newstudentinst.controller';
 import { StudentClassController } from './studentclass.controller';
 import { StudentHistoryController } from './studenthistory.controller';
-import { ModalSetStudentClassController } from './studentclassmodal.controller';
-import { StudentClassModalInstanceController } from './studentclassmodalinst.controller';
 import { FormLayoutsControllerEditStudent } from './editstudent.controller';
 import { ctrlDualList } from './studentdual.controller';
-//import { ctrlDualListGrid } from './studentdualgrid.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
 
 import { StudentServices } from '../../js/services/studentServices';
@@ -59,12 +54,9 @@ export const StudentModule = angular
  .controller('ModalNewStudentInstanceController', ModalNewStudentInstanceController)
  .controller('StudentClassController', StudentClassController)
  .controller('StudentHistoryController', StudentHistoryController)
- .controller('ModalSetStudentClassController', ModalSetStudentClassController)
- .controller('StudentClassModalInstanceController', StudentClassModalInstanceController)
  .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent)
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ctrlDualList', ctrlDualList)
- // .controller('ctrlDualListGrid', ctrlDualListGrid)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
  .component('editstudentComponent', editstudentComponent)
  .component('newpayerComponent', newpayerComponent)
@@ -72,8 +64,6 @@ export const StudentModule = angular
  .component('newstudentComponent', newstudentComponent)
  .component('newstudentinstComponent', newstudentinstComponent)
  .component('studentclassComponent', studentclassComponent)
- .component('studentclassmodalComponent', studentclassmodalComponent)
- .component('studentclassmodalinstComponent', studentclassmodalinstComponent)
  .component('studentdualComponent', studentdualComponent)
  .component('studentdualgridComponent', studentdualgridComponent)
  .component('studenthistoryComponent', studenthistoryComponent)

@@ -19,8 +19,8 @@ export class ModalSetStudentClassController {
 
     vmsetclassmodal.classname = '';
     vmsetclassmodal.modalInstance = undefined;
-    vmsetclassmodal.vmclass =
-      vmsetclassmodal.$controller('StudentClassController as $ctrl', { $scope: vmsetclassmodal.$scope });
+ //   vmsetclassmodal.vmclass =
+//      vmsetclassmodal.$controller('StudentClassController as $ctrl', { $scope: vmsetclassmodal.$scope });
 
     vmsetclassmodal.init();
 

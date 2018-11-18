@@ -437,7 +437,7 @@ $app->get('/studentclasslist', 'authenticate', function() {
         $tmp["classid"] = $slist["classid"];
         $tmp["pgm"] = $slist["pgm"];
         $tmp["pgmid"] = $slist["pgmid"];
-        $tmp["pictureurl"] = $slist["pictureurl"];
+        $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "genericteaching.jpeg" : $slist["pictureurl"]);
 
         $tmp["classcat"] = array();
         array_push($tmp["classcat"], explode("or", $slist["classcat"]));
