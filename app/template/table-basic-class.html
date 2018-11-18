@@ -1,5 +1,4 @@
-<div ng-controller="ClassTableBasicController as vm">
-
+<div ng-controller="ClassTableBasicController as $ctrl" ng-cloak> 
     <div class="portlet box portlet-green">
         <div class="portlet-header">
                 <div class="caption">Maintain Class</div>
@@ -21,13 +20,13 @@
             class="glyphicon tooltips"></i>
             <select id="registrationType" type="text" 
                 name="registrationType" 
-                ng-model="vm.Class.registrationType" 
-                ng-change="vm.changeRanktype()"                required 
+                ng-model="$ctrl.Class.registrationType" 
+                ng-change="$ctrl.changeRanktype()"                required 
                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
                 class="form-control">
                 <option 
-                    ng-repeat="iter in vm.rankTypes" 
-                    ng-selected="{{iter.id==vm.Class.registrationType}}" 
+                    ng-repeat="iter in $ctrl.rankTypes" 
+                    ng-selected="{{iter.id==$ctrl.Class.registrationType}}" 
                     placeholder="Select" 
                     value="{{ iter.id }}">{{ iter.value }}</option>
             </select>
@@ -44,13 +43,13 @@
                 <div class="panel-body pan">
                     <div class="table-tools">
                         <div class="row col-md-offset-11 mbs">
-                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                            <button type="button" class="btn btn-blue mrs" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">New</button>
                         </div>
                     </div>
-                  	<div uib-collapse="vm.isCollapsed">
+                  	<div uib-collapse="$ctrl.isCollapsed">
                 		<div class="well well-lg">
                             <div class="container-fluid"> 
-                                <div class="container" >
+                                <div class="container-xl" >
                     
             <div class="col-md-12" style="height: 88px;">
                 <form action="" novalidate name="editClass2" class="form-horizontal">
@@ -65,7 +64,7 @@
                     type="text" 
                     placeholder="Enter Name" 
                     name="class" 
-                    ng-model="vm.Class.class" 
+                    ng-model="$ctrl.Class.class" 
                     required 
                     class="form-control">
         </div>
@@ -74,7 +73,7 @@
                                     </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     
     <div class="form-group">
         <label for="nextclass" class="control-label">Next<br/> Class</label>
@@ -84,14 +83,14 @@
                     type="text" 
                     placeholder="Enter" 
                     name="nextclass" 
-                    ng-model="vm.Class.nextclass" 
+                    ng-model="$ctrl.Class.nextclass" 
                      
                     class="form-control">
         </div>
     </div>
 
                                     </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     
     <div class="form-group">
         <label for="ageForNextClass" class="control-label">Age for<br/>Next Class</label>
@@ -101,7 +100,7 @@
                     type="number" 
                     placeholder="0" 
                     name="ageForNextClass" 
-                    ng-model="vm.Class.ageForNextClass" 
+                    ng-model="$ctrl.Class.ageForNextClass" 
                      
                     class="form-control">
         </div>
@@ -120,13 +119,13 @@
             class="glyphicon tooltips"></i>
             <select id="ranklistForNextClass" type="text" 
                 name="ranklistForNextClass" 
-                ng-model="vm.Class.ranklistForNextClass" 
-                ng-change="vm.changeRanklisttype()"                 
+                ng-model="$ctrl.Class.ranklistForNextClass" 
+                ng-change="$ctrl.changeRanklisttype()"                 
                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
                 class="form-control">
                 <option 
-                    ng-repeat="iter in vm.rankTypes" 
-                    ng-selected="{{iter.id==vm.Class.ranklistForNextClass}}" 
+                    ng-repeat="iter in $ctrl.rankTypes" 
+                    ng-selected="{{iter.id==$ctrl.Class.ranklistForNextClass}}" 
                     placeholder="Select" 
                     value="{{ iter.id }}">{{ iter.value }}</option>
             </select>
@@ -151,13 +150,13 @@
             class="glyphicon tooltips"></i>
             <select id="rankForNextClass" type="text" 
                 name="rankForNextClass" 
-                ng-model="vm.Class.rankForNextClass" 
+                ng-model="$ctrl.Class.rankForNextClass" 
                                  
                 ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
                 class="form-control">
                 <option 
-                    ng-repeat="iter in vm.ranks" 
-                    ng-selected="{{iter.value==vm.Class.rankForNextClass}}" 
+                    ng-repeat="iter in $ctrl.ranks" 
+                    ng-selected="{{iter.value==$ctrl.Class.rankForNextClass}}" 
                     placeholder="Select" 
                     value="{{ iter.value }}">{{ iter.label }}</option>
             </select>
@@ -181,7 +180,7 @@
                     type="number" 
                     placeholder="" 
                     name="sort" 
-                    ng-model="vm.Class.sort" 
+                    ng-model="$ctrl.Class.sort" 
                     required 
                     class="form-control">
         </div>
@@ -198,7 +197,7 @@
                     type="text" 
                     placeholder="" 
                     name="pictureurl" 
-                    ng-model="vm.Class.pictureurl" 
+                    ng-model="$ctrl.Class.pictureurl" 
                     required 
                     class="form-control">
         </div>
@@ -208,7 +207,7 @@
                             <div class="col-md-1 btn" style="margin-top: 18px;">
                                         <label for="rankbtn" class="control-label">&nbsp; </label>
         <a role="button" class="btn btn-green form-control" 
-            ng-click="vm.addClass(vm.Class)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+            ng-click="$ctrl.addClass($ctrl.Class)"><i class="fa fa-plus"></i>&nbsp; Add</a>
                                 </div>
                 </form>
                                     </div>
@@ -219,8 +218,8 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <div ui-grid="vm.gridOptions"  
-                        ui-if="vm.gridOptions.data.length>0"
+                    <div ui-grid="$ctrl.gridOptions"  
+                        ui-if="$ctrl.gridOptions.data.length>0"
                         ui-grid-pagination 
                         ui-grid-cellNav  
                         ui-grid-pinning  
@@ -228,7 +227,7 @@
                         ui-grid-exporter 
                         ui-grid-auto-resize
                         ui-grid-resize-columns
-                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                        ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()" >
                     </div>
 
                 </div>

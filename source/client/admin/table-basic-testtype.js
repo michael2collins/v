@@ -208,12 +208,12 @@ export class TesttypeTableBasicController {
     getrankTypes() {
         var vm = this;
         vm.$log.debug('getrankTypes entered');
-        var path = '../v1/ranktypes';
+        var path = '../v1/ranktypeids';
         return vm.ClassServices.getRankTypes(path).then(function(data) {
             vm.$log.debug('getrankTypes returned data');
             vm.$log.debug(data);
 
-            vm.rankTypes = data.RankTypelist;
+            vm.rankTypes = data.ranktypelist;
             vm.$log.debug(data.message);
             vm.message = data.message;
             if ((typeof vm.rankTypes === 'undefined' || data.error === true) &&

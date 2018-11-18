@@ -17,7 +17,7 @@
                   	<div uib-collapse="vm.isCollapsed">
                 		<div class="well well-lg">
                             <div class="container-fluid"> 
-                                <div class="container" >
+                                <div class="container-xl" >
                                     <div class="col-md-12" style="height: 88px;">
                                         <!-- listtype, listkey, listvalue, listorder -->
                                         <form action="" novalidate name="editschedule2" class="form-horizontal">

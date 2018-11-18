@@ -1,5 +1,4 @@
-<div ng-controller="ClassTableBasicController as vm">
-
+<div ng-controller="ClassTableBasicController as $ctrl" ng-cloak> 
     <div class="portlet box portlet-green">
         <div class="portlet-header">
                 <div class="caption">Maintain Class</div>
@@ -14,13 +13,13 @@
                         print selectColTemplate(
                             array(
                                 'field'=>'registrationType',
-                                'model'=>'vm.Class.registrationType',
+                                'model'=>'$ctrl.Class.registrationType',
                                 'label'=>'Registration<br/>Type',
                                 'placeholder'=>'Select',
                                 'required'=>true,
                                 'form'=>'editClass2',
-                                'changefunction'=>'vm.changeRanktype()',
-                                'repeatmodel'=>'vm.rankTypes',
+                                'changefunction'=>'$ctrl.changeRanktype()',
+                                'repeatmodel'=>'$ctrl.rankTypes',
                                 'repeatvalue'=>'value',
                                 'repeatid'=>'id'
                                 )
@@ -31,13 +30,13 @@
                 <div class="panel-body pan">
                     <div class="table-tools">
                         <div class="row col-md-offset-11 mbs">
-                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                            <button type="button" class="btn btn-blue mrs" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">New</button>
                         </div>
                     </div>
-                  	<div uib-collapse="vm.isCollapsed">
+                  	<div uib-collapse="$ctrl.isCollapsed">
                 		<div class="well well-lg">
                             <div class="container-fluid"> 
-                                <div class="container" >
+                                <div class="container-xl" >
                     
             <div class="col-md-12" style="height: 88px;">
                 <form action="" novalidate name="editClass2" class="form-horizontal">
@@ -47,7 +46,7 @@
                                         print strColTemplate(
                                             array(
                                                 'field'=>'class',
-                                                'model'=>'vm.Class.class',
+                                                'model'=>'$ctrl.Class.class',
                                                 'label'=>'Class<br/>&nbsp;',
                                                 'placeholder'=>'Enter Name',
                                                 'required'=>true
@@ -57,12 +56,12 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="col-md-3">
+                                <div class="col-md-4">
                                     <?php require_once('../includes/table-basic.php');
                                         print strColTemplate(
                                             array(
                                                 'field'=>'nextclass',
-                                                'model'=>'vm.Class.nextclass',
+                                                'model'=>'$ctrl.Class.nextclass',
                                                 'label'=>'Next<br/> Class',
                                                 'placeholder'=>'Enter',
                                                 'required'=>false
@@ -70,12 +69,12 @@
                                         );
                                     ?>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <?php require_once('../includes/table-basic.php');
                                         print strColTemplate(
                                             array(
                                                 'field'=>'ageForNextClass',
-                                                'model'=>'vm.Class.ageForNextClass',
+                                                'model'=>'$ctrl.Class.ageForNextClass',
                                                 'label'=>'Age for<br/>Next Class',
                                                 'placeholder'=>0,
                                                 'required'=>false,
@@ -89,13 +88,13 @@
                                         print selectColTemplate(
                                             array(
                                                 'field'=>'ranklistForNextClass',
-                                                'model'=>'vm.Class.ranklistForNextClass',
+                                                'model'=>'$ctrl.Class.ranklistForNextClass',
                                                 'label'=>'Type of<br/>Next Class',
                                                 'placeholder'=>'Select',
                                                 'required'=>false,
                                                 'form'=>'editClass2',
-                                                'changefunction'=>'vm.changeRanklisttype()',
-                                                'repeatmodel'=>'vm.rankTypes',
+                                                'changefunction'=>'$ctrl.changeRanklisttype()',
+                                                'repeatmodel'=>'$ctrl.rankTypes',
                                                 'repeatvalue'=>'value',
                                                 'repeatid'=>'id'
                                                 )
@@ -107,12 +106,12 @@
                                         print selectColTemplate(
                                             array(
                                                 'field'=>'rankForNextClass',
-                                                'model'=>'vm.Class.rankForNextClass',
+                                                'model'=>'$ctrl.Class.rankForNextClass',
                                                 'label'=>'Rank For<br/>Next Class',
                                                 'placeholder'=>'Select',
                                                 'required'=>false,
                                                 'form'=>'editClass2',
-                                                'repeatmodel'=>'vm.ranks',
+                                                'repeatmodel'=>'$ctrl.ranks',
                                                 'repeatvalue'=>'label',
                                                 'repeatid'=>'value'
                                                 )
@@ -125,7 +124,7 @@
                                         print strColTemplate(
                                             array(
                                                 'field'=>'sort',
-                                                'model'=>'vm.Class.sort',
+                                                'model'=>'$ctrl.Class.sort',
                                                 'label'=>'Sort<br/> Order',
                                                 'placeholder'=>'',
                                                 'required'=>true,
@@ -139,7 +138,7 @@
                                         print strColTemplate(
                                             array(
                                                 'field'=>'pictureurl',
-                                                'model'=>'vm.Class.pictureurl',
+                                                'model'=>'$ctrl.Class.pictureurl',
                                                 'label'=>'Class<br/> Picture',
                                                 'placeholder'=>'',
                                                 'required'=>true
@@ -153,7 +152,7 @@
                                             array(
                                                 'field'=>'rankbtn',
                                                 'label'=>'Add',
-                                                'click'=>'vm.addClass(vm.Class)'
+                                                'click'=>'$ctrl.addClass($ctrl.Class)'
                                                 )
                                         );
                                 ?>
@@ -167,8 +166,8 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <div ui-grid="vm.gridOptions"  
-                        ui-if="vm.gridOptions.data.length>0"
+                    <div ui-grid="$ctrl.gridOptions"  
+                        ui-if="$ctrl.gridOptions.data.length>0"
                         ui-grid-pagination 
                         ui-grid-cellNav  
                         ui-grid-pinning  
@@ -176,7 +175,7 @@
                         ui-grid-exporter 
                         ui-grid-auto-resize
                         ui-grid-resize-columns
-                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                        ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()" >
                     </div>
 
                 </div>

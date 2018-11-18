@@ -240,13 +240,13 @@ export class RankTableBasicController {
     getRankTypes() {
         var vm = this;
        vm.$log.debug('getRankTypes entered');
-        var path = '../v1/ranktypes';
+        var path = '../v1/ranktypeids';
 
         return vm.ClassServices.getRankTypes(path).then(function(data) {
            vm.$log.debug('getRankTypes returned data');
            vm.$log.debug(data);
 
-            vm.rankTypes = data.RankTypelist;
+            vm.rankTypes = data.ranktypelist;
             vm.Rank.ranktype = String(vm.rankTypes[0].value);
             return vm.rankTypes;
         }, function(error) {

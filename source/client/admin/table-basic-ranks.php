@@ -17,7 +17,7 @@
                   	<div uib-collapse="vm.isCollapsed">
                 		<div class="well well-lg">
                             <div class="container-fluid"> 
-                                <div class="container" >
+                                <div class="container-xl" >
 <!--ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, school, nextsortkey          -->                           
                 <form action="" novalidate name="editschedule2" class="form-horizontal">
                             <div class="col-md-3">

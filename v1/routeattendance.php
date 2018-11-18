@@ -825,7 +825,7 @@ $app->get('/classtypes', 'authenticate', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/ranktypes', 'authenticate', function() {
+$app->get('/ranktypeids', 'authenticate', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -833,7 +833,7 @@ $app->get('/ranktypes', 'authenticate', function() {
     // fetch task
     $result = $db->getStudentRanktype();
     $response["error"] = false;
-    $response["RankTypelist"] = array();
+    $response["ranktypelist"] = array();
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
@@ -845,7 +845,7 @@ $app->get('/ranktypes', 'authenticate', function() {
             $tmp["value"] = "NULL";
             $tmp["id"] = "0";
         }
-        array_push($response["RankTypelist"], $tmp);
+        array_push($response["ranktypelist"], $tmp);
     }
     $row_cnt = $result->num_rows;
 
