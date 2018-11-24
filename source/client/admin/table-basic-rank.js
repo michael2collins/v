@@ -33,7 +33,7 @@ export class RankTableBasicController {
         vm.thisRank = [];
         vm.gridLength = {};
         vm.initialLength = 10;
-        vm.rowheight = 25;
+        vm.rowheight = 32;
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
 

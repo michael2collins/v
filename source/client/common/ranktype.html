@@ -1,12 +1,12 @@
 <!--<div ng-controller="RankTypeController as $ctrl" ng-cloak>-->
 <div  ng-cloak>
-    <div class="input-icon right col-md-3">
-        <label for="ranktype">Rank Type</label>
+    <div class="input-icon right">
+        <label for="ranktype" class="control-label">Rank Type</label>
         <select id="ranktype" type="text" name="ranktype" 
         ng-model="$ctrl.ranktypeparent.ranktype"
         field-value="$ctrl.ranktypeparent.ranktype"
         required 
-        ng-change="$ctrl.update('ranktype', $ctrl)"
+        ng-change="$ctrl.update('ranktype', $ctrl.ranktypeparent.ranktype)"
         class="form-control">
      <option ng-repeat="iter in $ctrl.ranktypelist" ng-selected="{{iter.ranktype==$ctrl.ranktypeparent.ranktype}}" 
      placeholder="Select" value="{{iter.ranktype}}">{{iter.ranktype}}</option>

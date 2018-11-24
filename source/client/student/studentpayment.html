@@ -33,8 +33,9 @@
                                  </div>
                                  <div class="portlet-body">
                                     <div class="table-tools">
-                                       <div class="row col-md-offset-11 mbs">
-                                          <button type="button" class="btn btn-blue mrs" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">New</button>
+                                       <div class="row col-md-offset-10 mbs">
+                                          <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
                                        </div>
                                     </div>
                                     <div class="row col-md-12">
@@ -395,8 +396,9 @@
                                     </div>
                                     <div class="portlet-body">
                                        <div class="table-tools">
-                                          <div class="row col-md-offset-11 mbs">
-                                             <button type="button" class="btn btn-blue mrs" ng-click="$ctrl.isCollapsed2 = !$ctrl.isCollapsed2">New</button>
+                                          <div class="row col-md-offset-10 mbs">
+                                             <button type="button" class="btn btn-blue mrs mts"
+                                ng-click="$ctrl.isCollapsed2 = !$ctrl.isCollapsed2">{{ $ctrl.isCollapsed2 ? 'New' : 'Collapse'}}</button>
                                           </div>
                                        </div>
                                        <div class="row col-md-12">

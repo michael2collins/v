@@ -38,7 +38,7 @@ export class ClassPgmTableBasicController {
         vm.thisClassPgm = [];
         vm.gridLength = {};
         vm.initialLength = 5;
-        vm.rowheight = 85;
+        vm.rowheight = 32;
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
 

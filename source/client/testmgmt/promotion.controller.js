@@ -40,7 +40,7 @@ export class ModalPromotionInstanceController {
     vm.testcandidate;
     vm.headerheight = 140;
     vm.initialLength = 10;
-    vm.rowheight = 25;
+    vm.rowheight = 32;
 
 
     vm.setGridLength(vm.initialLength);

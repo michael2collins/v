@@ -1,38 +1,38 @@
-<div ng-controller="BasicTableBasicController as vm">
+<div ng-controller="QuickPickController as $ctrl" ng-cloak> 
 
     <div class="portlet box portlet-green">
         <div class="portlet-header">
-                <div class="caption">Maintain Basic</div>
+                <div class="caption">Maintain Quick Picks</div>
                 <div class="tools"><i class="fa fa-chevron-up"></i></div>
         </div>
       <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
             <div class="panel panel-blue">
-                <div class="panel-heading">Basic</div>
+                <div class="panel-heading">Quick Pick</div>
                 <div class="panel-body pan">
                     <div class="table-tools">
                         <div class="row col-md-offset-10 mbs">
                             <button type="button" class="btn btn-blue mrs mts" 
-                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
+                                ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
                         </div>
                     </div>
-                  	<div uib-collapse="vm.isCollapsed">
+                  	<div uib-collapse="$ctrl.isCollapsed">
                 		<div class="well well-lg">
                             <div class="container-fluid"> 
                                 <div class="container-xl" >
                                     <div class="col-md-12" style="height: 88px;">
-                                        <!-- listtype, listkey, listvalue, listorder -->
+                                        <!-- ranktype rank class program paytype amt plan dayofm -->
                                         <form action="" novalidate name="editschedule2" class="form-horizontal">
                                             <div class="col-md-3">
                                                 <?php require_once('../includes/table-basic.php');
                                                     print selectColTemplate(
                                                         array(
                                                             'field'=>'listtype',
-                                                            'model'=>'vm.Basic.listtype',
+                                                            'model'=>'$ctrl.QuickPick.listtype',
                                                             'label'=>'List<br/>Type',
                                                             'placeholder'=>'Select',
                                                             'required'=>true,
                                                             'form'=>'editschedule2',
-                                                            'repeatmodel'=>'vm.listTypes',
+                                                            'repeatmodel'=>'$ctrl.listTypes',
                                                             'repeatvalue'=>'value',
                                                             'repeatid'=>'value'
                                                             )
@@ -44,7 +44,7 @@
                                                     print strColTemplate(
                                                         array(
                                                             'field'=>'listkey',
-                                                            'model'=>'vm.Basic.listkey',
+                                                            'model'=>'$ctrl.QuickPick.listkey',
                                                             'label'=>'Key<br/>&nbsp;',
                                                             'placeholder'=>'Enter Key',
                                                             'required'=>true
@@ -57,7 +57,7 @@
                                                     print strColTemplate(
                                                         array(
                                                             'field'=>'listvalue',
-                                                            'model'=>'vm.Basic.listvalue',
+                                                            'model'=>'$ctrl.QuickPick.listvalue',
                                                             'label'=>'Value<br/> &nbsp;',
                                                             'placeholder'=>0,
                                                             'required'=>true
@@ -71,7 +71,7 @@
                                                     print strColTemplate(
                                                         array(
                                                             'field'=>'listorder',
-                                                            'model'=>'vm.Basic.listorder',
+                                                            'model'=>'$ctrl.QuickPick.listorder',
                                                             'label'=>'Order<br/> &nbsp;',
                                                             'placeholder'=>0,
                                                             'required'=>true,
@@ -86,7 +86,7 @@
                                                         array(
                                                             'field'=>'rankbtn',
                                                             'label'=>'Add',
-                                                            'click'=>'vm.addBasic(vm.Basic)'
+                                                            'click'=>'$ctrl.addBasic($ctrl.QuickPick)'
                                                             )
                                                     );
                                             ?>
@@ -100,8 +100,8 @@
                     </div>
                 </div>
                 <div class="panel-footer">
-                    <div ui-grid="vm.gridOptions"  
-                        ui-if="vm.gridOptions.data.length>0"
+                    <div ui-grid="$ctrl.gridOptions"  
+                        ui-if="$ctrl.gridOptions.data.length>0"
                         ui-grid-pagination 
                         ui-grid-cellNav  
                         ui-grid-pinning  
@@ -109,7 +109,7 @@
                         ui-grid-exporter 
                         ui-grid-auto-resize
                         ui-grid-resize-columns
-                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                        ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()" >
                     </div>
 
                 </div>

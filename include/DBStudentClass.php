@@ -1139,7 +1139,8 @@ class StudentClassDbHandler {
         $sql = "INSERT INTO paymentclasspay( paymentid, classpayid) VALUES ";
         $sql .= "  ( ?, ? )";
 
-        // First check if  already existed in db
+        //todo First check if  already existed in db
+        try {
         if ($mode == "insert") {
             error_log( print_R("updatePaymentPays do insert\n", TRUE ),3, LOG);
 
@@ -1149,10 +1150,11 @@ class StudentClassDbHandler {
                         );
                     // Check for successful insertion
                     $result = $stmt->execute();
+                    $new_id = NULL;
                     if ($result) {
                         $new_id = $this->conn->insert_id;
                         // User successfully inserted
-                    }    
+                    } 
                 $stmt->close();
 
                 return $new_id;
@@ -1189,6 +1191,13 @@ class StudentClassDbHandler {
             
             return $num_affected_rows;
         }
+        } catch(exception $e) {
+			 error_log(print_R( "sql error in update paymentclasspay\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -3;
+		}
+
 
     }    
     public function removePaymentPay($pcpid

@@ -10,8 +10,9 @@
                 <div class="panel-heading">Class Program</div>
                 <div class="panel-body pan">
                     <div class="table-tools">
-                        <div class="row col-md-offset-11 mbs">
-                            <button type="button" class="btn btn-blue mrs" ng-click="vm.isCollapsed = !vm.isCollapsed">New</button>
+                        <div class="row col-md-offset-10 mbs">
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
                         </div>
                     </div>
                   	<div uib-collapse="vm.isCollapsed">

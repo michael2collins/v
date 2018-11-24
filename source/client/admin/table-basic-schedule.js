@@ -51,7 +51,7 @@ export class ScheduleTableBasicController {
         vm.gridLength = {};
         vm.initialLength = 3;
         //        vm.rowheight=88;
-        vm.rowheight = 25;
+        vm.rowheight = 32;
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
         //having it here sets the options, but the dropdown doesn't map

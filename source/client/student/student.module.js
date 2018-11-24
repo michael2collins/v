@@ -1,6 +1,5 @@
 import angular from 'angular';
 import studenttemplate from './table-basic-students.html';
-import newstudenttempate from './form-layouts-newstudent.html';
 import editstudenttempate from './form-layouts-editstudent.html';
 
 
@@ -78,10 +77,6 @@ function studentconfig($routeProvider) {
  $routeProvider
   .when('/table-basic-students', {
    template: studenttemplate
-  })
-
-  .when('/form-layouts-newstudent', {
-   template: newstudenttempate
   })
 
   .when('/form-layouts-editstudent/id/:id', {

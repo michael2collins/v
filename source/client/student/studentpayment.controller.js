@@ -544,7 +544,7 @@ export class StudentPaymentController {
         var thedata = {
             pcpid: input.pcpid
         };
-        return vmpayment.vmpayment.ClassServices.removePaymentPay(path, thedata)
+        return vmpayment.ClassServices.removePaymentPay(path, thedata)
             .then(function(data) {
                 vmpayment.$log.debug('removePaymentPay returned data');
                 vmpayment.$log.debug(data);
@@ -575,7 +575,7 @@ export class StudentPaymentController {
             vmpayment.$log.debug('updatePaymentPay returned data: ');
             vmpayment.$log.debug(data);
             if (data.error === true || typeof data === 'undefined') {
-                vmpayment.Notification.error({ message: data.error === true ? data.error : "data error", delay: 5000 });
+                vmpayment.Notification.error({ message: data.error === true ? data.message : "data error", delay: 5000 });
                 return (vmpayment.$q.reject(data));
             }
 

@@ -12,7 +12,6 @@ constructor() {
         '/main': {title:'Dashboard', 'breadcrumb':['Dashboard']},
         '/form-layouts-newlead': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
         '/form-layouts-newpayment': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
-        '/form-layouts-newstudent': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
         '/form-layouts-editstudent': {title:'Edit Student', 'breadcrumb':['Student', 'Edit Student']},
         '/form-layouts-newtest': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},
         '/form-layouts-newweek': {title:'Form Layouts', 'breadcrumb':['Form', 'Form Layouts']},

@@ -28,49 +28,52 @@ export class FormLayoutsControllerEditStudent {
     $onInit() {
         console.log('entering FormLayoutsControllerEditStudent oninit');
         this.$ = angular.element;
-        var vmstudent = this;
-        vmstudent.isCollapsed = true;
+        var vm = this;
+        vm.isCollapsed = true;
 
-        vmstudent.RankTypeList = [];
-        vmstudent.ranklist = [];
-        vmstudent.Rankslist = [];
-        vmstudent.rankpick;
-        vmstudent.ranktypepick;
-        vmstudent.disabled;
-        vmstudent.studentrank = {};
-        vmstudent.students = [];
-        vmstudent.genders = [];
-        vmstudent.zipList = [];
-        vmstudent.concat = '';
-        vmstudent.ContactTypeList = [];
-        vmstudent.CurrentRankList = [];
-        vmstudent.CurrentReikiRankList = [];
-        vmstudent.StudentSchoolList = [];
-        vmstudent.studentranks = [];
-        vmstudent.GuiSizeList = [];
-        vmstudent.ShirtSizeList = [];
-        vmstudent.BeltSizeList = [];
-        vmstudent.instructorTitleList = [];
-        vmstudent.studentclass = {};
-        vmstudent.students.pictureurldecache = undefined;
+        vm.RankTypeList = [];
+        vm.ranklist = [];
+        vm.Rankslist = [];
+        vm.rankpick;
+        vm.ranktypepick;
+        vm.disabled;
+        vm.studentrank = {};
+        vm.students = [];
+        vm.genders = [];
+        vm.zipList = [];
+        vm.concat = '';
+        vm.ContactTypeList = [];
+        vm.CurrentRankList = [];
+        vm.CurrentReikiRankList = [];
+        vm.StudentSchoolList = [];
+        vm.studentranks = [];
+        vm.GuiSizeList = [];
+        vm.ShirtSizeList = [];
+        vm.BeltSizeList = [];
+        vm.instructorTitleList = [];
+        vm.studentclass = {};
+        vm.students.pictureurldecache = undefined;
 
-        vmstudent.active = [];
-        vmstudent.path = '../v1/students/' + vmstudent.$routeParams.id;
-        vmstudent.zippath = '../v1/zips';
+        vm.active = [];
+        vm.path = '../v1/students/' + vm.$routeParams.id;
+        vm.zippath = '../v1/zips';
 
-        vmstudent.sListPath = '../v1/studentlists';
-        vmstudent.status = {
+        vm.sListPath = '../v1/studentlists';
+        vm.status = {
             opened: false
         };
-        vmstudent.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
-        vmstudent.bdateformat = vmstudent.formats[4];
+        vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
+        vm.bdateformat = vm.formats[4];
 
-        vmstudent.init();
-        vmstudent.setLists();
-        vmstudent.getAllZips();
-        vmstudent.getStudentLists();
-        vmstudent.getRankList();
-        vmstudent.activate();
+        vm.rankpickselected = '';
+        vm.rankpickparent = {};
+
+        vm.init();
+        vm.setLists();
+        vm.getAllZips();
+        vm.getStudentLists();
+//        vm.getRankList();
+        vm.activate();
 
     }
 
@@ -80,22 +83,22 @@ export class FormLayoutsControllerEditStudent {
     }
 
     init() {
-        var self = this;
+        var vm = this;
 
-        this.menu_h = this.$('#sidebar').height();
+        vm.menu_h = vm.$('#sidebar').height();
 
-        this.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            self.$log.debugEnabled(true);
-            self.$log.debug("editstudent started");
+        vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+            vm.$log.debugEnabled(true);
+            vm.$log.debug("editstudent started");
 
         });
-        this.$scope.$on('$destroy', function iVeBeenDismissed() {
-            self.$log.debug("editstudent dismissed");
-            self.$log.debugEnabled(false);
+        vm.$scope.$on('$destroy', function iVeBeenDismissed() {
+            vm.$log.debug("editstudent dismissed");
+            vm.$log.debugEnabled(false);
         });
 
 
-        this.portalDataService.Portlet('form-layouts-editstudent.js');
+        vm.portalDataService.Portlet('form-layouts-editstudent.js');
 
     }
     openPhoto() {
@@ -172,329 +175,350 @@ export class FormLayoutsControllerEditStudent {
     }
 
     activate() {
-        var self = this;
-        self.$log.debug('about activate editstudent ');
+        var vm = this;
+        vm.$log.debug('about activate editstudent ');
 
-        return self.getStudent().then(function() {
-            self.$log.debug('activated EditStudent view');
+        return vm.getStudent().then(function() {
+            vm.$log.debug('activated EditStudent view');
             //    StudentServices.setActiveTab(1,'EditStudent controller');
-            var thetab = self.StudentServices.getActiveTab();
-            self.$log.debug('activate the active tab', thetab);
-            //    vmstudent.active[thetab] = true;
-            self.active = thetab;
-            if (typeof(self.students.ID) !== 'undefined') {
-                self.getStudentRanks(self.students.ID);
-                self.getStudentRankTypes(self.students.ID);
+            var thetab = vm.StudentServices.getActiveTab();
+            vm.$log.debug('activate the active tab', thetab);
+            //    vm.active[thetab] = true;
+            vm.active = thetab;
+            if (typeof(vm.students.ID) !== 'undefined') {
+                vm.getStudentRanks(vm.students.ID);
+                vm.getStudentRankTypes(vm.students.ID);
             }
         }, function(error) {
-            self.$log.debug('activate editstudent', error);
-            self.Notification.error({ message: error, delay: 5000 });
+            vm.$log.debug('activate editstudent', error);
+            vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
     }
-
+/*
     getRankPartial(theinput) {
-        var self = this;
-        return self.StudentServices.getRankPartial(theinput, self.ranktypepick).then(function(data) {
-            self.$log.debug('controller getRankPartial returned data', theinput, self.ranktypepick);
-            self.$log.debug(data);
-            self.ranklist = data;
-            self.$log.debug('controller getRankPartial service data', self.ranklist);
-            return self.ranklist;
+        var vm = this;
+        return vm.StudentServices.getRankPartial(theinput, vm.ranktypepick).then(function(data) {
+            vm.$log.debug('controller getRankPartial returned data', theinput, vm.ranktypepick);
+            vm.$log.debug(data);
+            vm.ranklist = data;
+            vm.$log.debug('controller getRankPartial service data', vm.ranklist);
+            return vm.ranklist;
         });
 
     }
+*/
+    isOkRT() {
+        var vm = this;
+        return (Object.keys(vm.rankpickparent).length === 0 && vm.rankpickparent.constructor === Object) ? false : true;
+    }
 
+    updateRankPick(rankpickparent, prop, value) {
+        var vm = this;
+        //rankpickparent isn't working as expected.  Use value for whole parent
+        //vm.rankpickparent[prop] = value;
+        vm.rankpickparent = value;
+        vm.ranktypepick = vm.rankpickparent.ranktype;
+        vm.rankpick = vm.rankpickparent.rankpick;
+        vm.$log.debug('updateRankPick', rankpickparent,prop,value, vm.rankpick, vm.ranktypepick);
+//        vm.getRankList();
+//        vm.setRank('All');
+//        vm.$log.debug('setRank', vm.Rank);
+
+    }
+
+/*
     getRank(theinput) {
-        var self = this;
+        var vm = this;
 
-        return self.StudentServices.getRank(self.ranktypepick).then(function(data) {
-            self.$log.debug('controller getRank returned data', theinput, self.ranktypepick);
-            self.$log.debug(data);
-            self.ranklist = data;
-            self.$log.debug('controller getRank service data', self.ranklist);
-            return self.ranklist;
+        return vm.StudentServices.getRank(vm.ranktypepick).then(function(data) {
+            vm.$log.debug('controller getRank returned data', theinput, vm.ranktypepick);
+            vm.$log.debug(data);
+            vm.ranklist = data;
+            vm.$log.debug('controller getRank service data', vm.ranklist);
+            return vm.ranklist;
         });
 
     }
+*/
+getBirthday(bday) {
+    var vm=this;
+    vm.$log.debug('bday');
+    vm.$log.debug(bday);
+    return new Date(bday);
+}
 
-    getBirthday(bday) {
-        this.$log.debug('bday');
-        this.$log.debug(bday);
-        return new Date(bday);
-    }
+getStudent() {
+    var vm = this;
+    return vm.StudentServices.getStudent(vm.path).then(function(data) {
+        vm.$log.debug('getStudent returned data');
+        vm.$log.debug(data);
 
-    getStudent() {
-        var self = this;
-        return self.StudentServices.getStudent(self.path).then(function(data) {
-            self.$log.debug('getStudent returned data');
-            self.$log.debug(data);
+        vm.students = data;
 
-            self.students = data;
-
-            self.$log.debug(self.students.message);
-            self.message = self.students.message;
-            if ((typeof self.students === 'undefined' || self.students.error === true) &&
-                typeof data !== 'undefined') {
-                self.Notification.error({ message: self.message, delay: 5000 });
-                return (self.$q.reject(data));
-            }
-            else {
-                self.Notification.success({ message: self.message, delay: 5000 });
-                self.PhotoServices.setTheStudent(data);
-                self.$log.debug('studen pic url', self.students.pictureurl);
-                if (self._.isEmpty(self.students.pictureurl)) {
-                    self.$log.debug('empty picture');
-                    self.students.pictureurldecache = 'missingstudentpicture.png';
-                }
-                else {
-                    self.students.pictureurldecache = self.students.pictureurl + '?decache=' + Math.random();
-                }
-                self.$log.debug('get Birthday:', self.students.Birthday);
-                if (self._.isEmpty(self.students.Birthday)) {
-                    self.students.Birthday = self.getBirthday(new Date());
-                }
-                else {
-                    self.students.Birthday = self.getBirthday(self.students.Birthday);
-                }
-
-                self.$log.debug('studen pic url decache', self.students.pictureurldecache);
-            }
-
-            return self.students;
-        }, function(error) {
-            self.$log.debug('getStudent', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
-        });
-    }
-
-    getStudentRanks(studentid) {
-        var self = this;
-        if (typeof studentid === 'undefined') {
-            return {};
+        vm.$log.debug(vm.students.message);
+        vm.message = vm.students.message;
+        if ((typeof vm.students === 'undefined' || vm.students.error === true) &&
+            typeof data !== 'undefined') {
+            vm.Notification.error({ message: vm.message, delay: 5000 });
+            return (vm.$q.reject(data));
         }
-        self.$log.debug('getStudentRanks entered', studentid);
-        var thepath = encodeURI("../v1/studentrank?ContactID=" + studentid);
-
-        return self.StudentServices.getStudentRanks(thepath).then(function(data) {
-            self.$log.debug('getStudentRanks returned data');
-            self.$log.debug(data, data.studentranklist);
-            if (typeof(data.studentranklist) !== 'undefined' && data.error === false) {
-                self.$log.debug('studentranklist', data.studentranklist);
-                self.studentranks = data.studentranklist;
+        else {
+            vm.Notification.success({ message: vm.message, delay: 5000 });
+            vm.PhotoServices.setTheStudent(data);
+            vm.$log.debug('studen pic url', vm.students.pictureurl);
+            if (vm._.isEmpty(vm.students.pictureurl)) {
+                vm.$log.debug('empty picture');
+                vm.students.pictureurldecache = 'missingstudentpicture.png';
             }
             else {
-                self.studentranks = {};
-                if (typeof(data.studentranklist) !== 'undefined') {
-                    self.Notification.error({ message: typeof(data.message) !== 'undefined' ? data.message : 'error getstudentranks', delay: 5000 });
-                } //else ok to have no ranklist
+                vm.students.pictureurldecache = vm.students.pictureurl + '?decache=' + Math.random();
             }
-            return self.studentranks;
-        }, function(error) {
-            self.$log.debug('getStudentRanks', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
-        });
-    }
+            vm.$log.debug('get Birthday:', vm.students.Birthday);
+            if (vm._.isEmpty(vm.students.Birthday)) {
+                vm.students.Birthday = vm.getBirthday(new Date());
+            }
+            else {
+                vm.students.Birthday = vm.getBirthday(vm.students.Birthday);
+            }
 
-    getStudentRankTypes(studentid) {
-        var self = this;
-        if (typeof studentid === 'undefined') {
-            return {};
+            vm.$log.debug('studen pic url decache', vm.students.pictureurldecache);
         }
-        self.$log.debug('getStudentRankTypes entered', studentid);
-        var thepath = encodeURI("../v1/ranktypeexcluded?ContactID=" + studentid);
 
-        return self.StudentServices.getStudentRankTypes(thepath).then(function(data) {
-            self.$log.debug('getStudentRankTypes returned data');
-            self.$log.debug(data, data.ranktypelist);
-            if (typeof(data.ranktypelist) !== 'undefined' && data.error === false) {
-                self.$log.debug('studentranktypelist', data.ranktypelist);
-                self.RankTypeList = data.ranktypelist;
-            }
-            else {
-                self.RankTypeList = {};
-                if (typeof(data.ranktypelist) !== 'undefined') {
-                    self.Notification.error({ message: typeof(data.message) !== 'undefined' ? data.message : 'error ranktypelist', delay: 5000 });
-                } //else ok to have no ranklist
-            }
-            return self.RankTypeList;
-        }, function(error) {
-            self.$log.debug('getStudentRankTypes', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
-        });
+        return vm.students;
+    }, function(error) {
+        vm.$log.debug('getStudent', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+}
+
+getStudentRanks(studentid) {
+    var vm = this;
+    if (typeof studentid === 'undefined') {
+        return {};
     }
+    vm.$log.debug('getStudentRanks entered', studentid);
+    var thepath = encodeURI("../v1/studentrank?ContactID=" + studentid);
 
-    addStudentRank() {
-        var self = this;
-        self.$log.debug('addStudentRank entered', self.rankpick, self.ranktypepick);
-        var thedata = {
-            ContactID: self.students.ID,
-            currentrank: self.rankpick,
-            ranktype: self.ranktypepick
-        };
-        return self.StudentServices.addStudentRank(thedata)
-            .then(function(data) {
-                self.$log.debug('addStudentRank returned data');
-                self.$log.debug(data);
-                self.getStudentRanks(self.students.ID);
-                return data;
-            }).catch(function(e) {
-                self.$log.debug('addStudentRank failure:');
-                self.$log.debug("error", e);
-                self.Notification.error({ message: e, delay: 5000 });
-                throw e;
-            });
+    return vm.StudentServices.getStudentRanks(thepath).then(function(data) {
+        vm.$log.debug('getStudentRanks returned data');
+        vm.$log.debug(data, data.studentranklist);
+        if (typeof(data.studentranklist) !== 'undefined' && data.error === false) {
+            vm.$log.debug('studentranklist', data.studentranklist);
+            vm.studentranks = data.studentranklist;
+        }
+        else {
+            vm.studentranks = {};
+            if (typeof(data.studentranklist) !== 'undefined') {
+                vm.Notification.error({ message: typeof(data.message) !== 'undefined' ? data.message : 'error getstudentranks', delay: 5000 });
+            } //else ok to have no ranklist
+        }
+        return vm.studentranks;
+    }, function(error) {
+        vm.$log.debug('getStudentRanks', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+}
 
+getStudentRankTypes(studentid) {
+    var vm = this;
+    if (typeof studentid === 'undefined') {
+        return {};
     }
+    vm.$log.debug('getStudentRankTypes entered', studentid);
+    var thepath = encodeURI("../v1/ranktypeexcluded?ContactID=" + studentid);
 
-    removeStudentRank(ranktype) {
-        var self = this;
-        self.$log.debug('removeStudentRank entered', self.students.ID, ranktype);
-        var thedata = {
-            ContactID: self.students.ID,
-            ranktype: ranktype
-        };
-        return self.StudentServices.removeStudentRank(thedata)
-            .then(function(data) {
-                self.$log.debug('removeStudentRank returned data');
-                self.$log.debug(data);
-                self.getStudentRanks(self.students.ID);
-                self.getStudentRankTypes(self.students.ID);
-                return data;
-            }).catch(function(e) {
-                self.$log.debug('removeStudentRank failure:');
-                self.$log.debug("error", e);
-                self.Notification.error({ message: e, delay: 5000 });
-                throw e;
-            });
+    return vm.StudentServices.getStudentRankTypes(thepath).then(function(data) {
+        vm.$log.debug('getStudentRankTypes returned data');
+        vm.$log.debug(data, data.ranktypelist);
+        if (typeof(data.ranktypelist) !== 'undefined' && data.error === false) {
+            vm.$log.debug('studentranktypelist', data.ranktypelist);
+            vm.RankTypeList = data.ranktypelist;
+        }
+        else {
+            vm.RankTypeList = {};
+            if (typeof(data.ranktypelist) !== 'undefined') {
+                vm.Notification.error({ message: typeof(data.message) !== 'undefined' ? data.message : 'error ranktypelist', delay: 5000 });
+            } //else ok to have no ranklist
+        }
+        return vm.RankTypeList;
+    }, function(error) {
+        vm.$log.debug('getStudentRankTypes', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+}
 
-    }
-
-    updateStudentRank(item) {
-        var self = this;
-        self.$log.debug('about updateStudentRank ', item);
-
-        var thepath = "../v1/studentrank";
-        var thedata = {
-            ContactID: item.ContactID,
-            ranktype: item.ranktype,
-            currentrank: item.currentrank
-        };
-
-        return self.StudentServices.updateStudentRank(thepath, thedata).then(function(data) {
-            self.$log.debug('updateStudentRank returned data:');
-            self.$log.debug(data);
-            self.getStudentRanks(item.ContactID);
-        }, function(error) {
-            self.$log.debug('updateStudent', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
-        });
-    }
-
-    updateStudent() {
-        var self = this;
-        self.$log.debug('about updateStudent ', self.students);
-        self.$log.debug('with Birthday', self.students.Birthday);
-
-        return self.StudentServices.updateStudent(self.path, self.students).then(function(data) {
-            self.$log.debug('updateStudent returned data: goto', self.path);
-            self.$log.debug(data);
-            self.students = data;
-            self.getStudent();
-        }, function(error) {
-            self.$log.debug('updateStudent', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
-        });
-    }
-
-    getAllZips() {
-        var self = this;
-
-        return self.StudentServices.getAllZips(self.zippath).then(function(data) {
-            self.$log.debug('getAllZips returned data');
-            self.$log.debug(data);
-            self.zipList = data;
-
-            return self.zipList;
-        }, function(error) {
-            self.$log.debug('getAllZips', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
+addStudentRank() {
+    var vm = this;
+    vm.$log.debug('addStudentRank entered', vm.rankpick, vm.ranktypepick);
+    var thedata = {
+        ContactID: vm.students.ID,
+        currentrank: vm.rankpick,
+        ranktype: vm.ranktypepick
+    };
+    return vm.StudentServices.addStudentRank(thedata)
+        .then(function(data) {
+            vm.$log.debug('addStudentRank returned data');
+            vm.$log.debug(data);
+            vm.getStudentRanks(vm.students.ID);
+            return data;
+        }).catch(function(e) {
+            vm.$log.debug('addStudentRank failure:');
+            vm.$log.debug("error", e);
+            vm.Notification.error({ message: e, delay: 5000 });
+            throw e;
         });
 
-    }
+}
 
-    getStudentLists() {
-        var self = this;
-
-        return self.StudentServices.getStudentLists(self.sListPath).then(function(data) {
-            self.$log.debug('controller getStudentLists returned data');
-            self.$log.debug(data);
-            self.StudentList = data;
-
-            return self.StudentList;
-        }, function(error) {
-            self.$log.debug('getStudentLists ', error);
-            self.Notification.error({ message: error, delay: 5000 });
-            return (error);
+removeStudentRank(ranktype) {
+    var vm = this;
+    vm.$log.debug('removeStudentRank entered', vm.students.ID, ranktype);
+    var thedata = {
+        ContactID: vm.students.ID,
+        ranktype: ranktype
+    };
+    return vm.StudentServices.removeStudentRank(thedata)
+        .then(function(data) {
+            vm.$log.debug('removeStudentRank returned data');
+            vm.$log.debug(data);
+            vm.getStudentRanks(vm.students.ID);
+            vm.getStudentRankTypes(vm.students.ID);
+            return data;
+        }).catch(function(e) {
+            vm.$log.debug('removeStudentRank failure:');
+            vm.$log.debug("error", e);
+            vm.Notification.error({ message: e, delay: 5000 });
+            throw e;
         });
-    }
 
+}
+
+updateStudentRank(item) {
+    var vm = this;
+    vm.$log.debug('about updateStudentRank ', item);
+
+    var thepath = "../v1/studentrank";
+    var thedata = {
+        ContactID: item.ContactID,
+        ranktype: item.ranktype,
+        currentrank: item.currentrank
+    };
+
+    return vm.StudentServices.updateStudentRank(thepath, thedata).then(function(data) {
+        vm.$log.debug('updateStudentRank returned data:');
+        vm.$log.debug(data);
+        vm.getStudentRanks(item.ContactID);
+    }, function(error) {
+        vm.$log.debug('updateStudent', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+}
+
+updateStudent() {
+    var vm = this;
+    vm.$log.debug('about updateStudent ', vm.students);
+    vm.$log.debug('with Birthday', vm.students.Birthday);
+
+    return vm.StudentServices.updateStudent(vm.path, vm.students).then(function(data) {
+        vm.$log.debug('updateStudent returned data: goto', vm.path);
+        vm.$log.debug(data);
+        vm.students = data;
+        vm.getStudent();
+    }, function(error) {
+        vm.$log.debug('updateStudent', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+}
+
+getAllZips() {
+    var vm = this;
+
+    return vm.StudentServices.getAllZips(vm.zippath).then(function(data) {
+        vm.$log.debug('getAllZips returned data');
+        vm.$log.debug(data);
+        vm.zipList = data;
+
+        return vm.zipList;
+    }, function(error) {
+        vm.$log.debug('getAllZips', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+
+}
+
+getStudentLists() {
+    var vm = this;
+
+    return vm.StudentServices.getStudentLists(vm.sListPath).then(function(data) {
+        vm.$log.debug('controller getStudentLists returned data');
+        vm.$log.debug(data);
+        vm.StudentList = data;
+
+        return vm.StudentList;
+    }, function(error) {
+        vm.$log.debug('getStudentLists ', error);
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (error);
+    });
+}
+/*
     getRankList() {
-        var self = this;
+        var vm = this;
         var path = '../v1/ranklist';
         var data = {
-            ranktype: self.ranktypepick
+            ranktype: vm.ranktypepick
         };
 
-        return self.StudentServices.getRankList(data, path).then(function(data) {
+        return vm.StudentServices.getRankList(data, path).then(function(data) {
 
-            self.$log.debug('getRankList returned data');
-            self.$log.debug(data);
-            self.RanksList = data;
+            vm.$log.debug('getRankList returned data');
+            vm.$log.debug(data);
+            vm.RanksList = data;
 
-            return self.RanksList;
+            return vm.RanksList;
         }, function(error) {
-            self.$log.debug('getRankList ', error);
-            self.Notification.error({ message: error, delay: 5000 });
+            vm.$log.debug('getRankList ', error);
+            vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
     }
+*/
+setHeight() {
+    var vm = this;
 
-    setHeight() {
-        var self = this;
+    vm.$('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
+        vm.$log.debug('set height');
+        var tab_id = vm.$(this).attr('href');
+        var tab_h = vm.$(tab_id).height();
+        if (tab_h < vm.menu_h) {
+            vm.$(tab_id).css('height', '960px');
+        }
+    });
+}
 
-        self.$('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
-            self.$log.debug('set height');
-            var tab_id = self.$(this).attr('href');
-            var tab_h = self.$(tab_id).height();
-            if (tab_h < self.menu_h) {
-                self.$(tab_id).css('height', '960px');
-            }
-        });
-    }
+setLists() {
+    this.genders = ['Female', 'Male', 'Unknown'];
+}
 
-    setLists() {
-        this.genders = ['Female', 'Male', 'Unknown'];
-    }
+setActiveTab(activeTab, thecaller) {
+    var vm = this;
+    vm.$log.debug('set activetab as:', activeTab, thecaller);
+    vm.StudentServices.setActiveTab(activeTab, thecaller);
 
-    setActiveTab(activeTab, thecaller) {
-        var self = this;
-        self.$log.debug('set activetab as:', activeTab, thecaller);
-        self.StudentServices.setActiveTab(activeTab, thecaller);
+}
 
-    }
-
-    getActiveTab() {
-        var atab = self.StudentServices.getActiveTab();
-        self.$log.debug('get activetab is:', atab);
-        return atab;
-    }
+getActiveTab() {
+    var atab = vm.StudentServices.getActiveTab();
+    vm.$log.debug('get activetab is:', atab);
+    return atab;
+}
 
 
 }

@@ -24,7 +24,7 @@
               </div>
               <div class="row">
                 <div class="col-md-12">
-<!--
+                  <!--
                   <div class="input-icon right col-md-3">
                      <label for="ranktype">Rank Type</label>
                      <select id="ranktype" type="text" name="ranktype" ng-model="$ctrl.ranktypeselected" required ng-change="$ctrl.changeRankType()" class="form-control">
@@ -32,10 +32,10 @@
                      </select>
                   </div>
 -->
-                  <ranktype-component 
-                    on-update="$ctrl.updateRankType($ctrl.ranktypeparent, prop, value)"
-                  >
-                  </ranktype-component>
+                  <div class="col-md-3">
+                    <ranktype-component on-update="$ctrl.updateRankType($ctrl.ranktypeparent, prop, value)">
+                    </ranktype-component>
+                  </div>
                   <div class="col-md-2" ng-show="$ctrl.isOkRT()">
                     <div class="form-group">
                       <label for="inputcontacttype" class="control-label ">Student Type</label>
@@ -88,7 +88,7 @@
                   </div>
                 </div>
               </div>
-              <div class="row col-md-12" style="height: 70px;"  ng-show="$ctrl.isOkRT()">
+              <div class="row col-md-12" style="height: 70px;" ng-show="$ctrl.isOkRT()">
 
                 <div class="col-md-4">
                   <div class="select-box">
@@ -106,7 +106,7 @@
                 </div>
                 <div class="col-md-4">&nbsp;</div>
               </div>
-              <div  ng-show="$ctrl.isOkRT()">
+              <div ng-show="$ctrl.isOkRT()">
                 <div class="row">
                   <div class=" col-md-4">
                     <button ng-click="$ctrl.requery()" class="btn btn-blue ">Refresh List</button>
