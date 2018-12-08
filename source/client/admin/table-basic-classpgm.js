@@ -48,7 +48,7 @@ export class ClassPgmTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-basic dismissed");
+        this.$log.debug("table-basic-classpgm dismissed");
         this.$log.debugEnabled(false);
     }
 

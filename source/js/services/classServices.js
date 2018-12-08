@@ -164,6 +164,16 @@ export class ClassServices {
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
+    getPicklist(path) {
+        var self=this;
+        self.$log.debug('getPicklist service entered', path);
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    
     removeClass(thedata, path) {
         var self=this;
         self.$log.debug('removeClass data before delete :', thedata);
@@ -336,6 +346,7 @@ export class ClassServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
+    /*
     setStudentClass(path, mystudent, myclassid, mypgmid) {
         var self=this;
         self.$log.debug('service set student class :' + myclassid);
@@ -355,6 +366,7 @@ export class ClassServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
+*/
     getStudentClassPicture(classpicturepath) {
         var self=this;
         var request = self.$http({
@@ -667,15 +679,53 @@ export class ClassServices {
         return (request.then(self.handleSuccess, self.handleError));
     }
 
+    getQuickpicks(path) {
+        var self=this;
+        self.$log.debug('getQuickpicks service entered', path);
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+    getQuickpick(path) {
+        var self=this;
+        self.$log.debug('getQuickpick service entered', path);
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
+    updateQuickpick(path, thedata) {
+        var self=this;
+        self.$log.debug('updateQuickpick data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeQuickpick(path, thedata) {
+        var self=this;
+        self.$log.debug('removeQuickpick data before post :', path, thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+
+
     handleError(response) {
 
         if (!angular.isObject(response.data) ||
-            !response.data.message
+            !response.data
         ) {
-            return (this.$q.reject("An unknown error occurred in ClassServices."));
+            //todo, need to figure out if we can pass this in the function and not interfere with response
+            //return (this.$q.reject("An unknown error occurred in ClassServices."));
+            return response;
         }
         // Otherwise, use expected error message.
-        return (response.data.message);
+        return (response.data);
     }
 
     handleSuccess(response) {

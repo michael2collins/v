@@ -44,7 +44,7 @@ export class ClassTableBasicController {
         vm.activate();
     }
     $onDestroy() {
-        this.$log.debug("table-basic-basic dismissed");
+        this.$log.debug("table-basic-class dismissed");
         this.$log.debugEnabled(false);
     }
 

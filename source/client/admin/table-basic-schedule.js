@@ -66,11 +66,11 @@ export class ScheduleTableBasicController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-basic-basic');
+        vm.portalDataService.Portlet('table-basic-schedule');
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-basic started");
+            vm.$log.debug("table-basic-schedule started");
 
         });
 

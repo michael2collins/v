@@ -11,6 +11,7 @@ import { StripeTableBasicController } from './stripe-onboard';
 import { ClassPgmTableBasicController } from './table-basic-classpgm';  
 import { TemplateTableBasicController } from './table-basic-htmltemplate';  
 import { ScheduleTableBasicController } from './table-basic-schedule';
+import { QuickpickController } from './quickpick.controller';
 
 import stripeonboardtemplate from './template/stripe_onboard.html';
 import classtemplate from './template/table-basic-class.html';
@@ -24,6 +25,7 @@ import classtesttemplate from './template/table-basic-classtest.html';
 import programtemplate from './template/table-basic-program.html';
 import scheduletemplate from './template/table-basic-schedule.html';
 import rptbuildertemplate from './table-basic-rptbuilder.html';
+import quickpicktemplate from './template/table-quickpick.html';
 
 
 import './textblockimage.html';
@@ -33,6 +35,11 @@ export let basicComponent = {
 bindings: {},  
   controller: BasicTableBasicController,
   template: basictemplate
+};
+export let quickpickComponent = {
+bindings: {},  
+  controller: QuickpickController,
+  template: quickpicktemplate
 };
 export let classrankComponent = {
 bindings: {},  

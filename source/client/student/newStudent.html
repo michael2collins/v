@@ -6,23 +6,112 @@
         <div class="form-body pal">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="inputFirstName" class="control-label">First Name </label>
-                        <input id="inputFirstName" type="text" placeholder="First Name" name="FirstName" ng-model="vmnew.FirstName" minLength="2" maxLength="30" class="form-control">
+                    <div class="form-group" ng-class="{ 'has-error': newstudent.FirstName.$dirty && newstudent.FirstName.$error.required }">
+                        <label for="FirstName" class="control-label">First Name </label>
+                        <input id="FirstName" id="FirstName" value="" type="text" placeholder="First Name" name="FirstName" ng-model="vmnew.FirstName" minLength="2" maxLength="30" required class="form-control">
+            <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.required" class="help-block delete-red">First Name is required</span>
+            <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.minlength" class="help-block delete-red">First Name minLength = 2</span>
+            <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.maxlength" class="help-block delete-red">First Name maxlength = 30</span>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="inputLastName" class="control-label">LastName </label>
-                        <input id="inputLastName" type="text" placeholder="Last Name" name="LastName" ng-model="vmnew.LastName" minLength="2" maxLength="30" class="form-control">
+                    <div class="form-group" ng-class="{ 'has-error': newstudent.FirstName.$dirty && newstudent.FirstName.$error.required }">
+                        <label for="LastName" class="control-label">Last Name </label>
+                        <input id="LastName" id="LastName" value="" type="text" placeholder="Last Name" name="LastName" ng-model="vmnew.LastName" minLength="2" maxLength="30" required class="form-control">
+            <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.required" class="help-block delete-red">Last Name is required</span>
+            <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.minlength" class="help-block delete-red">Last Name minLength = 2</span>
+            <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.maxlength" class="help-block delete-red">Last Name maxlength = 30</span>
                     </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-12">
-                    <div class="form-group">
-                        <label for="inputEmail" class="control-label">Email </label>
-                        <input id="inputEmail" type="text" placeholder="Email" name="Email" ng-model="vmnew.Email" minLength="2" maxLength="30" class="form-control">
+                    <div class="form-group" ng-class="{ 'has-error': newstudent.email.$dirty && newstudent.email.$error.required }">
+                        <div class="input-iconx">
+                            <label for="email" class="control-label">Email </label>
+                            <i class="fa fa-envelope"></i>
+                            <input type="email" id="email" name="email" value="" placeholder="Email" class="form-control" ng-model="vmnew.Email" required />
+                            <span ng-show="newstudent.email.$dirty && newstudent.email.$error.email" class="help-block  delete-red">Email is missing @ and/or a period</span>
+            <span ng-show="newstudent.email.$dirty && newstudent.email.$error.required" class="help-block delete-red">Email is required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group row">
+                        <label for="inputquickpick" class=" col-md-5 col-form-label">Quickpick </label>
+                        <div class="col-md-6">
+                            <select id="inputquickpick" type="text" name="quickpick" ng-model="vmnew.quickpickid" ng-change="vmnew.pick()" required class="form-control">
+                                <option 
+                                  ng-repeat="q in vmnew.quickpicks" 
+                                  placeholder="Select" 
+                                  ng-selected="{{iter.id==vmnew.quickpick}}" 
+                                  value="{{q.id}}">{{q.description}}</option>
+                    
+                            </select>
+                        </div>
+                        <div class="col-md-1" ng-if="vmnew.okpick()">
+                            <button type="button" ng-click="vmnew.clear()"><i class="far fa-times-circle"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div ng-if="vmnew.okpick()">
+                <div class="form-group row">
+                    <label for="ranktype" class="col-md-6 col-form-label">Rank type </label>
+                    <div class="col-md-6">{{vmnew.quickpick.ranktype}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="rank" class="col-md-6 col-form-label">Rank </label>
+                    <div class="col-md-6">{{vmnew.quickpick.rank}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="amt" class="col-md-6 col-form-label">Amount </label>
+                    <div class="col-md-6">{{vmnew.quickpick.amt}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="payOnDayOfMonth" class="col-md-6 col-form-label">DayOfMonth </label>
+                    <div class="col-md-6">{{vmnew.quickpick.payOnDayOfMonth}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="paymentPlan" class="col-md-6 col-form-label">Payment Plan </label>
+                    <div class="col-md-6">{{vmnew.quickpick.paymentPlan}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="class" class="col-md-6 col-form-label">Class</label>
+                    <div class="col-md-6">{{vmnew.quickpick.class}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="program" class="col-md-6 col-form-label">Program</label>
+                    <div class="col-md-6">{{vmnew.quickpick.program}}</div>
+                </div>
+                <div class="form-group row">
+                    <label for="payerName" class="col-md-6 col-form-label">Payer Name</label>
+                    <div class="col-md-6">
+                        <ui-select ng-model="vmnew.payerName" theme="bootstrap" reset-search-input="false" style="width: 230px;" title="Pick Payer" append-to-body="false">
+                            <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
+                            <ui-select-choices repeat="item in vmnew.payers | filter: $select.search track by $index" refresh="vmnew.getPayersPartial($select.search)" refresh-delay="0">
+                                <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
+                            </ui-select-choices>
+                            <ui-select-no-choice>
+                                Dang! We couldn't find any choices...
+                            </ui-select-no-choice>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-12">
+                        <newpayer-component></newpayer-component>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="PaymentType" class="col-md-6 col-form-label">Payment Type</label>
+                    <div class="input-icon right col-md-6">
+                        <select id="PaymentType" type="text" name="PaymentType" ng-model="vmnew.paymenttype" required class="form-control">
+                          <option ng-repeat="iter in vmnew.PaymentTypes" 
+                            ng-selected="{{iter.paymenttype==vmnew.paymenttype}}" 
+                          placeholder="Select" value="{{iter.paymenttype}}">{{iter.paymenttype}}</option>
+                        </select>
                     </div>
                 </div>
             </div>
@@ -30,7 +119,8 @@
     </form>
 </div>
 <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
+    <button ng-if="vmnew.oksubmit()" ng-hide="vmnew.thisstudent.student_id" class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
+<!--    <a ng-href="/#/form-layouts-editstudent/id/{{vmnew.thisstudent.student_id}}" ng-show="vmnew.thisstudent.student_id" class="btn btn-blue ">Edit {{vmnew.FirstName}}</a> -->
+    <button ng-show="vmnew.thisstudent.student_id" class="btn btn-primary" type="button" ng-click="vmnew.finish()">Edit {{vmnew.FirstName + ' ' + vmnew.LastName}}</button>
     <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
 </div>
-                      

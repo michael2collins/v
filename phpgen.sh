@@ -16,3 +16,4 @@ php2html ./source/client/admin/table-basic-classpgm.php  > ./source/client/admin
 php2html ./source/client/admin/table-basic-classtest.php  > ./source/client/admin/template/table-basic-classtest.html
 php2html ./source/client/admin/table-basic-program.php       > ./source/client/admin/template/table-basic-program.html
 php2html ./source/client/admin/table-basic-schedule.php> ./source/client/admin/template/table-basic-schedule.html
+php2html ./source/client/admin/table-quickpick.php> ./source/client/admin/template/table-quickpick.html

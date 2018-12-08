@@ -68,7 +68,7 @@ export class ModalPromotionInstanceController {
         var msg = 'grid row selected ' + row.entity;
         self.$log.debug(msg);
 
-        var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+        var selectedStudentarr = self.grid.api.selection.getSelectedRows();
         self.$log.debug('selected', selectedStudentarr);
         self.setSelectedArray(selectedStudentarr);
 

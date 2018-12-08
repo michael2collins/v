@@ -31,10 +31,8 @@ export class ModalNewStudentController {
 
     vmnewstudentmodal.modalInstance = vmnewstudentmodal.$uibModal.open({
       animation: vmnewstudentmodal.animationsEnabled,
-      //templateUrl: 'newStudent.html',
-      //controller: 'ModalNewStudentController as vmnew',
       component: 'newstudentinstComponent',
-      size: 'sm',
+      size: 'md',
       resolve: {
         classname: function() {
           vmnewstudentmodal.$log.debug('return from open');

@@ -430,6 +430,7 @@ class StudentClassDbHandler {
         cl.registrationtype ,
         cpa.isTestfeewaived,
         cpa.primaryContact,
+        cpa.id as classpayid,
         pp.payerName,
         pp.id as payerid
         from 
@@ -921,9 +922,9 @@ class StudentClassDbHandler {
         $stmt->close();
         return $res;
     }
-    public function getPaymentplan($payerid) {
+    public function getPaymentPlan($payerid) {
         
-        error_log( print_R("student for getPaymentplan is: " . $payerid . "\n", TRUE ),3, LOG);
+        error_log( print_R("student for getPaymentPlan is: " . $payerid . "\n", TRUE ),3, LOG);
         
         $sql = "SELECT paymentid, payerid,
             `paymenttype`, `PaymentNotes`, `PaymentPlan`, `PaymentAmount`, `PriceSetby`,
@@ -933,7 +934,7 @@ class StudentClassDbHandler {
             WHERE payerid = ?
                 ";
 
-        error_log( print_R("sql for getPaymentplan is: " . $sql . "\n", TRUE ),3, LOG);
+        error_log( print_R("sql for getPaymentPlan is: " . $sql . "\n", TRUE ),3, LOG);
 
         $stmt = $this->conn->prepare($sql);
             
@@ -1248,6 +1249,192 @@ class StudentClassDbHandler {
         }
 
     }
-    
+
+    public function updateQuickPick(
+        $id, $ranktype,$rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth, $mode, $description
+    ) {
+        error_log( print_R("updateQuickPick entered\n", TRUE ),3, LOG);
+                                      
+        $response = array();
+        global $school;
+
+        $sql = "INSERT INTO quickpick
+        ( 
+        ranktype,rank, rankid, classid, pgmid, paymentAmount, paymentPlan, payOnDayOfMonth,description, school
+        ) VALUES ";
+        $sql .= "  ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )";
+
+        // First check if  already existed in db
+        if ($mode == "insert") {
+            error_log( print_R("updateQuickPick do insert\n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ssssssssss",
+        $ranktype, $rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth,$description, $school
+                                     );
+                    // Check for successful insertion
+                    $result = $stmt->execute();
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                    }    
+                $stmt->close();
+
+                return $new_id;
+
+            } else {
+                error_log( print_R("insert quickpick failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+            }
+
+
+        } else {
+            //  with same  existed
+                $updsql = "UPDATE quickpick SET 
+        ranktype =?, rank=?, rankid=? classid=?, pgmid=?, paymentAmount=?, paymentPlan=?,
+         payOnDayOfMonth=?, description=?, school=?
+                WHERE id = ?  ";
+            error_log( print_R("updateQuickPick do update: $updsql     
+        $ranktype, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $paymenttype, $payOnDayOfMonth, $school, $mode, $id
+                \n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssssssssss",
+        $ranktype, $rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth,$description, $school,
+        $id
+                                 );
+                    $stmt->execute();
+                    $num_affected_rows = $stmt->affected_rows;
+                    $stmt->close();
+            } else {
+                error_log( print_R("update quickpick failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+                return -2;
+            }
+            
+            return $num_affected_rows;
+        }
+
+    }
+    public function removeQuickPick($id
+    ) {
+
+        error_log( print_R("removeQuickPick entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from quickpick  where id = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",
+                              $id
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+    public function getQuickPicks() {
+        
+        global $school;
+
+        $sql = " SELECT
+        q.id, ranktype, rank, rankid, q.classid, q.pgmid, paymentAmount, paymentPlan, payOnDayOfMonth, description,
+        c.class, p.class as program 
+            FROM quickpick q, nclass c, nclasslist p
+            where q.classid = c.id
+                and p.id = q.pgmid
+                and p.school = c.school
+                and c.school = q.school           
+                and q.school = ? 
+                ";
+
+        error_log( print_R("sql for getQuickPicks is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $school);
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    public function getQuickPick($id) {
+        
+        global $school;
+
+        $sql = " SELECT
+        q.id, ranktype, rank, rankid, q.classid, q.pgmid, paymentAmount, paymentPlan, payOnDayOfMonth, description,
+        c.class, p.class as program 
+            FROM quickpick q, nclass c, nclasslist p
+            where q.classid = c.id
+                and p.id = q.pgmid
+                and p.school = c.school
+                and c.school = q.school           
+                and q.school = ? 
+                and q.id = ?
+                ";
+
+        error_log( print_R("sql for getQuickPick is: " . $sql . "\n", TRUE ),3, LOG);
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",  $school, $id);
+            if ($stmt->execute()) {
+                $slists = $stmt->get_result();
+                error_log( print_R("getQuickPick list returns data", TRUE), 3, LOG);
+                error_log( print_R($slists, TRUE), 3, LOG);
+                $stmt->close();
+                return $slists;
+            } else {
+                error_log( print_R("getQuickPick list execute failed", TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            error_log( print_R("getQuickPick list sql failed", TRUE), 3, LOG);
+            printf("Errormessage: %s\n", $this->conn->error);
+            return NULL;
+        }
+
+
+    }
+
+    public function getPicklist() {
+        
+        global $school;
+
+        $sql = " SELECT a.class, b.class AS pgm, c.classid, c.pgmid, r.ranktype, r.ranklist, r.rankid
+            FROM nclass a, nclasslist b, nclasspgm c, classrank cr, ranklist r
+            WHERE a.id = c.classid
+            AND b.id = c.pgmid
+            AND a.school = b.school
+            AND a.school = c.school
+            AND cr.classid = c.classid
+            AND cr.rankid = r.rankid
+            AND r.school = a.school
+            AND cr.school = a.school
+            and a.school = ? 
+                ";
+
+        error_log( print_R("sql for getPicklist is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $school);
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+
 }
 ?>

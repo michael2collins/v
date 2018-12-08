@@ -17,6 +17,7 @@ import classtesttemplate from './template/table-basic-classtest.html';
 import programtemplate from './template/table-basic-program.html';
 import scheduletemplate from './template/table-basic-schedule.html';
 import rptbuildertemplate from './table-basic-rptbuilder.html';
+import quickpicktemplate from './template/table-quickpick.html';
 
 import { BasicTableBasicController } from './table-basic-basic';
 import { ClassRankTableBasicController } from './table-basic-classrank';
@@ -30,6 +31,7 @@ import { StripeTableBasicController } from './stripe-onboard';
 import { ClassPgmTableBasicController } from './table-basic-classpgm';
 import { TemplateTableBasicController } from './table-basic-htmltemplate';
 import { ScheduleTableBasicController } from './table-basic-schedule';
+import { QuickpickController } from './quickpick.controller';
 
 import { ClassServices } from '../../js/services/classServices';
 import { TestingServices } from '../../js/services/testingServices';
@@ -57,7 +59,8 @@ import {
     stripeonboardComponent,
     classpgmComponent,
     templateComponent,
-    scheduleComponent
+    scheduleComponent,
+    quickpickComponent
 }
 from './admin.component';
 
@@ -100,6 +103,7 @@ export const AdminModule = angular
     .controller('ClassPgmTableBasicController', ClassPgmTableBasicController)
     .controller('TemplateTableBasicController', TemplateTableBasicController)
     .controller('ScheduleTableBasicController', ScheduleTableBasicController)
+    .controller('QuickpickController', QuickpickController)
     .filter('iddropdown', iddropdown)
 
     .component('basicComponent', basicComponent)
@@ -114,6 +118,7 @@ export const AdminModule = angular
     .component('classpgmComponent', classpgmComponent)
     .component('templateComponent', templateComponent)
     .component('scheduleComponent', scheduleComponent)
+    .component('quickpickComponent', quickpickComponent)
     .config(rptconfig)
     .name;
 
@@ -552,6 +557,7 @@ function config($routeProvider) {
         .when('/table-basic-program', { template: programtemplate })
         .when('/table-basic-rptbuilder', { template: rptbuildertemplate })
         .when('/table-basic-schedule', { template: scheduletemplate })
+        .when('/table-quickpick', { template: quickpicktemplate })
         .otherwise({
             redirectTo: '/page-signin'
             //           redirectTo: '/'

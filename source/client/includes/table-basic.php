@@ -20,6 +20,7 @@ function strColTemplate( $parameters = array() ) {
 
     $def = array(
         'required' => false,
+        'readonly' => false,
         'fieldtype' => 'text'
      );
      
@@ -37,6 +38,7 @@ function strColTemplate( $parameters = array() ) {
                     name="<?=$param['field']?>" 
                     ng-model="<?=$param['model']?>" 
                     <?=($param['required']  ? 'required' : '')?> 
+                    <?=($param['readonly']  ? 'readonly="readonly"' : '')?> 
                     class="form-control">
         </div>
     </div>

@@ -246,9 +246,6 @@ export class StudentServices {
         var request = self.$http({
             method: "POST",
             url: path,
-            //    params: {
-            //        action: "add"
-            //    },
             data: {
                 thedata: thedata
             }

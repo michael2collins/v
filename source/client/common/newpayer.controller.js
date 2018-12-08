@@ -31,7 +31,7 @@ export class ModalNewPayerController {
       animation: vmnewPayermodal.animationsEnabled,
 //      templateUrl: 'newPayer.html',
 //      controller: 'ModalNewPayerInstanceController as vmnew',
-      component: 'newpayerComponent',
+      component: 'newpayerinstComponent',
       //todo add newpayer component
       size: 'sm',
       resolve: {

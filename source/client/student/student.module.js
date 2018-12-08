@@ -4,8 +4,8 @@ import editstudenttempate from './form-layouts-editstudent.html';
 
 
 import { editstudentComponent } from './editstudent.component';
-import { newpayerComponent } from './newpayer.component';
-import { newpayerinstComponent } from './newpayerinst.component';
+//import { newpayerComponent } from './newpayer.component';
+//import { newpayerinstComponent } from './newpayerinst.component';
 import { newstudentComponent } from './newstudent.component';
 import { newstudentinstComponent } from './newstudentinst.component';
 import { studentclassComponent } from './studentclass.component';
@@ -16,8 +16,8 @@ import { studentpaymentComponent } from './studentpayment.component';
 import { studenttableComponent } from './studenttable.component';
 
 import { StudentPaymentController } from './studentpayment.controller';
-import { ModalNewPayerController } from './newpayer.controller';
-import { ModalNewPayerInstanceController } from './newpayerinst.controller';
+//import { ModalNewPayerController } from './newpayer.controller';
+//import { ModalNewPayerInstanceController } from './newpayerinst.controller';
 import { ModalNewStudentController } from './newstudent.controller';
 import { ModalNewStudentInstanceController } from './newstudentinst.controller';
 import { StudentClassController } from './studentclass.controller';
@@ -47,8 +47,8 @@ export const StudentModule = angular
  .service('TestingServices', TestingServices)
  .service('Util', Util)
  .controller('StudentPaymentController', StudentPaymentController)
- .controller('ModalNewPayerController', ModalNewPayerController)
- .controller('ModalNewPayerInstanceController', ModalNewPayerInstanceController)
+// .controller('ModalNewPayerController', ModalNewPayerController)
+// .controller('ModalNewPayerInstanceController', ModalNewPayerInstanceController)
  .controller('ModalNewStudentController', ModalNewStudentController)
  .controller('ModalNewStudentInstanceController', ModalNewStudentInstanceController)
  .controller('StudentClassController', StudentClassController)
@@ -58,8 +58,8 @@ export const StudentModule = angular
  .controller('ctrlDualList', ctrlDualList)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
  .component('editstudentComponent', editstudentComponent)
- .component('newpayerComponent', newpayerComponent)
- .component('newpayerinstComponent', newpayerinstComponent)
+// .component('newpayerComponent', newpayerComponent)
+// .component('newpayerinstComponent', newpayerinstComponent)
  .component('newstudentComponent', newstudentComponent)
  .component('newstudentinstComponent', newstudentinstComponent)
  .component('studentclassComponent', studentclassComponent)

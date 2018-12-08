@@ -52,7 +52,6 @@ $app->get('/studentclass/myclass/:class/mypgm/:pgm', 'authenticate', function( $
         echoRespnse(404, $response);
     }
 });
-    
 
 $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
     //  global $user_id;
@@ -81,6 +80,7 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
             $tmp["payerName"] = $slist["payerName"];
             $tmp["payerid"] = $slist["payerid"];
             $tmp["primaryContact"] = $slist["primaryContact"];
+            $tmp["classpayid"] = $slist["classpayid"];
             
         } else {
             $tmp["contactID"] = "NULL";
@@ -95,6 +95,8 @@ $app->get('/studentclasslist/:id', 'authenticate', function($student_id) {
             $tmp["payerName"] = "NULL";
             $tmp["payerid"] = "NULL";
             $tmp["primaryContact"] = "NULL";
+            $tmp["classpayid"] = "NULL";
+            
         }
         array_push($response["studentclasslist"], $tmp);
     }
@@ -375,8 +377,7 @@ $app->put('/studentclasspaylist/:id', 'authenticate', function($student_id) use(
     }
     echoRespnse(200, $response);
 });
-
-
+/*
 $app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm', 'authenticate', function($student_id, $classseq, $pgmseq) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
@@ -417,8 +418,7 @@ $app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm', 'authenticate', func
     }
     echoRespnse(200, $response);
 });
-
-
+*/
 $app->get('/studentclasslist', 'authenticate', function() {
     $response = array();
     $db = new StudentClassDbHandler();
@@ -459,7 +459,6 @@ $app->get('/studentclasslist', 'authenticate', function() {
     echoRespnse(200, $response);
 });
 
-
 $app->get('/studentclasspaylist', 'authenticate', function() {
     $response = array();
     $db = new StudentClassDbHandler();
@@ -496,7 +495,6 @@ $app->get('/studentclasspaylist', 'authenticate', function() {
 
     echoRespnse(200, $response);
 });
-
 
 $app->get('/studentclassstatuses', 'authenticate', function() {
     $response = array();
@@ -541,6 +539,7 @@ $app->get('/studentclasspicture/:picID', 'authenticate', function($picID) {
 
     echoRespnse(200, $response);
 });
+
 $app->get('/studentclasspicturelist/:student_id', 'authenticate', function($student_id) {
     $response = array();
     $db = new StudentClassDbHandler();
@@ -1292,5 +1291,239 @@ $app->delete('/payer','authenticate', function() use ($app) {
 
 });
 
+$app->post('/quickpick', 'authenticate', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("quickpick before insert\n", TRUE ), 3, LOG);
+//        id, ranktype, rankid, classid, pgmid, paymentAmount, paymentPlan, paymenttype, payOnDayOfMonth
+
+    $id = (isset($dataJsonDecode->thedata->id) ? $dataJsonDecode->thedata->id : "");
+    $ranktype = (isset($dataJsonDecode->thedata->ranktype) ? $dataJsonDecode->thedata->ranktype : "");
+    $rank = (isset($dataJsonDecode->thedata->rank) ? $dataJsonDecode->thedata->rank : "");
+    $rankid = (isset($dataJsonDecode->thedata->rankid) ? $dataJsonDecode->thedata->rankid : "");
+    $classid = (isset($dataJsonDecode->thedata->classid) ? $dataJsonDecode->thedata->classid : "");
+    $pgmid = (isset($dataJsonDecode->thedata->pgmid) ? $dataJsonDecode->thedata->pgmid : "");
+    $paymentAmount = (isset($dataJsonDecode->thedata->paymentAmount) ? $dataJsonDecode->thedata->paymentAmount : "");
+    $paymentPlan = (isset($dataJsonDecode->thedata->paymentPlan) ? $dataJsonDecode->thedata->paymentPlan : "");
+    $payOnDayOfMonth = (isset($dataJsonDecode->thedata->payOnDayOfMonth) ? $dataJsonDecode->thedata->payOnDayOfMonth : "");
+    $mode = (isset($dataJsonDecode->thedata->mode) ? $dataJsonDecode->thedata->mode : "");
+    $description = (isset($dataJsonDecode->thedata->description) ? $dataJsonDecode->thedata->description : "");
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // updating task
+    $result = $db->updateQuickPick(
+        $id, $ranktype,$rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth, $mode, $description
+                                );
+
+    if ($result > -1) {
+        $response["error"] = false;
+        $response["message"] = "updateQuickPick created successfully";
+        $response["result"] = $result;
+        error_log( print_R("updateQuickPick created: $result\n", TRUE ), 3, LOG);
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after updateQuickPick result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $response["error"] = true;
+        $response["message"] = "Failed to create updateQuickPick. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+$app->delete('/quickpick','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("quickpick before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+    $id = (isset($test->thedata->id) ? $test->thedata->id : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+
+    $QuickPick_good=0;
+    $QuickPick_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // removing QuickPick
+    $qid = $db->removeQuickPick(
+        $id
+                                );
+
+    if ($qid > 0) {
+        error_log( print_R("QuickPick removed for: $id \n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "QuickPick removed successfully";
+        $QuickPick_good = 1;
+        $response["quickpick"] = $QuickPick_good;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete QuickPick result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $id, TRUE), 3, LOG);
+        $QuickPick_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove QuickPick. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->get('/quickpicks', 'authenticate', function() {
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getQuickPicks();
+
+    $response["error"] = false;
+    $response["quickpicks"] = array();
+
+//        id, ranktype, rankid, classid, pgmid, paymentAmount, paymentPlan, paymenttype, payOnDayOfMonth
+
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+            $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["pgmid"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+            $tmp["amt"] = (empty($slist["paymentAmount"]) ? "NULL" : $slist["paymentAmount"]);
+            $tmp["paymentPlan"] = (empty($slist["paymentPlan"]) ? "NULL" : $slist["paymentPlan"]);
+            $tmp["payOnDayOfMonth"] = (empty($slist["payOnDayOfMonth"]) ? "NULL" : $slist["payOnDayOfMonth"]);
+            $tmp["description"] = (empty($slist["description"]) ? "NULL" : $slist["description"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["program"] = (empty($slist["program"]) ? "NULL" : $slist["program"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["ranktype"] = "NULL";
+            $tmp["rank"] = "NULL";
+            $tmp["rankid"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["pgmid"] = "NULL";
+            $tmp["amt"] = "NULL";
+            $tmp["paymentPlan"] = "NULL";
+            $tmp["payOnDayOfMonth"] = "NULL";
+            $tmp["description"] = "NULL";
+            $tmp["class"] = "NULL";
+            $tmp["program"] = "NULL";
+        }
+        array_push($response["quickpicks"], $tmp);
+    }
+
+    echoRespnse(200, $response);
+});
+
+$app->get('/quickpick', 'authenticate', function() use ($app) {
+    $response = array();
+
+    $allGetVars = $app->request->get();
+    error_log( print_R("quickpick entered:\n ", TRUE), 3, LOG);
+    error_log( print_R($allGetVars, TRUE), 3, LOG);
+
+    $id = '';
+
+    if(array_key_exists('id', $allGetVars)){
+        $id = $allGetVars['id'];
+    }
+
+    error_log( print_R("quickpick params: id: $id \n ", TRUE), 3, LOG);
+    
+    $db = new StudentClassDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getQuickPick($id);
+
+    $response["error"] = false;
+    $response["quickpick"] = array();
+
+//        id, ranktype, rankid, classid, pgmid, paymentAmount, paymentPlan, paymenttype, payOnDayOfMonth
+
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+            $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["pgmid"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+            $tmp["amt"] = (empty($slist["paymentAmount"]) ? "NULL" : $slist["paymentAmount"]);
+            $tmp["paymentPlan"] = (empty($slist["paymentPlan"]) ? "NULL" : $slist["paymentPlan"]);
+            $tmp["payOnDayOfMonth"] = (empty($slist["payOnDayOfMonth"]) ? "NULL" : $slist["payOnDayOfMonth"]);
+            $tmp["description"] = (empty($slist["description"]) ? "NULL" : $slist["description"]);
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["program"] = (empty($slist["program"]) ? "NULL" : $slist["program"]);
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["ranktype"] = "NULL";
+            $tmp["rank"] = "NULL";
+            $tmp["rankid"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["pgmid"] = "NULL";
+            $tmp["amt"] = "NULL";
+            $tmp["paymentPlan"] = "NULL";
+            $tmp["payOnDayOfMonth"] = "NULL";
+            $tmp["description"] = "NULL";
+            $tmp["class"] = "NULL";
+            $tmp["program"] = "NULL";
+        }
+        array_push($response["quickpick"], $tmp);
+    }
+
+    echoRespnse(200, $response);
+});
+
+$app->get('/picklist', 'authenticate', function() {
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getPicklist();
+
+    $response["error"] = false;
+    $response["picklist"] = array();
+
+//class pgm classid pgmid ranktype ranklist rankid
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
+            $tmp["pgm"] = (empty($slist["pgm"]) ? "NULL" : $slist["pgm"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["pgmid"] = (empty($slist["pgmid"]) ? "NULL" : $slist["pgmid"]);
+            $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
+            $tmp["ranklist"] = (empty($slist["ranklist"]) ? "NULL" : $slist["ranklist"]);
+            $tmp["rankid"] = (empty($slist["rankid"]) ? "NULL" : $slist["rankid"]);
+        } else {
+            $tmp["class"] = "NULL";
+            $tmp["pgm"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["pgmid"] = "NULL";
+            $tmp["ranktype"] = "NULL";
+            $tmp["ranklist"] = "NULL";
+            $tmp["rankid"] = "NULL";
+        }
+        array_push($response["picklist"], $tmp);
+    }
+
+    echoRespnse(200, $response);
+});
 
 ?>

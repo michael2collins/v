@@ -44,11 +44,6 @@ export class StudentClassController {
         vmclass.classlistpath = '../v1/studentclasslist';
         vmclass.classstatuspath = '../v1/studentclassstatuses';
 
-        vmclass.setclasspath = '../v1/studentclass/id/' +
-            vmclass.$routeParams.id +
-            '/myclass/' +
-            vmclass.$routeParams.myclass;
-
         vmclass.studentclass.contactID = vmclass.$routeParams.id;
 
         vmclass.activate();
@@ -406,6 +401,8 @@ export class StudentClassController {
 
     }
 
+//studenreg handles now
+/*
     setStudentClass(mystudent, myclassid, mypgmid) {
         var vmclass = this;
         var setclasspath = '../v1/studentclass/id/' +
@@ -426,4 +423,5 @@ export class StudentClassController {
             vmclass.$log.debug(data);
         });
     }
+    */
 }

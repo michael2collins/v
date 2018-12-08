@@ -45,7 +45,7 @@ export class ClassTestTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-basic dismissed");
+        this.$log.debug("table-basic-classtest dismissed");
         this.$log.debugEnabled(false);
     }
 

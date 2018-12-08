@@ -12,7 +12,27 @@
                 <div class="panel-body pan">
                   <form action="" novalidate name="editstudent" class="form-horizontal">
                     <div class="form-body pal">
-                      <h3 class="block-heading">Student Information</h3>
+                      <div class="col-md-12">
+                        <div class="col-md-11">
+                          <h3 class="block-heading">Student Information</h3>
+                        </div>
+<div id="modal-confirm" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade ng-scope" style="display: none;">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">Are you sure?</div>
+      <div class="modal-footer">
+        <button type="button" data-dismiss="modal" class="btn">Cancel</button>
+        <button type="button" data-dismiss="modal" ng-click="$ctrl.removeStudent()" class="btn btn-red">Delete {{$ctrl.students.FirstName + ' ' + $ctrl.students.LastName}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+                        <div class="col-md-1">
+                        <button type="button" data-target="#modal-confirm" data-toggle="modal" class="btn btn-red"><i class="far fa-trash-alt"></i>&nbsp; Student</button>
+                        </div>
+
+                      </div>
+
                       <div id="studentid" ng-model="$ctrl.students.ID">{{$ctrl.students.ID}}</div>
                       <div class="row">
                         <div class="col-md-6">
@@ -411,8 +431,7 @@
                           <div class="portlet-body">
                             <div class="table-tools">
                               <div class="row col-md-offset-10 mbs">
-                                <button type="button" class="btn btn-blue mrs mts" 
-                                ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
                               </div>
                             </div>
                             <div class="row">
@@ -501,8 +520,7 @@
                             <label for="inputShirtSize" class="control-label">Shirt Size </label>
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ShirtSize.$dirty" ng-class="editstudent.ShirtSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="$ctrl.students.ShirtSize" ng-change="$ctrl.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
+                              <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="$ctrl.students.ShirtSize" ng-change="$ctrl.updateStudent()" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                 <option ng-repeat="iter in $ctrl.StudentList.ShirtSizeList" ng-selected="{{iter.listkey==$ctrl.students.ShirtSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
                               </select>
                             </div>
