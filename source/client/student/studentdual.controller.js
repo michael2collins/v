@@ -47,18 +47,18 @@ export class ctrlDualList {
          { id: 13, colname: 'Notes', default: 'false' },
          { id: 14, colname: 'Birthday', default: 'false' },
          { id: 15, colname: 'BeltSize', default: 'false' },
-         { id: 16, colname: 'InstructorPaymentFree', default: 'false' },
-         { id: 17, colname: 'ContactType', default: 'false' },
-         { id: 18, colname: 'InstructorFlag', default: 'false' },
-         { id: 19, colname: 'quickbooklink', default: 'false' },
-         { id: 20, colname: 'instructorTitle', default: 'false' },
-         { id: 21, colname: 'sex', default: 'false' },
-         { id: 22, colname: 'medicalConcerns', default: 'false' },
-         { id: 23, colname: 'GuiSize', default: 'false' },
-         { id: 24, colname: 'studentclassstatus', default: 'false' },
-         { id: 25, colname: 'LastPromoted', default: 'false' },
-         { id: 26, colname: 'currentrank', default: 'false' },
-         { id: 27, colname: 'ranktype', default: 'false' }
+//         { id: 16, colname: 'InstructorPaymentFree', default: 'false' },
+         { id: 16, colname: 'ContactType', default: 'false' },
+         { id: 17, colname: 'InstructorFlag', default: 'false' },
+         { id: 18, colname: 'quickbooklink', default: 'false' },
+         { id: 19, colname: 'instructorTitle', default: 'false' },
+         { id: 20, colname: 'sex', default: 'false' },
+         { id: 21, colname: 'medicalConcerns', default: 'false' },
+         { id: 22, colname: 'GuiSize', default: 'false' },
+         { id: 23, colname: 'studentclassstatus', default: 'false' },
+//         { id: 24, colname: 'LastPromoted', default: 'false' },
+//         { id: 25, colname: 'currentrank', default: 'false' },
+         { id: 24, colname: 'ranktype', default: 'false' }
       ];
       vmDual.items = vmDual.userData;
 

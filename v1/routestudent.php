@@ -124,7 +124,6 @@ $app->get('/eventnames', 'authenticate', function() use ($app) {
     
 });
 
-
 $app->get('/eventdetails', 'authenticate', function() use($app){
 /**
  * Listing event details for an event
@@ -626,6 +625,224 @@ $app->get('/studentrank', 'authenticate', function() use ($app) {
     
 });
 
+$app->get('/studentcols', 'authenticate', function() use ($app) {
+
+    error_log( print_R("studentcols entered:\n ", TRUE), 3, LOG);
+
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getStudentCols();
+    $response["error"] = false;
+    $response["studentcollist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+//        error_log( print_R("slist\n ", TRUE), 3, LOG);
+//        error_log( print_R($slist, TRUE), 3, LOG);
+//        error_log( print_R("\n ", TRUE), 3, LOG);
+        
+            $tmp["field"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
+            $tmp["id"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
+            $tmp["value"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
+            $tmp["type"] = (empty($slist["Type"]) ? "NULL" : $slist["Type"]);
+            $tmp["nulltype"] = (empty($slist["is_nullable"]) ? " " : $slist["is_nullable"]);
+        array_push($response["studentcollist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+$app->get('/studentcolmap', 'authenticate', function() use ($app) {
+
+    error_log( print_R("studentcolmap entered:\n ", TRUE), 3, LOG);
+
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getStudentColMap();
+    $response["error"] = false;
+    $response["studentcolmaplist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+//        error_log( print_R("slist\n ", TRUE), 3, LOG);
+//        error_log( print_R($slist, TRUE), 3, LOG);
+//        error_log( print_R("\n ", TRUE), 3, LOG);
+        
+            $tmp["name"] = (empty($slist["name"]) ? "NULL" : $slist["name"]);
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+        array_push($response["studentcolmaplist"], $tmp);
+    }
+        //send no errors
+        echoRespnse(200, $response);
+    
+});
+$app->delete('/studentcolmap','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("Studentcolmap before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+
+    $ID    = (isset($test->thedata->id) ? 
+                    $test->thedata->id : "");
+    $all    = (isset($test->thedata->all) ? 
+                    $test->thedata->all : "");
+
+    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+
+    $StudentColMapgood=0;
+    $StudentColMapbad=0;
+
+    $db = new StudentDbHandler();
+
+        $StudentColMap = $db->removeStudentColMap(
+            $ID, $all
+                                    );
+    
+        if ($StudentColMap > 0) {
+            error_log( print_R("StudentColMap removed: $StudentColMap\n", TRUE ), 3, LOG);
+            $response["error"] = false;
+            $response["message"] = "StudentColMap removed successfully";
+            $StudentColMapgood = 1;
+            $response["StudentColMap"] = $StudentColMapgood;
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after delete StudentColMap result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $StudentColMap, TRUE), 3, LOG);
+            $StudentColMapbad = 1;
+            $response["error"] = true;
+            $response["message"] = "Failed to remove StudentColMap. Please try again";
+            echoRespnse(400, $response);
+        }
+});
+$app->post('/studentcolmap','authenticate',  function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("studentcolmap post before update insert\n", TRUE ), 3, LOG);
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    error_log( print_R($thedata, TRUE ), 3, LOG);
+// listtype, listkey, listvalue, listorder 
+
+    $all          = (isset($dataJsonDecode->thedata->all)         ? $dataJsonDecode->thedata->all : "");
+    $id          = (isset($dataJsonDecode->thedata->id)         ? $dataJsonDecode->thedata->id : "");
+    $type  = (isset($dataJsonDecode->thedata->type)     ? $dataJsonDecode->thedata->type : "");
+    $name  = (isset($dataJsonDecode->thedata->name)       ? $dataJsonDecode->thedata->name : "");
+
+    $db = new StudentDbHandler();
+    $response = array();
+    // updating task
+    $res_id = $db->updateStudentColMap(
+        $id, $type, $name, $all
+                                     );
+    error_log( print_R($res_id, TRUE ), 3, LOG);
+    error_log( print_R("\n", TRUE ), 3, LOG);
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "StudentColMap created successfully";
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("StudentColMap created: \n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "StudentColMap updated successfully";
+            error_log( print_R("StudentColMap already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
+    } else {
+        error_log( print_R("after StudentColMap result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create StudentColMap. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->get('/samplestudents', 'authenticate', function() use($app){
+
+    checkSecurity();
+    global $user_id;
+    
+    error_log( print_R("samplestudents entered:\n ", TRUE), 3, LOG);
+
+    $response = array();
+
+    $db = new StudentDbHandler();
+
+    $result = $db->getSampleStudents();
+
+    $response["error"] = false;
+    $response["students"] = array();
+
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+//        $tmp["ID"] = $slist["ID"];
+        $tmp["externalid"] = 'x' . $slist["ID"];
+        $tmp["LastName"] = $slist["LastName"];
+        $tmp["FirstName"] = $slist["FirstName"];
+        $tmp["Email"] = $slist["Email"];
+        $tmp["Email2"] = $slist["Email2"];
+        $tmp["Parent"] = $slist["Parent"];
+        $tmp["Phone"] = $slist["Phone"];
+        $tmp["AltPhone"] = $slist["AltPhone"];
+        $tmp["Address"] = $slist["Address"];
+        $tmp["City"] = $slist["City"];
+        $tmp["State"] = $slist["State"];
+        $tmp["ZIP"] = $slist["ZIP"];
+        $tmp["Notes"] = $slist["Notes"];
+        $tmp["Birthday"] = $slist["Birthday"];
+        $tmp["BeltSize"] = $slist["BeltSize"];
+//        $tmp["InstructorPaymentFree"] = $slist["InstructorPaymentFree"];
+        $tmp["ContactType"] = $slist["ContactType"];
+//        $tmp["include"] = $slist["include"];
+        $tmp["quickbooklink"] = $slist["quickbooklink"];
+        $tmp["instructorTitle"] = $slist["instructorTitle"];
+//        $tmp["bdayinclude"] = $slist["bdayinclude"];
+        $tmp["sex"] = $slist["sex"];
+        $tmp["medicalConcerns"] = $slist["medicalConcerns"];
+        $tmp["GuiSize"]= $slist["GuiSize"];
+        $tmp["ShirtSize"] = $slist["ShirtSize"];
+        $tmp["phoneExt"] = $slist["phoneExt"];
+        $tmp["altPhoneExt"] = $slist["altPhoneExt"];
+//        $tmp["StudentSchool"] = $slist["StudentSchool"];
+        $tmp["EmergencyContact"] = $slist["EmergencyContact"];
+        $tmp["pictureurl"] = $slist["pictureurl"];
+//        $tmp["nextScheduledTest"] = $slist["nextScheduledTest"];
+        array_push($response["students"], $tmp);
+        
+
+//CurrentRank
+//LastPromoted
+//testDate
+//testTime
+ 
+    }
+
+
+        echoRespnse(200, $response);
+
+});
+
 $app->post('/studentrank', 'authenticate', function() use ($app) {
 
     $response = array();
@@ -968,6 +1185,13 @@ $app->get('/contacttypes', 'authenticate', function() {
 
 $app->get('/students/:id', 'authenticate', function($student_id) {
     //  global $user_id;
+
+    if (!isset($student_id)) {
+        $response["error"] = true;
+        $response["message"] = "Missing studentid";
+        echoRespnse(404, $response);
+    }
+
     $response = array();
     $db = new StudentDbHandler();
 
@@ -991,12 +1215,12 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
         $response["Notes"] = $result["Notes"];
         $response["Birthday"] = $result["Birthday"];
         $response["BeltSize"] = $result["BeltSize"];
-        $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
+//        $response["InstructorPaymentFree"] = $result["InstructorPaymentFree"];
         $response["ContactType"] = $result["ContactType"];
-        $response["include"] = $result["include"];
+//        $response["include"] = $result["include"];
         $response["quickbooklink"] = $result["quickbooklink"];
         $response["instructorTitle"] = $result["instructorTitle"];
-        $response["bdayinclude"] = $result["bdayinclude"];
+ //       $response["bdayinclude"] = $result["bdayinclude"];
         $response["sex"] = $result["sex"];
         $response["medicalConcerns"] = $result["medicalConcerns"];
         $response["GuiSize"]= $result["GuiSize"];
@@ -1006,7 +1230,7 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
         $response["StudentSchool"] = $result["StudentSchool"];
         $response["EmergencyContact"] = $result["EmergencyContact"];
         $response["pictureurl"] = $result["pictureurl"];
-        $response["nextScheduledTest"] = $result["nextScheduledTest"];
+//        $response["nextScheduledTest"] = $result["nextScheduledTest"];
         $response["message"] = "Student retrieved";
         echoRespnse(200, $response);
     } else {
@@ -1101,7 +1325,7 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     $GuiSize = $student->GuiSize;
     $ShirtSize = $student->ShirtSize;
     $BeltSize = $student->BeltSize;
-    $InstructorPaymentFree = $student->InstructorPaymentFree;
+//    $InstructorPaymentFree = $student->InstructorPaymentFree;
     $instructorTitle = $student->instructorTitle;
     $pictureurl = $student->pictureurl;
 
@@ -1143,7 +1367,7 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
                                  $GuiSize,
                                  $ShirtSize,
                                  $BeltSize,
-                                 $InstructorPaymentFree,
+//                                 $InstructorPaymentFree,
                                  $instructorTitle,
                                  $pictureurl
 
@@ -1330,12 +1554,12 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["ZIP"] = (empty($slist["ZIP"]) ? "NULL" : $slist["ZIP"]);
         $tmp["Notes"] = (empty($slist["Notes"]) ? "NULL" : $slist["Notes"]);
         $tmp["BeltSize"] = (empty($slist["BeltSize"]) ? "NULL" : $slist["BeltSize"]);
-        $tmp["InstructorPaymentFree"] = (empty($slist["InstructorPaymentFree"]) ? "NULL" : $slist["InstructorPaymentFree"]);
+//        $tmp["InstructorPaymentFree"] = (empty($slist["InstructorPaymentFree"]) ? "NULL" : $slist["InstructorPaymentFree"]);
         $tmp["ContactType"] = (empty($slist["ContactType"]) ? "NULL" : $slist["ContactType"]);
-        $tmp["include"] = (empty($slist["include"]) ? "NULL" : $slist["include"]);
+//        $tmp["include"] = (empty($slist["include"]) ? "NULL" : $slist["include"]);
         $tmp["quickbooklink"] = (empty($slist["quickbooklink"]) ? "NULL" : $slist["quickbooklink"]);
         $tmp["instructorTitle"] = (empty($slist["instructorTitle"]) ? "NULL" : $slist["instructorTitle"]);
-        $tmp["bdayinclude"] = (empty($slist["bdayinclude"]) ? "NULL" : $slist["bdayinclude"]);
+//        $tmp["bdayinclude"] = (empty($slist["bdayinclude"]) ? "NULL" : $slist["bdayinclude"]);
         $tmp["sex"] = (empty($slist["sex"]) ? "NULL" : $slist["sex"]);
         $tmp["medicalConcerns"] = (empty($slist["medicalConcerns"]) ? "NULL" : $slist["medicalConcerns"]);
         $tmp["GuiSize"] = (empty($slist["GuiSize"]) ? "NULL" : $slist["GuiSize"]);
@@ -1344,7 +1568,7 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["altPhoneExt"] = (empty($slist["altPhoneExt"]) ? "NULL" : $slist["altPhoneExt"]);
         $tmp["StudentSchool"] = (empty($slist["StudentSchool"]) ? "NULL" : $slist["StudentSchool"]);
         $tmp["EmergencyContact"] = (empty($slist["EmergencyContact"]) ? "NULL" : $slist["EmergencyContact"]);
-        $tmp["nextScheduledTest"] = (empty($slist["nextScheduledTest"]) ? "NULL" : $slist["nextScheduledTest"]);
+ //       $tmp["nextScheduledTest"] = (empty($slist["nextScheduledTest"]) ? "NULL" : $slist["nextScheduledTest"]);
         $tmp["contactpictureurl"] = (empty($slist["contactpictureurl"]) ? "NULL" : $slist["contactpictureurl"]);
         $tmp["nclassid"] = (empty($slist["nclassid"]) ? "NULL" : $slist["nclassid"]);
         $tmp["nclass"] = (empty($slist["nclass"]) ? "NULL" : $slist["nclass"]);
@@ -1388,12 +1612,12 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["ZIP"] = "NULL";
         $tmp["Notes"] = "NULL";
         $tmp["BeltSize"] = "NULL";
-        $tmp["InstructorPaymentFree"] = "NULL";
+//        $tmp["InstructorPaymentFree"] = "NULL";
         $tmp["ContactType"] = "NULL";
-        $tmp["include"] = "NULL";
+//        $tmp["include"] = "NULL";
         $tmp["quickbooklink"] = "NULL";
         $tmp["instructorTitle"] = "NULL";
-        $tmp["bdayinclude"] = "NULL";
+//        $tmp["bdayinclude"] = "NULL";
         $tmp["sex"] = "NULL";
         $tmp["medicalConcerns"] = "NULL";
         $tmp["GuiSize"] = "NULL";
@@ -1402,7 +1626,7 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
         $tmp["altPhoneExt"] = "NULL";
         $tmp["StudentSchool"] = "NULL";
         $tmp["EmergencyContact"] = "NULL";
-        $tmp["nextScheduledTest"] = "NULL";
+//        $tmp["nextScheduledTest"] = "NULL";
         $tmp["contactpictureurl"] = "NULL";
         $tmp["nclassid"] = "NULL";
         $tmp["nclass"] = "NULL";
@@ -3762,6 +3986,105 @@ $app->get('/revokestripe', 'authenticate',  function() use ($app) {
 
 
 });
+
+$app->post('/bulkstudent', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("bulkstudent before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    
+
+
+    $studentgood=0;
+    $studentbad=0;
+    $studentexists=0;
+    
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $externalid = (isset($studentarr[$i]->externalid) ? $studentarr[$i]->externalid : "");
+        $LastName = (isset($studentarr[$i]->LastName) ? $studentarr[$i]->LastName : "");
+        $FirstName = (isset($studentarr[$i]->FirstName) ? $studentarr[$i]->FirstName : "");
+        $Email = (isset($studentarr[$i]->Email) ? $studentarr[$i]->Email : "");
+        $Email2 = (isset($studentarr[$i]->Email2) ? $studentarr[$i]->Email2 : "");
+        $Phone = (isset($studentarr[$i]->Phone) ? $studentarr[$i]->Phone : "");
+        $AltPhone = (isset($studentarr[$i]->AltPhone) ? $studentarr[$i]->AltPhone : "");
+        $phoneExt = (isset($studentarr[$i]->phoneExt) ? $studentarr[$i]->phoneExt : "");
+        $altPhoneExt = (isset($studentarr[$i]->altPhoneExt) ? $studentarr[$i]->altPhoneExt : "");
+        $Birthday = (isset($studentarr[$i]->Birthday) ? $studentarr[$i]->Birthday : "01/01/1900");
+        $sex = (isset($studentarr[$i]->sex) ? $studentarr[$i]->sex : "");
+        $Parent = (isset($studentarr[$i]->Parent) ? $studentarr[$i]->Parent : "");
+        $EmergencyContact = (isset($studentarr[$i]->EmergencyContact) ? $studentarr[$i]->EmergencyContact : "");
+        $Notes = (isset($studentarr[$i]->Notes) ? $studentarr[$i]->Notes : "");
+        $medicalConcerns = (isset($studentarr[$i]->medicalConcerns) ? $studentarr[$i]->medicalConcerns : "");
+        $Address = (isset($studentarr[$i]->Address) ? $studentarr[$i]->Address : "");
+        $City = (isset($studentarr[$i]->City) ? $studentarr[$i]->City : "");
+        $State = (isset($studentarr[$i]->State) ? $studentarr[$i]->State : "");
+        $ZIP = (isset($studentarr[$i]->ZIP) ? $studentarr[$i]->ZIP : "");
+        $ContactType = (isset($studentarr[$i]->ContactType) ? $studentarr[$i]->ContactType : "");
+        $quickbooklink = (isset($studentarr[$i]->quickbooklink) ? $studentarr[$i]->quickbooklink : "");
+        $GuiSize = (isset($studentarr[$i]->GuiSize) ? $studentarr[$i]->GuiSize : "");
+        $ShirtSize = (isset($studentarr[$i]->ShirtSize) ? $studentarr[$i]->ShirtSize : "");
+        $BeltSize = (isset($studentarr[$i]->BeltSize) ? $studentarr[$i]->BeltSize : "");
+        $pictureurl = (isset($studentarr[$i]->pictureurl) ? $studentarr[$i]->pictureurl : "");
+
+
+        $db = new StudentDbHandler();
+        $response = array();
+
+    $student = $db->createFullStudent(
+		$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt,
+		$altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns,
+		$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, $BeltSize, $pictureurl
+                                );    
+
+        if ($student > 0) {
+            error_log( print_R("createFullStudent created: $student\n", TRUE ), 3, LOG);
+            $studentgood += 1;
+        } else if ($student == RECORD_ALREADY_EXISTED) {
+            error_log( print_R("createFullStudent already existed\n", TRUE ), 3, LOG);
+            $studentexists += 1;
+        } else {
+            error_log( print_R("after createFullStudent result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $student, TRUE), 3, LOG);
+            $studentbad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($studentgood > 0) {
+            $response["error"] = false;
+            $response["message"] = "Event $studentgood created successfully";
+            $response["student"] = $studentgood;
+            $response["student_id"] = $studentgood;
+            error_log( print_R("Student(s) created: $studentgood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($studentexists > 0) {
+            $response["error"] = true;
+            $response["message"] = "Sorry, this $studentexists event already existed";
+            $response["student_id"] = $studentexists;
+            error_log( print_R("Student(s) already existed\n", TRUE ), 3, LOG);
+            echoRespnse(409, $response);
+        } else {
+            error_log( print_R("after createStudent result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $studentbad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $studentbad event. Please try again";
+            $response["student_id"] = $studentbad;
+            echoRespnse(400, $response);
+        }
+
+});
+
 
 function stripepaid(
     $inbound,

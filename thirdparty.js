@@ -375,6 +375,9 @@ let thirdparty = [
         module: 'pdfMake', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js'
     },
     {
+        module: 'CSV', entry: '//cdn.jsdelivr.net/npm/CSV-JS@1.2.0/csv.min.js'
+    },
+    {
         module: 'vfs_fonts', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js'
     },
     
@@ -421,14 +424,14 @@ let thirdparty = [
             },
         }
     },
-    {
-        module: 'bower_components', entry: {
-            path: 'CSV-JS/csv.js',
-            cwpPatternConfig: {
-                context: path.resolve(__dirname, '.'),
-            },
-        }
-    },
+//    {
+//        module: 'bower_components', entry: {
+//            path: 'CSV-JS/csv.js',
+//            cwpPatternConfig: {
+//                context: path.resolve(__dirname, '.'),
+//            },
+//        }
+//    },
     {
         module: 'bower_components', entry: {
             path: 'angular-isotope/dist2/angular-isotope.js',
@@ -509,7 +512,7 @@ let thirdparty = [
     },
     {
         module: 'jquery.cardswipe', entry: {
-            path: 'dist2/jquery.cardswipe.js',
+            path: 'dist/jquery.cardswipe.js',
         }
     },
     {

@@ -81,6 +81,50 @@ export class Util {
         return moment(thetime).tz('America/New_York').format('z');
     }
 
+    validateDate(indate,informat) {
+
+        var aDate   = moment(indate, informat, true);
+/*
+-1 no overflow
+0 year
+1 month
+2 day
+3 hour
+4 minute
+5 seconds
+6 milliseconds
+*/
+        var retVlu = aDate.isValid();
+        var invalidAt = aDate.invalidAt();
+        if (!retVlu) {
+            this.$log.debug('validateDate indicates error for: ', indate, ' format: ',informat, 'invalidAt', invalidAt);
+        }
+        
+        return retVlu;
+        
+    }
+
+    validateEmail(email) {
+        var pattern = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/;
+        var regExp = new RegExp(pattern, "i");
+        return regExp.test(email);
+    }
+    validatePhone(phone) {
+        var pattern = /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
+        var regExp = new RegExp(pattern, "i");
+        return regExp.test(phone);
+    }
+
+    simpledate(input) {
+        var vm = this;
+        if (input === null) {
+            return;
+        }
+        else {
+            return vm.Util.eventdateconvert(vm.Util.datecheckconvert(input.toString()));
+        }
+    }
+
 
     highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
         if (col.filters[0].term) {

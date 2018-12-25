@@ -555,6 +555,7 @@ export class FormLayoutsControllerEditStudent {
     }
 
     getActiveTab() {
+        var vm=this;
         var atab = vm.StudentServices.getActiveTab();
         vm.$log.debug('get activetab is:', atab);
         return atab;

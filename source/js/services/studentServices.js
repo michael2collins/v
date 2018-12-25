@@ -179,7 +179,6 @@ export class StudentServices {
         });
     }
 
-
     getAllStudents(path) {
         var self = this;
         self.$log.debug('getAllStudents service entered');
@@ -217,7 +216,6 @@ export class StudentServices {
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
-
 
     getStudentHistory(path) {
         var self = this;
@@ -535,6 +533,49 @@ export class StudentServices {
 
         return (request.then(self.handleSuccess, self.handleError));
     }
+    getStudentCols(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    getStudentColMap(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    updateStudentColMap(path, thedata) {
+        var self=this;
+        self.$log.debug('updateStudentColMap data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }    
+    removeCol(thedata, path) {
+        var self=this;
+        self.$log.debug('removeCol data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    
     getStripepub(path) {
         var self = this;
         var request = self.$http({
@@ -554,5 +595,17 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
     }
 
+    createBulkStudent(path, thedata) {
+        var self = this;
+        self.$log.debug('createBulkStudent data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
 
 }

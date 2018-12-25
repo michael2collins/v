@@ -13,6 +13,8 @@ import {myCustomDropdown} from './customdropdown.directive';
 import {myCustomDropdownid} from './customdropdownid.directive';
 import {zoom} from './zoom.directive';
 import {sbLoad} from './sbLoad.directive';
+import {fileChange} from './fileChange.directive';
+import {validFile} from './validFile.directive';
 
 
 export const DirectiveModule =  angular
@@ -30,6 +32,8 @@ export const DirectiveModule =  angular
     .directive('myCustomDropdownid',myCustomDropdownid)
     .directive('zoom',zoom)
     .directive('sbLoad',sbLoad)
+    .directive('fileChange',fileChange)
+    .directive('validFile',validFile)
     .directive('uiGridEditDatepicker',uiGridEditDatepicker)
     .name;
 

@@ -25,6 +25,7 @@
 'ui.grid.importer', 
 'ui.grid.grouping' ,       
 'ui.grid.saveState' ,
+'ui.grid.rowEdit',
         'ui.select',
                 'iso.directives',
                 'ngSanitize',

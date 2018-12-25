@@ -60,8 +60,8 @@ export class UserServices {
         //            self._$log.debug('cookie is:',cookiecheck, $cookies.getAll());
 
         if (typeof cookiecheck !== 'undefined') {
-            if (typeof self.apikey !== 'undefined') {
-                return self.apikey.length > 0;
+            if (typeof this.apikey !== 'undefined') {
+                return this.apikey.length > 0;
             }
             else {
                 //user refreshed page, but kept their browser session

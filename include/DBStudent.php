@@ -587,18 +587,24 @@ class StudentDbHandler
 	 */
 		$sql = "SELECT t.ID,t.LastName,t.FirstName,t.Email,t.Email2,t.Parent,t.Phone,
             t.AltPhone,t.Address,t.City,t.State,t.ZIP,t.Notes,DATE_FORMAT(t.Birthday, '%Y-%m-%d'),
-            t.BeltSize,t.InstructorPaymentFree,t.ContactType,t.include,t.quickbooklink,t.instructorTitle,
-            t.bdayinclude,t.sex,t.medicalConcerns,t.GuiSize,t.ShirtSize,t.phoneExt,t.altPhoneExt,
-            t.StudentSchool,t.EmergencyContact,t.pictureurl,t.nextScheduledTest
+            t.BeltSize,t.ContactType,t.quickbooklink,t.instructorTitle,
+            t.sex,t.medicalConcerns,t.GuiSize,t.ShirtSize,t.phoneExt,t.altPhoneExt,
+            t.StudentSchool,t.EmergencyContact,t.pictureurl
         from ncontacts t WHERE t.ID = ? ";
+
+//            t.nextScheduledTest
+//t.InstructorPaymentFree,
+//t.include,
+//t.bdayinclude,
+
 		$schoolfield = "t.studentschool";
 		$sql = addSecurity($sql, $schoolfield);
 		error_log(print_R("getStudent sql after security: $sql", TRUE) , 3, LOG);
 		$stmt = $this->conn->prepare($sql);
-		$stmt->bind_param("i", $student_id);
+		$stmt->bind_param("s", $student_id);
 		if ($stmt->execute()) {
 			$res = array();
-			$stmt->bind_result($ID, $LastName, $FirstName, $Email, $Email2, $Parent, $Phone, $AltPhone, $Address, $City, $State, $ZIP, $Notes, $Birthday, $BeltSize, $InstructorPaymentFree, $ContactType, $include, $quickbooklink, $instructorTitle, $bdayinclude, $sex, $medicalConcerns, $GuiSize, $ShirtSize, $phoneExt, $altPhoneExt, $StudentSchool, $EmergencyContact, $pictureurl, $nextScheduledTest);
+			$stmt->bind_result($ID, $LastName, $FirstName, $Email, $Email2, $Parent, $Phone, $AltPhone, $Address, $City, $State, $ZIP, $Notes, $Birthday, $BeltSize, $ContactType, $quickbooklink, $instructorTitle, $sex, $medicalConcerns, $GuiSize, $ShirtSize, $phoneExt, $altPhoneExt, $StudentSchool, $EmergencyContact, $pictureurl);
 			$stmt->fetch();
 			$res["ID"] = $ID;
 			$res["LastName"] = $LastName;
@@ -622,9 +628,9 @@ class StudentDbHandler
 			//      $res["CurrentRank"]= $CurrentRank;
 			//        $res["LastPromoted"] = $LastPromoted;
 
-			$res["InstructorPaymentFree"] = $InstructorPaymentFree;
+//			$res["InstructorPaymentFree"] = $InstructorPaymentFree;
 			$res["ContactType"] = $ContactType;
-			$res["include"] = $include;
+//			$res["include"] = $include;
 
 			//         $res["InstructorFlag"] = $InstructorFlag;
 
@@ -634,7 +640,7 @@ class StudentDbHandler
 			//        $res["testDate"]= $testDate;
 			//            $res["testTime"] = $testTime;
 
-			$res["bdayinclude"] = $bdayinclude;
+//			$res["bdayinclude"] = $bdayinclude;
 			$res["sex"] = $sex;
 			$res["medicalConcerns"] = $medicalConcerns;
 			$res["GuiSize"] = $GuiSize;
@@ -651,7 +657,7 @@ class StudentDbHandler
 			//       $res["ReadyForNextRank"] = $ReadyForNextRank;
 
 			$res["pictureurl"] = $pictureurl;
-			$res["nextScheduledTest"] = $nextScheduledTest;
+//			$res["nextScheduledTest"] = $nextScheduledTest;
 			$stmt->close();
 			return $res;
 		}
@@ -689,7 +695,8 @@ class StudentDbHandler
 	}
 
 	public
-	function updateStudent($student_id, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $InstructorPaymentFree, $instructorTitle, $pictureurl)
+	function updateStudent(
+		$student_id, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl)
 	{
 	/**
 	 * Updating student
@@ -720,7 +727,7 @@ class StudentDbHandler
 		$sql.= " t.GuiSize = ?,";
 		$sql.= " t.ShirtSize = ?,";
 		$sql.= " t.BeltSize = ?,";
-		$sql.= " t.InstructorPaymentFree = ?,";
+//		$sql.= " t.InstructorPaymentFree = ?,";
 		$sql.= " t.instructorTitle = ?,";
 		$sql.= " t.pictureurl = ?";
 		$sql.= " where ID = ? ";
@@ -752,7 +759,7 @@ class StudentDbHandler
 		error_log(print_R($GuiSize, TRUE));
 		error_log(print_R($ShirtSize, TRUE));
 		error_log(print_R($BeltSize, TRUE));
-		error_log(print_R($InstructorPaymentFree, TRUE));
+//		error_log(print_R($InstructorPaymentFree, TRUE));
 		error_log(print_R($instructorTitle, TRUE));
 		error_log(print_R($pictureurl, TRUE));
 		error_log(print_R($student_id, TRUE));
@@ -760,7 +767,7 @@ class StudentDbHandler
 		//       try {
 
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("ssssssssssssssssssssssssssss", $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $InstructorPaymentFree, $instructorTitle, $pictureurl, $student_id);
+			$stmt->bind_param("sssssssssssssssssssssssssss", $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl, $student_id);
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
@@ -866,6 +873,88 @@ class StudentDbHandler
 		if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
 			if ($stmt = $this->conn->prepare($sql)) {
 				$stmt->bind_param("ssss", $LastName, $FirstName, $Email, $school);
+				$result = $stmt->execute();
+				$stmt->close();
+
+				// Check for successful insertion
+
+				if ($result) {
+					$new_student_id = $this->conn->insert_id;
+
+					// User successfully inserted
+
+					return $new_student_id;
+				}
+				else {
+
+					// Failed to create user
+
+					return NULL;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return NULL;
+			}
+		}
+		else {
+
+			// User with same email already existed in the db
+
+			return RECORD_ALREADY_EXISTED;
+		}
+
+		return $response;
+	}
+
+	public
+	function createFullStudent(
+		$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt,
+		$altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns,
+		$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, $BeltSize, $pictureurl)
+	{
+		error_log(print_R("createFullStudent entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createFullStudent Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$response = array();
+		global $school;
+		
+        $dt = DateTime::createFromFormat('m/d/Y', $Birthday);
+        
+        if ($dt === false) {
+            error_log( print_R("createFullStudent  bad date $Birthday" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+		
+		$sql = "INSERT INTO ncontacts (
+		externalid, LastName, FirstName, Email, Email2, Phone, AltPhone, phoneExt,
+			altPhoneExt, Birthday, sex, Parent, EmergencyContact, Notes, medicalConcerns,
+			Address, City, State, ZIP, ContactType, quickbooklink, GuiSize, ShirtSize, BeltSize, pictureurl,
+			StudentSchool)
+			values (
+			?, ?, ?, ?, ?, ?, ?, ?, 
+			?, ?, ?, ?, ?, ?, ?,
+			?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+			?
+			)";
+
+		// First check if user already existed in db
+
+		if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
+			if ($stmt = $this->conn->prepare($sql)) {
+				$stmt->bind_param("ssssssssssssssssssssssssss", 
+					$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, 
+					$altPhoneExt, $bdate, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, 
+					$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, 
+					$BeltSize, $pictureurl, $school 
+				);
 				$result = $stmt->execute();
 				$stmt->close();
 
@@ -2635,6 +2724,362 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		return $num_affected_rows >=0;
     }
 
+	public
+	function getStudentCols()
+	{
+		        $dbname = DB_NAME;
+
+//		$sql = "desc ncontacts";
+//exclude fields that will go away
+//exclude ID as it can't be inserted, that is what externalid is for
+
+		$sql = "		SELECT DISTINCT column_type AS 
+		Type , column_name AS Field, is_nullable
+		FROM information_schema.columns
+		WHERE table_name =  'ncontacts'
+		and column_name not in (
+		'ID',
+   'NewRank',
+   'CurrentRank',
+   'LastPromoted',
+   'InstructorPaymentFree',
+   'include',
+   'testDate',
+   'testTime',
+   'bdayinclude',
+   'CurrentReikiRank',
+   'CurrentIARank',
+   'ReadyForNextRank',
+   'nextScheduledTest',
+   'SSMA_TimeStamp', 'upgrade', 'StudentSchool'
+
+		)
+		AND table_schema =  ?
+		";
+		error_log(print_R("getStudentCols sql: $sql", TRUE) , 3, LOG);
+		if ($stmt = $this->conn->prepare($sql)) {
+	                $stmt->bind_param("s",
+				        $dbname
+	                                     );
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$stmt->close();
+				return $slists;
+			}
+			else {
+				error_log(print_R("getStudentCols  execute failed", TRUE) , 3, LOG);
+				printf("Errormessage: %s\n", $this->conn->error);
+			}
+		}
+		else {
+			error_log(print_R("getStudentCols  sql failed", TRUE) , 3, LOG);
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+	}
+
+	public
+	function getStudentColMap()
+	{
+		global $school;
+		$sql = "select name, type, id from map_ncontact_cols where school = ? ";
+
+		error_log(print_R("getStudentColMap sql: $sql", TRUE) , 3, LOG);
+		if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("s",$school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$stmt->close();
+				return $slists;
+			}
+			else {
+				error_log(print_R("getStudentColMap  execute failed", TRUE) , 3, LOG);
+				printf("Errormessage: %s\n", $this->conn->error);
+			}
+		}
+		else {
+			error_log(print_R("getStudentColMap  sql failed", TRUE) , 3, LOG);
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+	}
+    public function removeStudentColMap(
+    	$id, $all
+    ) {
+
+        error_log( print_R("removeStudentColMap entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from map_ncontact_cols where ID = ? and school = ?  ";
+        if ($all == "all") {
+	        $sql1 = "DELETE from map_ncontact_cols where  school = ?  ";
+        }
+		$totaldel=0;
+		
+        if ($stmt = $this->conn->prepare($sql1)) {
+	        if ($all == "all") {
+    	        $stmt->bind_param("s",$school);
+	        } else {
+    	        $stmt->bind_param("ss",$id, $school);
+	        }
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+            $totaldel += $num_affected_rows ;
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+		return $num_affected_rows >=0;
+    }
+
+    private function isStudentColMapExists(
+        $type, $name, $id
+        ) {
+
+        error_log( print_R("isStudentColMapExists entered", TRUE), 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $cntsql = "select count(*) as StudentColMapcount from map_ncontact_cols ";
+        $cntsql .= " where id = ? and school = ? ";
+
+        $cnt2sql = "select count(*) as StudentColMapcount from map_ncontact_cols ";
+        $cnt2sql .= " where type = ? and name = ? and school = ? ";
+
+        error_log( print_R("StudentColMap isStudentColMapExists sql: $cntsql", TRUE), 3, LOG);
+
+
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("ss",
+                         $id, $school
+                                     );
+
+            $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                error_log( print_R("isStudentColMapExists: " . $row . "\n", TRUE), 3, LOG);
+            }
+
+            $stmt->close();
+
+            if ($row) {
+                return $row;
+            } else {
+                if ($stmt = $this->conn->prepare($cnt2sql)) {
+                    $stmt->bind_param("sss",
+                             $type, $name, $school
+                                         );
+        
+                    $stmt->execute();
+                    if (! $stmt->execute() ){
+                        $stmt->close();
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -1;
+                    }
+        
+                    $row = null;
+                    $stmt->bind_result($row);
+                    while ($stmt->fetch()) { 
+                        error_log( print_R("isStudentColMapExists: " . $row . "\n", TRUE), 3, LOG);
+                    }
+        
+                    $stmt->close();
+                    return $row;
+                    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+                }
+                
+            }
+
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+
+
+    public function updateStudentColMap( 
+        $id, $type, $name, $all
+        ) {
+        $num_affected_rows = 0;
+
+        global $school;
+        $dbname = DB_NAME;
+        error_log( print_R("StudentColMap update entered $school $dbname", TRUE), 3, LOG);
+
+		$errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $inssql = " INSERT INTO map_ncontact_cols( 
+             type, name, school ) ";
+
+        $inssql .= " VALUES (?, ?, ?) ";
+
+        if ($all == "all") {
+        	$inssql = "insert into map_ncontact_cols (type, name, school) ( 
+				SELECT distinct column_type, column_name, '";
+			$inssql .= $school ;
+			$inssql .= "' FROM information_schema.columns
+				WHERE table_name =  'ncontacts' and table_schema = ? 
+						and column_name not in (
+	'ID',
+   'NewRank',
+   'CurrentRank',
+   'LastPromoted',
+   'InstructorPaymentFree',
+   'include',
+   'testDate',
+   'testTime',
+   'bdayinclude',
+   'CurrentReikiRank',
+   'CurrentIARank',
+   'ReadyForNextRank',
+   'nextScheduledTest',
+   'SSMA_TimeStamp', 'upgrade', 'StudentSchool'
+
+		)
+				
+				)  	";
+				
+			error_log(print_R("updateStudentColMap sql: $inssql", TRUE) , 3, LOG);
+        	
+            if ($stmt = $this->conn->prepare($inssql)) {
+	                $stmt->bind_param("s",
+				        $dbname
+	                                     );
+                                     
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = 0;
+                        // User successfully inserted
+		                $errormessage["success"] = $new_id;
+		                return $errormessage;
+//                        return $new_id;
+                    } else {
+                        // Failed to create 
+		                $errormessage["sqlerror"] = "Insert failure: ";
+		                $errormessage["sqlerrordtl"] = $this->conn->error;
+		                return $errormessage;
+                    }
+
+                } else {
+	                $errormessage["sqlerror"] = "Insert failure: ";
+	                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+                }
+        	
+        }
+        else {
+	        if ($this->isStudentColMapExists(
+	        $type, $name, $id
+	            ) == 0) {
+				error_log(print_R("updateStudentColMap sql: $inssql", TRUE) , 3, LOG);
+	
+	            if ($stmt = $this->conn->prepare($inssql)) {
+	                $stmt->bind_param("sss",
+				        $type, $name, $school
+	                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+	    	            $errormessage["success"] = $new_id;
+	        	        return $errormessage;
+	//                        return $new_id;
+	                } else {
+	                        // Failed to create 
+		                $errormessage["sqlerror"] = "Insert failure: ";
+		                $errormessage["sqlerrordtl"] = $this->conn->error;
+		                return $errormessage;
+	                }
+	
+                } else {
+	                $errormessage["sqlerror"] = "Insert failure: ";
+	                $errormessage["sqlerrordtl"] = $this->conn->error;
+	                return $errormessage;
+                }
+	
+	
+	        } else {
+	
+	            // already existed in the db, update
+	            $updsql = "UPDATE map_ncontact_cols SET 
+	                 type = ?, 
+	                 name = ?, 
+	                 school = ?
+	            WHERE id = ? ";
+	
+	            error_log( print_R("StudentColMap update sql: $updsql", TRUE), 3, LOG);
+	            
+	            if ($stmt = $this->conn->prepare($updsql)) {
+	                $stmt->bind_param("ssss",
+	        $type, $name, $school, $id
+	                                     );
+	                $stmt->execute();
+	                $num_affected_rows = $stmt->affected_rows;
+	                $stmt->close();
+	                $errormessage["success"] = $num_affected_rows;
+	                return $errormessage;
+	//                return $num_affected_rows;
+	                
+	            } else {
+	                error_log( print_R("StudentColMap update failed", TRUE), 3, LOG);
+	                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+	                $errormessage["sqlerror"] = "update failure: ";
+	                $errormessage["sqlerrordtl"] = $this->conn->error;
+	                return $errormessage;
+	            }
+	        }
+        }
+    }
+
+	public
+	function getSampleStudents() {
+		global $school;
+		//random 10 percent of the records
+	    $sql = "
+		select *
+            from ncontacts 
+            where StudentSchool = ? and RAND() < .1
+			order by LastName, FirstName LIMIT 20 
+	    ";
+	    
+		error_log(print_R("sql for getSampleStudents is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $school);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+        
+	}
 
 }
 
