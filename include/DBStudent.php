@@ -515,18 +515,28 @@ class StudentDbHandler
 		$sql = "SELECT c.*, sr.studentclassstatus, cr.ranktype, cr.currentrank, cr.LastPromoted from ncontacts  c 
 		 LEFT JOIN studentregistration sr ON c.id = sr.studentid 
 		LEFT JOIN ncontactrank cr ON c.id = cr.contactid 
-		LEFT JOIN nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype and c.studentschool = cl.school) 
-		where c.studentschool = ?  and cl.registrationtype = ? ";
-		if (strlen($status) > 0 && $status != 'ALL') {
-			$sql.= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
+		LEFT JOIN nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype and c.studentschool = cl.school) ";	
+	if ($ranktype == 'missing') {
+			$sql .= " 	where c.studentschool = ? 
+and cl.registrationtype is null ";
+		} else {
+			$sql .= " 
+join nclasspays cp on (cp.classseq = cl.id and cp.pgmseq = sr.pgmid and cp.classseq = sr.classid and cp.contactid = c.ID 
+and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
+	where c.studentschool = ? 
+				and cl.registrationtype = '" . $ranktype ."' " ;
+		
+			if (strlen($status) > 0 && $status != 'ALL') {
+				$sql.= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
+			}
+	
+	
+			if (strlen($therank) > 0 && $therank != 'NULL' && $therank != 'All') {
+				$sql.= " and cr.currentrank = '" . $therank . "'";
+			}
 		}
-
 		if (strlen($contacttype) > 0 && $contacttype != 'All') {
 			$sql.= " and contacttype = '" . $contacttype . "'";
-		}
-
-		if (strlen($therank) > 0 && $therank != 'NULL' && $therank != 'All') {
-			$sql.= " and cr.currentrank = '" . $therank . "'";
 		}
 
 //		$schoolfield = "c.studentschool";
@@ -539,8 +549,8 @@ class StudentDbHandler
 
 		error_log(print_R("getAllStudents sql: $sql", TRUE) , 3, LOG);
 		if ($stmt = $this->conn->prepare($sql)) {
-	        $stmt->bind_param("ss",
-                           $school, $ranktype
+	        $stmt->bind_param("s",
+                           $school
                              );
 			if ($stmt->execute()) {
 				error_log(print_R("getAllStudents list stmt", TRUE) , 3, LOG);

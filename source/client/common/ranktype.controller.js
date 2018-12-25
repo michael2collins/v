@@ -54,7 +54,9 @@ export class RankTypeController {
                 vm.$log.debug('getRankTypes returned data');
                 vm.$log.debug(data);
                 if (data.ranktypelist.length > 0) {
+            
                     vm.ranktypelist = data.ranktypelist;
+                    vm.ranktypelist.push({ranktype: 'missing'});
                     vm.ranktypeselected = vm.ranktypelist[0].ranktype;
                 }
                 else {

@@ -37,7 +37,6 @@ export class StudentsTableBasicController {
         vm.eventResult;
 
         vm.userprefpath = "../v1/userprefcols/allstudents";
-        vm.path = '../v1/students';
 
         vm.gcolumns = [];
         vm.userprefcols = [];
@@ -383,8 +382,9 @@ export class StudentsTableBasicController {
         var vm = this;
         vm.$log.debug('getAllStudents tb grid');
         vm.gridOptions.data = [];
+        var path = '../v1/students';
 
-        var refreshpath = encodeURI(vm.path +
+        var refreshpath = encodeURI(path +
             '?contacttype=' + vm.getContactType() +
             '&thelimit=' + vm.getLimit() +
             '&status=' + vm.getStatus() +

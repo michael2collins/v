@@ -4063,7 +4063,7 @@ $app->post('/bulkstudent', 'authenticate', function() use($app) {
     //as long as one worked, return success
         if ($studentgood > 0) {
             $response["error"] = false;
-            $response["message"] = "Event $studentgood created successfully";
+            $response["message"] = "$studentgood student(s) created successfully";
             $response["student"] = $studentgood;
             $response["student_id"] = $studentgood;
             error_log( print_R("Student(s) created: $studentgood\n", TRUE ), 3, LOG);
