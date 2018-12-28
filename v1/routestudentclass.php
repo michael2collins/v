@@ -377,48 +377,7 @@ $app->put('/studentclasspaylist/:id', 'authenticate', function($student_id) use(
     }
     echoRespnse(200, $response);
 });
-/*
-$app->put('/studentclass/id/:id/myclass/:class/mypgm/:pgm', 'authenticate', function($student_id, $classseq, $pgmseq) use($app) {
-    // check for required params
-    //verifyRequiredParams(array('task', 'status'));
-    //error_log( print_R("before put student class set request", TRUE ));
 
-
-    $request = $app->request();
-    $body = $request->getBody();
-    $studentclass = json_decode($body);
-
-    //error_log( print_R($studentclass, TRUE ));
-
-    //global $user_id;
-    $contactID = $student_id;
-
-    //error_log( print_R("before update", TRUE ));
-
-    //error_log( print_R($student_id, TRUE ));
-    //error_log( print_R($classseq, TRUE ));
-    //error_log( print_R($pgmseq, TRUE ));
-
-    $db = new StudentClassDbHandler();
-    $response = array();
-
-    // updating task
-    $result = $db->setStudentClass( $contactID,
-                                   $classseq,
-                                   $pgmseq
-                                  );
-    if ($result) {
-        // task updated successfully
-        $response["error"] = false;
-        $response["message"] = "Student Class set successfully";
-    } else {
-        // task failed to update
-        $response["error"] = true;
-        $response["message"] = "Student failed to update. Please try again!";
-    }
-    echoRespnse(200, $response);
-});
-*/
 $app->get('/studentclasslist', 'authenticate', function() {
     $response = array();
     $db = new StudentClassDbHandler();
@@ -969,7 +928,7 @@ $app->post('/paymentplan', 'authenticate', function() use ($app) {
                 $Pricesetdate ,
                 $payOnDayOfMonth, 
                 $PriceSetby,
-                $mode
+                'insert'
                                 );
 
     if ($result > -1) {

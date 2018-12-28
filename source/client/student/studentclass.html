@@ -137,8 +137,8 @@
                           </thead>
                           <tbody>
                             <tr ng-repeat="classlist in $ctrl.studentclazzlist track by $index" style="z-index: {{200 - $index}}">
-                              <td class="col-md-2">{{classlist.class}}</td>
-                              <td class="col-md-2">{{classlist.pgmclass}}</td>
+                              <td class="col-md-1">{{classlist.class}}</td>
+                              <td class="col-md-1">{{classlist.pgmclass}}</td>
 
                               <td class="col-md-1">
                                 <div ng-class="{'has-error': editstudentclass['lstudentclassstatus' + $index].$invalid,
@@ -159,10 +159,10 @@
                                   </div>
                                 </div>
                               </td>
-                              <td class="col-md-2" style="position: relative; top:-17px;">
-                                <div class="form-group">
-                                  <div class="select-box">
-                                    <ui-select ng-model="classlist.payerList" theme="bootstrap" reset-search-input="false" on-select="$ctrl.changeStudentPayer(classlist)" style="width: 180px; " title="Pick Payer" append-to-body="false">
+                              <td class="col-md-2">
+                                <div class="">
+                                  <div class="pll pbl select-box">
+                                    <ui-select ng-model="classlist.payerList" theme="bootstrap" reset-search-input="false" on-select="$ctrl.changeStudentPayer(classlist)"  title="Pick Payer" append-to-body="false">
                                       <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
                                       <ui-select-choices repeat="item in $ctrl.payers | filter: $select.search" refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
                                         <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
@@ -174,11 +174,11 @@
                                   </div>
                                 </div>
                               </td>
-                              <td class="col-md-2">
+                              <td class="col-md-1">
                                 <div>
                                   <div ng-class="{'has-error': editstudentclass['isTestfeewaived' + $index].$invalid, 
                                         'has-success': !editstudentclass['isTestfeewaived' + $index].$invalid}" class="form-group">
-                                    <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['isTestfeewaived' + $index].$dirty" ng-class="editstudentclass['isTestfeewaived' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                    <div class=""><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['isTestfeewaived' + $index].$dirty" ng-class="editstudentclass['isTestfeewaived' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
                                         class="glyphicon tooltips"></i>
 
                                       <toggle-switch on-label="Waive" off-label="Charge" id="isTestfeewaived{{$index}}" type="checkbox" name="isTestfeewaived{{$index}}" ng-model="classlist.isTestfeewaived" ng-change="$ctrl.changetestfee(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
@@ -191,11 +191,11 @@
                                   </div>
                                 </div>
                               </td>
-                              <td class="col-md-2">
+                              <td class="col-md-1">
                                 <div>
                                   <div ng-class="{'has-error': editstudentclass['primaryContact' + $index].$invalid, 
                                         'has-success': !editstudentclass['primaryContact' + $index].$invalid}" class="form-group">
-                                    <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['primaryContact' + $index].$dirty" ng-class="editstudentclass['primaryContact' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                    <div class=""><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['primaryContact' + $index].$dirty" ng-class="editstudentclass['primaryContact' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
                                         class="glyphicon tooltips"></i>
 
                                       <toggle-switch on-label="Primary" off-label="Not" id="primaryContact{{$index}}" type="checkbox" name="primaryContact{{$index}}" ng-model="classlist.primaryContact" ng-change="$ctrl.changeprimaryContact(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"

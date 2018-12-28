@@ -843,6 +843,47 @@ $app->get('/samplestudents', 'authenticate', function() use($app){
 
 });
 
+$app->get('/samplestudentregistrations', 'authenticate', function() use($app){
+
+    checkSecurity();
+    global $user_id;
+    
+    error_log( print_R("samplestudentregistrations entered:\n ", TRUE), 3, LOG);
+
+    $response = array();
+
+    $db = new StudentDbHandler();
+
+    $result = $db->getSampleStudentRegistrations();
+
+    $response["error"] = false;
+    $response["studentregistrations"] = array();
+
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["externalid"] = 'x' . $slist["id"];
+//        $tmp["classid"] = $slist["classid"];
+        $tmp["classname"] = $slist["classname"];
+//        $tmp["pgmid"] = $slist["pgmid"];
+        $tmp["pgmname"] = $slist["pgmname"];
+        $tmp["studentClassStatus"] = $slist["studentClassStatus"];
+        $tmp["ranktype"] = $slist["ranktype"];
+        $tmp["currentRank"] = $slist["currentRank"];
+        $tmp["lastPromoted"] = $slist["lastPromoted"];
+        $tmp["payerName"] = $slist["payerName"];
+        $tmp["payerEmail"] = $slist["payerEmail"];
+        $tmp["paymenttype"] = $slist["paymenttype"];
+        $tmp["paymentplan"] = $slist["paymentplan"];
+        $tmp["paymentAmount"] = $slist["paymentAmount"];
+        $tmp["payOnDayofMonth"] = $slist["payOnDayofMonth"];
+
+        array_push($response["studentregistrations"], $tmp);
+        
+    }
+        echoRespnse(200, $response);
+
+});
+
 $app->post('/studentrank', 'authenticate', function() use ($app) {
 
     $response = array();
@@ -1230,6 +1271,8 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
         $response["StudentSchool"] = $result["StudentSchool"];
         $response["EmergencyContact"] = $result["EmergencyContact"];
         $response["pictureurl"] = $result["pictureurl"];
+        $response["externalid"] = $result["externalid"];
+
 //        $response["nextScheduledTest"] = $result["nextScheduledTest"];
         $response["message"] = "Student retrieved";
         echoRespnse(200, $response);
@@ -1282,6 +1325,42 @@ $app->get('/studenthistory/:id', 'authenticate', function($student_id) {
         echoRespnse(404, $response);
     }
 });
+
+$app->get('/samplestudenthistory', 'authenticate', function() {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getSampleStudentHistory();
+
+    $response["error"] = false;
+    $response["StudentHistoryList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["contactmgmttype"] = (empty($slist["contactmgmttype"]) ? "NULL" : $slist["contactmgmttype"]);
+            $tmp["contactdate"] = (empty($slist["contactdate"]) ? "NULL" : $slist["contactdate"]);
+            $tmp["externalid"] = (empty($slist["contactid"])  ? "NULL" : 'x' . $slist["contactid"]);
+        } else {
+            $tmp["contactmgmttype"] = "NULL";
+            $tmp["contactdate"] = "NULL";
+            $tmp["externalid"] = "NULL";
+        }
+        array_push($response["StudentHistoryList"], $tmp);
+    }
+    
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Problem getting sample student history";
+        echoRespnse(404, $response);
+    }
+});
+
 
 $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
 /**
@@ -4001,9 +4080,6 @@ $app->post('/bulkstudent', 'authenticate', function() use($app) {
     $studentarr = $dataJsonDecode->thedata->selectedStudents;
 
     error_log( print_R($studentarr, TRUE ), 3, LOG);
-    
-
-
     $studentgood=0;
     $studentbad=0;
     $studentexists=0;
@@ -4085,6 +4161,259 @@ $app->post('/bulkstudent', 'authenticate', function() use($app) {
 
 });
 
+$app->post('/lookupextras', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("lookupextras before lookup\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $studentgood=0;
+    $studentbad=0;
+    $studentexists=0;
+    
+    $response = array();
+    $response["error"] = false;
+    $response["lookups"] = array();
+
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $externalid = (isset($studentarr[$i]->externalid) ? $studentarr[$i]->externalid : "");
+        $classname = (isset($studentarr[$i]->classname) ? $studentarr[$i]->classname : "");
+        $pgmname = (isset($studentarr[$i]->pgmname) ? $studentarr[$i]->pgmname : "");
+
+        $db = new StudentDbHandler();
+
+        $result = $db->lookupExtras(
+            $externalid,$classname,$pgmname
+                                    );    
+        $tmp = array();
+        $tmp["externalid"] = $externalid;
+        $tmp["classname"] = $classname;
+        $tmp["pgmname"] = $pgmname;
+        $tmp["contacterror"] = NULL;
+    	$tmp["classerror"] = NULL;
+    	$tmp["programerror"] = NULL;
+
+        if ($result != NULL ) {
+
+            $tmp["id"] = $result["id"];
+            $tmp["classid"] = $result["classid"];
+            $tmp["pgmid"] = $result["pgmid"];
+    
+            $tmp["contacterror"] = $result["contacterror"];
+        	$tmp["classerror"] = $result["classerror"];
+        	$tmp["programerror"] = $result["programerror"];
+
+            array_push($response["lookups"], $tmp);
+            
+        } else {
+        	$tmp["generalerror"] = "Generic sql error";
+        }
+    }
+    echoRespnse(200, $response);
+
+});
+
+$app->post('/lookuphistextras', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("lookupextras before lookup\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $studentgood=0;
+    $studentbad=0;
+    $studentexists=0;
+    
+    $response = array();
+    $response["error"] = false;
+    $response["lookups"] = array();
+
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $externalid = (isset($studentarr[$i]->externalid) ? $studentarr[$i]->externalid : "");
+
+        $db = new StudentDbHandler();
+
+        $result = $db->lookupHistExtras(
+            $externalid
+                                    );    
+        $tmp = array();
+        $tmp["externalid"] = $externalid;
+        $tmp["contacterror"] = NULL;
+
+        if ($result != NULL ) {
+
+            $tmp["id"] = $result["id"];
+
+            $tmp["contacterror"] = $result["contacterror"];
+
+            array_push($response["lookups"], $tmp);
+            
+        } else {
+        	$tmp["generalerror"] = "Generic sql error";
+        }
+    }
+    echoRespnse(200, $response);
+
+});
+
+$app->post('/bulkstudentregistrations', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("bulkstudentregistrations before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+    $Pricesetdate = $dataJsonDecode->thedata->Pricesetdate;
+    
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $studentid = (isset($studentarr[$i]->id) ? $studentarr[$i]->id : "");
+        $externalid = (isset($studentarr[$i]->externalid) ? $studentarr[$i]->externalid : "");
+        $classid = (isset($studentarr[$i]->classid) ? $studentarr[$i]->classid : "");
+        $pgmid = (isset($studentarr[$i]->pgmid) ? $studentarr[$i]->pgmid : "");
+        $studentClassStatus = (isset($studentarr[$i]->studentClassStatus) ? $studentarr[$i]->studentClassStatus : "");
+        $ranktype = (isset($studentarr[$i]->ranktype) ? $studentarr[$i]->ranktype : "");
+        $currentRank = (isset($studentarr[$i]->currentRank) ? $studentarr[$i]->currentRank : "");
+        $lastPromoted = (isset($studentarr[$i]->lastPromoted) ? $studentarr[$i]->lastPromoted : "01/01/1900");
+        $payerName = (isset($studentarr[$i]->payerName) ? $studentarr[$i]->payerName : "");
+        $payerEmail = (isset($studentarr[$i]->payerEmail) ? $studentarr[$i]->payerEmail : "");
+        $paymenttype = (isset($studentarr[$i]->paymenttype) ? $studentarr[$i]->paymenttype : "");
+        $PaymentPlan = (isset($studentarr[$i]->paymentplan) ? $studentarr[$i]->paymentplan : "");
+        $PaymentAmount = (isset($studentarr[$i]->paymentAmount) ? $studentarr[$i]->paymentAmount : "");
+        $payOnDayOfMonth = (isset($studentarr[$i]->payOnDayofMonth) ? $studentarr[$i]->payOnDayofMonth : "");
+
+        $db = new StudentDbHandler();
+
+        $studentrank = $db->createStudentRank($studentid, $ranktype, $currentRank);
+
+        $db = new StudentClassDbHandler();
+
+        $payerid = $db->addPayerOrReturnid(
+                                 $payerName
+                                );
+        error_log( print_R("add payerid:", TRUE ), 3, LOG);
+        error_log( print_R($payerid, TRUE ), 3, LOG);
+        error_log( print_R("\n", TRUE ), 3, LOG);
+
+        $db = new StudentClassDbHandler();
+
+        $studentreg_id = $db->addStudentRegistration(
+            $studentid,$classid,$pgmid,$studentClassStatus,$payerName,$payerid
+                                );
+        $db = new StudentClassDbHandler();
+                                
+        $paymentid = $db->updatePaymentPlan(
+            null, $payerid, $paymenttype ,'',$PaymentPlan,$PaymentAmount,$Pricesetdate ,
+                $payOnDayOfMonth,'initialbulk','insert'
+                                );
+                                
+        $db = new StudentClassDbHandler();
+        $reslist = $db->getClassStudentlist($studentid);
+
+        while ($slist = $reslist->fetch_assoc()) {
+            $classpayid = $slist["classpayid"];
+            error_log( print_R("fetch classpayid: $classpayid", TRUE ), 3, LOG);
+
+            $db = new StudentClassDbHandler();
+
+            $respay = $db->updatePaymentPay(
+                $paymentid, $classpayid, null, 'insert'
+                                );
+        }
+    }
+
+    $response["error"] = false;
+    $response["message"] = "student registration(s) created successfully";
+
+    echoRespnse(201, $response);
+
+
+});
+
+$app->post('/bulkstudenthistory', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("bulkstudenthistory before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $studentgood=0;
+    $studentbad=0;
+
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $studentid = (isset($studentarr[$i]->id) ? $studentarr[$i]->id : "");
+        $externalid = (isset($studentarr[$i]->externalid) ? $studentarr[$i]->externalid : "");
+        $contactmgmttype = (isset($studentarr[$i]->contactmgmttype) ? $studentarr[$i]->contactmgmttype : "");
+        $contactdate = (isset($studentarr[$i]->contactdate) ? $studentarr[$i]->contactdate : "01/01/1900");
+
+        $db = new StudentDbHandler();
+
+        $history = $db->createBulkStudentHistory($studentid, $contactmgmttype, $contactdate);
+        
+        if ($history > 0) {
+            error_log( print_R("createBulkStudentHistory created: $history\n", TRUE ), 3, LOG);
+            $studentgood += 1;
+        } else {
+            error_log( print_R("after createBulkStudentHistory result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $history, TRUE), 3, LOG);
+            $studentbad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($studentgood > 0) {
+            $response["error"] = false;
+            $response["message"] = "$studentgood student history(s) created successfully";
+            $response["student"] = $studentgood;
+            $response["student_id"] = $studentgood;
+            error_log( print_R("Student history(s) created: $studentgood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after createBulkStudentHistory result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $studentbad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $studentbad event. Please try again";
+            $response["student_id"] = $studentbad;
+            echoRespnse(400, $response);
+        }
+
+});
 
 function stripepaid(
     $inbound,
@@ -4247,12 +4576,8 @@ function stripepaid(
                 emailnotify($to , $subject, $message);
             //    emailnotify('villaris.us@gmail.com', $subject, $message);
                 error_log( print_R("email to send: $to, $subject, $message\n", TRUE ), 3, LOG);
-    
                 }
-                
-                
             }
-
     } catch (Exception $e) {
       // Something else happened, completely unrelated to Stripe
         error_log( print_R("stripepaid dd:\n ", TRUE), 3, LOG);
@@ -4261,7 +4586,6 @@ function stripepaid(
 
 
 };
-
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();

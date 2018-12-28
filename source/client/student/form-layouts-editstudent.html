@@ -33,7 +33,8 @@
 
                       </div>
 
-                      <div id="studentid" ng-model="$ctrl.students.ID">{{$ctrl.students.ID}}</div>
+                      <div id="studentid" ng-model="$ctrl.students.ID">ID: {{$ctrl.students.ID}} &nbsp;</div>
+                      <div id="studentid" ng-model="$ctrl.students.externalid"> Externalid: {{$ctrl.students.externalid}} &nbsp;</div>
                       <div class="row">
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.FirstName.$invalid, 'has-success': !editstudent.FirstName.$invalid}" class="form-group">

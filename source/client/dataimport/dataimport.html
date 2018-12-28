@@ -1,0 +1,16 @@
+<div id="dataimport" class="row" ng-controller="DataImportController as $ctrl">
+
+    <div class="col-lg-12">
+        <uib-tabset type="pills" active="$ctrl.active">
+            <uib-tab index="1" id="tab-impstudent" heading="Student Import" select="$ctrl.setActiveTab(1,'studentimpselect');imptabShown = !imptabShown" deselect="imptabShown = !imptabShown">
+                <impstudent-component></impstudent-component>
+            </uib-tab>
+            <uib-tab index="2" id="tab-impclass" heading="Class Import" select="$ctrl.setActiveTab(2,'classimpselect');classtabShown = !classtabShown" deselect="classtabShown = !classtabShown">
+                <impclass-component></impclass-component>
+            </uib-tab>
+            <uib-tab index="3" id="tab-imphistory" heading="History Import" select="$ctrl.setActiveTab(3,'histimpselect');histtabShown = !histtabShown" deselect="histtabShown = !histtabShown">
+                <imphistory-component></imphistory-component>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>

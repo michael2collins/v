@@ -55,6 +55,7 @@ export class Util {
     }
 
     isEmptyObject(obj) {
+        if(obj == null) return true;
         return (Object.getOwnPropertyNames(obj).length === 0);
     }
     
@@ -121,7 +122,7 @@ export class Util {
             return;
         }
         else {
-            return vm.Util.eventdateconvert(vm.Util.datecheckconvert(input.toString()));
+            return vm.eventdateconvert(vm.datecheckconvert(input.toString()));
         }
     }
 

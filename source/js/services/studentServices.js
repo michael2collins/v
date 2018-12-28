@@ -191,7 +191,42 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
+    getSampleStudents(path) {
+        var self = this;
+        self.$log.debug('getSampleStudents service entered');
 
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    getSampleStudentRegistrations(path) {
+        var self = this;
+        self.$log.debug('getSampleStudentRegistrations service entered');
+
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    lookupExtas(path, thedata) {
+        var self = this;
+        self.$log.debug('lookupExtas data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
     getUserPrefCols(path) {
         var self = this;
         self.$log.debug('getUserPrefCols service entered with path:', path);
@@ -218,6 +253,16 @@ export class StudentServices {
     }
 
     getStudentHistory(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+    getSampleStudenthistory(path) {
         var self = this;
         var request = self.$http({
             method: "get",
@@ -598,6 +643,30 @@ export class StudentServices {
     createBulkStudent(path, thedata) {
         var self = this;
         self.$log.debug('createBulkStudent data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createBulkStudentRegistrations(path, thedata) {
+        var self = this;
+        self.$log.debug('createBulkStudentRegistrations data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createBulkStudentHistory(path, thedata) {
+        var self = this;
+        self.$log.debug('createBulkStudentHistory data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,

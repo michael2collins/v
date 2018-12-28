@@ -640,6 +640,7 @@ $app->get('/students/:id', 'authenticate',  function($student_id) {
         //                $response["status"] = $result["status"];
         //                $response["createdAt"] = $result["created_at"];
         $response["ID"] = $result["ID"];
+        $response["externalid"] = $result["externalid"];
         $response["LastName"] = $result["LastName"];
         $response["FirstName"] = $result["FirstName"];
         $response["Email"] = $result["Email"];

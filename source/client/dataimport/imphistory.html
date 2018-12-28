@@ -1,0 +1,82 @@
+<div ng-controller="ImphistoryController as $ctrl" ng-cloak>
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+            <div class="caption"> Student History Import</div>
+            <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+        <div class="portlet-body pbs ptl" style="display: block;   background-color: grey;">
+
+            <div class="row">
+                <div class="table-tools">
+                    <div class="row mls mbs">
+                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.step1();">{{ $ctrl.isStep1Collapsed ? 'Step1 - Download Sample Import' : 'Step1 - Collapse'}}</button>
+                    </div>
+                </div>
+                <div class="panel panel-blue" uib-collapse="$ctrl.isStep1Collapsed">
+                    <div class="panel-heading">Download Sample Student History for Import</div>
+                    <div class="panel-body pan">
+                        <div class="table-tools">
+                            <div class="row col-md-offset-8 mbs">
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.download()"><i class="fa fa-download"></i>&nbsp;Download File</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer">
+                        <div ui-grid="$ctrl.gridexp1Options" ui-if="$ctrl.gridexp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-exporter class="mygrid" ng-style="$ctrl.getGridLength()">
+                            <div class="watermark" ng-show="!$ctrl.gridexp1Options.data.length">No data available</div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-tools">
+                    <div class="row mls mbs">
+                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.step2();">{{ $ctrl.isStep2Collapsed ? 'Step2 - Upload Student History' : 'Step2 - Collapse'}}</button>
+                    </div>
+                </div>
+                <div class="panel panel-blue" uib-collapse="$ctrl.isStep2Collapsed">
+                    <div class="panel-heading">Upload Student History</div>
+                    <div class="panel-body pan">
+                        <div class="table-tools">
+                            <div class="row col-md-offset-8 mbs">
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep2NewCollapsed = !$ctrl.isStep2NewCollapsed"><i ng-show="$ctrl.isStep2NewCollapsed" class="fa fa-upload"></i>&nbsp;{{ $ctrl.isStep2NewCollapsed ? 'Pick File' : 'Collapse'}}</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep2Populated()" ng-click="$ctrl.batchValidate()"><i class="fa fa-check"></i>&nbsp; Validate</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isValidForErrors" ng-click="$ctrl.createBulkStudentHistory()"><i class="fa fa-add"></i>&nbsp; Save</button>
+                            </div>
+                        </div>
+                        <div uib-collapse="$ctrl.isStep2NewCollapsed">
+                            <div class="well well-lg">
+                                <div class="container-fluid">
+                                    <div class="container-xl">
+                                        <div class="col-md-12" style="height: 22px;">
+                                            <form>
+                                                <input type="file" class="file-chooser" id="filechoicehistory" 
+                                            name="filechoicehistory" single file-change valid-file=".csv" accept=".csv" 
+                                            ng-model="$ctrl.filechoice" handler="$ctrl.handleFileSelect(files)" 
+                                            ng-click="$ctrl.clearInput($event)"/>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer ">
+                        <div ui-grid="$ctrl.gridimp1Options" ui-if="$ctrl.gridimp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-importer ui-grid-edit ui-grid-row-edit ui-grid-selection ui-grid-validate class="mygrid"
+                            ng-style="$ctrl.getGridLength()">
+                            <div class="watermark" ng-show="!$ctrl.gridimp1Options.data.length">No data available</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

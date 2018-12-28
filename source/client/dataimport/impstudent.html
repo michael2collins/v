@@ -1,0 +1,154 @@
+<div ng-controller="ImpstudentController as $ctrl" ng-cloak>
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+            <div class="caption"> Student Import</div>
+            <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+        <div class="portlet-body pbs ptl" style="display: block;   background-color: grey;">
+
+            <div class="row">
+                <div class="table-tools">
+                    <div class="row mls mbs">
+                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep1Collapsed = !$ctrl.isStep1Collapsed">{{ $ctrl.isStep1Collapsed ? 'Step1 - Define Import' : 'Step1 - Collapse'}}</button>
+                    </div>
+                </div>
+                <div class="panel panel-blue" uib-collapse="$ctrl.isStep1Collapsed">
+                    <div class="panel-heading">Setup Student Import Columns</div>
+                    <div class="panel-body pan">
+                        <div class="table-tools">
+                            <div class="row col-md-offset-8 mbs">
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.addAll()"><i class="fa fa-plus"></i>&nbsp; Add All</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.removeAll()"><i class="far fa-trash-alt"></i>&nbsp; Remove All</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep1NewCollapsed = !$ctrl.isStep1NewCollapsed"><i ng-show="$ctrl.isStep1NewCollapsed" class="fa fa-plus"></i>&nbsp;{{ $ctrl.isStep1NewCollapsed ? 'Add One' : 'Collapse'}}</button>
+                            </div>
+                        </div>
+                        <div uib-collapse="$ctrl.isStep1NewCollapsed">
+                            <div class="well well-lg">
+                                <div class="container-fluid">
+                                    <div class="container-xl">
+                                        <div class="col-md-12" style="height: 88px;">
+                                            <!-- name, type -->
+                                            <form action="" novalidate name="studentcolform" class="form-horizontal">
+                                                <div class="col-md-3">
+
+                                                    <div ng-class="{'has-error': studentcolform.name.$invalid, 
+                    'has-success': !studentcolform.name.$invalid}" class="form-group">
+                                                        <label for="name" class="control-label">Column Name</label>
+                                                        <div class="input-icon right">
+                                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="studentcolform.name.$dirty" ng-class="studentcolform.name.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                                            <select id="name" type="text" name="name" ng-model="$ctrl.StudentColMap" required ng-change="$ctrl.changeColMapName($ctrl.StudentColMap)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control" ng-options="iter.value  for iter in $ctrl.StudentCols">
+              </select>
+
+                                                        </div>
+                                                        <div style="color:maroon" role="alert" ng-messages="studentcolform.name.$error" class="has-error">
+                                                            <div ng-message="required">You did not enter a field</div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-3">
+
+                                                    <div class="form-group">
+                                                        <label for="type" class="control-label"> Column Type<br/>&nbsp;</label>
+
+                                                        <div>
+                                                            <input id="type" type="text" readonly="readonly" name="type" ng-model="$ctrl.StudentColMap.type" class="form-control">
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-2 btn" style="margin-top: 18px;">
+                                                    <label for="rankbtn" class="control-label">&nbsp; </label>
+                                                    <a role="button" class="btn btn-green form-control" ng-if="$ctrl.isokCol()" ng-click="$ctrl.addStudentColMap($ctrl.StudentColMap)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                                </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div ui-grid="$ctrl.gridOptions" ui-if="$ctrl.gridOptions.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()">
+                            <div class="watermark" ng-show="!$ctrl.gridOptions.data.length">No data available</div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-tools">
+                    <div class="row mls mbs">
+                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.step2();">{{ $ctrl.isStep2Collapsed ? 'Step2 - Download Sample Import' : 'Step2 - Collapse'}}</button>
+                    </div>
+                </div>
+                <div class="panel panel-blue" uib-collapse="$ctrl.isStep2Collapsed">
+                    <div class="panel-heading">Download Sample Students for Import</div>
+                    <div class="panel-body pan">
+                        <div class="table-tools">
+                            <div class="row col-md-offset-8 mbs">
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.download()"><i class="fa fa-download"></i>&nbsp;Download File</button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="panel-footer">
+                        <div ui-grid="$ctrl.gridexp1Options" ui-if="$ctrl.gridexp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-exporter class="mygrid" ng-style="$ctrl.getGridLength()">
+                            <div class="watermark" ng-show="!$ctrl.gridexp1Options.data.length">No data available</div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-tools">
+                    <div class="row mls mbs">
+                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.step3();">{{ $ctrl.isStep3Collapsed ? 'Step3 - Upload Students' : 'Step3 - Collapse'}}</button>
+                    </div>
+                </div>
+                <div class="panel panel-blue" uib-collapse="$ctrl.isStep3Collapsed">
+                    <div class="panel-heading">Upload Students</div>
+                    <div class="panel-body pan">
+                        <div class="table-tools">
+                            <div class="row col-md-offset-8 mbs">
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep3NewCollapsed = !$ctrl.isStep3NewCollapsed"><i ng-show="$ctrl.isStep3NewCollapsed" class="fa fa-upload"></i>&nbsp;{{ $ctrl.isStep3NewCollapsed ? 'Pick File' : 'Collapse'}}</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep3Populated()" ng-click="$ctrl.batchValidate()"><i class="fa fa-check"></i>&nbsp; Validate</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isValidForErrors" ng-click="$ctrl.createBulkStudents()"><i class="fa fa-add"></i>&nbsp; Save</button>
+                            </div>
+                        </div>
+                        <div uib-collapse="$ctrl.isStep3NewCollapsed">
+                            <div class="well well-lg">
+                                <div class="container-fluid">
+                                    <div class="container-xl">
+                                        <div class="col-md-12" style="height: 22px;">
+                                            <form>
+                                                <input type="file" class="file-chooser" id="filechoice" 
+                                            name="filechoice" single file-change valid-file=".csv" accept=".csv" 
+                                            ng-model="$ctrl.filechoice" handler="$ctrl.handleFileSelect(files)" 
+                                            ng-click="$ctrl.clearInput($event)"/>
+
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer ">
+                        <div ui-grid="$ctrl.gridimp1Options" ui-if="$ctrl.gridimp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-importer ui-grid-edit ui-grid-row-edit ui-grid-selection ui-grid-validate class="mygrid"
+                            ng-style="$ctrl.getGridLength()">
+                            <div class="watermark" ng-show="!$ctrl.gridimp1Options.data.length">No data available</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

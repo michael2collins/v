@@ -34,7 +34,7 @@ class StudentDbHandler
 	{
 		error_log(print_R("before isStudenrankExists\n", TRUE) , 3, LOG);
 		error_log(print_R("contactid: $contactid\n", TRUE) , 3, LOG);
-		error_log(print_R("ranktype  ate: $ranktype\n", TRUE) , 3, LOG);
+		error_log(print_R("ranktype : $ranktype\n", TRUE) , 3, LOG);
 		$sql = "SELECT id from ncontactrank WHERE contactid = ? ";
 		$sql.= " and ranktype = ? ";
 		$stmt = $this->conn->prepare($sql);
@@ -518,7 +518,7 @@ class StudentDbHandler
 		LEFT JOIN nclass cl on (cl.id = sr.classid and cl.registrationtype = cr.ranktype and c.studentschool = cl.school) ";	
 	if ($ranktype == 'missing') {
 			$sql .= " 	where c.studentschool = ? 
-and cl.registrationtype is null ";
+and cl.registrationtype is null and sr.registrationid is null";
 		} else {
 			$sql .= " 
 join nclasspays cp on (cp.classseq = cl.id and cp.pgmseq = sr.pgmid and cp.classseq = sr.classid and cp.contactid = c.ID 
@@ -599,7 +599,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
             t.AltPhone,t.Address,t.City,t.State,t.ZIP,t.Notes,DATE_FORMAT(t.Birthday, '%Y-%m-%d'),
             t.BeltSize,t.ContactType,t.quickbooklink,t.instructorTitle,
             t.sex,t.medicalConcerns,t.GuiSize,t.ShirtSize,t.phoneExt,t.altPhoneExt,
-            t.StudentSchool,t.EmergencyContact,t.pictureurl
+            t.StudentSchool,t.EmergencyContact,t.pictureurl, t.externalid
         from ncontacts t WHERE t.ID = ? ";
 
 //            t.nextScheduledTest
@@ -614,7 +614,10 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$stmt->bind_param("s", $student_id);
 		if ($stmt->execute()) {
 			$res = array();
-			$stmt->bind_result($ID, $LastName, $FirstName, $Email, $Email2, $Parent, $Phone, $AltPhone, $Address, $City, $State, $ZIP, $Notes, $Birthday, $BeltSize, $ContactType, $quickbooklink, $instructorTitle, $sex, $medicalConcerns, $GuiSize, $ShirtSize, $phoneExt, $altPhoneExt, $StudentSchool, $EmergencyContact, $pictureurl);
+			$stmt->bind_result($ID, $LastName, $FirstName, $Email, $Email2, $Parent, $Phone, 
+			$AltPhone, $Address, $City, $State, $ZIP, $Notes, $Birthday, $BeltSize, $ContactType, 
+			$quickbooklink, $instructorTitle, $sex, $medicalConcerns, $GuiSize, $ShirtSize, 
+			$phoneExt, $altPhoneExt, $StudentSchool, $EmergencyContact, $pictureurl, $externalid);
 			$stmt->fetch();
 			$res["ID"] = $ID;
 			$res["LastName"] = $LastName;
@@ -667,6 +670,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 			//       $res["ReadyForNextRank"] = $ReadyForNextRank;
 
 			$res["pictureurl"] = $pictureurl;
+			$res["externalid"] = $externalid;
 //			$res["nextScheduledTest"] = $nextScheduledTest;
 			$stmt->close();
 			return $res;
@@ -674,6 +678,28 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		else {
 			return NULL;
 		}
+	}
+
+	public
+	function getSampleStudentHistory()
+	{
+		global $school;
+
+		error_log(print_R("enter getSampleStudentHistory \n", TRUE) , 3, LOG);
+		
+		$sql = " SELECT  t.contactid , t.contactdate, t.contactmgmttype  
+			FROM ncontactmgmt t, ncontacts n 
+			WHERE n.studentschool = ? and n.ID = t.contactid 
+			and RAND() < .1
+			ORDER BY t.contactdate LIMIT 20 ";
+		error_log(print_R("sql for getSampleStudentHistory is: " . $sql . "\n", TRUE) , 3, LOG);
+
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $school);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
 	}
 
 	public
@@ -997,6 +1023,57 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		}
 
 		return $response;
+	}
+
+	public
+	function createBulkStudentHistory(
+		$studentid, $contactmgmttype, $contactdate
+		)
+	{
+		error_log(print_R("createBulkStudentHistory entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createBulkStudentHistory Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$response = array();
+		global $school;
+		
+        $dt = DateTime::createFromFormat('m/d/Y', $contactdate);
+        
+        if ($dt === false) {
+            error_log( print_R("createBulkStudentHistory  bad date $contactdate" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+		
+		$sql = "INSERT INTO ncontactmgmt (
+		contactid, contactmgmttype, contactdate)
+			values (
+			?, ?, ?
+			)";
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("sss", 
+				$studentid, $contactmgmttype, $bdate
+			);
+			$result = $stmt->execute();
+			$stmt->close();
+			if ($result) {
+				$new_student_id = $this->conn->insert_id;
+				return $new_student_id;
+			}
+			else {
+				return NULL;
+			}
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
 	}
 
 	private
@@ -2813,6 +2890,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			return NULL;
 		}
 	}
+
     public function removeStudentColMap(
     	$id, $all
     ) {
@@ -2922,8 +3000,6 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         }
 
     }
-
-
 
     public function updateStudentColMap( 
         $id, $type, $name, $all
@@ -3091,6 +3167,173 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         
 	}
 
+	public
+	function getSampleStudentRegistrations() {
+		global $school;
+		//random 10 percent of the records
+	    $sql = "
+			select 
+				sr.studentid as id,
+				sr.classid,
+				cl.class as classname,
+				sr.pgmid,
+				p.class as pgmname,
+				sr.studentClassStatus,
+				cr.ranktype,
+				cr.currentRank,
+				cr.lastPromoted,
+				pp.payerName,
+				pp.payerEmail,
+				np.paymenttype,
+				np.paymentplan,
+				np.paymentAmount,
+				np.payOnDayofMonth,
+				ncp.payerid
+			from studentregistration sr
+			 join nclass cl on ( sr.classid = cl.id and cl.school = ? )
+			 join nclasslist p on (sr.pgmid = p.id and p.school = cl.school)
+			 join ncontactrank cr on (cr.contactid = sr.studentid and cr.ranktype = cl.registrationtype)
+			 join nclasspays ncp on (sr.classid = ncp.classseq and sr.studentid = ncp.contactid and sr.pgmid = ncp.pgmseq)
+			 join npayments np on ( np.payerid = ncp.payerid )
+			 join payer pp on (pp.id = np.payerid and pp.school = cl.school)
+			 join paymentclasspay pcp on (pcp.classpayid = ncp.id and pcp.paymentid = np.paymentid)
+            where  RAND() < .1
+			order by cl.class LIMIT 20 
+	    ";
+	    
+		error_log(print_R("sql for getSampleStudents is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $school);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+        
+	}
+
+	public
+	function lookupExtras(
+            $externalid,$classname,$pgmname
+		) {
+		global $school;
+		//random 10 percent of the records
+	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
+		$clsql = " select id as classid from nclass where class = ? and school = ?";	
+		$psql = " select id as pgmid from nclasslist where class = ? and school = ?";
+
+        $res = array();
+        $res["externalid"] = $externalid;
+        $res["contacterror"] = NULL;
+        $res["classerror"] = NULL;
+        $res["programerror"] = NULL;
+        	
+	    try {
+	        $stmt = $this->conn->prepare($idsql);
+	        $stmt->bind_param("ss", $externalid, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($id);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["id"] = $id;
+				} else {
+		            $res["id"] = null;
+	        		$res["contacterror"] = "External ID not found";
+				}
+	            $stmt->close();
+	        } else {
+	        	$res["contacterror"] = "External ID failure";
+	        }
+	        $stmt = $this->conn->prepare($clsql);
+	        $stmt->bind_param("ss", $classname, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($classid);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["classid"] = $classid;
+				} else {
+		            $res["classid"] = null;
+	        		$res["classerror"] = "Class ID not found";
+				}
+
+	            $stmt->close();
+	        } else {
+	        	$res["classerror"] = "Class ID failure";
+	        }
+	        $stmt = $this->conn->prepare($psql);
+	        $stmt->bind_param("ss", $pgmname, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($pgmid);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["pgmid"] = $pgmid;
+				} else {
+		            $res["pgmid"] = null;
+	        		$res["programerror"] = "Program ID not found";
+				}
+	            
+	            $stmt->close();
+	        } else {
+	        	$res["programerror"] = "Program ID failure";
+	        }
+			return $res;
+	    } catch(exception $e) {
+			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+
+
+	}
+
+	public
+	function lookupHistExtras(
+            $externalid
+		) {
+		global $school;
+
+	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
+
+        $res = array();
+        $res["externalid"] = $externalid;
+        $res["contacterror"] = NULL;
+
+	    try {
+	        $stmt = $this->conn->prepare($idsql);
+	        $stmt->bind_param("ss", $externalid, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($id);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["id"] = $id;
+				} else {
+		            $res["id"] = null;
+	        		$res["contacterror"] = "External ID not found";
+				}
+	            $stmt->close();
+	        } else {
+	        	$res["contacterror"] = "External ID failure";
+	        }
+
+			return $res;
+	    } catch(exception $e) {
+			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+
+
+	}
+	
 }
 
 ?>

@@ -1,7 +1,7 @@
 import angular from 'angular';
 
 export class UserServices {
-    constructor($http, $q, $log, $rootScope, $cookies, _) {
+    constructor($http, $q, $log, $rootScope, $cookies, _, Util) {
         'ngInject';
         
         this.apikey = {};
@@ -13,6 +13,7 @@ export class UserServices {
 //        this._$cookieStore = $cookieStore;
         this._$cookies = $cookies;
         this.__ = _;
+        this.Util = Util;
     }
 
     getUserOptions(path) {
@@ -60,7 +61,7 @@ export class UserServices {
         //            self._$log.debug('cookie is:',cookiecheck, $cookies.getAll());
 
         if (typeof cookiecheck !== 'undefined') {
-            if (typeof this.apikey !== 'undefined') {
+            if (typeof this.apikey !== 'undefined' && !this.Util.isEmptyObject(this.apikey)) {
                 return this.apikey.length > 0;
             }
             else {

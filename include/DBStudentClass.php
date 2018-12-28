@@ -477,16 +477,7 @@ class StudentClassDbHandler {
         }
     }
 
-
-    /**
-     * Updating student class
-
-     */
-
-    public function updateStudentClass($sc_ContactId,
-                                       $sc_classseq,
-                                       $sc_pgmseq,
-                                       $sc_studentclassstatus
+    public function updateStudentClass($sc_ContactId,$sc_classseq,$sc_pgmseq,$sc_studentclassstatus
                                       ) {
         $num_affected_rows = 0;
 
@@ -523,12 +514,7 @@ class StudentClassDbHandler {
 
         return $num_affected_rows > 0;
     }
-
-    /**
-     * set student classpay
-     */
-    public function setStudentClassPay($sc_ContactId,
-                                    $sc_classPayName
+    public function setStudentClassPay($sc_ContactId,$sc_classPayName
                                    ) {
         $num_affected_rows = 0;
 
@@ -558,7 +544,6 @@ class StudentClassDbHandler {
 
         return $num_affected_rows;
     }
-
     private function isStudentRegExists($studentid, $classid, $pgmid) {
 
     error_log( print_R("before isStudentRegExists\n", TRUE ), 3, LOG);
@@ -584,7 +569,13 @@ class StudentClassDbHandler {
     ) {
 
         error_log( print_R("addStudentRegistration entered\n", TRUE ),3, LOG);
-                                      
+        error_log( print_R("contact $studentid\n", TRUE ), 3, LOG);
+        error_log( print_R("class $classid\n", TRUE ), 3, LOG);
+        error_log( print_R("pgm $pgmid\n", TRUE ), 3, LOG);
+        error_log( print_R("class stat $studentclassstatus\n", TRUE ), 3, LOG);
+        error_log( print_R("payer $payerid\n", TRUE ), 3, LOG);
+        error_log( print_R("payerNm $payerName\n", TRUE ), 3, LOG);
+
         $response = array();
         $testfeedefault = 0;
         $new_id = '';
@@ -611,7 +602,8 @@ class StudentClassDbHandler {
                                     $classid,
                                     $pgmid,
                                     $payerid,
-                                    $testfeedefault);
+                                    $testfeedefault,
+                                    0);
 
                 return $new_id;
 
@@ -670,10 +662,6 @@ class StudentClassDbHandler {
 
     }
 
-        /**
-     * Checking for studentclass existing
-     * @return boolean
-     */
     private function isStudentClassExists($contactid, $classseq, $pgmseq) {
     error_log( print_R("before isStudentClassExists\n", TRUE ), 3, LOG);
     error_log( print_R("contactid: $contactid\n", TRUE ), 3, LOG);
@@ -693,16 +681,9 @@ class StudentClassDbHandler {
         return $num_rows > 0;
     }
 
-    /**
-     * set student class
-     */
-    public function setStudentClass($sc_ContactId,
-                                    $sc_classseq,
-                                    $sc_pgmseq,
-                                    $payer,
-                                    $testfee = 0,
-                                    $primaryContact = 0
-                                   ) {
+    public function setStudentClass(
+    $sc_ContactId,$sc_classseq,$sc_pgmseq,$payer,$testfee = 0,$primaryContact = 0                                   
+    ) {
         $num_affected_rows = 0;
 
 
@@ -789,6 +770,35 @@ class StudentClassDbHandler {
         return $num_rows > 0;
     }
 
+    private function isPayerExistsOrRetId($payerName) {
+        error_log( print_R("before isPayerExistsOrRetId\n", TRUE ), 3, LOG);
+        error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
+        global $school;
+        
+        $sql = "SELECT id from payer WHERE payerName = ? and school = ? ";
+
+        error_log( print_R("isPayerExists sql after security: $sql", TRUE), 3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param("ss", $payerName, $school);
+        $stmt->execute();
+	    $stmt->bind_result($id);
+        $stmt->store_result();
+        $num_rows = $stmt->num_rows;
+    	if ($num_rows > 0) {
+            $stmt->fetch();
+            $retid = $id;
+            error_log( print_R("isPayerExists : $retid", TRUE), 3, LOG);
+            
+            $stmt->close();
+            return $retid;
+    	} else {
+            error_log( print_R("isPayernotExists ", TRUE), 3, LOG);
+            $stmt->close();
+    	    return -1;
+    	}
+    }
     public function addPayer($payerName
     ) {
 
@@ -838,10 +848,53 @@ class StudentClassDbHandler {
         return $response;
     }
 
-    /**
-     * Fetching family for  student
-     * @param String $student_id id of the student
-     */
+    public function addPayerOrReturnid($payerName
+    ) {
+
+        error_log( print_R("addPayer entered\n", TRUE ),3, LOG);
+                                      
+        $testfeedefault = 0;
+
+        global $school;
+
+        $sql = "INSERT INTO payer (payerName, school) VALUES ";
+        $sql .= "  ( ?, ?)";
+
+        $res = $this->isPayerExistsOrRetId($payerName); 
+        error_log( print_R("isPayerExistsOrRetId returns with : $res", TRUE), 3, LOG);
+
+        if ($res == -1) {
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ss",
+                                  $payerName, $school
+                                     );
+                    // Check for successful insertion
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        return $new_id;
+                    } else {
+                        // Failed to create 
+                        printf("Errormessage: %s\n", $this->conn->error);
+                        return NULL;
+                    }
+
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+            }
+        } else {
+            // User with same  existed
+            error_log( print_R("addPayerOrReturnid to return with : $res", TRUE), 3, LOG);
+            return $res;
+        }
+
+    }
+
     public function getFamily($payerid) {
         global $school;
         error_log( print_R("student for getfamily is: " . $payerid . "\n", TRUE ),3, LOG);
@@ -999,6 +1052,7 @@ class StudentClassDbHandler {
             return NULL;
         }
         $thedate = $dt->format('Y-m-d');
+        $new_id = null;
 
         $sql = "INSERT INTO npayments( payerid, paymenttype, PaymentNotes, 
         PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby) VALUES ";
@@ -1037,7 +1091,7 @@ class StudentClassDbHandler {
                 Pricesetdate= ?, payOnDayOfMonth= ?, PaymentPlan = ?, 
                 paymenttype = ?
                 WHERE paymentid = ? and payerid = ? ";
-            error_log( print_R("updatePaymentPlan do update: $updsql                     $PaymentNotes, $PaymentAmount,$PriceSetby, 
+            error_log( print_R("updatePaymentPlan do update: $updsql, $PaymentNotes, $PaymentAmount,$PriceSetby, 
                     $thedate ,$payOnDayOfMonth, $PaymentPlan,
                     $paymenttype ,
                     $paymentid,
