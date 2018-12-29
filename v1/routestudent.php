@@ -3152,7 +3152,9 @@ $app->post('/invoices',  function() use ($app) {
     $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
     $invoiceDate  = (isset($dataJsonDecode->thedata->invoiceDate) ? $dataJsonDecode->thedata->invoiceDate : $today);
+    $school  = (isset($dataJsonDecode->thedata->school) ? $dataJsonDecode->thedata->school : "");
     $status   = 'new';
+    $payfor = "lessons";
 
     error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
 
@@ -3166,7 +3168,7 @@ $app->post('/invoices',  function() use ($app) {
 
     // creating invoices based on date and who is ready
     $result = $db->getInvoiceList(
-        $invoiceDate
+        $invoiceDate, $school
                                 );
     if ($result != NULL) {
 
@@ -3325,7 +3327,7 @@ $message = "
     
         // creating invoices
         $return = $db->createinvoice(
-            $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status
+            $invoice, $invoiceDate, $invoiceAmt, $paymentid, $status, $payfor
                                     );
     
         if ($return > 0) {
@@ -3355,10 +3357,10 @@ $message = "
             emailnotify('villaris.us@gmail.com', $subject, $message);
             error_log( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
 */            
-            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,'lessons');
+            genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
             
             $invoicegood += 1;
-        } else if ($invoice == RECORD_ALREADY_EXISTED) {
+        } else if ($return == RECORD_ALREADY_EXISTED) {
             error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
             $invoiceexists += 1;
         } else {

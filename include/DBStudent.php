@@ -2063,7 +2063,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function getCommunication() {
 		global $school;
 	    $sql = "
-		select schoolReplyEmail, schoolReplySignature
+		select schoolReplyEmail, schoolReplySignature,invoicebatchenabled
             from schoolCommunication 
             where school = ?
 	    ";
@@ -2095,7 +2095,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	}
 	
 	public
-	function getInvoiceList($invoiceDate) {
+	function getInvoiceList($invoiceDate, $school) {
 
 	    $sql = "
 select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmonth, 
@@ -2114,6 +2114,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			left join (select count(*) as overduecnt, paymentid from invoice where status = 'new') as overdue on (overdue.paymentid = pp.paymentid)
             where
 			cp.primaryContact = 1
+			and com.invoicebatchenabled = 1
+			and c.studentschool = ?
 	    ";
 	    
 	    /*
@@ -2133,7 +2135,7 @@ WHERE cp.primaryContact =1
 
 		error_log(print_R("sql for getInvoiceLIst is: " . $sql . "\n", TRUE) , 3, LOG);
 		$stmt = $this->conn->prepare($sql);
-		$stmt->bind_param("s", $invoiceDate);
+		$stmt->bind_param("ss", $school, $invoiceDate);
 		$stmt->execute();
 		$res = $stmt->get_result();
 		$stmt->close();

@@ -10,6 +10,7 @@ const https = require('https');
 var moment = require('moment');
 
 var host = process.env.host;
+var school = process.env.school;
 
 var invoiceDate = moment().format('YYYY-MM-DD');
 
@@ -58,7 +59,8 @@ function performRequest(thedata) {
 
     var content = {
         "thedata": {
-            "invoiceDate": invoiceDate
+            "invoiceDate": invoiceDate,
+            "school": school
         }
     };
 

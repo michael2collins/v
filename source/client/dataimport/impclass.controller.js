@@ -377,7 +377,14 @@ export class ImpclassController {
                 vm.importdata = [];
                 vm.$log.debug('importerDataAddCallback ', newObjects);
                 vm.importdata = vm.importdata.concat(newObjects);
-                vm.lookupExtas();
+                
+//                vm.importdata = angular.copy(newObjects);
+//                vm.lookupExtas().then(function(){
+                    vm.step2populated = vm.importdata.length > 0 ? true : false;
+                    vm.gridimp1Options.data = vm.importdata;
+                    
+ //               });
+                
             },
 
 
@@ -484,10 +491,8 @@ export class ImpclassController {
                 }
 
             }
-            vm.step2populated = vm.importdata.length > 0 ? true : false;
-            vm.gridimp1Options.data = vm.importdata;
 
-            return vm.gridexp1Options.data;
+            return data;
         });
     }
 
@@ -529,15 +534,20 @@ export class ImpclassController {
 
     batchValidate() {
         var vm = this;
-        var rowsRendred = vm.gridimp1Api.grid.renderContainers.body.renderedRows;
-        rowsRendred.forEach(function(row) {
-            row.grid.options.columnDefs.forEach(function(colDef) {
-                vm.gridimp1Api.grid.validate.runValidators(
-                    row.entity, colDef, row.entity[colDef.field], NaN, vm.gridimp1Api.grid).then(function() {
-                    vm.countValidateErrors();
+        vm.lookupExtas().then(function(){
+            vm.gridimp1Options.data = vm.importdata;
+            var rowsRendred = vm.gridimp1Api.grid.renderContainers.body.renderedRows;
+            rowsRendred.forEach(function(row) {
+                row.grid.options.columnDefs.forEach(function(colDef) {
+                    vm.gridimp1Api.grid.validate.runValidators(
+                        row.entity, colDef, row.entity[colDef.field], NaN, vm.gridimp1Api.grid).then(function() {
+                        vm.countValidateErrors();
+                    });
                 });
             });
+            
         });
+        
     }
 
     countValidateErrors() {
