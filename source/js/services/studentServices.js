@@ -272,6 +272,16 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
+    getSampleStudentAttendance(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
 
     getStudent(path) {
         var self = this;
@@ -667,6 +677,18 @@ export class StudentServices {
     createBulkStudentHistory(path, thedata) {
         var self = this;
         self.$log.debug('createBulkStudentHistory data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createBulkStudentAttendance(path, thedata) {
+        var self = this;
+        self.$log.debug('createBulkStudentAttendance data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,

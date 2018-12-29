@@ -1360,6 +1360,51 @@ $app->get('/samplestudenthistory', 'authenticate', function() {
         echoRespnse(404, $response);
     }
 });
+$app->get('/samplestudentattendance', 'authenticate', function() {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getSampleStudentAttendance();
+
+    $response["error"] = false;
+    $response["StudentAttendanceList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["externalid"] = (empty($slist["contactID"])  ? "NULL" : 'x' . $slist["contactID"]);
+            $tmp["mondayOfWeek"] = (empty($slist["mondayOfWeek"])  ? "NULL" : $slist["mondayOfWeek"]);
+            $tmp["contactID"] = (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
+            $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);;
+            $tmp["classname"] = (empty($slist["classname"]) ? "NULL" : $slist["classname"]);
+            $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
+            $tmp["attended"] = (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
+        } else {
+            $tmp["externalid"] = "NULL";
+            $tmp["mondayOfWeek"] = "NULL";
+            $tmp["contactID"] = "NULL";
+            $tmp["DOWnum"] = "NULL";
+            $tmp["classname"] = "NULL";
+            $tmp["classid"] = "NULL";
+            $tmp["rank"] = "NULL";
+            $tmp["attended"] = "NULL";
+
+        }
+        array_push($response["StudentAttendanceList"], $tmp);
+    }
+    
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "Problem getting sample student attendance";
+        echoRespnse(404, $response);
+    }
+});
 
 
 $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
@@ -3620,7 +3665,6 @@ $app->get('/stripepub', 'authenticate', function() use ($app) {
     
 });
 
-
 $app->post('/paystripe', 'authenticate',  function() use ($app) {
 
     $response = array();
@@ -4274,6 +4318,62 @@ $app->post('/lookuphistextras', 'authenticate', function() use($app) {
     echoRespnse(200, $response);
 
 });
+$app->post('/lookupattendextras', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("lookupattendextras before lookup\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $studentgood=0;
+    $studentbad=0;
+    $studentexists=0;
+    
+    $response = array();
+    $response["error"] = false;
+    $response["lookups"] = array();
+
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $externalid = (isset($studentarr[$i]->externalid) ? $studentarr[$i]->externalid : "");
+        $classname = (isset($studentarr[$i]->classname) ? $studentarr[$i]->classname : "");
+
+        $db = new StudentDbHandler();
+
+        $result = $db->lookupAttendExtras(
+            $externalid,$classname
+                                    );    
+        $tmp = array();
+        $tmp["externalid"] = $externalid;
+        $tmp["classname"] = $classname;
+        $tmp["contacterror"] = NULL;
+    	$tmp["classerror"] = NULL;
+
+        if ($result != NULL ) {
+
+            $tmp["id"] = $result["id"];
+            $tmp["classid"] = $result["classid"];
+
+            $tmp["contacterror"] = $result["contacterror"];
+        	$tmp["classerror"] = $result["classerror"];
+
+            array_push($response["lookups"], $tmp);
+            
+        } else {
+        	$tmp["generalerror"] = "Generic sql error";
+        }
+    }
+    echoRespnse(200, $response);
+
+});
 
 $app->post('/bulkstudentregistrations', 'authenticate', function() use($app) {
 
@@ -4409,6 +4509,69 @@ $app->post('/bulkstudenthistory', 'authenticate', function() use($app) {
             error_log( print_R( $studentbad, TRUE), 3, LOG);
             $response["error"] = true;
             $response["message"] = "Failed to create $studentbad event. Please try again";
+            $response["student_id"] = $studentbad;
+            echoRespnse(400, $response);
+        }
+
+});
+$app->post('/bulkstudentattendance', 'authenticate', function() use($app) {
+
+    $response = array();
+
+    $data               = file_get_contents("php://input");
+    $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("bulkstudentattendance before insert\n", TRUE ), 3, LOG);
+    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedStudents;
+
+    error_log( print_R($studentarr, TRUE ), 3, LOG);
+
+    $studentgood=0;
+    $studentbad=0;
+
+    for($i = 0; $i < count($studentarr); $i++ ) {
+    
+        $contactID = (isset($studentarr[$i]->contactID) ? $studentarr[$i]->contactID : "");
+        $DOWnum = (isset($studentarr[$i]->DOWnum) ? $studentarr[$i]->DOWnum : "");
+        $classID = (isset($studentarr[$i]->classid) ? $studentarr[$i]->classid : "");
+        $rank = (isset($studentarr[$i]->rank) ? $studentarr[$i]->rank : "");
+        $attended = (isset($studentarr[$i]->attended) ? $studentarr[$i]->attended : 0);
+        $DOWnum = (isset($studentarr[$i]->DOWnum) ? $studentarr[$i]->DOWnum : "");
+        $mondayOfWeek = (isset($studentarr[$i]->mondayOfWeek) ? $studentarr[$i]->mondayOfWeek : "01/01/2000");
+
+        $db = new StudentDbHandler();
+
+        $attend = $db->createBulkStudentAttendance(
+            $contactID, $classID, $mondayOfWeek, $rank, $DOWnum, $attended
+            );
+        
+        if ($attend > 0) {
+            error_log( print_R("createBulkStudentAttendance created: $attend\n", TRUE ), 3, LOG);
+            $studentgood += 1;
+        } else {
+            error_log( print_R("after createBulkStudentAttendance result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $attend, TRUE), 3, LOG);
+            $studentbad += 1;
+        }
+                        
+    }
+
+    //as long as one worked, return success
+        if ($studentgood > 0) {
+            $response["error"] = false;
+            $response["message"] = "$studentgood student attendance(s) created successfully";
+            $response["student"] = $studentgood;
+            $response["student_id"] = $studentgood;
+            error_log( print_R("Student attendance(s) created: $studentgood\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else {
+            error_log( print_R("after createBulkStudentAttendance result bad\n", TRUE), 3, LOG);
+            error_log( print_R( $studentbad, TRUE), 3, LOG);
+            $response["error"] = true;
+            $response["message"] = "Failed to create $studentbad attendances. Please try again";
             $response["student_id"] = $studentbad;
             echoRespnse(400, $response);
         }

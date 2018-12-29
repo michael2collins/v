@@ -1076,6 +1076,58 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		}
 	}
 
+	public
+	function createBulkStudentAttendance(
+            $contactID, $classID, $mondayOfWeek, $rank, $DOWnum, $attended
+		)
+	{
+		error_log(print_R("createBulkStudentAttendance entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createBulkStudentAttendance Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$response = array();
+		global $school;
+		
+        $dt = DateTime::createFromFormat('m/d/Y', $mondayOfWeek);
+        
+        if ($dt === false) {
+            error_log( print_R("createBulkStudentAttendance  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+		
+		$sql = "INSERT INTO attendance (
+            contactID, classID, mondayOfWeek, rank, DOWnum, attended
+		)
+			values (
+			?, ?, ?, ?, ?, ? 
+			)";
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("ssssss", 
+            $contactID, $classID, $bdate, $rank, $DOWnum, $attended
+			);
+			$result = $stmt->execute();
+			$stmt->close();
+			if ($result) {
+				$new_student_id = $this->conn->insert_id;
+				return $new_student_id;
+			}
+			else {
+				return NULL;
+			}
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+			return NULL;
+		}
+	}
+
 	private
 	function isStudentExists($Email, $LastName, $FirstName, $inschool)
 	{
@@ -3212,6 +3264,29 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	}
 
 	public
+	function getSampleStudentAttendance() {
+		global $school;
+		//random 10 percent of the records
+	    $sql = "
+			select contactID, classID as classid, mondayOfWeek, rank, DOWnum, attended,
+				cl.class as classname
+			from attendance a
+			 join nclass cl on ( a.classid = cl.id and cl.school = ? )
+            where  RAND() < .1
+			order by contactID, mondayOfWeek desc,DOWnum asc LIMIT 21 
+	    ";
+	    
+		error_log(print_R("sql for getSampleStudentAttendance is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("s", $school);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+        
+	}
+
+	public
 	function lookupExtras(
             $externalid,$classname,$pgmname
 		) {
@@ -3326,6 +3401,67 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			return $res;
 	    } catch(exception $e) {
 			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+
+
+	}
+
+	public
+	function lookupAttendExtras(
+            $externalid,$classname
+		) {
+		global $school;
+	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
+		$clsql = " select id as classid from nclass where class = ? and school = ?";	
+
+        $res = array();
+        $res["externalid"] = $externalid;
+        $res["contacterror"] = NULL;
+        $res["classerror"] = NULL;
+
+	    try {
+	        $stmt = $this->conn->prepare($idsql);
+	        $stmt->bind_param("ss", $externalid, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($id);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["id"] = $id;
+				} else {
+		            $res["id"] = null;
+	        		$res["contacterror"] = "External ID not found";
+				}
+	            $stmt->close();
+	        } else {
+	        	$res["contacterror"] = "External ID failure";
+	        }
+	        $stmt = $this->conn->prepare($clsql);
+	        $stmt->bind_param("ss", $classname, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($classid);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["classid"] = $classid;
+				} else {
+		            $res["classid"] = null;
+	        		$res["classerror"] = "Class ID not found";
+				}
+
+	            $stmt->close();
+	        } else {
+	        	$res["classerror"] = "Class ID failure";
+	        }
+
+			return $res;
+	    } catch(exception $e) {
+			 error_log(print_R( "sql error in lookupAttendExtras\n" , TRUE), 3, LOG);
 			error_log(print_R(  $e , TRUE), 3, LOG);
                 printf("Errormessage: %s\n", $e);
                 return NULL;

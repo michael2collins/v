@@ -326,7 +326,7 @@ class AttendanceDbHandler {
         }
 //todo: currentrank remove
         $sql .= " group by contactid, classid, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d'), rank ";
-        $sql .= "   order by mondayofweek desc, c.currentrank " ;
+        $sql .= "   order by mondayofweek desc, rank " ;
 
         error_log( print_R("getAttendanceHistory sql: $sql", TRUE), 3, LOG);
         

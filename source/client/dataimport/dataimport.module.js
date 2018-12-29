@@ -10,12 +10,13 @@ import { DataImportController } from './dataimport.controller';
 import { ImpstudentController } from './impstudent.controller';
 import { ImpclassController } from './impclass.controller';
 import { ImphistoryController } from './imphistory.controller';
+import { ImpattendController } from './impattend.controller';
 
 import { Util } from '../../js/utility/utility';
 import textDate from '../../js/filters/textdate.filter';
 
 import template from './dataimport.html';
-import { impstudentComponent,impclassComponent,imphistoryComponent,dataimportComponent } from './impstudent.component';
+import { impstudentComponent,impclassComponent,imphistoryComponent,impattendComponent,dataimportComponent } from './impstudent.component';
 
 export const DataimportModule = angular
    .module('ngadmin.dataimport', [CoreModule, DirectiveModule,
@@ -38,10 +39,12 @@ export const DataimportModule = angular
    .component('impstudentComponent', impstudentComponent)
    .component('impclassComponent', impclassComponent)
    .component('imphistoryComponent', imphistoryComponent)
+   .component('impattendComponent', impattendComponent)
    .component('dataimportComponent', dataimportComponent)
    .controller('ImpstudentController', ImpstudentController)
    .controller('ImpclassController', ImpclassController)
    .controller('ImphistoryController', ImphistoryController)
+   .controller('ImpattendController', ImpattendController)
    .controller('DataImportController', DataImportController)
    .service('portalDataService', portalDataService)
    .service('StudentServices', StudentServices)
