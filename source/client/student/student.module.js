@@ -12,16 +12,16 @@ import { studentclassComponent } from './studentclass.component';
 import { studentdualComponent } from './studentdual.component';
 import { studentdualgridComponent } from './studentdual.component';
 import { studenthistoryComponent } from './studenthistory.component';
+import { studentattendComponent } from './studentattend.component';
 import { studentpaymentComponent } from './studentpayment.component';
 import { studenttableComponent } from './studenttable.component';
 
 import { StudentPaymentController } from './studentpayment.controller';
-//import { ModalNewPayerController } from './newpayer.controller';
-//import { ModalNewPayerInstanceController } from './newpayerinst.controller';
 import { ModalNewStudentController } from './newstudent.controller';
 import { ModalNewStudentInstanceController } from './newstudentinst.controller';
 import { StudentClassController } from './studentclass.controller';
 import { StudentHistoryController } from './studenthistory.controller';
+import { StudentAttendController } from './studentattend.controller';
 import { FormLayoutsControllerEditStudent } from './editstudent.controller';
 import { ctrlDualList } from './studentdual.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
@@ -47,25 +47,23 @@ export const StudentModule = angular
  .service('TestingServices', TestingServices)
  .service('Util', Util)
  .controller('StudentPaymentController', StudentPaymentController)
-// .controller('ModalNewPayerController', ModalNewPayerController)
-// .controller('ModalNewPayerInstanceController', ModalNewPayerInstanceController)
  .controller('ModalNewStudentController', ModalNewStudentController)
  .controller('ModalNewStudentInstanceController', ModalNewStudentInstanceController)
  .controller('StudentClassController', StudentClassController)
  .controller('StudentHistoryController', StudentHistoryController)
+ .controller('StudentAttendController', StudentAttendController)
  .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent)
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ctrlDualList', ctrlDualList)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
  .component('editstudentComponent', editstudentComponent)
-// .component('newpayerComponent', newpayerComponent)
-// .component('newpayerinstComponent', newpayerinstComponent)
  .component('newstudentComponent', newstudentComponent)
  .component('newstudentinstComponent', newstudentinstComponent)
  .component('studentclassComponent', studentclassComponent)
  .component('studentdualComponent', studentdualComponent)
  .component('studentdualgridComponent', studentdualgridComponent)
  .component('studenthistoryComponent', studenthistoryComponent)
+ .component('studentattendComponent', studentattendComponent)
  .component('studentpaymentComponent', studentpaymentComponent)
  .component('studenttableComponent', studenttableComponent)
  .config(studentconfig)

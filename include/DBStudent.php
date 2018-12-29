@@ -729,6 +729,27 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$stmt->close();
 		return $res;
 	}
+	public
+	function getStudentAttend($student_id)
+	{
+		global $school;
+		error_log(print_R("student for getStudentAttend is: " . $student_id . "\n", TRUE) , 3, LOG);
+
+		$sql = " SELECT a.ID, contactID, classID, mondayOfWeek, rank, DOWnum, attended,
+				cl.class as classname
+				FROM `attendance` a
+				join ncontacts c on (a.contactID = c.ID)
+				join nclass cl on (a.classID = cl.ID)
+				where a.contactID = ? and c.studentschool = ? 
+				order by mondayOfWeek desc, DOWnum asc";
+		error_log(print_R("sql for getStudentAttend is: " . $sql . "\n", TRUE) , 3, LOG);
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("ss", $student_id, $school);
+		$stmt->execute();
+		$res = $stmt->get_result();
+		$stmt->close();
+		return $res;
+	}
 
 	public
 	function updateStudent(

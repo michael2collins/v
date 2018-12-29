@@ -1325,6 +1325,53 @@ $app->get('/studenthistory/:id', 'authenticate', function($student_id) {
         echoRespnse(404, $response);
     }
 });
+$app->get('/studentattend/:id', 'authenticate', function($student_id) {
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    $result = $db->getStudentAttend($student_id);
+
+    $response["error"] = false;
+    $response["StudentAttendList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+//ID, contactID, classID, classname, mondayOfWeek, rank, DOWnum, attended        
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
+            $tmp["contactID"] = (empty($slist["contactID"]) ? "NULL" : $slist["contactID"]);
+            $tmp["classname"] = (empty($slist["classname"]) ? "NULL" : $slist["classname"]);
+            $tmp["classID"] = (empty($slist["classID"]) ? "NULL" : $slist["classID"]);
+            $tmp["mondayOfWeek"] = (empty($slist["mondayOfWeek"]) ? "NULL" : $slist["mondayOfWeek"]);
+            $tmp["rank"] = (empty($slist["rank"])  ? "NULL" : $slist["rank"]);
+            $tmp["DOWnum"] = (empty($slist["DOWnum"])  ? "NULL" : $slist["DOWnum"]);
+            $tmp["attended"] = (empty($slist["attended"])  ? "NULL" : $slist["attended"]);
+        } else {
+            $tmp["ID"] = "NULL";
+            $tmp["contactID"] = "NULL";
+            $tmp["classname"] = "NULL";
+            $tmp["classID"] = "NULL";
+            $tmp["mondayOfWeek"] = "NULL";
+            $tmp["rank"] = "NULL";
+            $tmp["DOWnum"] = "NULL";
+            $tmp["attended"] = "NULL";
+        }
+        array_push($response["StudentAttendList"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The student attendance doesn't exist";
+        echoRespnse(404, $response);
+    }
+});
 
 $app->get('/samplestudenthistory', 'authenticate', function() {
 
@@ -4534,7 +4581,7 @@ $app->post('/bulkstudentattendance', 'authenticate', function() use($app) {
 
     for($i = 0; $i < count($studentarr); $i++ ) {
     
-        $contactID = (isset($studentarr[$i]->contactID) ? $studentarr[$i]->contactID : "");
+        $contactID = (isset($studentarr[$i]->id) ? $studentarr[$i]->id : "");
         $DOWnum = (isset($studentarr[$i]->DOWnum) ? $studentarr[$i]->DOWnum : "");
         $classID = (isset($studentarr[$i]->classid) ? $studentarr[$i]->classid : "");
         $rank = (isset($studentarr[$i]->rank) ? $studentarr[$i]->rank : "");
