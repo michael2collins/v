@@ -20,6 +20,7 @@ constructor() {
         '/table-basic-leads': {title:'Table Basic', 'breadcrumb':['Table', 'Table Basic']},
         '/table-basic-attendance': {title:'Attendance', 'breadcrumb':['Students', 'Attendance']},
         '/table-basic-schedule': {title:'Class Schedule', 'breadcrumb':['Manage Studio', 'Class Schedule']},
+        '/table-basic-schoolcom': {title:'School Communication', 'breadcrumb':['Manage Studio', 'School Communication']},
         '/table-basic-program': {title:'Program Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-htmltemplate': {title:'Email Template Maintenance', 'breadcrumb':['Manage Studio', 'Email Template']},
         '/table-basic-testtype': {title:'Test type Maintenance', 'breadcrumb':['Manage Studio', 'Test Type']},

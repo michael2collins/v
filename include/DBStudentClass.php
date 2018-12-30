@@ -1490,5 +1490,138 @@ class StudentClassDbHandler {
         return $res;
     }
 
+    public function getSchoolcom() {
+        global $school;
+
+        $sql = " SELECT  id, schoolReplyEmail, schoolReplySignature, invoicebatchenabled 
+            from schoolCommunication
+            where school = ? 
+                ";
+
+        error_log( print_R("sql for getSchoolcom is: " . $sql . "\n", TRUE ),3, LOG);
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param("s", $school);
+        
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+        return $res;
+    }
+    public function updateSchoolcom(
+        $id, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $mode
+    ) {
+        error_log( print_R("updateSchoolcom entered\n", TRUE ),3, LOG);
+        global $school;                              
+        $response = array();
+
+        $errormessage=array();
+        
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+
+        $sql = "INSERT INTO schoolCommunication( school, schoolReplyEmail, schoolReplySignature, invoicebatchenabled ) ";
+        $sql .= "  ( ?, ?, ?, ? )";
+
+        //todo First check if  already existed in db
+        try {
+        if ($mode == "insert") {
+            error_log( print_R("updateSchoolcom do insert\n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ssss",
+                    $school, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled
+                        );
+                    // Check for successful insertion
+                    $result = $stmt->execute();
+                    $new_id = NULL;
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                        $errormessage["success"] = $new_id;
+                        return $errormessage;
+                    } else {
+                        $errormessage["sqlerror"] = "Insert failure: ";
+                        $errormessage["sqlerrordtl"] = $this->conn->error;
+                        return $errormessage;
+                        
+                    } 
+                $stmt->close();
+
+                return $new_id;
+
+            } else {
+                error_log( print_R("insert Schoolcom failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+            }
+
+
+        } else {
+            //  with same  existed
+                $updsql = "UPDATE schoolCommunication SET 
+                schoolReplyEmail= ?, schoolReplySignature= ?, invoicebatchenabled=?
+                WHERE id = ? and school = ?  ";
+            error_log( print_R("invoicebatchenabled do update: $updsql, $id, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $mode
+                \n", TRUE ),3, LOG);
+
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("sssss",
+                    $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $id, $school
+                                 );
+                    $stmt->execute();
+                    $num_affected_rows = $stmt->affected_rows;
+                    $stmt->close();
+                    $errormessage["success"] = $num_affected_rows;
+                    return $errormessage;
+            } else {
+                error_log( print_R("update invoicebatchenabled failed", TRUE ), 3, LOG);
+                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+            }
+            
+        }
+        } catch(exception $e) {
+			 error_log(print_R( "sql error in update invoicebatchenabled\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+            $errormessage["sqlerror"] = "update failure: ";
+            $errormessage["sqlerrordtl"] = $e;
+            return $errormessage;
+		}
+
+
+    }    
+    public function removeSchoolcom($id
+    ) {
+        global $school;
+        error_log( print_R("removeSchoolcom entered\n", TRUE ),3, LOG);
+                                      
+        $sql = "DELETE from schoolcommunication  where id = ? and school = ?";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ss",
+                              $id, $school
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
+
 }
 ?>

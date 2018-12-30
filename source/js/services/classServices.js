@@ -714,6 +714,38 @@ export class ClassServices {
         return (request.then(self.handleSuccess, self.handleError));
     }
 
+    getSchoolcom(path) {
+        var self=this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeSchoolcom(thedata, path) {
+        var self=this;
+        self.$log.debug('removeSchoolcom data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    updateSchoolcom(path, thedata) {
+        var self=this;
+        self.$log.debug('updateSchoolcom data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
 
     handleError(response) {
 

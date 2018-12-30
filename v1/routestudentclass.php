@@ -1485,4 +1485,134 @@ $app->get('/picklist', 'authenticate', function() {
     echoRespnse(200, $response);
 });
 
+$app->post('/schoolcom', 'authenticate', function() use ($app) {
+
+    $response = array();
+    global $user_name;
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    error_log( print_R("schoolcom before insert\n", TRUE ), 3, LOG);
+
+    $id = (isset($dataJsonDecode->thedata->id) ? $dataJsonDecode->thedata->id : "");
+    $schoolReplyEmail = (isset($dataJsonDecode->thedata->schoolReplyEmail) ? $dataJsonDecode->thedata->schoolReplyEmail : "");
+    $schoolReplySignature = (isset($dataJsonDecode->thedata->schoolReplySignature) ? $dataJsonDecode->thedata->schoolReplySignature : "");
+    $invoicebatchenabled = (isset($dataJsonDecode->thedata->invoicebatchenabled) ? $dataJsonDecode->thedata->invoicebatchenabled : "");
+    $mode = (isset($dataJsonDecode->thedata->mode) ? $dataJsonDecode->thedata->mode : "");
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // updating task
+    $res_id = $db->updateschoolcom(
+        $id, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $mode
+                                );
+
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "School Communication updated successfully";
+            $response["res_id"] = $res_id["success"];
+            error_log( print_R("School Communication created: \n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "School Communication updated successfully";
+            error_log( print_R("School Communication already existed\n", TRUE ), 3, LOG);
+            echoRespnse(201, $response);
+        }
+    } else {
+        error_log( print_R("after School Communication result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create School Communication. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+$app->delete('/schoolcom','authenticate', function() use ($app) {
+
+    $response = array();
+
+    error_log( print_R("schoolcom before delete\n", TRUE ), 3, LOG);
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    error_log( print_R($test, TRUE ), 3, LOG);
+
+    $id = (isset($test->thedata->id) ? $test->thedata->id : "");
+
+    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+
+    $schoolcom_good=0;
+    $schoolcom_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // removing schoolcom
+    $result = $db->removeschoolcom(
+        $id
+        );
+
+    if ($result > 0) {
+        error_log( print_R("schoolcom removed for: $id\n", TRUE ), 3, LOG);
+        $response["error"] = false;
+        $response["message"] = "schoolcom removed successfully";
+        $schoolcom_good = 1;
+        $response["schoolcom"] = $schoolcom_good;
+        echoRespnse(201, $response);
+    } else {
+        error_log( print_R("after delete schoolcom result bad\n", TRUE), 3, LOG);
+        error_log( print_R( $result, TRUE), 3, LOG);
+        $schoolcom_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove schoolcom. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+
+$app->get('/schoolcom', 'authenticate', function() {
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getSchoolcom();
+
+    $response["error"] = false;
+    $response["Schoolcomlist"] = array();
+
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["id"] = $slist["id"];
+            $tmp["schoolReplyEmail"] = $slist["schoolReplyEmail"];
+            $tmp["schoolReplySignature"] = $slist["schoolReplySignature"];
+            $tmp["invoicebatchenabled"] = $slist["invoicebatchenabled"];
+        } else {
+            $tmp["id"] = "NULL";
+            $tmp["schoolReplyEmail"] = "NULL";
+            $tmp["schoolReplySignature"] = "NULL";
+            $tmp["invoicebatchenabled"] = "NULL";
+        }
+        array_push($response["Schoolcomlist"], $tmp);
+        
+    }
+    if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested resource doesn't exists";
+        echoRespnse(404, $response);
+    }
+});
+
 ?>

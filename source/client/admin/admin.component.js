@@ -12,6 +12,7 @@ import { ClassPgmTableBasicController } from './table-basic-classpgm';
 import { TemplateTableBasicController } from './table-basic-htmltemplate';  
 import { ScheduleTableBasicController } from './table-basic-schedule';
 import { QuickpickController } from './quickpick.controller';
+import { SchoolcomTableBasicController } from './table-basic-schoolcom';
 
 import stripeonboardtemplate from './template/stripe_onboard.html';
 import classtemplate from './template/table-basic-class.html';
@@ -26,6 +27,7 @@ import programtemplate from './template/table-basic-program.html';
 import scheduletemplate from './template/table-basic-schedule.html';
 import rptbuildertemplate from './table-basic-rptbuilder.html';
 import quickpicktemplate from './template/table-quickpick.html';
+import schoolcomtemplate from './template/table-basic-schoolcom.html';
 
 
 import './textblockimage.html';
@@ -94,7 +96,12 @@ bindings: {},
  export let        scheduleComponent = {
 bindings: {},  
   controller: ScheduleTableBasicController,
-  template: scheduletemplate
+  template:  scheduletemplate
 };
         
+ export let        schoolcomComponent = {
+bindings: {},  
+  controller: SchoolcomTableBasicController,
+  template: schoolcomtemplate
+};
 
