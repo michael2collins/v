@@ -1,14 +1,13 @@
 #as root
 #useradd -m -s /bin/bash marktest
 #usermod -aG sudo marktest
-$user = $1
-$site = $2
-$domain = $3
-$school = $4
-$nodeversion = $5
+user=$1
+site=$2
+domain=$3
+school=$4
+nodeversion=$5
 
 cd /home/$user
-#su - marktest
 ln -s /home/michael2collins/Web/$site/v/scripts/mailforward.js mailforward.js
 ln -s /home/michael2collins/Web/$site/v/node_modules node_modules
 mkdir Maildir
@@ -26,3 +25,5 @@ echo "|/opt/nvm/versions/node/$nodeversion/bin/node /home/$user/mailforward.js" 
 echo '"|IFS=' '&&exec /usr/bin/procmail -f-||exit 75 #$user"' > .forward
 echo "host=$domain.villaris.us" > .env
 echo "school=$school" >> .env
+chown -h $user:$user *
+chown -h $user:$user .*
