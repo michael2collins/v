@@ -1,4 +1,5 @@
-<div ng-controller="ImphistoryController as $ctrl" ng-cloak>
+<!--<div ng-controller="ImphistoryController as $ctrl" ng-cloak> -->
+<div  ng-cloak>
 
     <div class="portlet box portlet-green">
         <div class="portlet-header">
@@ -45,6 +46,7 @@
                             <div class="row col-md-offset-8 mbs">
                                 <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep2NewCollapsed = !$ctrl.isStep2NewCollapsed"><i ng-show="$ctrl.isStep2NewCollapsed" class="fa fa-upload"></i>&nbsp;{{ $ctrl.isStep2NewCollapsed ? 'Pick File' : 'Collapse'}}</button>
                                 <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep2Populated()" ng-click="$ctrl.batchValidate()"><i class="fa fa-check"></i>&nbsp; Validate</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep2Populated()" ng-click="$ctrl.clear()"><i class="fa fa-eraser"></i>&nbsp; Clear</button>
                                 <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isValidForErrors" ng-click="$ctrl.createBulkStudentHistory()"><i class="fa fa-add"></i>&nbsp; Save</button>
                             </div>
                         </div>
@@ -68,7 +70,7 @@
                     </div>
 
                     <div class="panel-footer ">
-                        <div ui-grid="$ctrl.gridimp1Options" ui-if="$ctrl.gridimp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-importer ui-grid-edit ui-grid-row-edit ui-grid-selection ui-grid-validate class="mygrid"
+                        <div ui-grid="$ctrl.gridimp1Options" ui-if="$ctrl.gridimp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-importer ui-grid-edit ui-grid-selection ui-grid-validate class="mygrid"
                             ng-style="$ctrl.getGridLength()">
                             <div class="watermark" ng-show="!$ctrl.gridimp1Options.data.length">No data available</div>
                         </div>

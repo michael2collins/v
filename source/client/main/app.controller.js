@@ -87,7 +87,7 @@ export class AppController {
         };
         this.notifylist = [];
 
-        this.isok;
+        this.isok = false;
         this.forUser = "ALL";
         this.myuser;
         this.forUsers = {
@@ -303,7 +303,7 @@ export class AppController {
             });
 
         });
-        this.islogin();
+    //    this.islogin();
     }
 
     intervalChecker() {

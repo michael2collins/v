@@ -100,6 +100,14 @@ export class ImphistoryController {
         vm.getColumns();
     }
 
+    clear() {
+        var vm=this;
+        vm.gridexp1Options.data = [];
+        vm.gridimp1Options.data = [];
+        vm.importdata =[];
+        
+    }
+
     step1() {
         var vm = this;
         if (vm.isStep1Collapsed) {
@@ -245,6 +253,9 @@ export class ImphistoryController {
             exporterCsvColumnSeparator: ',',
             exporterHeaderFilterUseName: true,
             exporterMenuVisibleData: false,
+            paginationPageSizes: vm.limits,
+            paginationPageSize: vm.initialLength,
+            rowHeight: vm.rowheight,
 
             columnDefs: vm.gcolumns,
 
@@ -310,6 +321,11 @@ export class ImphistoryController {
         vm.gridimp1Options = {
             showGridFooter: false,
             enableGridMenu: false, //btn is working
+            paginationPageSizes: vm.limits,
+            paginationPageSize: vm.initialLength,
+            rowHeight: vm.rowheight,
+            flatEntityAccess: true,
+            fastWatch: true,
             appScopeProvider: vm,
 
             columnDefs: vm.impgcolumns,
@@ -326,14 +342,14 @@ export class ImphistoryController {
                 vm.$log.debug('vm gridimp1Api onRegisterApi');
                 vm.gridimp1Api = gridApi;
 
-                gridApi.rowEdit.on.saveRow(vm.$scope,
-                    function(rowEntity) {
+    //            gridApi.rowEdit.on.saveRow(vm.$scope,
+     //               function(rowEntity) {
                         // create a fake promise - normally you'd use the promise returned by $http or $resource
-                        var promise = vm.$q.defer();
-                        vm.gridimp1Api.rowEdit.setSavePromise(rowEntity, promise.promise);
-                        promise.resolve();
+     //                   var promise = vm.$q.defer();
+      //                  vm.gridimp1Api.rowEdit.setSavePromise(rowEntity, promise.promise);
+    //                    promise.resolve();
 
-                    });
+//                    });
 
                 gridApi.validate.on.validationFailed(vm.$scope,
                     function(rowEntity, colDef, newValue, oldValue) {
@@ -344,7 +360,7 @@ export class ImphistoryController {
                             'Has an error.  The new Value: ' + newValue + '\n' +
                             ' vs the old Value: ' + oldValue + '\nvalidators: ' +
                             JSON.stringify(colDef.validators));
-                        vm.Notification.error({ message: msg, delay: 5000 });
+//                        vm.Notification.error({ message: msg, delay: 5000 });
 
                     });
 
@@ -356,7 +372,7 @@ export class ImphistoryController {
 
                     });
 
-                gridApi.selection.on.rowSelectionChanged(vm.$scope,
+/*                gridApi.selection.on.rowSelectionChanged(vm.$scope,
                     function(row) {
                         var msg = 'gridimp1Api row selected ' + row.entity;
                         vm.$log.debug(msg);
@@ -375,6 +391,7 @@ export class ImphistoryController {
                         vm.setImp1SelectedArray(selectedArr);
 
                     });
+*/                    
             }
 
         };
@@ -415,6 +432,7 @@ export class ImphistoryController {
             }
             vm.step2populated = vm.importdata.length > 0 ? true : false;
             vm.gridimp1Options.data = vm.importdata;
+            vm.importdata =[];
 
             return vm.gridexp1Options.data;
         });

@@ -2,12 +2,15 @@ import { ImpstudentController } from './impstudent.controller';
 import { ImpclassController } from './impclass.controller';
 import { ImphistoryController } from './imphistory.controller';
 import { ImpattendController } from './impattend.controller';
+import './imp.less';
 
 import template from './impstudent.html';
 import datatemplate from './dataimport.html';
 import classtemplate from './impclass.html';
 import historytemplate from './imphistory.html';
 import attendtemplate from './impattend.html';
+
+import '../includes/filtercoltemplatevlu.html';
 
 export let impstudentComponent  = {
 bindings: {},  

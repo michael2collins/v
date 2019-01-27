@@ -22,30 +22,30 @@ import { mainComponent } from './main.component';
 
 
 export const MainModule = angular
- .module('ngadmin.main', [CoreModule,DirectiveModule])
- .component('mainComponent', mainComponent)
- .controller('AppController', AppController)
- .service('attendanceServices', AttendanceServices)
- .service('testingServices', TestingServices)
- .service('eventServices', EventServices)
- .service('templateServices', TemplateServices)
- .service('paymentServices', PaymentServices)
- .service('statsServices', StatsServices)
- .service('calUtil', CalUtil)
- .service('Util', Util)
+   .module('ngadmin.main', [CoreModule, DirectiveModule])
+   .component('mainComponent', mainComponent)
+   .controller('AppController', AppController)
+   .service('attendanceServices', AttendanceServices)
+   .service('testingServices', TestingServices)
+   .service('eventServices', EventServices)
+   .service('templateServices', TemplateServices)
+   .service('paymentServices', PaymentServices)
+   .service('statsServices', StatsServices)
+   .service('calUtil', CalUtil)
+   .service('Util', Util)
 
- .service('portalDataService', portalDataService)
- .service('userServices', UserServices)
- .service('calendarServices', CalendarServices)
- .service('studentServices', StudentServices)
- .service('classServices', ClassServices)
- .config(mainconfig)
- .name;
+   .service('portalDataService', portalDataService)
+   .service('userServices', UserServices)
+   .service('calendarServices', CalendarServices)
+   .service('studentServices', StudentServices)
+   .service('classServices', ClassServices)
+   .config(mainconfig)
+   .name;
 
 function mainconfig($routeProvider) {
- 'ngInject';
- $routeProvider
-  .when('/main', {
-   template: maintemplate
-  });
+   'ngInject';
+   $routeProvider
+      .when('/main', {
+         template: maintemplate
+      });
 }

@@ -65,6 +65,18 @@ function echoRespnse($status_code, $response) {
         redirect($url, $status_code);
     }
 
+function Getfloat($str) { 
+  if(strstr($str, ",")) { 
+    $str = str_replace(".", "", $str); // replace dots (thousand seps) with blancs 
+    $str = str_replace(",", ".", $str); // replace ',' with '.' 
+  } 
+  
+  if(preg_match("#([0-9\.]+)#", $str, $match)) { // search for number that may contain '.' 
+    return floatval($match[0]); 
+  } else { 
+    return floatval($str); // take some last chances with floatval 
+  } 
+} 
 
     function emailoutbound($to,$subject,$message,$_from,$_cc,$_bcc){
 

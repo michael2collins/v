@@ -753,7 +753,9 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 
 	public
 	function updateStudent(
-		$student_id, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl)
+		$student_id, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt,
+		$Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP,
+		$ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl)
 	{
 	/**
 	 * Updating student
@@ -824,7 +826,10 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		//       try {
 
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("sssssssssssssssssssssssssss", $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl, $student_id);
+			$stmt->bind_param("sssssssssssssssssssssssssss", 
+			$LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, 
+			$Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, 
+			$quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl, $student_id);
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
@@ -3493,6 +3498,723 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 	}
 	
+	public
+	function updateRawStudent(
+		$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt,
+		$Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP,
+		$ContactType, $quickbooklink, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl)
+	{
+	/**
+	 * Updating student
+	 */
+		global $school;
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("updateRawStudent Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$num_affected_rows = 0;
+		$sql = " UPDATE rawcontacts  set 
+		LastName = ?,
+		FirstName = ?,
+		Email = ?,
+		Email2 = ?,
+		Phone = ?,
+		AltPhone = ?,
+		phoneExt = ?,
+		altPhoneExt = ?,
+		Birthday = ?,
+		sex = ?,
+		Parent = ?,
+		EmergencyContact = ?,
+		Notes = ?,
+		medicalConcerns = ?,
+		Address = ?,
+		City = ?,
+		State = ?,
+		ZIP = ?,
+		ContactType = ?,
+		quickbooklink = ?,
+		StudentSchool = ?,
+		GuiSize = ?,
+		ShirtSize = ?,
+		BeltSize = ?,
+		instructorTitle = ?,
+		pictureurl = ?
+		where externalid = ? and studentschool = ? ";
+
+		error_log(print_R("updateStudent sql after security: $sql", TRUE) , 3, LOG);
+
+		try {
+	        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $Birthday);
+	        
+	        if ($dt === false) {
+	            error_log( print_R("updateStudent  bad date $Birthday" , TRUE), 3, LOG);
+	            return -3;
+	        }
+	        $bdate = $dt->format('Y-m-d');
+	
+	
+			if ($stmt = $this->conn->prepare($sql)) {
+				$stmt->bind_param("sssssssssssssssssssssssssss", 
+				$LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $bdate, $sex, 
+				$Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, 
+				$quickbooklink, $school, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl, $externalid, $school);
+				$stmt->execute();
+				$num_affected_rows = $stmt->affected_rows;
+				$stmt->close();
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+	                return -1;			
+			}
+	
+			return $num_affected_rows > 0;
+		} catch(exception $e) {
+			error_log(print_R( "sql error in updateRawStudent\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -2;			
+		}
+
+	}
+
+	public
+	function createFullStudentRaw(
+		$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt,
+		$altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns,
+		$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, $BeltSize, $pictureurl)
+	{
+		error_log(print_R("createFullStudentRaw entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createFullStudentRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		global $school;
+		
+        $dt = DateTime::createFromFormat('m/d/Y H:i:s', $Birthday);
+        
+        if ($dt === false) {
+            error_log( print_R("createFullStudentRaw  bad date $Birthday" , TRUE), 3, LOG);
+            return -4;
+        }
+        $bdate = $dt->format('Y-m-d');
+		
+		$sql = "INSERT INTO rawcontacts (
+		externalid, LastName, FirstName, Email, Email2, Phone, AltPhone, phoneExt,
+			altPhoneExt, Birthday, sex, Parent, EmergencyContact, Notes, medicalConcerns,
+			Address, City, State, ZIP, ContactType, quickbooklink, GuiSize, ShirtSize, BeltSize, pictureurl,
+			StudentSchool)
+			values (
+			?, ?, ?, ?, ?, ?, ?, ?, 
+			?, ?, ?, ?, ?, ?, ?,
+			?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+			?
+			)
+			on duplicate key update 
+			externalid = values(externalid), LastName = values(LastName), FirstName = values(FirstName), Email = values(Email), 
+			Email2 = values(Email2), Phone = values(Phone), altPhone = values(AltPhone), phoneExt = values(phoneExt),
+			altPhoneExt = values(altPhoneExt),Birthday = values(Birthday), sex = values(sex),Parent = values(Parent), 
+			EmergencyContact= values(EmergencyContact),Notes = values(Notes),medicalConcerns = values(medicalConcerns),
+			Address = values(Address),City = values(City),State = values(State),ZIP = values(ZIP),ContactType = values(ContactType), 
+			quickbooklink= values(quickbooklink),GuiSize = values(GuiSize),ShirtSize = values(ShirtSize),BeltSize = values(BeltSize), 
+			pictureurl= values(pictureurl),
+			StudentSchool = values(StudentSchool)
+			)";
+
+		// First check if user already existed in db
+
+		try {
+			if ($stmt = $this->conn->prepare($sql)) {
+				$stmt->bind_param("ssssssssssssssssssssssssss", 
+					$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, 
+					$altPhoneExt, $bdate, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, 
+					$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, 
+					$BeltSize, $pictureurl, $school 
+				);
+				$result = $stmt->execute();
+				$stmt->close();
+
+				if ($result) {
+					$new_student_id = $this->conn->insert_id;
+					return $new_student_id;
+				}
+				else {
+					return -1;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return -2;
+			}
+	} catch(exception $e) {
+			error_log(print_R( "sql error in createFullStudentRaw\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -3;			
+		}
+		
+	}
+
+	private
+	function isRawStudentExists($Email, $LastName, $FirstName, $inschool)
+	{
+	/**
+	 * Checking for duplicate student by email address, FirstName, LastName
+	 * @return boolean
+	 */
+		error_log(print_R("before isStudentExists\n", TRUE) , 3, LOG);
+		error_log(print_R("lastname: $LastName\n", TRUE) , 3, LOG);
+		error_log(print_R("FirstName: $FirstName\n", TRUE) , 3, LOG);
+		error_log(print_R("email: $Email\n", TRUE) , 3, LOG);
+		error_log(print_R("school: $inschool\n", TRUE) , 3, LOG);
+		$sql = "SELECT id from rawcontacts WHERE email = ?
+				and LastName = ? and FirstName = ? 
+				and studentschool = ?  ";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("ssss", $Email, $LastName, $FirstName, $inschool);
+		$stmt->execute();
+		$stmt->store_result();
+		$num_rows = $stmt->num_rows;
+		$stmt->close();
+		return $num_rows > 0;
+	}
+
+    public function removeRawStudents(
+    ) {
+
+        error_log( print_R("removeRawStudents entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawcontacts where studentschool = ?  ";
+
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >=0;
+    }
+
+    public function removeRawStudent($id
+    ) {
+
+        error_log( print_R("removeRawStudent entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawcontacts where externalid = ? and studentschool = ? ";
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("ss",$id, $school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >0;
+    }
+
+    public function transferBulkStudents(
+    ) {
+
+        error_log( print_R("transferBulkStudents entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "
+        insert ignore into ncontacts (  externalid, LastName, FirstName, Email, Email2, Parent, Phone, AltPhone,
+        Address, City, State, ZIP, Notes, Birthday, BeltSize, ContactType, InstructorFlag, 
+        quickbooklink, instructorTitle, sex, medicalConcerns, GuiSize, ShirtSize, phoneExt, 
+        altPhoneExt, StudentSchool, EmergencyContact, pictureurl )
+        SELECT  externalid, LastName, FirstName, Email, Email2, Parent, Phone, AltPhone,
+        Address, City, State, ZIP, Notes, Birthday, BeltSize, ContactType, InstructorFlag, 
+        quickbooklink, instructorTitle, sex, medicalConcerns, GuiSize, ShirtSize, phoneExt, 
+        altPhoneExt, StudentSchool, EmergencyContact, pictureurl FROM rawcontacts
+        where studentschool = ?  ";
+
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >=0;
+    }
+
+    public function getRawStudentStatus(
+    ) {
+
+        error_log( print_R("getRawStudentStatus entered\n", TRUE ),3, LOG);
+        global $school;
+        $errormessage=array();
+
+        $sql = "
+        SELECT  c.ID as contactid, r.externalid, r.LastName, r.FirstName, r.Email, r.Email2, r.Parent, r.Phone, r.AltPhone,
+        r.Address, r.City, r.State, r.ZIP, r.Notes, DATE_FORMAT(r.Birthday,'%m/%d/%Y') as Birthday, r.BeltSize, r.ContactType, r.InstructorFlag,
+		r.quickbooklink, r.instructorTitle, r.sex, r.medicalConcerns, r.GuiSize, r.ShirtSize, r.phoneExt, 
+        r.altPhoneExt, r.StudentSchool, r.EmergencyContact, r.pictureurl FROM rawcontacts r
+        left join ncontacts c on (r.externalid = c.externalid and r.studentschool = c.studentschool)
+        where r.studentschool = ?  ";
+
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				error_log(print_R("getRawStudentStatus list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+
+                if ($slists) {
+                    $errormessage["success"] = true;
+					$errormessage["slist"]=$slists;
+                    return $errormessage;
+                } else {
+                    // Failed to find 
+                    $errormessage["sqlerror"] = "Select failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+					$errormessage["slist"] = array();
+                    return $errormessage;
+                }
+			}
+			else {
+				error_log(print_R("getRawStudentStatus list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getRawStudentStatus failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$errormessage["slist"] = array();
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getRawStudentStatus list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getRawStudentStatus failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$res["slist"] = array();
+            return $errormessage;
+		}
+    }
+
+	public
+	function updateRawregistration(
+		$externalid, 
+ $studentID, $pgmid, $classid, $Classname, $Pgmname, $studentClassStatus, $Ranktype, $currentRank,
+ $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth
+		)
+	{
+	/**
+	 * Updating registration
+	 */
+		global $school;
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("updateRawregistration Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$num_affected_rows = 0;
+		$sql = "UPDATE rawregistration set 
+			studentID=?,
+			pgmid=?,
+			classid=?,
+			studentClassStatus=?,
+			Ranktype=?,
+			currentRank=?,
+			lastPromoted=?,
+			payerName=?,
+			payerEmail=?,
+			paymenttype=?,
+			PaymentPlan=?,
+			PaymentAmount=?,
+			payOnDayOfMonth=?
+		where externalid = ? and school = ? and Classname = ? and Pgmname = ?";
+
+		error_log(print_R("updateregistration sql after security: $sql", TRUE) , 3, LOG);
+		error_log(print_R($sql, TRUE));
+		
+        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $lastPromoted);
+        
+        if ($dt === false) {
+            error_log( print_R("updateregistration  bad date $lastPromoted" , TRUE), 3, LOG);
+            return -3;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+
+      try {
+			if ($this->isRawRegistrationExists(
+			$externalid, $Classname, $Pgmname, $school
+				)) {
+	
+				if ($stmt = $this->conn->prepare($sql)) {
+					$stmt->bind_param("sssssssssssssssss", 
+				 $studentID, $pgmid, $classid, $studentClassStatus, $Ranktype, $currentRank,
+				 $bdate, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,
+				$externalid, $school,$Classname, $Pgmname
+					);
+					$stmt->execute();
+					$num_affected_rows = $stmt->affected_rows;
+					$stmt->close();
+				}
+				else {
+					printf("Errormessage: %s\n", $this->conn->error);
+				}
+			} else {
+				error_log(print_R("updateRawregistration did not exist can not update", TRUE) , 3, LOG);
+				
+				return -1;	
+			}		
+	
+			return $num_affected_rows >= 0;
+		} catch(exception $e) {
+			error_log(print_R( "sql error in updateRawregistration\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -2;			
+		}
+
+	}
+
+	public
+	function createRegistrationRaw(
+		$externalid, $classid, $pgmid, $studentID,
+ $Classname, $Pgmname, $Ranktype, $currentRank,
+ $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus
+	){
+		error_log(print_R("createFullregistrationRaw entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createFullregistrationRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$response = array();
+		global $school;
+		
+        $dt = DateTime::createFromFormat('m/d/Y H:i:s', $lastPromoted);
+        
+        if ($dt === false) {
+            error_log( print_R("createFullregistrationRaw  bad date $lastPromoted" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+		
+		$sql = "INSERT INTO rawregistration (
+			externalid, classid, pgmid, studentID,
+			Classname, Pgmname, Ranktype, currentRank,
+			lastPromoted, payerName, payerEmail, paymenttype, 
+			PaymentPlan, PaymentAmount, payOnDayOfMonth, studentClassStatus,
+			school)
+			values (
+			?,?,?,?,
+			?,?,?,?,
+			?,?,?,?,
+			?,?,?,?,
+			?
+			) on duplicate key update 
+			externalid = values(externalid), classid = values(classid), 
+			pgmid = values(pgmid), studentID = values(studentID),
+			Classname = values(Classname), Pgmname = values(Pgmname), 
+			Ranktype = values(Ranktype), currentRank = values(currentRank),
+			lastPromoted= values(lastPromoted), payerName= values(payerName), 
+			payerEmail= values(payerEmail), paymenttype= values(paymenttype), 
+			PaymentPlan= values(PaymentPlan), PaymentAmount= values(PaymentAmount), 
+			payOnDayOfMonth= values(payOnDayOfMonth), studentClassStatus= values(studentClassStatus),
+			school= values(school)
+			";
+
+		// First check if user already existed in db
+
+//		if (!$this->isRawregistrationExists($externalid, $Classname, $Pgmname, $school)) {
+				if ($stmt = $this->conn->prepare($sql)) {
+		            $stmt->bind_param("sssssssssssssssss",
+						 $externalid, $classid, $pgmid, $studentID,
+						 $Classname, $Pgmname, $Ranktype, $currentRank,
+						 $bdate, $payerName, $payerEmail, $paymenttype, 
+						 $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus,
+						$school
+	            );
+				
+				$result = $stmt->execute();
+				$stmt->close();
+
+				// Check for successful insertion
+
+				if ($result) {
+					$new_registration_id = $this->conn->insert_id;
+
+					// User successfully inserted
+
+					return $new_registration_id;
+				}
+				else {
+
+					// Failed to create user
+
+					return NULL;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return NULL;
+			}
+/*		}
+		else {
+
+			// User with same email already existed in the db
+
+			return RECORD_ALREADY_EXISTED;
+		}
+*/
+		return $response;
+	}
+
+	private
+	function isRawregistrationExists(
+		$externalid, $Classname, $Pgmname, $school		
+		){
+	/**
+	 * Checking for duplicate registration 
+	 * @return boolean
+	 */
+		error_log(print_R("before isRawregistrationExists\n", TRUE) , 3, LOG);
+		error_log(print_R("extid: $externalid\n", TRUE) , 3, LOG);
+		error_log(print_R("class: $Classname\n", TRUE) , 3, LOG);
+		error_log(print_R("pgm: $Pgmname\n", TRUE) , 3, LOG);
+		error_log(print_R("school: $school\n", TRUE) , 3, LOG);
+		$sql = "SELECT id from rawregistration WHERE externalid = ? ";
+		$sql.= " and Classname = ? and Pgmname = ? ";
+		$sql.= " and school = ?  ";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("ssss",
+		$externalid, $Classname, $Pgmname, $school		
+		);
+		$stmt->execute();
+		$stmt->store_result();
+		$num_rows = $stmt->num_rows;
+		$stmt->close();
+		error_log(print_R("isRawregistrationExists: $num_rows\n", TRUE) , 3, LOG);
+		return $num_rows > 0;
+	}
+
+    public function removeRawregistrations(
+    ) {
+
+        error_log( print_R("removeRawregistrations entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawregistration where school = ?  ";
+
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >=0;
+    }
+
+    public function removeRawregistration(
+    	$id,$pgm,$cls
+    ) {
+
+        error_log( print_R("removeRawregistration entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawregistration where externalid = ? and school = ? and Pgmname = ? and Classname = ?  ";
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("ssss",
+            $id, $school,$pgm,$cls
+            );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >0;
+    }
+
+    public function transferBulkregistrations(
+    ) {
+
+        error_log( print_R("transferBulkregistrations entered\n", TRUE ),3, LOG);
+        global $school;
+		$totalrec =0;
+		
+		try {
+		$sql1 = "INSERT ignore INTO ncontactrank (ContactID, ranktype, currentrank) 
+				select studentid,ranktype, currentrank from rawregistration
+				where school = ? ";
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -1;			
+        }
+        
+        $sql2 = "INSERT ignore INTO payer (payerName, school) 
+        		select payerName, school from rawregistration
+				where school = ? ";
+
+        if ($stmt = $this->conn->prepare($sql2)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -2;			
+        }
+        
+        $sql3 = "INSERT ignore INTO studentregistration (studentid, classid, pgmid, studentclassstatus)  
+				select studentid, classid, pgmid, studentclassstatus from rawregistration  
+				where school = ? and studentid <> 0";
+
+        if ($stmt = $this->conn->prepare($sql3)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -3;			
+        }
+        
+        $sql4 = "INSERT ignore INTO npayments( payerid, paymenttype, PaymentNotes, 
+        		PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby)
+        		select p.id, r.paymenttype, '',
+        		r.PaymentPlan, r.PaymentAmount, CURDATE(), r.payOnDayOfMonth, 'initialbulk' from rawregistration r
+        		left join payer p on r.payername = p.payername and r.school = p.school
+        		where r.school = ? ";
+
+        if ($stmt = $this->conn->prepare($sql4)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -4;			
+        }                
+        
+        $sql5 = "INSERT ignore INTO paymentclasspay( paymentid, classpayid) 
+        		select cpa.id as classpayid, np.paymentid
+		        from 
+		        (((((nclasspgm cp 
+		        left outer join nclass cl on cp.classid = cl.id) 
+		        left outer join nclasslist l on l.id = cp.pgmid) 
+		        left outer join studentregistration sr on sr.classid = cl.id and sr.pgmid = cp.pgmid )
+		        Left outer join nclasspays cpa on cpa.classseq = sr.classid and cpa.pgmseq = sr.pgmid and cpa.contactid = sr.studentid)
+		        Left outer join payer pp on pp.id = cpa.payerid
+		        join rawregistration rr on rr.studentid =  sr.studentid and rr.classid = sr.classid and rr.pgmid = sr.pgmid
+		        join npayments np on np.payerid = pp.id
+		        ) where  cl.school = cp.school and cl.school = l.school and cl.school = rr.school
+		                and cl.school = ?		";        
+
+        if ($stmt = $this->conn->prepare($sql5)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -5;			
+        }
+			return $totalrec;
+        
+		} catch(exception $e) {
+			error_log(print_R( "sql error in transferBulkregistrations\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -6;			
+		}
+    }
+
+    public function getRawRegistrationStatus(
+    ) {
+
+        error_log( print_R("getRawregistrationStatus entered\n", TRUE ),3, LOG);
+        global $school;
+        $errormessage=array();
+
+        $sql = "
+        SELECT  
+        c.ID as contactid, 
+		r.externalid, r.studentID, r.pgmid, r.classid, r.Classname, r.Pgmname, r.studentClassStatus, 
+		r.Ranktype, r.currentRank,DATE_FORMAT(r.lastPromoted,'%m/%d/%Y') as lastPromoted, r.payerName, 
+		r.payerEmail, r.paymenttype, r.PaymentPlan, r.PaymentAmount, r.payOnDayOfMonth, r.school
+        FROM rawregistration r
+        left join ncontacts c on (r.externalid = c.externalid and r.school = c.studentschool)
+        where r.school = ?  ";
+
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				error_log(print_R("getRawregistrationStatus list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+
+                if ($slists) {
+                    $errormessage["success"] = true;
+					$errormessage["slist"]=$slists;
+                    return $errormessage;
+                } else {
+                    // Failed to find 
+                    $errormessage["sqlerror"] = "Select failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+					$errormessage["slist"] = array();
+                    return $errormessage;
+                }
+			}
+			else {
+				error_log(print_R("getRawregistrationStatus list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getRawregistrationStatus failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$errormessage["slist"] = array();
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getRawregistrationStatus list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getRawregistrationStatus failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$res["slist"] = array();
+            return $errormessage;
+		}
+    }	
 }
 
 ?>

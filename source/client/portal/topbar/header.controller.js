@@ -1,4 +1,5 @@
 const { jQuery: $ } = window;
+import angular from 'angular';
 
 export class HeaderController {
 
@@ -64,6 +65,7 @@ export class HeaderController {
         this.okNotify = false;
         this.mydelay = 0;
         this.showTimeoutv = false;
+        this.timeout = 32;
 
         this.origtitle = 'V Dojo';
 
@@ -72,10 +74,7 @@ export class HeaderController {
         this.portalDataService.Portlet('header-controller.js');
 
         this.init();
-        this.islogin();
-
-        this.intervalChecker();
-
+        
     }
 
 
@@ -85,8 +84,10 @@ export class HeaderController {
     }
 
     init() {
-
         var self = this;
+
+        self.islogin();
+
         self.$scope.$on('IdleStart', function() {
             self.$log.debug('IdleStart');
             self.Title.original();
@@ -131,22 +132,34 @@ export class HeaderController {
 
 
         self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+            if (event == undefined) {
+                return;
+            }
             var vm = event.currentScope.$ctrl;
             vm.$log.debugEnabled(true);
-            vm.$log.debug('routechange in main for success');
-            vm.data = vm.portalDataService.get(current.originalPath);
-            vm.isokf();
-            var mydelay = vm.CalendarServices.getIntervalValue();
-            vm.$interval(vm.intervalChecker(),mydelay * 1000);
-
+            if (current.originalPath !== '/page-signin') {
+                vm.$log.debug('routechange in main for success');
+                vm.data = vm.portalDataService.get(current.originalPath);
+                vm.isokf();
+                var mydelay = vm.CalendarServices.getIntervalValue();
+                vm.$interval(vm.intervalChecker(vm),mydelay * 1000);
+            } else {
+                event.preventDefault();
+                if (angular.isDefined(vm.intervalChecker)) {
+                    vm.$interval.cancel(vm.intervalChecker(vm));
+                    //vm.intervalChecker = undefined;
+                }
+          }
         });
 
+        self.intervalChecker(self);
         
     }
 
-    intervalChecker() {
-        this.$log.debug('main controller intervalChecker entered');
-        this.islogin();
+    intervalChecker(input) {
+        var vm = input
+        vm.$log.debug('main controller intervalChecker entered');
+        vm.islogin();
     }
 
     padLeft(nr, n, str) {
@@ -168,11 +181,20 @@ export class HeaderController {
                 self.$log.debug("main controller service getUserOptions returned:", data);
                 if ((typeof data.options === 'undefined' || data.options.error === true) &&
                     typeof data !== 'undefined') {
-                    var themsg = {
-                        message: data.message + ': ' +
-                            (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
-                        delay: 5000
-                    };
+                    var themsg = '';
+                    if (typeof(data.extra) !== 'undefined') {
+                         themsg = {
+                            message: data.message + ': ' +
+                                (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
+                            delay: 5000
+                        };
+                    } else {
+                         themsg = {
+                            message: data.message + ': ' +
+                                (typeof(data.error) === "string" ? data.error : ""),
+                            delay: 5000
+                        };
+                    }
                     self.Notification.error(themsg);
                     return (self.$q.reject(data));
                 }
@@ -181,11 +203,11 @@ export class HeaderController {
                         self.userOptions = JSON.parse(data.options);
                         self.okNotify = (self.userOptions.notify ? self.userOptions.notify : false);
                         self.mydelay = (self.userOptions.delay ? self.userOptions.delay : 30);
-                        self.$scope.idle = (self.userOptions.idle ? self.userOptions.idle : 5);
-                        self.$scope.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5);
-                        self.Title.setAsIdle(self.$scope.idle);
-                        self.Idle.setIdle(self.$scope.idle);
-                        self.Idle.setTimeout(self.$scope.timeout);
+                        self.idle = (self.userOptions.idle ? self.userOptions.idle : 5);
+                        self.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5);
+                        self.Title.setAsIdle(self.idle);
+                        self.Idle.setIdle(self.idle);
+                        self.Idle.setTimeout(self.timeout);
 
                         self.Idle.watch();
 
@@ -253,6 +275,7 @@ export class HeaderController {
             thisModal.retvlu = retvlu;
         }, function() {
             thisModal.$log.info('Modal dismissed at: ' + new Date());
+            thisModal.getUserOptions();
         });
 
     }
@@ -342,6 +365,7 @@ export class HeaderController {
             //self.CalendarServices.setapikey(thekey);
             //self.StudentServices.setapikey(thekey);
             self.UserServices.setapikey(thekey);
+            self.showTimeoutv = false;
 
             self.$q.all([
                     self.gettheTasknamelist().then(function() {
@@ -355,6 +379,9 @@ export class HeaderController {
                     }),
                     self.getUserDetails().then(function() {
                         self.$log.debug('q return   getUserDetails returned');
+                    }),
+                    self.getUserOptions().then(function() {
+                        self.$log.debug('q return   getUserOptions returned');
                     })
 
                 ])

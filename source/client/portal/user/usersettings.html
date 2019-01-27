@@ -16,27 +16,36 @@
             <div class="row col-md-12">
                <label for="inputokNotify" class="col-md-3 control-label">Notify Me?</label>
                <div class="col-md-9">
-                  <select id="inputokNotify" type="text" name="okNotify" ng-model="$ctrl.okNotify" ng-change="$ctrl.setUserOptions()" required placeholder="select" ng-options="o for o in $ctrl.okoptions track by o" class="form-control">
+                  <select id="inputokNotify" type="text" name="okNotify" ng-model="$ctrl.okNotify" 
+                  ng-change="$ctrl.setUserOptions()" 
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                  required placeholder="select" ng-options="o for o in $ctrl.okoptions track by o" class="form-control">
                   </select>
                </div>
             </div>
             <div class="row col-md-12">
                <label for="mydelay" class="col-md-3 control-label">Delay</label>
                <div class="col-md-9">
-                  <input id="mydelay" type="number" ng-model="$ctrl.mydelay" ng-change="$ctrl.setUserOptions()" class="form-control" />
+                  <input id="mydelay" type="number" ng-model="$ctrl.mydelay" 
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                  ng-change="$ctrl.setUserOptions()" class="form-control" />
                </div>
             </div>
             <div class="row col-md-12">
                <label for="mydelay" class="col-md-3 control-label">Idle</label>
                <div class="col-md-9">
-                  <input id="myidle"  type="number" ng-model="idle" ng-change="$ctrl.setUserOptions()" class="form-control"/>
+                  <input id="myidle"  type="number" ng-model="$ctrl.idle" 
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                  ng-change="$ctrl.setUserOptions()" class="form-control"/>
                   </div>
                </div>
             </div>
             <div class="row col-md-12">
                <label for="mydelay" class="col-md-3 control-label">Timeout</label>
                <div class="col-md-9">
-                   <input id="mytimeout" type="number" ng-model="timeout" ng-change="$ctrl.setUserOptions()" class="form-control" />
+                   <input id="mytimeout" type="number" ng-model="$ctrl.timeout" 
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                   ng-change="$ctrl.setUserOptions()" class="form-control" />
                </div>
             </div>
             

@@ -3,7 +3,7 @@ import studenttemplate from './table-basic-students.html';
 
 export let studenttableComponent  = {
 //bindings: {},  
-  controller: StudentsTableBasicController,
+//  controller: StudentsTableBasicController,
 //  controllerAs: "vm",
   template: studenttemplate
 };

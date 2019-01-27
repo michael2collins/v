@@ -6,5 +6,5 @@ export const mainComponent = {
 //    scope: true,
 //    transclude: true,
     template,
-    controller: AppController
+//    controller: AppController
 };

@@ -385,6 +385,19 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
+    updateRawStudent(path, students) {
+        var self = this;
+        self.$log.debug('updateStudent vm.data before put :', students);
+        var request = self.$http({
+            method: "PUT",
+            url: path,
+            data: students
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+
     getAllZips(path) {
         var self = this;
         var request = self.$http({
@@ -660,9 +673,17 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
     }
 
-    createBulkStudent(path, thedata) {
+    createBulkStudents(path) {
         var self = this;
-        self.$log.debug('createBulkStudent data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createRawStudents(path, thedata) {
+        var self = this;
+        self.$log.debug('createRawStudent data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -672,15 +693,11 @@ export class StudentServices {
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
-    createBulkStudentRegistrations(path, thedata) {
+    createBulkRegistrations(path) {
         var self = this;
-        self.$log.debug('createBulkStudentRegistrations data before post :', thedata);
         var request = self.$http({
             method: "POST",
-            url: path,
-            data: {
-                thedata: thedata
-            }
+            url: path
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
@@ -708,5 +725,88 @@ export class StudentServices {
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
+    removeRawStudents(path) {
+        var self=this;
+        var request = self.$http({
+            method: "DELETE",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawStudent(thedata, path) {
+        var self=this;
+        self.$log.debug('removeRawStudent data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    getRawStudentStatus(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
 
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    getRawRegistrationStatus(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawRegistrations(path) {
+        var self=this;
+        var request = self.$http({
+            method: "DELETE",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawRegistration(thedata, path) {
+        var self=this;
+        self.$log.debug('removeRawRegistration data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createRawRegistrations(path, thedata) {
+        var self = this;
+        self.$log.debug('createRawRegistrations data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    updateRawRegistration(path, registrations) {
+        var self = this;
+        self.$log.debug('updateRawRegistration vm.data before put :', registrations);
+        var request = self.$http({
+            method: "PUT",
+            url: path,
+            data: registrations
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+
+    
 }

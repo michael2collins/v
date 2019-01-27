@@ -126,11 +126,11 @@ let thirdparty = [
     },
     {
         module: 'jquery', 
-        entry: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.js',
+        entry: '//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js',
         global: 'jQuery'
     },
     {
-        module: 'jqueryui', entry: '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.js'
+        module: 'jqueryui', entry: '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
     },
     {
         module: 'html5shiv', entry: '//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js'
@@ -205,7 +205,7 @@ let thirdparty = [
         module: 'underscore', entry: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'
     },
     {
-        module: 'angularjs', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.js'
+        module: 'angularjs', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js'
     },
     {
         module: 'momentjs', entry: '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js'
@@ -223,7 +223,7 @@ let thirdparty = [
         module: 'lodash', entry: '//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js'
     },
     {
-        module: 'angular-route', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.js'
+        module: 'angular-route', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.min.js'
     },
     {
         module: 'angular-animate', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-animate.min.js'
@@ -238,10 +238,10 @@ let thirdparty = [
         module: 'angular-boostrap-toggle', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js'
     },
     {
-        module: 'angular-ui-bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.js'
+        module: 'angular-ui-bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js'
     },
     {
-        module: 'angular-ui-bootstrap-tpls', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.js'
+        module: 'angular-ui-bootstrap-tpls', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap-tpls.min.js'
     },
     {
         module: 'angular-ui-ieshiv', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui/0.4.0/angular-ui-ieshiv.min.js'

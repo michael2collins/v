@@ -16,6 +16,9 @@ import {sbLoad} from './sbLoad.directive';
 import {fileChange} from './fileChange.directive';
 import {validFile} from './validFile.directive';
 
+import '../../client/includes/filtercoltemplate.html';
+import '../../client/includes/filtercoltemplatevlu.html';
+import '../../client/includes/filtercoltemplatevlu2id.html';
 
 export const DirectiveModule =  angular
     .module('ngadmin.directives', [])

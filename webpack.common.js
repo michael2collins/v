@@ -127,6 +127,13 @@
 
      ];
      let prodRules = [{
+             test: /\.js$/,
+             exclude: /(node_modules|bower_components)/,
+             use: {
+                 loader: 'babel-plugin-angularjs-annotate',
+                 loader: 'babel-loader'
+             }
+   
          //    "test": /(?:\.ngfactor\.js|\.ngstyle\.js\|\.ts)$/,
          //    "loader": "@ngtools/webpack"
          // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`

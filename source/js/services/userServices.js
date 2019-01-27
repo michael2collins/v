@@ -239,8 +239,8 @@ export class UserServices {
         var self = this;
         self._$log.debug('getUserDetails service entered', self.userdetails);
 //        if (self.__.isEmpty(self.userdetails) && self.isapikey()) {
-        if (self.__.isEmpty(self.userdetails)) {
-            var cookiecheck = self._$cookies.getObject('globals');
+        var cookiecheck = self._$cookies.getObject('globals');
+        if (self.__.isEmpty(self.userdetails) && cookiecheck !== undefined) {
             var usernm = cookiecheck.currentUser.username;
             self._$log.debug('getUserDetails service refresh user', usernm);
 

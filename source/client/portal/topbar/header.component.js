@@ -7,7 +7,7 @@ export const headerComponent  = {
     "userdta": "<"
   },  
   controller: HeaderController,
-  controllerAs: '$ctrl',
+//  controllerAs: '$ctrl',
   template: template
 };
 

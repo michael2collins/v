@@ -26,9 +26,6 @@ export class ModalUserSettingsInstanceController {
     this.okNotify = true;
     this.mydelay = 10;
     this.init();
-
-    this.getUserOptions();
-
     
     this.portalDataService.Portlet('header.controller.js');
   }
@@ -39,13 +36,15 @@ export class ModalUserSettingsInstanceController {
 
   init() {
     var self=this;
-    this.$scope.$watch('idle', function(value) {
+    self.getUserOptions();
+    
+    self.$scope.$watch('idle', function(value) {
       if (Boolean(value)) self.Idle.setIdle(value);
     });
-    this.$scope.$watch('timeout', function(value) {
+    self.$scope.$watch('timeout', function(value) {
       if (Boolean(value)) self.Idle.setTimeout(value);
     });
-    this.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+    self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
       var vm = event.currentScope.$ctrl;
       vm.$log.debugEnabled(true);
       vm.$log.debug('routechange in app for success');
@@ -76,11 +75,11 @@ export class ModalUserSettingsInstanceController {
             self.userOptions = JSON.parse(data.options);
             self.okNotify = (self.userOptions.notify ? self.userOptions.notify : false);
             self.mydelay = (self.userOptions.delay ? self.userOptions.delay : 30);
-            self.$scope.idle = (self.userOptions.idle ? self.userOptions.idle : 20 * 60);
-            self.$scope.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5 * 60);
-            self.Title.setAsIdle(self.$scope.idle);
-            self.Idle.setIdle(self.$scope.idle);
-            self.Idle.setTimeout(self.$scope.timeout);
+            self.idle = (self.userOptions.idle ? self.userOptions.idle : 20 * 60);
+            self.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5 * 60);
+            self.Title.setAsIdle(self.idle);
+            self.Idle.setIdle(self.idle);
+            self.Idle.setTimeout(self.timeout);
             //reset the timer
             self.Idle.watch();
 
@@ -121,8 +120,8 @@ export class ModalUserSettingsInstanceController {
       "options": {
         "delay": self.mydelay,
         "notify": self.okNotify,
-        "idle": self.$scope.idle,
-        "timeout": self.$scope.timeout
+        "idle": self.idle,
+        "timeout": self.timeout
       }
     };
     self.$log.debug('about setUserOptions ', thedata, updpath);

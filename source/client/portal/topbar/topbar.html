@@ -1,4 +1,6 @@
-<div id="topbar" role="navigation" style="margin-bottom: 0;" ng-cloak  class="navbar navbar-default navbar-static-top" ng-controller="HeaderController as $ctrl">
+<div id="topbar" role="navigation" style="margin-bottom: 0;" ng-cloak  
+class="navbar navbar-default navbar-static-top" >
+<!--class="navbar navbar-default navbar-static-top" ng-controller="HeaderController as $ctrl"> -->
 <div ng-class="[$ctrl.header.layout_topbar]" class="navbar-header" >
    <a id="setting-toggle"><i class="icon-wrench"></i></a>
    <button type="button" data-toggle="offcanvas" class="navbar-toggle">
@@ -172,6 +174,7 @@
       </li>
       <li class=" navbar-top-links navbar-right mrxxl">
       <ul class="nav mtm">
+         Timeout: {{$ctrl.timeout}}
          <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="$ctrl.isokf()">
             <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
          <span class="img-responsive img-circle" ng-switch on="$ctrl.userdta.pictureurl">

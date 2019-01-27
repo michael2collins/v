@@ -1,4 +1,5 @@
-<div ng-controller="ImpclassController as $ctrl" ng-cloak>
+<!-- <div ng-controller="ImpclassController as $ctrl" ng-cloak> -->
+<div ng-cloak>
 
     <div class="portlet box portlet-green">
         <div class="portlet-header">
@@ -18,7 +19,7 @@
                     <div class="panel-body pan">
                         <div class="table-tools">
                             <div class="row col-md-offset-8 mbs">
-                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.download()"><i class="fa fa-download"></i>&nbsp;Download File</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.Util.download($ctrl.gridexp1Api,$ctrl.uiGridExporterConstants)"><i class="fa fa-download"></i>&nbsp;Download File</button>
                             </div>
                         </div>
 
@@ -42,10 +43,30 @@
                     <div class="panel-heading">Upload Student Registrations</div>
                     <div class="panel-body pan">
                         <div class="table-tools">
-                            <div class="row col-md-offset-8 mbs">
+                            Error count: {{$ctrl.errCnt}}
+                            <div class="row col-md-12 mbs">
                                 <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep2NewCollapsed = !$ctrl.isStep2NewCollapsed"><i ng-show="$ctrl.isStep2NewCollapsed" class="fa fa-upload"></i>&nbsp;{{ $ctrl.isStep2NewCollapsed ? 'Pick File' : 'Collapse'}}</button>
                                 <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep2Populated()" ng-click="$ctrl.batchValidate()"><i class="fa fa-check"></i>&nbsp; Validate</button>
-                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isValidForErrors" ng-click="$ctrl.createBulkStudentRegistrations()"><i class="fa fa-add"></i>&nbsp; Save</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.getRawRegistrationStatus()"><i class="fa fa-search"></i>&nbsp; Get Prev import</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep2Populated()" ng-click="$ctrl.clear()"><i class="fa fa-eraser"></i>&nbsp; Clear</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isValidForErrors" ng-click="$ctrl.createBulkRegistrations()"><i class="fa fa-add"></i>&nbsp; Save</button>
+                                <button type="button" class="btn btn-blue mrs mts" ng-show="$ctrl.isStep2Populated()" ng-click="$ctrl.createBulkRegistrations()"><i class="fa fa-add"></i>&nbsp; Save with errors</button>
+                            </div>
+                            <div class="row col-md-5 mbs">
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-primary btn-radio" ng-click="$ctrl.Util.changeloadfilter('loaded',$ctrl.gridimp1Api)" ng-class="{'active': $ctrl.loadedfilter == 'loaded'}">Show Loaded<input ng-model="$ctrl.loadedfilter" value='loaded' type="radio"/></label>
+                                    <label class="btn btn-primary btn-radio" ng-click="$ctrl.Util.changeloadfilter('missing',$ctrl.gridimp1Api)" ng-class="{'active': $ctrl.loadedfilter == 'missing'}">Show Missing<input ng-model="$ctrl.loadedfilter" value='missing'  type="radio"/></label>
+                                    <label class="btn btn-primary btn-radio" ng-click="$ctrl.Util.changeloadfilter('all',$ctrl.gridimp1Api)" ng-class="{'active': $ctrl.loadedfilter == 'all'}">Show All<input ng-model="$ctrl.loadedfilter" value='all'  type="radio"/></label>
+                                </div>
+                            </div>
+                            <div class="row col-md-2">
+                            </div>
+                            <div class="row col-md-5 mbs">
+                                <div class="btn-group" data-toggle="buttons">
+                                    <label class="btn btn-primary btn-radio" ng-click="$ctrl.Util.changeerrfilter('error',$ctrl.gridimp1Api,$ctrl.uiGridConstants)" ng-class="{'active': $ctrl.errfilter == 'error'}">Show Errors<input ng-model="$ctrl.errfilter" value='error' type="radio"/></label>
+                                    <label class="btn btn-primary btn-radio" ng-click="$ctrl.Util.changeerrfilter('valid',$ctrl.gridimp1Api,$ctrl.uiGridConstants)" ng-class="{'active': $ctrl.errfilter == 'valid'}">Show Valid<input ng-model="$ctrl.errfilter" value='valid'  type="radio"/></label>
+                                    <label class="btn btn-primary btn-radio" ng-click="$ctrl.Util.changeerrfilter('all',$ctrl.gridimp1Api,$ctrl.uiGridConstants)" ng-class="{'active': $ctrl.errfilter == 'all'}">Show All<input ng-model="$ctrl.errfilter" value='all'  type="radio"/></label>
+                                </div>
                             </div>
                         </div>
                         <div uib-collapse="$ctrl.isStep2NewCollapsed">
@@ -54,10 +75,7 @@
                                     <div class="container-xl">
                                         <div class="col-md-12" style="height: 22px;">
                                             <form>
-                                                <input type="file" class="file-chooser" id="filechoiceclass" 
-                                            name="filechoiceclass" single file-change valid-file=".csv" accept=".csv" 
-                                            ng-model="$ctrl.filechoice" handler="$ctrl.handleFileSelect(files)" 
-                                            ng-click="$ctrl.clearInput($event)"/>
+                                                <input type="file" class="file-chooser" id="filechoiceclass" name="filechoiceclass" single file-change valid-file=".csv" accept=".csv" ng-model="$ctrl.filechoice" handler="$ctrl.Util.handleFileSelect(files, $ctrl)" ng-click="$ctrl.Util.clearInput($event)" />
 
                                             </form>
                                         </div>
@@ -68,8 +86,9 @@
                     </div>
 
                     <div class="panel-footer ">
-                        <div ui-grid="$ctrl.gridimp1Options" ui-if="$ctrl.gridimp1Options.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-auto-resize ui-grid-resize-columns ui-grid-importer ui-grid-edit ui-grid-row-edit ui-grid-selection ui-grid-validate class="mygrid"
-                            ng-style="$ctrl.getGridLength()">
+                        <div ui-grid="$ctrl.gridimp1Options" ui-if="$ctrl.gridimp1Options.data.length>0" ui-grid-pagination 
+                        ui-grid-cellNav ui-grid-resize-columns ui-grid-auto-resize ui-grid-edit ui-grid-importer 
+                        ui-grid-selection ui-grid-validate class="mygrid" ng-style="$ctrl.getGridLength()">
                             <div class="watermark" ng-show="!$ctrl.gridimp1Options.data.length">No data available</div>
                         </div>
 
