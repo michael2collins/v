@@ -11,7 +11,9 @@
             <div class="row">
                 <div class="table-tools">
                     <div class="row mls mbs">
-                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isStep1Collapsed = !$ctrl.isStep1Collapsed">{{ $ctrl.isStep1Collapsed ? 'Step1 - Define Import' : 'Step1 - Collapse'}}</button>
+                        <button type="button" class="btn btn-blue mrs mts" 
+                        ng-click="$ctrl.isStep1Collapsed = !$ctrl.isStep1Collapsed">
+                            {{ $ctrl.isStep1Collapsed ? 'Step1 - Define Import' : 'Step1 - Collapse'}}</button>
                     </div>
                 </div>
                 <div class="panel panel-blue" uib-collapse="$ctrl.isStep1Collapsed">
@@ -147,7 +149,11 @@
                                     <div class="container-xl">
                                         <div class="col-md-12" style="height: 22px;">
                                             <form>
-                                                <input type="file" class="file-chooser" id="filechoice" name="filechoice" single file-change valid-file=".csv" accept=".csv" ng-model="$ctrl.filechoice" handler="$ctrl.handleFileSelect(files)" ng-click="$ctrl.clearInput($event)" />
+                                                <input type="file" class="file-chooser" id="filechoice" 
+                                                name="filechoice" single file-change valid-file=".csv" 
+                                                accept=".csv" ng-model="$ctrl.filechoice" 
+                                                handler="$ctrl.handleFileSelect(files)" 
+                                                ng-click="$ctrl.clearInput($event)" />
 
                                             </form>
                                         </div>

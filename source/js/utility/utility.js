@@ -8,12 +8,12 @@ export class Util {
         'ngInject';
         this.$log = $log;
     }
-    
+
     convertTime(thetime) {
-        var vm=this;
+        var vm = this;
         if (typeof(thetime) !== 'undefined') {
             var m = moment(thetime, "MM/DD/YYYY hh:mm A z");
-             vm.$log.debug('convertTime: passed in: ', thetime,
+            vm.$log.debug('convertTime: passed in: ', thetime,
                 'isvalid?', m.isValid(),
                 'where invalid', m.invalidAt());
             return moment(thetime, "MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
@@ -56,12 +56,12 @@ export class Util {
     }
 
     isEmptyObject(obj) {
-        if(obj == null) return true;
-        if(obj == "null") return true;
-        if(obj == "") return true;
+        if (obj == null) return true;
+        if (obj == "null") return true;
+        if (obj == "") return true;
         return (Object.getOwnPropertyNames(obj).length === 0);
     }
-    
+
     eventdateconvert(thedate) {
 
         //                var startd = moment(thedate).tz('America/New_York').format('MM/DD/YYYY');
@@ -85,20 +85,20 @@ export class Util {
         return moment(thetime).tz('America/New_York').format('z');
     }
 
-    validateDate(indate,informat) {
+    validateDate(indate, informat) {
 
-        var aDate   = moment(indate, informat, true);
-/*
--1 no overflow
-0 year
-1 month
-2 day
-3 hour
-4 minute
-5 seconds
-6 milliseconds
-*/
-        var invalidmsg="";
+        var aDate = moment(indate, informat, true);
+        /*
+        -1 no overflow
+        0 year
+        1 month
+        2 day
+        3 hour
+        4 minute
+        5 seconds
+        6 milliseconds
+        */
+        var invalidmsg = "";
         var retVlu = aDate.isValid();
         var invalidAt = aDate.invalidAt();
         switch (invalidAt) {
@@ -143,13 +143,13 @@ export class Util {
                     break;
                 }
         }
-        
+
         if (!retVlu) {
-            this.$log.debug('validateDate indicates error for: ', indate, ' format: ',informat, 'invalidAt', invalidmsg);
+            this.$log.debug('validateDate indicates error for: ', indate, ' format: ', informat, 'invalidAt', invalidmsg);
         }
-        
+
         return retVlu;
-        
+
     }
 
     validateEmail(email) {
@@ -182,7 +182,7 @@ export class Util {
         else {
             return moment(vm.datecheckconvert(input.toString())).format(oraFormat);
         }
-        
+
     }
     highlightFilteredHeader(row, rowRenderIndex, col, colRenderIndex) {
         if (col.filters[0].term) {
@@ -226,7 +226,7 @@ export class Util {
 
     }
 
-    handleFileSelect(files,vm) {
+    handleFileSelect(files, vm) {
         var fileObject = files[0];
 
         if (fileObject == undefined || fileObject == null) {
@@ -247,7 +247,7 @@ export class Util {
         document.getElementById("filechoiceclass").innerHTML = "";
     }
 
-    setTypeStr(theType,format) {
+    setTypeStr(theType, format) {
         var theTypeStr = {};
         if (theType === 'date') {
             this.setDateCol(format, theType);
@@ -278,7 +278,7 @@ export class Util {
         };
 
     }
-    setValidStrByType(colname,mailrequired,dateformat) {
+    setValidStrByType(colname, mailrequired, dateformat) {
         var theValidStr = {};
         theValidStr = this.setValidStr(true);
 
@@ -289,6 +289,13 @@ export class Util {
             };
         }
         if (colname.match(/lastPromoted/i)) {
+            theValidStr = {
+                validators: { required: false, date: dateformat },
+                cellTemplate: 'ui-grid/cellTitleValidator',
+            };
+
+        }
+        if (colname.match(/contactDate/i)) {
             theValidStr = {
                 validators: { required: false, date: dateformat },
                 cellTemplate: 'ui-grid/cellTitleValidator',
@@ -316,7 +323,7 @@ export class Util {
 
         return coldef;
 
-    }    
+    }
 
     setGCol(field, displayName, required) {
         var gcol = {
@@ -365,10 +372,10 @@ export class Util {
         gcol.enableSorting = false;
         gcol.enableHiding = false;
         return gcol;
-    }    
+    }
 
-    setEmailValidator(uiGridValidateService){
-        var self=this;
+    setEmailValidator(uiGridValidateService) {
+        var self = this;
         uiGridValidateService.setValidator('email',
             function(argument) {
                 //todo, note below is different then example but matching current uigrid code order
@@ -385,10 +392,10 @@ export class Util {
                 return 'Needs proper email address format';
             }
         );
-        
+
     }
     setDateValidator(uiGridValidateService) {
-        var self=this;
+        var self = this;
         uiGridValidateService.setValidator('date',
             function(argument) {
                 //todo, note below is different then example but matching current uigrid code order
@@ -404,9 +411,9 @@ export class Util {
             function(argument) {
                 return 'Needs proper date format ' + argument;
             }
-        );        
-    }    
-    setImpGridDefaults(cols,gridimp1Options,uiGridConstants,limits,initialLength,rowheight) {
+        );
+    }
+    setImpGridDefaults(cols, gridimp1Options, uiGridConstants, limits, initialLength, rowheight) {
         gridimp1Options.showGridFooter = false;
         gridimp1Options.enableGridMenu = false;
         gridimp1Options.paginationPageSizes = limits;
@@ -419,9 +426,9 @@ export class Util {
         gridimp1Options.enableHorizontalScrollbar = uiGridConstants.scrollbars.WHEN_NEEDED;
         gridimp1Options.enableVerticalScrollbar = uiGridConstants.scrollbars.WHEN_NEEDED;
 
-        gridimp1Options.columnDefs = cols;        
+        gridimp1Options.columnDefs = cols;
     }
-    importerDataSetCallback(grid, newObjects,importdata,step2populated,gridimp1Options) {
+    importerDataSetCallback(grid, newObjects, importdata, step2populated, gridimp1Options) {
         importdata = [];
         this.$log.debug('importerDataAddCallback ', newObjects);
         importdata = importdata.concat(newObjects);
@@ -430,7 +437,7 @@ export class Util {
         importdata = [];
 
     }
-    changeloadfilter(value,gridimp1Api) {
+    changeloadfilter(value, gridimp1Api) {
         if (value == "all") {
             gridimp1Api.grid.getColumn('loaded').filters[0].term = '';
         }
@@ -439,7 +446,7 @@ export class Util {
         }
         gridimp1Api.grid.refresh();
     }
-    changeerrfilter(value,gridimp1Api,uiGridConstants) {
+    changeerrfilter(value, gridimp1Api, uiGridConstants) {
         if (value == "all") {
             gridimp1Api.grid.getColumn('haserror').filters[0] = {
                 term: ''
@@ -467,23 +474,23 @@ export class Util {
         }
         gridimp1Api.grid.refresh();
 
-    }    
-    setGridLength(size,vm) {
+    }
+    setGridLength(size, vm) {
         vm.gridLength = {
             height: (size * vm.rowheight) + vm.headerheight + 'px'
         };
     }
-    setPagination(gridApi,vm) {
+    setPagination(gridApi, vm) {
         gridApi.pagination.on.paginationChanged(vm.$scope,
             function(newPage, pageSize) {
                 vm.$log.debug('pagination changed');
-                vm.Util.setGridLength(pageSize,vm);
+                vm.Util.setGridLength(pageSize, vm);
                 vm.gridimp1Api.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
             });
-        
+
     }
-    download(gridexp1Api,uiGridExporterConstants) {
+    download(gridexp1Api, uiGridExporterConstants) {
         gridexp1Api.exporter.csvExport(uiGridExporterConstants.ALL, uiGridExporterConstants.ALL);
     }
 
@@ -496,14 +503,14 @@ export class Util {
             });
         });
 
-    } 
-    validationFailed(gridApi, errmsgfields,errCnt,isValidForErrors,scope) {
-        var self=this;
-        var errmsg="";
+    }
+    validationFailed(gridApi, errmsgfields, errCnt, isValidForErrors, scope) {
+        var self = this;
+        var errmsg = "";
         gridApi.validate.on.validationFailed(scope,
             function(rowEntity, colDef, newValue, oldValue) {
                 for (var i = 0, len = errmsgfields.length; i < len; i++) {
-                    errmsg +=  ' ' + rowEntity[errmsgfields[i]];
+                    errmsg += ' ' + rowEntity[errmsgfields[i]];
                 }
 
                 var msg = (
@@ -536,7 +543,7 @@ export class Util {
 
         gridexp1Options.columnDefs = gcolumns;
 
-    }    
+    }
     setExporterFieldCallback(grid, row, col, value) {
         if (col.name === 'lastPromoted') {
             if (this.isEmptyObject(value)) {
@@ -546,7 +553,94 @@ export class Util {
                 return this.simpledate(value);
             }
         }
+        if (col.name === 'contactDate') {
+            if (this.isEmptyObject(value)) {
+                return this.simpledate("01/01/1900");
+            }
+            else {
+                return this.simpledate(value);
+            }
+        }
+        if (col.name === 'mondayOfWeek') {
+            if (this.isEmptyObject(value)) {
+                return this.simpledate("01/01/2000");
+            }
+            else {
+                return this.simpledate(value);
+            }
+        }
 
     }
-    
+    exceptionError(e, func, notification) {
+        this.$log.debug(func + ' failure:');
+        this.$log.debug("error", e);
+        notification.error({ message: e, delay: 5000 });
+    }
+    checkDataSuccess(data, list, notification, $q, func, notifysuccess) {
+        this.$log.debug(func + ' returned data');
+        this.$log.debug(data);
+        if ((typeof data === 'undefined' || typeof list === 'undefined' || data.error === true) &&
+            typeof data !== 'undefined') {
+            notification.error({ message: data.message, delay: 5000 });
+            return ($q.reject(data));
+        }
+        else {
+            if (notifysuccess) {
+                notification.success({ message: data.message, delay: 5000 });
+            }
+        }
+    }
+    checkRemoveSuccess(data, notification, $q, func, notifysuccess) {
+        this.$log.debug(func + ' returned data');
+        this.$log.debug(data);
+        if ((typeof data === 'undefined' ||  data.error === true) &&
+            typeof data !== 'undefined') {
+            notification.error({ message: data.message, delay: 5000 });
+            return ($q.reject(data));
+        }
+        else {
+            if (notifysuccess) {
+                notification.success({ message: data.message, delay: 5000 });
+            }
+        }
+    }
+    checkCreateDataSuccess(data, newid, notification, $q, func, notifysuccess) {
+        this.$log.debug(func + ' returned data');
+        this.$log.debug(data);
+        if ((typeof data === 'undefined'  || data.error === true) &&
+            typeof data !== 'undefined') {
+            notification.error({ message: data.message, delay: 5000 });
+            return ($q.reject(data));
+        }
+        else {
+            if (newid > 0) {
+                if (notifysuccess) {
+                    notification.success({ message: data.message, delay: 5000 });
+                }
+            } else {
+                notification.error({ message: data.message, delay: 5000 });
+            }
+        }
+    }
+    checkDataSuccessv2(data, list, notification, $q, func, notifysuccess) {
+        this.$log.debug(func + ' returned data');
+        this.$log.debug(data);
+        if ((typeof list === 'undefined' || data.error === true) &&
+            typeof data !== 'undefined') {
+            notification.error({
+                message: data.message + ': ' + (
+                    (typeof(data.extra.sqlerror) === "string" && typeof(data.extra.sqlerrordtl) === "string") ?
+                    data.extra.sqlerror + data.extra.sqlerrordtl : ""),
+                delay: 5000
+            });
+            return ($q.reject(data));
+        }
+        else {
+            if (notifysuccess) {
+                notification.success({ message: data.message, delay: 5000 });
+            }
+        }
+    }
+
+
 }

@@ -808,5 +808,112 @@ export class StudentServices {
 
     }
 
+    getRawHistoryStatus(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawHistorys(path) {
+        var self=this;
+        var request = self.$http({
+            method: "DELETE",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawHistory(thedata, path) {
+        var self=this;
+        self.$log.debug('removeRawHistory data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createRawHistorys(path, thedata) {
+        var self = this;
+        self.$log.debug('createRawHistorys data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    updateRawHistory(path, historys) {
+        var self = this;
+        self.$log.debug('updateRawHistory vm.data before put :', historys);
+        var request = self.$http({
+            method: "PUT",
+            url: path,
+            data: historys
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
+
+    getRawAttendanceStatus(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawAttendances(path) {
+        var self=this;
+        var request = self.$http({
+            method: "DELETE",
+            url: path
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    removeRawAttendance(thedata, path) {
+        var self=this;
+        self.$log.debug('removeRawAttendance data before delete :', thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    createRawAttendances(path, thedata) {
+        var self = this;
+        self.$log.debug('createRawAttendances data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    updateRawAttendance(path, historys) {
+        var self = this;
+        self.$log.debug('updateRawAttendance vm.data before put :', historys);
+        var request = self.$http({
+            method: "PUT",
+            url: path,
+            data: historys
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
     
 }

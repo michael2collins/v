@@ -75,7 +75,12 @@
                                     <div class="container-xl">
                                         <div class="col-md-12" style="height: 22px;">
                                             <form>
-                                                <input type="file" class="file-chooser" id="filechoiceclass" name="filechoiceclass" single file-change valid-file=".csv" accept=".csv" ng-model="$ctrl.filechoice" handler="$ctrl.Util.handleFileSelect(files, $ctrl)" ng-click="$ctrl.Util.clearInput($event)" />
+                                                <input type="file" class="file-chooser" id="filechoiceclass" 
+                                                name="filechoiceclass" single file-change valid-file=".csv" 
+                                                accept=".csv" 
+                                                ng-model="$ctrl.filechoice" 
+                                                handler="$ctrl.Util.handleFileSelect(files, $ctrl)" 
+                                                ng-click="$ctrl.Util.clearInput($event)" />
 
                                             </form>
                                         </div>

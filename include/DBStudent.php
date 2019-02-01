@@ -1102,57 +1102,6 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		}
 	}
 
-	public
-	function createBulkStudentAttendance(
-            $contactID, $classID, $mondayOfWeek, $rank, $DOWnum, $attended
-		)
-	{
-		error_log(print_R("createBulkStudentAttendance entered\n", TRUE) , 3, LOG);
-
-        $numargs = func_num_args();
-        $arg_list = func_get_args();
-            for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createBulkStudentAttendance Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
-        }
-		
-		$response = array();
-		global $school;
-		
-        $dt = DateTime::createFromFormat('m/d/Y', $mondayOfWeek);
-        
-        if ($dt === false) {
-            error_log( print_R("createBulkStudentAttendance  bad date $mondayOfWeek" , TRUE), 3, LOG);
-            return NULL;
-        }
-        $bdate = $dt->format('Y-m-d');
-
-		
-		$sql = "INSERT INTO attendance (
-            contactID, classID, mondayOfWeek, rank, DOWnum, attended
-		)
-			values (
-			?, ?, ?, ?, ?, ? 
-			)";
-
-		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("ssssss", 
-            $contactID, $classID, $bdate, $rank, $DOWnum, $attended
-			);
-			$result = $stmt->execute();
-			$stmt->close();
-			if ($result) {
-				$new_student_id = $this->conn->insert_id;
-				return $new_student_id;
-			}
-			else {
-				return NULL;
-			}
-		}
-		else {
-			printf("Errormessage: %s\n", $this->conn->error);
-			return NULL;
-		}
-	}
 
 	private
 	function isStudentExists($Email, $LastName, $FirstName, $inschool)
@@ -3396,109 +3345,6 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	}
 
 	public
-	function lookupHistExtras(
-            $externalid
-		) {
-		global $school;
-
-	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
-
-        $res = array();
-        $res["externalid"] = $externalid;
-        $res["contacterror"] = NULL;
-
-	    try {
-	        $stmt = $this->conn->prepare($idsql);
-	        $stmt->bind_param("ss", $externalid, $school);
-	        if ($stmt->execute()) {
-	            $stmt->bind_result($id);
-		        $stmt->store_result();
-		        $num_rows = $stmt->num_rows;
-				if ($num_rows > 0) {
-		            $stmt->fetch();
-		            $res["id"] = $id;
-				} else {
-		            $res["id"] = null;
-	        		$res["contacterror"] = "External ID not found";
-				}
-	            $stmt->close();
-	        } else {
-	        	$res["contacterror"] = "External ID failure";
-	        }
-
-			return $res;
-	    } catch(exception $e) {
-			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
-                printf("Errormessage: %s\n", $e);
-                return NULL;
-		}
-
-
-	}
-
-	public
-	function lookupAttendExtras(
-            $externalid,$classname
-		) {
-		global $school;
-	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
-		$clsql = " select id as classid from nclass where class = ? and school = ?";	
-
-        $res = array();
-        $res["externalid"] = $externalid;
-        $res["contacterror"] = NULL;
-        $res["classerror"] = NULL;
-
-	    try {
-	        $stmt = $this->conn->prepare($idsql);
-	        $stmt->bind_param("ss", $externalid, $school);
-	        if ($stmt->execute()) {
-	            $stmt->bind_result($id);
-		        $stmt->store_result();
-		        $num_rows = $stmt->num_rows;
-				if ($num_rows > 0) {
-		            $stmt->fetch();
-		            $res["id"] = $id;
-				} else {
-		            $res["id"] = null;
-	        		$res["contacterror"] = "External ID not found";
-				}
-	            $stmt->close();
-	        } else {
-	        	$res["contacterror"] = "External ID failure";
-	        }
-	        $stmt = $this->conn->prepare($clsql);
-	        $stmt->bind_param("ss", $classname, $school);
-	        if ($stmt->execute()) {
-	            $stmt->bind_result($classid);
-		        $stmt->store_result();
-		        $num_rows = $stmt->num_rows;
-				if ($num_rows > 0) {
-		            $stmt->fetch();
-		            $res["classid"] = $classid;
-				} else {
-		            $res["classid"] = null;
-	        		$res["classerror"] = "Class ID not found";
-				}
-
-	            $stmt->close();
-	        } else {
-	        	$res["classerror"] = "Class ID failure";
-	        }
-
-			return $res;
-	    } catch(exception $e) {
-			 error_log(print_R( "sql error in lookupAttendExtras\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
-                printf("Errormessage: %s\n", $e);
-                return NULL;
-		}
-
-
-	}
-	
-	public
 	function updateRawStudent(
 		$externalid, $LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt,
 		$Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP,
@@ -3902,7 +3748,6 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                 error_log( print_R("createFullregistrationRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
         }
 		
-		$response = array();
 		global $school;
 		
         $dt = DateTime::createFromFormat('m/d/Y H:i:s', $lastPromoted);
@@ -3966,22 +3811,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 					// Failed to create user
 
-					return NULL;
+					return -1;
 				}
 			}
 			else {
 				printf("Errormessage: %s\n", $this->conn->error);
-				return NULL;
+				return -2;
 			}
-/*		}
-		else {
-
-			// User with same email already existed in the db
-
-			return RECORD_ALREADY_EXISTED;
-		}
-*/
-		return $response;
 	}
 
 	private
@@ -4065,8 +3901,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		
 		try {
 		$sql1 = "INSERT ignore INTO ncontactrank (ContactID, ranktype, currentrank) 
-				select studentid,ranktype, currentrank from rawregistration
-				where school = ? ";
+				select c.ID,ranktype, currentrank from rawregistration r
+				join ncontacts c on c.externalid = r.externalid and r.school = c.studentschool
+				where r.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql1)) {
             $stmt->bind_param("s",$school);
@@ -4079,8 +3916,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                return -1;			
         }
         
-        $sql2 = "INSERT ignore INTO payer (payerName, school) 
-        		select payerName, school from rawregistration
+        $sql2 = "INSERT ignore INTO payer (payerName,payerEmail, school) 
+        		select payerName,payerEmail, school from rawregistration
 				where school = ? ";
 
         if ($stmt = $this->conn->prepare($sql2)) {
@@ -4095,8 +3932,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         }
         
         $sql3 = "INSERT ignore INTO studentregistration (studentid, classid, pgmid, studentclassstatus)  
-				select studentid, classid, pgmid, studentclassstatus from rawregistration  
-				where school = ? and studentid <> 0";
+				select c.ID, classid, pgmid, studentclassstatus from rawregistration r  
+				join ncontacts c on c.externalid = r.externalid and c.studentschool = r.school
+				where school = ? ";
 
         if ($stmt = $this->conn->prepare($sql3)) {
             $stmt->bind_param("s",$school);
@@ -4113,7 +3951,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         		PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby)
         		select p.id, r.paymenttype, '',
         		r.PaymentPlan, r.PaymentAmount, CURDATE(), r.payOnDayOfMonth, 'initialbulk' from rawregistration r
-        		left join payer p on r.payername = p.payername and r.school = p.school
+        		 join payer p on r.payername = p.payername and r.school = p.school
         		where r.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql4)) {
@@ -4126,19 +3964,40 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             printf("Errormessage: %s\n", $this->conn->error); return NULL;
                return -4;			
         }                
+
+        $sql4b = "INSERT ignore INTO nclasspays(
+        contactid, isTestFeeWaived, classseq, pgmseq, payerid, primaryContact )
+        		select 
+        		c.ID, 0, r.classid, r.pgmid, p.id, 1
+        		from rawregistration r
+        		 join payer p on r.payername = p.payername and r.school = p.school
+        		 join ncontacts c on r.externalid = c.externalid and c.studentschool = r.school
+        		where r.school = ? ";
+
+        if ($stmt = $this->conn->prepare($sql4b)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -5;			
+        }                
         
         $sql5 = "INSERT ignore INTO paymentclasspay( paymentid, classpayid) 
         		select cpa.id as classpayid, np.paymentid
 		        from 
-		        (((((nclasspgm cp 
-		        left outer join nclass cl on cp.classid = cl.id) 
-		        left outer join nclasslist l on l.id = cp.pgmid) 
-		        left outer join studentregistration sr on sr.classid = cl.id and sr.pgmid = cp.pgmid )
-		        Left outer join nclasspays cpa on cpa.classseq = sr.classid and cpa.pgmseq = sr.pgmid and cpa.contactid = sr.studentid)
-		        Left outer join payer pp on pp.id = cpa.payerid
-		        join rawregistration rr on rr.studentid =  sr.studentid and rr.classid = sr.classid and rr.pgmid = sr.pgmid
+		        rawregistration rr
+		         join ncontacts c on c.externalid = rr.externalid and c.studentschool = rr.school
+		         join nclasspgm cp on cp.classid = rr.classid and cp.pgmid = rr.pgmid and cp.school = rr.school
+		         join nclass cl on cp.classid = cl.id 
+		         join nclasslist l on l.id = cp.pgmid
+		         join studentregistration sr on sr.classid = cl.id and sr.pgmid = cp.pgmid and sr.studentid = c.ID
+		        join nclasspays cpa on cpa.classseq = sr.classid and cpa.pgmseq = sr.pgmid and cpa.contactid = sr.studentid
+		         join payer pp on pp.id = cpa.payerid
 		        join npayments np on np.payerid = pp.id
-		        ) where  cl.school = cp.school and cl.school = l.school and cl.school = rr.school
+		         where  cl.school = cp.school and cl.school = l.school and cl.school = rr.school
 		                and cl.school = ?		";        
 
         if ($stmt = $this->conn->prepare($sql5)) {
@@ -4149,7 +4008,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $stmt->close();
         } else {
             printf("Errormessage: %s\n", $this->conn->error); return NULL;
-               return -5;			
+               return -6;			
         }
 			return $totalrec;
         
@@ -4215,6 +4074,718 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             return $errormessage;
 		}
     }	
+
+	public
+	function updateRawhistory(
+        $externalid, $studentID,  $contactmgmttype, $contactDate
+		)
+	{
+	/**
+	 * Updating history
+	 */
+		global $school;
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("updateRawhistory Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$num_affected_rows = 0;
+		$sql = "UPDATE rawcontactmgmt set 
+			studentID=?
+		where externalid = ? and contactDate = ? and contactmgmttype = ? and school = ? ";
+
+		error_log(print_R("updatehistory sql after security: $sql", TRUE) , 3, LOG);
+		error_log(print_R($sql, TRUE));
+		
+        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $contactDate);
+        
+        if ($dt === false) {
+            error_log( print_R("updatehistory  bad date $contactDate" , TRUE), 3, LOG);
+            return -3;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+
+      try {
+			if ($this->isRawHistoryExists(
+			$externalid, $bdate, $contactmgmttype, $school
+				)) {
+	
+				if ($stmt = $this->conn->prepare($sql)) {
+					$stmt->bind_param("sssss", 
+				 $studentID, $externalid, $bdate, $contactmgmttype, $school
+					);
+					$stmt->execute();
+					$num_affected_rows = $stmt->affected_rows;
+					$stmt->close();
+				}
+				else {
+					printf("Errormessage: %s\n", $this->conn->error);
+				}
+			} else {
+				error_log(print_R("updateRawhistory did not exist can not update", TRUE) , 3, LOG);
+				
+				return -1;	
+			}		
+	
+			return $num_affected_rows >= 0;
+		} catch(exception $e) {
+			error_log(print_R( "sql error in updateRawhistory\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -2;			
+		}
+
+	}
+
+	public
+	function createHistoryRaw(
+		$externalid, $contactDate,$contactmgmttype, $studentID
+	){
+		error_log(print_R("createFullhistoryRaw entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createFullhistoryRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$response = array();
+		global $school;
+		
+//        $dt = DateTime::createFromFormat('m/d/Y H:i:s', $contactDate);
+        $dt = DateTime::createFromFormat('m/d/Y', $contactDate);
+        
+        if ($dt === false) {
+            error_log( print_R("createFullhistoryRaw  bad date $contactDate" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+		
+		$sql = "INSERT INTO rawcontactmgmt (
+			externalid, contactdate, contactmgmttype,studentID,
+			school)
+			values (
+			?,?,?,?,
+			?
+			) on duplicate key update 
+			externalid = values(externalid), contactdate = values(contactdate),
+			contactmgmttype = values(contactmgmttype), 
+			studentID = values(studentID), school= values(school)
+			";
+
+		// First check if user already existed in db
+
+				if ($stmt = $this->conn->prepare($sql)) {
+		            $stmt->bind_param("sssss",
+					$externalid, $bdate,$contactmgmttype, $studentID,
+						$school
+	            );
+				
+				$result = $stmt->execute();
+				$stmt->close();
+
+				// Check for successful insertion
+
+				if ($result) {
+					$new_history_id = $this->conn->insert_id;
+
+					// User successfully inserted
+
+					return $new_history_id;
+				}
+				else {
+
+					// Failed to create user
+
+					return -1;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return -2;
+			}
+		return $response;
+	}
+
+	private
+	function isRawhistoryExists(
+			$externalid, $contactDate, $contactmgmttype, $school
+		){
+	/**
+	 * Checking for duplicate history 
+	 * @return boolean
+	 */
+		error_log(print_R("before isRawhistoryExists\n", TRUE) , 3, LOG);
+		error_log(print_R("extid: $externalid\n", TRUE) , 3, LOG);
+		error_log(print_R("date: $contactDate\n", TRUE) , 3, LOG);
+		error_log(print_R("contactmgmttype: $contactmgmttype\n", TRUE) , 3, LOG);
+		error_log(print_R("school: $school\n", TRUE) , 3, LOG);
+		$sql = "SELECT id from rawcontactmgmt WHERE externalid = ? ";
+		$sql.= " and contactDate = ? and contactmgmttype = ? ";
+		$sql.= " and school = ?  ";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("ssss",
+			$externalid, $contactDate, $contactmgmttype, $school
+		);
+		$stmt->execute();
+		$stmt->store_result();
+		$num_rows = $stmt->num_rows;
+		$stmt->close();
+		error_log(print_R("isRawhistoryExists: $num_rows\n", TRUE) , 3, LOG);
+		return $num_rows > 0;
+	}
+
+    public function removeRawhistorys(
+    ) {
+
+        error_log( print_R("removeRawhistorys entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawcontactmgmt where school = ?  ";
+
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >=0;
+    }
+
+    public function removeRawhistory(
+            $externalid,$contactmgmttype,$contactDate
+    ) {
+
+        error_log( print_R("removeRawhistory entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawcontactmgmt where externalid = ? and 
+        	contactmgmttype = ? and  contactDate= ? and school = ?  ";
+
+        $dt = DateTime::createFromFormat('m/d/Y', $contactDate);
+        
+        if ($dt === false) {
+            error_log( print_R("removeRawhistory  bad date $contactDate" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("ssss",
+            $externalid,$contactmgmttype,$bdate,$school
+            );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >0;
+    }
+
+    public function transferBulkhistorys(
+    ) {
+
+        error_log( print_R("transferBulkhistorys entered\n", TRUE ),3, LOG);
+        global $school;
+		$totalrec =0;
+		
+		try {
+		$sql1 = "INSERT ignore INTO ncontactmgmt 
+			( contactid, contactmgmttype, contactDate ) 
+				select c.ID, r.contactmgmttype, r.contactDate from rawcontactmgmt r
+				join ncontacts c on c.externalid = r.externalid and c.studentschool = r.school
+				where r.school = ? ";
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $totalrec += $num_affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+               return -1;			
+        }
+        
+			return $totalrec;
+        
+		} catch(exception $e) {
+			error_log(print_R( "sql error in transferBulkhistorys\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -6;			
+		}
+    }
+
+    public function getRawHistoryStatus(
+    ) {
+
+        error_log( print_R("getRawhistoryStatus entered\n", TRUE ),3, LOG);
+        global $school;
+        $errormessage=array();
+
+        $sql = "
+        SELECT  
+        c.ID as contactid, 
+        r.externalid, r.studentID, r.contactmgmttype, 
+		DATE_FORMAT(r.contactDate,'%m/%d/%Y') as contactDate, r.school
+        FROM rawcontactmgmt r
+        left join ncontacts c on (r.externalid = c.externalid and r.school = c.studentschool)
+        where r.school = ?  ";
+
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				error_log(print_R("getRawhistoryStatus list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+
+                if ($slists) {
+                    $errormessage["success"] = true;
+					$errormessage["slist"]=$slists;
+                    return $errormessage;
+                } else {
+                    // Failed to find 
+                    $errormessage["sqlerror"] = "Select failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+					$errormessage["slist"] = array();
+                    return $errormessage;
+                }
+			}
+			else {
+				error_log(print_R("getRawhistoryStatus list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getRawhistoryStatus failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$errormessage["slist"] = array();
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getRawhistoryStatus list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getRawhistoryStatus failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$res["slist"] = array();
+            return $errormessage;
+		}
+    }		
+
+	public
+	function lookupHistExtras(
+            $externalid
+		) {
+		global $school;
+
+	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
+
+        $res = array();
+        $res["externalid"] = $externalid;
+        $res["contacterror"] = NULL;
+
+	    try {
+	        $stmt = $this->conn->prepare($idsql);
+	        $stmt->bind_param("ss", $externalid, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($id);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["id"] = $id;
+				} else {
+		            $res["id"] = null;
+	        		$res["contacterror"] = "External ID not found";
+				}
+	            $stmt->close();
+	        } else {
+	        	$res["contacterror"] = "External ID failure";
+	        }
+
+			return $res;
+	    } catch(exception $e) {
+			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+
+
+	}
+
+	public
+	function lookupAttendExtras(
+            $externalid,$classname
+		) {
+		global $school;
+	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
+		$clsql = " select id as classid from nclass where class = ? and school = ?";	
+
+        $res = array();
+        $res["externalid"] = $externalid;
+        $res["contacterror"] = NULL;
+        $res["classerror"] = NULL;
+
+	    try {
+	        $stmt = $this->conn->prepare($idsql);
+	        $stmt->bind_param("ss", $externalid, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($id);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["id"] = $id;
+				} else {
+		            $res["id"] = null;
+	        		$res["contacterror"] = "External ID not found";
+				}
+	            $stmt->close();
+	        } else {
+	        	$res["contacterror"] = "External ID failure";
+	        }
+	        $stmt = $this->conn->prepare($clsql);
+	        $stmt->bind_param("ss", $classname, $school);
+	        if ($stmt->execute()) {
+	            $stmt->bind_result($classid);
+		        $stmt->store_result();
+		        $num_rows = $stmt->num_rows;
+				if ($num_rows > 0) {
+		            $stmt->fetch();
+		            $res["classid"] = $classid;
+				} else {
+		            $res["classid"] = null;
+	        		$res["classerror"] = "Class ID not found";
+				}
+
+	            $stmt->close();
+	        } else {
+	        	$res["classerror"] = "Class ID failure";
+	        }
+
+			return $res;
+	    } catch(exception $e) {
+			 error_log(print_R( "sql error in lookupAttendExtras\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+
+
+	}
+
+    public function transferBulkattendances(
+    ) {
+
+        error_log( print_R("transferBulkattendances entered\n", TRUE ),3, LOG);
+        global $school;
+		$totalrec =0;
+		
+		try {
+		$sql1 = "INSERT ignore INTO attendance (
+			 contactID, classID, mondayOfWeek, rank, DOWnum, attended
+			) 
+				select c.ID, r.classID, r.mondayOfWeek, r.rank, r.DOWnum, r.attended
+				from rawattendance r
+				join ncontacts c on c.externalid = r.externalid and c.studentschool = r.school
+				where r.school = ? ";
+
+	        if ($stmt = $this->conn->prepare($sql1)) {
+	            $stmt->bind_param("s",$school);
+	            $stmt->execute();
+	            $num_affected_rows = $stmt->affected_rows;
+	            $totalrec += $num_affected_rows;
+	            $stmt->close();
+	        } else {
+	            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+	               return -1;			
+	        }
+        
+			return $totalrec;
+        
+		} catch(exception $e) {
+			error_log(print_R( "sql error in transferBulkregistrations\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -6;			
+		}
+    }
+
+	public
+	function updateRawattendance(
+		$externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $attended
+		)
+	{
+		global $school;
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("updateRawattendance Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$num_affected_rows = 0;
+		$sql = "UPDATE rawcontactmgmt set 
+			studentID=?,
+			classID =?, 
+			rank=?,
+			attended=?
+		where externalid = ? and Classname = ? and mondayOfWeek =? and  DOWnum=? and school = ? ";
+		
+
+		error_log(print_R("updateattendance sql after security: $sql", TRUE) , 3, LOG);
+		error_log(print_R($sql, TRUE));
+		
+        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $mondayOfWeek);
+        
+        if ($dt === false) {
+            error_log( print_R("updateattendance  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            return -3;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+      try {
+			if ($this->isRawAttendanceExists(
+				 $externalid, $Classname, $bdate, $DOWnum, $school
+				)) {
+	
+				if ($stmt = $this->conn->prepare($sql)) {
+					$stmt->bind_param("sssssssss", 
+				$studentID, $classID, $rank,  $attended, $externalid, $Classname, $bdate, $DOWnum, $school
+					);
+					$stmt->execute();
+					$num_affected_rows = $stmt->affected_rows;
+					$stmt->close();
+				}
+				else {
+					printf("Errormessage: %s\n", $this->conn->error);
+				}
+			} else {
+				error_log(print_R("updateRawattendance did not exist can not update", TRUE) , 3, LOG);
+				
+				return -1;	
+			}		
+	
+			return $num_affected_rows >= 0;
+		} catch(exception $e) {
+			error_log(print_R( "sql error in updateRawattendance\n" , TRUE), 3, LOG);
+			error_log(print_R(  $e , TRUE), 3, LOG);
+                printf("Errormessage: %s\n", $e);
+                return -2;			
+		}
+
+	}
+
+	public
+	function createAttendanceRaw(
+		$externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $attended
+	){
+		error_log(print_R("createFullattendanceRaw entered\n", TRUE) , 3, LOG);
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                error_log( print_R("createFullattendanceRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+        }
+		
+		$response = array();
+		global $school;
+		
+        $dt = DateTime::createFromFormat('m/d/Y H:i:s', $mondayOfWeek);
+//        $dt = DateTime::createFromFormat('m/d/Y', $mondayOfWeek);
+        
+        if ($dt === false) {
+            error_log( print_R("createFullattendanceRaw  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+		
+		$sql = "INSERT INTO rawattendance (
+			externalid, studentID, classID, Classname, 
+			mondayOfWeek, rank, DOWnum, attended,	
+			school)
+			values (
+			?,?,?,?,
+			?,?,?,?,
+			?
+			) on duplicate key update 
+			externalid = values(externalid), 
+			studentID = values(studentID),
+			classID = values(classID), 
+			Classname = values(Classname), 
+			mondayOfWeek = values(mondayOfWeek), 
+			rank = values(rank), 
+			DOWnum = values(DOWnum), 
+			attended = values(attended), 
+			school= values(school)
+			";
+				if ($stmt = $this->conn->prepare($sql)) {
+		            $stmt->bind_param("sssssssss",
+				$externalid, $studentID, $classID, $Classname, 
+				$bdate, $rank, $DOWnum, $attended,
+						$school
+	            );
+				
+				$result = $stmt->execute();
+				$stmt->close();
+				if ($result) {
+					$new_attendance_id = $this->conn->insert_id;
+					return $new_attendance_id;
+				}
+				else {
+					return -1;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return -2;
+			}
+		return $response;
+	}
+
+	private
+	function isRawattendanceExists(
+		$externalid, $Classname, $mondayOfWeek, $DOWnum, $school
+		 ){
+		error_log(print_R("before isRawattendanceExists\n", TRUE) , 3, LOG);
+		error_log(print_R("extid: $externalid\n", TRUE) , 3, LOG);
+		error_log(print_R("Classname: $Classname\n", TRUE) , 3, LOG);
+		error_log(print_R("mondayOfWeek: $mondayOfWeek\n", TRUE) , 3, LOG);
+		error_log(print_R("DOWnum: $DOWnum\n", TRUE) , 3, LOG);
+		error_log(print_R("school: $school\n", TRUE) , 3, LOG);
+		$sql = "SELECT id from rawattendance WHERE externalid = ? ";
+		$sql.= " and Classname = ? and mondayOfWeek = ? ";
+		$sql.= " and DOWnum = ? ";
+		$sql.= " and school = ?  ";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bind_param("sssss",
+		$externalid, $Classname, $mondayOfWeek, $DOWnum, $school
+		);
+		$stmt->execute();
+		$stmt->store_result();
+		$num_rows = $stmt->num_rows;
+		$stmt->close();
+		error_log(print_R("isRawattendanceExists: $num_rows\n", TRUE) , 3, LOG);
+		return $num_rows > 0;
+	}
+
+    public function removeRawattendances(
+    ) {
+
+        error_log( print_R("removeRawattendances entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawattendance where school = ?  ";
+
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("s",$school);
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >=0;
+    }
+
+    public function removeRawattendance(
+            $externalid,$Classname,$mondayOfWeek,$DOWnum
+    ) {
+
+        error_log( print_R("removeRawattendance entered\n", TRUE ),3, LOG);
+        global $school;
+                                      
+        $sql1 = "DELETE from rawattendance where externalid = ? and 
+        	Classname = ? and  mondayOfWeek= ? and DOWnum = ? and school = ?  ";
+
+        $dt = DateTime::createFromFormat('m/d/Y', $mondayOfWeek);
+        
+        if ($dt === false) {
+            error_log( print_R("removeRawattendance  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
+        if ($stmt = $this->conn->prepare($sql1)) {
+            $stmt->bind_param("sssss",
+            $externalid,$Classname,$bdate,$DOWnum,$school
+            );
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+            $stmt->close();
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error); return NULL;
+        }
+
+		return $num_affected_rows >0;
+    }
+
+    public function getRawAttendanceStatus(
+    ) {
+
+        error_log( print_R("getRawattendanceStatus entered\n", TRUE ),3, LOG);
+        global $school;
+        $errormessage=array();
+
+        $sql = "
+        SELECT  
+        c.ID as contactid, 
+        r.externalid, r.studentID, r.classID, r.Classname, 
+		DATE_FORMAT(r.mondayOfWeek,'%m/%d/%Y') as mondayOfWeek,
+		r.rank, r.DOWnum, r.attended,
+		r.school
+        FROM rawattendance r
+        left join ncontacts c on (r.externalid = c.externalid and r.school = c.studentschool)
+        where r.school = ?  ";
+
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				error_log(print_R("getRawattendanceStatus list returns data", TRUE) , 3, LOG);
+				error_log(print_R($slists, TRUE) , 3, LOG);
+				$stmt->close();
+
+                if ($slists) {
+                    $errormessage["success"] = true;
+					$errormessage["slist"]=$slists;
+                    return $errormessage;
+                } else {
+                    // Failed to find 
+                    $errormessage["sqlerror"] = "Select failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+					$errormessage["slist"] = array();
+                    return $errormessage;
+                }
+			}
+			else {
+				error_log(print_R("getRawattendanceStatus list execute failed", TRUE) , 3, LOG);
+	            $errormessage["sqlerror"] = "getRawattendanceStatus failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$errormessage["slist"] = array();
+	            return $errormessage;
+			}
+		}
+		else {
+			error_log(print_R("getRawattendanceStatus list sql failed", TRUE) , 3, LOG);
+            $errormessage["sqlerror"] = "getRawattendanceStatus failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$res["slist"] = array();
+            return $errormessage;
+		}
+    }			
 }
 
 ?>

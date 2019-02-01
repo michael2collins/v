@@ -26,11 +26,17 @@ export class ImpattendController {
 
         var vm = this;
         CSV.DETECT_TYPES = false;
+        vm.loadeddefault = "missing";
+        vm.emailrequired = false;
+        vm.haserrordefault = "";
+        vm.thisattendance = {};
 
         vm.gridexp1Options = {};
         vm.gridimp1Options = {};
         vm.step2populated = false;
         vm.isValidForErrors = false;
+        vm.loadedfilter = "all";
+        vm.errfilter = "all";
 
         vm.picklistImp1 = [];
         vm.pickImp1 = {};
@@ -47,44 +53,23 @@ export class ImpattendController {
         vm.thisColumns = [];
         vm.importdata = [];
         vm.filechoice = null;
+        vm.bdateformat = "MM/DD/YYYY";
+        vm.bdateformattxt = 'textDate:"MM/dd/yyyy"';
 
         vm.gridLength = {};
         vm.limits = [5, 10, 20, 50, 100, 200];
         vm.initialLength = 10;
         vm.rowheight = 32;
         vm.headerheight = 140;
-        vm.setGridLength(vm.initialLength);
+        vm.Util.setGridLength(vm.initialLength, vm);
 
-        vm.setGridexp1Options();
-        vm.setGridimp1Options();
+        vm.setprelimimp1Options();
         vm.activate();
     }
 
     $onDestroy() {
         this.$log.debug("ImpattendController dismissed");
         this.$log.debugEnabled(false);
-    }
-
-    getLimit() {
-        var vm = this;
-        vm.$log.debug('getLimit');
-        return vm.limit;
-    }
-    setLimit(thelimit) {
-        var vm = this;
-        vm.$log.debug('setLimit', thelimit);
-        vm.limit = thelimit;
-    }
-    setGridLength(size) {
-        var vm = this;
-        vm.gridLength = {
-            height: (size * vm.rowheight) + vm.headerheight + 'px'
-        };
-    }
-
-    getGridLength() {
-        var vm = this;
-        return vm.gridLength;
     }
 
     activate() {
@@ -121,6 +106,9 @@ export class ImpattendController {
         vm.gridexp1Options.data = [];
         vm.gridimp1Options.data = [];
         vm.importdata =[];
+        vm.errCnt = 0;
+        vm.isValidForErrors = true;
+        vm.removeRawAttendances();
         
     }
 
@@ -131,157 +119,84 @@ export class ImpattendController {
         var path = '../v1/samplestudentattendance';
 
         return vm.StudentServices.getSampleStudentAttendance(path).then(function(data) {
+                vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'getStudentAttendance', true);
             vm.gridexp1Options.data = data.StudentAttendanceList;
 
             return vm.gridexp1Options.data;
-        });
+            }, function(error) {
+                vm.Util.exceptionError(error, "getStudentAttendance", vm.Notification);
+                return (vm.$q.reject(error));
+            });
     }
 
     getColumns() {
         var vm = this;
 //ID, contactID, classID, mondayOfWeek, rank, DOWnum, attended
         var Columnslist = [
-            { name: "externalid", type: 'string' },
-            { name: "classname", type: 'string' },
-            { name: "mondayOfWeek", type: 'date' },
-            { name: "rank", type: 'string' },
-            { name: "DOWnum", type: 'number' },
-            { name: "attended", type: 'number' },
+            { name: "externalid", type: 'string', required: true   },
+            { name: "Classname", type: 'string', required: true   },
+            { name: "mondayOfWeek", type: 'date', required: true   },
+            { name: "rank", type: 'string', required: true   },
+            { name: "DOWnum", type: 'number', required: true   },
+            { name: "attended", type: 'number', required: true   },
         ];
 
         vm.setGColumns(Columnslist);
         vm.setGridexp1Options();
         vm.setGridimp1Options();
     }
-
-    setGColumns(columns) {
+    setAllGcol(columns) {
         var vm = this;
-        var theType = 'String';
-        var gcol = [];
         var coldef = {};
         var theTypeStr = {};
         var theValidStr = {};
         vm.gcolumns = [];
-        vm.impgcolumns = [];
         for (var i = 0, len = columns.length; i < len; i++) {
-            // uigrid type string', 'boolean', 'number', 'date', 'object', 'numberStr' 
 
-            theType = columns[i].type;
+            columns[i].haserror = vm.haserrordefault;
+            columns[i].loaded = vm.loadeddefault;
 
-            theTypeStr = {};
-            theValidStr = {};
+            theTypeStr = vm.Util.setTypeStr(columns[i].type, vm.bdateformattxt);
 
-            if (theType === 'date') {
-                theTypeStr = {
-                    type: theType,
-                    cellFilter: 'textDate:"MM/dd/yyyy"',
-                    editableCellTemplate: '<div><form name="inputForm"><div ui-grid-edit-datepicker ng-class="\'colt\' + col.uid"></div></form></div>'
-                };
-            }
-            else {
-                theTypeStr = {
-                    type: theType,
-                };
-            }
+            theValidStr = vm.Util.setValidStrByType(columns[i].name, vm.emailrequired, vm.bdateformat);
 
-            // all required
-            theValidStr = {
-                validators: { required: true },
-                cellTemplate: 'ui-grid/cellTitleValidator',
-            };
-
-            if (columns[i].name.match(/date/i)) {
-                theValidStr = {
-                    validators: { required: false, date: 'MM/DD/YYYY' },
-                    cellTemplate: 'ui-grid/cellTitleValidator',
-                };
-
-            }
-
-            coldef = {
-                field: columns[i].name,
-                displayName: columns[i].name,
-                enableCellEdit: true
-            };
-            theValidStr.validators ? coldef.validators = theValidStr.validators : '';
-            theValidStr.cellTemplate ? coldef.cellTemplate = theValidStr.cellTemplate : '';
-            theTypeStr.cellFilter ? coldef.cellFilter = theTypeStr.cellFilter : '';
-            theTypeStr.editableCellTemplate ? coldef.editableCellTemplate = theTypeStr.editableCellTemplate : '';
-            coldef.type = theTypeStr.type;
+            coldef = vm.Util.setColDef(columns[i].name, theValidStr, theTypeStr);
 
             vm.gcolumns.push(coldef);
 
         }
+    }
 
+    setGColumns(columns) {
+        var vm = this;
+        var gcol = [];
+        vm.gcolumns = [];
+        vm.impgcolumns = [];
+        vm.setAllGcol(columns);
         vm.impgcolumns = angular.copy(vm.gcolumns);
 
-        gcol = {
-            field: 'id',
-            displayName: 'Student Id',
-            enableCellEdit: false,
-            visible: true,
-            validators: { required: true },
-            cellTemplate: 'ui-grid/cellTitleValidator',
-
-        };
-        vm.impgcolumns.push(gcol);
-        gcol = {
-            field: 'classid',
-            displayName: 'Class Id',
-            enableCellEdit: false,
-            visible: true,
-            validators: { required: true },
-            cellTemplate: 'ui-grid/cellTitleValidator',
-
-        };
-        vm.impgcolumns.push(gcol);
-        gcol = {
-            field: 'externalid',
-            displayName: 'Action',
-            enableFiltering: false,
-            enableSorting: false,
-            enableHiding: false,
-            enableCellEdit: false,
-            cellTemplate: '<div class="ui-grid-cell-contents"><span> <a ng-click="grid.appScope.removeImp1Row(row)" role="button" class="btn btn-red" style="padding:  0px 14px;"  ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></div>'
-        };
-
-        vm.impgcolumns.push(gcol);
-
+        var required = true;
+        gcol = vm.Util.setGCol('id', 'Student Id', required);
+        vm.impgcolumns.unshift(gcol);
+        gcol = vm.Util.setGCol('classid', 'Class Id', required);
+        vm.impgcolumns.unshift(gcol);
+        gcol = vm.Util.setHasErrCol();
+        vm.impgcolumns.unshift(gcol);
+        gcol = vm.Util.setLoadedCol();
+        vm.impgcolumns.unshift(gcol);
+        gcol = vm.Util.setExtIdCol('grid.appScope.removeRawAttendance(row)');
+        vm.impgcolumns.unshift(gcol);
 
     }
 
     setGridexp1Options() {
         var vm = this;
 
-
-
         vm.gridexp1Options = {
-            showGridFooter: false,
-            enableGridMenu: false, //button is working
-            exporterMenuCsv: true,
-            exporterMenuExcel: false,
-            exporterMenuPdf: false,
-            exporterCsvFilename: 'studentattendance.csv',
-            exporterCsvColumnSeparator: ',',
-            exporterHeaderFilterUseName: true,
-            exporterMenuVisibleData: false,
-            paginationPageSizes: vm.limits,
-            paginationPageSize: vm.initialLength,
-            rowHeight: vm.rowheight,
-
-
-            columnDefs: vm.gcolumns,
 
             exporterFieldCallback: function(grid, row, col, value) {
+                vm.Util.setExporterFieldCallback(grid, row, col, value);
 
-                if (col.name === 'mondayOfWeek') {
-                    if (vm.Util.isEmptyObject(value)) {
-                        return vm.Util.simpledate("01/01/2000");
-                    }
-                    else {
-                        return vm.Util.simpledate(value);
-                    }
-                }
                 return value;
             },
 
@@ -289,133 +204,66 @@ export class ImpattendController {
                 vm.$log.debug('vm gridexp1Options onRegisterApi');
                 vm.gridexp1Api = gridApi;
 
-                gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
-                    vm.setGridLength(pageSize);
-                    vm.gridexp1Options.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
-
-                });
-
+                vm.Util.setPagination(vm.gridexp1Api, vm);
 
             }
         };
+        vm.Util.setGridexp1OptionsDefaults(vm.gridexp1Options, 'studentattendance.csv', vm.limits, vm.initialLength, vm.rowheight, vm.gcolumns);
+
 
         vm.$log.debug('gridexp1Options', vm.gridexp1Options);
     }
-
-    removeImp1Row(row) {
-        var vm = this;
-        vm.$log.debug('removeRow entered', row);
-
-        var index = vm.gridimp1Options.data.indexOf(row.entity);
-        vm.gridimp1Options.data.splice(index, 1);
-    }
-
     setGridimp1Options() {
         var vm = this;
 
-        vm.uiGridValidateService.setValidator('date',
-            function(argument) {
-                //todo, note below is different then example but matching current uigrid code order
-                return function(oldValue, newValue, rowEntity, colDef) {
-                    if (!newValue) {
-                        return true; // We should not test for existence here
-                    }
-                    else {
-                        return vm.Util.validateDate(newValue, argument);
-                    }
-                };
-            },
-            function(argument) {
-                return 'Needs proper date format ' + argument;
-            }
-        );
+        vm.Util.setEmailValidator(vm.uiGridValidateService);
+        vm.Util.setDateValidator(vm.uiGridValidateService);
+        vm.Util.setImpGridDefaults(vm.impgcolumns, vm.gridimp1Options, vm.uiGridConstants, vm.limits, vm.initialLength, vm.rowheight);
+        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+    }
 
+    setAfterCellEdit(gridApi, func, vm, scope) {
+        gridApi.edit.on.afterCellEdit(scope,
+            function(rowEntity, colDef, newValue, oldValue) {
+                if (newValue != oldValue) {
+                    if (func == "rawAttendance") {
+                        vm.updateRawAttendance(rowEntity);
+                    }
+                }
+            });
+    }
+    setprelimimp1Options() {
+        var vm = this;
         vm.gridimp1Options = {
-            showGridFooter: false,
-            enableGridMenu: false, //btn is working
-            paginationPageSizes: vm.limits,
-            paginationPageSize: vm.initialLength,
-            rowHeight: vm.rowheight,
-            flatEntityAccess: true,
-            fastWatch: true,
             appScopeProvider: vm,
 
-            columnDefs: vm.impgcolumns,
-
             importerDataAddCallback: function(grid, newObjects) {
-                vm.importdata = [];
-                vm.$log.debug('importerDataAddCallback ', newObjects);
-                vm.importdata = vm.importdata.concat(newObjects);
-                vm.lookupExtas();
+                vm.Util.importerDataSetCallback(grid, newObjects, vm.importdata, vm.step2populated, vm.gridimp1Options);
+                vm.createRawAttendances();
             },
-
 
             onRegisterApi: function(gridApi) {
                 vm.$log.debug('vm gridimp1Api onRegisterApi');
                 vm.gridimp1Api = gridApi;
 
-//                gridApi.rowEdit.on.saveRow(vm.$scope,
- //                   function(rowEntity) {
-                        // create a fake promise - normally you'd use the promise returned by $http or $resource
-   //                     var promise = vm.$q.defer();
-    //                    vm.gridimp1Api.rowEdit.setSavePromise(rowEntity, promise.promise);
-     //                   promise.resolve();
+                vm.setAfterCellEdit(vm.gridimp1Api, "rawAttendance", vm, vm.$scope);
 
-       //             });
+                vm.Util.validationFailed(vm.gridimp1Api, [ 'externalid', 'Classname'], vm.errCnt, vm.isValidForErrors, vm.$scope);
 
-                gridApi.validate.on.validationFailed(vm.$scope,
-                    function(rowEntity, colDef, newValue, oldValue) {
+                vm.Util.setPagination(vm.gridimp1Api, vm);
 
-                        var msg = (
-                            'For:' + rowEntity.FirstName + ' ' + rowEntity.LastName +
-                            '\nColumn: ' + colDef.displayName + '\n' +
-                            'Has an error.  The new Value: ' + newValue + '\n' +
-                            ' vs the old Value: ' + oldValue + '\nvalidators: ' +
-                            JSON.stringify(colDef.validators));
-                  //      vm.Notification.error({ message: msg, delay: 5000 });
-
-                    });
-
-                gridApi.pagination.on.paginationChanged(vm.$scope,
-                    function(newPage, pageSize) {
-                        vm.$log.debug('pagination changed');
-                        vm.setGridLength(pageSize);
-                        vm.gridimp1Api.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
-
-                    });
-
-/*                gridApi.selection.on.rowSelectionChanged(vm.$scope,
-                    function(row) {
-                        var msg = 'gridimp1Api row selected ' + row.entity;
-                        vm.$log.debug(msg);
-
-                        var selectedArr = vm.gridimp1Api.selection.getSelectedRows();
-                        vm.$log.debug('selected', selectedArr);
-                        vm.setImp1SelectedArray(selectedArr);
-
-                    });
-
-                gridApi.selection.on.rowSelectionChangedBatch(vm.$scope,
-                    function(rows) {
-                        vm.$log.debug(" gridimp1Api grid batch");
-                        var selectedArr = vm.gridimp1Api.selection.getSelectedRows();
-                        vm.$log.debug('batch selected', selectedArr);
-                        vm.setImp1SelectedArray(selectedArr);
-
-                    });
-*/                    
             }
 
         };
 
         vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+
     }
 
     lookupExtas() {
         var vm = this;
         vm.$log.debug('lookupExtas entered');
-        vm.gridimp1Options.data = [];
+        vm.importdata = vm.gridimp1Options.data;
         var path = '../v1/lookupattendextras';
         var theData = {
             selectedStudents: vm.importdata
@@ -449,10 +297,7 @@ export class ImpattendController {
                 }
 
             }
-            vm.step2populated = vm.importdata.length > 0 ? true : false;
-            vm.gridimp1Options.data = vm.importdata;
-            vm.importdata=[];
-            return vm.gridexp1Options.data;
+            return data;
         });
     }
 
@@ -461,84 +306,17 @@ export class ImpattendController {
         return vm.step2populated;
     }
 
-    setImp1SelectedArray(inputArray) {
-        var vm = this;
-        vm.$log.debug("setImp1SelectedArray entered", inputArray);
-        vm.picklistImp1 = [];
-
-        //attendance pgm attendanceid pgmid ranktype ranklist rankid
-
-        if (inputArray.length > 0) {
-            vm.pickImp1 = true;
-            for (var i = 0, len = inputArray.length; i < len; i++) {
-                var info = {
-                    externalid: inputArray[i].externalid,
-
-                };
-                vm.picklistImp1.push(info);
-            }
-        }
-        else {
-            vm.pickImp1 = false;
-            return;
-        }
-
-        vm.$log.debug("setarray", vm.picklistImp1);
-
-    }
-
-    download() {
-        var vm = this;
-        vm.gridexp1Api.exporter.csvExport(vm.uiGridExporterConstants.ALL, vm.uiGridExporterConstants.ALL);
-    }
-
     batchValidate() {
         var vm = this;
-        var rowsRendred = vm.gridimp1Api.grid.renderContainers.body.renderedRows;
-        rowsRendred.forEach(function(row) {
-            row.grid.options.columnDefs.forEach(function(colDef) {
-                vm.gridimp1Api.grid.validate.runValidators(
-                    row.entity, colDef, row.entity[colDef.field], NaN, vm.gridimp1Api.grid).then(function() {
-                    vm.countValidateErrors();
-                });
-            });
-        });
-    }
 
-    countValidateErrors() {
-        var vm = this;
         vm.errCnt = 0;
-        vm.isValidForErrors = false;
-        var rowsRendred = vm.gridimp1Api.grid.renderContainers.body.renderedRows;
-        rowsRendred.forEach(function(row) {
-            row.grid.options.columnDefs.forEach(function(colDef) {
-                vm.errCnt += vm.gridimp1Api.grid.validate.isInvalid(row.entity, colDef) ? 1 : 0;
-            });
+        vm.isValidForErrors = true; //if validation error created, this will become false
+
+        vm.lookupExtas().then(function() {
+            vm.gridimp1Options.data = vm.importdata;
+            vm.Util.validate(vm.gridimp1Api);
         });
-        vm.isValidForErrors = vm.errCnt > 0 ? false : true;
-    }
 
-    handleFileSelect(files) {
-        var vm = this;
-        var fileObject = files[0];
-
-        if (fileObject == undefined || fileObject == null) {
-            return;
-        }
-        else if (fileObject == '' && vm.$scope.uploadedFileType == 'other') {
-            document.getElementById('filechoiceattendance').setCustomValidity('Supported file formats are *.csv');
-        }
-        else {
-            //submit valid file here
-            vm.gridimp1Api.importer.importFile(fileObject);
-            vm.isStep2NewCollapsed = true;
-        }
-    }
-
-    clearInput(event) {
-        var input = angular.element(event.target);
-        input.val("");
-        document.getElementById("filechoiceattendance").innerHTML = "";
     }
 
     createBulkStudentAttendance() {
@@ -551,28 +329,118 @@ export class ImpattendController {
 
         return vm.StudentServices.createBulkStudentAttendance(path, thedata)
             .then(function(data) {
-                vm.$log.debug('createBulkStudentAttendance returned data');
-                vm.$log.debug(data);
-                vm.thisstudent = data;
-                vm.$log.debug(vm.thisstudent);
-                vm.$log.debug(vm.thisstudent.message);
-                vm.message = vm.thisstudent.message;
+                vm.Util.checkCreateDataSuccess(data, data.attendance_id, vm.Notification, vm.$q, 'createBulkStudentAttendance', true);
+                vm.thisattendance = data;
+                vm.getRawAttendanceStatus();
+                return data;
 
-                if (vm.thisstudent.student_id > 0) {
-                    vm.Notification.success({ message: vm.message, delay: 5000 });
-                }
-                else {
-                    vm.Notification.error({ message: vm.message, delay: 5000 });
+            }, function(error) {
+                vm.Util.exceptionError(error, "createBulkStudentAttendance", vm.Notification);
+                return (vm.$q.reject(error));
+            });
+    }
+
+    createRawAttendances() {
+        var vm = this;
+        var path = '../v1/rawattendance';
+        vm.$log.debug('about createRawAttendances ');
+        var thedata = {
+            selectedattendances: vm.gridimp1Options.data
+        };
+
+        return vm.StudentServices.createRawAttendances(path, thedata)
+            .then(function(data) {
+                vm.thisattendance = data;
+                vm.Util.checkCreateDataSuccess(data, data.attendance_id, vm.Notification, vm.$q, 'createRawAttendances', true);
+
+                if (data.attendance_id > 0) {
+                    vm.getRawAttendanceStatus();
                 }
                 return data;
 
-            }).catch(function(e) {
-                vm.$log.debug('createBulkStudentAttendance failure:');
-                vm.$log.debug("error", e);
-                vm.message = e;
-                vm.Notification.error({ message: e, delay: 5000 });
-                throw e;
+            }, function(error) {
+                vm.Util.exceptionError(error, "createRawAttendances", vm.Notification);
+                return (vm.$q.reject(error));
             });
+
+    }
+    updateRawAttendance(input) {
+        var vm = this;
+        var path = encodeURI('../v1/rawattendance/ext/' + input.externalid + '/type/' + input.contactmgmttype + '/date/' + input.contactDate);
+
+        input.contactDate = vm.Util.oradate(input.contactDate);
+
+        vm.$log.debug('about updateRawAttendance ', input);
+
+        return vm.StudentServices.updateRawAttendance(path, input).then(function(data) {
+            vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'updateRawAttendance', true);
+
+        }, function(error) {
+            vm.Util.exceptionError(error, "updateRawAttendance", vm.Notification);
+            return (vm.$q.reject(error));
+        });
+    }
+
+    getRawAttendanceStatus() {
+
+        var vm = this;
+        var path = "../v1/rawattendances";
+        vm.gridimp1Options.data = [];
+
+        return vm.StudentServices.getRawAttendanceStatus(path).then(function(data) {
+            vm.Util.checkDataSuccessv2(data, data.rawattendancelist, vm.Notification, vm.$q, 'getRawAttendanceStatus', true);
+
+            for (var i = 0, len = data.rawattendancelist.length; i < len; i++) {
+                data.rawattendancelist[i].loaded = data.rawattendancelist[i].id > 0 ? "loaded" : "missing";
+            }
+            vm.gridimp1Options.data = data.rawattendancelist;
+            vm.step2populated = vm.gridimp1Options.data.length > 0 ? true : false;
+
+        }, function(error) {
+            vm.Util.exceptionError(error, "getRawAttendanceStatus", vm.Notification);
+            vm.gridimp1Options.data = [];
+            return (vm.$q.reject(error));
+
+        });
+
+    }
+    removeRawAttendance(row) {
+        var vm = this;
+        vm.$log.debug('removeRawAttendance entered', row.entity.externalid, row.entity.contactDate, row.entity.contactmgmttype);
+        var path = '../v1/rawattendance';
+        var thedata = {
+            externalid: row.entity.externalid,
+            contactDate: row.entity.contactDate,
+            contactmgmttype: row.entity.contactmgmttype
+        };
+
+        return vm.StudentServices.removeRawAttendance(thedata, path)
+            .then(function(data) {
+                vm.Util.checkRemoveSuccess(data, vm.Notification, vm.$q, 'removeRawAttendance', true);
+                vm.getRawAttendanceStatus();
+                return data;
+            }, function(error) {
+                vm.Util.exceptionError(error, "removeRawAttendance", vm.Notification);
+                return (vm.$q.reject(error));
+            });
+
+    }
+
+    removeRawAttendances() {
+        var vm = this;
+        vm.$log.debug('removeRawAttendances entered');
+        var path = '../v1/rawattendances';
+
+        return vm.StudentServices.removeRawAttendances(path)
+            .then(function(data) {
+                vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'removeRawAttendances', true);
+
+                return data;
+            }, function(error) {
+                vm.Util.exceptionError(error, "removeRawAttendances", vm.Notification);
+                return (vm.$q.reject(error));
+            });
+
     }
 
 }
