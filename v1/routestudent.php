@@ -649,7 +649,7 @@ $app->get('/studentcols', 'authenticate', function() use ($app) {
             $tmp["id"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
             $tmp["value"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
             $tmp["type"] = (empty($slist["Type"]) ? "NULL" : $slist["Type"]);
-            $tmp["nulltype"] = (empty($slist["is_nullable"]) ? " " : $slist["is_nullable"]);
+            $tmp["required"] = (empty($slist["required"]) ? "NO" : $slist["required"]);
         array_push($response["studentcollist"], $tmp);
     }
         //send no errors
@@ -679,6 +679,7 @@ $app->get('/studentcolmap', 'authenticate', function() use ($app) {
             $tmp["name"] = (empty($slist["name"]) ? "NULL" : $slist["name"]);
             $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
             $tmp["id"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["required"] = (empty($slist["required"]) ? "NULL" : $slist["required"]);
         array_push($response["studentcolmaplist"], $tmp);
     }
         //send no errors
@@ -745,12 +746,13 @@ $app->post('/studentcolmap','authenticate',  function() use($app) {
     $id          = (isset($dataJsonDecode->thedata->id)         ? $dataJsonDecode->thedata->id : "");
     $type  = (isset($dataJsonDecode->thedata->type)     ? $dataJsonDecode->thedata->type : "");
     $name  = (isset($dataJsonDecode->thedata->name)       ? $dataJsonDecode->thedata->name : "");
+    $required  = (isset($dataJsonDecode->thedata->required)       ? $dataJsonDecode->thedata->required : "");
 
     $db = new StudentDbHandler();
     $response = array();
     // updating task
     $res_id = $db->updateStudentColMap(
-        $id, $type, $name, $all
+        $id, $type, $name, $all, $required
                                      );
     error_log( print_R($res_id, TRUE ), 3, LOG);
     error_log( print_R("\n", TRUE ), 3, LOG);
@@ -842,7 +844,6 @@ $app->get('/samplestudents', 'authenticate', function() use($app){
         echoRespnse(200, $response);
 
 });
-
 
 $app->post('/studentrank', 'authenticate', function() use ($app) {
 
@@ -4430,7 +4431,7 @@ $app->post('/rawstudent', 'authenticate', function() use($app) {
             echoRespnse(201, $response);
         } else {
             error_log( print_R("after createFullStudentRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $studentbad, TRUE), 3, timeouLOG);
+            error_log( print_R( $studentbad, TRUE), 3, LOG);
             $response["error"] = true;
             $response["message"] = "Failed to create $studentbad createFullStudentRaw. Please try again";
             $response["student_id"] = $studentbad;

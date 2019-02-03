@@ -26,7 +26,6 @@ export class ImpclassController {
 
         var vm = this;
         CSV.DETECT_TYPES = false;
-        vm.emailrequired = false;
         vm.loadeddefault = "missing";
         vm.haserrordefault = "";
 
@@ -61,7 +60,7 @@ export class ImpclassController {
         vm.initialLength = 10;
         vm.rowheight = 32;
         vm.headerheight = 140;
-        vm.Util.setGridLength(vm.initialLength, vm);
+        vm.gridLength = vm.Util.setGridLength(vm.initialLength, vm.rowheight, vm.headerheight);
 
         vm.setprelimimp1Options();
         vm.activate();
@@ -123,6 +122,7 @@ export class ImpclassController {
                 vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'getStudentRegistrations', true);
 
                 vm.gridexp1Options.data = data.studentregistrations;
+                vm.gridexp1Api.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
                 return vm.gridexp1Options.data;
             }, function(error) {
@@ -172,7 +172,7 @@ export class ImpclassController {
 
             theTypeStr = vm.Util.setTypeStr(columns[i].type, vm.bdateformattxt);
 
-            theValidStr = vm.Util.setValidStrByType(columns[i].name, vm.emailrequired, vm.bdateformat);
+            theValidStr = vm.Util.setValidStrByType(columns[i].name, vm.bdateformat,columns[i].required);
 
             coldef = vm.Util.setColDef(columns[i].name, theValidStr, theTypeStr);
 
@@ -262,7 +262,8 @@ export class ImpclassController {
 
                 vm.setAfterCellEdit(vm.gridimp1Api, "rawRegistration", vm, vm.$scope);
 
-                vm.Util.validationFailed(vm.gridimp1Api, ['Pgmname', 'Classname', 'externalid'], vm.errCnt, vm.isValidForErrors, vm.$scope);
+                vm.Util.validationFailed(vm.gridimp1Api, ['Pgmname', 'Classname', 'externalid'], 
+                    vm.errCnt, vm.isValidForErrors, vm.$scope, vm);
 
                 vm.Util.setPagination(vm.gridimp1Api, vm);
 
@@ -343,7 +344,7 @@ export class ImpclassController {
 
         return vm.StudentServices.createBulkRegistrations(path)
             .then(function(data) {
-                vm.Util.checkCreateDataSuccess(data, data.student_id, vm.Notification, vm.$q, 'createBulkRegistrations', true);
+                vm.Util.checkCreateDataSuccess(data, data.registration_id, vm.Notification, vm.$q, 'createBulkRegistrations', true);
                 vm.thisregistration = data;
                 vm.getRawRegistrationStatus();
                 return data;

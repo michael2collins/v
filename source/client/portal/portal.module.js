@@ -3,7 +3,6 @@ import angular from 'angular';
 import { headerComponent } from './topbar/header.component';
 import { breadcrumbComponent } from './header/breadcrumb.component';
 import { usersettingsComponent } from './user/usersettings.component';
-//import { sidebarComponent } from './sidebar/sidebar.component'; 
 import { portalComponent } from './portal.component';
 import { portalDataService } from './portaldata.service';
 import { UserServices } from '../../js/services/userServices';
@@ -22,6 +21,7 @@ import { ModalUserSettingsInstanceController } from './user/usersettings.control
 import { Util } from '../../js/utility/utility';
 import { HeaderController } from './topbar/header.controller';
 import { PortalController } from './portal.controller';
+import { BreadcrumbController } from './header/breadcrumb.controller';
 
 import { CoreModule } from '../../js/core/core.module';
 import { EmailModule } from '../email/email.module';
@@ -37,6 +37,7 @@ export const PortalModule = angular
     .component('usersettingsComponent', usersettingsComponent)
     .controller('HeaderController', HeaderController)
     .controller('PortalController', PortalController)
+    .controller('BreadcrumbController', BreadcrumbController)
     .controller('ModalUserSettingsInstanceController',ModalUserSettingsInstanceController)
     .service('portalDataService', portalDataService)
     .service('userServices', UserServices)

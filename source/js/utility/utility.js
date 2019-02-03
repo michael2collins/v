@@ -278,13 +278,13 @@ export class Util {
         };
 
     }
-    setValidStrByType(colname, mailrequired, dateformat) {
+    setValidStrByType(colname, dateformat,required) {
         var theValidStr = {};
-        theValidStr = this.setValidStr(true);
+        theValidStr = this.setValidStr(required);
 
         if (colname.match(/email/i)) {
             theValidStr = {
-                validators: { email: '', required: mailrequired },
+                validators: { email: '', required: required },
                 cellTemplate: 'ui-grid/cellTitleValidator',
             };
         }
@@ -302,12 +302,54 @@ export class Util {
             };
 
         }
+            if (colname.match(/externalid/i)) {
+                theValidStr = {
+                    validators: { required: true },
+                    cellTemplate: 'ui-grid/cellTitleValidator',
+                };
+            }
+            if (colname.match(/lastname/i)) {
+                theValidStr = {
+                    validators: { required: required },
+                    cellTemplate: 'ui-grid/cellTitleValidator',
+                };
+            }
+            if (colname.match(/firstname/i)) {
+                theValidStr = {
+                    validators: { required: required },
+                    cellTemplate: 'ui-grid/cellTitleValidator',
+                };
+
+            }
+            if (colname.match(/^phone$/i)) {
+                theValidStr = {
+                    validators: { required: required, phone: '' },
+                    cellTemplate: 'ui-grid/cellTitleValidator',
+                };
+
+            }
+            if (colname.match(/^AltPhone/i)) {
+                theValidStr = {
+                    validators: { required: required, phone: '' },
+                    cellTemplate: 'ui-grid/cellTitleValidator',
+                };
+
+            }
+            if (colname.match(/birthday/i)) {
+                theValidStr = {
+                    validators: { required: required, date: dateformat },
+                    cellTemplate: 'ui-grid/cellTitleValidator',
+                };
+
+            }        
         return theValidStr;
     }
+
     setColDef(colname, theValidStr, theTypeStr) {
         var coldef = {
             field: colname,
             displayName: colname,
+            headerCellClass: this.highlightFilteredHeader,
             enableCellEdit: true,
             enableHiding: false,
             maxWidth: 200,
@@ -413,6 +455,25 @@ export class Util {
             }
         );
     }
+    setPhoneValidator(uiGridValidateService) {
+        var self = this;
+        uiGridValidateService.setValidator('phone',
+            function(argument) {
+                //todo, note below is different then example but matching current uigrid code order
+                return function(oldValue, newValue, rowEntity, colDef) {
+                    if (!newValue) {
+                        return true; // We should not test for existence here
+                    }
+                    else {
+                        return self.validatePhone(newValue, argument);
+                    }
+                };
+            },
+            function(argument) {
+                return 'Needs proper phone format ' + argument;
+            }
+        );
+    }    
     setImpGridDefaults(cols, gridimp1Options, uiGridConstants, limits, initialLength, rowheight) {
         gridimp1Options.showGridFooter = false;
         gridimp1Options.enableGridMenu = false;
@@ -434,6 +495,7 @@ export class Util {
         importdata = importdata.concat(newObjects);
         step2populated = importdata.length > 0 ? true : false;
         gridimp1Options.data = importdata;
+        grid.api.core.notifyDataChange(grid.appScope.uiGridConstants.dataChange.ALL);
         importdata = [];
 
     }
@@ -475,17 +537,17 @@ export class Util {
         gridimp1Api.grid.refresh();
 
     }
-    setGridLength(size, vm) {
-        vm.gridLength = {
-            height: (size * vm.rowheight) + vm.headerheight + 'px'
+    setGridLength(size, rowheight, headerheight) {
+        return  {
+            height: (size * rowheight) + headerheight + 'px'
         };
     }
     setPagination(gridApi, vm) {
         gridApi.pagination.on.paginationChanged(vm.$scope,
             function(newPage, pageSize) {
                 vm.$log.debug('pagination changed');
-                vm.Util.setGridLength(pageSize, vm);
-                vm.gridimp1Api.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+                vm.gridLength = vm.Util.setGridLength(pageSize, vm.rowheight, vm.headerheight);
+                gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
             });
 
@@ -504,11 +566,10 @@ export class Util {
         });
 
     }
-    validationFailed(gridApi, errmsgfields, errCnt, isValidForErrors, scope) {
-        var self = this;
-        var errmsg = "";
+    validationFailed(gridApi, errmsgfields, errCnt, isValidForErrors, scope,vm) {
         gridApi.validate.on.validationFailed(scope,
             function(rowEntity, colDef, newValue, oldValue) {
+                var errmsg = "";
                 for (var i = 0, len = errmsgfields.length; i < len; i++) {
                     errmsg += ' ' + rowEntity[errmsgfields[i]];
                 }
@@ -519,10 +580,14 @@ export class Util {
                     'Has an error.  The new Value: ' + newValue + '\n' +
                     ' vs the old Value: ' + oldValue + '\nvalidators: ' +
                     JSON.stringify(colDef.validators));
-                self.$log.debug("validation error", msg);
+                vm.$log.debug("validation error", msg);
+                if (colDef.name === 'Birthday' && rowEntity.$$errorsBirthday.required) {
+                    rowEntity.Birthday = this.simpledate("01/01/1900");
+                }
+
                 rowEntity.haserror = "error";
-                errCnt += 1;
-                isValidForErrors = false;
+                vm.errCnt += 1;
+                vm.isValidForErrors = false;
 
             });
     }
@@ -564,6 +629,14 @@ export class Util {
         if (col.name === 'mondayOfWeek') {
             if (this.isEmptyObject(value)) {
                 return this.simpledate("01/01/2000");
+            }
+            else {
+                return this.simpledate(value);
+            }
+        }
+        if (col.name === 'Birthday') {
+            if (this.isEmptyObject(value)) {
+                return this.simpledate("01/01/1900");
             }
             else {
                 return this.simpledate(value);

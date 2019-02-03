@@ -526,7 +526,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	where c.studentschool = ? 
 				and cl.registrationtype = '" . $ranktype ."' " ;
 		
-			if (strlen($status) > 0 && $status != 'ALL') {
+			if (strlen($status) > 0 && $status != 'All') {
 				$sql.= " and ( sr.studentclassstatus is null or sr.studentclassstatus = '" . $status . "') ";
 			}
 	
@@ -2616,11 +2616,11 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 
  public function getUserByUsername($username) {
-        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash, id as userid, school, pictureurl FROM users WHERE username = ?");
+        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash, id as userid, school, pictureurl,options FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         if ($stmt->execute()) {
             // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash, $userid, $school, $pictureurl);
+            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash, $userid, $school, $pictureurl, $options);
             $stmt->fetch();
             $user = array();
             $user["name"] = $name;
@@ -2628,6 +2628,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $user["username"] = $username;
             $user["email"] = $email;
             $user["pictureurl"] = $pictureurl;
+            $user["options"] = $options;
             $user["api_key"] = $api_key;
             $user["status"] = $status;
             $user["created_at"] = $created_at;
@@ -2850,7 +2851,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 //exclude ID as it can't be inserted, that is what externalid is for
 
 		$sql = "		SELECT DISTINCT column_type AS 
-		Type , column_name AS Field, is_nullable
+		Type , column_name AS Field,  ( CASE is_nullable WHEN 'YES' then 'false' WHEN 'NO' then 'true'  END) as required 
 		FROM information_schema.columns
 		WHERE table_name =  'ncontacts'
 		and column_name not in (
@@ -2898,7 +2899,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function getStudentColMap()
 	{
 		global $school;
-		$sql = "select name, type, id from map_ncontact_cols where school = ? ";
+		$sql = "select name, type, id, required from map_ncontact_cols where school = ? ";
 
 		error_log(print_R("getStudentColMap sql: $sql", TRUE) , 3, LOG);
 		if ($stmt = $this->conn->prepare($sql)) {
@@ -3031,7 +3032,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     }
 
     public function updateStudentColMap( 
-        $id, $type, $name, $all
+        $id, $type, $name, $all, $required
         ) {
         $num_affected_rows = 0;
 
@@ -3047,15 +3048,16 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         }
 
         $inssql = " INSERT INTO map_ncontact_cols( 
-             type, name, school ) ";
+             type, name, school, required ) ";
 
-        $inssql .= " VALUES (?, ?, ?) ";
+        $inssql .= " VALUES (?, ?, ?, ?) ";
 
         if ($all == "all") {
-        	$inssql = "insert into map_ncontact_cols (type, name, school) ( 
+        	$inssql = "insert into map_ncontact_cols (type, name, school,required) ( 
 				SELECT distinct column_type, column_name, '";
 			$inssql .= $school ;
-			$inssql .= "' FROM information_schema.columns
+			$inssql .= "',  ( CASE is_nullable WHEN 'YES' then 'false' WHEN 'NO' then 'true'  END) as required
+			FROM information_schema.columns
 				WHERE table_name =  'ncontacts' and table_schema = ? 
 						and column_name not in (
 	'ID',
@@ -3115,8 +3117,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				error_log(print_R("updateStudentColMap sql: $inssql", TRUE) , 3, LOG);
 	
 	            if ($stmt = $this->conn->prepare($inssql)) {
-	                $stmt->bind_param("sss",
-				        $type, $name, $school
+	                $stmt->bind_param("ssss",
+				        $type, $name, $school, $required
 	                                     );
                     $result = $stmt->execute();
 
@@ -3148,14 +3150,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	            $updsql = "UPDATE map_ncontact_cols SET 
 	                 type = ?, 
 	                 name = ?, 
-	                 school = ?
+	                 school = ?,
+	                 required = ?
 	            WHERE id = ? ";
 	
 	            error_log( print_R("StudentColMap update sql: $updsql", TRUE), 3, LOG);
 	            
 	            if ($stmt = $this->conn->prepare($updsql)) {
-	                $stmt->bind_param("ssss",
-	        $type, $name, $school, $id
+	                $stmt->bind_param("sssss",
+	        $type, $name, $school, $required, $id
 	                                     );
 	                $stmt->execute();
 	                $num_affected_rows = $stmt->affected_rows;
@@ -3462,15 +3465,33 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			?
 			)
 			on duplicate key update 
-			externalid = values(externalid), LastName = values(LastName), FirstName = values(FirstName), Email = values(Email), 
-			Email2 = values(Email2), Phone = values(Phone), altPhone = values(AltPhone), phoneExt = values(phoneExt),
-			altPhoneExt = values(altPhoneExt),Birthday = values(Birthday), sex = values(sex),Parent = values(Parent), 
-			EmergencyContact= values(EmergencyContact),Notes = values(Notes),medicalConcerns = values(medicalConcerns),
-			Address = values(Address),City = values(City),State = values(State),ZIP = values(ZIP),ContactType = values(ContactType), 
-			quickbooklink= values(quickbooklink),GuiSize = values(GuiSize),ShirtSize = values(ShirtSize),BeltSize = values(BeltSize), 
+			externalid = values(externalid), 
+			LastName = values(LastName), 
+			FirstName = values(FirstName), 
+			Email = values(Email), 
+			Email2 = values(Email2), 
+			Phone = values(Phone), 
+			altPhone = values(AltPhone), 
+			phoneExt = values(phoneExt),
+			altPhoneExt = values(altPhoneExt),
+			Birthday = values(Birthday), 
+			sex = values(sex),
+			Parent = values(Parent), 
+			EmergencyContact= values(EmergencyContact),
+			Notes = values(Notes),
+			medicalConcerns = values(medicalConcerns),
+			Address = values(Address),
+			City = values(City),
+			State = values(State),
+			ZIP = values(ZIP),
+			ContactType = values(ContactType), 
+			quickbooklink= values(quickbooklink),
+			GuiSize = values(GuiSize),
+			ShirtSize = values(ShirtSize),
+			BeltSize = values(BeltSize), 
 			pictureurl= values(pictureurl),
 			StudentSchool = values(StudentSchool)
-			)";
+			";
 
 		// First check if user already existed in db
 
@@ -3985,7 +4006,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                return -5;			
         }                
         
-        $sql5 = "INSERT ignore INTO paymentclasspay( paymentid, classpayid) 
+        $sql5 = "INSERT ignore INTO paymentclasspay(  classpayid, paymentid) 
         		select cpa.id as classpayid, np.paymentid
 		        from 
 		        rawregistration rr

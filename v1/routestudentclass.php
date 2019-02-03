@@ -316,6 +316,7 @@ $app->put('/studentclass/:id', 'authenticate', function($student_id) use($app) {
 
         if ($changestatus == 'Inactive' || 
             $changestatus == 'Active'  ||
+            $changestatus == 'Break'  ||
             $changestatus == 'Injured' ) {
 
                 $historytype='date' . $studentclassstatus;

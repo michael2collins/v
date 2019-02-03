@@ -1,38 +1,37 @@
-<div id="topbar" role="navigation" style="margin-bottom: 0;" ng-cloak  
-class="navbar navbar-default navbar-static-top" >
-<!--class="navbar navbar-default navbar-static-top" ng-controller="HeaderController as $ctrl"> -->
-<div ng-class="[$ctrl.header.layout_topbar]" class="navbar-header" >
-   <a id="setting-toggle"><i class="icon-wrench"></i></a>
-   <button type="button" data-toggle="offcanvas" class="navbar-toggle">
+<div id="topbar" role="navigation" style="margin-bottom: 0;" ng-cloak class="navbar navbar-default navbar-static-top">
+   <!--class="navbar navbar-default navbar-static-top" ng-controller="HeaderController as $ctrl"> -->
+   <div ng-class="[$ctrl.header.layout_topbar]" class="navbar-header">
+      <a id="setting-toggle"><i class="icon-wrench"></i></a>
+      <button type="button" data-toggle="offcanvas" class="navbar-toggle">
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
       <span class="icon-bar"></span>
    </button>
-   <a id="logo" href="/#/main" class="navbar-brand">
+      <a id="logo" href="/#/main" class="navbar-brand">
       <span class="icon-social-tumblr"></span>
       <span class="logo-text">V Dojo</span>
    </a>
-</div>
-<div id="top-menu" class="topbar-main" title>
-   <ul class=" navbar-top-links" style="margin-left: 130px; margin-bottom: 0px;">
-      <li class=" navbar-top-links navbar-left">
-      <ul class="nav mtm">
-         <li class="mlxl dropdown" ng-show="$ctrl.isokf()">
-            <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+   </div>
+   <div id="top-menu" class="topbar-main" title>
+      <ul class=" navbar-top-links" style="margin-left: 130px; margin-bottom: 0px;">
+         <li class=" navbar-top-links navbar-left">
+            <ul class="nav mtm">
+               <li class="mlxl dropdown" ng-show="$ctrl.isokf()">
+                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
                <i class="far fa-comments"></i>
                <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
                <span class="badge badge-yellow">{{$ctrl.alertcount}}</span></a>
-            <ul class="dropdown-menu dropdown-alerts">
-               <li class="dropdown-submenu">
-                  <a class="test" ng-hide="!$ctrl.newstudents.length" tabindex="-1" href="javascript:void(0);">
+                  <ul class="dropdown-menu dropdown-alerts">
+                     <li class="dropdown-submenu">
+                        <a class="test" ng-hide="!$ctrl.newstudents.length" tabindex="-1" href="javascript:void(0);">
                         <span class="label label-green">
                            <i class="far fa-handshake fa-fw"></i></span>
                         <span class="menu-title">{{$ctrl.newstudents.length}} New Students Last 2 weeks</span>
                      <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <li ng-repeat="stu in $ctrl.newstudents">
-                        <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
+                        <ul class="dropdown-menu">
+                           <li ng-repeat="stu in $ctrl.newstudents">
+                              <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-green">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
@@ -40,180 +39,179 @@ class="navbar navbar-default navbar-static-top" >
                            </span>
                            </a></li>
 
-                     <li><a tabindex="-1" ng-click="$ctrl.clearNewStudents()">
+                           <li><a tabindex="-1" ng-click="$ctrl.clearNewStudents()">
                            <span class="label label-grey">
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alerts</span>
                         </a></li>
-                  </ul>
-               </li>
-               <li class="dropdown-submenu">
-                  <a class="test" ng-hide="!$ctrl.teststudents.length" tabindex="-1" href="javascript:void(0);">
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" ng-hide="!$ctrl.teststudents.length" tabindex="-1" href="javascript:void(0);">
                         <span class="label label-violet"><i class="fas fa-flag-checkered fa-fw"></i></span>
                         <span class="menu-title">{{$ctrl.teststudents.length}} Students ready to test</span>
                      <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <li ng-repeat="stu in $ctrl.teststudents">
-                        <a tabindex="-1" href="#/table-basic-testcandidate">
+                        <ul class="dropdown-menu">
+                           <li ng-repeat="stu in $ctrl.teststudents">
+                              <a tabindex="-1" href="#/table-basic-testcandidate">
                            <span class="label label-green">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
                               {{stu.firstname}} {{stu.lastname}}
                            </span>
                            </a></li>
-                     <li><a tabindex="-1" ng-click="$ctrl.clearTestStudents()">
+                           <li><a tabindex="-1" ng-click="$ctrl.clearTestStudents()">
                            <span class="label label-grey">
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alerts</span>
                         </a></li>
-                  </ul>
-               </li>
-               <li class="dropdown-submenu">
-                  <a class="test" ng-hide="!$ctrl.overduestudents.overdue.length" tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fas fa-fire fa-fw"></i></span><span class="menu-title">{{$ctrl.overduestudents.overdue.length}} Overdue Payments</span>
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" ng-hide="!$ctrl.overduestudents.overdue.length" tabindex="-1" href="javascript:void(0);"><span class="label label-red"><i class="fas fa-fire fa-fw"></i></span><span class="menu-title">{{$ctrl.overduestudents.overdue.length}} Overdue Payments</span>
                      <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <li ng-repeat="stu in $ctrl.overduestudents.overdue">
-                        <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
+                        <ul class="dropdown-menu">
+                           <li ng-repeat="stu in $ctrl.overduestudents.overdue">
+                              <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-red">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
                               {{stu.firstname}} {{stu.lastname}}
                            </span>
                            </a></li>
-                     <li><a tabindex="-1" ng-click="$ctrl.clearOverdueStudents()">
+                           <li><a tabindex="-1" ng-click="$ctrl.clearOverdueStudents()">
                            <span class="label label-grey">
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
                         </a></li>
 
-                  </ul>
-               </li>
-               <li class="dropdown-submenu">
-                  <a class="test" ng-hide="!$ctrl.noshowstudents.noshow.length" tabindex="-1" href="javascript:void(0);">
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" ng-hide="!$ctrl.noshowstudents.noshow.length" tabindex="-1" href="javascript:void(0);">
                         <span class="label label-blue"><i class="fas fa-coffee fa-fw"></i></span><span class="menu-title">{{$ctrl.noshowstudents.noshow.length}} No show Students +2wk</span>
                      <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <li ng-repeat="stu in $ctrl.noshowstudents.noshow">
-                        <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
+                        <ul class="dropdown-menu">
+                           <li ng-repeat="stu in $ctrl.noshowstudents.noshow">
+                              <a tabindex="-1" href="#/form-layouts-editstudent/id/{{stu.contactid}}">
                            <span class="label label-blue">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
                               {{stu.firstname}} {{stu.lastname}}
                            </span>
                            </a></li>
-                     <li><a tabindex="-1" ng-click="$ctrl.clearNoshowStudents()">
+                           <li><a tabindex="-1" ng-click="$ctrl.clearNoshowStudents()">
                            <span class="label label-grey">
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
                         </a></li>
 
-                  </ul>
-               </li>
-               <li class="dropdown-submenu">
-                  <a class="test" ng-hide="!$ctrl.thisTasknamelist.length" tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fas fa-tasks fa-fw"></i></span><span class="menu-title">{{$ctrl.thisTasknamelist.length}} Tasks outstanding</span>
+                        </ul>
+                     </li>
+                     <li class="dropdown-submenu">
+                        <a class="test" ng-hide="!$ctrl.thisTasknamelist.length" tabindex="-1" href="javascript:void(0);"><span class="label label-orange"><i class="fas fa-tasks fa-fw"></i></span><span class="menu-title">{{$ctrl.thisTasknamelist.length}} Tasks outstanding</span>
                      <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                     <li ng-repeat="task in $ctrl.thisTasknamelist">
-                        <a tabindex="-1" href="javascript:void(0);">
+                        <ul class="dropdown-menu">
+                           <li ng-repeat="task in $ctrl.thisTasknamelist">
+                              <a tabindex="-1" href="javascript:void(0);">
                            <span class="label label-orange">
                               <i class="fas fa-pencil-alt fa-fw"></i></span>                           
                            <span class=""> 
                               {{task.taskname}}
                            </span>
                            </a></li>
-                     <li><a tabindex="-1" href="javascript:void(0);">
+                           <li><a tabindex="-1" href="javascript:void(0);">
                            <span class="label label-grey">
                               <i class="fas fa-eraser fa-fw"></i></span>                           
                            <span class="menu-title">Clear Alert</span>
                         </a></li>
 
-                  </ul>
-               </li>
-               <li><a tabindex="-1" href="javascript:void(0);">
+                        </ul>
+                     </li>
+                     <li><a tabindex="-1" href="javascript:void(0);">
                      <span class="label label-grey">
                         <i class="fas fa-eraser fa-fw"></i></span>                           
                      <span class="text-right">Clear All Alerts</span>
                      </a>
-                  <span class="pull-right text-muted small">Last upd. 12min ago</span></li>
-            </ul>
-         </li>
-         <li class="mrl dropdown" ng-show="$ctrl.isokf()">
-            <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
+                        <span class="pull-right text-muted small">Last upd. 12min ago</span></li>
+                  </ul>
+               </li>
+               <li class="mrl dropdown" ng-show="$ctrl.isokf()">
+                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">
                <i ng-class="$ctrl.emailcount > 0 ? ' icon-envelope-open' : ' icon-envelope '"></i>
                <span class="visible-xs-inline mlm">Msgs&nbsp;<span class="caret"></span></span>
                <span class="badge badge-yellow">{{$ctrl.emailcount}}</span></a>
-            <ul class="dropdown-menu  pull-left" uib-dropdown-menu aria-labelledby="simple-dropdown">
-               <li>
-                  <div class="navbar-content">
-                     <div class="row">
-                        <div class="mll mtm col-md-12 col-xs-12"><a ng-click="$ctrl.openEmail()" class="btn  btn-sm btn-green">Open Email</a></div>
-                     </div>
-                     <div class="row">
-                        <div class="mll mtm col-md-12 col-xs-12"><a ng-click="$ctrl.newEmail()" class="btn btn-sm btn-green">New Email</a></div>
-                     </div>
-                     <div class="navbar-footer">
-                        <div class="navbar-footer-content">
+                  <ul class="dropdown-menu  pull-left" uib-dropdown-menu aria-labelledby="simple-dropdown">
+                     <li>
+                        <div class="navbar-content">
                            <div class="row">
-                              <div class="mbm mtm col-md-offset-5 col-xs-offset-5"><a href="javascript:void(0);" class="btn btn-green btn-sm">Close</a></div>
+                              <div class="mll mtm col-md-12 col-xs-12"><a ng-click="$ctrl.openEmail()" class="btn  btn-sm btn-green">Open Email</a></div>
+                           </div>
+                           <div class="row">
+                              <div class="mll mtm col-md-12 col-xs-12"><a ng-click="$ctrl.newEmail()" class="btn btn-sm btn-green">New Email</a></div>
+                           </div>
+                           <div class="navbar-footer">
+                              <div class="navbar-footer-content">
+                                 <div class="row">
+                                    <div class="mbm mtm col-md-offset-5 col-xs-offset-5"><a href="javascript:void(0);" class="btn btn-green btn-sm">Close</a></div>
+                                 </div>
+                              </div>
                            </div>
                         </div>
+                     </li>
+                  </ul>
+               </li>
+               <li class="mrl dropdown" ng-show="$ctrl.isokf()">
+                  <div class="panel panel-warning" style="margin-top: -18px;">
+                     <div class="panel-heading" ng-show="$ctrl.showTimeout()">Timeout!</div>
+                     <div class="pandel-body" idle-countdown="countdown" ng-show="$ctrl.showTimeout()">
+                        You have {{minutes}} minutes and {{seconds}} seconds until your session expires!
                      </div>
                   </div>
                </li>
             </ul>
          </li>
-         <li class="mrl dropdown" ng-show="$ctrl.isokf()">
-            <div class="panel panel-warning" style="margin-top: -18px;">
-               <div class="panel-heading" ng-show="$ctrl.showTimeout()">Timeout!</div>
-               <div class="pandel-body" idle-countdown="countdown" ng-show="$ctrl.showTimeout()">
-                  You have {{minutes}} minutes and {{seconds}} seconds until your session expires!
-               </div>
-            </div>
-         </li>
-      </ul>
-      </li>
-      <li class=" navbar-top-links navbar-right mrxxl">
-      <ul class="nav mtm">
-         Timeout: {{$ctrl.timeout}}
-         <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="$ctrl.isokf()">
-            <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
+         <li class=" navbar-top-links navbar-right mrxxl">
+            <ul class="nav mtm">
+               Timeout: {{$ctrl.timeout}}
+               <li class="dropdown" uib-dropdown auto-close="disabled" on-toggle="toggled(open)" ng-show="$ctrl.isokf()">
+                  <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
          <span class="img-responsive img-circle" ng-switch on="$ctrl.userdta.pictureurl">
          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
          <img ng-switch-default   ng-src="{{$ctrl.userdta.pictureurl}}"/>
          </span>
          <span>&nbsp;{{$ctrl.userdta.username}}&nbsp;</span><span class="caret"></span>
          </a>
-            <ul class="dropdown-menu dropdown-user pull-right" aria-labelledby="simple-dropdown">
-               <li>
-                  <div class="navbar-content">
-                     <div class="row">
-                        <div class="col-md-7 col-xs-5">
-                           <span>{{$ctrl.userdta.firstname}} {{$ctrl.userdta.lastname}}</span>
-                           <p class="text-muted small">{{$ctrl.userdta.email}}</p>
+                  <ul class="dropdown-menu dropdown-user pull-right" aria-labelledby="simple-dropdown">
+                     <li>
+                        <div class="navbar-content">
+                           <div class="row">
+                              <div class="col-md-7 col-xs-5">
+                                 <span>{{$ctrl.userdta.firstname}} {{$ctrl.userdta.lastname}}</span>
+                                 <p class="text-muted small">{{$ctrl.userdta.email}}</p>
+                              </div>
+                           </div>
                         </div>
-                     </div>
-                  </div>
-               </li>
-               <li>
-                  <div class="row">
-                     <div class="mtm mlm mbm col-md-12 col-xs-12"><a ng-click="$ctrl.openSettings()" class="btn btn-sm btn-green">Edit Settings</a></div>
-                  </div>
-               </li>
-               <li>
-                  <div class="navbar-footer">
-                     <div class="navbar-footer-content">
+                     </li>
+                     <li>
                         <div class="row">
-                           <div class="col-md-6 col-xs-6"><a href="/#/change-pwd" class="btn btn-green btn-sm">Change Password</a></div>
-                           <div class="col-md-6 col-xs-6"><a href="/#/page-lock-screen?pictureurl={{$ctrl.userdta.pictureurl}}" class="btn btn-green btn-sm pull-right">Sign Out</a></div>
+                           <div class="mtm mlm mbm col-md-12 col-xs-12"><a ng-click="$ctrl.openSettings()" class="btn btn-sm btn-green">Edit Settings</a></div>
                         </div>
-                     </div>
-                  </div>
+                     </li>
+                     <li>
+                        <div class="navbar-footer">
+                           <div class="navbar-footer-content">
+                              <div class="row">
+                                 <div class="col-md-6 col-xs-6"><a href="/#/change-pwd" class="btn btn-green btn-sm">Change Password</a></div>
+                                 <div class="col-md-6 col-xs-6"><a href="/#/page-lock-screen?pictureurl={{$ctrl.userdta.pictureurl}}" class="btn btn-green btn-sm pull-right">Sign Out</a></div>
+                              </div>
+                           </div>
+                        </div>
+                     </li>
+                  </ul>
                </li>
             </ul>
          </li>
       </ul>
-      </li>
-   </ul>
-</div>
-
+   </div>
 </div>

@@ -162,6 +162,7 @@ $app->post('/login', function() use ($app) {
             $response['createdAt'] = $user['created_at'];
             $response['school'] = $user['school'];
             $response['pictureurl'] = $user['pictureurl'];
+            $response['options'] = $user['options'];
             $user_name = $user['username'];
 //            error_log( print_R("login return:", TRUE ), 3, LOG);
 //            error_log( print_R($response, TRUE ), 3, LOG);
@@ -249,6 +250,7 @@ $app->get('/forgotpassword', function() use ($app) {
         $response['createdAt'] = $user['created_at'];
     $response['school'] = $user['school'];
     $response['pictureurl'] = $user['pictureurl'];
+    $response['options'] = $user['options'];
         $user_name = $user['username'];
     } else {
         // unknown error occurred
@@ -337,6 +339,7 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
         $response['createdAt'] = $user['created_at'];
     $response['school'] = $user['school'];
     $response['pictureurl'] = $user['pictureurl'];
+    $response['options'] = $user['options'];
         $user_name = $user['username'];
     } else {
         // unknown error occurred
@@ -417,6 +420,7 @@ if (PassHash::check_password($user['token_hash'], $token)) {
         $response['token_hash'] = $user['token_hash'];
     $response['school'] = $user['school'];
     $response['pictureurl'] = $user['pictureurl'];
+    $response['options'] = $user['options'];
             $response['apiKey'] = $user['api_key'];
         $user_name = $user['username'];
         //now redirect to changePassword with approval
@@ -466,6 +470,7 @@ $app->get('/userdetails', 'authenticate', function() use ($app) {
     $response['userid'] = $user['userid'];
     $response['school'] = $user['school'];
     $response['pictureurl'] = $user['pictureurl'];
+    $response['options'] = $user['options'];
     echoRespnse(200, $response);
 
 });
@@ -602,6 +607,7 @@ if (PassHash::check_password($user['token_hash'], $token)) {
         $response['token_hash'] = $user['token_hash'];
     $response['school'] = $user['school'];
     $response['pictureurl'] = $user['pictureurl'];
+    $response['options'] = $user['options'];
 
             $api_key = $user['api_key'];
         $user_name = $user['username'];

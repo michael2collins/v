@@ -1,10 +1,10 @@
 import template from './header-breadcrumb.html';
-//import { HeaderController } from '../topbar/header.controller';
-//import '../topbar/topbar.less'; 
+import { BreadcrumbController } from '../header/breadcrumb.controller';
 
 export const breadcrumbComponent  = {
   bindings: {
+    "userdta": "<"
   },  
-//    controller: HeaderController,
+    controller: BreadcrumbController,
   template: template
 };

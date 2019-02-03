@@ -256,6 +256,7 @@ export class UserServices {
                     self.userdetails.email = data.email;
                     self.userdetails.school = data.school;
                     self.userdetails.pictureurl = data.pictureurl;
+                    self.userdetails.options = data.options;
                     return self.userdetails;
                 },
                 function(error) {

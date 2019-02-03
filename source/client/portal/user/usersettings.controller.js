@@ -23,7 +23,9 @@ export class ModalUserSettingsInstanceController {
     console.log("initializing usersettings...");
     this.userOptions = {};
     this.okoptions = [true, false];
+    this.debugoptions = ["On", "Off"];
     this.okNotify = true;
+    this.debugOn = "Off";
     this.mydelay = 10;
     this.init();
     
@@ -35,16 +37,16 @@ export class ModalUserSettingsInstanceController {
   };
 
   init() {
-    var self=this;
-    self.getUserOptions();
+    var vm=this;
+    vm.getUserOptions();
     
-    self.$scope.$watch('idle', function(value) {
-      if (Boolean(value)) self.Idle.setIdle(value);
+    vm.$scope.$watch('idle', function(value) {
+      if (Boolean(value)) vm.Idle.setIdle(value);
     });
-    self.$scope.$watch('timeout', function(value) {
-      if (Boolean(value)) self.Idle.setTimeout(value);
+    vm.$scope.$watch('timeout', function(value) {
+      if (Boolean(value)) vm.Idle.setTimeout(value);
     });
-    self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
+    vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
       var vm = event.currentScope.$ctrl;
       vm.$log.debugEnabled(true);
       vm.$log.debug('routechange in app for success');
@@ -55,11 +57,11 @@ export class ModalUserSettingsInstanceController {
     });    
   }
   getUserOptions() {
-    var self=this;
-    self.$log.debug('getUserOptions entered');
+    var vm=this;
+    vm.$log.debug('getUserOptions entered');
     var path = "../v1/useroptions";
-    return self.UserServices.getUserOptions(path).then(function(data) {
-        self.$log.debug("usersettings controller service getUserOptions returned:", data);
+    return vm.UserServices.getUserOptions(path).then(function(data) {
+        vm.$log.debug("usersettings controller service getUserOptions returned:", data);
         if ((typeof data.options === 'undefined' || data.options.error === true) &&
           typeof data !== 'undefined') {
           var themsg = {
@@ -67,68 +69,69 @@ export class ModalUserSettingsInstanceController {
               (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
             delay: 5000
           };
-          self.Notification.error(themsg);
-          return (self.$q.reject(data));
+          vm.Notification.error(themsg);
+          return (vm.$q.reject(data));
         }
         else {
           try {
-            self.userOptions = JSON.parse(data.options);
-            self.okNotify = (self.userOptions.notify ? self.userOptions.notify : false);
-            self.mydelay = (self.userOptions.delay ? self.userOptions.delay : 30);
-            self.idle = (self.userOptions.idle ? self.userOptions.idle : 20 * 60);
-            self.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5 * 60);
-            self.Title.setAsIdle(self.idle);
-            self.Idle.setIdle(self.idle);
-            self.Idle.setTimeout(self.timeout);
+            vm.userOptions = JSON.parse(data.options);
+            vm.okNotify = (vm.userOptions.notify ? vm.userOptions.notify : false);
+            vm.debugOn = (vm.userOptions.debug ? vm.userOptions.debug : "Off");
+            vm.mydelay = (vm.userOptions.delay ? vm.userOptions.delay : 30);
+            vm.idle = (vm.userOptions.idle ? vm.userOptions.idle : 20 * 60);
+            vm.timeout = (vm.userOptions.timeout ? vm.userOptions.timeout : 5 * 60);
+            vm.Title.setAsIdle(vm.idle);
+            vm.Idle.setIdle(vm.idle);
+            vm.Idle.setTimeout(vm.timeout);
             //reset the timer
-            self.Idle.watch();
+            vm.Idle.watch();
 
-            //self.Notification.success({message: self.message, delay: 5000});
           }
           catch (e) {
-            self.$log.debug(e instanceof SyntaxError); // true
-            self.$log.debug(e.message); // "missing ; before statement"
-            self.$log.debug(e.name); // "SyntaxError"
-            self.$log.debug(e.fileName); // "Scratchpad/1"
-            self.$log.debug(e.lineNumber); // 1
-            self.$log.debug(e.columnNumber); // 4
-            self.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
-            self.Notification.error(e.message);
-            return (self.$q.reject(data));
+            vm.$log.debug(e instanceof SyntaxError); // true
+            vm.$log.debug(e.message); // "missing ; before statement"
+            vm.$log.debug(e.name); // "SyntaxError"
+            vm.$log.debug(e.fileName); // "Scratchpad/1"
+            vm.$log.debug(e.lineNumber); // 1
+            vm.$log.debug(e.columnNumber); // 4
+            vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+            vm.Notification.error(e.message);
+            return (vm.$q.reject(data));
           }
 
         }
 
-        return self.userOptions;
+        return vm.userOptions;
       },
 
       function(error) {
-        self.$log.debug('Caught an error getUserOptions, going to notify:', error);
-        self.userOptions = [];
-        self.message = error;
-        self.Notification.error({ message: error, delay: 5000 });
-        return (self.$q.reject(error));
+        vm.$log.debug('Caught an error getUserOptions, going to notify:', error);
+        vm.userOptions = [];
+        vm.message = error;
+        vm.Notification.error({ message: error, delay: 5000 });
+        return (vm.$q.reject(error));
       }).
     finally(function() {});
 
   }
 
   setUserOptions() {
-    var self=this;
+    var vm=this;
     var updpath = "../v1/useroptions";
     var thedata = {
       "options": {
-        "delay": self.mydelay,
-        "notify": self.okNotify,
-        "idle": self.idle,
-        "timeout": self.timeout
+        "delay": vm.mydelay,
+        "notify": vm.okNotify,
+        "idle": vm.idle,
+        "timeout": vm.timeout,
+        "debug": vm.debugOn
       }
     };
-    self.$log.debug('about setUserOptions ', thedata, updpath);
-    return self.UserServices.setUserOptions(updpath, thedata)
+    vm.$log.debug('about setUserOptions ', thedata, updpath);
+    return vm.UserServices.setUserOptions(updpath, thedata)
       .then(function(data) {
-        self.$log.debug('setUserOptions returned data');
-        self.$log.debug(data);
+        vm.$log.debug('setUserOptions returned data');
+        vm.$log.debug(data);
         if ((typeof data.message === 'undefined' || data.error === true) &&
           typeof data !== 'undefined') {
           var themsg = {
@@ -136,20 +139,20 @@ export class ModalUserSettingsInstanceController {
               (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
             delay: 5000
           };
-          self.Notification.error(themsg);
-          return (self.$q.reject(data));
+          vm.Notification.error(themsg);
+          return (vm.$q.reject(data));
         }
         else {
-          self.Notification.success({ message: data.message, delay: 5000 });
-          self.getUserOptions();
+          vm.Notification.success({ message: data.message, delay: 5000 });
+          vm.getUserOptions();
         }
 
         return data;
       }).catch(function(e) {
-        self.$log.debug('setUserOptions failure:');
-        self.$log.debug("error", e);
-        self.message = e;
-        self.Notification.error({ message: e, delay: 5000 });
+        vm.$log.debug('setUserOptions failure:');
+        vm.$log.debug("error", e);
+        vm.message = e;
+        vm.Notification.error({ message: e, delay: 5000 });
         throw e;
       });
   }

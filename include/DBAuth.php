@@ -272,11 +272,11 @@ class DbHandler {
     }
 
   public function getUserByUsername($username) {
-        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash, id as userid, school, pictureurl FROM users WHERE username = ?");
+        $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash, id as userid, school, pictureurl,options FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         if ($stmt->execute()) {
             // $user = $stmt->get_result()->fetch_assoc();
-            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash, $userid, $school, $pictureurl);
+            $stmt->bind_result($name,$lastname,$username, $email, $api_key, $status, $created_at, $token_hash, $userid, $school, $pictureurl, $options);
             $stmt->fetch();
             $user = array();
             $user["name"] = $name;
@@ -284,6 +284,7 @@ class DbHandler {
             $user["username"] = $username;
             $user["email"] = $email;
             $user["pictureurl"] = $pictureurl;
+            $user["options"] = $options;
             $user["api_key"] = $api_key;
             $user["status"] = $status;
             $user["created_at"] = $created_at;

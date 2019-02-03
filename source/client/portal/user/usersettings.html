@@ -48,6 +48,16 @@
                    ng-change="$ctrl.setUserOptions()" class="form-control" />
                </div>
             </div>
+            <div class="row col-md-12">
+               <label for="inputokNotify" class="col-md-3 control-label">Debug On?</label>
+               <div class="col-md-9">
+                  <select id="inputdebugOn" type="text" name="debugOn" ng-model="$ctrl.debugOn" 
+                  ng-change="$ctrl.setUserOptions()" 
+                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                  required placeholder="select" ng-options="o for o in $ctrl.debugoptions track by o" class="form-control">
+                  </select>
+               </div>
+            </div>
             
             
             

@@ -27,7 +27,6 @@ export class ImphistoryController {
         var vm = this;
         CSV.DETECT_TYPES = false;
         vm.loadeddefault = "missing";
-        vm.emailrequired = false;
         vm.haserrordefault = "";
         vm.thishistory = {};
 
@@ -61,7 +60,7 @@ export class ImphistoryController {
         vm.initialLength = 10;
         vm.rowheight = 32;
         vm.headerheight = 140;
-        vm.Util.setGridLength(vm.initialLength, vm);
+        vm.gridLength = vm.Util.setGridLength(vm.initialLength, vm.rowheight, vm.headerheight);
 
         vm.setprelimimp1Options();
         vm.activate();
@@ -124,6 +123,7 @@ export class ImphistoryController {
             .then(function(data) {
                 vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'getStudenthistory', true);
             vm.gridexp1Options.data = data.StudentHistoryList;
+                vm.gridexp1Api.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
             return vm.gridexp1Options.data;
             }, function(error) {
@@ -159,7 +159,7 @@ export class ImphistoryController {
 
             theTypeStr = vm.Util.setTypeStr(columns[i].type, vm.bdateformattxt);
 
-            theValidStr = vm.Util.setValidStrByType(columns[i].name, vm.emailrequired, vm.bdateformat);
+            theValidStr = vm.Util.setValidStrByType(columns[i].name, vm.bdateformat,columns[i].required);
 
             coldef = vm.Util.setColDef(columns[i].name, theValidStr, theTypeStr);
 
@@ -247,7 +247,8 @@ export class ImphistoryController {
 
                 vm.setAfterCellEdit(vm.gridimp1Api, "rawHistory", vm, vm.$scope);
 
-                vm.Util.validationFailed(vm.gridimp1Api, [ 'externalid'], vm.errCnt, vm.isValidForErrors, vm.$scope);
+                vm.Util.validationFailed(vm.gridimp1Api, [ 'externalid'], 
+                    vm.errCnt, vm.isValidForErrors, vm.$scope, vm);
 
                 vm.Util.setPagination(vm.gridimp1Api, vm);
 
