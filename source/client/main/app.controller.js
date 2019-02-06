@@ -17,7 +17,7 @@ export class AppController {
         classServices,
         statsServices,
         $cookies,
-   //     $cookieStore,
+        //     $cookieStore,
         $log,
         Notification,
         $q,
@@ -49,7 +49,7 @@ export class AppController {
         this.ClassServices = classServices;
         this.StatsServices = statsServices;
         this.$cookies = $cookies;
-//        this.$cookieStore = $cookieStore;
+        //        this.$cookieStore = $cookieStore;
         this.Notification = Notification;
         this.$q = $q;
         this.$window = $window;
@@ -71,8 +71,8 @@ export class AppController {
 
     $onInit() {
         console.log("initializing App...");
-        var self=this;
-        
+        var self = this;
+
         this.data = {};
         this.userdta = {};
 
@@ -99,7 +99,7 @@ export class AppController {
         this.thisTasknamelist = [];
         this.instructorlist = [];
         this.testtypelist = [];
-        this.message ={};
+        this.message = {};
         this.loading = false;
         this.loadAttempted = false;
         this.neweventid;
@@ -161,6 +161,8 @@ export class AppController {
         this.bdateformat = this.formats[4];
         this.open = true;
         this.close = false;
+        this.open2 = true;
+        this.close2 = false;
 
 
 
@@ -206,30 +208,30 @@ export class AppController {
             vm.header.layout_topbar = '';
             vm.header.layout_menu = '';
             vm.header.header_topbar = '';
-/*
-            if ('/layout-left-sidebar' === current.originalPath) {
-                vm.$log.debug("left sidebar entered");
-                vm.header.boxed = '';
-                vm.header.layout_topbar = '';
-                vm.header.layout_menu = '';
-                vm.header.header_topbar = '';
-                $('#wrapper').removeClass('right-sidebar');
-                $('body').removeClass('left-side-collapsed');
-                $('body').removeClass('layout-boxed');
-                $('body > .default-page').removeClass('container');
-                $('#topbar .navbar-header').removeClass('logo-collapsed');
-                $('body').addClass('sidebar-fixed');
-                $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
-                    "height": $(window).height() - 50,
-                    'width': '250px',
-                    'wheelStep': 5
-                });
-                $('body').removeClass('right-side-collapsed');
-                $('body').removeClass('container');
-            }
+            /*
+                        if ('/layout-left-sidebar' === current.originalPath) {
+                            vm.$log.debug("left sidebar entered");
+                            vm.header.boxed = '';
+                            vm.header.layout_topbar = '';
+                            vm.header.layout_menu = '';
+                            vm.header.header_topbar = '';
+                            $('#wrapper').removeClass('right-sidebar');
+                            $('body').removeClass('left-side-collapsed');
+                            $('body').removeClass('layout-boxed');
+                            $('body > .default-page').removeClass('container');
+                            $('#topbar .navbar-header').removeClass('logo-collapsed');
+                            $('body').addClass('sidebar-fixed');
+                            $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
+                                "height": $(window).height() - 50,
+                                'width': '250px',
+                                'wheelStep': 5
+                            });
+                            $('body').removeClass('right-side-collapsed');
+                            $('body').removeClass('container');
+                        }
 
-            else if ('/' === current.originalPath) {
-*/            
+                        else if ('/' === current.originalPath) {
+            */
             if ('/' === current.originalPath) {
                 vm.$log.debug("/ path entered");
                 $('body').removeAttr('id'); // error 404, 500
@@ -240,10 +242,10 @@ export class AppController {
                 vm.header.layout_topbar = '';
                 vm.header.layout_menu = '';
                 vm.header.header_topbar = '';
-//                $('#wrapper').removeClass('right-sidebar');
-//                $('body').removeClass('left-side-collapsed');
-//                $('body').removeClass('right-side-collapsed');
-//                $('body').removeClass('layout-boxed');
+                //                $('#wrapper').removeClass('right-sidebar');
+                //                $('body').removeClass('left-side-collapsed');
+                //                $('body').removeClass('right-side-collapsed');
+                //                $('body').removeClass('layout-boxed');
                 $('body #page-wrapper').removeClass('animated');
                 $('body > .default-page').removeClass('container');
                 $('#topbar .navbar-header').removeClass('logo-collapsed');
@@ -256,7 +258,7 @@ export class AppController {
             }
 
             var mydelay = vm.CalendarServices.getIntervalValue();
-            vm.$interval(vm.intervalChecker(),mydelay * 1000);
+            vm.$interval(vm.intervalChecker(), mydelay * 1000);
 
             vm.$log.debug('exit app controller routechangesucess');
 
@@ -303,7 +305,7 @@ export class AppController {
             });
 
         });
-    //    this.islogin();
+        //    this.islogin();
     }
 
     intervalChecker() {
@@ -319,21 +321,36 @@ export class AppController {
     }
 
     openSchedule() {
-        //$.fn.Data.slideDown();
         this.portalDataService.slideDown();
         this.open = false;
         this.close = true;
     }
+    openCharts() {
+        var vm = this;
+        vm.getStats().then(function() {
+            vm.$log.debug("getStats returned");
+
+        }).catch(function(e) {
+            vm.$log.debug("getStats error", e);
+        });
+
+    }
 
     closeSchedule() {
-    //    $.fn.Data.slideDown();
+        //    $.fn.Data.slideDown();
         this.portalDataService.slideDown();
         this.open = true;
         this.close = false;
     }
+    closeCharts() {
+        //    $.fn.Data.slideDown();
+        this.portalDataService.slide2Down();
+        this.open2 = true;
+        this.close2 = false;
+    }
 
     activate() {
-        var self=this;
+        var self = this;
         this.$log.debug('app-controller.js activate entered');
         this.textcolor = this.CalUtil.getColorByBgColor(this.mycolor); // Set to complement of textColor.
 
@@ -351,7 +368,7 @@ export class AppController {
 
         self.getUserDetails().then(function() {
             self.$log.debug('activate getUserDetails returned', self.userdta);
-//            self.islogin();
+            //            self.islogin();
 
             self.todos();
             self.gettheTasknamelist();
@@ -400,7 +417,7 @@ export class AppController {
     }
 
     getAgeRangeList() {
-        var self=this;
+        var self = this;
         var path = "../v1/ageranges";
         return self.CalendarServices.getAgeRangeList(path).then(function(data) {
             self.$log.debug('getAgeRangeList returned data');
@@ -412,7 +429,7 @@ export class AppController {
     }
 
     schedToCal() {
-        var self=this;
+        var self = this;
         self.$log.debug('schedToCal entered');
         var thedata = {
             'calendarscheduleDate': this.ConversionDate
@@ -442,7 +459,7 @@ export class AppController {
     }
 
     clearCal() {
-        var self=this;
+        var self = this;
         self.$log.debug('clearCal entered');
         var path = "../v1/calendarschedule";
         return self.CalendarServices.clearCal(path).then(function(data) {
@@ -469,7 +486,7 @@ export class AppController {
     }
 
     transferCal() {
-        var self=this;
+        var self = this;
         self.$log.debug('transferCal entered');
         var thedata = {
             'calendarscheduleDate': self.ConversionDate
@@ -528,8 +545,6 @@ export class AppController {
         this.studentpick = item;
         $("#studentpick").val(item);
     }
-
-
 
     calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval,
         userpick, updateflag, theevent, contactid, eventid, eventclass, color, textcolor, eventtype,
@@ -632,7 +647,7 @@ export class AppController {
     }
 
     saveCalendarEvent(theEvent) {
-        var self=this;
+        var self = this;
         var updpath = "../v1/saveCalendarEvent";
         self.$log.debug('about saveCalendarEvent ', theEvent, updpath);
         var rep = (typeof(theEvent.userpick) !== 'undefined' && theEvent.userpick !== "") ? theEvent.userpick.toString().replace("number:", "") : this.myuser;
@@ -671,7 +686,7 @@ export class AppController {
                 self.$log.debug(data.message);
                 self.message = data.message;
                 self.getEventList(self.forUser).then(function(zdata) {
-                       self.$log.debug('saveCalendarEvent getEventList returned', zdata);
+                        self.$log.debug('saveCalendarEvent getEventList returned', zdata);
                     },
                     function(error) {
                         self.$log.debug('Caught an error saveCalendarEvent getEventList after update:', error);
@@ -692,7 +707,7 @@ export class AppController {
     }
 
     updateTasknamelist(taskname, taskstatus) {
-        var self=this;
+        var self = this;
         var updpath = "../v1/updatetasknamelist";
         var thedata = {
             taskname: taskname,
@@ -729,7 +744,7 @@ export class AppController {
     }
 
     removeTasknamelist(taskname) {
-        var self=this;
+        var self = this;
         var updpath = "../v1/removetasknamelist";
         var thedata = {
             taskname: taskname
@@ -764,7 +779,7 @@ export class AppController {
     }
 
     getStudent(path) {
-        var self=this;
+        var self = this;
         return self.StudentServices.getStudent(path).then(function(data) {
             self.$log.debug('getStudent returned data');
             self.$log.debug(data);
@@ -778,7 +793,7 @@ export class AppController {
 
 
     removeCalendarEvent(eventid) {
-        var self=this;
+        var self = this;
         var updpath = "../v1/removeCalendarEvent";
         var thedata = {
             eventid: eventid
@@ -814,7 +829,7 @@ export class AppController {
     }
 
     getUserDetails() {
-        var self=this;
+        var self = this;
         self.$log.debug('getUserDetails entered');
         return self.UserServices.getUserDetails().then(function(data) {
                 self.$log.debug("service getuserdetails returned:", data);
@@ -838,7 +853,7 @@ export class AppController {
     }
 
     getUserList() {
-        var self=this;
+        var self = this;
         self.$log.debug('getUserList entered');
         var refreshpath = "../v1/getuserlist";
 
@@ -863,7 +878,7 @@ export class AppController {
     }
 
     getClassList() {
-        var self=this;
+        var self = this;
         self.$log.debug('getClassList entered');
         var path = '../v1/class';
 
@@ -884,7 +899,7 @@ export class AppController {
     }
 
     gettheTasknamelist() {
-        var self=this;
+        var self = this;
         self.$log.debug('gettheTasknamelist entered');
         var refreshpath = "../v1/tasknamelist";
 
@@ -909,7 +924,7 @@ export class AppController {
     }
 
     getInstructorList() {
-        var self=this;
+        var self = this;
         self.$log.debug('getInstructorList entered');
         var refreshpath = "../v1/instructorlist";
 
@@ -946,7 +961,7 @@ export class AppController {
     }
 
     getTestTypes() {
-        var self=this;
+        var self = this;
         self.$log.debug('getTestTypes entered');
         var refreshpath = "../v1/testtypes";
 
@@ -984,7 +999,7 @@ export class AppController {
     }
 
     getEventList(qparm) {
-        var self=this;
+        var self = this;
         //                var qparm =  typeof(this.forUser) !== 'undefined' ? this.forUser : 'ALL' ;
         var refreshpath = "../v1/getEventList?username=" + qparm;
         self.$log.debug('getEventList entered', qparm, refreshpath);
@@ -994,7 +1009,7 @@ export class AppController {
                 self.$log.debug(data, typeof(data.events));
                 if (typeof(data.events) !== "undefined") {
                     for (var i = 0; i < data.events.length; i++) {
-                     //   self.$log.debug('reformat dates', data.events[i]);
+                        //   self.$log.debug('reformat dates', data.events[i]);
                         /*      var atimetoadd = {
                                   "title": data.events[i].title,
                                   "time": data.events[i].start,
@@ -1038,7 +1053,7 @@ export class AppController {
     }
 
     islogin() {
-        var self=this;
+        var self = this;
 
         self.$log.debug('app controller islogin');
         self.isok = self.UserServices.isapikey();
@@ -1046,18 +1061,17 @@ export class AppController {
         if (self.isok) {
             self.$log.debug('setting apikey for services');
             var thekey = self.UserServices.getapikey();
-        //    self.CalendarServices.setapikey(thekey);
-        //    self.TestingServices.setapikey(thekey);
-        //    self.EventServices.setapikey(thekey);
-        //    self.TemplateServices.setapikey(thekey);
-        //    self.StudentServices.setapikey(thekey);
-        //    self.PaymentServices.setapikey(thekey);
-        //    self.ClassServices.setapikey(thekey);
+            //    self.CalendarServices.setapikey(thekey);
+            //    self.TestingServices.setapikey(thekey);
+            //    self.EventServices.setapikey(thekey);
+            //    self.TemplateServices.setapikey(thekey);
+            //    self.StudentServices.setapikey(thekey);
+            //    self.PaymentServices.setapikey(thekey);
+            //    self.ClassServices.setapikey(thekey);
             self.UserServices.setapikey(thekey);
-        //    self.StatsServices.setapikey(thekey);
-//            this.filterstat = self.filterstat;
+            //    self.StatsServices.setapikey(thekey);
+            //            this.filterstat = self.filterstat;
 
-            var getdatestr = 'startdate';
 
             self.$q.all([
                     self.getUserList().then(function() {
@@ -1065,12 +1079,6 @@ export class AppController {
                     }),
                     self.getClassList().then(function() {
                         self.$log.debug('getClassList returned');
-                    }),
-                    self.getStudentStatsMonths(getdatestr).then(function() {
-                        self.$log.debug('getStudentStatsMonths returned');
-                    }),
-                    self.getStudentStats(getdatestr).then(function() {
-                        self.$log.debug('getStudentStats returned');
                     })
                 ])
                 .then(function() {
@@ -1107,6 +1115,22 @@ export class AppController {
         this.$log.debug('settextcolor', this.mycolor, this.textcolor);
     }
 
+    getStats() {
+        var vm = this;
+        var getdatestr = 'startdate';
+
+//        vm.getStudentStatsMonths(getdatestr).then(function() {
+//            self.$log.debug('getStudentStatsMonths returned');
+//        });
+        vm.getStudentStats(getdatestr).then(function() {
+            vm.portalDataService.slide2Down();
+            vm.open2 = false;
+            vm.close2 = true;
+
+            self.$log.debug('getStudentStats returned');
+        });
+
+    }
 
 
     getYType(index) {
@@ -1159,7 +1183,7 @@ export class AppController {
     }
 
     todos() {
-        var self=this;
+        var self = this;
         setTimeout(function() {
             //BEGIN TODOS LIST
             $("#todos-list-sort").sortable();
@@ -1176,7 +1200,7 @@ export class AppController {
     }
 
     gety(x, seriesIndex) {
-        this.$log.debug('gety:', x, seriesIndex);
+        //     this.$log.debug('gety:', x, seriesIndex);
         var retvl = [];
         if (this.getYType(seriesIndex) !== 'Net') {
             var d2_1a = this.contentForGraph(this.studentstats,
@@ -1186,11 +1210,11 @@ export class AppController {
                 this.getYType(seriesIndex),
                 this.getYStatus(seriesIndex)
             );
-            this.$log.debug('gety d2_1a', d2_1a, x);
+            //          this.$log.debug('gety d2_1a', d2_1a, x);
             for (var iter = 0, len = d2_1a.length; iter < len; iter++) {
                 for (var diter = 0, dlen = d2_1a[iter].length; diter < dlen; diter++) {
                     if (d2_1a[iter][diter].month === x) {
-                        this.$log.debug('d2_1a content', d2_1a[iter][diter].details);
+                        //                    this.$log.debug('d2_1a content', d2_1a[iter][diter].details);
                         var dta = {
                             "item": {
                                 "firstname": d2_1a[iter][diter].details.firstname,
@@ -1207,12 +1231,12 @@ export class AppController {
         else {
             retvl = 'no text';
         }
-        this.$log.debug('gety x', JSON.stringify(retvl));
+        //     this.$log.debug('gety x', JSON.stringify(retvl));
         return (JSON.stringify(retvl));
     }
 
     genGraph() {
-        var self=this;
+        var self = this;
         //      $log.debug('genGraph entered');
         setTimeout(function() {
             var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
@@ -1258,6 +1282,44 @@ export class AppController {
                     }
                 });
 
+                $("<div id='tooltip'></div>").css({
+                    position: "absolute",
+                    display: "none",
+                    border: "1px solid #fdd",
+                    padding: "2px",
+                    "background-color": "#fee",
+                    width: "33%",
+                    opacity: 0.80
+                }).appendTo("body");
+
+                $("#line-chart-spline").bind("plothover", function(event, pos, item) {
+
+                    if (item) {
+                        var x = item.series.data[item.datapoint[0]][0],
+                            y = item.datapoint[1];
+
+                        var xy = JSON.parse(self.gety(x, item.seriesIndex));
+                        var xx = '';
+                        if (xy !== 'no text') {
+                            for (var iter = 0, len = xy.length; iter < len; iter++) {
+                                xx = xx + '<div class="row col-md-12"><div class="col-md-6">Name: ' +
+                                    xy[iter].item.firstname + ' ' + xy[iter].item.lastname +
+                                    '</div><div class="col-md-6">ID: ' +
+                                    xy[iter].item.contactid + ' on: ' +
+                                    xy[iter].item.fulldate +
+                                    '</div></div>';
+                            }
+                        }
+                        xx += '<div class="row col-md-12">Count: ' + y + ' </div>';
+
+                        $("#tooltip").html(xx)
+                            .css({ top: item.pageY + 5, left: item.pageX + 5 })
+                            .fadeIn(200);
+                    }
+                    else {
+                        $("#tooltip").hide();
+                    }
+                });
 
 
                 var d2_sum = d2_1.SumArray(d2_2).SumArray(d2_3).SumArray(d2_4);
@@ -1286,56 +1348,58 @@ export class AppController {
                 }], {
                     series: {
                         lines: {
-                            show: !1
+                            show: true
                         },
-                        splines: {
-                            show: !0,
-                            tension: 0.4,
-                            lineWidth: 2,
-                            fill: 0
-                        },
+                        //                        splines: {
+                        //                            show: !0,
+                        //                            tension: 0.4,
+                        //                            lineWidth: 2,
+                        //                            fill: 0
+                        //                        },
                         points: {
-                            show: !0,
+                            show: true,
                             radius: 4
                         }
                     },
                     grid: {
                         borderColor: "#ffffff",
                         borderWidth: 1,
-                        hoverable: !0
+                        hoverable: true,
+                        clickable: false
                     },
-                    tooltip: !0,
-                    tooltipOpts: {
-                        content: function(label, xval, yval, flotItem) {
-                            //  $log.debug('flot %j',flotItem);
-                            var xy = JSON.parse(self.gety(xval, flotItem.seriesIndex));
-                            self.$log.debug('xy', xy, xval, yval, self.getYType(flotItem.seriesIndex));
-                            //               return 'new students:<br/> <json-formatter json="'+ gety(xval,flotItem.seriesIndex) + 
-                            //               '" open="1"></json-formatter> <br/> for:' + yval;
-                            var xx = '';
-                            if (xy !== 'no text') {
-                                for (var iter = 0, len = xy.length; iter < len; iter++) {
-                                    //$log.debug('each', xy[iter].item.firstname);
-                                    xx = xx + '<div class="row col-md-12"> name:' +
-                                        xy[iter].item.firstname + ' ' +
-                                        xy[iter].item.lastname + ' ' +
-                                        '<br/> id: ' +
-                                        xy[iter].item.contactid + ' on: ' +
-                                        xy[iter].item.fulldate +
-                                        '</div>';
-                                }
-                            }
-                            self.$log.debug('xx', xx);
-                            //               return 'new students: ' + xx + ' for:' + yval;
-                            xx += 'Count:' + yval;
-                            return xx;
-                        },
-                        shifts: {
-                            x: -30,
-                            y: -50
-                        },
-                        defaultTheme: false
-                    },
+                    //                   tooltip: !0,
+                    /*                    tooltipOpts: {
+                                            content: function(label, xval, yval, flotItem) {
+                                                //  $log.debug('flot %j',flotItem);
+                                                var xy = JSON.parse(self.gety(xval, flotItem.seriesIndex));
+                                 //               self.$log.debug('xy', xy, xval, yval, self.getYType(flotItem.seriesIndex));
+                                                //               return 'new students:<br/> <json-formatter json="'+ gety(xval,flotItem.seriesIndex) + 
+                                                //               '" open="1"></json-formatter> <br/> for:' + yval;
+                                                var xx = '';
+                                                if (xy !== 'no text') {
+                                                    for (var iter = 0, len = xy.length; iter < len; iter++) {
+                                                        //$log.debug('each', xy[iter].item.firstname);
+                                                        xx = xx + '<div class="row col-md-12"> name:' +
+                                                            xy[iter].item.firstname + ' ' +
+                                                            xy[iter].item.lastname + ' ' +
+                                                            '<br/> id: ' +
+                                                            xy[iter].item.contactid + ' on: ' +
+                                                            xy[iter].item.fulldate +
+                                                            '</div>';
+                                                    }
+                                                }
+                                     //           self.$log.debug('xx', xx);
+                                                //               return 'new students: ' + xx + ' for:' + yval;
+                                                xx += 'Count:' + yval;
+                                                return xx;
+                                            },
+                                            shifts: {
+                                                x: -30,
+                                                y: -50
+                                            },
+                                            defaultTheme: false
+                                        },
+                     */
                     xaxis: {
                         tickColor: "#fafafa",
                         mode: "categories"
@@ -1602,7 +1666,7 @@ export class AppController {
     }
 
     contentForGraph(data, x, y, type, category, status) {
-        this.$log.debug('contentForGraph:', data, x, y, type, category, status);
+        //  this.$log.debug('contentForGraph:', data, x, y, type, category, status);
         var res = [];
 
         for (var iter = 0, len = data.length; iter < len; iter++) {
@@ -1612,7 +1676,7 @@ export class AppController {
             var dta;
             var dtaarr = [];
             for (var diter = 0, dlen = d[1].length; diter < dlen; diter++) {
-                this.$log.debug('diter', d[1][diter]);
+                //        this.$log.debug('diter', d[1][diter]);
                 dta = {
                     'item': diter,
                     'month': d[0],
@@ -1630,23 +1694,23 @@ export class AppController {
                 data[iter].type === type &&
                 data[iter].category === category
             ) {
-                this.$log.debug('contentIf found:', dtaarr, data[iter].type, data[iter].category);
+                //          this.$log.debug('contentIf found:', dtaarr, data[iter].type, data[iter].category);
                 res.push(dtaarr);
             }
             if (status === 'NotActive' &&
                 data[iter].type === type &&
                 data[iter].classstatus === category
             ) {
-                this.$log.debug('contentIf found:', dtaarr, data[iter].type, data[iter].category);
+                //        this.$log.debug('contentIf found:', dtaarr, data[iter].type, data[iter].category);
                 res.push(dtaarr);
             }
         }
-        this.$log.debug('contentForGraph res:', res);
+        //     this.$log.debug('contentForGraph res:', res);
         return res;
     }
 
     getStudentStats(datestr) {
-        var self=this;
+        var self = this;
         self.$log.debug('getStudentStats entered');
         var myTime = '1970/01/01';
         var oraFormat = "YYYY-MM-DD HH:mm:ss";
@@ -1695,7 +1759,7 @@ export class AppController {
     }
 
     getStudentStatsMonths(datetype) {
-        var self=this;
+        var self = this;
         self.$log.debug('getStudentStatsMonths entered');
 
         var myTime = '1970/01/01';
@@ -1748,14 +1812,14 @@ export class AppController {
 
 
     refreshStudents(theinput) {
-        var self=this;
+        var self = this;
         return self.StudentServices.refreshStudents(theinput).then(
             function(data) {
-            self.$log.debug('controller refreshStudents returned data');
-            self.$log.debug(data);
-            self.refreshstudentlist = data;
-            self.$log.debug('controller refreshstudentlist service data', self.refreshstudentlist);
-            return self.refreshstudentlist;
+                self.$log.debug('controller refreshStudents returned data');
+                self.$log.debug(data);
+                self.refreshstudentlist = data;
+                self.$log.debug('controller refreshstudentlist service data', self.refreshstudentlist);
+                return self.refreshstudentlist;
             },
             function(error) {
                 self.$log.debug(' refreshStudents error', error);
