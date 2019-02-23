@@ -29,7 +29,7 @@
     vmnewstudentmodal.openmodal = openmodal;
     vmnewstudentmodal.modalInstance = undefined;
     vmnewstudentmodal.thisstudent = '';
-    $log.debug('ModalNewStudentController entered ');
+    $log.log('ModalNewStudentController entered ');
 
 
     function openmodal() {
@@ -41,7 +41,7 @@
         size: 'sm',
         resolve: {
           classname: function () {
-              $log.debug('return from open');
+              $log.log('return from open');
             return vmnewstudentmodal.thisstudent;
           }
         }
@@ -75,7 +75,7 @@
     function submit() {
       console.log('hit submit');
       createStudent().then(function(){
-          $log.debug('createstudent ready to close', vmnew.thisstudent);
+          $log.log('createstudent ready to close', vmnew.thisstudent);
           $uibModalInstance.close(vmnew.thisstudent);
       }).catch(function(e){
          // alert("try again", e);
@@ -87,26 +87,26 @@
     }
 
     function createStudent() {
-            $log.debug('about createStudent ', vmnew);
+            $log.log('about createStudent ', vmnew);
 
             return TournamentServices.createStudent(vmnew.path, vmnew)
                 .then(function(data){
-                    $log.debug('createStudent returned data');
-                    $log.debug(data);
+                    $log.log('createStudent returned data');
+                    $log.log(data);
                     vmnew.thisstudent = data;
-                    $log.debug(vmnew.thisstudent);
-                    $log.debug(vmnew.thisstudent.message);
+                    $log.log(vmnew.thisstudent);
+                    $log.log(vmnew.thisstudent.message);
                     vmnew.message = vmnew.thisstudent.message;
                     var url = './#/tournament/id/' + vmnew.thisstudent.student_id;
-                    $log.debug(url);
+                    $log.log(url);
                     $window.location.href = url;
                     return vmnew.thisstudent;
                 }).catch(function(e) {
-                    $log.debug('createStudent failure:');
-                    $log.debug("error", e);
+                    $log.log('createStudent failure:');
+                    $log.log("error", e);
                     if (e.status == 409) {
                         var url = './#/tournament/id/' + vmnew.thisstudent.student_id;
-                        $log.debug(url);
+                        $log.log(url);
                         $window.location.href = url;
                         
                     }

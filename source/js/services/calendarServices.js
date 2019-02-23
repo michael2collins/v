@@ -18,7 +18,7 @@ export class CalendarServices {
         this.moment = moment;
     }        
 /*        setapikey(key) {
-            //     this.$log.debug('setapikey', key);
+            //     this.$log.log('setapikey', key);
             this.apikey = key;
         }
 */
@@ -40,7 +40,7 @@ export class CalendarServices {
 
         schedToCal(path, thedata) {
             var self=this;
-            self.$log.debug('schedToCal data before post :', thedata);
+            self.$log.log('schedToCal data before post :', thedata);
             var request = self.$http({
                 method: "POST",
                 url: path,
@@ -53,7 +53,7 @@ export class CalendarServices {
 
         clearCal(path) {
             var self=this;
-            self.$log.debug('clearCal  before delete :');
+            self.$log.log('clearCal  before delete :');
             var request = self.$http({
                 method: "DELETE",
                 url: path
@@ -63,7 +63,7 @@ export class CalendarServices {
 
         transferCal(path, thedata) {
             var self=this;
-            self.$log.debug('transferCal data before post :', thedata);
+            self.$log.log('transferCal data before post :', thedata);
             var request = self.$http({
                 method: "POST",
                 url: path,
@@ -76,8 +76,8 @@ export class CalendarServices {
 
         getAgeRangeList(path) {
             var self=this;
-            self.$log.debug('getAgeRangeList service entered');
-            self.$log.debug('path', path);
+            self.$log.log('getAgeRangeList service entered');
+            self.$log.log('path', path);
             var request = self.$http({
                 method: "GET",
                 url: path,
@@ -89,8 +89,8 @@ export class CalendarServices {
 
         gettasknamelist(path) {
             var self=this;
-            self.$log.debug('gettasknamelist service entered');
-            self.$log.debug('path', path);
+            self.$log.log('gettasknamelist service entered');
+            self.$log.log('path', path);
             var request = self.$http({
                 method: "GET",
                 url: path,
@@ -102,20 +102,20 @@ export class CalendarServices {
 
         getinstructorlist(path) {
             var self=this;
-            self.$log.debug('getinstructorlist service entered');
-            self.$log.debug('path', path);
+            self.$log.log('getinstructorlist service entered');
+            self.$log.log('path', path);
 
             return (self.$http.get(path).then(self.handleSuccess, self.handleError));
         }
 
         setNotifyList(list) {
             var self=this;
-            self.$log.debug('entered setnotifylist', list);
+            self.$log.log('entered setnotifylist', list);
             self.notifylist = list;
         }
 
         getNotifyList(notify) {
-            //    this.$log.debug('entered getnotif', notifylist);
+            //    this.$log.log('entered getnotif', notifylist);
             this.timeCleaner(notify);
             return this.notifylist;
         }
@@ -170,7 +170,7 @@ export class CalendarServices {
             return this.sendNotification(title, options, optionssyn);
         }
         mynotify(msg) {
-            this.$log.debug('notify entered', msg);
+            this.$log.log('notify entered', msg);
             var title = msg.title;
             var str = 'check calendar for: ' + msg.title + ' at: ' + msg.start;
             var iconstr = 'https://vdojo.villaris.us/images/notifyicon.jpg';
@@ -230,7 +230,7 @@ export class CalendarServices {
             this.okNotify = notify;
             this.checktime = this.moment();
             for (var iter = 0, len = this.notifylist.length; iter < len; iter++) {
-                /*                    this.$log.debug('intervalChecker: b4 if', 
+                /*                    this.$log.log('intervalChecker: b4 if', 
                                         checktime, 
                                         okNotify, 
                                         intervalValue,
@@ -239,23 +239,23 @@ export class CalendarServices {
                   */
                 if (this.moment(this.checktime) <= this.moment(this.notifylist[iter].start).add(this.intervalValue / 1000, 'seconds') &&
                     this.moment(this.checktime) > this.moment(this.notifylist[iter].start)) {
-                    this.$log.debug('intervalChecker: found in interval',
+                    this.$log.log('intervalChecker: found in interval',
                         this.checktime,
                         this.okNotify,
                         this.intervalValue,
                         this.notifylist[iter]);
                     if (this.okNotify === true) {
-                        this.$log.debug('going to notify', this.notifylist[iter]);
+                        this.$log.log('going to notify', this.notifylist[iter]);
                         this.mynotify(this.notifylist[iter]);
                     }
                     this.notifylist[iter].remove = true;
                 }
-                // this.$log.debug("checking deleted event from list", listOfTimes[iter]);
+                // this.$log.log("checking deleted event from list", listOfTimes[iter]);
 
                 this.notifylist[iter].remove = false;
             }
             for (var niter = 0, nlen = this.notifylist.length; niter < nlen; niter++) {
-                /*            this.$log.debug('intervalChecker: b4 removal if', 
+                /*            this.$log.log('intervalChecker: b4 removal if', 
                                 checktime, 
                                 okNotify, 
                                 intervalValue,
@@ -269,7 +269,7 @@ export class CalendarServices {
                         this.moment(this.checktime) > this.moment(this.notifylist[niter].start).add(this.intervalValue / 1000, 'seconds') ||
                         this.notifylist[niter].remove === true
                     ) {
-                        //            this.$log.debug('dropping too old ones',this.notifylist[niter], checktime);
+                        //            this.$log.log('dropping too old ones',this.notifylist[niter], checktime);
                         //remove if they were passed by in the loop above
                         this.notifylist.splice(niter, 1);
                     }
@@ -284,22 +284,22 @@ export class CalendarServices {
         }
 
         setCurrentEvent(event) {
-            this.$log.debug("setCurrentEvent", event);
+            this.$log.log("setCurrentEvent", event);
             this.currentCalendarEvent = event;
         }
 
         getCalendarEvents(path) {
             var self=this;
-            self.$log.debug('getCalendarEvents service entered');
-            self.$log.debug('path', path);
+            self.$log.log('getCalendarEvents service entered');
+            self.$log.log('path', path);
 
             return (self.$http.get(path).then(self.handleSuccess, self.handleError));
         }
 
         getUsers(path) {
             var self=this;
-            self.$log.debug('getUsers service entered');
-            self.$log.debug('path', path);
+            self.$log.log('getUsers service entered');
+            self.$log.log('path', path);
 
             return (self.$http.get(path).then(self.handleSuccess, self.handleError));
         }
@@ -307,7 +307,7 @@ export class CalendarServices {
         //add or update
         saveCalendarEvent(path, thedata) {
             var self=this;
-            self.$log.debug('saveCalendarEvent data before post :', thedata);
+            self.$log.log('saveCalendarEvent data before post :', thedata);
             var request = self.$http({
                 method: "POST",
                 url: path,
@@ -320,7 +320,7 @@ export class CalendarServices {
 
         removeCalendarEvent(path, thedata) {
             var self=this;
-            self.$log.debug('removeCalendarEvent data before delete :', thedata);
+            self.$log.log('removeCalendarEvent data before delete :', thedata);
             var request = self.$http({
                 method: "POST",
                 url: path,
@@ -333,7 +333,7 @@ export class CalendarServices {
 
         updateTasknamelist(path, thedata) {
             var self=this;
-            self.$log.debug('updatetasknamelist data before post :', thedata);
+            self.$log.log('updatetasknamelist data before post :', thedata);
             var request = self.$http({
                 method: "POST",
                 url: path,
@@ -346,7 +346,7 @@ export class CalendarServices {
 
         removeTasknamelist(path, thedata) {
             var self=this;
-            self.$log.debug('removeTasknamelist data before delete :', thedata);
+            self.$log.log('removeTasknamelist data before delete :', thedata);
             var request = self.$http({
                 method: "POST",
                 url: path,
@@ -362,10 +362,10 @@ export class CalendarServices {
         // PRIVATE METHODS.
         // ---
         handleError(response) {
-//            this.$log.debug('failure:');
- //           this.$log.debug(response);
-  //          this.$log.debug('status', response.status);
-//            this.$log.debug('config', response.config);
+//            this.$log.log('failure:');
+ //           this.$log.log(response);
+  //          this.$log.log('status', response.status);
+//            this.$log.log('config', response.config);
             //debugger;
             if (!angular.isObject(response.data) ||
                 !response.data.message
@@ -379,8 +379,8 @@ export class CalendarServices {
         // I transform the successful response, unwrapping the application data
         // from the API response payload.
         handleSuccess(response) {
-//            this.$log.debug(' success:');
-  //          this.$log.debug(response);
+//            this.$log.log(' success:');
+  //          this.$log.log(response);
             return (response.data);
         }
 

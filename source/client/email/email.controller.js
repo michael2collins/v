@@ -4,10 +4,9 @@ import angular from 'angular';
 export class ModalEmailInstanceController {
   constructor(
     $log, studentServices, $window, Notification,
-     $scope, $q, _, moment
+     $scope, $q, _, moment, UserServices
   ) {
     'ngInject';
-    console.log('entering email controller');
     this.myinitial = $scope.$parent.$resolve.myinitial;
     this.$log = $log;
     this.StudentServices = studentServices;
@@ -18,6 +17,7 @@ export class ModalEmailInstanceController {
     this.contactform = $scope.$parent.$resolve.contactform;
     this._ = _;
     this.moment = moment;
+        this.UserServices = UserServices;
 
   }
   $onInit() {
@@ -131,15 +131,20 @@ export class ModalEmailInstanceController {
   }
   init() {
     var self=this;
+    var vm=this;
+            if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ModalEmailInstanceController',vm.UserServices.isDebugEnabled());
+        }
+
     self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
         var vm = event.currentScope.$ctrl;
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("ModalEmailInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("ModalEmailInstanceController started");
 
     });
     self.$scope.$on('$destroy', function iVeBeenDismissed() {
-      self.$log.debug("ModalEmailInstanceController dismissed");
-      self.$log.debugEnabled(false);
+      self.$log.log("ModalEmailInstanceController dismissed");
+      //self.$log.logEnabled(false);
     });
     
   }
@@ -165,7 +170,7 @@ export class ModalEmailInstanceController {
     return name;
   }
   messageChange(value) {
-    this.$log.debug("messageChange entered", value);
+    this.$log.log("messageChange entered", value);
   }
   addTo() {
     this.inputEmail = angular.copy(this.eventResult);
@@ -182,10 +187,10 @@ export class ModalEmailInstanceController {
 
   refreshemails(theinput) {
     var self = this;
-    self.$log.debug("refreshemails", theinput);
+    self.$log.log("refreshemails", theinput);
     return self.StudentServices.refreshEmails(theinput).then(function(data) {
-      self.$log.debug('controller refreshemails returned data');
-      self.$log.debug(data);
+      self.$log.log('controller refreshemails returned data');
+      self.$log.log(data);
       self.refreshemaillist = data;
       return self.refreshemaillist;
     });
@@ -244,13 +249,13 @@ export class ModalEmailInstanceController {
         }
       };
 
-      self.$log.debug('about sendEmail ', thedata, path);
+      self.$log.log('about sendEmail ', thedata, path);
 
 
       return self.StudentServices.sendEmail(path, thedata)
         .then(function(data) {
-          self.$log.debug('sendEmail returned data');
-          self.$log.debug(data);
+          self.$log.log('sendEmail returned data');
+          self.$log.log(data);
           if (!data.error) { //success comes from the return json object
             self.submitButtonDisabled = true;
             self.resultMessage = data.message;
@@ -263,8 +268,8 @@ export class ModalEmailInstanceController {
           }
 
         }).catch(function(e) {
-          self.$log.debug('sendEmail failure:');
-          self.$log.debug("error", e);
+          self.$log.log('sendEmail failure:');
+          self.$log.log("error", e);
           self.message = e;
           self.resultMessage = 'Failed  Please fill out all the fields.';
           self.submitButtonDisabled = false;

@@ -20,15 +20,15 @@ export class RankTypeController {
     }
 
     $onDestroy() {
-        this.$log.debug("RankTypeController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("RankTypeController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
 
         vm.getRankTypes().then(function() {
-            vm.$log.debug('getRankTypes', vm.ranktypelist);
+            vm.$log.log('getRankTypes', vm.ranktypelist);
 // parent doesn't get notice, better for user to pick
 //vm.ranktypeparent.ranktype = vm.ranktypelist[0].ranktype;
         })
@@ -42,17 +42,17 @@ export class RankTypeController {
 
     changeRankType() {
         var vm = this;
-        vm.$log.debug("changeRankType", vm.ranktypeselected);
+        vm.$log.log("changeRankType", vm.ranktypeselected);
     }
     getRankTypes() {
         var vm = this;
-        vm.$log.debug('getRankTypes entered');
+        vm.$log.log('getRankTypes entered');
         var path = encodeURI("../v1/ranktypes");
         var error;
 
         return vm.TestingServices.getRankTypes(path).then(function(data) {
-                vm.$log.debug('getRankTypes returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getRankTypes returned data');
+                vm.$log.log(data);
                 if (data.ranktypelist.length > 0) {
             
                     vm.ranktypelist = data.ranktypelist;
@@ -70,7 +70,7 @@ export class RankTypeController {
                 return vm.ranktypelist;
             },
             function(error) {
-                vm.$log.debug('Caught an error ranktypelist, going to notify:', error);
+                vm.$log.log('Caught an error ranktypelist, going to notify:', error);
                 vm.ranktypelist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });

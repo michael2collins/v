@@ -21,11 +21,9 @@ export class ChangepwdController {
         this.$q = $q;
         this.notification = Notification;
 
-        $log.debug('enter ChangepwdController');
     }
 
     $onInit() {
-        console.log("initializing Login...");
         this.username = null;
         this.password = null;
         this.firstname = null;
@@ -49,8 +47,8 @@ export class ChangepwdController {
     }
 
     $onDestroy() {
-        this.$log.debug("ChangepwdController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ChangepwdController dismissed");
+        //this.$log.logEnabled(false);
     }
 
 
@@ -59,13 +57,13 @@ export class ChangepwdController {
 
     compare(repass) {
         var self = this;
-        self.$log.debug('compare', repass);
+        self.$log.log('compare', repass);
         self.isconfirm = self.password == repass ? true : false;
     }
 
     changepwd() {
         var self = this;
-        self.$log.debug('ChangepwdController register function entered');
+        self.$log.log('ChangepwdController register function entered');
         self.dataLoading = true;
         var thedata = {
             username: self.userdta.username,
@@ -74,13 +72,13 @@ export class ChangepwdController {
             oldpassword: self.oldpassword
         };
         var path = '/v1/changepassword';
-        self.$log.debug('controller register thedata:', thedata);
+        self.$log.log('controller register thedata:', thedata);
 
         self.dataLoading = true;
 
         return self.userServices.createUser(path, thedata).then(function(data) {
-                self.$log.debug('register returned data');
-                self.$log.debug(data);
+                self.$log.log('register returned data');
+                self.$log.log(data);
                 //                            alert('Change successful', true);
                 self.notification.success({ message: 'Change successful', delay: 5000 });
 
@@ -88,7 +86,7 @@ export class ChangepwdController {
                 return data;
             },
             function(error) {
-                self.$log.debug('Caught an error , going to notify:', error);
+                self.$log.log('Caught an error , going to notify:', error);
                 self.flashService.Err(error);
                 return (self.$q.reject(error));
             }).

@@ -7,7 +7,6 @@ export class SidebarController {
         userServices
     ) {
         'ngInject';
-        console.log('constructor sidebar controller');
         this.UserServices = userServices;
         this.$log = $log;
         this.$scope = $scope;
@@ -15,7 +14,7 @@ export class SidebarController {
 
 
     $onInit() {
-        this.$log.debug("sidebar controller oninit");
+        this.$log.log("sidebar controller oninit");
         this.isok = false;
 
         this.islogin();
@@ -23,8 +22,8 @@ export class SidebarController {
 
         this.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             var vm = event.currentScope.$ctrl;
-            vm.$log.debugEnabled(true);
-            vm.$log.debug('routechange in sidebar for success');
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log('routechange in sidebar for success');
             vm.isokf();
 
         });
@@ -32,21 +31,25 @@ export class SidebarController {
     }
 
     $onDestroy() {
-        this.$log.debug("sidebar dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("sidebar dismissed");
+        //this.$log.logEnabled(false);
     }
 
     islogin() {
         var self = this;
 
-        self.$log.debug('islogin sidebar controller');
+        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined ) {
+            self.$log = self.$log.getInstance('SidebarController',self.UserServices.isDebugEnabled());
+        }
+
+        self.$log.log('islogin sidebar controller');
         self.isok = self.UserServices.isapikey();
 
     }
 
 
     isokf() {
-        //        this.$log.debug('isokf');
+        //        this.$log.log('isokf');
         this.isok = this.UserServices.isapikey();
         return this.isok;
     }
@@ -54,7 +57,7 @@ export class SidebarController {
 
     loadSidebar() {
         var self = this;
-        self.$log.debug('loadSidebar');
+        self.$log.log('loadSidebar');
 
 
         $(window).scroll(function() {

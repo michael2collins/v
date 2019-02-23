@@ -2,11 +2,10 @@ import angular from 'angular';
 
 export class TesttypeTableBasicController {
     constructor(
-        $log, $q, $scope, $interval, ClassServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
+        $log, $q, $scope, $interval, ClassServices,UserServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
 
     ) {
         'ngInject';
-        console.log('entering TesttypeTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -18,6 +17,7 @@ export class TesttypeTableBasicController {
         this.Util = Util;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -42,23 +42,26 @@ export class TesttypeTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-testtype dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-testtype dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-basic-testtype');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('TesttypeTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-testtype started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-testtype started");
 
         });
         vm.getTesttype().then(function() {
-            vm.$log.debug('getTesttype activate done');
+            vm.$log.log('getTesttype activate done');
             vm.getrankTypes().then(function() {
-                vm.$log.debug('getrankTypes activate done', vm.rankTypes);
+                vm.$log.log('getrankTypes activate done', vm.rankTypes);
                 vm.setgridOptions();
                 vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -84,7 +87,7 @@ export class TesttypeTableBasicController {
 
     removeTesttype(input) {
         var vm = this;
-        vm.$log.debug('removeTesttype entered', input);
+        vm.$log.log('removeTesttype entered', input);
         var path = "../v1/testtype";
         var thedata = {
             id: input.id
@@ -94,8 +97,8 @@ export class TesttypeTableBasicController {
 
         return vm.ClassServices.removeTesttype(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeTesttype returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeTesttype returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -108,10 +111,10 @@ export class TesttypeTableBasicController {
                 }
 
                 vm.getTesttype().then(function(zdata) {
-                        vm.$log.debug('getTesttype returned', zdata);
+                        vm.$log.log('getTesttype returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getTesttype after remove:', error);
+                        vm.$log.log('Caught an error getTesttype after remove:', error);
                         vm.thisTesttype = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -119,8 +122,8 @@ export class TesttypeTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeTesttype failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeTesttype failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -143,14 +146,14 @@ export class TesttypeTableBasicController {
             testdescription: rowEntity.testdescription
         };
 
-        vm.$log.debug('about updateTesttype ', thedata, updpath, updatetype);
+        vm.$log.log('about updateTesttype ', thedata, updpath, updatetype);
         return vm.ClassServices.updateTesttype(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateTesttype returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateTesttype returned data');
+                vm.$log.log(data);
                 vm.thisTesttype = data;
-                vm.$log.debug(vm.thisTesttype);
-                vm.$log.debug(vm.thisTesttype.message);
+                vm.$log.log(vm.thisTesttype);
+                vm.$log.log(vm.thisTesttype.message);
                 vm.message = vm.thisTesttype.message;
                 if ((typeof vm.thisTesttype === 'undefined' || vm.thisTesttype.error === true) &&
                     typeof data !== 'undefined') {
@@ -162,10 +165,10 @@ export class TesttypeTableBasicController {
                 }
                 if (updatetype === 'Add') {
                     vm.getTesttype().then(function(zdata) {
-                            vm.$log.debug('getTesttype returned', zdata);
+                            vm.$log.log('getTesttype returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getTesttype after add:', error);
+                            vm.$log.log('Caught an error getTesttype after add:', error);
                             vm.thisTesttype = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -176,8 +179,8 @@ export class TesttypeTableBasicController {
 
                 return vm.thisTesttype;
             }).catch(function(e) {
-                vm.$log.debug('updateTesttype failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateTesttype failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -186,17 +189,17 @@ export class TesttypeTableBasicController {
 
     getTesttype() {
         var vm = this;
-        vm.$log.debug('getTesttype entered');
+        vm.$log.log('getTesttype entered');
         var path = '../v1/testtype';
 
         return vm.ClassServices.getTesttypes(path).then(function(data) {
-            vm.$log.debug('getTesttypes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getTesttypes returned data');
+            vm.$log.log(data);
 
             vm.gridOptions.data = data.TesttypeList;
             return data.TesttypeList;
         }, function(error) {
-            vm.$log.debug('Caught an error getTesttypes:', error);
+            vm.$log.log('Caught an error getTesttypes:', error);
             vm.TesttypeList = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -207,14 +210,14 @@ export class TesttypeTableBasicController {
 
     getrankTypes() {
         var vm = this;
-        vm.$log.debug('getrankTypes entered');
+        vm.$log.log('getrankTypes entered');
         var path = '../v1/ranktypeids';
         return vm.ClassServices.getRankTypes(path).then(function(data) {
-            vm.$log.debug('getrankTypes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getrankTypes returned data');
+            vm.$log.log(data);
 
             vm.rankTypes = data.ranktypelist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.rankTypes === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -224,7 +227,7 @@ export class TesttypeTableBasicController {
             else {}
             return vm.rankTypes;
         }, function(error) {
-            vm.$log.debug('Caught an error getrankTypes:', error);
+            vm.$log.log('Caught an error getrankTypes:', error);
             vm.rankTypes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -288,11 +291,11 @@ export class TesttypeTableBasicController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

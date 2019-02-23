@@ -33,8 +33,8 @@ export class ModalNewStudentInstanceController {
    }
 
    $onDestroy() {
-      this.$log.debug("ModalNewStudentInstanceController dismissed");
-      this.$log.debugEnabled(false);
+      this.$log.log("ModalNewStudentInstanceController dismissed");
+      //this.$log.logEnabled(false);
    }
 
    activate() {
@@ -55,7 +55,7 @@ export class ModalNewStudentInstanceController {
    finish() {
       var vmnew = this;
       var url = '/#/form-layouts-editstudent/id/' + vmnew.thisstudent.student_id;
-        vmnew.$log.debug(url);
+        vmnew.$log.log(url);
         vmnew.$window.location.href = url;
         vmnew.$scope.$parent.$uibModalInstance.close(vmnew.thisstudent);
       
@@ -72,7 +72,7 @@ export class ModalNewStudentInstanceController {
    }
    pick() {
       var vmnew = this;
-      vmnew.$log.debug('pick entered');
+      vmnew.$log.log('pick entered');
       if (vmnew.quickpickid === null) {
          vmnew.quickpick = [];
          return vmnew.quickpick;
@@ -80,8 +80,8 @@ export class ModalNewStudentInstanceController {
       var path = encodeURI('../v1/quickpick?id=' + vmnew.quickpickid);
 
       return vmnew.ClassServices.getQuickpick(path).then(function(data) {
-         vmnew.$log.debug('pick returned data');
-         vmnew.$log.debug(data);
+         vmnew.$log.log('pick returned data');
+         vmnew.$log.log(data);
          vmnew.message = data.message;
          vmnew.quickpick = [];
          if ((typeof data === 'undefined' || data.error === true)) {
@@ -94,7 +94,7 @@ export class ModalNewStudentInstanceController {
             return vmnew.quickpick;
          }
       }, function(error) {
-         vmnew.$log.debug('Caught an error pick:', error);
+         vmnew.$log.log('Caught an error pick:', error);
          vmnew.quickpick = [];
          vmnew.message = error;
          vmnew.Notification.error({ message: error, delay: 5000 });
@@ -104,11 +104,11 @@ export class ModalNewStudentInstanceController {
    }
    getPayersPartial(theinput) {
       var vmnew = this;
-      vmnew.$log.debug('getPayers entered');
+      vmnew.$log.log('getPayers entered');
 
       return vmnew.ClassServices.getPayersPartial(theinput).then(function(data) {
-         vmnew.$log.debug('controller getPayersPartial returned data', theinput);
-         vmnew.$log.debug(data.payerlist);
+         vmnew.$log.log('controller getPayersPartial returned data', theinput);
+         vmnew.$log.log(data.payerlist);
          vmnew.payers = data.payerlist;
          return vmnew.payers;
       });
@@ -117,12 +117,12 @@ export class ModalNewStudentInstanceController {
 
    getQuickpick() {
       var vmnew = this;
-      vmnew.$log.debug('getQuickpick entered');
+      vmnew.$log.log('getQuickpick entered');
       var path = '../v1/quickpicks';
 
       return vmnew.ClassServices.getQuickpicks(path).then(function(data) {
-         vmnew.$log.debug('getQuickpicks returned data');
-         vmnew.$log.debug(data);
+         vmnew.$log.log('getQuickpicks returned data');
+         vmnew.$log.log(data);
          vmnew.message = data.message;
          vmnew.quickpicks = [];
          if ((typeof data === 'undefined' || data.error === true)) {
@@ -134,7 +134,7 @@ export class ModalNewStudentInstanceController {
             return vmnew.quickpicks;
          }
       }, function(error) {
-         vmnew.$log.debug('Caught an error getQuickpicks:', error);
+         vmnew.$log.log('Caught an error getQuickpicks:', error);
          vmnew.quickpicks = [];
          vmnew.message = error;
          vmnew.Notification.error({ message: error, delay: 5000 });
@@ -145,10 +145,10 @@ export class ModalNewStudentInstanceController {
    getPaymenttypes() {
       var vmnew = this;
       var path = '../v1/paymenttypes';
-      vmnew.$log.debug('getPaymenttypes entered', path);
+      vmnew.$log.log('getPaymenttypes entered', path);
       return vmnew.ClassServices.getPaymenttypes(path).then(function(data) {
-            vmnew.$log.debug('getPaymenttypes returned data');
-            vmnew.$log.debug(data);
+            vmnew.$log.log('getPaymenttypes returned data');
+            vmnew.$log.log(data);
             vmnew.PaymentTypes = data.paymenttypes;
             if ((typeof data.paymenttypes === 'undefined' || data.paymenttypes.error === true) && typeof data !== 'undefined') {
                vmnew.PaymentTypes = [];
@@ -158,7 +158,7 @@ export class ModalNewStudentInstanceController {
             return vmnew.PaymentTypes;
          },
          function(error) {
-            vmnew.$log.debug('Caught an error PaymentTypes, going to notify:', error);
+            vmnew.$log.log('Caught an error PaymentTypes, going to notify:', error);
             vmnew.PaymentTypes = [];
             vmnew.message = error;
             vmnew.Notification.error({ message: error, delay: 5000 });
@@ -173,12 +173,12 @@ export class ModalNewStudentInstanceController {
 
    submit() {
       var vmnew = this;
-      vmnew.$log.debug('hit submit');
+      vmnew.$log.log('hit submit');
       vmnew.createStudent().then(function() {
-         vmnew.$log.debug('createstudent ready to close', vmnew.thisstudent);
+         vmnew.$log.log('createstudent ready to close', vmnew.thisstudent);
 
       }).catch(function(e) {
-         vmnew.$log.debug('error', e);
+         vmnew.$log.log('error', e);
       });
    }
 
@@ -189,7 +189,7 @@ export class ModalNewStudentInstanceController {
    createStudent() {
       var vmnew = this;
       var path = '../v1/newstudent';
-      vmnew.$log.debug('about createStudent ', vmnew);
+      vmnew.$log.log('about createStudent ', vmnew);
       var thedata = {
          FirstName: vmnew.FirstName,
          LastName: vmnew.LastName,
@@ -198,21 +198,21 @@ export class ModalNewStudentInstanceController {
 
       return vmnew.StudentServices.createStudent(path, thedata)
          .then(function(data) {
-            vmnew.$log.debug('createStudent returned data');
-            vmnew.$log.debug(data);
+            vmnew.$log.log('createStudent returned data');
+            vmnew.$log.log(data);
             vmnew.thisstudent = data;
-            vmnew.$log.debug(vmnew.thisstudent);
-            vmnew.$log.debug(vmnew.thisstudent.message);
+            vmnew.$log.log(vmnew.thisstudent);
+            vmnew.$log.log(vmnew.thisstudent.message);
             vmnew.message = vmnew.thisstudent.message;
 
             if (vmnew.thisstudent.student_id > 0) {
                vmnew.addStudentRank().then(function(data) {
-                  vmnew.$log.debug('addStudentRank complete', data);
+                  vmnew.$log.log('addStudentRank complete', data);
                   vmnew.addStudentRegistration().then(function(data) {
-                     vmnew.$log.debug('addStudentRegistration complete', data);
+                     vmnew.$log.log('addStudentRegistration complete', data);
                      return data;
                   }).catch(function(e) {
-                     vmnew.$log.debug('error', e);
+                     vmnew.$log.log('error', e);
                      vmnew.message = e;
                      vmnew.Notification.error({ message: e, delay: 5000 });
                      throw e;
@@ -220,7 +220,7 @@ export class ModalNewStudentInstanceController {
 
                   return data;
                }).catch(function(e) {
-                  vmnew.$log.debug('error', e);
+                  vmnew.$log.log('error', e);
                   vmnew.message = e;
                   vmnew.Notification.error({ message: e, delay: 5000 });
                   throw e;
@@ -235,8 +235,8 @@ export class ModalNewStudentInstanceController {
             }
 
          }).catch(function(e) {
-            vmnew.$log.debug('createStudent failure:');
-            vmnew.$log.debug("error", e);
+            vmnew.$log.log('createStudent failure:');
+            vmnew.$log.log("error", e);
             vmnew.message = e;
             vmnew.Notification.error({ message: e, delay: 5000 });
             throw e;
@@ -244,7 +244,7 @@ export class ModalNewStudentInstanceController {
    }
    addStudentRank() {
       var vmnew = this;
-      vmnew.$log.debug('addStudentRank entered', vmnew.rankpick, vmnew.ranktypepick);
+      vmnew.$log.log('addStudentRank entered', vmnew.rankpick, vmnew.ranktypepick);
       var thedata = {
          ContactID: vmnew.thisstudent.student_id,
          currentrank: vmnew.quickpick.rank,
@@ -252,13 +252,13 @@ export class ModalNewStudentInstanceController {
       };
       return vmnew.StudentServices.addStudentRank(thedata)
          .then(function(data) {
-            vmnew.$log.debug('addStudentRank returned data');
-            vmnew.$log.debug(data);
+            vmnew.$log.log('addStudentRank returned data');
+            vmnew.$log.log(data);
 
             return data;
          }).catch(function(e) {
-            vmnew.$log.debug('addStudentRank failure:');
-            vmnew.$log.debug("error", e);
+            vmnew.$log.log('addStudentRank failure:');
+            vmnew.$log.log("error", e);
             vmnew.Notification.error({ message: e, delay: 5000 });
             throw e;
          });
@@ -274,10 +274,10 @@ export class ModalNewStudentInstanceController {
          payerid: vmnew.payerName.payerid,
          studentclassstatus: 'Active'
       };
-      vmnew.$log.debug('about addStudentRegistration ', path, thedata);
+      vmnew.$log.log('about addStudentRegistration ', path, thedata);
       return vmnew.ClassServices.addStudentRegistration(path, thedata).then(function(data) {
-         vmnew.$log.debug('addStudentRegistration returned data: ');
-         vmnew.$log.debug(data);
+         vmnew.$log.log('addStudentRegistration returned data: ');
+         vmnew.$log.log(data);
 
          if ((typeof data.message === 'undefined' || data.error === true) &&
             typeof data !== 'undefined') {
@@ -287,12 +287,12 @@ export class ModalNewStudentInstanceController {
          else {
 
             vmnew.updatePaymentPlan().then(function(data) {
-               vmnew.$log.debug('updatePaymentPlan complete', data);
+               vmnew.$log.log('updatePaymentPlan complete', data);
                vmnew.getStudentClazzList();
 
                return data;
             }).catch(function(e) {
-               vmnew.$log.debug('error', e);
+               vmnew.$log.log('error', e);
                vmnew.message = e;
                vmnew.Notification.error({ message: e, delay: 5000 });
                throw e;
@@ -301,7 +301,7 @@ export class ModalNewStudentInstanceController {
          }
 
       }, function(error) {
-         vmnew.$log.debug('addStudentRegistration ', error);
+         vmnew.$log.log('addStudentRegistration ', error);
          vmnew.Notification.error({ message: error, delay: 5000 });
          return (error);
       });
@@ -323,10 +323,10 @@ export class ModalNewStudentInstanceController {
          paymentid: null,
          mode: 'insert'
       };
-      vmnew.$log.debug('about updatePaymentPlan ', path, thedata);
+      vmnew.$log.log('about updatePaymentPlan ', path, thedata);
       return vmnew.ClassServices.updatePaymentPlan(path, thedata).then(function(data) {
-         vmnew.$log.debug('updatePaymentPlan returned data: ');
-         vmnew.$log.debug(data);
+         vmnew.$log.log('updatePaymentPlan returned data: ');
+         vmnew.$log.log(data);
          if (data.error === true || typeof data === 'undefined') {
             vmnew.Notification.error({ message: data.error === true ? data.error : "data error", delay: 5000 });
             return (vmnew.$q.reject(data));
@@ -338,14 +338,14 @@ export class ModalNewStudentInstanceController {
          //            vmnew.getPaymentplan();
 
       }, function(error) {
-         vmnew.$log.debug('updatePaymentPlan ', error);
+         vmnew.$log.log('updatePaymentPlan ', error);
          vmnew.Notification.error({ message: error, delay: 5000 });
          return (error);
       });
    }
    getStudentClazzList() {
       var vmnew = this;
-      vmnew.$log.debug('getStudentClazzList entered:' + vmnew.thisstudent.student_id);
+      vmnew.$log.log('getStudentClazzList entered:' + vmnew.thisstudent.student_id);
       var path = '../v1/studentclasslist/' + vmnew.thisstudent.student_id;
       return vmnew.ClassServices.getStudentClassList(path).then(function(data) {
          vmnew.studentclazzlist = data.studentclasslist;
@@ -358,22 +358,22 @@ export class ModalNewStudentInstanceController {
                         */
             if (vmnew.studentclazzlist[iter].classpayid > 0) {
                vmnew.updatePaymentPay(vmnew.studentclazzlist[iter].classpayid).then(function(data) {
-                  vmnew.$log.debug('updatePaymentPay complete', data);
+                  vmnew.$log.log('updatePaymentPay complete', data);
                   return data;
                }).catch(function(e) {
-                  vmnew.$log.debug('error', e);
+                  vmnew.$log.log('error', e);
                   vmnew.message = e;
                   vmnew.Notification.error({ message: e, delay: 5000 });
                   throw e;
                });
             }
          }
-         vmnew.$log.debug('studentclazzlist returned data', vmnew.studentclazzlist);
+         vmnew.$log.log('studentclazzlist returned data', vmnew.studentclazzlist);
 
          return vmnew.studentclazzlist;
 
       }, function(error) {
-         vmnew.$log.debug('getStudentClass ', error);
+         vmnew.$log.log('getStudentClass ', error);
          vmnew.Notification.error({ message: error, delay: 5000 });
          return (error);
       });
@@ -390,17 +390,17 @@ export class ModalNewStudentInstanceController {
          pcpid: null,
          mode: 'insert'
       };
-      vmnew.$log.debug('about updatePaymentPay ', path, thedata);
+      vmnew.$log.log('about updatePaymentPay ', path, thedata);
       return vmnew.ClassServices.updatePaymentPay(path, thedata).then(function(data) {
-         vmnew.$log.debug('updatePaymentPay returned data: ');
-         vmnew.$log.debug(data);
+         vmnew.$log.log('updatePaymentPay returned data: ');
+         vmnew.$log.log(data);
          if (data.error === true || typeof data === 'undefined') {
             vmnew.Notification.error({ message: data.error === true ? data.message : "data error", delay: 5000 });
             return (vmnew.$q.reject(data));
          }
 
       }, function(error) {
-         vmnew.$log.debug('updatePaymentPay ', error);
+         vmnew.$log.log('updatePaymentPay ', error);
          vmnew.Notification.error({ message: error, delay: 5000 });
          return (error);
       });

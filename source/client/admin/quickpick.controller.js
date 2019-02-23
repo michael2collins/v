@@ -4,11 +4,10 @@ export class QuickpickController {
     constructor(
 
         $log, $q, $scope, $interval, ClassServices, uiGridConstants,
-        Notification, moment, iddropdownFilter, Util, portalDataService
+        Notification, moment, iddropdownFilter, Util, portalDataService,UserServices
 
     ) {
         'ngInject';
-        console.log('entering QuickpickController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -20,6 +19,7 @@ export class QuickpickController {
         this.Util = Util;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -67,8 +67,8 @@ export class QuickpickController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-Quickpick dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-Quickpick dismissed");
+        //this.$log.logEnabled(false);
     }
 
 
@@ -76,9 +76,13 @@ export class QuickpickController {
         var vm = this;
         vm.portalDataService.Portlet('table-Quickpick');
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('QuickpickController',vm.UserServices.isDebugEnabled());
+        }
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-Quickpick started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-Quickpick started");
 
         });
 
@@ -86,27 +90,27 @@ export class QuickpickController {
 
         vm.$q.all([
                 vm.getRanks().then(function() {
-                    vm.$log.debug('getRank activate done', vm.Ranks);
+                    vm.$log.log('getRank activate done', vm.Ranks);
                 }, function(error) {
                     return (vm.$q.reject(error));
                 }),
                 vm.getRankTypes().then(function() {
-                    vm.$log.debug('getrankTypes activate done', vm.rankTypes);
+                    vm.$log.log('getrankTypes activate done', vm.rankTypes);
                 }, function(error) {
                     return (vm.$q.reject(error));
                 }),
                 vm.getClasses().then(function() {
-                    vm.$log.debug('getClasses activate done', vm.classes);
+                    vm.$log.log('getClasses activate done', vm.classes);
                 }, function(error) {
                     return (vm.$q.reject(error));
                 }),
                 vm.getPaymentplans().then(function() {
-                    vm.$log.debug('getPaymentplans activate done');
+                    vm.$log.log('getPaymentplans activate done');
                 }).catch(function(error) {
                     return (vm.$q.reject(error));
                 }),
                 vm.getPrograms().then(function() {
-                    vm.$log.debug('getPrograms activate done', vm.programs);
+                    vm.$log.log('getPrograms activate done', vm.programs);
                 }, function(error) {
                     return (vm.$q.reject(error));
                 })
@@ -117,13 +121,13 @@ export class QuickpickController {
                 vm.setpickgridOptions();
                 
                 vm.getQuickpick().then(function() {
-                    vm.$log.debug('getQuickpick activate done');
+                    vm.$log.log('getQuickpick activate done');
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
                 }, function(error) {
                     return (vm.$q.reject(error));
                 });
                 vm.getPicklist().then(function() {
-                    vm.$log.debug('getPicklist activate done', vm.pickgridOptions.data);
+                    vm.$log.log('getPicklist activate done', vm.pickgridOptions.data);
                     vm.pickgridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
                 }, function(error) {
                     return (vm.$q.reject(error));
@@ -156,7 +160,7 @@ export class QuickpickController {
     }
 
     formatter(modelValue, filter, defaultValue) {
-        //  $log.debug("formatter arguments", arguments);
+        //  $log.log("formatter arguments", arguments);
         if (modelValue) {
             return filter("currency")(modelValue);
         }
@@ -166,7 +170,7 @@ export class QuickpickController {
     /*
         changeRanktype() {
             var vm = this;
-            vm.$log.debug('changeRanktype return', vm.ClassRank.rankType);
+            vm.$log.log('changeRanktype return', vm.ClassRank.rankType);
             vm.Quickpick.rankTypeVlu = vm.Util.getByValue(vm.rankTypes, vm.Quickpick.rankType, 'id', 'value');
             vm.getRanks().then(function() {
     //            vm.gridApi.grid.columns[1].filters[0].term = String(vm.ClassRank.rankTypeVlu);
@@ -180,7 +184,7 @@ export class QuickpickController {
     */
     removeQuickpick(input) {
         var vm = this;
-        vm.$log.debug('removeQuickpick entered', input);
+        vm.$log.log('removeQuickpick entered', input);
         var path = "../v1/quickpick";
         var thedata = {
             id: input.id
@@ -191,8 +195,8 @@ export class QuickpickController {
         //check nclasspays, nclasspgm, studentregistration, testcandidates
         return vm.ClassServices.removeQuickpick(path, thedata)
             .then(function(data) {
-                vm.$log.debug('removeQuickpick returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeQuickpick returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -204,10 +208,10 @@ export class QuickpickController {
                 }
 
                 vm.getQuickpick().then(function(zdata) {
-                        vm.$log.debug('getQuickpick returned', zdata);
+                        vm.$log.log('getQuickpick returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getQuickpick after remove:', error);
+                        vm.$log.log('Caught an error getQuickpick after remove:', error);
                         vm.thisQuickpick = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -215,8 +219,8 @@ export class QuickpickController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeQuickpick failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeQuickpick failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -226,10 +230,10 @@ export class QuickpickController {
     getPicklist() {
         var vm = this;
         var path = '../v1/picklist';
-        vm.$log.debug('getPicklist entered', path);
+        vm.$log.log('getPicklist entered', path);
         return vm.ClassServices.getPicklist(path).then(function(data) {
-                vm.$log.debug('getPicklist returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getPicklist returned data');
+                vm.$log.log(data);
                 //                vm.Picklist = data.picklist;
                 if ((typeof data.picklist === 'undefined' || data.picklist.error === true) && typeof data !== 'undefined') {
                     vm.Picklist = [];
@@ -243,7 +247,7 @@ export class QuickpickController {
                 return data.picklist;
             },
             function(error) {
-                vm.$log.debug('Caught an error getPicklist, going to notify:', error);
+                vm.$log.log('Caught an error getPicklist, going to notify:', error);
                 vm.pickgridOptions.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -259,10 +263,10 @@ export class QuickpickController {
     getPaymentplans() {
         var vm = this;
         var path = '../v1/paymentplans';
-        vm.$log.debug('getPaymentplans entered', path);
+        vm.$log.log('getPaymentplans entered', path);
         return vm.ClassServices.getPaymentplans(path).then(function(data) {
-                vm.$log.debug('getPaymentplans returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getPaymentplans returned data');
+                vm.$log.log(data);
                 vm.PaymentPlans = data.paymentplans;
                 if ((typeof data.paymentplans === 'undefined' || data.paymentplans.error === true) && typeof data !== 'undefined') {
                     vm.PaymentPlans = [];
@@ -278,7 +282,7 @@ export class QuickpickController {
                 return vm.PaymentPlans;
             },
             function(error) {
-                vm.$log.debug('Caught an error PaymentPlans, going to notify:', error);
+                vm.$log.log('Caught an error PaymentPlans, going to notify:', error);
                 vm.PaymentPlans = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -293,14 +297,14 @@ export class QuickpickController {
 
     getPrograms() {
         var vm = this;
-        vm.$log.debug('getPrograms entered');
+        vm.$log.log('getPrograms entered');
         var path = '../v1/programs';
         return vm.ClassServices.getPrograms(path).then(function(data) {
-            vm.$log.debug('getPrograms returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getPrograms returned data');
+            vm.$log.log(data);
 
             vm.programs = data.Programlist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.programs === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -313,7 +317,7 @@ export class QuickpickController {
             }
             return vm.programs;
         }, function(error) {
-            vm.$log.debug('Caught an error getPrograms:', error);
+            vm.$log.log('Caught an error getPrograms:', error);
             vm.programs = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -324,15 +328,15 @@ export class QuickpickController {
 
     getRanks() {
         var vm = this;
-        vm.$log.debug('getranks entered', vm.Quickpick.rankTypeVlu);
+        vm.$log.log('getranks entered', vm.Quickpick.rankTypeVlu);
         var path = encodeURI('../v1/ranks?ranktype=' + vm.Quickpick.rankTypeVlu);
         return vm.ClassServices.getRanks(path).then(function(data) {
 
-            vm.$log.debug('getRanks returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getRanks returned data');
+            vm.$log.log(data);
 
             vm.Ranks = data.Ranklist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = vm.Ranks.message;
             if ((typeof vm.Ranks === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -350,7 +354,7 @@ export class QuickpickController {
             return vm.Ranks;
 
         }, function(error) {
-            vm.$log.debug('Caught an error getranks:', error);
+            vm.$log.log('Caught an error getranks:', error);
             vm.Ranks = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -360,15 +364,15 @@ export class QuickpickController {
     }
     getRankTypes() {
         var vm = this;
-        vm.$log.debug('getRankTypes entered');
+        vm.$log.log('getRankTypes entered');
         var path = '../v1/ranktypeids';
 
         return vm.ClassServices.getRankTypes(path).then(function(data) {
-            vm.$log.debug('getRankTypes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getRankTypes returned data');
+            vm.$log.log(data);
 
             vm.rankTypes = data.ranktypelist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.rankTypes === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -378,7 +382,7 @@ export class QuickpickController {
 
             return vm.rankTypes;
         }, function(error) {
-            vm.$log.debug('Caught an error getRankTypes:', error);
+            vm.$log.log('Caught an error getRankTypes:', error);
             vm.rankTypes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -389,14 +393,14 @@ export class QuickpickController {
 
     getClasses() {
         var vm = this;
-        vm.$log.debug('getClasses entered');
+        vm.$log.log('getClasses entered');
         var path = '../v1/classes';
         return vm.ClassServices.getClasses(path).then(function(data) {
-            vm.$log.debug('getClasses returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClasses returned data');
+            vm.$log.log(data);
 
             vm.classes = data.ClassList;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.classes === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -413,7 +417,7 @@ export class QuickpickController {
             }
             return vm.classes;
         }, function(error) {
-            vm.$log.debug('Caught an error getClasses:', error);
+            vm.$log.log('Caught an error getClasses:', error);
             vm.classes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -424,14 +428,14 @@ export class QuickpickController {
 
     getRanksquery(path) {
         var vm = this;
-        vm.$log.debug('getranksquery entered', path);
+        vm.$log.log('getranksquery entered', path);
 
         return vm.ClassServices.getRanks(path).then(function(data) {
-            vm.$log.debug('getranks returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getranks returned data');
+            vm.$log.log(data);
 
             var ranks = data.Ranklist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = ranks.message;
             if ((typeof ranks === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -440,7 +444,7 @@ export class QuickpickController {
             }
             return ranks;
         }, function(error) {
-            vm.$log.debug('Caught an error getranks:', error);
+            vm.$log.log('Caught an error getranks:', error);
             //ranks = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -473,14 +477,14 @@ export class QuickpickController {
             mode: mode
         };
 
-        vm.$log.debug('about updateQuickpick ', thedata, updpath, mode);
+        vm.$log.log('about updateQuickpick ', thedata, updpath, mode);
         return vm.ClassServices.updateQuickpick(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateQuickpick returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateQuickpick returned data');
+                vm.$log.log(data);
                 vm.thisQuickpick = data;
-                vm.$log.debug(vm.thisQuickpick);
-                vm.$log.debug(vm.thisQuickpick.message);
+                vm.$log.log(vm.thisQuickpick);
+                vm.$log.log(vm.thisQuickpick.message);
                 vm.message = vm.thisQuickpick.message;
                 if ((typeof vm.thisQuickpick === 'undefined' || vm.thisQuickpick.error === true) &&
                     typeof data !== 'undefined') {
@@ -492,10 +496,10 @@ export class QuickpickController {
                 }
                 if (mode === 'insert') {
                     vm.getQuickpick().then(function(zdata) {
-                            vm.$log.debug('getQuickpick returned', zdata);
+                            vm.$log.log('getQuickpick returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getQuickpick after remove:', error);
+                            vm.$log.log('Caught an error getQuickpick after remove:', error);
                             vm.thisQuickpick = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -506,8 +510,8 @@ export class QuickpickController {
 
                 return vm.thisQuickpick;
             }).catch(function(e) {
-                vm.$log.debug('updateQuickpick failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateQuickpick failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -516,12 +520,12 @@ export class QuickpickController {
 
     getQuickpick() {
         var vm = this;
-        vm.$log.debug('getQuickpick entered');
+        vm.$log.log('getQuickpick entered');
         var path = '../v1/quickpicks';
 
         return vm.ClassServices.getQuickpicks(path).then(function(data) {
-            vm.$log.debug('getQuickpicks returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getQuickpicks returned data');
+            vm.$log.log(data);
                 vm.message = data.message;
                 vm.gridOptions.data = [];
                 if ((typeof data === 'undefined' || data.error === true) ) {
@@ -533,7 +537,7 @@ export class QuickpickController {
                     return vm.gridOptions.data;
                 }
         }, function(error) {
-            vm.$log.debug('Caught an error getQuickpicks:', error);
+            vm.$log.log('Caught an error getQuickpicks:', error);
             vm.gridOptions.data = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -669,11 +673,11 @@ export class QuickpickController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -692,7 +696,7 @@ export class QuickpickController {
     }
     setSelectedArray(inputArray) {
         var vm = this;
-        vm.$log.debug("setSelectedArray entered", inputArray);
+        vm.$log.log("setSelectedArray entered", inputArray);
         vm.picklistpick = [];
 
         //class pgm classid pgmid ranktype ranklist rankid
@@ -718,7 +722,7 @@ export class QuickpickController {
             return;
         }
 
-        vm.$log.debug("setarray", vm.picklistpick);
+        vm.$log.log("setarray", vm.picklistpick);
 
     }
 
@@ -804,28 +808,28 @@ export class QuickpickController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm pickgridapi onRegisterApi');
+                vm.$log.log('vm pickgridapi onRegisterApi');
                 vm.pickgridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pick pagination changed');
+                    vm.$log.log('pick pagination changed');
                     vm.setpickGridLength(pageSize);
                     vm.pickgridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
                 });
                 gridApi.selection.on.rowSelectionChanged(vm.$scope, function(row) {
                     var msg = 'pickgrid row selected ' + row.entity;
-                    vm.$log.debug(msg);
+                    vm.$log.log(msg);
 
                     var selectedArr = vm.pickgridApi.selection.getSelectedRows();
-                    vm.$log.debug('selected', selectedArr);
+                    vm.$log.log('selected', selectedArr);
                     vm.setSelectedArray(selectedArr);
 
                 });
                 gridApi.selection.on.rowSelectionChangedBatch(vm.$scope, function(rows) {
-                    vm.$log.debug("grid batch");
+                    vm.$log.log("grid batch");
                     var selectedArr = vm.pickgridApi.selection.getSelectedRows();
-                    vm.$log.debug('batch selected', selectedArr);
+                    vm.$log.log('batch selected', selectedArr);
                     vm.setSelectedArray(selectedArr);
 
                 });

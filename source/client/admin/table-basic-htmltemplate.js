@@ -7,7 +7,6 @@ export class TemplateTableBasicController {
 
     ) {
         'ngInject';
-        console.log('entering TemplateTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -68,7 +67,7 @@ export class TemplateTableBasicController {
     }
     messageChange(value) {
         var vm = this;
-        vm.$log.debug("messageChange entered", value);
+        vm.$log.log("messageChange entered", value);
     }
 
 
@@ -76,7 +75,7 @@ export class TemplateTableBasicController {
         var vm = this;
 
         vm.getTemplate().then(function() {
-            vm.$log.debug('getTemplate activate done');
+            vm.$log.log('getTemplate activate done');
         }, function(error) {
             return (vm.$q.reject(error));
         });
@@ -97,7 +96,7 @@ export class TemplateTableBasicController {
 
     removeTemplate(input) {
         var vm = this;
-        vm.$log.debug('removeTemplate entered', input);
+        vm.$log.log('removeTemplate entered', input);
         var path = "../v1/htmltemplate";
         var thedata = {
             id: input.id
@@ -108,8 +107,8 @@ export class TemplateTableBasicController {
         //check nclasspays, nclasspgm, studentregistration, testcandidates
         return vm.ClassServices.removeTemplate(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeTemplate returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeTemplate returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -122,10 +121,10 @@ export class TemplateTableBasicController {
                 }
 
                 vm.getTemplate().then(function(zdata) {
-                        vm.$log.debug('getTemplate returned', zdata);
+                        vm.$log.log('getTemplate returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getTemplate after remove:', error);
+                        vm.$log.log('Caught an error getTemplate after remove:', error);
                         vm.thisTemplate = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -133,8 +132,8 @@ export class TemplateTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeTemplate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeTemplate failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -158,14 +157,14 @@ export class TemplateTableBasicController {
             content: rowEntity.content
         };
 
-        vm.$log.debug('about updateTemplate ', thedata, updpath, updatetype);
+        vm.$log.log('about updateTemplate ', thedata, updpath, updatetype);
         return vm.ClassServices.updateTemplate(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateTemplate returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateTemplate returned data');
+                vm.$log.log(data);
                 vm.thisTemplate = data;
-                vm.$log.debug(vm.thisTemplate);
-                vm.$log.debug(vm.thisTemplate.message);
+                vm.$log.log(vm.thisTemplate);
+                vm.$log.log(vm.thisTemplate.message);
                 vm.message = vm.thisTemplate.message;
                 if ((typeof vm.thisTemplate === 'undefined' || vm.thisTemplate.error === true) &&
                     typeof data !== 'undefined') {
@@ -177,10 +176,10 @@ export class TemplateTableBasicController {
                 }
                 if (updatetype === 'Add') {
                     vm.getTemplate().then(function(zdata) {
-                            vm.$log.debug('getTemplate returned', zdata);
+                            vm.$log.log('getTemplate returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getTemplate after remove:', error);
+                            vm.$log.log('Caught an error getTemplate after remove:', error);
                             vm.thisTemplate = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -191,8 +190,8 @@ export class TemplateTableBasicController {
 
                 return vm.thisTemplate;
             }).catch(function(e) {
-                vm.$log.debug('updateTemplate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateTemplate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -201,17 +200,17 @@ export class TemplateTableBasicController {
 
     getTemplate() {
         var vm = this;
-        vm.$log.debug('getTemplate entered');
+        vm.$log.log('getTemplate entered');
         var path = '../v1/htmltemplate';
 
         return vm.ClassServices.getTemplates(path).then(function(data) {
-            vm.$log.debug('getTemplates returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getTemplates returned data');
+            vm.$log.log(data);
 
             vm.gridOptions.data = data.HtmlTemplateList;
 
         }, function(error) {
-            vm.$log.debug('Caught an error getTemplates:', error);
+            vm.$log.log('Caught an error getTemplates:', error);
             vm.Templatelist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -273,11 +272,11 @@ export class TemplateTableBasicController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

@@ -4,11 +4,11 @@ const { Stripe: Stripe } = window;
         'ngInject';
         var path="../v1/stripepub";
         StudentServices.getStripepub(path).then(function(data) {
-            $log.debug('getStripepub returned', data);
+            $log.log('getStripepub returned', data);
             $rootScope.stripe = Stripe(data.stripepub);
 
         }, function(error) {
-            $log.debug('Caught an error getStripepub:', error);
+            $log.log('Caught an error getStripepub:', error);
 
         });
 

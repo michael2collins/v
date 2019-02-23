@@ -40,7 +40,8 @@ export  const CoreModule = angular.module('ngadmin.core', [
     'angularSpectrumColorpicker', 
     'ui.bootstrap.dropdownToggle',
             'angular-loading-bar',
-            'ngmodel.format'
+            'ngmodel.format',
+            'log.ex.uo'
         ])
         .constant('_', window._)
         .constant('toastr', toastr)

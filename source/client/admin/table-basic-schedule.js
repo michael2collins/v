@@ -2,11 +2,10 @@ import angular from 'angular';
 
 export class ScheduleTableBasicController {
     constructor(
-        $log, $q, $scope, $interval, AttendanceServices, CalendarServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
+        $log, $q, $scope, $interval, AttendanceServices, UserServices, CalendarServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
 
     ) {
         'ngInject';
-        console.log('entering ScheduleTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -19,6 +18,7 @@ export class ScheduleTableBasicController {
         this.Util = Util;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -60,17 +60,20 @@ export class ScheduleTableBasicController {
     }
 
     $onDestroy() {
-        this.$log.debug("table-basic-schedule dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-schedule dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-basic-schedule');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ScheduleTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-schedule started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-schedule started");
 
         });
 
@@ -85,9 +88,9 @@ export class ScheduleTableBasicController {
         }, true);
 
         vm.getSchedule().then(function() {
-            vm.$log.debug('getSchedule activate done');
+            vm.$log.log('getSchedule activate done');
             vm.getClasses().then(function() {
-                vm.$log.debug('getClasses activate done');
+                vm.$log.log('getClasses activate done');
                 vm.setgridOptions();
                 vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
                 vm.schedule.TakeAttendance = 'Yes';
@@ -105,7 +108,7 @@ export class ScheduleTableBasicController {
             return (vm.$q.reject(error));
         });
         vm.getAgeRangeList().then(function() {
-            vm.$log.debug("returned from getAgeRangeList");
+            vm.$log.log("returned from getAgeRangeList");
         });
 
 
@@ -135,8 +138,8 @@ export class ScheduleTableBasicController {
         var vm = this;
         var path = "../v1/ageranges";
         return vm.CalendarServices.getAgeRangeList(path).then(function(data) {
-            vm.$log.debug('getAgeRangeList returned data');
-            vm.$log.debug(data.agerangelist);
+            vm.$log.log('getAgeRangeList returned data');
+            vm.$log.log(data.agerangelist);
             if ((typeof vm.agerangelist === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
                 vm.Notification.error({ message: data.message, delay: 5000 });
@@ -163,20 +166,20 @@ export class ScheduleTableBasicController {
     }
     removeSchedule(input) {
         var vm = this;
-        vm.$log.debug('removeSchedule entered', input);
+        vm.$log.log('removeSchedule entered', input);
         var path = "../v1/schedule";
         var thedata = {
             ID: input.ID
         };
         return vm.AttendanceServices.removeSchedule(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeSchedule returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeSchedule returned data');
+                vm.$log.log(data);
                 vm.getSchedule().then(function(zdata) {
-                        vm.$log.debug('getSchedule returned', zdata);
+                        vm.$log.log('getSchedule returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getSchedule after remove:', error);
+                        vm.$log.log('Caught an error getSchedule after remove:', error);
                         vm.thisschedule = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -184,8 +187,8 @@ export class ScheduleTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeSchedule failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeSchedule failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -198,7 +201,7 @@ export class ScheduleTableBasicController {
 
     updSchedule(input, type) {
         var vm = this;
-        vm.$log.debug('updSchedule entered', input);
+        vm.$log.log('updSchedule entered', input);
         var output = {
             ID: input.ID,
             DayOfWeek: input.dow,
@@ -229,14 +232,14 @@ export class ScheduleTableBasicController {
             classid: rowEntity.classid
         };
 
-        vm.$log.debug('about updateSchedule ', rowEntity, updpath, updatetype);
+        vm.$log.log('about updateSchedule ', rowEntity, updpath, updatetype);
         return vm.AttendanceServices.updateSchedule(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateSchedule returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateSchedule returned data');
+                vm.$log.log(data);
                 vm.thisschedule = data;
-                vm.$log.debug(vm.thisschedule);
-                vm.$log.debug(vm.thisschedule.message);
+                vm.$log.log(vm.thisschedule);
+                vm.$log.log(vm.thisschedule.message);
                 vm.message = vm.thisschedule.message;
                 if ((typeof vm.thisschedule === 'undefined' || vm.thisschedule.error === true) &&
                     typeof data !== 'undefined') {
@@ -248,10 +251,10 @@ export class ScheduleTableBasicController {
                 }
                 //       if (updatetype === 'Add') {
                 vm.getSchedule().then(function(zdata) {
-                        vm.$log.debug('getSchedule returned', zdata);
+                        vm.$log.log('getSchedule returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getSchedule after update:', error);
+                        vm.$log.log('Caught an error getSchedule after update:', error);
                         vm.thisschedule = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -260,8 +263,8 @@ export class ScheduleTableBasicController {
                 //       }
                 return vm.thisschedule;
             }).catch(function(e) {
-                vm.$log.debug('updateSchedule failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateSchedule failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -270,14 +273,14 @@ export class ScheduleTableBasicController {
 
     getSchedule() {
         var vm = this;
-        vm.$log.debug('getSchedule entered');
+        vm.$log.log('getSchedule entered');
         var path = '../v1/schedule';
         var myDatea = new Date();
         var myDateb = new Date();
 
         return vm.AttendanceServices.getSchedules(path).then(function(data) {
-            vm.$log.debug('getSchedules returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getSchedules returned data');
+            vm.$log.log(data);
 
             for (var iter = 0, len = data.Schedulelist.length; iter < len; iter++) {
                 myDatea = new Date();
@@ -293,7 +296,7 @@ export class ScheduleTableBasicController {
 
             vm.gridOptions.data = data.Schedulelist;
         }, function(error) {
-            vm.$log.debug('Caught an error getSchedules:', error);
+            vm.$log.log('Caught an error getSchedules:', error);
             vm.Schedulelist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -303,12 +306,12 @@ export class ScheduleTableBasicController {
     }
     getClasses() {
         var vm = this;
-        vm.$log.debug('getClasses entered');
+        vm.$log.log('getClasses entered');
         var path = '../v1/classes';
 
         return vm.AttendanceServices.getClasses(path).then(function(data) {
-            vm.$log.debug('getClasses returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClasses returned data');
+            vm.$log.log(data);
 
             vm.classlist = data.ClassList;
             //classes which aren't in the db
@@ -322,7 +325,7 @@ export class ScheduleTableBasicController {
             }
             return vm.classlist;
         }, function(error) {
-            vm.$log.debug('Caught an error getClasses:', error);
+            vm.$log.log('Caught an error getClasses:', error);
             vm.classlist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -475,11 +478,11 @@ export class ScheduleTableBasicController {
 
             ],
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     //                        paginationOptions.pageSize = pageSize;
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);

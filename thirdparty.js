@@ -372,13 +372,13 @@ let thirdparty = [
         module: 'tinymce', entry: '//cdnjs.cloudflare.com/ajax/libs/tinymce/4.7.4/tinymce.min.js'
     },
     {
-        module: 'pdfMake', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js'
+        module: 'pdfMake', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.51/pdfmake.js'
     },
     {
         module: 'CSV', entry: '//cdn.jsdelivr.net/npm/CSV-JS@1.2.0/csv.min.js'
     },
     {
-        module: 'vfs_fonts', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js'
+        module: 'vfs_fonts', entry: '//cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.51/vfs_fonts.js'
     },
     
     {
@@ -403,6 +403,14 @@ let thirdparty = [
     {
         module: 'bower_components', entry: {
             path: 'jquery-animateNumber/jquery.animateNumber.min.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'angular-logex/AngularLogExtender/dist2/log-ex-unobtrusive.js',
             cwpPatternConfig: {
                 context: path.resolve(__dirname, '.'),
             },

@@ -5,7 +5,7 @@ export class FormLayoutsControllerEditStudent {
     constructor(
         StudentServices, $scope, $rootScope, $routeParams,
         $log, $location, Notification, ClassServices, _, $q, PhotoServices, $uibModal,
-        portalDataService, $window
+        portalDataService, $window, UserServices
 
     ) {
         'ngInject';
@@ -24,10 +24,10 @@ export class FormLayoutsControllerEditStudent {
         this.PhotoServices = PhotoServices;
         this.$uibModal = $uibModal;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
-        console.log('entering FormLayoutsControllerEditStudent oninit');
         this.$ = angular.element;
         var vm = this;
         vm.isCollapsed = true;
@@ -79,23 +79,27 @@ export class FormLayoutsControllerEditStudent {
     }
 
     $onDestroy() {
-        this.$log.debug("editstudent dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("editstudent dismissed");
+        //this.$log.logEnabled(false);
     }
 
     init() {
         var vm = this;
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('FormLayoutsControllerEditStudent',vm.UserServices.isDebugEnabled());
+        }
+
         vm.menu_h = vm.$('#sidebar').height();
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("editstudent started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("editstudent started");
 
         });
         vm.$scope.$on('$destroy', function iVeBeenDismissed() {
-            vm.$log.debug("editstudent dismissed");
-            vm.$log.debugEnabled(false);
+            vm.$log.log("editstudent dismissed");
+         //   vm.$log.logEnabled(false);
         });
 
 
@@ -127,7 +131,7 @@ export class FormLayoutsControllerEditStudent {
             windowClass: 'my-modal-popup',
             resolve: {
                 dataToPass: function() {
-                    photoModal.$log.debug('resolve datatopass', photoModal.dataToPass);
+                    photoModal.$log.log('resolve datatopass', photoModal.dataToPass);
                     return photoModal.dataToPass;
                 }
 
@@ -136,30 +140,30 @@ export class FormLayoutsControllerEditStudent {
 
         photoModal.modalInstance.opened.then(
             function(success) {
-                photoModal.$log.debug('photoModal ui opened:', success);
+                photoModal.$log.log('photoModal ui opened:', success);
 
             },
             function(error) {
-                photoModal.$log.debug('photoModal ui failed to open, reason : ', error);
+                photoModal.$log.log('photoModal ui failed to open, reason : ', error);
             }
         );
         photoModal.modalInstance.rendered.then(
             function(success) {
-                photoModal.$log.debug('photomodal ui rendered:', success);
+                photoModal.$log.log('photomodal ui rendered:', success);
             },
             function(error) {
-                photoModal.$log.debug('photoModal ui failed to render, reason : ', error);
+                photoModal.$log.log('photoModal ui failed to render, reason : ', error);
             }
         );
 
         photoModal.modalInstance.result.then(
             function(retvlu) {
-                photoModal.$log.debug('search modalInstance result :', retvlu);
+                photoModal.$log.log('search modalInstance result :', retvlu);
                 photoModal.activate();
 
             },
             function(error) {
-                photoModal.$log.debug('photomodal ui failed to result, reason : ', error);
+                photoModal.$log.log('photomodal ui failed to result, reason : ', error);
                 photoModal.$log.info('Modal dismissed at: ' + new Date());
                 photoModal.activate();
             });
@@ -171,19 +175,19 @@ export class FormLayoutsControllerEditStudent {
     }
 
     rankremove(ranktype) {
-        this.$log.debug('rankremove entered', ranktype);
+        this.$log.log('rankremove entered', ranktype);
         this.removeStudentRank(ranktype);
     }
 
     activate() {
         var vm = this;
-        vm.$log.debug('about activate editstudent ');
+        vm.$log.log('about activate editstudent ');
 
         return vm.getStudent().then(function() {
-            vm.$log.debug('activated EditStudent view');
+            vm.$log.log('activated EditStudent view');
             //    StudentServices.setActiveTab(1,'EditStudent controller');
             var thetab = vm.StudentServices.getActiveTab();
-            vm.$log.debug('activate the active tab', thetab);
+            vm.$log.log('activate the active tab', thetab);
             //    vm.active[thetab] = true;
             vm.active = thetab;
             if (typeof(vm.students.ID) !== 'undefined') {
@@ -191,7 +195,7 @@ export class FormLayoutsControllerEditStudent {
                 vm.getStudentRankTypes(vm.students.ID);
             }
         }, function(error) {
-            vm.$log.debug('activate editstudent', error);
+            vm.$log.log('activate editstudent', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -200,10 +204,10 @@ export class FormLayoutsControllerEditStudent {
         getRankPartial(theinput) {
             var vm = this;
             return vm.StudentServices.getRankPartial(theinput, vm.ranktypepick).then(function(data) {
-                vm.$log.debug('controller getRankPartial returned data', theinput, vm.ranktypepick);
-                vm.$log.debug(data);
+                vm.$log.log('controller getRankPartial returned data', theinput, vm.ranktypepick);
+                vm.$log.log(data);
                 vm.ranklist = data;
-                vm.$log.debug('controller getRankPartial service data', vm.ranklist);
+                vm.$log.log('controller getRankPartial service data', vm.ranklist);
                 return vm.ranklist;
             });
 
@@ -221,10 +225,10 @@ export class FormLayoutsControllerEditStudent {
         vm.rankpickparent = value;
         vm.ranktypepick = vm.rankpickparent.ranktype;
         vm.rankpick = vm.rankpickparent.rankpick;
-        vm.$log.debug('updateRankPick', rankpickparent, prop, value, vm.rankpick, vm.ranktypepick);
+        vm.$log.log('updateRankPick', rankpickparent, prop, value, vm.rankpick, vm.ranktypepick);
         //        vm.getRankList();
         //        vm.setRank('All');
-        //        vm.$log.debug('setRank', vm.Rank);
+        //        vm.$log.log('setRank', vm.Rank);
 
     }
 
@@ -233,10 +237,10 @@ export class FormLayoutsControllerEditStudent {
             var vm = this;
 
             return vm.StudentServices.getRank(vm.ranktypepick).then(function(data) {
-                vm.$log.debug('controller getRank returned data', theinput, vm.ranktypepick);
-                vm.$log.debug(data);
+                vm.$log.log('controller getRank returned data', theinput, vm.ranktypepick);
+                vm.$log.log(data);
                 vm.ranklist = data;
-                vm.$log.debug('controller getRank service data', vm.ranklist);
+                vm.$log.log('controller getRank service data', vm.ranklist);
                 return vm.ranklist;
             });
 
@@ -244,20 +248,20 @@ export class FormLayoutsControllerEditStudent {
     */
     getBirthday(bday) {
         var vm = this;
-        vm.$log.debug('bday');
-        vm.$log.debug(bday);
+        vm.$log.log('bday');
+        vm.$log.log(bday);
         return new Date(bday);
     }
 
     getStudent() {
         var vm = this;
         return vm.StudentServices.getStudent(vm.path).then(function(data) {
-            vm.$log.debug('getStudent returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getStudent returned data');
+            vm.$log.log(data);
 
             vm.students = data;
 
-            vm.$log.debug(vm.students.message);
+            vm.$log.log(vm.students.message);
             vm.message = vm.students.message;
             if ((typeof vm.students === 'undefined' || vm.students.error === true) &&
                 typeof data !== 'undefined') {
@@ -267,15 +271,15 @@ export class FormLayoutsControllerEditStudent {
             else {
                 vm.Notification.success({ message: vm.message, delay: 5000 });
                 vm.PhotoServices.setTheStudent(data);
-                vm.$log.debug('studen pic url', vm.students.pictureurl);
+                vm.$log.log('studen pic url', vm.students.pictureurl);
                 if (vm._.isEmpty(vm.students.pictureurl)) {
-                    vm.$log.debug('empty picture');
+                    vm.$log.log('empty picture');
                     vm.students.pictureurldecache = 'missingstudentpicture.png';
                 }
                 else {
                     vm.students.pictureurldecache = vm.students.pictureurl + '?decache=' + Math.random();
                 }
-                vm.$log.debug('get Birthday:', vm.students.Birthday);
+                vm.$log.log('get Birthday:', vm.students.Birthday);
                 if (vm._.isEmpty(vm.students.Birthday)) {
                     vm.students.Birthday = vm.getBirthday(new Date());
                 }
@@ -283,12 +287,12 @@ export class FormLayoutsControllerEditStudent {
                     vm.students.Birthday = vm.getBirthday(vm.students.Birthday);
                 }
 
-                vm.$log.debug('studen pic url decache', vm.students.pictureurldecache);
+                vm.$log.log('studen pic url decache', vm.students.pictureurldecache);
             }
 
             return vm.students;
         }, function(error) {
-            vm.$log.debug('getStudent', error);
+            vm.$log.log('getStudent', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -299,14 +303,14 @@ export class FormLayoutsControllerEditStudent {
         if (typeof studentid === 'undefined') {
             return {};
         }
-        vm.$log.debug('getStudentRanks entered', studentid);
+        vm.$log.log('getStudentRanks entered', studentid);
         var thepath = encodeURI("../v1/studentrank?ContactID=" + studentid);
 
         return vm.StudentServices.getStudentRanks(thepath).then(function(data) {
-            vm.$log.debug('getStudentRanks returned data');
-            vm.$log.debug(data, data.studentranklist);
+            vm.$log.log('getStudentRanks returned data');
+            vm.$log.log(data, data.studentranklist);
             if (typeof(data.studentranklist) !== 'undefined' && data.error === false) {
-                vm.$log.debug('studentranklist', data.studentranklist);
+                vm.$log.log('studentranklist', data.studentranklist);
                 vm.studentranks = data.studentranklist;
             }
             else {
@@ -317,7 +321,7 @@ export class FormLayoutsControllerEditStudent {
             }
             return vm.studentranks;
         }, function(error) {
-            vm.$log.debug('getStudentRanks', error);
+            vm.$log.log('getStudentRanks', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -328,14 +332,14 @@ export class FormLayoutsControllerEditStudent {
         if (typeof studentid === 'undefined') {
             return {};
         }
-        vm.$log.debug('getStudentRankTypes entered', studentid);
+        vm.$log.log('getStudentRankTypes entered', studentid);
         var thepath = encodeURI("../v1/ranktypeexcluded?ContactID=" + studentid);
 
         return vm.StudentServices.getStudentRankTypes(thepath).then(function(data) {
-            vm.$log.debug('getStudentRankTypes returned data');
-            vm.$log.debug(data, data.ranktypelist);
+            vm.$log.log('getStudentRankTypes returned data');
+            vm.$log.log(data, data.ranktypelist);
             if (typeof(data.ranktypelist) !== 'undefined' && data.error === false) {
-                vm.$log.debug('studentranktypelist', data.ranktypelist);
+                vm.$log.log('studentranktypelist', data.ranktypelist);
                 vm.RankTypeList = data.ranktypelist;
             }
             else {
@@ -346,7 +350,7 @@ export class FormLayoutsControllerEditStudent {
             }
             return vm.RankTypeList;
         }, function(error) {
-            vm.$log.debug('getStudentRankTypes', error);
+            vm.$log.log('getStudentRankTypes', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -354,7 +358,7 @@ export class FormLayoutsControllerEditStudent {
 
     addStudentRank() {
         var vm = this;
-        vm.$log.debug('addStudentRank entered', vm.rankpick, vm.ranktypepick);
+        vm.$log.log('addStudentRank entered', vm.rankpick, vm.ranktypepick);
         var thedata = {
             ContactID: vm.students.ID,
             currentrank: vm.rankpick,
@@ -362,13 +366,13 @@ export class FormLayoutsControllerEditStudent {
         };
         return vm.StudentServices.addStudentRank(thedata)
             .then(function(data) {
-                vm.$log.debug('addStudentRank returned data');
-                vm.$log.debug(data);
+                vm.$log.log('addStudentRank returned data');
+                vm.$log.log(data);
                 vm.getStudentRanks(vm.students.ID);
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('addStudentRank failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('addStudentRank failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -377,21 +381,21 @@ export class FormLayoutsControllerEditStudent {
 
     removeStudentRank(ranktype) {
         var vm = this;
-        vm.$log.debug('removeStudentRank entered', vm.students.ID, ranktype);
+        vm.$log.log('removeStudentRank entered', vm.students.ID, ranktype);
         var thedata = {
             ContactID: vm.students.ID,
             ranktype: ranktype
         };
         return vm.StudentServices.removeStudentRank(thedata)
             .then(function(data) {
-                vm.$log.debug('removeStudentRank returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeStudentRank returned data');
+                vm.$log.log(data);
                 vm.getStudentRanks(vm.students.ID);
                 vm.getStudentRankTypes(vm.students.ID);
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeStudentRank failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeStudentRank failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -400,7 +404,7 @@ export class FormLayoutsControllerEditStudent {
 
     updateStudentRank(item) {
         var vm = this;
-        vm.$log.debug('about updateStudentRank ', item);
+        vm.$log.log('about updateStudentRank ', item);
 
         var thepath = "../v1/studentrank";
         var thedata = {
@@ -410,11 +414,11 @@ export class FormLayoutsControllerEditStudent {
         };
 
         return vm.StudentServices.updateStudentRank(thepath, thedata).then(function(data) {
-            vm.$log.debug('updateStudentRank returned data:');
-            vm.$log.debug(data);
+            vm.$log.log('updateStudentRank returned data:');
+            vm.$log.log(data);
             vm.getStudentRanks(item.ContactID);
         }, function(error) {
-            vm.$log.debug('updateStudent', error);
+            vm.$log.log('updateStudent', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -422,16 +426,16 @@ export class FormLayoutsControllerEditStudent {
 
     updateStudent() {
         var vm = this;
-        vm.$log.debug('about updateStudent ', vm.students);
-        vm.$log.debug('with Birthday', vm.students.Birthday);
+        vm.$log.log('about updateStudent ', vm.students);
+        vm.$log.log('with Birthday', vm.students.Birthday);
 
         return vm.StudentServices.updateStudent(vm.path, vm.students).then(function(data) {
-            vm.$log.debug('updateStudent returned data: goto', vm.path);
-            vm.$log.debug(data);
+            vm.$log.log('updateStudent returned data: goto', vm.path);
+            vm.$log.log(data);
             vm.students = data;
             vm.getStudent();
         }, function(error) {
-            vm.$log.debug('updateStudent', error);
+            vm.$log.log('updateStudent', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -439,7 +443,7 @@ export class FormLayoutsControllerEditStudent {
 
     removeStudent() {
         var vm = this;
-        vm.$log.debug('removeStudent entered', vm.students.ID);
+        vm.$log.log('removeStudent entered', vm.students.ID);
         var path = '../v1/student';
         var thedata = {
             id: vm.students.ID
@@ -449,8 +453,8 @@ export class FormLayoutsControllerEditStudent {
 
         return vm.StudentServices.removeStudent(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeStudent returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeStudent returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -461,15 +465,15 @@ export class FormLayoutsControllerEditStudent {
                 else {
                     vm.Notification.success({ message: vm.message, delay: 5000 });
                     var url = '/#/table-basic-students';
-                    vm.$log.debug(url);
+                    vm.$log.log(url);
                     vm.$window.location.href = url;
 
                 }
 
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeStudent failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeStudent failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -480,13 +484,13 @@ export class FormLayoutsControllerEditStudent {
         var vm = this;
 
         return vm.StudentServices.getAllZips(vm.zippath).then(function(data) {
-            vm.$log.debug('getAllZips returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getAllZips returned data');
+            vm.$log.log(data);
             vm.zipList = data;
 
             return vm.zipList;
         }, function(error) {
-            vm.$log.debug('getAllZips', error);
+            vm.$log.log('getAllZips', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -497,13 +501,13 @@ export class FormLayoutsControllerEditStudent {
         var vm = this;
 
         return vm.StudentServices.getStudentLists(vm.sListPath).then(function(data) {
-            vm.$log.debug('controller getStudentLists returned data');
-            vm.$log.debug(data);
+            vm.$log.log('controller getStudentLists returned data');
+            vm.$log.log(data);
             vm.StudentList = data;
 
             return vm.StudentList;
         }, function(error) {
-            vm.$log.debug('getStudentLists ', error);
+            vm.$log.log('getStudentLists ', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -518,13 +522,13 @@ export class FormLayoutsControllerEditStudent {
 
             return vm.StudentServices.getRankList(data, path).then(function(data) {
 
-                vm.$log.debug('getRankList returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getRankList returned data');
+                vm.$log.log(data);
                 vm.RanksList = data;
 
                 return vm.RanksList;
             }, function(error) {
-                vm.$log.debug('getRankList ', error);
+                vm.$log.log('getRankList ', error);
                 vm.Notification.error({ message: error, delay: 5000 });
                 return (error);
             });
@@ -534,7 +538,7 @@ export class FormLayoutsControllerEditStudent {
         var vm = this;
 
         vm.$('#form-layouts-editstudent ul.nav-pills li a').live('click', function() {
-            vm.$log.debug('set height');
+            vm.$log.log('set height');
             var tab_id = vm.$(this).attr('href');
             var tab_h = vm.$(tab_id).height();
             if (tab_h < vm.menu_h) {
@@ -549,7 +553,7 @@ export class FormLayoutsControllerEditStudent {
 
     setActiveTab(activeTab, thecaller) {
         var vm = this;
-        vm.$log.debug('set activetab as:', activeTab, thecaller);
+        vm.$log.log('set activetab as:', activeTab, thecaller);
         vm.StudentServices.setActiveTab(activeTab, thecaller);
 
     }
@@ -557,7 +561,7 @@ export class FormLayoutsControllerEditStudent {
     getActiveTab() {
         var vm=this;
         var atab = vm.StudentServices.getActiveTab();
-        vm.$log.debug('get activetab is:', atab);
+        vm.$log.log('get activetab is:', atab);
         return atab;
     }
 

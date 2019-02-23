@@ -28,9 +28,9 @@
             pagevm.apiKey;
 //            pagevm.init = init;
             
-            $log.debug('enter PageSigninController');
-            $log.debug('username', pagevm.username);
-            $log.debug('password', pagevm.password);
+            $log.log('enter PageSigninController');
+            $log.log('username', pagevm.username);
+            $log.log('password', pagevm.password);
             
             (function initController() {
                 // reset login status
@@ -44,13 +44,13 @@
                 $('body').attr('id', 'signin-page');
 
             function login() {
-                $log.debug('controller login function entered', pagevm.username, pagevm.password);
+                $log.log('controller login function entered', pagevm.username, pagevm.password);
                 
                 pagevm.dataLoading = true;
 
                  return UserServices.Login(pagevm.username, pagevm.password).then(function(data){
-                    $log.debug('UserServices returned data');
-                    $log.debug(data);
+                    $log.log('UserServices returned data');
+                    $log.log(data);
                     pagevm.apiKey = data.apiKey;
                         UserServices.SetCredentials(pagevm.username, pagevm.password, pagevm.apiKey);
                         TournamentServices.setapikey(pagevm.apiKey);
@@ -63,7 +63,7 @@
                         return data;
                 },
                 function (error) {
-                    $log.debug('Caught an error UserServices, going to notify:', error); 
+                    $log.log('Caught an error UserServices, going to notify:', error); 
                 //    vm.message = error;
                 //    Notification.error({message: error, delay: 5000});
                         UserServices.SetCredentials('','','');

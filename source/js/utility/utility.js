@@ -13,7 +13,7 @@ export class Util {
         var vm = this;
         if (typeof(thetime) !== 'undefined') {
             var m = moment(thetime, "MM/DD/YYYY hh:mm A z");
-            vm.$log.debug('convertTime: passed in: ', thetime,
+            vm.$log.log('convertTime: passed in: ', thetime,
                 'isvalid?', m.isValid(),
                 'where invalid', m.invalidAt());
             return moment(thetime, "MM/DD/YYYY hh:mm A z").tz('America/New_York').format('MM/DD/YYYY hh:mm A z');
@@ -145,7 +145,7 @@ export class Util {
         }
 
         if (!retVlu) {
-            this.$log.debug('validateDate indicates error for: ', indate, ' format: ', informat, 'invalidAt', invalidmsg);
+            this.$log.log('validateDate indicates error for: ', indate, ' format: ', informat, 'invalidAt', invalidmsg);
         }
 
         return retVlu;
@@ -213,12 +213,12 @@ export class Util {
 
     }
     maxObjArr(arr, attr) {
-        this.$log.debug('maxObjArr entered', arr, attr);
+        this.$log.log('maxObjArr entered', arr, attr);
         var res = Math.max.apply(Math, arr.map(function(o) { return o[attr]; }));
         return res;
     }
     getByValue(arr, value, attr, resvlu) {
-        this.$log.debug('getByValue entered', arr, value, attr, resvlu);
+        this.$log.log('getByValue entered', arr, value, attr, resvlu);
 
         var result = arr.filter(function(o) { return o[attr] == value; });
 
@@ -491,7 +491,7 @@ export class Util {
     }
     importerDataSetCallback(grid, newObjects, importdata, step2populated, gridimp1Options) {
         importdata = [];
-        this.$log.debug('importerDataAddCallback ', newObjects);
+        this.$log.log('importerDataAddCallback ', newObjects);
         importdata = importdata.concat(newObjects);
         step2populated = importdata.length > 0 ? true : false;
         gridimp1Options.data = importdata;
@@ -545,7 +545,7 @@ export class Util {
     setPagination(gridApi, vm) {
         gridApi.pagination.on.paginationChanged(vm.$scope,
             function(newPage, pageSize) {
-                vm.$log.debug('pagination changed');
+                vm.$log.log('pagination changed');
                 vm.gridLength = vm.Util.setGridLength(pageSize, vm.rowheight, vm.headerheight);
                 gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -580,7 +580,7 @@ export class Util {
                     'Has an error.  The new Value: ' + newValue + '\n' +
                     ' vs the old Value: ' + oldValue + '\nvalidators: ' +
                     JSON.stringify(colDef.validators));
-                vm.$log.debug("validation error", msg);
+                vm.$log.log("validation error", msg);
                 if (colDef.name === 'Birthday' && rowEntity.$$errorsBirthday.required) {
                     rowEntity.Birthday = this.simpledate("01/01/1900");
                 }
@@ -645,13 +645,13 @@ export class Util {
 
     }
     exceptionError(e, func, notification) {
-        this.$log.debug(func + ' failure:');
-        this.$log.debug("error", e);
+        this.$log.log(func + ' failure:');
+        this.$log.log("error", e);
         notification.error({ message: e, delay: 5000 });
     }
     checkDataSuccess(data, list, notification, $q, func, notifysuccess) {
-        this.$log.debug(func + ' returned data');
-        this.$log.debug(data);
+        this.$log.log(func + ' returned data');
+        this.$log.log(data);
         if ((typeof data === 'undefined' || typeof list === 'undefined' || data.error === true) &&
             typeof data !== 'undefined') {
             notification.error({ message: data.message, delay: 5000 });
@@ -664,8 +664,8 @@ export class Util {
         }
     }
     checkRemoveSuccess(data, notification, $q, func, notifysuccess) {
-        this.$log.debug(func + ' returned data');
-        this.$log.debug(data);
+        this.$log.log(func + ' returned data');
+        this.$log.log(data);
         if ((typeof data === 'undefined' ||  data.error === true) &&
             typeof data !== 'undefined') {
             notification.error({ message: data.message, delay: 5000 });
@@ -678,8 +678,8 @@ export class Util {
         }
     }
     checkCreateDataSuccess(data, newid, notification, $q, func, notifysuccess) {
-        this.$log.debug(func + ' returned data');
-        this.$log.debug(data);
+        this.$log.log(func + ' returned data');
+        this.$log.log(data);
         if ((typeof data === 'undefined'  || data.error === true) &&
             typeof data !== 'undefined') {
             notification.error({ message: data.message, delay: 5000 });
@@ -696,8 +696,8 @@ export class Util {
         }
     }
     checkDataSuccessv2(data, list, notification, $q, func, notifysuccess) {
-        this.$log.debug(func + ' returned data');
-        this.$log.debug(data);
+        this.$log.log(func + ' returned data');
+        this.$log.log(data);
         if ((typeof list === 'undefined' || data.error === true) &&
             typeof data !== 'undefined') {
             notification.error({

@@ -3,10 +3,9 @@
 export class ModalEmailListInstanceController {
   constructor(
     $log, studentServices, $window, Notification, uiGridConstants,
-    $scope, iddropdownFilter, $uibModal, util, $q, moment
+    $scope, iddropdownFilter, $uibModal, util, $q, moment, UserServices
   ) {
     'ngInject';
-    console.log('entering ModalEmailListInstanceController controller');
 
     this.iddropdownFilter = iddropdownFilter;
     this.$log = $log;
@@ -19,6 +18,7 @@ export class ModalEmailListInstanceController {
     this.moment = moment;
     this.Util = util;
     this.$uibModal = $uibModal;
+        this.UserServices = UserServices;
 
   }
   $onInit() {
@@ -47,15 +47,20 @@ export class ModalEmailListInstanceController {
   }
   init() {
     var self=this;
+    var vm=this;
+            if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ModalEmailListInstanceController',vm.UserServices.isDebugEnabled());
+        }
+
     self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
       var vm = event.currentScope.$ctrl;
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("ModalEmailListInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("ModalEmailListInstanceController started");
 
     });
     self.$scope.$on('$destroy', function iVeBeenDismissed() {
-      self.$log.debug("ModalEmailListInstanceController dismissed");
-      self.$log.debugEnabled(false);
+      self.$log.log("ModalEmailListInstanceController dismissed");
+      //self.$log.logEnabled(false);
     });
     
   }
@@ -78,7 +83,7 @@ export class ModalEmailListInstanceController {
       windowClass: 'my-modal-popup',
       resolve: {
         item: function() {
-          emailModal.$log.debug('resolve item', emailModal.item);
+          emailModal.$log.log('resolve item', emailModal.item);
           return emailModal.item;
         }
 
@@ -89,17 +94,17 @@ export class ModalEmailListInstanceController {
 
     emailModal.modalInstance.opened.then(
         function(success) {
-            emailModal.$log.debug('emailview ui opened:', success);
+            emailModal.$log.log('emailview ui opened:', success);
 
         },
         function(error) {
-            emailModal.$log.debug('emailview ui failed to open, reason : ', error);
+            emailModal.$log.log('emailview ui failed to open, reason : ', error);
         }
     );
 
 
     emailModal.modalInstance.result.then(function(retvlu) {
-      emailModal.$log.debug('search modalInstance result :', retvlu);
+      emailModal.$log.log('search modalInstance result :', retvlu);
       emailModal.retvlu = retvlu;
     }, function() {
       emailModal.getEmailList();
@@ -114,12 +119,12 @@ export class ModalEmailListInstanceController {
 
   getEmailList() {
     var self = this;
-    self.$log.debug('getEmailList entered');
+    self.$log.log('getEmailList entered');
     var path = '../v1/emaillist';
 
     return self.StudentServices.getEmailLists(path).then(function(data) {
-      self.$log.debug('getEmailLists returned data');
-      self.$log.debug(data);
+      self.$log.log('getEmailLists returned data');
+      self.$log.log(data);
       var testdate;
       for (var i = 0; i < data.EmailList.length; i++) {
 
@@ -139,7 +144,7 @@ export class ModalEmailListInstanceController {
       self.gridOptions.data = data.EmailList;
 
     }, function(error) {
-      self.$log.debug('Caught an error getEmailLists:', error);
+      self.$log.log('Caught an error getEmailLists:', error);
       self.gridOptions.data = {};
       self.message = error;
       self.Notification.error({ message: error, delay: 5000 });
@@ -253,11 +258,11 @@ export class ModalEmailListInstanceController {
       enableColumnResizing: true,
 
       onRegisterApi: function(gridApi) {
-        vm.$log.debug('vm gridapi onRegisterApi');
+        vm.$log.log('vm gridapi onRegisterApi');
         vm.gridApi = gridApi;
 
         gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-          vm.$log.debug('pagination changed');
+          vm.$log.log('pagination changed');
           vm.setGridLength(pageSize);
           vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -289,7 +294,7 @@ export class ModalEmailListInstanceController {
 
   removeEmailList(input) {
     var vm = this;
-    vm.$log.debug('removeEmailList entered', input);
+    vm.$log.log('removeEmailList entered', input);
     var path = "../v1/emaillist";
     var thedata = {
       id: input.id
@@ -300,8 +305,8 @@ export class ModalEmailListInstanceController {
     //check nclasspays, nclasspgm, studentregistration, testcandidates
     return vm.StudentServices.removeEmailList(thedata, path)
       .then(function(data) {
-        vm.$log.debug('removeEmailList returned data');
-        vm.$log.debug(data);
+        vm.$log.log('removeEmailList returned data');
+        vm.$log.log(data);
         vm.message = data.message;
         if ((typeof data === 'undefined' || data.error === true) &&
           typeof data !== 'undefined') {
@@ -314,10 +319,10 @@ export class ModalEmailListInstanceController {
         }
 
         vm.getEmailList().then(function(zdata) {
-            vm.$log.debug('getEmailList returned', zdata);
+            vm.$log.log('getEmailList returned', zdata);
           },
           function(error) {
-            vm.$log.debug('Caught an error getEmailList after remove:', error);
+            vm.$log.log('Caught an error getEmailList after remove:', error);
             vm.thisEmailList = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -325,8 +330,8 @@ export class ModalEmailListInstanceController {
           });
         return data;
       }).catch(function(e) {
-        vm.$log.debug('removeEmailList failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('removeEmailList failure:');
+        vm.$log.log("error", e);
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;
       });
@@ -342,14 +347,14 @@ export class ModalEmailListInstanceController {
       status: rowEntity.status
     };
 
-    vm.$log.debug('about updateEmailList ', thedata, updpath, updatetype);
+    vm.$log.log('about updateEmailList ', thedata, updpath, updatetype);
     return vm.StudentServices.updateEmailList(updpath, thedata)
       .then(function(data) {
-        vm.$log.debug('updateEmailList returned data');
-        vm.$log.debug(data);
+        vm.$log.log('updateEmailList returned data');
+        vm.$log.log(data);
         vm.thisEmailList = data;
-        vm.$log.debug(vm.thisEmailList);
-        vm.$log.debug(vm.thisEmailList.message);
+        vm.$log.log(vm.thisEmailList);
+        vm.$log.log(vm.thisEmailList.message);
         vm.message = vm.thisEmailList.message;
         if ((typeof vm.thisEmailList === 'undefined' || vm.thisEmailList.error === true) &&
           typeof data !== 'undefined') {
@@ -361,10 +366,10 @@ export class ModalEmailListInstanceController {
         }
         if (updatetype === 'Add') {
           vm.getEmailList().then(function(zdata) {
-              vm.$log.debug('getEmailList returned', zdata);
+              vm.$log.log('getEmailList returned', zdata);
             },
             function(error) {
-              vm.$log.debug('Caught an error getEmailList after remove:', error);
+              vm.$log.log('Caught an error getEmailList after remove:', error);
               vm.thisEmailList = [];
               vm.message = error;
               vm.Notification.error({ message: error, delay: 5000 });
@@ -375,8 +380,8 @@ export class ModalEmailListInstanceController {
 
         return vm.thisEmailList;
       }).catch(function(e) {
-        vm.$log.debug('updateEmailList failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('updateEmailList failure:');
+        vm.$log.log("error", e);
         vm.message = e;
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;

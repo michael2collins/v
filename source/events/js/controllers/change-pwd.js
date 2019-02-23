@@ -30,7 +30,7 @@
 
             vm.userdta = UserServices.getUserDetails();            
             
-            $log.debug('enter ChangepwdController',vm.userdta);
+            $log.log('enter ChangepwdController',vm.userdta);
 //            $("body>.default-page").hide();
 //            $("body>.extra-page").html($(".page-content").html()).show();
 //            $('body').attr('id', 'signup-page');
@@ -38,12 +38,12 @@
             vm.re = /^[a-zA-Z]\w{3,14}$/;
            
             function compare(repass) {
-                $log.debug('compare',repass);
+                $log.log('compare',repass);
                 vm.isconfirm = vm.password == repass ? true : false;
             }
             
             function changepwd() {
-                $log.debug('controller register function entered');
+                $log.log('controller register function entered');
                 vm.dataLoading = true;
                 var thedata = {
                     username: vm.userdta.username,
@@ -52,13 +52,13 @@
                     oldpassword: vm.oldpassword
                 };
                 var path = '/v1/changepassword';
-                $log.debug('controller register thedata:', thedata);
+                $log.log('controller register thedata:', thedata);
                 
                 vm.dataLoading = true;
 
                  return UserServices.createUser(path, thedata).then(function(data){
-                    $log.debug('register returned data');
-                    $log.debug(data);
+                    $log.log('register returned data');
+                    $log.log(data);
 //                            alert('Change successful', true);
                 Notification.success({message: 'Change successful', delay: 5000});
 
@@ -66,7 +66,7 @@
                         return data;
                 },
                 function (error) {
-                    $log.debug('Caught an error , going to notify:', error); 
+                    $log.log('Caught an error , going to notify:', error); 
                 //    vm.message = error;
                 //    Notification.error({message: error, delay: 5000});
                         FlashService.Err(error);

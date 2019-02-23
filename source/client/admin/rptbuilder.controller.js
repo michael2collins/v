@@ -6,11 +6,10 @@ export class RptBuilderController {
     constructor(
         $log, $routeParams, TestingServices, CalendarServices, $location, $window, $q,
         $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, moment, UserServices,
-        TemplateServices, AttendanceServices, textAngularManager, $uibModal, _, portalDataService
+        TemplateServices, AttendanceServices, textAngularManager, $uibModal, _, portalDataService, Util
 
     ) {
         'ngInject';
-        console.log('entering RptBuilderController controller');
         this.$log = $log;
         this.$routeParams = $routeParams;
 
@@ -33,6 +32,7 @@ export class RptBuilderController {
         this.$uibModal = $uibModal;
         this._ = _;
         this.portalDataService = portalDataService;
+        this.Util = Util;
     }
     $onInit() {
 
@@ -132,33 +132,520 @@ export class RptBuilderController {
         vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
         vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
 
+        vm.restricted = true;
+        vm.testdatelist=[];
+        vm.ranktypelist =[];
+        vm.ranktypeselected = '';
+        vm.styleleft = "400px";
+        vm.styleright = "400px";
+        vm.gridright = 10; //5
+        vm.gridleft = 10; //5
+        vm.gridleftcnt = 0;
+        vm.gridrightcnt = 0;
 
         vm.activate();
-        vm.refresHtml();
     }
 
     $onDestroy() {
-        this.$log.debug("rptbuilder controller dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("rptbuilder controller dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
+
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('RptBuilderController',vm.UserServices.isDebugEnabled());
+        }
+        
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("rptbuilder-controller started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("rptbuilder-controller started");
 
         });
 
-        vm.getTemplateNames('').then(function() {
-            vm.$log.debug('activate eventdetails fetched');
+        vm.getTestDates();
+        vm.getRankTypes();
+        vm.initGridOptions();
+        vm.getUserDetails();
+//        vm.getTemplateNames('').then(function() {
+//            vm.$log.log('activate eventdetails fetched');
+//        });
+
+        vm.$q.all([
+                vm.getGeneralColDefs('test', 'Testcandidatesource').then(function() {
+                    vm.$log.log('getGeneralColDefs ready');
+                    vm.setGridOptions();
+
+                }).catch(function(e) {
+                    vm.$log.log("getPayerList error in activate", e);
+                }),
+                vm.getTemplateNames('').then(function() {
+                    vm.$log.log('activate getTemplateNames fetched');
+                }).catch(function(e) {
+                    vm.$log.log("rptbuilder error in activate", e);
+                }),
+                vm.getInstructorList().then(function() {
+                    vm.$log.log('getInstructorList ready');
+
+                }).catch(function(e) {
+                    vm.$log.log("rptbuilder error in activate", e);
+                })
+            ])
+            .then(function() {
+                vm.$log.log('rptbuilder activation done');
+                vm.refresHtml();
+            });
+
+    }
+    changeRankType(){
+        var vm=this;
+        vm.$log.log("changeRankType", vm.ranktypeselected);
+        vm.refreshList();
+    }
+    
+    refreshList() {
+        var vm = this;
+
+        vm.gettestcandidateDetails(vm.testdatelist.testtype).then(function(zdata) {
+                vm.$log.log('gettestcandidateDetails returned', zdata);
+            },
+            function(error) {
+                vm.$log.log('Caught an error gettestcandidateDetails after update:', error);
+                vm.data = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            });
+    }
+    
+    getRankTypes() {
+        var vm = this;
+        vm.$log.log('getRankTypes entered');
+        var path = encodeURI("../v1/ranktypes");
+        var error;
+
+        return vm.TestingServices.getRankTypes(path).then(function(data) {
+                vm.$log.log('getRankTypes returned data');
+                vm.$log.log(data);
+                if (data.ranktypelist.length > 0) {
+                    vm.ranktypelist = data.ranktypelist;
+                    vm.ranktypeselected = vm.ranktypelist[0].ranktype;
+                }
+                else {
+                    error = "No ranktpes found" ;
+                    vm.message = error;
+                    vm.Notification.error({ message: error, delay: 5000 });
+                    vm.ranktypelist = [];
+                    return (vm.$q.reject(error));
+
+                }
+                return vm.ranktypelist;
+            },
+            function(error) {
+                vm.$log.log('Caught an error ranktypelist, going to notify:', error);
+                vm.ranktypelist = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+    getUserDetails() {
+        var vm = this;
+        vm.$log.log('getUserDetails entered');
+        return vm.UserServices.getUserDetails().then(function(data) {
+                vm.$log.log("testcandidate getuserdetails returned:", data);
+                vm.userdta = data;
+                return vm.userdta;
+            },
+
+            function(error) {
+                vm.$log.log('Caught an error getUserDetails, going to notify:', error);
+                vm.userdta = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
         });
 
     }
 
+    testdateshow() {
+        var vm = this;
+        var show = false;
+        if (vm.testdatelist !== undefined) {
+            show = typeof(vm.testdatelist) === 'object' ? true : false;
+        }
+        //         vm.$log.log('testdateshow', typeof(vm.testdatelist), vm.testdatelist, show);
+        return show;
+    }
+
+    getTestDates(testname) {
+        var vm = this;
+        if (typeof testname === 'undefined') {
+            return {};
+        }
+        vm.$log.log('getTestDates entered', testname);
+        var refreshpath = encodeURI("../v1/testdates?testname=" + testname.name);
+        var error;
+        vm.testname = testname.name;
+        vm.testtype = testname.eventtype;
+
+        return vm.TestingServices.getTestDates(refreshpath).then(function(data) {
+                vm.$log.log('getTestDates returned data');
+                vm.$log.log(data);
+                if (data.testdatelist.length > 1) {
+                    error = "too many testdates found:" + data.testdatelist.length;
+                    vm.message = error;
+                    vm.Notification.error({ message: error, delay: 5000 });
+                    vm.testdatelist = [];
+                    return (vm.$q.reject(error));
+                }
+                if (data.testdatelist.length === 1) {
+                    vm.testdatelist = data.testdatelist[0];
+                    vm.testdatelist.starttime = vm.Util.convertTime(data.testdatelist[0].startdate);
+                    vm.testdatelist.endtime = vm.Util.convertTime(data.testdatelist[0].enddate);
+                    vm.gettestcandidateDetails(vm.testdatelist.testtype).then(function(zdata) {
+                            vm.$log.log('gettestcandidateDetails returned', zdata);
+                        },
+                        function(error) {
+                            vm.$log.log('Caught an error gettestcandidateDetails after update:', error);
+                            vm.data = [];
+                            vm.message = error;
+                            vm.Notification.error({ message: error, delay: 5000 });
+                            return (vm.$q.reject(error));
+                        });
+
+
+                }
+                else {
+                    error = "No testdates found in calendar for:" + testname.name;
+                    vm.message = error;
+                    vm.Notification.error({ message: error, delay: 5000 });
+                    vm.testdatelist = [];
+                    return (vm.$q.reject(error));
+
+                }
+                return vm.testdatelist;
+            },
+            function(error) {
+                vm.$log.log('Caught an error getTestDates, going to notify:', error);
+                vm.testdatelist = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+
+    getGeneralColDefs(colkey, colsubkey) {
+        var vm = this;
+        vm.$log.log('getGeneralColDefs entered', colkey, colsubkey);
+        var path = encodeURI("../v1/gencoldefs?colkey=" + colkey + "&colsubkey=" + colsubkey);
+
+        return vm.TestingServices.getGeneralColDefs(path).then(function(data) {
+                vm.$log.log("getGeneralColDefs returned:", data);
+                var retdata = JSON.parse(data.gcolumns[0][0]);
+
+                if (colsubkey === 'Testcandidatesource') {
+                    vm.tcsrccoldef = retdata;
+                }
+
+                return retdata;
+            },
+
+            function(error) {
+                vm.$log.log('Caught an error getGeneralColDefs, going to notify:', error);
+                vm.userdta = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+
+    setSelectedArray(inputArray) {
+        var vm = this;
+        vm.$log.log("setSelectedArray entered", inputArray);
+        vm.selectedStudents = [];
+        //todo: move readyfornext rank to studentregistration
+
+        if (inputArray.length > 0) {
+            vm.selected = true;
+            for (var i = 0, len = inputArray.length; i < len; i++) {
+                var info = {
+                    ContactID: inputArray[i].contactID,
+                    studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName,
+                    FirstName: inputArray[i].FirstName,
+                    LastName: inputArray[i].LastName,
+                    rankType: inputArray[i].ranktype,
+                    pgrmcat: inputArray[i].pgrmcat,
+                    nextClass: inputArray[i].nextClass,
+                    nclassid: inputArray[i].nclassid,
+                    nclass: inputArray[i].nclass,
+                    classcat: inputArray[i].classcat,
+                    agecat: inputArray[i].agecat,
+                    pgmWas: inputArray[i].pgmid,
+                    classWas: inputArray[i].classid,
+                    BeltSize: inputArray[i].BeltSize,
+                    ContactType: inputArray[i].ContactType,
+                    CurrentRank: inputArray[i].ranklist,
+                    RankAchievedInTest: inputArray[i].nextrank,
+                    ReadyForNextRank: inputArray[i].ReadyForNextRank,
+                    address: inputArray[i].address,
+                    age: inputArray[i].age,
+                    birthday: inputArray[i].birthday,
+                    city: inputArray[i].city,
+                    contactpictureurl: inputArray[i].contactpictureurl,
+                    daysAttended: inputArray[i].daysAttended,
+                    daysSinceLastTest: inputArray[i].daysSinceLastTest,
+                    email: inputArray[i].email,
+                    lastpromoted: inputArray[i].lastpromoted,
+                    parent: inputArray[i].parent,
+                    phone: inputArray[i].phone,
+                    state: inputArray[i].state,
+                    zip: inputArray[i].zip
+
+                };
+                vm.selectedStudents.push(info);
+            }
+        }
+        else {
+            vm.selected = false;
+            return;
+        }
+
+        vm.$log.log("setarray", vm.selectedStudents);
+
+    }
+
+    gettestcandidateDetails(thetesttype) {
+        var vm = this;
+
+        //called by gettestdates
+        vm.$log.log('gettestcandidateDetails entered:', thetesttype);
+        var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype + '&ranktype=' + vm.ranktypeselected);
+        if (vm.restricted !== undefined) {
+            path = path + '&supplement=' + vm.restricted;
+        }
+        var messagetxt;
+        //view testcandidatesource
+        vm.$log.log('gettestcandidateDetails path:', path);
+
+        return vm.TestingServices.gettestcandidateDetails(path).then(function(data) {
+                vm.$log.log('gettestcandidateDetails returned data');
+                vm.$log.log(data);
+                if (typeof(data.testcandidatedetails) !== 'undefined' && data.testcandidatedetails.length > 0) {
+                    vm.gridOptions.data = data.testcandidatedetails;
+
+                    vm.$log.log("details", data.testcandidatedetails[0]);
+
+                    vm.ContactID = data.testcandidatedetails[0].contactID;
+
+                    //check for empty set and do message
+                    messagetxt = "testcandidateDetails obtained";
+                    vm.Notification.success({ message: messagetxt, delay: 5000 });
+                }
+                else {
+                    messagetxt = "No test candidates found";
+                    vm.Notification.warning({ message: messagetxt, delay: 5000 });
+                }
+                return data.testcandidatedetails;
+            },
+            function(error) {
+                vm.$log.log('Caught an error gettestcandidateDetails:', error);
+                vm.data = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+
+    setSlide(direction) {
+        var vm = this;
+        if (direction == 'left') {
+            //                vm.styleright = "col-md-9";
+            //                vm.styleleft = 'col-md-1';                
+            vm.styleright = "770px";
+            vm.styleleft = "0px";
+            vm.gridright = 10;
+            vm.gridleft = 0;
+            vm.showright = true;
+            vm.showleft = false;
+        }
+        if (direction == 'right') {
+            //                vm.styleright = "col-md-1";
+            //                vm.styleleft = 'col-md-9';                
+            vm.styleright = "0px";
+            vm.styleleft = "770px";
+            vm.gridright = 0;
+            vm.gridleft = 10;
+            vm.showright = false;
+            vm.showleft = true;
+        }
+        if (direction == 'center') {
+            //                vm.styleright = "400px";
+            //                vm.styleleft = "400px";                
+            //                vm.gridright = 5;
+            //                vm.gridleft = 5;
+            vm.showright = true;
+            vm.showleft = true;
+        }
+    }
+
+    gettestcandidateNames(testcandidatepartial) {
+        var vm = this;
+        vm.$log.log('gettestcandidateNames entered');
+        var path = encodeURI('../v1/testcandidatenames?testcandidatepartial=' + testcandidatepartial);
+
+        vm.$log.log('gettestcandidateNames path:', path);
+
+        return vm.TestingServices.gettestcandidateNames(path).then(function(data) {
+                vm.$log.log('gettestcandidateNames returned data');
+                vm.$log.log(data);
+                vm.testcandidatenames = data.testcandidatenames;
+                //check for empty set and do message
+                //messagetxt = "testcandidateDetails obtained";
+                //Notification.success({message: messagetxt, delay: 5000});
+                return;
+            },
+            function(error) {
+                vm.$log.log('Caught an error gettestcandidateDetails:', error);
+                vm.data.testcandidatelist = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+
+    initGridOptions() {
+        var vm = this;
+
+
+        vm.gridOptions = {
+            enableFiltering: true,
+            paginationPageSizes: vm.limits,
+            paginationPageSize: 10,
+            rowHeight: 100,
+            //                columnDefs: vm.tcsrccoldef.columns,
+            //rowHeight: 15,
+            showGridFooter: true,
+            enableColumnResizing: true,
+            enableGridMenu: true,
+            showColumnFooter: true,
+            appScopeProvider: vm,
+
+            onRegisterApi: function(gridApi) {
+                vm.$log.log('vm gridapi onRegisterApi');
+                vm.gridApi = gridApi;
+
+                gridApi.selection.on.rowSelectionChanged(vm.$scope, function(row) {
+                    var msg = 'grid row selected ' + row.entity;
+                    vm.$log.log(msg);
+
+                    var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                    vm.gridleftcnt = selectedStudentarr.length;
+                    vm.$log.log('selected', selectedStudentarr);
+                    vm.setSelectedArray(selectedStudentarr);
+
+                });
+                gridApi.selection.on.rowSelectionChangedBatch(vm.$scope, function(rows) {
+                    vm.$log.log("grid batch");
+                    var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+                    vm.gridleftcnt = selectedStudentarr.length;
+                    vm.$log.log('batch selected', selectedStudentarr);
+                    vm.setSelectedArray(selectedStudentarr);
+
+                });
+            }
+
+        };
+
+
+        vm.$log.log('setGridOptions gridOptions', vm.gridOptions);
+
+    }
+
+    setGridOptions() {
+        var vm = this;
+
+
+        vm.gridOptions = {
+            columnDefs: vm.tcsrccoldef.columns
+
+        };
+
+
+        vm.$log.log('setGridOptions gridOptions', vm.gridOptions);
+
+    }
+
+    getInstructorList() {
+        var vm = this;
+        vm.$log.log('getInstructorList entered');
+        var refreshpath = "../v1/instructorlist";
+        var witnessdefault = {
+            firstname: 'Witness',
+            lastname: '',
+            instructortitle: '',
+            name: 'Witness'
+        };
+        return vm.CalendarServices.getinstructorlist(refreshpath).then(function(data) {
+                vm.$log.log(' calservices getinstructorlist returned data');
+                vm.$log.log(data);
+                vm.instructorlist = data.instructorlist;
+                if (typeof data.instructorlist !== 'undefined') {
+                    for (var i = 0; i < data.instructorlist.length; i++) {
+                        vm.instructorlist[i].name = data.instructorlist[i].firstname + ' ' + data.instructorlist[i].lastname;
+                    }
+                }
+                vm.instructorlist.unshift(witnessdefault);
+                return vm.instructorlist;
+            },
+            function(error) {
+                vm.$log.log('Caught an error getinstructorlist, going to notify:', error);
+                vm.instructorlist = [];
+                vm.message = error;
+                vm.Notification.error({ message: error, delay: 5000 });
+                return (vm.$q.reject(error));
+            }).
+        finally(function() {
+            vm.loading = false;
+            vm.loadAttempted = true;
+        });
+
+    }
+
+
     refresHtml() {
         var vm = this;
-        vm.$log.debug('refresHtml called');
+        vm.$log.log('refresHtml called');
         vm.htmlcontentdata.htmlcontentall = '';
         vm.htmlcontentdata.htmlcontentall += (typeof(vm.htmlcontentdata.htmlcontentheader) !== "undefined") ? vm.htmlcontentdata.htmlcontentheader : '';
         vm.htmlcontentdata.htmlcontentall += (typeof(vm.htmlcontentdata.htmlcontent) !== "undefined") ? vm.htmlcontentdata.htmlcontent : '';
@@ -167,11 +654,11 @@ export class RptBuilderController {
     }
     htmlcontentsubmit() {
         var vm = this;
-        vm.$log.debug('Submit triggered');
+        vm.$log.log('Submit triggered');
     }
     htmlcontentclear() {
         var vm = this;
-        vm.$log.debug('clear');
+        vm.$log.log('clear');
         vm.htmlcontentdata = {
             orightml: ' <h2>Try me!</h2><p>textAngular is a super cool WYSIWYG Text Editor directive for AngularJS</p><p><b>Features:</b></p><ol><li>Automatic Seamless Two-Way-Binding</li><li>Super Easy <b>Theming</b> Options</li><li style="color: green;">Simple Editor Instance Creation</li><li>Safely Parses Html for Custom Toolbar Icons</li><li class="text-danger">Doesn&apos;t Use an iFrame</li><li>Works with Firefox, Chrome, and IE9+</li></ol><p><b>Code at GitHub:</b> <a href="https://github.com/fraywing/textAngular">Here</a> </p>'
         };
@@ -186,7 +673,7 @@ export class RptBuilderController {
                 '"/></td><td>Right</td></tr></tbody></table>'
         };
         vm.htmlcontentdata.htmlcontentheader = vm.htmlcontentheader.orightml;
-        vm.$log.debug("setheaderlogo entered", vm.htmlcontentheader.orightml);
+        vm.$log.log("setheaderlogo entered", vm.htmlcontentheader.orightml);
         vm.refresHtml();
     }
     setFooterLogo() {
@@ -197,7 +684,7 @@ export class RptBuilderController {
                 '"/></td><td>Right</td></tr></tbody></table>'
         };
         vm.htmlcontentdata.htmlcontentfooter = vm.htmlcontentfooter.orightml;
-        vm.$log.debug("setfooterlogo entered", vm.htmlcontentfooter.orightml);
+        vm.$log.log("setfooterlogo entered", vm.htmlcontentfooter.orightml);
         vm.refresHtml();
     }
     setBodyImage() {
@@ -207,7 +694,7 @@ export class RptBuilderController {
         };
         //todo figure out how to loop and insert content to existing pointer location
         vm.htmlcontentdata.htmlcontentbody = vm.htmlcontentbody.orightml;
-        vm.$log.debug("setBodyImage entered", vm.htmlcontentbody.orightml);
+        vm.$log.log("setBodyImage entered", vm.htmlcontentbody.orightml);
         vm.refresHtml();
     }
     setBackgroundImage() {
@@ -224,19 +711,19 @@ export class RptBuilderController {
                 height: rptheight
             }],
         };
-        vm.$log.debug("setBackgroundImage entered", vm.htmlbackground);
+        vm.$log.log("setBackgroundImage entered", vm.htmlbackground);
         vm.refresHtml();
     }
 
     htmlcontentreset() {
         var vm = this;
-        vm.$log.debug('reset');
+        vm.$log.log('reset');
 
         vm.htmlcontentdata.htmlcontent = vm.htmlcontentdata.orightml;
     }
     htmlcontenttestPaste($html) {
         var vm = this;
-        vm.$log.debug('Hit Paste', arguments);
+        vm.$log.log('Hit Paste', arguments);
         return '<p>Jackpot</p>';
     }
 
@@ -372,7 +859,7 @@ export class RptBuilderController {
     }
     getContent(students, certdata) {
         var vm = this;
-        vm.$log.debug('getContent entered', students, certdata);
+        vm.$log.log('getContent entered', students, certdata);
         var contentdtl = [];
         var pagebreak;
         var certtext = [];
@@ -403,10 +890,10 @@ export class RptBuilderController {
         //var logoImageDataUrl ='data:image/png;base64,'+ this.getBase64Image("images/logos/vlogo.gif");
         var program = "and is therefore awarded the rank of";
 
-        vm.$log.debug('testers', vm.testdatelist);
-        vm.$log.debug('titles', vm.instructorlist);
-        vm.$log.debug('title1', vm._.findWhere(vm.instructorlist, { name: vm.testdatelist.tester1 }));
-        vm.$log.debug('school', vm.userdta);
+        vm.$log.log('testers', vm.testdatelist);
+        vm.$log.log('titles', vm.instructorlist);
+        vm.$log.log('title1', vm._.findWhere(vm.instructorlist, { name: vm.testdatelist.tester1 }));
+        vm.$log.log('school', vm.userdta);
         var students = vm.selectedStudents;
         var certdata = {
             certDate: vm.testdatelist.testdate,
@@ -423,7 +910,7 @@ export class RptBuilderController {
         };
 
         var thecontent = vm.getContent(students, certdata);
-        vm.$log.debug('thecontent', thecontent, 'json', JSON.stringify(thecontent));
+        vm.$log.log('thecontent', thecontent, 'json', JSON.stringify(thecontent));
 
 
         var docDefinition = {
@@ -512,7 +999,7 @@ export class RptBuilderController {
         };
 
         var myJsonString = JSON.stringify(docDefinition);
-        vm.$log.debug('doc json', myJsonString);
+        vm.$log.log('doc json', myJsonString);
 
        // var now = new Date();
         //var pdfDoc = printer.createPdfKitDocument(docDefinition);
@@ -525,19 +1012,19 @@ export class RptBuilderController {
 
     getTemplateNames(templatepartial) {
         var vm = this;
-        vm.$log.debug('getTemplateNames entered');
+        vm.$log.log('getTemplateNames entered');
         var path = encodeURI('../v1/templatenames?templatepartial=' + templatepartial);
 
-        vm.$log.debug('gettemplateNames path:', path);
+        vm.$log.log('gettemplateNames path:', path);
 
         return vm.TemplateServices.gettemplateNames(path).then(function(data) {
-                vm.$log.debug('gettemplateNames returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettemplateNames returned data');
+                vm.$log.log(data);
                 vm.templatelist = data.templatelist;
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error getTemplateNames:', error);
+                vm.$log.log('Caught an error getTemplateNames:', error);
                 vm.templatelist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -553,18 +1040,18 @@ export class RptBuilderController {
     gettemplateDetails(templateSelected) {
         var vm = this;
         //called by gettestdates
-        vm.$log.debug('gettemplateDetails entered:', templateSelected.templatename);
+        vm.$log.log('gettemplateDetails entered:', templateSelected.templatename);
         var path = encodeURI('../v1/templatedetails?templatename=' + templateSelected.templatename);
         var messagetxt;
         //view templatesource
-        vm.$log.debug('gettemplateDetails path:', path);
+        vm.$log.log('gettemplateDetails path:', path);
 
         return vm.TemplateServices.gettemplateDetails(path).then(function(data) {
-                vm.$log.debug('gettemplateDetails returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettemplateDetails returned data');
+                vm.$log.log(data);
                 if (typeof(data.templatedetails) !== 'undefined' && data.templatedetails.length > 0) {
                     vm.templatedetails = data.templatedetails[0];
-                    vm.$log.debug("details", data.templatedetails[0]);
+                    vm.$log.log("details", data.templatedetails[0]);
 
                     vm.htmlcontentdata.htmlcontentheader = vm.templatedetails.htmlheader === "NULL" ? '' : vm.templatedetails.htmlheader;
                     vm.htmlcontentdata.htmlcontent = vm.templatedetails.htmlbody === "NULL" ? '' : vm.templatedetails.htmlbody;
@@ -597,7 +1084,7 @@ export class RptBuilderController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error gettemplateDetails:', error);
+                vm.$log.log('Caught an error gettemplateDetails:', error);
                 vm.templatedetails = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -618,26 +1105,26 @@ export class RptBuilderController {
         var thedata = {
             templatename: templatename
         };
-        vm.$log.debug('about removetemplate ', path, thedata, vm.templatename);
+        vm.$log.log('about removetemplate ', path, thedata, vm.templatename);
         return vm.TemplateServices.removetemplate(path, thedata)
             .then(function(data) {
-                vm.$log.debug('removetemplate returned data');
-                vm.$log.debug(data, data.error);
+                vm.$log.log('removetemplate returned data');
+                vm.$log.log(data, data.error);
                 if (data.error === true) {
-                    vm.$log.debug('removetemplate error returned', data.error);
+                    vm.$log.log('removetemplate error returned', data.error);
                     return (vm.$q.reject(data));
                 }
 
                 vm.templatedetails = data;
-                vm.$log.debug(vm.templatedetails);
-                vm.$log.debug(vm.templatedetails.message);
+                vm.$log.log(vm.templatedetails);
+                vm.$log.log(vm.templatedetails.message);
                 vm.message = vm.templatedetails.message;
                 vm.Notification.success({ message: vm.message, delay: 5000 });
                 vm.getTemplateNames('').then(function(zdata) {
-                        vm.$log.debug('activate gettemplateNames fetched', zdata);
+                        vm.$log.log('activate gettemplateNames fetched', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error gettemplateDetails after update:', error);
+                        vm.$log.log('Caught an error gettemplateDetails after update:', error);
                         vm.data = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -646,8 +1133,8 @@ export class RptBuilderController {
 
                 return;
             }).catch(function(e) {
-                vm.$log.debug('removetemplate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removetemplate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -658,29 +1145,29 @@ export class RptBuilderController {
         var vm = this;
         var saveSelectedStudents = vm.selectedStudents;
         vm.selectedStudents = [];
-        vm.pdfForElement('convertthis');
+//        vm.pdfForElement('convertthis');
         vm.selectedStudents = saveSelectedStudents;
 
         var path = "../v1/templateupdate"; // put wasn't working?
         var thedata = vm.setPDFdata(templatename);
-        vm.$log.debug('about updatetemplate ', thedata, path);
+        vm.$log.log('about updatetemplate ', thedata, path);
 
         return vm.TemplateServices.updateTemplate(path, thedata)
             .then(function(data) {
-                vm.$log.debug('updatetemplate returned data');
-                vm.$log.debug(data, data.error);
+                vm.$log.log('updatetemplate returned data');
+                vm.$log.log(data, data.error);
                 if (data.error === true) {
-                    vm.$log.debug('updateTemplate error returned', data.error);
+                    vm.$log.log('updateTemplate error returned', data.error);
                     return (vm.$q.reject(data));
                 }
                 vm.templatedetails = data;
-                vm.$log.debug(vm.templatedetails);
-                vm.$log.debug(vm.templatedetails.message);
+                vm.$log.log(vm.templatedetails);
+                vm.$log.log(vm.templatedetails.message);
                 vm.message = vm.templatedetails.message;
 
             }).catch(function(e) {
-                vm.$log.debug('updatetemplate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updatetemplate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -730,15 +1217,15 @@ export class RptBuilderController {
 
         var thedata = vm.setPDFdata(templatename);
 
-        vm.$log.debug('about createtemplate ', path, thedata, vm.templateName);
+        vm.$log.log('about createtemplate ', path, thedata, vm.templateName);
         return vm.TemplateServices.createtemplate(path, thedata)
             .then(function(data) {
-                vm.$log.debug('createtemplate returned data');
-                vm.$log.debug(data);
+                vm.$log.log('createtemplate returned data');
+                vm.$log.log(data);
                 if (typeof(data) !== 'undefined') {
                     vm.templatedetails = data;
-                    vm.$log.debug(vm.templatedetails);
-                    vm.$log.debug(vm.templatedetails.message);
+                    vm.$log.log(vm.templatedetails);
+                    vm.$log.log(vm.templatedetails.message);
                     vm.message = vm.templatedetails.message;
                     vm.Notification.success({ message: vm.message, delay: 5000 });
                 }
@@ -746,10 +1233,10 @@ export class RptBuilderController {
                     vm.Notification.success({ message: "Not created", delay: 5000 });
                 }
                 vm.getTemplateNames(templatename).then(function(zdata) {
-                        vm.$log.debug('activate gettemplateNames fetched', zdata);
+                        vm.$log.log('activate gettemplateNames fetched', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error gettemplateNames after update:', error);
+                        vm.$log.log('Caught an error gettemplateNames after update:', error);
                         vm.data = [];
                         vm.message = error;
                     vm.Notification.error({ message: error, delay: 5000 });
@@ -757,8 +1244,8 @@ export class RptBuilderController {
                     });
                 return vm.templatedetails;
             }).catch(function(e) {
-                vm.$log.debug('createtemplate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('createtemplate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
             vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -850,7 +1337,7 @@ export class RptBuilderController {
         var contentdtl = [];
         if (typeof(students) !== 'undefined' && students.length > 0) {
             for (var i = 0; i < students.length; i++) {
-                vm.$log.debug('process student:', students[i]);
+                vm.$log.log('process student:', students[i]);
                 if (i < students.length - 1) {
                     if (vm.pagebreak == "student") {
                         pagebreak = { pageBreak: 'before', text: '' };
@@ -862,7 +1349,7 @@ export class RptBuilderController {
                 else {
                     pagebreak = {};
                 }
-                vm.$log.debug("types", content.length, typeof(pagebreak));
+                vm.$log.log("types", content.length, typeof(pagebreak));
                 tmp = content;
 
                 tmp = tmp.replace(/{agecat}/g, students[i].agecat);
@@ -909,13 +1396,13 @@ export class RptBuilderController {
                     obj = JSON.parse('[' + tmp + ']');
                 }
                 catch (e) {
-                    vm.$log.debug(e instanceof SyntaxError); // true
-                    vm.$log.debug(e.message); // "missing ; before statement"
-                    vm.$log.debug(e.name); // "SyntaxError"
-                    vm.$log.debug(e.fileName); // "Scratchpad/1"
-                    vm.$log.debug(e.lineNumber); // 1
-                    vm.$log.debug(e.columnNumber); // 4
-                    vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+                    vm.$log.log(e instanceof SyntaxError); // true
+                    vm.$log.log(e.message); // "missing ; before statement"
+                    vm.$log.log(e.name); // "SyntaxError"
+                    vm.$log.log(e.fileName); // "Scratchpad/1"
+                    vm.$log.log(e.lineNumber); // 1
+                    vm.$log.log(e.columnNumber); // 4
+                    vm.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
                 }
                 contentdtl.push([
                     obj,
@@ -939,6 +1426,8 @@ export class RptBuilderController {
     }
     genPDF(templatename) {
         var vm = this;
+        vm.calcsizes();        
+
         var mycontent = vm.mycontent;
         var mycontentheader = vm.mycontentheader;
         var mycontentfooter = vm.mycontentfooter;
@@ -963,7 +1452,7 @@ export class RptBuilderController {
             title4: vm._.findWhere(vm.instructorlist, { name: vm.testdatelist.tester4 }).instructortitle
         };
 
-        vm.$log.debug('after parsehmtl', mycontent, students, typeof(students), students.length);
+        vm.$log.log('after parsehmtl', mycontent, students, typeof(students), students.length);
         var contentdtl = [];
         var tmp;
         var obj;
@@ -971,7 +1460,7 @@ export class RptBuilderController {
         /*            
                     if (typeof(students) !== 'undefined' && students.length > 0 ) {
                         for (var i=0; i<students.length; i++) {       
-                          vm.$log.debug('process student:',students[i]);
+                          vm.$log.log('process student:',students[i]);
                             if (i < students.length -1  ) {
                                 if (vm.pagebreak == "student") {
                                     pagebreak = {pageBreak: 'before', text: ''}; 
@@ -981,7 +1470,7 @@ export class RptBuilderController {
                             } else {
                                 pagebreak = {};
                             }
-                          vm.$log.debug("types", mycontent.length, typeof(pagebreak));
+                          vm.$log.log("types", mycontent.length, typeof(pagebreak));
                             tmp=mycontent;
 
                             tmp = tmp.replace(/{agecat}/g,students[i].agecat);
@@ -1027,13 +1516,13 @@ export class RptBuilderController {
                             try {
                                 obj = JSON.parse('[' + tmp + ']');
                             } catch (e) {
-                            vm.$log.debug(e instanceof SyntaxError); // true
-                            vm.$log.debug(e.message);                // "missing ; before statement"
-                            vm.$log.debug(e.name);                   // "SyntaxError"
-                            vm.$log.debug(e.fileName);               // "Scratchpad/1"
-                            vm.$log.debug(e.lineNumber);             // 1
-                            vm.$log.debug(e.columnNumber);           // 4
-                            vm.$log.debug(e.stack);                  // "@Scratchpad/1:2:3\n"
+                            vm.$log.log(e instanceof SyntaxError); // true
+                            vm.$log.log(e.message);                // "missing ; before statement"
+                            vm.$log.log(e.name);                   // "SyntaxError"
+                            vm.$log.log(e.fileName);               // "Scratchpad/1"
+                            vm.$log.log(e.lineNumber);             // 1
+                            vm.$log.log(e.columnNumber);           // 4
+                            vm.$log.log(e.stack);                  // "@Scratchpad/1:2:3\n"
                             }
                             contentdtl.push([
                                 obj,
@@ -1058,18 +1547,18 @@ export class RptBuilderController {
             mycontentfooter = obj;
         }
         catch (e) {
-            vm.$log.debug(e instanceof SyntaxError); // true
-            vm.$log.debug(e.message); // "missing ; before statement"
-            vm.$log.debug(e.name); // "SyntaxError"
-            vm.$log.debug(e.fileName); // "Scratchpad/1"
-            vm.$log.debug(e.lineNumber); // 1
-            vm.$log.debug(e.columnNumber); // 4
-            vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+            vm.$log.log(e instanceof SyntaxError); // true
+            vm.$log.log(e.message); // "missing ; before statement"
+            vm.$log.log(e.name); // "SyntaxError"
+            vm.$log.log(e.fileName); // "Scratchpad/1"
+            vm.$log.log(e.lineNumber); // 1
+            vm.$log.log(e.columnNumber); // 4
+            vm.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
         }
 
         var background;
         if (typeof(vm.backgroundimages[0]) !== undefined && vm.backgroundimages[0] !== "") {
-            vm.calcsizes();
+            
             var rptwidth = vm.pagewidthpx;
             var rptheight = vm.pageheightpx;
             background = { image: vm.backgroundimages[0], width: rptwidth, height: rptheight };
@@ -1095,7 +1584,7 @@ export class RptBuilderController {
         docDefinition.background = background;
 
         var myJsonString = JSON.stringify(docDefinition);
-        vm.$log.debug('doc json', myJsonString);
+        vm.$log.log('doc json', myJsonString);
 
 
         pdfMake.createPdf(docDefinition).open();
@@ -1206,13 +1695,13 @@ export class RptBuilderController {
         }
 
         function ComputeStyle(o, styles) {
-            vm.$log.debug('computestyle in', styles, o);
+            vm.$log.log('computestyle in', styles, o);
             //                  if (o.stack !== undefined) {
             for (var i = 0; i < styles.length; i++) {
                 var st = styles[i].trim().toLowerCase().split(":");
                 if (st.length === 2) {
                     st[1] = st[1].trim();
-                    vm.$log.debug("has a style", st[0], st[1], o);
+                    vm.$log.log("has a style", st[0], st[1], o);
                     switch (st[0]) {
                         case "padding-left":
                             {
@@ -1300,12 +1789,12 @@ export class RptBuilderController {
                     }
                 }
                 if (st.length === 1) {
-                    vm.$log.debug("has a class", st[0], o);
+                    vm.$log.log("has a class", st[0], o);
                     o.style = st[0];
                 }
             }
             //                  }
-            vm.$log.debug('computestyle done', o);
+            vm.$log.log('computestyle done', o);
 
         }
 
@@ -1364,12 +1853,12 @@ export class RptBuilderController {
                 }
             }
 
-            vm.$log.debug("parseelement", e, e.nodename);
+            vm.$log.log("parseelement", e, e.nodename);
             switch (e.nodeName.toLowerCase()) {
                 case "#text":
                     {
                         sl = e.textContent.replace(/\n/g, "");
-                        vm.$log.debug('in text', sl, 'len', sl.length);
+                        vm.$log.log('in text', sl, 'len', sl.length);
                         if (sl.length > 0) {
                             var t = {
                                 text: e.textContent.replace(/\n/g, "")
@@ -1379,9 +1868,9 @@ export class RptBuilderController {
                                 p.text.push(t);
                             }
                             else {
-                                vm.$log.debug("skipping text", p);
+                                vm.$log.log("skipping text", p);
                             }
-                            vm.$log.debug('in text', e.textContent, p);
+                            vm.$log.log('in text', e.textContent, p);
                         }
                         break;
                     }
@@ -1434,7 +1923,7 @@ export class RptBuilderController {
                     }
                 case "hr":
                     {
-                        vm.$log.debug("hr found", e.className);
+                        vm.$log.log("hr found", e.className);
                         var c;
                         var xlen;
                         if (pctlen) {
@@ -1628,7 +2117,7 @@ export class RptBuilderController {
                     }
                 case "div":
                     {
-                        vm.$log.debug("div found");
+                        vm.$log.log("div found");
 
                         //    p = create("text");
                         var st = create("stack");
@@ -1659,7 +2148,7 @@ export class RptBuilderController {
                     }
                 case "li":
                     {
-                        vm.$log.debug("li found");
+                        vm.$log.log("li found");
 
                         p = CreateParagraph();
                         p.lineHeight = 1.25;
@@ -1678,7 +2167,7 @@ export class RptBuilderController {
                 case "ol":
                 case "ul":
                     {
-                        vm.$log.debug(e.nodeName, cnt, e, p);
+                        vm.$log.log(e.nodeName, cnt, e, p);
                         var list = create(e.nodeName.toLowerCase());
                         ComputeStyle(list, styles);
                         p = ParseContainer(list[e.nodeName.toLowerCase()], e, p, styles, parseType);
@@ -1688,7 +2177,7 @@ export class RptBuilderController {
                     }
                 case "font":
                     {
-                        vm.$log.debug("font found");
+                        vm.$log.log("font found");
                         p = CreateParagraph();
                         var st = {
                             stack: []
@@ -1702,7 +2191,7 @@ export class RptBuilderController {
                     }
                 case "p":
                     {
-                        vm.$log.debug("p found");
+                        vm.$log.log("p found");
                         p = create("text");
                         p.lineHeight = 1.25;
                         //                      p.margin = [20, 0, 0, 0];                      
@@ -1744,7 +2233,7 @@ export class RptBuilderController {
                         else {
 
                         }
-                        vm.$log.debug('img settings',
+                        vm.$log.log('img settings',
                             e.width,
                             e.height,
                             e.clientWidth,
@@ -1777,7 +2266,7 @@ export class RptBuilderController {
                             imageSize.width *= scaleByHeight;
                             imageSize.height *= scaleByHeight;
                         }
-                        vm.$log.debug('img settings if scaled', imageSize);
+                        vm.$log.log('img settings if scaled', imageSize);
 
                         cnt.push({
                             //                        image: images[e.getAttribute("src")].data,
@@ -1791,7 +2280,7 @@ export class RptBuilderController {
                     }
                 default:
                     {
-                        vm.$log.debug("Parsing for node " + e.nodeName + " not found");
+                        vm.$log.log("Parsing for node " + e.nodeName + " not found");
                         var defaultText = create("text", e.textContent.replace(/\n/g, ""));
                         ComputeStyle(defaultText, styles);
                         if (!p) {
@@ -1810,13 +2299,13 @@ export class RptBuilderController {
             var rsb1 = new RegExp(/<span id="selectionBoundary_\d+_\d+" class="rangySelectionBoundary">[^<>]+?<\/span>/ig);
             var rsb2 = new RegExp(/<span class="rangySelectionBoundary" id="selectionBoundary_\d+_\d+">[^<>]+?<\/span>/ig);
             var rsb3 = new RegExp(/<span id="selectionBoundary_\d+_\d+" class="rangySelectionBoundary">[^<>]+?<\/span>/ig);
-            if (vm.$(htmlText).length > 0) {
-                var html = vm.$(htmlText.replace(/\t/g, "").replace(/\n/g, "").replace(rsb1, '').replace(rsb2, '').replace(rsb3, ''));
+            if (vm.$window.$(htmlText).length > 0) {
+                var html = vm.$window.$(htmlText.replace(/\t/g, "").replace(/\n/g, "").replace(rsb1, '').replace(rsb2, '').replace(rsb3, ''));
                 var p = CreateParagraph();
                 for (var i = 0; i < html.length; i++) {
                     ParseElement(cnt, html.get(i), p, parseType, []);
                 }
-                vm.$log.debug('parsehmtl', p, cnt);
+                vm.$log.log('parsehmtl', p, cnt);
                 return cnt;
             }
             else {
@@ -1841,6 +2330,7 @@ export class RptBuilderController {
         var content = [];
         var headercontent = [];
         var footercontent = [];
+        vm.calcsizes();
 
         parseType = "body";
         var mycontent = ParseHtml(content, vm.htmlcontentdata.htmlcontent, parseType);
@@ -1851,17 +2341,17 @@ export class RptBuilderController {
         parseType = "footer";
         var mycontentfooter = ParseHtml(footercontent, vm.htmlcontentdata.htmlcontentfooter, parseType);
         vm.mycontentfooter = JSON.stringify(mycontentfooter);
-        vm.$log.debug('header', mycontentheader);
-        vm.$log.debug('footer', mycontentfooter);
+        vm.$log.log('header', mycontentheader);
+        vm.$log.log('footer', mycontentfooter);
 
-        vm.$log.debug('after parsehmtl', mycontent, students, typeof(students), students.length);
+        vm.$log.log('after parsehmtl', mycontent, students, typeof(students), students.length);
         var contentdtl = [];
         var tmp;
         var obj;
         var pagebreak;
         if (typeof(students) !== 'undefined' && students.length > 0) {
             for (var i = 0; i < students.length; i++) {
-                vm.$log.debug('process student:', students[i]);
+                vm.$log.log('process student:', students[i]);
                 if (i < students.length - 1) {
                     if (vm.pagebreak == "student") {
                         pagebreak = { pageBreak: 'before', text: '' };
@@ -1881,10 +2371,10 @@ export class RptBuilderController {
                                         pagebreak = {};
                                     }
                   */
-                vm.$log.debug("types", mycontent.length, typeof(pagebreak));
+                vm.$log.log("types", mycontent.length, typeof(pagebreak));
                 tmp = JSON.stringify(mycontent[0]);
                 for (var j = 1; j < mycontent.length; j++) {
-                    vm.$log.debug("mycon j", JSON.stringify(mycontent[j]));
+                    vm.$log.log("mycon j", JSON.stringify(mycontent[j]));
                     tmp = tmp + ',' + JSON.stringify(mycontent[j]);
                 }
                 tmp = tmp.replace(/{FirstName}/g, students[i].studentname);
@@ -1892,13 +2382,13 @@ export class RptBuilderController {
                     obj = JSON.parse('[' + tmp + ']');
                 }
                 catch (e) {
-                    vm.$log.debug(e instanceof SyntaxError); // true
-                    vm.$log.debug(e.message); // "missing ; before statement"
-                    vm.$log.debug(e.name); // "SyntaxError"
-                    vm.$log.debug(e.fileName); // "Scratchpad/1"
-                    vm.$log.debug(e.lineNumber); // 1
-                    vm.$log.debug(e.columnNumber); // 4
-                    vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+                    vm.$log.log(e instanceof SyntaxError); // true
+                    vm.$log.log(e.message); // "missing ; before statement"
+                    vm.$log.log(e.name); // "SyntaxError"
+                    vm.$log.log(e.fileName); // "Scratchpad/1"
+                    vm.$log.log(e.lineNumber); // 1
+                    vm.$log.log(e.columnNumber); // 4
+                    vm.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
                 }
                 contentdtl.push([
                     obj,
@@ -1923,12 +2413,12 @@ export class RptBuilderController {
                     var fpositionInfo = felement.getBoundingClientRect();
                     var fheight = fpositionInfo.height;
                     var fwidth = fpositionInfo.width;
-                  vm.$log.debug('header height, width',hheight,hwidth);
+                  vm.$log.log('header height, width',hheight,hwidth);
         */
         var background;
+        
         if (vm.backgroundimages !== null) {
             if (typeof(vm.backgroundimages[0]) !== undefined && vm.backgroundimages[0] !== "") {
-                vm.calcsizes();
                 var rptwidth = vm.pagewidthpx;
                 var rptheight = vm.pageheightpx;
                 background = {
@@ -2036,7 +2526,7 @@ export class RptBuilderController {
         docDefinition.background = background;
 
         var myJsonString = JSON.stringify(docDefinition);
-        vm.$log.debug('doc json', myJsonString);
+        vm.$log.log('doc json', myJsonString);
 
         /*const pdfDocGenerator = pdfMake.createPdf(docDefinition);
         pdfDocGenerator.getDataUrl((dataUrl) => {
@@ -2067,7 +2557,7 @@ export class RptBuilderController {
 
                 document.getElementById(fileoutid).innerHTML = newImage.outerHTML;
                 alert("Converted Base64 version is " + document.getElementById(fileoutid).innerHTML);
-                // $log.debug("Converted Base64 version is " + document.getElementById(fileoutid).innerHTML);
+                // $log.log("Converted Base64 version is " + document.getElementById(fileoutid).innerHTML);
             };
             fileReader.readAsDataURL(fileToLoad);
         }

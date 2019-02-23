@@ -1,6 +1,6 @@
 export class StudentAttendController {
     constructor(
-        $routeParams, $log, $scope, StudentServices, Util, $q, uiGridConstants, Notification
+        $routeParams, $log, $scope, StudentServices, Util, $q, uiGridConstants, Notification, UserServices
     ) {
         'ngInject';
         this.$routeParams = $routeParams;
@@ -11,13 +11,14 @@ export class StudentAttendController {
         this.$q = $q;
         this.uiGridConstants = uiGridConstants;
         this.Notification = Notification;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
         var vm = this;
 
         vm.path = '../v1/studentattend/' + vm.$routeParams.id;
-        vm.$log.debug('studentid for studentAttend: ' + vm.$routeParams.id);
+        vm.$log.log('studentid for studentAttend: ' + vm.$routeParams.id);
         vm.gridApi = {};
         vm.gridLength = {};
         vm.initialLength = 5;
@@ -30,21 +31,24 @@ export class StudentAttendController {
     }
 
     $onDestroy() {
-        this.$log.debug("StudentAttendController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("StudentAttendController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('StudentAttendController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("studentAttend started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("studentAttend started");
 
         });
 
         vm.getStudentAttend().then(function() {
-            vm.$log.debug('activated StudentAttend view');
+            vm.$log.log('activated StudentAttend view');
             vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
         }, function(error) {
@@ -65,10 +69,10 @@ export class StudentAttendController {
     getStudentAttend() {
         var vm = this;
         return vm.StudentServices.getStudentAttend(vm.path).then(function(data) {
-            vm.$log.debug('getStudentAttend returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getStudentAttend returned data');
+            vm.$log.log(data);
             if (typeof(data.StudentAttendList) !== 'undefined' && data.error === false) {
-                vm.$log.debug('StudentAttendList', data.StudentAttendList);
+                vm.$log.log('StudentAttendList', data.StudentAttendList);
                 vm.gridOptions.data = data.StudentAttendList;
             }
             else {
@@ -80,7 +84,7 @@ export class StudentAttendController {
             return vm.gridOptions.data;
 
         }, function(error) {
-            vm.$log.debug('StudentAttendList', error);
+            vm.$log.log('StudentAttendList', error);
             vm.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -130,11 +134,11 @@ export class StudentAttendController {
             ],
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

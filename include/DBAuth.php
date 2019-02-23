@@ -21,6 +21,8 @@ class DbHandler {
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
+
     }
 
        /* ------------- `users` table method ------------------ */
@@ -332,13 +334,14 @@ class DbHandler {
     }
 
     public function getUserName($api_key) {
+        global $app;
         $stmt = $this->conn->prepare("SELECT username FROM users WHERE api_key = ?");
         $stmt->bind_param("s", $api_key);
         if ($stmt->execute()) {
             $stmt->bind_result($user_name);
             $stmt->fetch();
             $stmt->close();
-        error_log( print_R("getUserName:  user: $user_name\n ", TRUE), 3, LOG);
+  //      $app->log->debug( print_R("getUserName:  user: $user_name\n ", TRUE));
             
             return $user_name;
         } else {
@@ -347,13 +350,14 @@ class DbHandler {
     }
 
     public function getRole($api_key) {
+        global $app;
         $stmt = $this->conn->prepare("SELECT role FROM users WHERE api_key = ?");
         $stmt->bind_param("s", $api_key);
         if ($stmt->execute()) {
             $stmt->bind_result($role);
             $stmt->fetch();
             $stmt->close();
-        error_log( print_R("getRole:  role: $role\n ", TRUE), 3, LOG);
+  //      $app->log->debug( print_R("getRole:  role: $role\n ", TRUE));
             
             return $role;
         } else {
@@ -362,13 +366,14 @@ class DbHandler {
     }
 
     public function getSchool($userid) {
+        global $app;
         $stmt = $this->conn->prepare("SELECT school FROM users WHERE id = ?");
         $stmt->bind_param("s", $userid);
         if ($stmt->execute()) {
             $stmt->bind_result($school);
             $stmt->fetch();
             $stmt->close();
-        error_log( print_R("getSchool:  school: $school\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("getSchool:  school: $school\n ", TRUE));
             
             return $school;
         } else {
@@ -403,10 +408,11 @@ class DbHandler {
 	function getUserOptions()
 	{
 		global $user_id;
+        global $app;
         $errormessage=array();
 		
 		$sql = "SELECT options from users where id = ?";
-		error_log(print_R("getUserOptions sql : $sql : $user_id \n", TRUE) , 3, LOG);
+//		$app->log->debug(print_R("getUserOptions sql : $sql : $user_id \n", TRUE));
 		
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $user_id);
@@ -414,21 +420,21 @@ class DbHandler {
                 $stmt->bind_result($options);
                 $stmt->fetch();
                 $stmt->close();
-            error_log( print_R("getoptions: $options\n ", TRUE), 3, LOG);
+  //          $app->log->debug( print_R("getoptions: $options\n ", TRUE));
                 $opt = array();
                 $opt["options"] = $options;
                 
                 return $opt;
             } 
             else {
-				error_log(print_R("getUserOptions  execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getUserOptions  execute failed", TRUE));
                 $errormessage["sqlerror"] = "getUserOptions failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
     		}
 		}
 		else {
-			error_log(print_R("getUserOptions  sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getUserOptions  sql failed", TRUE));
             $errormessage["sqlerror"] = "getUserOptions general failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
@@ -438,8 +444,9 @@ class DbHandler {
 	public
 	function setUserOptions($options)
 	{
-		error_log(print_R("setUserOptions entered\n", TRUE) , 3, LOG);
+        global $app;
         global $user_id;
+//		$app->log->debug(print_R("setUserOptions entered\n", TRUE));
 		$response = array();
 		$sql = "update users set options = ? ";
 		$sql .= " where id = ? ";
@@ -455,13 +462,45 @@ class DbHandler {
 			return $num_affected_rows >= 0;
 		}
         else {
-			error_log(print_R("setUserOptions  sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("setUserOptions  sql failed", TRUE));
             $errormessage["sqlerror"] = "setUserOptions failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
 		}
 	}
 
+	public
+	function getDebugoption()
+	{
+        global $app;
+        global $user_id;
+//		$app->log->debug(print_R("getDebugoption entered $user_id\n", TRUE));
+		
+		$sql = "SELECT if (
+		    substring(
+		        substring_index(
+		           substring_index(
+		               substring_index(options,',',5),',',-1),':',-1),2,2) 
+		               = 'ON', 1, 0) as debug  from users  where id = 4";
+
+//		$app->log->debug(print_R($sql, TRUE));
+	    $stmt = $this->conn->prepare($sql);
+//	    $stmt->bind_param("s", $user_id);
+		if ($stmt->execute()) {
+            $stmt->bind_result($debugg);
+            $stmt->fetch();
+            $res = array();
+            $res["debug"] = $debugg;
+            $stmt->close();
+		}
+		else {
+			$app->log->debug(print_R("getDebugoption  execute failed", TRUE));
+			printf("Errormessage: %s\n", $this->conn->error);
+            $res = array();
+            $res["debug"] = -1;
+		}
+		return $res;
+	}
 
 }
 ?>

@@ -21,6 +21,7 @@ class StudentClassDbHandler {
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
     }
 
 
@@ -29,12 +30,13 @@ class StudentClassDbHandler {
      */
     public function getStudentClassStatus() {
         global $school;
+        global $app;
         $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' and t.school = ?" ;
 //        $schoolfield = "t.school";
 //        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by t.listtype, t.listorder";
-        error_log( print_R("getStudentClassStatus sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getStudentClassStatus sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s",
@@ -49,6 +51,7 @@ class StudentClassDbHandler {
 
     public function getClassAges() {
         global $school;
+        global $app;
         $stmt = $this->conn->prepare("SELECT listkey as agecat FROM studentlist where listtype = 'agecat' and school = ? order by listorder");
             $stmt->bind_param("s",
                               $school 
@@ -61,6 +64,7 @@ class StudentClassDbHandler {
 
     public function getClassPgms() {
         global $school;
+        global $app;
         $stmt = $this->conn->prepare("SELECT listkey as pgmcat FROM studentlist where listtype = 'pgmcat' and school = ? order by listorder");
             $stmt->bind_param("s",
                               $school 
@@ -73,6 +77,7 @@ class StudentClassDbHandler {
     
     public function getClassCats() {
         global $school;
+        global $app;
         $stmt = $this->conn->prepare("SELECT listkey as classcat FROM studentlist where listtype = 'classcat' and school = ?  order by listorder");
             $stmt->bind_param("s",
                               $school 
@@ -86,6 +91,7 @@ class StudentClassDbHandler {
 
     public function getStudentClassPgmList() {
         global $school;
+        global $app;
         $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat 
         from nclass a, nclasslist b, nclasspgm c 
         where a.id = c.classid and b.id = c.pgmid and a.school = ? and a.school = b.school and a.school = c.school order by a.class ";
@@ -95,20 +101,20 @@ class StudentClassDbHandler {
                               $school 
                                  );
             if ($stmt->execute()) {
-                error_log( print_R("studentclasspgm list stmt", TRUE ), 3, LOG);
-                error_log( print_R($stmt, TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclasspgm list stmt", TRUE ));
+                $app->log->debug( print_R($stmt, TRUE ));
                 $slists = $stmt->get_result();
-                error_log( print_R("studentclasspgm list returns data", TRUE ), 3, LOG);
-                error_log( print_R($slists, TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclasspgm list returns data", TRUE ));
+                $app->log->debug( print_R($slists, TRUE ));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("studentclasspgm list execute failed", TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclasspgm list execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("studentclasspgm list sql failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("studentclasspgm list sql failed", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -117,6 +123,7 @@ class StudentClassDbHandler {
 
     public function getStudentClassList() {
         global $school;
+        global $app;
         $sql = "SELECT t.* FROM nclass t and t.school = ? order by t.class ";
 
         if ($stmt = $this->conn->prepare($sql)) {
@@ -124,26 +131,27 @@ class StudentClassDbHandler {
                               $school 
                                  );
             if ($stmt->execute()) {
-                error_log( print_R("studentclass list stmt", TRUE ), 3, LOG);
-                error_log( print_R($stmt, TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclass list stmt", TRUE ));
+                $app->log->debug( print_R($stmt, TRUE ));
                 $slists = $stmt->get_result();
-                error_log( print_R("studentclass list returns data", TRUE ), 3, LOG);
-                error_log( print_R($slists, TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclass list returns data", TRUE ));
+                $app->log->debug( print_R($slists, TRUE ));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("studentclass list execute failed", TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclass list execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("studentclass list sql failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("studentclass list sql failed", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
     }
 
     public function getStudentClassPayList() {
+        global $app;
         $sql = 'SELECT distinct p.classPayName as classpaynametmp,
         c.LastName as lastname,
         c.FirstName as firstname,
@@ -152,25 +160,25 @@ class StudentClassDbHandler {
 
         if ($stmt = $this->conn->prepare($sql) ) {
             if ($stmt->execute() ) {
-                error_log( print_R("studentclasspay list stmt", TRUE ), 3, LOG);
-                error_log( print_R($sql, TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclasspay list stmt", TRUE ));
+                $app->log->debug( print_R($sql, TRUE ));
                 $slists = $stmt->get_result();
 
                 if (empty($slists)) {
                     return array();
                 }
               //  $row_cnt = $slists->num_rows;
-              //  error_log( print_R("route Result set has $row_cnt rows.", TRUE ), 3, LOG);
+              //  $app->log->debug( print_R("route Result set has $row_cnt rows.", TRUE ));
                 $stmt->close();
                 return $slists;
 
             } else {
-                error_log( print_R("studentclass list execute failed", TRUE ), 3, LOG);
+                $app->log->debug( print_R("studentclass list execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("studentclasspay list sql failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("studentclasspay list sql failed", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -178,6 +186,7 @@ class StudentClassDbHandler {
 
 
     public function getStudentClassPicture($picID) {
+        global $app;
         global $school;
         $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? and t.school = ? ";
 
@@ -188,20 +197,20 @@ class StudentClassDbHandler {
             $stmt->bind_param("i", $picID);
 
             if ($stmt->execute()) {
-                error_log( print_R("getStudentClassPicture  stmt", TRUE ), 3, LOG);
-                error_log( print_R($stmt, TRUE ), 3, LOG);
+                $app->log->debug( print_R("getStudentClassPicture  stmt", TRUE ));
+                $app->log->debug( print_R($stmt, TRUE ));
                 $piclist = $stmt->get_result();
-                error_log( print_R("getStudentClassPicture  returns data", TRUE ), 3, LOG);
-                error_log( print_R($piclist, TRUE ), 3, LOG);
+                $app->log->debug( print_R("getStudentClassPicture  returns data", TRUE ));
+                $app->log->debug( print_R($piclist, TRUE ));
                 $stmt->close();
                 return $piclist;
             } else {
-                error_log( print_R("getStudentClassPicture  execute failed", TRUE ), 3, LOG);
+                $app->log->debug( print_R("getStudentClassPicture  execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getStudentClassPicture  sql failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("getStudentClassPicture  sql failed", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -209,26 +218,27 @@ class StudentClassDbHandler {
 
     public function getStudentClassPictureList($student_id) {
         global $school;
+        global $app;
         $sql = "SELECT t.pictureurl, t.id FROM nclass t, studentregistration sr where t.id = sr.classid and sr.studentid = ? and t.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s", $student_id);
 
             if ($stmt->execute()) {
-                error_log( print_R("getStudentClassPictureList  stmt", TRUE ), 3, LOG);
-                error_log( print_R($stmt, TRUE ), 3, LOG);
+                $app->log->debug( print_R("getStudentClassPictureList  stmt", TRUE ));
+                $app->log->debug( print_R($stmt, TRUE ));
                 $piclist = $stmt->get_result();
-                error_log( print_R("getStudentClassPictureList  returns data", TRUE ), 3, LOG);
-                error_log( print_R($piclist, TRUE ), 3, LOG);
+                $app->log->debug( print_R("getStudentClassPictureList  returns data", TRUE ));
+                $app->log->debug( print_R($piclist, TRUE ));
                 $stmt->close();
                 return $piclist;
             } else {
-                error_log( print_R("getStudentClassPictureList  execute failed", TRUE ), 3, LOG);
+                $app->log->debug( print_R("getStudentClassPictureList  execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getStudentClassPictureList  sql failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("getStudentClassPictureList  sql failed", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -240,8 +250,9 @@ class StudentClassDbHandler {
      */
     public function getClassStudent($student_id) {
         global $school;
-        error_log( print_R("get class student for id", TRUE ), 3, LOG);
-        error_log( print_R($student_id, TRUE ), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("get class student for id", TRUE ));
+        $app->log->debug( print_R($student_id, TRUE ));
         $stmt = $this->conn->prepare("Select
            t.ID,
             t.contactid,
@@ -264,7 +275,7 @@ class StudentClassDbHandler {
     Where sr.studentid = ?    and p.school = ? and c.school = ?
         ");
         $stmt->bind_param("sss", $student_id, $school, $school );
-        error_log( print_R("get class student", TRUE ), 3, LOG);
+        $app->log->debug( print_R("get class student", TRUE ));
         if ($stmt->execute()) {
             $res = array();
             $stmt->bind_result(
@@ -292,18 +303,19 @@ class StudentClassDbHandler {
             $res["primaryContact"] = $sc_primaryContact;
             
             $stmt->close();
-            error_log( print_R($res, TRUE ), 3, LOG);
+            $app->log->debug( print_R($res, TRUE ));
             return $res;
         } else {
-            error_log( print_R("get class student failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("get class student failed", TRUE ));
             return NULL;
         }
     }
 
     public function getClassPgm($classseq, $pgmseq) {
         global $school;
-        error_log( print_R("get class pgm for class pgm", TRUE ), 3, LOG);
-        error_log( print_R("classseq: $classseq pgmseq $pgmseq", TRUE ), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("get class pgm for class pgm", TRUE ));
+        $app->log->debug( print_R("classseq: $classseq pgmseq $pgmseq", TRUE ));
         $stmt = $this->conn->prepare("Select
             p.class as pgmclass,
             c.class,
@@ -315,7 +327,7 @@ class StudentClassDbHandler {
             and c.id = ? and p.id = ?    and c.school = ? and p.school = ? and t.school = ?
         ");
         $stmt->bind_param("sssss", $classseq, $pgmseq, $school, $school, $school);
-        error_log( print_R("get class pgm for class pgm", TRUE ), 3, LOG);
+        $app->log->debug( print_R("get class pgm for class pgm", TRUE ));
         if ($stmt->execute()) {
             $res = array();
             $stmt->bind_result(
@@ -333,16 +345,17 @@ class StudentClassDbHandler {
             $res["pictureurl"] = $sc_pictureurl;
 
             $stmt->close();
-            error_log( print_R($res, TRUE ), 3, LOG);
+            $app->log->debug( print_R($res, TRUE ));
             return $res;
         } else {
-            error_log( print_R("get class student failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("get class student failed", TRUE ));
             return NULL;
         }
     }
 
     public function getPayerPartial($theinput) {
         global $school;
+        global $app;
         $inp = '%' . $theinput . '%';
         
         $sql = "SELECT t.* FROM payer t  ";
@@ -350,7 +363,7 @@ class StudentClassDbHandler {
 
 //        $schoolfield = "t.school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getPayerPartial sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getPayerPartial sql after security: $sql", TRUE));
 
         $sql .= " order by t.payerName";
         
@@ -358,17 +371,17 @@ class StudentClassDbHandler {
             $stmt->bind_param("ss", $inp, $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getPayerPartial list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getPayerPartial list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getPayerPartial list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getPayerPartial list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getPayerPartial list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getPayerPartial list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -377,12 +390,13 @@ class StudentClassDbHandler {
 
    public function getPayerDistinct($student_id) {
         global $school;
+        global $app;
 
         $sql = "Select distinct payerName, payerid from payerPayments where contactid = ? and school = ?";
 
     //    $schoolfield = "school";
     //    $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getPayerDistinct sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getPayerDistinct sql after security: $sql", TRUE));
 
         $sql .= " order by payerName";
         
@@ -390,17 +404,17 @@ class StudentClassDbHandler {
             $stmt->bind_param("ss", $student_id, $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getPayerPartial list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getPayerPartial list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getPayerDistinct list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getPayerDistinct list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getPayerDistinct list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getPayerDistinct list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -408,8 +422,9 @@ class StudentClassDbHandler {
     }
 
     public function getClassStudentlist($student_id) {
-        error_log( print_R("get class student list for id", TRUE ), 3, LOG);
-        error_log( print_R($student_id, TRUE ), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("get class student list for id", TRUE ));
+        $app->log->debug( print_R($student_id, TRUE ));
         global $school;
         
         $sql = "select sr.studentid as contactid,
@@ -448,15 +463,15 @@ class StudentClassDbHandler {
 
 //        $schoolfield = "cl.school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getClassStudentlist sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassStudentlist sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql) ) {
             $stmt->bind_param("ss",
                               $student_id, $school
                              );
             if ($stmt->execute() ) {
-                error_log( print_R("getClassStudentlist list stmt", TRUE ), 3, LOG);
-                error_log( print_R($sql, TRUE ), 3, LOG);
+                $app->log->debug( print_R("getClassStudentlist list stmt", TRUE ));
+                $app->log->debug( print_R($sql, TRUE ));
                 $slists = $stmt->get_result();
 //todo: should i do this everywhere
                 if (empty($slists)) {
@@ -466,12 +481,12 @@ class StudentClassDbHandler {
                 return $slists;
 
             } else {
-                error_log( print_R("getClassStudentlist list execute failed", TRUE ), 3, LOG);
+                $app->log->debug( print_R("getClassStudentlist list execute failed", TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassStudentlist list sql failed", TRUE ), 3, LOG);
+            $app->log->debug( print_R("getClassStudentlist list sql failed", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -479,6 +494,7 @@ class StudentClassDbHandler {
 
     public function updateStudentClass($sc_ContactId,$sc_classseq,$sc_pgmseq,$sc_studentclassstatus
                                       ) {
+        global $app;
         $num_affected_rows = 0;
 
         $sql = "UPDATE studentregistration t set ";
@@ -486,11 +502,11 @@ class StudentClassDbHandler {
 
         $sql .= " where studentid = ? and classid = ? and pgmid = ?";
 
-        error_log( print_R("$sql\n", TRUE ), 3, LOG);
-        error_log( print_R("contact: $sc_ContactId\n", TRUE ), 3, LOG);
-        error_log( print_R("class: $sc_classseq\n", TRUE ), 3, LOG);
-        error_log( print_R("pgm: $sc_pgmseq\n", TRUE ), 3, LOG);
-        error_log( print_R("status: $sc_studentclassstatus\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("$sql\n", TRUE ));
+        $app->log->debug( print_R("contact: $sc_ContactId\n", TRUE ));
+        $app->log->debug( print_R("class: $sc_classseq\n", TRUE ));
+        $app->log->debug( print_R("pgm: $sc_pgmseq\n", TRUE ));
+        $app->log->debug( print_R("status: $sc_studentclassstatus\n", TRUE ));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("ssss",
@@ -499,16 +515,16 @@ class StudentClassDbHandler {
                               $sc_classseq,
                               $sc_pgmseq
                              );
-            error_log( print_R("student class status update bind", TRUE ), 3, LOG);
+            $app->log->debug( print_R("student class status update bind", TRUE ));
             $stmt->execute();
-            error_log( print_R("student class status update execute", TRUE ), 3, LOG);
+            $app->log->debug( print_R("student class status update execute", TRUE ));
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("student class status update done", TRUE ), 3, LOG);
+            $app->log->debug( print_R("student class status update done", TRUE ));
 
         } else {
-            error_log( print_R("student class status update failed", TRUE ), 3, LOG);
-            error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+            $app->log->debug( print_R("student class status update failed", TRUE ));
+            $app->log->debug( print_R($this->conn->error, TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
         }
 
@@ -516,6 +532,7 @@ class StudentClassDbHandler {
     }
     public function setStudentClassPay($sc_ContactId,$sc_classPayName
                                    ) {
+        global $app;
         $num_affected_rows = 0;
 
         $sql = "UPDATE nclasspays t set ";
@@ -523,8 +540,8 @@ class StudentClassDbHandler {
 
         $sql .= " where contactID = ? ";
 
-    error_log( print_R("setStudentClassPay\n", TRUE ), 3, LOG);
-    error_log( print_R("$sql\n $sc_ContactId\n $sc_classPayName\n ", TRUE ), 3, LOG);
+    $app->log->debug( print_R("setStudentClassPay\n", TRUE ));
+    $app->log->debug( print_R("$sql\n $sc_ContactId\n $sc_classPayName\n ", TRUE ));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("si",
@@ -533,12 +550,12 @@ class StudentClassDbHandler {
                              );
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
-    error_log( print_R("number affected rows: $num_affected_rows\n ", TRUE ), 3, LOG);
+    $app->log->debug( print_R("number affected rows: $num_affected_rows\n ", TRUE ));
             $stmt->close();
 
         } else {
-    error_log( print_R("setStudentClassPay failed\n", TRUE ), 3, LOG);
-    error_log( print_R("$this->conn->error \n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("setStudentClassPay failed\n", TRUE ));
+    $app->log->debug( print_R("$this->conn->error \n", TRUE ));
             printf("Errormessage: %s\n", $this->conn->error);
         }
 
@@ -546,10 +563,10 @@ class StudentClassDbHandler {
     }
     private function isStudentRegExists($studentid, $classid, $pgmid) {
 
-    error_log( print_R("before isStudentRegExists\n", TRUE ), 3, LOG);
-    error_log( print_R("studentid: $studentid\n", TRUE ), 3, LOG);
-    error_log( print_R("classid  ate: $classid\n", TRUE ), 3, LOG);
-    error_log( print_R("pgmid  ate: $pgmid\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before isStudentRegExists\n", TRUE ));
+    $app->log->debug( print_R("studentid: $studentid\n", TRUE ));
+    $app->log->debug( print_R("classid  ate: $classid\n", TRUE ));
+    $app->log->debug( print_R("pgmid  ate: $pgmid\n", TRUE ));
 
         
         $sql = "SELECT registrationid from studentregistration WHERE studentid = ? and classid = ? and pgmid = ? ";
@@ -567,14 +584,15 @@ class StudentClassDbHandler {
 
     public function addStudentRegistration($studentid, $classid, $pgmid, $studentclassstatus, $payerName, $payerid
     ) {
+        global $app;
 
-        error_log( print_R("addStudentRegistration entered\n", TRUE ),3, LOG);
-        error_log( print_R("contact $studentid\n", TRUE ), 3, LOG);
-        error_log( print_R("class $classid\n", TRUE ), 3, LOG);
-        error_log( print_R("pgm $pgmid\n", TRUE ), 3, LOG);
-        error_log( print_R("class stat $studentclassstatus\n", TRUE ), 3, LOG);
-        error_log( print_R("payer $payerid\n", TRUE ), 3, LOG);
-        error_log( print_R("payerNm $payerName\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("addStudentRegistration entered\n", TRUE ));
+        $app->log->debug( print_R("contact $studentid\n", TRUE ));
+        $app->log->debug( print_R("class $classid\n", TRUE ));
+        $app->log->debug( print_R("pgm $pgmid\n", TRUE ));
+        $app->log->debug( print_R("class stat $studentclassstatus\n", TRUE ));
+        $app->log->debug( print_R("payer $payerid\n", TRUE ));
+        $app->log->debug( print_R("payerNm $payerName\n", TRUE ));
 
         $response = array();
         $testfeedefault = 0;
@@ -623,8 +641,9 @@ class StudentClassDbHandler {
 
     public function removeStudentReg($studentid, $classid, $pgmid
     ) {
+        global $app;
 
-        error_log( print_R("removeStudentReg entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeStudentReg entered\n", TRUE ));
                                       
         $sql = "DELETE from studentregistration  where studentid = ? and classid = ? and pgmid = ?";
         $cpsql = "DELETE from nclasspays  where contactid = ? and classseq = ? and pgmseq = ?";
@@ -663,10 +682,11 @@ class StudentClassDbHandler {
     }
 
     private function isStudentClassExists($contactid, $classseq, $pgmseq) {
-    error_log( print_R("before isStudentClassExists\n", TRUE ), 3, LOG);
-    error_log( print_R("contactid: $contactid\n", TRUE ), 3, LOG);
-    error_log( print_R("classseq: $classseq\n", TRUE ), 3, LOG);
-    error_log( print_R("pgmseq: $pgmseq\n", TRUE ), 3, LOG);
+        global $app;
+    $app->log->debug( print_R("before isStudentClassExists\n", TRUE ));
+    $app->log->debug( print_R("contactid: $contactid\n", TRUE ));
+    $app->log->debug( print_R("classseq: $classseq\n", TRUE ));
+    $app->log->debug( print_R("pgmseq: $pgmseq\n", TRUE ));
         
         
         $sql = "SELECT id from nclasspays WHERE contactid = ? and classseq = ? and pgmseq = ? ";
@@ -684,6 +704,7 @@ class StudentClassDbHandler {
     public function setStudentClass(
     $sc_ContactId,$sc_classseq,$sc_pgmseq,$payer,$testfee = 0,$primaryContact = 0                                   
     ) {
+        global $app;
         $num_affected_rows = 0;
 
 
@@ -695,18 +716,18 @@ class StudentClassDbHandler {
         $inssql .= " ( ?, ?, ?, ?,?,? ) ";
 
 
-        error_log( print_R("contact $sc_ContactId\n", TRUE ), 3, LOG);
-        error_log( print_R("class $sc_classseq\n", TRUE ), 3, LOG);
-        error_log( print_R("pgm $sc_pgmseq\n", TRUE ), 3, LOG);
-        error_log( print_R("fee $testfee\n", TRUE ), 3, LOG);
-        error_log( print_R("payer $payer\n", TRUE ), 3, LOG);
-        error_log( print_R("primary $primaryContact\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("contact $sc_ContactId\n", TRUE ));
+        $app->log->debug( print_R("class $sc_classseq\n", TRUE ));
+        $app->log->debug( print_R("pgm $sc_pgmseq\n", TRUE ));
+        $app->log->debug( print_R("fee $testfee\n", TRUE ));
+        $app->log->debug( print_R("payer $payer\n", TRUE ));
+        $app->log->debug( print_R("primary $primaryContact\n", TRUE ));
 
         if ($this->isStudentClassExists(
                               $sc_ContactId,
                               $sc_classseq,
                               $sc_pgmseq)) {
-            error_log( print_R($updsql, TRUE ), 3, LOG);
+            $app->log->debug( print_R($updsql, TRUE ));
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssssss",
                                   $testfee, $payer, 
@@ -719,13 +740,13 @@ class StudentClassDbHandler {
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {
-                error_log( print_R("student class status update failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("student class status update failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -1;
             }
         } else {
-            error_log( print_R($inssql, TRUE ), 3, LOG);
+            $app->log->debug( print_R($inssql, TRUE ));
             if ($stmt = $this->conn->prepare($inssql)) {
                 $stmt->bind_param("ssssss", 
                                     $sc_ContactId,
@@ -740,8 +761,8 @@ class StudentClassDbHandler {
                 $stmt->close();
     
             } else {
-                error_log( print_R("student class status insert failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("student class status insert failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -2;
             }
@@ -750,15 +771,16 @@ class StudentClassDbHandler {
     }
 
     private function isPayerExists($payerName) {
-        error_log( print_R("before isPayerExists\n", TRUE ), 3, LOG);
-        error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("before isPayerExists\n", TRUE ));
+        $app->log->debug( print_R("payerName: $payerName\n", TRUE ));
         global $school;
         
         $sql = "SELECT id from payer WHERE payerName = ? and school = ? ";
 
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("isPayerExists sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isPayerExists sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
 
@@ -771,13 +793,14 @@ class StudentClassDbHandler {
     }
 
     private function isPayerExistsOrRetId($payerName) {
-        error_log( print_R("before isPayerExistsOrRetId\n", TRUE ), 3, LOG);
-        error_log( print_R("payerName: $payerName\n", TRUE ), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("before isPayerExistsOrRetId\n", TRUE ));
+        $app->log->debug( print_R("payerName: $payerName\n", TRUE ));
         global $school;
         
         $sql = "SELECT id from payer WHERE payerName = ? and school = ? ";
 
-        error_log( print_R("isPayerExists sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isPayerExists sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
 
@@ -789,20 +812,21 @@ class StudentClassDbHandler {
     	if ($num_rows > 0) {
             $stmt->fetch();
             $retid = $id;
-            error_log( print_R("isPayerExists : $retid", TRUE), 3, LOG);
+            $app->log->debug( print_R("isPayerExists : $retid", TRUE));
             
             $stmt->close();
             return $retid;
     	} else {
-            error_log( print_R("isPayernotExists ", TRUE), 3, LOG);
+            $app->log->debug( print_R("isPayernotExists ", TRUE));
             $stmt->close();
     	    return -1;
     	}
     }
     public function addPayer($payerName
     ) {
+        global $app;
 
-        error_log( print_R("addPayer entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("addPayer entered\n", TRUE ));
                                       
         $response = array();
         $testfeedefault = 0;
@@ -850,8 +874,9 @@ class StudentClassDbHandler {
 
     public function addPayerOrReturnid($payerName
     ) {
+        global $app;
 
-        error_log( print_R("addPayer entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("addPayer entered\n", TRUE ));
                                       
         $testfeedefault = 0;
 
@@ -861,7 +886,7 @@ class StudentClassDbHandler {
         $sql .= "  ( ?, ?)";
 
         $res = $this->isPayerExistsOrRetId($payerName); 
-        error_log( print_R("isPayerExistsOrRetId returns with : $res", TRUE), 3, LOG);
+        $app->log->debug( print_R("isPayerExistsOrRetId returns with : $res", TRUE));
 
         if ($res == -1) {
             if ($stmt = $this->conn->prepare($sql)) {
@@ -889,7 +914,7 @@ class StudentClassDbHandler {
             }
         } else {
             // User with same  existed
-            error_log( print_R("addPayerOrReturnid to return with : $res", TRUE), 3, LOG);
+            $app->log->debug( print_R("addPayerOrReturnid to return with : $res", TRUE));
             return $res;
         }
 
@@ -897,7 +922,8 @@ class StudentClassDbHandler {
 
     public function getFamily($payerid) {
         global $school;
-        error_log( print_R("student for getfamily is: " . $payerid . "\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("student for getfamily is: " . $payerid . "\n", TRUE ));
         
         $sql = "SELECT distinct 
              t.ID as contactid, 
@@ -913,11 +939,11 @@ class StudentClassDbHandler {
 
 //        $schoolfield = "t.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getStudentLists sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getStudentLists sql after security: $sql", TRUE));
         
         $sql = $sql . " ORDER BY t.firstname ";
 
-        error_log( print_R("sql for getfamily is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getfamily is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
             
@@ -931,7 +957,8 @@ class StudentClassDbHandler {
     }
     public function getListPrices($payerid) {
         global $school;
-        error_log( print_R("student for getListPrices is: " . $payerid . "\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("student for getListPrices is: " . $payerid . "\n", TRUE ));
         
 /*        $sql = "select pp.classname, pp.payerName, c.firstname, c.lastname, 
         ncl.id as classlistpricid, ncl.class as classlistclass, classType, 
@@ -959,11 +986,11 @@ class StudentClassDbHandler {
 
 //        $schoolfield = "c.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getListPrices sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getListPrices sql after security: $sql", TRUE));
         
         $sql = $sql . " ORDER BY sortKey ";
 
-        error_log( print_R("sql for getListPrices is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getListPrices is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
             
@@ -976,8 +1003,9 @@ class StudentClassDbHandler {
         return $res;
     }
     public function getPaymentPlan($payerid) {
-        
-        error_log( print_R("student for getPaymentPlan is: " . $payerid . "\n", TRUE ),3, LOG);
+                global $app;
+
+        $app->log->debug( print_R("student for getPaymentPlan is: " . $payerid . "\n", TRUE ));
         
         $sql = "SELECT paymentid, payerid,
             `paymenttype`, `PaymentNotes`, `PaymentPlan`, `PaymentAmount`, `PriceSetby`,
@@ -987,7 +1015,7 @@ class StudentClassDbHandler {
             WHERE payerid = ?
                 ";
 
-        error_log( print_R("sql for getPaymentPlan is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getPaymentPlan is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
             
@@ -1001,12 +1029,13 @@ class StudentClassDbHandler {
     }
     public function getPaymentplans() {
         global $school;
+        global $app;
         $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentPlan' and t.school = ? " ;
 //        $schoolfield = "t.school";
 //        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by t.listtype, t.listorder";
-        error_log( print_R("getPaymentplans sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getPaymentplans sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s",
@@ -1020,12 +1049,13 @@ class StudentClassDbHandler {
     }
     public function getPaymenttypes() {
         global $school;
+        global $app;
         $sql = "SELECT t.* FROM studentlist t where t.listtype = 'PaymentType' and t.school = ? " ;
 //        $schoolfield = "t.school";
 //        $sql = addSecurity($sql, $schoolfield);
 
         $sql .= " order by t.listtype, t.listorder";
-        error_log( print_R("getPaymentplans sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getPaymentplans sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s",
@@ -1041,14 +1071,15 @@ class StudentClassDbHandler {
     public function updatePaymentPlan(
         $paymentid, $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount,$Pricesetdate ,$payOnDayOfMonth, $PriceSetby, $mode
     ) {
-        error_log( print_R("updatePaymentPlan entered\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("updatePaymentPlan entered\n", TRUE ));
                                       
         $response = array();
 
         $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $Pricesetdate, new DateTimeZone('Etc/Zulu'));
 //        $dt = DateTime::createFromFormat(DateTime::ISO8601, $Pricesetdate);
         if ($dt === false) {
-            error_log( print_R("updatePaymentPlan  bad date $Pricesetdate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("updatePaymentPlan  bad date $Pricesetdate" , TRUE));
             return NULL;
         }
         $thedate = $dt->format('Y-m-d');
@@ -1060,7 +1091,7 @@ class StudentClassDbHandler {
 
         // First check if  already existed in db
         if ($mode == "insert") {
-            error_log( print_R("updatePaymentPlan do insert\n", TRUE ),3, LOG);
+            $app->log->debug( print_R("updatePaymentPlan do insert\n", TRUE ));
 
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ssssssss",
@@ -1077,8 +1108,8 @@ class StudentClassDbHandler {
                 return $new_id;
 
             } else {
-                error_log( print_R("insert npayment failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("insert npayment failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -1;
             }
@@ -1091,12 +1122,12 @@ class StudentClassDbHandler {
                 Pricesetdate= ?, payOnDayOfMonth= ?, PaymentPlan = ?, 
                 paymenttype = ?
                 WHERE paymentid = ? and payerid = ? ";
-            error_log( print_R("updatePaymentPlan do update: $updsql, $PaymentNotes, $PaymentAmount,$PriceSetby, 
+            $app->log->debug( print_R("updatePaymentPlan do update: $updsql, $PaymentNotes, $PaymentAmount,$PriceSetby, 
                     $thedate ,$payOnDayOfMonth, $PaymentPlan,
                     $paymenttype ,
                     $paymentid,
                     $payerid
-                \n", TRUE ),3, LOG);
+                \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssssssss",
@@ -1110,8 +1141,8 @@ class StudentClassDbHandler {
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {
-                error_log( print_R("update npayments failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("update npayments failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -2;
             }
@@ -1122,8 +1153,9 @@ class StudentClassDbHandler {
     }
     public function removePaymentPlan($payerid, $paymentid
     ) {
+        global $app;
 
-        error_log( print_R("removePaymentPlan entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removePaymentPlan entered\n", TRUE ));
                                       
         $sql = "DELETE from npayments  where payerid = ? and paymentid = ? ";
 
@@ -1145,15 +1177,16 @@ class StudentClassDbHandler {
 
     }
     public function getPayerPayments($payerid) {
-        
-        error_log( print_R("student for getPayerPayments is: " . $payerid . "\n", TRUE ),3, LOG);
+                global $app;
+
+        $app->log->debug( print_R("student for getPayerPayments is: " . $payerid . "\n", TRUE ));
         
         $sql = " SELECT  classpayid ,  contactid ,  classseq ,  pgmseq ,  payerid ,  classname ,  studentClassStatus ,  pgmclass 
             FROM  payerPayments
             WHERE payerid = ?
                 ";
 
-        error_log( print_R("sql for getPayerPayments is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getPayerPayments is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
 
@@ -1165,15 +1198,16 @@ class StudentClassDbHandler {
         return $res;
     }
     public function getPaymentPays($payerid) {
+        global $app;
         
-        error_log( print_R("student for getPaymentPays is: " . $payerid . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("student for getPaymentPays is: " . $payerid . "\n", TRUE ));
         
         $sql = " SELECT pcp.paymentid, classpayid, pcpid
             FROM paymentclasspay pcp
             WHERE pcp.paymentid in (select p.paymentid from npayments p where p.payerid = ? )
                 ";
 
-        error_log( print_R("sql for getPaymentPays is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getPaymentPays is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
 
@@ -1187,7 +1221,8 @@ class StudentClassDbHandler {
     public function updatePaymentPay(
         $paymentid, $classpayid, $pcpid, $mode
     ) {
-        error_log( print_R("updatePaymentPays entered\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("updatePaymentPays entered\n", TRUE ));
                                       
         $response = array();
 
@@ -1197,7 +1232,7 @@ class StudentClassDbHandler {
         //todo First check if  already existed in db
         try {
         if ($mode == "insert") {
-            error_log( print_R("updatePaymentPays do insert\n", TRUE ),3, LOG);
+            $app->log->debug( print_R("updatePaymentPays do insert\n", TRUE ));
 
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ss",
@@ -1215,8 +1250,8 @@ class StudentClassDbHandler {
                 return $new_id;
 
             } else {
-                error_log( print_R("insert npayment failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("insert npayment failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -1;
             }
@@ -1227,8 +1262,8 @@ class StudentClassDbHandler {
                 $updsql = "UPDATE paymentclasspay SET 
                 paymentid= ?, classpayid= ?
                 WHERE pcpid = ?  ";
-            error_log( print_R("updatePaymentPlan do update: $updsql, $paymentid, $classpayid, $pcpid, $mode
-                \n", TRUE ),3, LOG);
+            $app->log->debug( print_R("updatePaymentPlan do update: $updsql, $paymentid, $classpayid, $pcpid, $mode
+                \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sss",
@@ -1238,8 +1273,8 @@ class StudentClassDbHandler {
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {
-                error_log( print_R("update paymentclasspay failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("update paymentclasspay failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -2;
             }
@@ -1247,8 +1282,8 @@ class StudentClassDbHandler {
             return $num_affected_rows;
         }
         } catch(exception $e) {
-			 error_log(print_R( "sql error in update paymentclasspay\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in update paymentclasspay\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -3;
 		}
@@ -1257,8 +1292,9 @@ class StudentClassDbHandler {
     }    
     public function removePaymentPay($pcpid
     ) {
+        global $app;
 
-        error_log( print_R("removePaymentPays entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removePaymentPays entered\n", TRUE ));
                                       
         $sql = "DELETE from paymentclasspay  where pcpid = ? ";
 
@@ -1281,8 +1317,9 @@ class StudentClassDbHandler {
     }
     public function removePayer($payerid
     ) {
+        global $app;
 
-        error_log( print_R("removePayer entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removePayer entered\n", TRUE ));
                                       
         $sql = "DELETE from payer  where id = ? ";
 
@@ -1307,7 +1344,8 @@ class StudentClassDbHandler {
     public function updateQuickPick(
         $id, $ranktype,$rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth, $mode, $description
     ) {
-        error_log( print_R("updateQuickPick entered\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("updateQuickPick entered\n", TRUE ));
                                       
         $response = array();
         global $school;
@@ -1320,7 +1358,7 @@ class StudentClassDbHandler {
 
         // First check if  already existed in db
         if ($mode == "insert") {
-            error_log( print_R("updateQuickPick do insert\n", TRUE ),3, LOG);
+            $app->log->debug( print_R("updateQuickPick do insert\n", TRUE ));
 
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ssssssssss",
@@ -1337,8 +1375,8 @@ class StudentClassDbHandler {
                 return $new_id;
 
             } else {
-                error_log( print_R("insert quickpick failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("insert quickpick failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -1;
             }
@@ -1350,9 +1388,9 @@ class StudentClassDbHandler {
         ranktype =?, rank=?, rankid=? classid=?, pgmid=?, paymentAmount=?, paymentPlan=?,
          payOnDayOfMonth=?, description=?, school=?
                 WHERE id = ?  ";
-            error_log( print_R("updateQuickPick do update: $updsql     
+            $app->log->debug( print_R("updateQuickPick do update: $updsql     
         $ranktype, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $paymenttype, $payOnDayOfMonth, $school, $mode, $id
-                \n", TRUE ),3, LOG);
+                \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssssssssss",
@@ -1363,8 +1401,8 @@ class StudentClassDbHandler {
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {
-                error_log( print_R("update quickpick failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("update quickpick failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return -2;
             }
@@ -1375,8 +1413,9 @@ class StudentClassDbHandler {
     }
     public function removeQuickPick($id
     ) {
+        global $app;
 
-        error_log( print_R("removeQuickPick entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeQuickPick entered\n", TRUE ));
                                       
         $sql = "DELETE from quickpick  where id = ? ";
 
@@ -1400,6 +1439,7 @@ class StudentClassDbHandler {
     public function getQuickPicks() {
         
         global $school;
+        global $app;
 
         $sql = " SELECT
         q.id, ranktype, rank, rankid, q.classid, q.pgmid, paymentAmount, paymentPlan, payOnDayOfMonth, description,
@@ -1412,7 +1452,7 @@ class StudentClassDbHandler {
                 and q.school = ? 
                 ";
 
-        error_log( print_R("sql for getQuickPicks is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getQuickPicks is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $school);
@@ -1425,6 +1465,7 @@ class StudentClassDbHandler {
     public function getQuickPick($id) {
         
         global $school;
+        global $app;
 
         $sql = " SELECT
         q.id, ranktype, rank, rankid, q.classid, q.pgmid, paymentAmount, paymentPlan, payOnDayOfMonth, description,
@@ -1438,23 +1479,23 @@ class StudentClassDbHandler {
                 and q.id = ?
                 ";
 
-        error_log( print_R("sql for getQuickPick is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getQuickPick is: " . $sql . "\n", TRUE ));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("ss",  $school, $id);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getQuickPick list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getQuickPick list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getQuickPick list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getQuickPick list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getQuickPick list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getQuickPick list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1465,6 +1506,7 @@ class StudentClassDbHandler {
     public function getPicklist() {
         
         global $school;
+        global $app;
 
         $sql = " SELECT a.class, b.class AS pgm, c.classid, c.pgmid, r.ranktype, r.ranklist, r.rankid
             FROM nclass a, nclasslist b, nclasspgm c, classrank cr, ranklist r
@@ -1479,7 +1521,7 @@ class StudentClassDbHandler {
             and a.school = ? 
                 ";
 
-        error_log( print_R("sql for getPicklist is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getPicklist is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $school);
@@ -1492,13 +1534,14 @@ class StudentClassDbHandler {
 
     public function getSchoolcom() {
         global $school;
+        global $app;
 
         $sql = " SELECT  id, schoolReplyEmail, schoolReplySignature, invoicebatchenabled 
             from schoolCommunication
             where school = ? 
                 ";
 
-        error_log( print_R("sql for getSchoolcom is: " . $sql . "\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("sql for getSchoolcom is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s", $school);
@@ -1511,7 +1554,8 @@ class StudentClassDbHandler {
     public function updateSchoolcom(
         $id, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $mode
     ) {
-        error_log( print_R("updateSchoolcom entered\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("updateSchoolcom entered\n", TRUE ));
         global $school;                              
         $response = array();
 
@@ -1520,7 +1564,7 @@ class StudentClassDbHandler {
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $sql = "INSERT INTO schoolCommunication( school, schoolReplyEmail, schoolReplySignature, invoicebatchenabled ) ";
@@ -1529,7 +1573,7 @@ class StudentClassDbHandler {
         //todo First check if  already existed in db
         try {
         if ($mode == "insert") {
-            error_log( print_R("updateSchoolcom do insert\n", TRUE ),3, LOG);
+            $app->log->debug( print_R("updateSchoolcom do insert\n", TRUE ));
 
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ssss",
@@ -1554,8 +1598,8 @@ class StudentClassDbHandler {
                 return $new_id;
 
             } else {
-                error_log( print_R("insert Schoolcom failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("insert Schoolcom failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 $errormessage["sqlerror"] = "Insert failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -1567,8 +1611,8 @@ class StudentClassDbHandler {
                 $updsql = "UPDATE schoolCommunication SET 
                 schoolReplyEmail= ?, schoolReplySignature= ?, invoicebatchenabled=?
                 WHERE id = ? and school = ?  ";
-            error_log( print_R("invoicebatchenabled do update: $updsql, $id, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $mode
-                \n", TRUE ),3, LOG);
+            $app->log->debug( print_R("invoicebatchenabled do update: $updsql, $id, $schoolReplyEmail, $schoolReplySignature, $invoicebatchenabled, $mode
+                \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssss",
@@ -1580,8 +1624,8 @@ class StudentClassDbHandler {
                     $errormessage["success"] = $num_affected_rows;
                     return $errormessage;
             } else {
-                error_log( print_R("update invoicebatchenabled failed", TRUE ), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE ), 3, LOG);
+                $app->log->debug( print_R("update invoicebatchenabled failed", TRUE ));
+                $app->log->debug( print_R($this->conn->error, TRUE ));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -1589,8 +1633,8 @@ class StudentClassDbHandler {
             
         }
         } catch(exception $e) {
-			 error_log(print_R( "sql error in update invoicebatchenabled\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in update invoicebatchenabled\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
             $errormessage["sqlerror"] = "update failure: ";
             $errormessage["sqlerrordtl"] = $e;
             return $errormessage;
@@ -1601,7 +1645,8 @@ class StudentClassDbHandler {
     public function removeSchoolcom($id
     ) {
         global $school;
-        error_log( print_R("removeSchoolcom entered\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("removeSchoolcom entered\n", TRUE ));
                                       
         $sql = "DELETE from schoolcommunication  where id = ? and school = ?";
 

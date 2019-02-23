@@ -11,7 +11,7 @@ export class PaymentServices {
 
     }
 /*    setapikey(key) {
-        // $log.debug('setapikey', key);
+        // $log.log('setapikey', key);
         this.apikey = key;
     }
 */
@@ -28,7 +28,7 @@ export class PaymentServices {
     }
     updateStudentPayment(path, StudentPayment) {
         var self = this;
-        self.$log.debug('enter updateStudentPayment before put :', StudentPayment);
+        self.$log.log('enter updateStudentPayment before put :', StudentPayment);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -39,14 +39,14 @@ export class PaymentServices {
     }
     setStudentPayment(path, mystudent, myclassid, mypgmid) {
         var self = this;
-        self.$log.debug('service set student class :' + myclassid);
-        self.$log.debug('service set student pgm :' + mypgmid);
+        self.$log.log('service set student class :' + myclassid);
+        self.$log.log('service set student pgm :' + mypgmid);
         var mydata = {
             "mystudent": mystudent,
             "myclassid": myclassid,
             "mypgmid": mypgmid,
         };
-        self.$log.debug('service set studentx class mydata:' + JSON.stringify({ data: mydata }) + ' sent to:' + path);
+        self.$log.log('service set studentx class mydata:' + JSON.stringify({ data: mydata }) + ' sent to:' + path);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -76,7 +76,7 @@ export class PaymentServices {
 
     createPayer(path, thedata) {
         var self = this;
-        self.$log.debug('createPayer data before :', thedata);
+        self.$log.log('createPayer data before :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,

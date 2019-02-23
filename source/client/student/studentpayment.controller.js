@@ -54,12 +54,12 @@ export class StudentPaymentController {
     }
 
     $onDestroy() {
-        this.$log.debug("StudentPaymentController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("StudentPaymentController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     getPriceDate(input) {
-        this.$log.debug('getPriceDate', input);
+        this.$log.log('getPriceDate', input);
         //  var theDate = moment(input).format('YYYY-MM-DD');
         var theDate = new Date(input);
         return theDate;
@@ -70,106 +70,106 @@ export class StudentPaymentController {
         var element = typeof e === 'object' ? e.target : document.getElementById(e);
         var scrollHeight = element.scrollHeight - 60; // replace 60 by the sum of padding-top and padding-bottom
         element.style.height = scrollHeight + "px";
-        this.$log.debug('autoexpand', scrollHeight);
+        this.$log.log('autoexpand', scrollHeight);
         element.style.minHeight = "35px";
     }
 
     payerSet(input) {
         var vmpayment = this;
-        vmpayment.$log.debug('payerSet entered', input);
+        vmpayment.$log.log('payerSet entered', input);
         vmpayment.head.payerid = vmpayment.studentpayer;
         vmpayment.headcoverage.payerid = vmpayment.studentpayer;
         vmpayment.$q.all([
                 vmpayment.getFamily().then(function() {
-                    vmpayment.$log.debug('getPayerList ready');
+                    vmpayment.$log.log('getPayerList ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getFamily error in payerSet", e);
+                    vmpayment.$log.log("getFamily error in payerSet", e);
                 }),
                 vmpayment.getListPrices().then(function() {
-                    vmpayment.$log.debug('getListPrices ready');
+                    vmpayment.$log.log('getListPrices ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getListPrices error in payerSet", e);
+                    vmpayment.$log.log("getListPrices error in payerSet", e);
                 }),
                 vmpayment.getPaymentplan().then(function() {
-                    vmpayment.$log.debug('getPaymentplan ready');
+                    vmpayment.$log.log('getPaymentplan ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getPaymentplan error in payerSet", e);
+                    vmpayment.$log.log("getPaymentplan error in payerSet", e);
                 }),
                 vmpayment.getPaymentpays().then(function() {
-                    vmpayment.$log.debug('getPaymentpays ready');
+                    vmpayment.$log.log('getPaymentpays ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getPaymentpays error in payerSet", e);
+                    vmpayment.$log.log("getPaymentpays error in payerSet", e);
                 }),
                 vmpayment.getPayerpayments().then(function() {
-                    vmpayment.$log.debug('getPayerpayments ready');
+                    vmpayment.$log.log('getPayerpayments ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getPayerpayments error in payerSet", e);
+                    vmpayment.$log.log("getPayerpayments error in payerSet", e);
                 })
             ])
             .then(function() {
-                vmpayment.$log.debug(' payerSet done');
+                vmpayment.$log.log(' payerSet done');
             });
 
     }
 
     dateopen($event, iter) {
         var vmpayment = this;
-        vmpayment.$log.debug("dateopen:", vmpayment.status);
+        vmpayment.$log.log("dateopen:", vmpayment.status);
         vmpayment.status[iter].opened = true;
     }
 
     dateheadopen($event) {
         var vmpayment = this;
-        vmpayment.$log.debug("dateheadopen:", vmpayment.statushead);
+        vmpayment.$log.log("dateheadopen:", vmpayment.statushead);
         vmpayment.statushead.opened = true;
     }
 
     activate() {
         var vmpayment = this;
         vmpayment.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vmpayment.$log.debugEnabled(true);
-            vmpayment.$log.debug("student-payment-controller started");
+           // vmpayment.$log.logEnabled(true);
+            vmpayment.$log.log("student-payment-controller started");
 
         });
 
-        vmpayment.$log.debug('payment activate');
+        vmpayment.$log.log('payment activate');
         vmpayment.$q.all([
                 vmpayment.getPayerList().then(function() {
-                    vmpayment.$log.debug('getPayerList ready');
+                    vmpayment.$log.log('getPayerList ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getPayerList error in activate", e);
+                    vmpayment.$log.log("getPayerList error in activate", e);
                 }),
                 vmpayment.getPaymentplans().then(function() {
-                    vmpayment.$log.debug('getPaymentplans ready');
+                    vmpayment.$log.log('getPaymentplans ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getPayerList error in activate", e);
+                    vmpayment.$log.log("getPayerList error in activate", e);
                 }),
                 vmpayment.getPaymenttypes().then(function() {
-                    vmpayment.$log.debug('getPaymenttypes ready');
+                    vmpayment.$log.log('getPaymenttypes ready');
 
                 }).catch(function(e) {
-                    vmpayment.$log.debug("getPayerList error in activate", e);
+                    vmpayment.$log.log("getPayerList error in activate", e);
                 })
             ])
             .then(function() {
-                vmpayment.$log.debug('student-payment activation done');
+                vmpayment.$log.log('student-payment activation done');
             });
     }
 
     getPayerList() {
         var vmpayment = this;
         var path = '../v1/payers/' + vmpayment.$routeParams.id;
-        vmpayment.$log.debug('getPayerList entered', path);
+        vmpayment.$log.log('getPayerList entered', path);
         return vmpayment.ClassServices.getPayerList(path).then(function(data) {
-                vmpayment.$log.debug('getPayerList returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getPayerList returned data');
+                vmpayment.$log.log(data);
                 if ((typeof data.payerlist === 'undefined' || data.payerlist.error === true) && typeof data !== 'undefined') {
                     vmpayment.payerlist = [];
                     vmpayment.Notification.error({ message: data, delay: 5000 });
@@ -185,7 +185,7 @@ export class StudentPaymentController {
                 return vmpayment.payerlist;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error getPayerList, going to notify:', error);
+                vmpayment.$log.log('Caught an error getPayerList, going to notify:', error);
                 vmpayment.payerlist = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -201,10 +201,10 @@ export class StudentPaymentController {
     getFamily() {
         var vmpayment = this;
         var familypath = '../v1/family/' + vmpayment.studentpayer;
-        vmpayment.$log.debug('getPayerList entered', familypath);
+        vmpayment.$log.log('getPayerList entered', familypath);
         return vmpayment.ClassServices.getFamily(familypath).then(function(data) {
-                vmpayment.$log.debug('getFamily returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getFamily returned data');
+                vmpayment.$log.log(data);
                 vmpayment.FamilyList = data.FamilyList;
                 if ((typeof data.FamilyList === 'undefined' || data.FamilyList.error === true) && typeof data !== 'undefined') {
                     vmpayment.FamilyList = [];
@@ -214,7 +214,7 @@ export class StudentPaymentController {
                 return vmpayment.FamilyList;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error getFamily, going to notify:', error);
+                vmpayment.$log.log('Caught an error getFamily, going to notify:', error);
                 vmpayment.FamilyList = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -230,10 +230,10 @@ export class StudentPaymentController {
     getListPrices() {
         var vmpayment = this;
         var path = '../v1/listprices/' + vmpayment.studentpayer;
-        vmpayment.$log.debug('getListPrices entered', path);
+        vmpayment.$log.log('getListPrices entered', path);
         return vmpayment.ClassServices.getListPrices(path).then(function(data) {
-                vmpayment.$log.debug('getListPrices returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getListPrices returned data');
+                vmpayment.$log.log(data);
                 vmpayment.PriceList = data.PriceList;
                 if ((typeof data.PriceList === 'undefined' || data.PriceList.error === true) && typeof data !== 'undefined') {
                     vmpayment.PriceList = [];
@@ -268,7 +268,7 @@ export class StudentPaymentController {
                 return vmpayment.PriceList;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error getListPrices, going to notify:', error);
+                vmpayment.$log.log('Caught an error getListPrices, going to notify:', error);
                 vmpayment.PriceList = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -284,10 +284,10 @@ export class StudentPaymentController {
     getPaymentplan() {
         var vmpayment = this;
         var path = '../v1/paymentplan/' + vmpayment.studentpayer;
-        vmpayment.$log.debug('getPaymentplan entered', path);
+        vmpayment.$log.log('getPaymentplan entered', path);
         return vmpayment.ClassServices.getPaymentplan(path).then(function(data) {
-                vmpayment.$log.debug('getPaymentplan returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getPaymentplan returned data');
+                vmpayment.$log.log(data);
                 vmpayment.PaymentPlanList = data.PaymentPlanList;
 
                 if ((typeof data.PaymentPlanList === 'undefined' || data.PaymentPlanList.error === true) && typeof data !== 'undefined') {
@@ -313,7 +313,7 @@ export class StudentPaymentController {
                 return vmpayment.PaymentPlanList;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error PaymentPlan, going to notify:', error);
+                vmpayment.$log.log('Caught an error PaymentPlan, going to notify:', error);
                 vmpayment.PaymentPlanList = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -329,10 +329,10 @@ export class StudentPaymentController {
     getPaymenttypes() {
         var vmpayment = this;
         var path = '../v1/paymenttypes';
-        vmpayment.$log.debug('getPaymenttypes entered', path);
+        vmpayment.$log.log('getPaymenttypes entered', path);
         return vmpayment.ClassServices.getPaymenttypes(path).then(function(data) {
-                vmpayment.$log.debug('getPaymenttypes returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getPaymenttypes returned data');
+                vmpayment.$log.log(data);
                 vmpayment.PaymentTypes = data.paymenttypes;
                 if ((typeof data.paymenttypes === 'undefined' || data.paymenttypes.error === true) && typeof data !== 'undefined') {
                     vmpayment.PaymentTypes = [];
@@ -342,7 +342,7 @@ export class StudentPaymentController {
                 return vmpayment.PaymentTypes;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error PaymentTypes, going to notify:', error);
+                vmpayment.$log.log('Caught an error PaymentTypes, going to notify:', error);
                 vmpayment.PaymentTypes = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -358,10 +358,10 @@ export class StudentPaymentController {
     getPaymentplans() {
         var vmpayment = this;
         var path = '../v1/paymentplans';
-        vmpayment.$log.debug('getPaymentplans entered', path);
+        vmpayment.$log.log('getPaymentplans entered', path);
         return vmpayment.ClassServices.getPaymentplans(path).then(function(data) {
-                vmpayment.$log.debug('getPaymentplans returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getPaymentplans returned data');
+                vmpayment.$log.log(data);
                 vmpayment.PaymentPlans = data.paymentplans;
                 if ((typeof data.paymentplans === 'undefined' || data.paymentplans.error === true) && typeof data !== 'undefined') {
                     vmpayment.PaymentPlans = [];
@@ -371,7 +371,7 @@ export class StudentPaymentController {
                 return vmpayment.PaymentPlans;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error PaymentPlans, going to notify:', error);
+                vmpayment.$log.log('Caught an error PaymentPlans, going to notify:', error);
                 vmpayment.PaymentPlans = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -386,7 +386,7 @@ export class StudentPaymentController {
 
     removePaymentPlan(input) {
         var vmpayment = this;
-        vmpayment.$log.debug('removePaymentPlan entered', input);
+        vmpayment.$log.log('removePaymentPlan entered', input);
         var path = "../v1/paymentplan";
         var thedata = {
             paymentid: input.paymentid,
@@ -394,13 +394,13 @@ export class StudentPaymentController {
         };
         return vmpayment.ClassServices.removePaymentPlan(path, thedata)
             .then(function(data) {
-                vmpayment.$log.debug('removePaymentPlan returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('removePaymentPlan returned data');
+                vmpayment.$log.log(data);
                 vmpayment.getPaymentplan();
                 return data;
             }).catch(function(e) {
-                vmpayment.$log.debug('removePaymentPlan failure:');
-                vmpayment.$log.debug("error", e);
+                vmpayment.$log.log('removePaymentPlan failure:');
+                vmpayment.$log.log("error", e);
                 vmpayment.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -424,10 +424,10 @@ export class StudentPaymentController {
             paymentid: input.paymentid,
             mode: mode
         };
-        vmpayment.$log.debug('about updatePaymentPlan ', path, thedata, input);
+        vmpayment.$log.log('about updatePaymentPlan ', path, thedata, input);
         return vmpayment.ClassServices.updatePaymentPlan(path, thedata).then(function(data) {
-            vmpayment.$log.debug('updatePaymentPlan returned data: ');
-            vmpayment.$log.debug(data);
+            vmpayment.$log.log('updatePaymentPlan returned data: ');
+            vmpayment.$log.log(data);
             if (data.error === true || typeof data === 'undefined') {
                 vmpayment.Notification.error({ message: data.error === true ? data.error : "data error", delay: 5000 });
                 return (vmpayment.$q.reject(data));
@@ -436,7 +436,7 @@ export class StudentPaymentController {
             vmpayment.getPaymentplan();
 
         }, function(error) {
-            vmpayment.$log.debug('updatePaymentPlan ', error);
+            vmpayment.$log.log('updatePaymentPlan ', error);
             vmpayment.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -445,10 +445,10 @@ export class StudentPaymentController {
     getPaymentpays() {
         var vmpayment = this;
         var path = '../v1/paymentpays/' + vmpayment.studentpayer;
-        vmpayment.$log.debug('getPaymentpays entered', path);
+        vmpayment.$log.log('getPaymentpays entered', path);
         return vmpayment.ClassServices.getPaymentpays(path).then(function(data) {
-                vmpayment.$log.debug('getPaymentpays returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getPaymentpays returned data');
+                vmpayment.$log.log(data);
                 vmpayment.PaymentPaysList = data.PaymentPaysList;
                 if ((typeof data.PaymentPaysList === 'undefined' || data.PaymentPaysList.error === true) && typeof data !== 'undefined') {
                     vmpayment.PaymentPaysList = [];
@@ -465,7 +465,7 @@ export class StudentPaymentController {
                 return vmpayment.PaymentPaysList;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error getPaymentpays, going to notify:', error);
+                vmpayment.$log.log('Caught an error getPaymentpays, going to notify:', error);
                 vmpayment.PaymentPaysList = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -481,10 +481,10 @@ export class StudentPaymentController {
     getPayerpayments() {
         var vmpayment = this;
         var path = '../v1/payerpayments/' + vmpayment.studentpayer;
-        vmpayment.$log.debug('getPayerpayments entered', path);
+        vmpayment.$log.log('getPayerpayments entered', path);
         return vmpayment.ClassServices.getPaymentpays(path).then(function(data) {
-                vmpayment.$log.debug('getPayerpayments returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('getPayerpayments returned data');
+                vmpayment.$log.log(data);
                 vmpayment.PayerPaymentList = data.PayerPaymentList;
                 if ((typeof data.PayerPaymentList === 'undefined' || data.PayerPaymentList.error === true) && typeof data !== 'undefined') {
                     vmpayment.PayerPaymentList = [];
@@ -499,7 +499,7 @@ export class StudentPaymentController {
                 return vmpayment.PayerPaymentList;
             },
             function(error) {
-                vmpayment.$log.debug('Caught an error getPayerpayments, going to notify:', error);
+                vmpayment.$log.log('Caught an error getPayerpayments, going to notify:', error);
                 vmpayment.PayerPaymentList = [];
                 vmpayment.message = error;
                 vmpayment.Notification.error({ message: error, delay: 5000 });
@@ -514,22 +514,22 @@ export class StudentPaymentController {
 
     removePayer() {
         var vmpayment = this;
-        vmpayment.$log.debug('removePayer entered', vmpayment.studentpayer);
+        vmpayment.$log.log('removePayer entered', vmpayment.studentpayer);
         var path = "../v1/payer";
         var thedata = {
             payerid: vmpayment.studentpayer
         };
         return vmpayment.ClassServices.removePayer(path, thedata)
             .then(function(data) {
-                vmpayment.$log.debug('removePayer returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('removePayer returned data');
+                vmpayment.$log.log(data);
                 vmpayment.getPayerList();
                 vmpayment.getPaymentpays();
                 vmpayment.getListPrices();
                 return data;
             }).catch(function(e) {
-                vmpayment.$log.debug('removePayer failure:');
-                vmpayment.$log.debug("error", e);
+                vmpayment.$log.log('removePayer failure:');
+                vmpayment.$log.log("error", e);
                 vmpayment.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -539,21 +539,21 @@ export class StudentPaymentController {
 
     removePaymentPay(input) {
         var vmpayment = this;
-        vmpayment.$log.debug('removePaymentPay entered', input);
+        vmpayment.$log.log('removePaymentPay entered', input);
         var path = "../v1/paymentpay";
         var thedata = {
             pcpid: input.pcpid
         };
         return vmpayment.ClassServices.removePaymentPay(path, thedata)
             .then(function(data) {
-                vmpayment.$log.debug('removePaymentPay returned data');
-                vmpayment.$log.debug(data);
+                vmpayment.$log.log('removePaymentPay returned data');
+                vmpayment.$log.log(data);
                 vmpayment.getPaymentpays();
                 vmpayment.getListPrices();
                 return data;
             }).catch(function(e) {
-                vmpayment.$log.debug('removePaymentPay failure:');
-                vmpayment.$log.debug("error", e);
+                vmpayment.$log.log('removePaymentPay failure:');
+                vmpayment.$log.log("error", e);
                 vmpayment.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -570,10 +570,10 @@ export class StudentPaymentController {
             pcpid: input.pcpid,
             mode: mode
         };
-        vmpayment.$log.debug('about updatePaymentPay ', path, thedata, input);
+        vmpayment.$log.log('about updatePaymentPay ', path, thedata, input);
         return vmpayment.ClassServices.updatePaymentPay(path, thedata).then(function(data) {
-            vmpayment.$log.debug('updatePaymentPay returned data: ');
-            vmpayment.$log.debug(data);
+            vmpayment.$log.log('updatePaymentPay returned data: ');
+            vmpayment.$log.log(data);
             if (data.error === true || typeof data === 'undefined') {
                 vmpayment.Notification.error({ message: data.error === true ? data.message : "data error", delay: 5000 });
                 return (vmpayment.$q.reject(data));
@@ -583,7 +583,7 @@ export class StudentPaymentController {
             vmpayment.getListPrices();
 
         }, function(error) {
-            vmpayment.$log.debug('updatePaymentPay ', error);
+            vmpayment.$log.log('updatePaymentPay ', error);
             vmpayment.Notification.error({ message: error, delay: 5000 });
             return (error);
         });

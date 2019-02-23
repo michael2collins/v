@@ -2,11 +2,10 @@ import angular from 'angular';
 
 export class ClassTestTableBasicController {
     constructor(
-        $log, $q, $scope, $interval, ClassServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
+        $log, $q, $scope, $interval, ClassServices, UserServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
 
     ) {
         'ngInject';
-        console.log('entering ClassTestTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -18,6 +17,7 @@ export class ClassTestTableBasicController {
         this.Util = Util;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -45,36 +45,39 @@ export class ClassTestTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-classtest dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-classtest dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-basic-classtest');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ClassTestTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-classtest started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-classtest started");
 
         });
 
         vm.getClassTest().then(function() {
-            vm.$log.debug('getClassTest activate done');
+            vm.$log.log('getClassTest activate done');
             vm.$q.all([
                     vm.getTesttypes().then(function() {
-                        vm.$log.debug('gettestTypes activate done', vm.testTypes);
+                        vm.$log.log('gettestTypes activate done', vm.testTypes);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     }),
                     vm.getClasses().then(function() {
-                        vm.$log.debug('getClasses activate done', vm.classes);
+                        vm.$log.log('getClasses activate done', vm.classes);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     })
                 ])
                 .then(function() {
-                    vm.$log.debug(' activate done');
+                    vm.$log.log(' activate done');
                     vm.setgridOptions();
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
                 });
@@ -100,14 +103,14 @@ export class ClassTestTableBasicController {
     }
     getClasses() {
         var vm = this;
-        vm.$log.debug('getClasses entered');
+        vm.$log.log('getClasses entered');
         var path = '../v1/classes';
         return vm.ClassServices.getClasses(path).then(function(data) {
-            vm.$log.debug('getClasses returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClasses returned data');
+            vm.$log.log(data);
 
             vm.classes = data.ClassList;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.classes === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -124,7 +127,7 @@ export class ClassTestTableBasicController {
             }
             return vm.classes;
         }, function(error) {
-            vm.$log.debug('Caught an error getClasses:', error);
+            vm.$log.log('Caught an error getClasses:', error);
             vm.classes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -136,17 +139,17 @@ export class ClassTestTableBasicController {
 
     getTesttypes() {
         var vm = this;
-        vm.$log.debug('getTesttypes entered');
+        vm.$log.log('getTesttypes entered');
         var path = '../v1/testtype';
 
         return vm.ClassServices.getTesttypes(path).then(function(data) {
-            vm.$log.debug('getTesttypes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getTesttypes returned data');
+            vm.$log.log(data);
 
             vm.testTypes = data.TesttypeList;
             return data.TesttypeList;
         }, function(error) {
-            vm.$log.debug('Caught an error getTesttypes:', error);
+            vm.$log.log('Caught an error getTesttypes:', error);
             vm.testTypes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -157,7 +160,7 @@ export class ClassTestTableBasicController {
 
     removeClassTest(input) {
         var vm = this;
-        vm.$log.debug('removeClassTest entered', input);
+        vm.$log.log('removeClassTest entered', input);
         vm.dataLoading = true;
 
         var path = "../v1/classtest";
@@ -169,8 +172,8 @@ export class ClassTestTableBasicController {
 
         return vm.ClassServices.removeClassTest(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeClassTest returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeClassTest returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -183,10 +186,10 @@ export class ClassTestTableBasicController {
                 }
 
                 vm.getClassTest().then(function(zdata) {
-                        vm.$log.debug('getClassTest returned', zdata);
+                        vm.$log.log('getClassTest returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getClassTest after remove:', error);
+                        vm.$log.log('Caught an error getClassTest after remove:', error);
                         vm.thisClassTest = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -194,8 +197,8 @@ export class ClassTestTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeClassTest failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeClassTest failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             }).
@@ -221,14 +224,14 @@ export class ClassTestTableBasicController {
             sortorder: rowEntity.sortorder
         };
 
-        vm.$log.debug('about updateClassTest ', thedata, updpath, updatetype);
+        vm.$log.log('about updateClassTest ', thedata, updpath, updatetype);
         return vm.ClassServices.updateClassTest(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateClassTest returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateClassTest returned data');
+                vm.$log.log(data);
                 vm.thisClassTest = data;
-                vm.$log.debug(vm.thisClassTest);
-                vm.$log.debug(vm.thisClassTest.message);
+                vm.$log.log(vm.thisClassTest);
+                vm.$log.log(vm.thisClassTest.message);
                 vm.message = vm.thisClassTest.message;
                 if ((typeof vm.thisClassTest === 'undefined' || vm.thisClassTest.error === true) &&
                     typeof data !== 'undefined') {
@@ -239,10 +242,10 @@ export class ClassTestTableBasicController {
                     vm.Notification.success({ message: vm.message, delay: 5000 });
                 }
                 vm.getClassTest().then(function(zdata) {
-                        vm.$log.debug('getClassTest returned', zdata);
+                        vm.$log.log('getClassTest returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getClassTest after add:', error);
+                        vm.$log.log('Caught an error getClassTest after add:', error);
                         vm.thisClassTest = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -252,8 +255,8 @@ export class ClassTestTableBasicController {
 
                 return vm.thisClassTest;
             }).catch(function(e) {
-                vm.$log.debug('updateClassTest failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateClassTest failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -265,19 +268,19 @@ export class ClassTestTableBasicController {
 
     getClassTest() {
         var vm = this;
-        vm.$log.debug('getClassTest entered');
+        vm.$log.log('getClassTest entered');
         var path = '../v1/classtest';
 
         return vm.ClassServices.getClassTests(path).then(function(data) {
-            vm.$log.debug('getClassTests returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClassTests returned data');
+            vm.$log.log(data);
 
             vm.gridOptions.data = data.ClasstestList;
             vm.Classtest.sortorder = parseInt(vm.Util.maxObjArr(data.ClasstestList, 'sortorder'), 10) + 1;
 
             return data.ClasstestList;
         }, function(error) {
-            vm.$log.debug('Caught an error getClassTests:', error);
+            vm.$log.log('Caught an error getClassTests:', error);
             vm.ClasstestList = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -355,11 +358,11 @@ export class ClassTestTableBasicController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

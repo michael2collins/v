@@ -6,7 +6,7 @@ export class ImpstudentController {
 
     constructor(
         $scope, $log, StudentServices, Util, uiGridConstants, Notification, $q, portalDataService,
-        $window, uiGridValidateService, uiGridExporterConstants, $interval, $sce, cfpLoadingBar
+        $window, uiGridValidateService, uiGridExporterConstants, $interval, $sce, cfpLoadingBar, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -23,6 +23,7 @@ export class ImpstudentController {
         this.$interval = $interval;
         this.$sce = $sce;
         this.cfpLoadingBar = cfpLoadingBar;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
@@ -77,8 +78,8 @@ export class ImpstudentController {
     }
 
     $onDestroy() {
-        this.$log.debug("ImpstudentController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ImpstudentController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     isokCol() {
@@ -89,23 +90,26 @@ export class ImpstudentController {
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('impstudent');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ImpstudentController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("impstudent started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("impstudent started");
 
         });
 
         vm.$q.all([
                 vm.getStudentCols().then(function() {
-                    vm.$log.debug('getStudentCols', vm.StudentCols);
+                    vm.$log.log('getStudentCols', vm.StudentCols);
                 }),
                 vm.getStudentColMap().then(function() {
-                    vm.$log.debug('getStudentColMap done');
+                    vm.$log.log('getStudentColMap done');
                 })
             ])
             .then(function() {
-                vm.$log.debug(' activate returned');
+                vm.$log.log(' activate returned');
                 vm.cfpLoadingBar.complete();
             });
 
@@ -130,7 +134,7 @@ export class ImpstudentController {
 
     changeColMapName(input) {
         var vm = this;
-        vm.$log.debug('changeColMapName', input);
+        vm.$log.log('changeColMapName', input);
         vm.okcol = true;
     }
 
@@ -190,7 +194,7 @@ export class ImpstudentController {
     }
     getSampleStudents() {
         var vm = this;
-        vm.$log.debug('get samplestudents entered');
+        vm.$log.log('get samplestudents entered');
         vm.gridexp1Options.data = [];
         var path = '../v1/samplestudents';
 
@@ -266,7 +270,7 @@ export class ImpstudentController {
             required: rowEntity.required
         };
 
-        vm.$log.debug('about updateStudentColMap ', thedata, updpath, updatetype);
+        vm.$log.log('about updateStudentColMap ', thedata, updpath, updatetype);
         return vm.StudentServices.updateStudentColMap(updpath, thedata)
             .then(function(data) {
                     vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'updateStudentColMap', true);
@@ -274,7 +278,7 @@ export class ImpstudentController {
 
                     if (updatetype === 'Add') {
                         vm.getStudentColMap().then(function(zdata) {
-                                vm.$log.debug('getStudentColMap returned', zdata);
+                                vm.$log.log('getStudentColMap returned', zdata);
                             },
                             function(error) {
                                 vm.Util.exceptionError(error, "getStudentColMap", vm.Notification);
@@ -296,7 +300,7 @@ export class ImpstudentController {
 
     removeCol(input, all) {
         var vm = this;
-        vm.$log.debug('removeCol entered', input);
+        vm.$log.log('removeCol entered', input);
         var path = '../v1/studentcolmap';
         var thedata = {
             id: input.id,
@@ -308,7 +312,7 @@ export class ImpstudentController {
                 vm.Util.checkRemoveSuccess(data, vm.Notification, vm.$q, 'removeCol', true);
 
                 vm.getStudentColMap().then(function(zdata) {
-                        vm.$log.debug('getStudentColMap returned', zdata);
+                        vm.$log.log('getStudentColMap returned', zdata);
                     },
                     function(error) {
                         vm.Util.exceptionError(error, "getStudentColMap", vm.Notification);
@@ -416,7 +420,7 @@ export class ImpstudentController {
             ],
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
                 vm.Util.setPagination(vm.gridApi, vm);
 
@@ -424,7 +428,7 @@ export class ImpstudentController {
         };
 
 
-        vm.$log.debug('gridOptions', vm.gridOptions);
+        vm.$log.log('gridOptions', vm.gridOptions);
     }
     setGridimp1Options() {
         var vm = this;
@@ -434,7 +438,7 @@ export class ImpstudentController {
         vm.Util.setPhoneValidator(vm.uiGridValidateService);
         vm.Util.setImpGridDefaults(vm.impgcolumns, vm.gridimp1Options, vm.uiGridConstants, vm.limits, vm.initialLength, vm.rowheight);
 
-        vm.$log.debug('gridimp1Options', vm.gridimp1Options);
+        vm.$log.log('gridimp1Options', vm.gridimp1Options);
     }
 
     setGridexp1Options() {
@@ -449,7 +453,7 @@ export class ImpstudentController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridexp1Options onRegisterApi');
+                vm.$log.log('vm gridexp1Options onRegisterApi');
                 vm.gridexp1Api = gridApi;
 
                 vm.Util.setPagination(vm.gridexp1Api, vm);
@@ -458,7 +462,7 @@ export class ImpstudentController {
         };
         vm.Util.setGridexp1OptionsDefaults(vm.gridexp1Options, 'students.csv', vm.limits, vm.initialLength, vm.rowheight, vm.gcolumns);
 
-        vm.$log.debug('gridexp1Options', vm.gridexp1Options);
+        vm.$log.log('gridexp1Options', vm.gridexp1Options);
     }
     setAfterCellEdit(gridApi, func, vm, scope) {
         gridApi.edit.on.afterCellEdit(scope,
@@ -482,7 +486,7 @@ export class ImpstudentController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridimp1Api onRegisterApi');
+                vm.$log.log('vm gridimp1Api onRegisterApi');
                 vm.gridimp1Api = gridApi;
 
                 vm.setAfterCellEdit(vm.gridimp1Api, "rawcontacts", vm, vm.$scope);
@@ -496,7 +500,7 @@ export class ImpstudentController {
 
         };
 
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
 
     }
     isStep3Populated() {
@@ -516,7 +520,7 @@ export class ImpstudentController {
     createBulkStudents() {
         var vm = this;
         var path = '../v1/bulkstudent';
-        vm.$log.debug('about createBulkStudents ');
+        vm.$log.log('about createBulkStudents ');
 
         return vm.StudentServices.createBulkStudents(path)
             .then(function(data) {
@@ -534,7 +538,7 @@ export class ImpstudentController {
     createRawStudents() {
         var vm = this;
         var path = '../v1/rawstudent';
-        vm.$log.debug('about createRawStudents ');
+        vm.$log.log('about createRawStudents ');
         var thedata = {
             selectedStudents: vm.gridimp1Options.data
         };
@@ -560,7 +564,7 @@ export class ImpstudentController {
 
         input.Birthday = vm.Util.oradate(input.Birthday);
 
-        vm.$log.debug('about updateRawStudent ', input);
+        vm.$log.log('about updateRawStudent ', input);
 
         return vm.StudentServices.updateRawStudent(path, input).then(function(data) {
             vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'updateRawStudent', true);
@@ -595,7 +599,7 @@ export class ImpstudentController {
 
     removeRawStudent(row) {
         var vm = this;
-        vm.$log.debug('removeRawStudent entered', row.entity.externalid);
+        vm.$log.log('removeRawStudent entered', row.entity.externalid);
         var path = '../v1/rawstudent';
         var thedata = {
             id: row.entity.externalid
@@ -615,7 +619,7 @@ export class ImpstudentController {
 
     removeRawStudents() {
         var vm = this;
-        vm.$log.debug('removeRawStudents entered');
+        vm.$log.log('removeRawStudents entered');
         var path = '../v1/rawstudents';
 
         return vm.StudentServices.removeRawStudents(path)

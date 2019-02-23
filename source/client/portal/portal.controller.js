@@ -16,7 +16,6 @@ export class PortalController {
         statsServices
     ) {
         'ngInject';
-        console.log('entering portal controller');
         this.$log = $log;
         this.$scope = $scope;
         this.portalDataService = portalDataService;
@@ -33,8 +32,8 @@ export class PortalController {
     }
     
     $onDestroy() {
-            this.$log.debug("portal dismissed");
-            this.$log.debugEnabled(false);
+            this.$log.log("portal dismissed");
+            //this.$log.logEnabled(false);
         }
 
     $onInit() {
@@ -58,13 +57,17 @@ export class PortalController {
     init() {
         var self=this;
 
+        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined ) {
+            self.$log = self.$log.getInstance('PortalController',self.UserServices.isDebugEnabled());
+        }
+
 
         self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             var vm = event.currentScope.$ctrl;
             vm.current = current;
 
-            vm.$log.debugEnabled(true);
-            vm.$log.debug('routechange in portal for success');
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log('routechange in portal for success');
 
 
             vm.header.animation = 'fadeInUp';
@@ -88,7 +91,7 @@ export class PortalController {
             vm.header.header_topbar = '';
 /*
             if ('/layout-left-sidebar' === vm.current.originalPath) {
-                vm.$log.debug("left sidebar entered");
+                vm.$log.log("left sidebar entered");
                 vm.header.boxed = '';
                 vm.header.layout_topbar = '';
                 vm.header.layout_menu = '';
@@ -122,11 +125,11 @@ export class PortalController {
             else if ('/' === vm.current.originalPath) {
 */            
             if ('/' === vm.current.originalPath) {
-                vm.$log.debug("/ path entered");
+                vm.$log.log("/ path entered");
                 $('body').removeAttr('id'); // error 404, 500
             }
             else {
-                vm.$log.debug("else path entered");
+                vm.$log.log("else path entered");
                 vm.header.boxed = '';
                 vm.header.layout_topbar = '';
                 vm.header.layout_menu = '';
@@ -153,18 +156,18 @@ export class PortalController {
             }
 
             vm.isokf();
-            vm.$log.debug('exit routechangesucess');
+            vm.$log.log('exit routechangesucess');
 
 
         });
 
         self.$scope.$on('$routeChangeError', function(event, current, previous) {
             var vm = event.currentScope.$ctrl;
-            vm.$log.debug('routechange in portal for error');
-            vm.$log.debug('originalPath');
-            vm.$log.debug(current.originalPath);
+            vm.$log.log('routechange in portal for error');
+            vm.$log.log('originalPath');
+            vm.$log.log(current.originalPath);
             vm.data = vm.portalDataService.get(current.originalPath);
-            vm.$log.debug('data in $routeChangeSuccess', vm.data);
+            vm.$log.log('data in $routeChangeSuccess', vm.data);
             
         });
 
@@ -186,11 +189,11 @@ export class PortalController {
 
     islogin() {
 
-        this.$log.debug('islogin');
+        this.$log.log('islogin');
         this.isok = this.UserServices.isapikey();
 
         if (this.isok) {
-            this.$log.debug('setting apikey for services');
+            this.$log.log('setting apikey for services');
             var thekey = this.UserServices.getapikey();
             //this.CalendarServices.setapikey(thekey);
             //this.TestingServices.setapikey(thekey);
@@ -208,20 +211,20 @@ export class PortalController {
     }
 
     isokf() {
-        //        this.$log.debug('isokf');
+        //        this.$log.log('isokf');
         this.isok = this.UserServices.isapikey();
         return this.isok;
     }
 
     loadTopbar() {
-        this.$log.debug("loadTopbar");
+        this.$log.log("loadTopbar");
         $("[data-toggle='offcanvas']").on('click', function() {
             $('#sidebar-wrapper').toggleClass('active');
             return false;
         });
         // Setting toggle in mobile view 
         $('#setting-toggle').click(function() {
-            this.$log.debug('mobile toggle');
+            this.$log.log('mobile toggle');
             $('.topbar-main').toggle();
         });
     }

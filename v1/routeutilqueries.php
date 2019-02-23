@@ -5,7 +5,7 @@
  * method GET
  * url /zips
  */
-$app->get('/zips', 'authenticate', function() {
+$app->get('/zips', 'authenticate','setDebug', function() {
     $response = array();
     $db = new UtilDbHandler();
 
@@ -28,11 +28,11 @@ $app->get('/zips', 'authenticate', function() {
 
 
 //$app->get('/ranklist', 'authenticate', function() {
-$app->get('/ranklist', 'authenticate', function() use ($app) {
+$app->get('/ranklist', 'authenticate', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("util ranklist entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("util ranklist entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $ranktype = '';
 
@@ -40,7 +40,7 @@ $app->get('/ranklist', 'authenticate', function() use ($app) {
         $ranktype = $allGetVars['ranktype'];
     }
 
-    error_log( print_R("ranklist params: ranktype: $ranktype \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("ranklist params: ranktype: $ranktype \n ", TRUE));
 
     $response = array();
     $db = new UtilDbHandler();
@@ -62,16 +62,16 @@ $app->get('/ranklist', 'authenticate', function() use ($app) {
     echoRespnse(200, $response);
 });
 
-$app->put('/renamefile', 'authenticate', function() use($app) {
+$app->put('/renamefile', 'authenticate', 'setDebug',function() use($app) {
 
-    error_log( print_R("before request\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before request\n", TRUE ));
 
     $request = $app->request();
     $response = array();
     
     $body = $request->getBody();
     $student = json_decode($body);
-    error_log( print_R($student, TRUE ), 3, LOG);
+    $app->log->debug( print_R($student, TRUE ));
 
     //global $user_id;
     $LastName = $student->LastName;
@@ -81,15 +81,15 @@ $app->put('/renamefile', 'authenticate', function() use($app) {
     $newpicfile2 = STUPICDIR . $newpicfile;
     $oldpicfile = STUPICDIR . $student->oldpicfile;
     
-    error_log( print_R("new: " . $newpicfile2 . "\n", TRUE ), 3, LOG);
-    error_log( print_R("old: " . $oldpicfile . "\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("new: " . $newpicfile2 . "\n", TRUE ));
+    $app->log->debug( print_R("old: " . $oldpicfile . "\n", TRUE ));
 
     if ($oldpicfile == STUPICDIR ) {
-        error_log( print_R("old pic is empty, using new pic\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("old pic is empty, using new pic\n", TRUE));
         $response["newpicfile"] = $newpicfile;
         
     } else {
-        error_log( print_R("renaming pic\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("renaming pic\n", TRUE));
         if (!copy($oldpicfile, $oldpicfile . ".bkup")) {
             echo "failed to copy $oldpicfile...\n";
             $response["error"] = true;
@@ -108,9 +108,9 @@ $app->put('/renamefile', 'authenticate', function() use($app) {
     
 });
 
-$app->get('/studentfiles', 'authenticate', function() {
+$app->get('/studentfiles', 'authenticate', 'setDebug',function() {
 
-    //error_log( print_R("enter get studentfiles\n", TRUE ), 3, LOG);
+    //$app->log->debug( print_R("enter get studentfiles\n", TRUE ));
 
     $app = \Slim\Slim::getInstance();
 
@@ -151,7 +151,7 @@ $app->get('/studentfiles', 'authenticate', function() {
         $tmp = array();
 
         $logstr = "file list:" . $studentImageDir . $files[$index] . "\n";        
-        error_log( print_R($logstr, TRUE ), 3, LOG);
+        $app->log->debug( print_R($logstr, TRUE ));
 
         // Gets File Names
         $fullname=$studentImageDir . $files[$index];   

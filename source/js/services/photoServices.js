@@ -15,19 +15,19 @@ export class PhotoServices {
         this.theStudent = student;
     }
     getTheStudent() {
-        this.$log.debug('getTheStudent', this.theStudent);
+        this.$log.log('getTheStudent', this.theStudent);
         return this.theStudent;
     }
 
 
     getstudentPicFile() {
-        this.$log.debug('getStuPicfile: ' + this.picFile);
+        this.$log.log('getStuPicfile: ' + this.picFile);
         return this.picFile;
     }
 
     getstudentPicFiles(path) {
         var self = this;
-        self.$log.debug('getStuPicfiles ');
+        self.$log.log('getStuPicfiles ');
         var request = self.$http({
             method: "get",
             url: path
@@ -39,12 +39,12 @@ export class PhotoServices {
 
     renameStudentPicFile(path, student, oldpicfile) {
         var self = this;
-        self.$log.debug('renameStudentPicFile ');
-        self.$log.debug(student);
-        self.$log.debug('pic');
-        self.$log.debug(oldpicfile);
-        self.$log.debug('path');
-        self.$log.debug(path);
+        self.$log.log('renameStudentPicFile ');
+        self.$log.log(student);
+        self.$log.log('pic');
+        self.$log.log(oldpicfile);
+        self.$log.log('path');
+        self.$log.log(path);
         student.oldpicfile = oldpicfile;
 
         var request = self.$http({
@@ -59,7 +59,7 @@ export class PhotoServices {
 
     saveStudentPic(student, picnm) {
         var self = this;
-        self.$log.debug('saveStudentPic :', student, picnm);
+        self.$log.log('saveStudentPic :', student, picnm);
         student.picnm = picnm;
         var path = '../v1/pic';
         var request = self.$http({
@@ -74,7 +74,7 @@ export class PhotoServices {
 
     setstudentPicFile(pic) {
         var self = this;
-        self.$log.debug('setStuPicfile: ' + pic);
+        self.$log.log('setStuPicfile: ' + pic);
         this.picFile = pic;
     }
 

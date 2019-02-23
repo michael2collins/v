@@ -2,10 +2,9 @@ import angular from 'angular';
 
 export class ClassTableBasicController {
     constructor(
-       $log,$q,$scope,$interval,ClassServices,Util,uiGridConstants,Notification,moment,iddropdownFilter,portalDataService
+       $log,$q,$scope,$interval,ClassServices,UserServices, Util,uiGridConstants,Notification,moment,iddropdownFilter,portalDataService
     ) {
         'ngInject';
-        console.log('entering ClassTableBasicController controller');
         this.$log =$log;
         this.$q =$q;
         this.$scope = $scope;
@@ -17,6 +16,7 @@ export class ClassTableBasicController {
         this.moment = moment;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -44,34 +44,38 @@ export class ClassTableBasicController {
         vm.activate();
     }
     $onDestroy() {
-        this.$log.debug("table-basic-class dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-class dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-basic-class');
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ClassTableBasicController',vm.UserServices.isDebugEnabled());
+        }
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-class started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-class started");
 
         });
 
 
 
         vm.getClass().then(function() {
-           vm.$log.debug('getClass activate done');
+           vm.$log.log('getClass activate done');
            vm.$q.all([
                     vm.getrankTypes().then(function() {
-                       vm.$log.debug('getrankTypes activate done', vm.rankTypes);
+                       vm.$log.log('getrankTypes activate done', vm.rankTypes);
                         vm.changeRanktype();
                     }, function(error) {
                         return(vm.$q.reject(error));
                     })
                 ])
                 .then(function() {
-                   vm.$log.debug(' activate done');
+                   vm.$log.log(' activate done');
                     vm.setgridOptions();
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
                 });
@@ -96,7 +100,7 @@ export class ClassTableBasicController {
 
     removeClass(input) {
         var vm = this;
-       vm.$log.debug('removeClass entered', input);
+       vm.$log.log('removeClass entered', input);
         var path = "../v1/class";
         var thedata = {
             id: input.id
@@ -107,8 +111,8 @@ export class ClassTableBasicController {
         //check ???
         return vm.ClassServices.removeClass(thedata, path)
             .then(function(data) {
-               vm.$log.debug('removeClass returned data');
-               vm.$log.debug(data);
+               vm.$log.log('removeClass returned data');
+               vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -121,10 +125,10 @@ export class ClassTableBasicController {
                 }
 
                 vm.getClass().then(function(zdata) {
-                       vm.$log.debug('getClass returned', zdata);
+                       vm.$log.log('getClass returned', zdata);
                     },
                     function(error) {
-                       vm.$log.debug('Caught an error getClass after remove:', error);
+                       vm.$log.log('Caught an error getClass after remove:', error);
                         vm.thisClass = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -132,8 +136,8 @@ export class ClassTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-               vm.$log.debug('removeClass failure:');
-               vm.$log.debug("error", e);
+               vm.$log.log('removeClass failure:');
+               vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -164,14 +168,14 @@ export class ClassTableBasicController {
             pictureurl: rowEntity.pictureurl
         };
 
-       vm.$log.debug('about updateClass ', thedata, updpath, updatetype);
+       vm.$log.log('about updateClass ', thedata, updpath, updatetype);
         return vm.ClassServices.updateClass(updpath, thedata)
             .then(function(data) {
-               vm.$log.debug('updateClass returned data');
-               vm.$log.debug(data);
+               vm.$log.log('updateClass returned data');
+               vm.$log.log(data);
                 vm.thisClass = data;
-               vm.$log.debug(vm.thisClass);
-               vm.$log.debug(vm.thisClass.message);
+               vm.$log.log(vm.thisClass);
+               vm.$log.log(vm.thisClass.message);
                 vm.message = vm.thisClass.message;
                 if ((typeof vm.thisClass === 'undefined' || vm.thisClass.error === true) &&
                     typeof data !== 'undefined') {
@@ -187,10 +191,10 @@ export class ClassTableBasicController {
                 }
                 //                    if (updatetype === 'Add') {
                 vm.getClass().then(function(zdata) {
-                       vm.$log.debug('getClass returned', zdata);
+                       vm.$log.log('getClass returned', zdata);
                     },
                     function(error) {
-                       vm.$log.debug('Caught an error getClass after remove:', error);
+                       vm.$log.log('Caught an error getClass after remove:', error);
                         vm.thisClass = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -201,8 +205,8 @@ export class ClassTableBasicController {
 
                 return vm.thisClass;
             }).catch(function(e) {
-               vm.$log.debug('updateClass failure:');
-               vm.$log.debug("error", e);
+               vm.$log.log('updateClass failure:');
+               vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -211,18 +215,18 @@ export class ClassTableBasicController {
 
     getClass() {
         var vm = this;
-       vm.$log.debug('getClass entered');
+       vm.$log.log('getClass entered');
         var path = '../v1/class';
 
         return vm.ClassServices.getClasses(path).then(function(data) {
-           vm.$log.debug('getClasses returned data');
-           vm.$log.debug(data);
+           vm.$log.log('getClasses returned data');
+           vm.$log.log(data);
 
             vm.gridOptions.data = data.Classlist;
             vm.Class.sort = parseInt (vm.Util.maxObjArr(data.Classlist, 'sort'), 10) + 1;
 
         }, function(error) {
-           vm.$log.debug('Caught an error getClasses:', error);
+           vm.$log.log('Caught an error getClasses:', error);
             vm.Classlist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -236,7 +240,7 @@ export class ClassTableBasicController {
         vm.Class.registrationTypeVlu = vm.Util.getByValue(vm.rankTypes, vm.Class.registrationType, 'id', 'value');
         //            getRanks();
         vm.getRanks().then(function() {
-           vm.$log.debug('getranks activate done', vm.ranks);
+           vm.$log.log('getranks activate done', vm.ranks);
             vm.gridApi.grid.columns[1].filters[0].term = String(vm.Class.registrationTypeVlu);
             //            vm.gridApi.grid.columns[1].filters[0].term = parseInt(vm.Class.registrationType,10);
             vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
@@ -257,14 +261,14 @@ export class ClassTableBasicController {
 
     getrankTypes() {
         var vm = this;
-       vm.$log.debug('getrankTypes entered');
+       vm.$log.log('getrankTypes entered');
         var path = '../v1/ranktypeids';
         return vm.ClassServices.getRankTypes(path).then(function(data) {
-           vm.$log.debug('getrankTypes returned data');
-           vm.$log.debug(data);
+           vm.$log.log('getrankTypes returned data');
+           vm.$log.log(data);
 
             vm.rankTypes = data.ranktypelist;
-           vm.$log.debug(data.message);
+           vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.rankTypes === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -277,7 +281,7 @@ export class ClassTableBasicController {
             }
             return vm.rankTypes;
         }, function(error) {
-           vm.$log.debug('Caught an error getrankTypes:', error);
+           vm.$log.log('Caught an error getrankTypes:', error);
             vm.rankTypes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -287,7 +291,7 @@ export class ClassTableBasicController {
     }
     getRanks(mode) {
         var vm = this;
-       vm.$log.debug('getranks entered', vm.Class.registrationTypeVlu);
+       vm.$log.log('getranks entered', vm.Class.registrationTypeVlu);
         var path;
         if (mode === "All") {
             vm.Class.registrationTypeVlu = 'AdultKarate';
@@ -299,7 +303,7 @@ export class ClassTableBasicController {
             vm.Class.ranklistForNextClass =
                 typeof vm.Class.registrationType !== undefined ? vm.Class.registrationType : '';
         }, function(error) {
-           vm.$log.debug('Caught an error getranks:', error);
+           vm.$log.log('Caught an error getranks:', error);
             vm.ranks = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -309,14 +313,14 @@ export class ClassTableBasicController {
     }
     getRanksquery(path) {
         var vm = this;
-       vm.$log.debug('getranksquery entered', path);
+       vm.$log.log('getranksquery entered', path);
 
         return vm.ClassServices.getRanks(path).then(function(data) {
-           vm.$log.debug('getranks returned data');
-           vm.$log.debug(data);
+           vm.$log.log('getranks returned data');
+           vm.$log.log(data);
 
             var ranks = data.Ranklist;
-           vm.$log.debug(data.message);
+           vm.$log.log(data.message);
             vm.message = ranks.message;
             if ((typeof ranks === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -325,7 +329,7 @@ export class ClassTableBasicController {
             }
             return ranks;
         }, function(error) {
-           vm.$log.debug('Caught an error getranks:', error);
+           vm.$log.log('Caught an error getranks:', error);
             //ranks = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -336,7 +340,7 @@ export class ClassTableBasicController {
 
     getRankss(mode) {
         var vm = this;
-       vm.$log.debug('getranks entered', vm.Class.registrationTypeVlu);
+       vm.$log.log('getranks entered', vm.Class.registrationTypeVlu);
         var path;
         if (mode === "All") {
             path = encodeURI('../v1/ranks?ranktype=AdultKarate');
@@ -346,11 +350,11 @@ export class ClassTableBasicController {
         }
 
         return vm.ClassServices.getRanks(path).then(function(data) {
-           vm.$log.debug('getranks returned data');
-           vm.$log.debug(data);
+           vm.$log.log('getranks returned data');
+           vm.$log.log(data);
 
             vm.ranks = data.Ranklist;
-           vm.$log.debug(data.message);
+           vm.$log.log(data.message);
             vm.message = vm.ranks.message;
             if ((typeof vm.ranks === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -362,7 +366,7 @@ export class ClassTableBasicController {
             }
             return vm.ranks;
         }, function(error) {
-           vm.$log.debug('Caught an error getranks:', error);
+           vm.$log.log('Caught an error getranks:', error);
             vm.ranks = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -490,11 +494,11 @@ export class ClassTableBasicController {
 
 
             onRegisterApi: function(gridApi) {
-               vm.$log.debug('vm gridapi onRegisterApi');
+               vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                   vm.$log.debug('pagination changed');
+                   vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

@@ -5,15 +5,17 @@ function authenticate(\Slim\Route $route) {
  * Adding Middle Layer to authenticate every request
  * Checking if the request has valid api key in the 'Authorization' header
  */
-    error_log( print_R("authenticate entered:\n ", TRUE), 3, LOG);
+    $app = \Slim\Slim::getInstance();
+    $app->log->setEnabled(false); //change to true if want these
+ 
+    $app->log->debug( print_R("authenticate entered:\n ", TRUE));
 
     // Getting request headers
     $headers = apache_request_headers();
     $response = array();
-    $app = \Slim\Slim::getInstance();
 
-    error_log( print_R("headers:\n ", TRUE), 3, LOG);
-    error_log( print_R($headers, TRUE), 3, LOG);
+    $app->log->debug( print_R("headers:\n ", TRUE));
+    $app->log->debug( print_R($headers, TRUE));
 
     // Verifying Authorization Header
     if (isset($headers['Authorization'])) {
@@ -41,7 +43,7 @@ function authenticate(\Slim\Route $route) {
         }
     } else {
         // api key is missing in header
-        error_log( print_R("missing auth header", TRUE), 3, LOG);
+        $app->log->debug( print_R("missing auth header", TRUE));
         $response["error"] = true;
         $response["message"] = "Login required";
         echoRespnse(400, $response);
@@ -61,7 +63,7 @@ $app->post('/register', function() use ($app) {
  * params - name, email, password
  */
     // check for required params
-    error_log( print_R("register entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("register entered:\n ", TRUE));
  
 
 //    verifyRequiredParams(array('name','lastname', 'email', 'password'));
@@ -70,8 +72,8 @@ $app->post('/register', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("register before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("register before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     if (isset($dataJsonDecode->thedata->firstname)) {
         $firstname = $dataJsonDecode->thedata->firstname;
@@ -129,8 +131,8 @@ $app->post('/login', function() use ($app) {
         $dataJsonDecode     = json_decode($data);
     global $user_name;
     
-    error_log( print_R("login entered: $user_name\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+//    $app->log->debug( print_R("login entered: $user_name\n", TRUE ));
+//    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     if (isset($dataJsonDecode->thedata->username)) {
         $username = $dataJsonDecode->thedata->username;
@@ -145,12 +147,12 @@ $app->post('/login', function() use ($app) {
     $db = new DbHandler();
     // check for correct email and password
     if ($db->checkLoginUser($username, $password)) {
-        error_log( print_R("checkLoginUser: $username\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("checkLoginUser: $username\n", TRUE ));
         // get the user by email
         //$user = $db->getUserByEmail($email);
         $user = $db->getUserByUsername($username);
- //       error_log( print_R("getUserByUsername:", TRUE ), 3, LOG);
- //       error_log( print_R($user, TRUE ), 3, LOG);
+ //       $app->log->debug( print_R("getUserByUsername:", TRUE ));
+ //       $app->log->debug( print_R($user, TRUE ));
 
         if ($user != NULL && $user['school'] != NULL) {
             $response["error"] = false;
@@ -164,11 +166,11 @@ $app->post('/login', function() use ($app) {
             $response['pictureurl'] = $user['pictureurl'];
             $response['options'] = $user['options'];
             $user_name = $user['username'];
-//            error_log( print_R("login return:", TRUE ), 3, LOG);
-//            error_log( print_R($response, TRUE ), 3, LOG);
+//            $app->log->debug( print_R("login return:", TRUE ));
+//            $app->log->debug( print_R($response, TRUE ));
             echoRespnse(200, $response);
         } else if ( $user['school'] == NULL ) {
-            error_log( print_R("login error\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("login error\n", TRUE ));
             $response['error'] = true;
             $response['message'] = "An error occurred. You do not have access. This is a private site.  Please contact your dojo administrator. This transaction has been audited for possible prosecution.";
             $user_name = '';
@@ -194,7 +196,7 @@ $app->post('/login', function() use ($app) {
             $app->stop();            
         } else {
             // unknown error occurred
-            error_log( print_R("login error\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("login error\n", TRUE ));
             $response['error'] = true;
             $response['message'] = "An error occurred. Please try again";
             $user_name = '';
@@ -203,7 +205,7 @@ $app->post('/login', function() use ($app) {
         }
     } else {
         // user credentials are wrong
-            error_log( print_R("login failed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("login failed\n", TRUE ));
             $user_name = '';
         $response['error'] = true;
         $response['message'] = 'Login failed. Incorrect credentials';
@@ -219,8 +221,8 @@ $app->get('/keepalive', function() use ($app) {
 $app->get('/forgotpassword', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("forgotpassword entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("forgotpassword entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $username = '';
     $user = '';
@@ -254,7 +256,7 @@ $app->get('/forgotpassword', function() use ($app) {
         $user_name = $user['username'];
     } else {
         // unknown error occurred
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("login error\n", TRUE ));
         $response['error'] = true;
         $response['message'] = "An error occurred. User not found. Please try again";
         $user_name = '';
@@ -291,7 +293,7 @@ $app->get('/forgotpassword', function() use ($app) {
     
         emailnotify($to,$Subject,$Body);
     } else {
-            error_log( print_R("reset pwd failed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("reset pwd failed\n", TRUE ));
             $user_name = '';
         $response['error'] = true;
         $response['message'] = 'Reset failed.';
@@ -308,9 +310,9 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("changepassword post entered\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("changepassword post entered\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $username    = (isset($dataJsonDecode->thedata->username)    ? $dataJsonDecode->thedata->username : "bad");
     $password = (isset($dataJsonDecode->thedata->password) ? $dataJsonDecode->thedata->password : "bad");
@@ -343,7 +345,7 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
         $user_name = $user['username'];
     } else {
         // unknown error occurred
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("login error\n", TRUE ));
         $response['error'] = true;
         $response['message'] = "An error occurred. User not found. Please try again";
         $user_name = '';
@@ -361,7 +363,7 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
         $user_name = $user['username'];
     } else {
         // unknown error occurred
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("login error\n", TRUE ));
         $response['error'] = true;
         $response['message'] = "An error occurred. User not updated. Please try again";
         $user_name = '';
@@ -374,8 +376,8 @@ $app->post('/changepassword', 'authenticate', function() use ($app) {
 $app->get('/confirmresetpassword', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("resetpassword entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("resetpassword entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $username = '';
     $user = '';
@@ -405,10 +407,10 @@ $app->get('/confirmresetpassword', function() use ($app) {
     $db = new DbHandler();
 
     $user = $db->getUserByUsername($username);
-        error_log( print_R("post getuser query hash:\n", TRUE ), 3, LOG);
-        error_log( print_R($user['token_hash'], TRUE ), 3, LOG);
-        error_log( print_R("post getuser query token:\n", TRUE ), 3, LOG);
-        error_log( print_R($token, TRUE ), 3, LOG);
+        $app->log->debug( print_R("post getuser query hash:\n", TRUE ));
+        $app->log->debug( print_R($user['token_hash'], TRUE ));
+        $app->log->debug( print_R("post getuser query token:\n", TRUE ));
+        $app->log->debug( print_R($token, TRUE ));
 
 if (PassHash::check_password($user['token_hash'], $token)) {
         $response["error"] = false;
@@ -427,7 +429,7 @@ if (PassHash::check_password($user['token_hash'], $token)) {
         $app->redirect('/#/reset-pwd?user=' . urlencode($user_name) . '&token=' . urlencode($token));
     } else {
         // unknown error occurred
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("login error\n", TRUE ));
         $response['error'] = true;
         $response['message'] = "An error occurred. User not found. Please try again";
         $user_name = '';
@@ -442,8 +444,8 @@ if (PassHash::check_password($user['token_hash'], $token)) {
 $app->get('/userdetails', 'authenticate', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("userdetails entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("userdetails entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $username = '';
 
@@ -477,7 +479,7 @@ $app->get('/userdetails', 'authenticate', function() use ($app) {
 
 $app->get('/useroptions', 'authenticate', function() use ($app) {
 
-    error_log( print_R("useroptions entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("useroptions entered:\n ", TRUE));
 
     $response = array();
 
@@ -489,12 +491,12 @@ $app->get('/useroptions', 'authenticate', function() use ($app) {
         $response["error"] = false;
         $response["message"] = "Found user options successfully";
         $response["options"] = $res["options"];
-        error_log( print_R("User options:\n", TRUE ), 3, LOG);
-        error_log( print_R($res, TRUE ), 3, LOG);
+        $app->log->debug( print_R("User options:\n", TRUE ));
+        $app->log->debug( print_R($res, TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after User Options result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res, TRUE), 3, LOG);
+        $app->log->debug( print_R("after User Options result bad\n", TRUE));
+        $app->log->debug( print_R( $res, TRUE));
         $response["extra"] = $res;
         $response["error"] = true;
         $response["message"] = "Failed to get User Options. Please try again";
@@ -511,13 +513,13 @@ $app->post('/useroptions', 'authenticate', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("useroptions before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);    
+    $app->log->debug( print_R("useroptions before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));    
 
     $options = (isset($dataJsonDecode->thedata->options) ? $dataJsonDecode->thedata->options : "");
 
-    error_log( print_R("options:\n", TRUE ), 3, LOG);    
-    error_log( print_R($options, TRUE ), 3, LOG);    
+    $app->log->debug( print_R("options:\n", TRUE ));    
+    $app->log->debug( print_R($options, TRUE ));    
 
     $db = new DbHandler();
     $response = array();
@@ -527,11 +529,11 @@ $app->post('/useroptions', 'authenticate', function() use ($app) {
     if ($id > 0) {
         $response["error"] = false;
         $response["message"] = "Options updated successfully";
-        error_log( print_R("Options updated: $id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Options updated: $id\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after options result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after options result bad\n", TRUE));
+        $app->log->debug( print_R( $id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to update options. Please try again";
         echoRespnse(400, $response);
@@ -543,8 +545,8 @@ $app->post('/useroptions', 'authenticate', function() use ($app) {
 $app->get('/resetpassword',  function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("resetpassword entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("resetpassword entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $username = '';
     $user = '';
@@ -590,10 +592,10 @@ $app->get('/resetpassword',  function() use ($app) {
     $db = new DbHandler();
 
     $user = $db->getUserByUsername($username);
-        error_log( print_R("post reset getuser query: hash\n", TRUE ), 3, LOG);
-        error_log( print_R($user['token_hash'], TRUE ), 3, LOG);
-        error_log( print_R("post reset getuser query: token\n", TRUE ), 3, LOG);
-        error_log( print_R($token, TRUE ), 3, LOG);
+        $app->log->debug( print_R("post reset getuser query: hash\n", TRUE ));
+        $app->log->debug( print_R($user['token_hash'], TRUE ));
+        $app->log->debug( print_R("post reset getuser query: token\n", TRUE ));
+        $app->log->debug( print_R($token, TRUE ));
     //may want to add question/answer checking
 
 if (PassHash::check_password($user['token_hash'], $token)) {
@@ -613,7 +615,7 @@ if (PassHash::check_password($user['token_hash'], $token)) {
         $user_name = $user['username'];
     } else {
         // unknown error occurred
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("login error\n", TRUE ));
         $response['error'] = true;
         $response['message'] = "An error occurred. User not found. Please try again";
         $user_name = '';
@@ -631,7 +633,7 @@ if (PassHash::check_password($user['token_hash'], $token)) {
         echoRespnse(200, $response);
     } else {
         // unknown error occurred
-        error_log( print_R("login error\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("login error\n", TRUE ));
         $response['error'] = true;
         $response['message'] = "A reset error occurred. User not updated. Please try again";
         $user_name = '';
@@ -642,11 +644,35 @@ if (PassHash::check_password($user['token_hash'], $token)) {
 
 });
 
+function getDebug() {
+    $db = new DbHandler();
+    $response=array();
+    $res = $db->getDebugoption();
+
+    if ($res != NULL) {
+        $response['debug'] = $res['debug'];
+    } else {
+        $response['debug'] = "0";
+    }        
+    return $response;
+}
+
+function setDebug() {
+    $app = \Slim\Slim::getInstance();
+    
+    $debu = getDebug();
+//    $app->log->debug(print_R("debug enabled:\n", TRUE) , 3, LOG);
+//    $app->log->debug(print_R($debu["debug"], TRUE) , 3, LOG);
+    $app->log->setEnabled($debu["debug"] == 1 ? true : false);
+    
+}
 
 function verifyRequiredParams($required_fields) {
 /**
  * Verifying required params posted or not
  */
+     setDebug();    
+
     $error = false;
     $error_fields = "";
     $request_params = array();
@@ -656,8 +682,8 @@ function verifyRequiredParams($required_fields) {
         $app = \Slim\Slim::getInstance();
         parse_str($app->request()->getBody(), $request_params);
     }
-    error_log( print_R("verify entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($request_params, TRUE), 3, LOG);
+    $app->log->debug( print_R("verify entered:\n ", TRUE));
+    $app->log->debug( print_R($request_params, TRUE));
     
     foreach ($required_fields as $field) {
         if (!isset($request_params[$field]) || strlen(trim($request_params[$field])) <= 0) {
@@ -673,8 +699,8 @@ function verifyRequiredParams($required_fields) {
         $app = \Slim\Slim::getInstance();
         $response["error"] = true;
         $response["message"] = 'Required field(s) ' . substr($error_fields, 0, -2) . ' is missing or empty';
-    error_log( print_R("verify error:\n ", TRUE), 3, LOG);
-    error_log( print_R(substr($error_fields, 0, -2), TRUE), 3, LOG);
+    $app->log->debug( print_R("verify error:\n ", TRUE));
+    $app->log->debug( print_R(substr($error_fields, 0, -2), TRUE));
         echoRespnse(400, $response);
         $app->stop();
     }
@@ -683,10 +709,12 @@ function verifyRequiredParams($required_fields) {
 function errorRequiredParams($required_fields) {
         $response = array();
         $app = \Slim\Slim::getInstance();
+    setDebug();    
+        
         $response["error"] = true;
         $response["message"] = 'Required field(s) ' . $required_fields . ' is missing or empty';
-    error_log( print_R("verify error:\n ", TRUE), 3, LOG);
-    error_log( print_R($required_fields, TRUE), 3, LOG);
+    $app->log->debug( print_R("verify error:\n ", TRUE));
+    $app->log->debug( print_R($required_fields, TRUE));
         echoRespnse(400, $response);
         $app->stop();
     

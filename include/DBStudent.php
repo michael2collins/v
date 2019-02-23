@@ -27,14 +27,17 @@ class StudentDbHandler
 
 		$db = new DbConnect();
 		$this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
+		
 	}
 
 	private
 	function isStudenrankExists($contactid, $ranktype)
 	{
-		error_log(print_R("before isStudenrankExists\n", TRUE) , 3, LOG);
-		error_log(print_R("contactid: $contactid\n", TRUE) , 3, LOG);
-		error_log(print_R("ranktype : $ranktype\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isStudenrankExists\n", TRUE) );
+		$app->log->debug(print_R("contactid: $contactid\n", TRUE) );
+		$app->log->debug(print_R("ranktype : $ranktype\n", TRUE) );
 		$sql = "SELECT id from ncontactrank WHERE contactid = ? ";
 		$sql.= " and ranktype = ? ";
 		$stmt = $this->conn->prepare($sql);
@@ -49,7 +52,8 @@ class StudentDbHandler
 	public
 	function createStudentRank($contactid, $ranktype, $currentrank)
 	{
-		error_log(print_R("createStudentRank entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createStudentRank entered\n", TRUE) );
 		$response = array();
 		$sql = "INSERT INTO ncontactrank (ContactID, ranktype, currentrank) VALUES ";
 		$sql.= "  ( ?,?,? )";
@@ -85,7 +89,8 @@ class StudentDbHandler
 	public
 	function updateStudentRank($contactid, $ranktype, $currentrank)
 	{
-		error_log(print_R("updateStudentRank entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("updateStudentRank entered\n", TRUE) );
 		$response = array();
 		$sql = "update ncontactrank set currentrank = ? where ContactID = ? and ranktype = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
@@ -107,7 +112,8 @@ class StudentDbHandler
 	public
 	function removeStudentRank($contactid, $ranktype)
 	{
-		error_log(print_R("removeStudentRank entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("removeStudentRank entered\n", TRUE) );
 		$sql = "DELETE from ncontactrank  where ContactID = ? and ranktype = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $contactid, $ranktype);
@@ -128,11 +134,12 @@ class StudentDbHandler
 	public
 	function savepic($studentid, $picnm)
 	{
+        global $app;
 		$num_affected_rows = 0;
 		$sql = "UPDATE ncontacts set ";
 		$sql.= "  pictureurl = ? ";
 		$sql.= " where ID =  ? ";
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R($sql, TRUE));
 
 		//       try {
 
@@ -155,11 +162,12 @@ class StudentDbHandler
 	/**
 	 * Updating event
 	 */
+        global $app;
 		$num_affected_rows = 0;
 		$sql = "UPDATE eventregistration set ";
 		$sql.= "  paid = ?, shirtSize = ?, Notes = ?, include = ?, attended = ?, ordered = ? ";
 		$sql.= " where event = ? and eventdate = ? and  Contact = ? ";
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R($sql, TRUE));
 
 		//       try {
 
@@ -186,29 +194,30 @@ class StudentDbHandler
 	public
 	function getEventNames($theinput)
 	{
+        global $app;
+        global $school;
+        
 		$sql = "SELECT distinct event FROM eventregistration e, ncontacts c ";
 		$sql.= " where event like '%" . $theinput . "%' ";
-		$sql.= " and c.ID = e.contact ";
-		$schoolfield = "c.studentschool";
-		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getEventNames sql after security: $sql", TRUE) , 3, LOG);
+		$sql.= " and c.ID = e.contact and c.studentschool = ? ";
 		$sql.= " order by event ";
-		error_log(print_R("getEventNames sql: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEventNames sql after security: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s",  $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEventNames list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEventNames list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEventNames list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEventNames list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getEventNames list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getEventNames list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -217,6 +226,7 @@ class StudentDbHandler
 	public
 	function getEventDetails($theinput)
 	{
+        global $app;
 		$sql = "select e.event, e.eventdate as EventDate, e.eventstart as EventStart, e.eventend as EventEnd ";
 		$sql.= ", e.eventType as EventType, e.paid as Paid, e.shirtSize as ShirtSize, e.notes as Notes, e.include as Include, e.attended as Attended";
 		$sql.= ", e.ordered as Ordered, e.location as Location ";
@@ -226,25 +236,25 @@ class StudentDbHandler
 		$sql.= " and c.id = e.contact ";
 		$schoolfield = "c.studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getEventDetails sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEventDetails sql after security: $sql", TRUE) );
 		$sql.= " order by e.event, e.eventdate, c.lastname, c.firstname ";
-		error_log(print_R("getEventDetails sql: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEventDetails sql: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $theinput);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEventDetails list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEventDetails list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEventDetails list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEventDetails list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getEventDetails list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getEventDetails list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -257,10 +267,11 @@ class StudentDbHandler
 	 * Checking for duplicate event by name, date, contact
 	 * @return boolean
 	 */
-		error_log(print_R("before isEventExists\n", TRUE) , 3, LOG);
-		error_log(print_R("event: $Event\n", TRUE) , 3, LOG);
-		error_log(print_R("eventd  ate: $EventDate\n", TRUE) , 3, LOG);
-		error_log(print_R("contactid: $ContactID\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isEventExists\n", TRUE) );
+		$app->log->debug(print_R("event: $Event\n", TRUE) );
+		$app->log->debug(print_R("eventd  ate: $EventDate\n", TRUE) );
+		$app->log->debug(print_R("contactid: $ContactID\n", TRUE) );
 		$sql = "SELECT event from eventregistration e, ncontacts c WHERE event = ? ";
 		$sql.= " and eventdate = ? and contact = ?";
 		$stmt = $this->conn->prepare($sql);
@@ -278,7 +289,8 @@ class StudentDbHandler
 	/**
 	 * Creating new event
 	 */
-		error_log(print_R("createEvent entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createEvent entered\n", TRUE) );
 		$response = array();
 		$sql = "INSERT INTO eventregistration (event, eventdate, eventstart, eventend, Contact, eventType, paid, shirtSize, Notes, include, attended, ordered, location) VALUES ";
 		$sql.= "  ( ?,?,?,?, ";
@@ -320,10 +332,11 @@ class StudentDbHandler
 	 * Fetching lookup lists for students
 	 */
 		global $school;
+        global $app;
 		$sql = "SELECT t.* FROM studentlist t where t.school = ? ";
 //		$schoolfield = "t.school";
 //		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getStudentLists sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentLists sql after security: $sql", TRUE) );
 		$sql.= " order by t.listtype, t.listorder";
 		$stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s",
@@ -339,30 +352,31 @@ class StudentDbHandler
 	public
 	function getStudentNames($theinput)
 	{
+        global $app;
 		$sql = "SELECT FirstName,LastName,ID FROM ncontacts ";
 //		$sql.= " where LastName like '%" . $theinput . "%' ";
 //		$sql.= " or FirstName like '%" . $theinput . "%' ";
 		$sql.= " where CONCAT_WS(' ',`FirstName`,`LastName`)  like '%" . $theinput . "%' ";
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getStudentNames sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentNames sql after security: $sql", TRUE) );
 		$sql.= " order by LastName, FirstName LIMIT 10";
-		error_log(print_R("getStudentNames sql: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentNames sql: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getStudentNames list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentNames list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getStudentNames list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentNames list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getStudentNames list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStudentNames list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -372,29 +386,30 @@ class StudentDbHandler
 	function getRank($ranktype)
 	{
 		global $school;
+        global $app;
 		$sql = "SELECT t.* FROM ranklist t  ";
 		$sql.= " where t.ranktype = ? and t.school = ? ";
 //		$schoolfield = "t.school";
 //		$sql = addSecurity($sql, $schoolfield);
 		
-		error_log(print_R("getRankList sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getRankList sql after security: $sql", TRUE) );
 		$sql.= " order by t.sortkey";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $ranktype, $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getRank list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRank list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getRank list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRank list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getRank list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getRank list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -403,30 +418,31 @@ class StudentDbHandler
 	public
 	function getRankPartial($theinput, $ranktype)
 	{
+        global $app;
 		$inp = '%' . $theinput . '%';
 		$sql = "SELECT t.* FROM ranklist t  ";
 		$sql.= " where t.ranktype = ?  ";
 		$sql.= " and LOWER(t.ranklist) like LOWER( ? ) ";
 		$schoolfield = "t.school";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getRankList sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getRankList sql after security: $sql", TRUE) );
 		$sql.= " order by t.sortkey";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $ranktype, $inp);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getRankPartial list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRankPartial list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getRankPartial list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRankPartial list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getRankPartial list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getRankPartial list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -435,29 +451,30 @@ class StudentDbHandler
 	public
 	function getStudentRank($student_id)
 	{
+        global $app;
 		$sql = "SELECT c.ID as id, ContactID, r.currentrank as currentrank, r.ranktype as ranktype FROM ncontactrank r, ncontacts c ";
 		$sql.= " where c.ID = r.ContactID ";
 		$sql.= " and c.ID = ? ";
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
 		$sql.= " order by ranktype";
-		error_log(print_R("getStudentRanks sql after security: $sql for $student_id\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentRanks sql after security: $sql for $student_id\n", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $student_id);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getStudentRanks list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentRanks list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getStudentRanks list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentRanks list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getStudentRanks list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStudentRanks list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -467,6 +484,7 @@ class StudentDbHandler
 	function getStudentRanktypeExcluded($student_id)
 	{
 		global $school;
+        global $app;
 		$sql = "select listvalue as ranktype from studentlist s where listtype = 'ranktypelist' and s.school = ? ";
 //		$schoolfield = "s.school";
 //		$sql = addSecurity($sql, $schoolfield);
@@ -480,23 +498,23 @@ class StudentDbHandler
 		
 		$sql.= " and c.ID = ? ) ";
 		$sql.= " order by ranktype";
-		error_log(print_R("getStudentRanktypeExcluded sql after security: $sql for $student_id\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentRanktypeExcluded sql after security: $sql for $student_id\n", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("sss", $school, $school, $student_id );
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getStudentRanktypeExcluded list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentRanktypeExcluded list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getStudentRanktypeExcluded list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentRanktypeExcluded list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getStudentRanktypeExcluded list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStudentRanktypeExcluded list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -510,8 +528,9 @@ class StudentDbHandler
 	 */
 		global $user_id;
 		global $school;
+        global $app;
 		
-		error_log(print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank user: $user_id \n ", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getAllStudents entered: contacttype: $contacttype thelimit: $thelimit therank: $therank user: $user_id \n ", TRUE) );
 		$sql = "SELECT c.*, sr.studentclassstatus, cr.ranktype, cr.currentrank, cr.LastPromoted from ncontacts  c 
 		 LEFT JOIN studentregistration sr ON c.id = sr.studentid 
 		LEFT JOIN ncontactrank cr ON c.id = cr.contactid 
@@ -541,33 +560,33 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 
 //		$schoolfield = "c.studentschool";
 //		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getAllStudents sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getAllStudents sql after security: $sql", TRUE) );
 		$sql.= "   order by cr.currentrank, LastName, FirstName ";
 		if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
 			$sql.= "  LIMIT " . $thelimit;
 		}
 
-		error_log(print_R("getAllStudents sql: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getAllStudents sql: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 	        $stmt->bind_param("s",
                            $school
                              );
 			if ($stmt->execute()) {
-				error_log(print_R("getAllStudents list stmt", TRUE) , 3, LOG);
-				error_log(print_R($stmt, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getAllStudents list stmt", TRUE) );
+				$app->log->debug(print_R($stmt, TRUE) );
 				$students = $stmt->get_result();
-				error_log(print_R("getAllStudents list returns data", TRUE) , 3, LOG);
-				error_log(print_R($students, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getAllStudents list returns data", TRUE) );
+				$app->log->debug(print_R($students, TRUE) );
 				$stmt->close();
 				return $students;
 			}
 			else {
-				error_log(print_R("getAllStudents list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getAllStudents list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getAllStudents list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getAllStudents list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -576,10 +595,11 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getContactTypes()
 	{
+        global $app;
 		$sql = "SELECT contacttype, count(contacttype) FROM ncontacts where (1=1) ";
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getStudentLists sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentLists sql after security: $sql", TRUE) );
 		$sql.= " group by contacttype order by 2 desc";
 		$stmt = $this->conn->prepare($sql);
 		$stmt->execute();
@@ -591,6 +611,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getStudent($student_id)
 	{
+        global $app;
 	/**
 	 * Fetching single student
 	 * @param String $student_id id of the student
@@ -609,7 +630,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 
 		$schoolfield = "t.studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getStudent sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudent sql after security: $sql", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $student_id);
 		if ($stmt->execute()) {
@@ -684,15 +705,16 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function getSampleStudentHistory()
 	{
 		global $school;
+        global $app;
 
-		error_log(print_R("enter getSampleStudentHistory \n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("enter getSampleStudentHistory \n", TRUE) );
 		
 		$sql = " SELECT  t.contactid , t.contactdate, t.contactmgmttype  
 			FROM ncontactmgmt t, ncontacts n 
 			WHERE n.studentschool = ? and n.ID = t.contactid 
 			and RAND() < .1
 			ORDER BY t.contactdate LIMIT 20 ";
-		error_log(print_R("sql for getSampleStudentHistory is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getSampleStudentHistory is: " . $sql . "\n", TRUE) );
 
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $school);
@@ -709,7 +731,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	 * Fetching history for  student
 	 * @param String $student_id id of the student
 	 */
-		error_log(print_R("student for getStudentHistory is: " . $student_id . "\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("student for getStudentHistory is: " . $student_id . "\n", TRUE) );
 		$sql = " SELECT  ";
 		$sql = $sql . " t.contactid as contactid, ";
 		$sql = $sql . "  t.contactdate as contactdate, ";
@@ -719,9 +742,9 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$sql = $sql . " and n.ID = t.contactid ";
 		$schoolfield = "n.studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getStudentHistory sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentHistory sql after security: $sql", TRUE) );
 		$sql = $sql . " ORDER BY t.contactdate ";
-		error_log(print_R("sql for getStudentHistory is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getStudentHistory is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("i", $student_id);
 		$stmt->execute();
@@ -732,8 +755,9 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getStudentAttend($student_id)
 	{
+        global $app;
 		global $school;
-		error_log(print_R("student for getStudentAttend is: " . $student_id . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("student for getStudentAttend is: " . $student_id . "\n", TRUE) );
 
 		$sql = " SELECT a.ID, contactID, classID, mondayOfWeek, rank, DOWnum, attended,
 				cl.class as classname
@@ -742,7 +766,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 				join nclass cl on (a.classID = cl.ID)
 				where a.contactID = ? and c.studentschool = ? 
 				order by mondayOfWeek desc, DOWnum asc";
-		error_log(print_R("sql for getStudentAttend is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getStudentAttend is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("ss", $student_id, $school);
 		$stmt->execute();
@@ -760,6 +784,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Updating student
 	 */
+        global $app;
 		$num_affected_rows = 0;
 		$sql = "UPDATE ncontacts t set ";
 		$sql.= " t.LastName = ?,";
@@ -792,36 +817,36 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$sql.= " where ID = ? ";
 		$schoolfield = "t.studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("updateStudent sql after security: $sql", TRUE) , 3, LOG);
-		error_log(print_R($sql, TRUE));
-		error_log(print_R($LastName, TRUE));
-		error_log(print_R($FirstName, TRUE));
-		error_log(print_R($Email, TRUE));
-		error_log(print_R($Email2, TRUE));
-		error_log(print_R($Phone, TRUE));
-		error_log(print_R($AltPhone, TRUE));
-		error_log(print_R($phoneExt, TRUE));
-		error_log(print_R($altPhoneExt, TRUE));
-		error_log(print_R($Birthday, TRUE));
-		error_log(print_R($sex, TRUE));
-		error_log(print_R($Parent, TRUE));
-		error_log(print_R($EmergencyContact, TRUE));
-		error_log(print_R($Notes, TRUE));
-		error_log(print_R($medicalConcerns, TRUE));
-		error_log(print_R($Address, TRUE));
-		error_log(print_R($City, TRUE));
-		error_log(print_R($State, TRUE));
-		error_log(print_R($ZIP, TRUE));
-		error_log(print_R($ContactType, TRUE));
-		error_log(print_R($quickbooklink, TRUE));
-		error_log(print_R($StudentSchool, TRUE));
-		error_log(print_R($GuiSize, TRUE));
-		error_log(print_R($ShirtSize, TRUE));
-		error_log(print_R($BeltSize, TRUE));
-//		error_log(print_R($InstructorPaymentFree, TRUE));
-		error_log(print_R($instructorTitle, TRUE));
-		error_log(print_R($pictureurl, TRUE));
-		error_log(print_R($student_id, TRUE));
+		$app->log->debug(print_R("updateStudent sql after security: $sql", TRUE) );
+		$app->log->debug(print_R($sql, TRUE));
+		$app->log->debug(print_R($LastName, TRUE));
+		$app->log->debug(print_R($FirstName, TRUE));
+		$app->log->debug(print_R($Email, TRUE));
+		$app->log->debug(print_R($Email2, TRUE));
+		$app->log->debug(print_R($Phone, TRUE));
+		$app->log->debug(print_R($AltPhone, TRUE));
+		$app->log->debug(print_R($phoneExt, TRUE));
+		$app->log->debug(print_R($altPhoneExt, TRUE));
+		$app->log->debug(print_R($Birthday, TRUE));
+		$app->log->debug(print_R($sex, TRUE));
+		$app->log->debug(print_R($Parent, TRUE));
+		$app->log->debug(print_R($EmergencyContact, TRUE));
+		$app->log->debug(print_R($Notes, TRUE));
+		$app->log->debug(print_R($medicalConcerns, TRUE));
+		$app->log->debug(print_R($Address, TRUE));
+		$app->log->debug(print_R($City, TRUE));
+		$app->log->debug(print_R($State, TRUE));
+		$app->log->debug(print_R($ZIP, TRUE));
+		$app->log->debug(print_R($ContactType, TRUE));
+		$app->log->debug(print_R($quickbooklink, TRUE));
+		$app->log->debug(print_R($StudentSchool, TRUE));
+		$app->log->debug(print_R($GuiSize, TRUE));
+		$app->log->debug(print_R($ShirtSize, TRUE));
+		$app->log->debug(print_R($BeltSize, TRUE));
+//		$app->log->debug(print_R($InstructorPaymentFree, TRUE));
+		$app->log->debug(print_R($instructorTitle, TRUE));
+		$app->log->debug(print_R($pictureurl, TRUE));
+		$app->log->debug(print_R($student_id, TRUE));
 
 		//       try {
 
@@ -847,6 +872,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Creating new student
 	 */
+        global $app;
 		$app->log->info(print_R("createStudentHistory entered: $contactid, $histtype, $histdate", TRUE));
 		$response = array();
 
@@ -920,7 +946,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Creating new student
 	 */
-		error_log(print_R("createStudent entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createStudent entered\n", TRUE) );
 		$response = array();
 		global $school;
 		$sql = "INSERT into ncontacts (";
@@ -975,12 +1002,13 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns,
 		$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, $BeltSize, $pictureurl)
 	{
-		error_log(print_R("createFullStudent entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createFullStudent entered\n", TRUE) );
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createFullStudent Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("createFullStudent Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$response = array();
@@ -989,7 +1017,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
         $dt = DateTime::createFromFormat('m/d/Y', $Birthday);
         
         if ($dt === false) {
-            error_log( print_R("createFullStudent  bad date $Birthday" , TRUE), 3, LOG);
+            $app->log->debug( print_R("createFullStudent  bad date $Birthday" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -1056,12 +1084,13 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$studentid, $contactmgmttype, $contactdate
 		)
 	{
-		error_log(print_R("createBulkStudentHistory entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createBulkStudentHistory entered\n", TRUE) );
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createBulkStudentHistory Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("createBulkStudentHistory Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$response = array();
@@ -1070,7 +1099,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
         $dt = DateTime::createFromFormat('m/d/Y', $contactdate);
         
         if ($dt === false) {
-            error_log( print_R("createBulkStudentHistory  bad date $contactdate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("createBulkStudentHistory  bad date $contactdate" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -1110,11 +1139,12 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	 * Checking for duplicate student by email address, FirstName, LastName
 	 * @return boolean
 	 */
-		error_log(print_R("before isStudentExists\n", TRUE) , 3, LOG);
-		error_log(print_R("lastname: $LastName\n", TRUE) , 3, LOG);
-		error_log(print_R("FirstName: $FirstName\n", TRUE) , 3, LOG);
-		error_log(print_R("email: $Email\n", TRUE) , 3, LOG);
-		error_log(print_R("school: $inschool\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isStudentExists\n", TRUE) );
+		$app->log->debug(print_R("lastname: $LastName\n", TRUE) );
+		$app->log->debug(print_R("FirstName: $FirstName\n", TRUE) );
+		$app->log->debug(print_R("email: $Email\n", TRUE) );
+		$app->log->debug(print_R("school: $inschool\n", TRUE) );
 		$sql = "SELECT id from ncontacts WHERE email = ? ";
 		$sql.= " and LastName = ? and FirstName = ? ";
 		$sql.= " and studentschool = ?  ";
@@ -1130,6 +1160,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	private
 	function isStatusExists($contactid, $histdate, $histtype)
 	{
+        global $app;
 		$sql = "SELECT contactid from ncontactmgmt WHERE contactid = ? ";
 		$sql.= " and contactdate = ? ";
 		$sql.= " and contactmgmttype = ? ";
@@ -1148,10 +1179,11 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Fetching fields for user froerences
 	 */
-		error_log(print_R("getUserPreferences entered: $user_id key: $prefkey\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("getUserPreferences entered: $user_id key: $prefkey\n", TRUE) );
 
-		//       error_log( print_R($user_id, TRUE ));
-		//       error_log( print_R(  $prefkey, TRUE));
+		//       $app->log->debug( print_R($user_id, TRUE ));
+		//       $app->log->debug( print_R(  $prefkey, TRUE));
 
 		$stmt = $this->conn->prepare("SELECT u.id, u.prefcolumn from userpreferences u WHERE u.user_id = ? AND u.prefkey = ? order by preforder");
 		$stmt->bind_param("is", $user_id, $prefkey);
@@ -1159,7 +1191,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$userpreferences = $stmt->get_result();
 		$stmt->close();
 
-		//        error_log( print_R($userpreferences,TRUE));
+		//        $app->log->debug( print_R($userpreferences,TRUE));
 
 		return $userpreferences;
 	}
@@ -1170,7 +1202,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Replacing userpreferences
 	 */
-		error_log(print_R("createPref entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createPref entered\n", TRUE) );
 		$response = array();
 
 		// cleanout old and replace with a new set
@@ -1191,8 +1224,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$types = array();
 		$obj = json_decode($thedata, TRUE);
 		for ($i = 0; $i < count($obj['thedata']); $i++) {
-			error_log(print_R("loop json:\n", TRUE) , 3, LOG);
-			error_log(print_R($obj['thedata'][$i]["colname"], TRUE) , 3, LOG);
+			$app->log->debug(print_R("loop json:\n", TRUE) );
+			$app->log->debug(print_R($obj['thedata'][$i]["colname"], TRUE) );
 			array_push($values, $user_id, $prefkey, $obj['thedata'][$i]["colname"], $i + 1);
 		}
 
@@ -1227,10 +1260,11 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Fetching event view
 	 */
+        global $app;
 		$sql = "SELECT * FROM eventsource ";
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getEventSource sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEventSource sql after security: $sql", TRUE) );
 		if ($thelimit > 0 && $thelimit != 'NULL' && $thelimit != 'All') {
 			$sql.= "  LIMIT " . $thelimit;
 		}
@@ -1245,10 +1279,11 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	private
 	function isColDefExists($colkey, $colsubkey, $userid)
 	{
-		error_log(print_R("before isColDefExists\n", TRUE) , 3, LOG);
-		error_log(print_R("colkey: $colkey\n", TRUE) , 3, LOG);
-		error_log(print_R("colsubkey: $colsubkey\n", TRUE) , 3, LOG);
-		error_log(print_R("userid: $userid\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isColDefExists\n", TRUE) );
+		$app->log->debug(print_R("colkey: $colkey\n", TRUE) );
+		$app->log->debug(print_R("colsubkey: $colsubkey\n", TRUE) );
+		$app->log->debug(print_R("userid: $userid\n", TRUE) );
 		$stmt = $this->conn->prepare("SELECT colkey from coldef WHERE colkey = ? and colsubkey = ? and userid = ?");
 		$stmt->bind_param("sss", $colkey, $colsubkey, $userid);
 		$stmt->execute();
@@ -1259,19 +1294,25 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	}
 
 	public
-	function getColDefs($colkey, $colsubkey, $userid)
+	function getColDefs($colkey, $colsubkey)
 	{
-		error_log(print_R("getColDefs entered\n", TRUE) , 3, LOG);
-		$sql = " SELECT colcontent FROM coldef ";
-		$sql.= " where ";
-		$sql.= " userid = " . $userid;
-		$sql.= " and colkey = '" . $colkey . "'";
-		$sql.= " and colsubkey = '" . $colsubkey . "'";
+        global $app;
+        global $user_id;
+		$app->log->debug(print_R("getColDefs entered\n", TRUE) );
+		if ($colsubkey == 'Default') {
+			$sql = " SELECT colcontent FROM coldef 
+				 where userid = ? and colkey = ? ";
+		} else {
+			$sql = " SELECT colcontent FROM coldef 
+				 where userid = ? and colkey = ? and colsubkey =  '" . $colsubkey . "'";
+		}
+		
 		if (!$stmt = $this->conn->prepare($sql)) {
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
 		else {
+			$stmt->bind_param("ss",$user_id, $colkey);
 			$stmt->execute();
 
 			// $slists = $stmt->bind_result($colcontent);
@@ -1283,12 +1324,14 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	}
 
 	public
-	function getColDefList($colkey, $userid)
+	function getColDefList($colkey)
 	{
-		error_log(print_R("getColDefList entered\n", TRUE) , 3, LOG);
+        global $app;
+        global $user_id;
+		$app->log->debug(print_R("getColDefList entered\n", TRUE) );
 		$sql = " SELECT colsubkey FROM coldef ";
 		$sql.= " where ";
-		$sql.= " userid = " . $userid;
+		$sql.= " userid = " . $user_id;
 		$sql.= " and colkey = '" . $colkey . "'";
 		if (!$stmt = $this->conn->prepare($sql)) {
 			printf("Errormessage: %s\n", $this->conn->error);
@@ -1306,12 +1349,14 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	}
 
 	public
-	function createColDef($colkey, $colsubkey, $colcontent, $userid)
+	function createColDef($colkey, $colsubkey, $colcontent)
 	{
 	/**
 	 * Creating new coldef
 	 */
-		error_log(print_R("createColDef entered\n", TRUE) , 3, LOG);
+        global $app;
+        global $user_id;
+		$app->log->debug(print_R("createColDef entered\n", TRUE) );
 		$response = array();
 		$sql = "INSERT into coldef (";
 		$sql.= " colkey ,";
@@ -1329,9 +1374,9 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 
 		// First check if user already existed in db
 
-		if (!$this->isColDefExists($colkey, $colsubkey, $userid)) {
+		if (!$this->isColDefExists($colkey, $colsubkey, $user_id)) {
 			if ($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param("ssss", $colkey, $colsubkey, $cont, $userid);
+				$stmt->bind_param("ssss", $colkey, $colsubkey, $cont, $user_id);
 
 				//                	$stmt->send_long_data(0, $colcontent);
 
@@ -1353,7 +1398,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 			// User with same colkey already existed in the db
 
 			if ($stmt = $this->conn->prepare($updsql)) {
-				$stmt->bind_param("ssss", $cont, $colkey, $colsubkey, $userid);
+				$stmt->bind_param("ssss", $cont, $colkey, $colsubkey, $user_id);
 
 				//                	$stmt->send_long_data(0, $colcontent);
 
@@ -1372,20 +1417,21 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getUserFromEmail($to)
 	{
-		error_log(print_R("getUserFromEmail entered with $to\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("getUserFromEmail entered with $to\n", TRUE) );
 		$response = array();
 		$usql = "select id,school from users where systememail = ?";
 		if ($stmt = $this->conn->prepare($usql)) {
 			$stmt->bind_param("s", $to);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getUserFromEmail  returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getUserFromEmail  returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getUserFromEmail  execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getUserFromEmail  execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
@@ -1398,20 +1444,21 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getEmailFromUser($user)
 	{
-		error_log(print_R("getEmailFromUser entered with $user\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("getEmailFromUser entered with $user\n", TRUE) );
 		$response = array();
 		$usql = "select systememail,email from users where id = ?";
 		if ($stmt = $this->conn->prepare($usql)) {
 			$stmt->bind_param("s", $user);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEmailFromUser  returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailFromUser  returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEmailFromUser  execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailFromUser  execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
@@ -1424,13 +1471,14 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function createMessage($userid, $school, $subject, $to, $body, $threadTopic, $emailDate, $from, $returnPath, $deliveredTo, $replyTo, $cc, $bcc, $ContactID = NULL)
 	{
-		error_log(print_R("createMessage entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createMessage entered\n", TRUE) );
 		$response = array();
 		$bod = json_encode($body);
 		$sql = "INSERT into message ( userid, school, subject, emailto, body, `thread-topic`, `email-date`, `from`, `return-path`, `delivered-to`, `reply-to`, cc, bcc, contactid ) ";
 		$sql.= " VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		error_log(print_R($sql, TRUE));
-		error_log(print_R("u $userid s $school sb $subject t $to b $body c $ContactID\n", TRUE));
+		$app->log->debug(print_R($sql, TRUE));
+		$app->log->debug(print_R("u $userid s $school sb $subject t $to b $body c $ContactID\n", TRUE));
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ssssssssssssss", $userid, $school, $subject, $to, $body, $threadTopic, $emailDate, $from, $returnPath, $deliveredTo, $replyTo, $cc, $bcc, $ContactID);
 			$result = $stmt->execute();
@@ -1463,6 +1511,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getNotifications()
 	{
+        global $app;
 		global $school;
 		global $user_id;
 		$sql = "SELECT          
@@ -1470,7 +1519,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
         FROM notification n, ncontacts c where n.userid = ? and n.school = ? and notifkey = 'student_id' 
         and c.ID = n.value and c.studentschool = n.school
         ";
-		error_log(print_R("getNotifications sql : $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getNotifications sql : $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $user_id, $school);
 			if ($stmt->execute()) {
@@ -1479,12 +1528,12 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 				return $notificationList;
 			}
 			else {
-				error_log(print_R("getNotifications  execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getNotifications  execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getNotifications  sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getNotifications  sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -1493,6 +1542,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function createNotification($type, $notifkey, $value, $app)
 	{
+        global $app;
 		$app->log->info(print_R("createNotification entered: $type,
                                   $notifkey,
                                   $value", TRUE));
@@ -1559,7 +1609,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function removeNotification($id)
 	{
 		global $user_id;
-		error_log(print_R("removeNotification entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("removeNotification entered\n", TRUE) );
 		$sql = "DELETE from notification  where id = ? and userid = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $id, $user_id);
@@ -1580,29 +1631,30 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getEmails($theinput)
 	{
+        global $app;
 		$sql = "SELECT distinct email, ID, FirstName, LastName FROM ncontacts ";
 		$sql.= " where email like concat ('%',?,'%')  ";
 		$sql.= " or LastName like concat ('%',?,'%')  ";
 		$sql.= " or FirstName like concat ('%',?,'%') ";
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getEmails sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEmails sql after security: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("sss", $theinput, $theinput, $theinput);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEmails list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmails list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEmails list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmails list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getEmails list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getEmails list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -1612,28 +1664,29 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function getEmailView($theinput)
 	{
 		global $user_id;
+        global $app;
 		$sql = "SELECT m.id, userid,  emailto, subject, body, `thread-topic`, `reply-to`, `return-path`, 
             `delivered-to`, cc, bcc, `email-date`, `from`, contactid, status, FirstName as firstname, LastName as lastname
             from message m left join ncontacts n on (m.contactid = n.ID) where  userid = ? and m.id = ? ";
 		$schoolfield = "school";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getEmailView sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEmailView sql after security: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $user_id, $theinput);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEmailView list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailView list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEmailView list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailView list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getEmailView list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getEmailView list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -1643,28 +1696,29 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function getEmailList()
 	{
 		global $user_id;
+        global $app;
 		$sql = "SELECT m.id, userid,  emailto, subject, body, `thread-topic`, `reply-to`, `return-path`, 
             `delivered-to`, cc, bcc, `email-date`, `from`, contactid, status, FirstName as firstname, LastName as lastname
             from message m left join ncontacts n on ( m.contactid = n.ID ) where userid = ? ";
 		$schoolfield = "school";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getEmailList sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getEmailList sql after security: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $user_id);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEmailList list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailList list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEmailList list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailList list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getEmailList list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getEmailList list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -1674,24 +1728,25 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function getEmailCount()
 	{
 		global $user_id;
+        global $app;
 		$sql = "SELECT count(*) as count
             from message where status = 'new' and userid = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $user_id);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getEmailCount list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailCount list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getEmailCount list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getEmailCount list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getEmailCount list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getEmailCount list sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -1701,7 +1756,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function updateEmail($id, $status)
 	{
 		global $user_id;
-		error_log(print_R("updateEmail entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("updateEmail entered\n", TRUE) );
 		$response = array();
 		$sql = "update message set status = ? where id = ? and userid = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
@@ -1724,7 +1780,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	function removeEmail($id)
 	{
 		global $user_id;
-		error_log(print_R("removeEmail entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("removeEmail entered\n", TRUE) );
 		$sql = "DELETE from message  where id = ? and userid = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss", $id, $user_id);
@@ -1749,8 +1806,9 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		 * Checking for duplicate payment by name, date, contact
 		 * @return boolean
 		 */
-		error_log(print_R("before isPaymentExists\n", TRUE) , 3, LOG);
-		error_log(print_R("txnid: $txnid\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isPaymentExists\n", TRUE) );
+		$app->log->debug(print_R("txnid: $txnid\n", TRUE) );
 		$stmt = $this->conn->prepare("SELECT txn_id from payment WHERE txn_id = ?");
 		$stmt->bind_param("s", $txnid);
 		$stmt->execute();
@@ -1758,32 +1816,33 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$num_rows = $stmt->num_rows;
 		$stmt->close();
 		$r = $num_rows > 0;
-		error_log(print_R("txnid exists: $r\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("txnid exists: $r\n", TRUE) );
 		return $r;
 	}
 
 	public
 	function getPayment($txnid)
 	{
+        global $app;
 		$sql = "SELECT * FROM payment";
 		$sql.= " where txn_id = ?";
-		error_log(print_R("getPayment sql: $sql $txnid\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getPayment sql: $sql $txnid\n", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $txnid);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getPayment  returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getPayment  returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				return $slists;
 			}
 			else {
-				error_log(print_R("getPayment list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getPayment list execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getPayment sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getPayment sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -1792,6 +1851,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	public
 	function getPayments($payer)
 	{
+        global $app;
 		$sql = "SELECT 
 		payerid	,
 		p.id	as npid,
@@ -1836,29 +1896,29 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		join npayments pp on ( pp.paymentid = inv.paymentid )
 		where pp.payerid = ?
 ";
-		error_log(print_R("getPayment sql: $sql $payer\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getPayment sql: $sql $payer\n", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $payer);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				$res = array();
-				error_log(print_R("getPayments list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getPayments list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				$res["success"]=true;
 				$res["slist"]=$slists;
 				return $res;
 			}
 			else {
-				error_log(print_R("getPayments list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getPayments list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getPayments failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 	            return $errormessage;
 			}
 		}
 		else {
-			error_log(print_R("getPayments list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getPayments list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getPayments failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
@@ -1874,14 +1934,15 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	$item_name2, $item_name3, $item_name4, $item_name5, $mc_gross_2, $mc_gross_3, $mc_gross_4, $mc_gross_5, $receipt_id, $payment_gross,
 	$ipn_track_id, $custom, $paymentprocessor, $school)
 	{
+        global $app;
 		/**
 		 * Creating new payment
 		 */
-		error_log(print_R("createPayment entered\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("createPayment entered\n", TRUE) );
 		$numargs = func_num_args();
 		$arg_list = func_get_args();
 		for ($i = 0; $i < $numargs; $i++) {
-			error_log(print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE) , 3, LOG);
+			$app->log->debug(print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE) );
 		}
 
 		$response = array();
@@ -1910,7 +1971,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		// First check if user already existed in db
 
 		if (!$this->isPaymentExists($txn_id)) {
-			error_log(print_R("proceed with create payment: $sql\n", TRUE) , 3, LOG);
+			$app->log->debug(print_R("proceed with create payment: $sql\n", TRUE) );
 			if ($stmt = $this->conn->prepare($sql)) {
 				$stmt->bind_param("sssssssssssssssssssssssssssssss", 
 					$txn_id , $receipt_id , $num_cart_items , $ipn_track_id , $payment_gross ,
@@ -1957,6 +2018,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	/**
 	 * Updating payment
 	 */
+        global $app;
 
 		$num_affected_rows = 0;
 		$sql = 'UPDATE payment set 
@@ -1983,7 +2045,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$sql.= "  where               txn_id  = ? ";
 */
 
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R($sql, TRUE));
 
 		if ($stmt = $this->conn->prepare($sql)) {
 				$stmt->bind_param("sssssssssssssssssssssssssssssss", 
@@ -1999,7 +2061,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
-			error_log(print_R("affected rows: $num_affected_rows\n", TRUE));
+			$app->log->debug(print_R("affected rows: $num_affected_rows\n", TRUE));
 		}
 		else {
 			printf("Errormessage: %s\n", $this->conn->error);
@@ -2009,20 +2071,18 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		return $num_affected_rows;
 	}
 	
-	public
-	function getPayerFromID($paymendid) {
-	}
 
 	public
 	function getCommunication() {
 		global $school;
+        global $app;
 	    $sql = "
 		select schoolReplyEmail, schoolReplySignature,invoicebatchenabled
             from schoolCommunication 
             where school = ?
 	    ";
 	    
-		error_log(print_R("sql for getCommunication is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getCommunication is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $school);
 		$stmt->execute();
@@ -2034,11 +2094,12 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 
 	public
 	function getOverdue($paymentid) {
+        global $app;
 	    $sql = "
 		select count(*) as overduecnt from invoice where status = 'new' and paymentid = ?
 	    ";
 	    
-		error_log(print_R("sql for getOverdue is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getOverdue is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $paymentid);
 		$stmt->execute();
@@ -2050,6 +2111,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	
 	public
 	function getInvoiceList($invoiceDate, $school) {
+        global $app;
 
 	    $sql = "
 select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmonth, 
@@ -2087,7 +2149,7 @@ WHERE cp.primaryContact =1
         $sql .= "  and DATE_FORMAT(date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) , '%Y-%m-%d') 
         	< DATE_FORMAT( ?, '%Y-%m-%d')  ";
 
-		error_log(print_R("sql for getInvoiceLIst is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getInvoiceLIst is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("ss", $school, $invoiceDate);
 		$stmt->execute();
@@ -2100,6 +2162,7 @@ WHERE cp.primaryContact =1
 	public
 	function calcInvoice($payer) {
 //need to figure out overdue logic
+        global $app;
 	    $sql = "
 select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmonth, 
 	    pp.paymentplan, pp.paymentamount, DATE_FORMAT(pp.lastpaymentdate, '%Y-%m-%d') as lastpaymentdate , pp.nextpaymentdate, p.payername,
@@ -2124,29 +2187,29 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
       //  $sql .= "  and DATE_FORMAT(date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) , '%Y-%m-%d') 
       //  	< DATE_FORMAT( ?, '%Y-%m-%d')  ";
 
-		error_log(print_R("sql for getPreInvoiceLIst is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getPreInvoiceLIst is: " . $sql . "\n", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $payer);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				$res = array();
-				error_log(print_R("calcinvoice list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("calcinvoice list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				$res["success"]=true;
 				$res["slist"]=$slists;
 				return $res;
 			}
 			else {
-				error_log(print_R("calcinvoice list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("calcinvoice list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "calcinvoice failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 	            return $errormessage;
 			}
 		}
 		else {
-			error_log(print_R("calcinvoice list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("calcinvoice list sql failed", TRUE) );
             $errormessage["sqlerror"] = "calcinvoice failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
@@ -2161,19 +2224,20 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Updating invoice
 	 */
+        global $app;
 
 		$num_affected_rows = 0;
 		$sql = "UPDATE invoice set ";
 		$sql.= "  amt = ?, invdate = ?, status = ? , payfor = ?";
 		$sql.= "  where   id  = ? ";
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R($sql, TRUE));
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("sssss",  $amt, $invdate, $status, $payfor, $id);
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
-			error_log(print_R("affected rows: $num_affected_rows\n", TRUE));
+			$app->log->debug(print_R("affected rows: $num_affected_rows\n", TRUE));
 		}
 		else {
 			printf("Errormessage: %s\n", $this->conn->error);
@@ -2189,19 +2253,20 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Updating invoice status after payment
 	 */
+        global $app;
 
 		$num_affected_rows = 0;
 		$sql = "UPDATE invoice set ";
 		$sql.= "   status = ? ";
 		$sql.= "  where   invoice  = ? ";
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R($sql, TRUE));
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss",  $status, $invoice);
 			$stmt->execute();
 			$num_affected_rows = $stmt->affected_rows;
 			$stmt->close();
-			error_log(print_R("affected rows: $num_affected_rows\n", TRUE));
+			$app->log->debug(print_R("affected rows: $num_affected_rows\n", TRUE));
 		}
 		else {
 			printf("Errormessage: %s\n", $this->conn->error);
@@ -2213,6 +2278,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 	public
 	function getInvoices($payerid) {
+        global $app;
 
 	    $sql = "
 	    select id, invoice, i.paymentid, amt, invdate, status, payfor
@@ -2221,29 +2287,29 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	    where np.payerid = ?
 	    ";
 	    
-		error_log(print_R("sql for getInvoices is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getInvoices is: " . $sql . "\n", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $payerid);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				$res = array();
-				error_log(print_R("getInvoices list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getInvoices list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				$res["success"]=true;
 				$res["slist"]=$slists;
 				return $res;
 			}
 			else {
-				error_log(print_R("getInvoices list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getInvoices list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getInvoices failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 	            return $errormessage;
 			}
 		}
 		else {
-			error_log(print_R("getInvoices list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getInvoices list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getInvoices failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
@@ -2254,6 +2320,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function getStudentGivePayer($theinput,$thetype)
 	{
+        global $app;
 		
 	    $sql = "
 			select c.ID as contactid, c.firstname, c.lastname, p.id as payerid, p.payername, p.payerEmail, pp.paymentid
@@ -2274,29 +2341,29 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		
 		$schoolfield = "studentschool";
 		$sql = addSecurity($sql, $schoolfield);
-		error_log(print_R("getStudentGivePayer sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentGivePayer sql after security: $sql", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $theinput);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				$res = array();
-				error_log(print_R("getStudentGivePayer list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentGivePayer list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				$res["success"]=true;
 				$res["slist"]=$slists;
 				return $res;
 			}
 			else {
-				error_log(print_R("getStudentGivePayer list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentGivePayer list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getStudentGivePayer failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 	            return $errormessage;
 			}
 		}
 		else {
-			error_log(print_R("getStudentGivePayer list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStudentGivePayer list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getStudentGivePayer failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
@@ -2310,9 +2377,10 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		 * Checking for duplicate invoice 
 		 * @return boolean
 		 */
-		error_log(print_R("before isInvoiceExists\n", TRUE) , 3, LOG);
-		error_log(print_R("paymentid: $paymentid\n", TRUE) , 3, LOG);
-		error_log(print_R("invdate: $invdate\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isInvoiceExists\n", TRUE) );
+		$app->log->debug(print_R("paymentid: $paymentid\n", TRUE) );
+		$app->log->debug(print_R("invdate: $invdate\n", TRUE) );
 		
 		$stmt = $this->conn->prepare("SELECT id from invoice WHERE paymentid = ? and invdate = ? ");
 		$stmt->bind_param("ss", $paymentid, $invdate);
@@ -2321,7 +2389,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$num_rows = $stmt->num_rows;
 		$stmt->close();
 		$r = $num_rows > 0;
-		error_log(print_R("invoice exists: $r\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("invoice exists: $r\n", TRUE) );
 		return $r;
 	}
 	
@@ -2331,7 +2399,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Creating new invoice
 	 */
-		error_log(print_R("createInvoice entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createInvoice entered\n", TRUE) );
 		$response = array();
 		global $school;
 		$sql = "INSERT into invoice (";
@@ -2382,7 +2451,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function removeInvoice($id)
 	{
-		error_log(print_R("removeInvoice entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("removeInvoice entered\n", TRUE) );
 		$sql = "DELETE from invoice  where id = ? ";
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $id);
@@ -2403,7 +2473,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function setsession($auth_session, $csrfstate)
 	{
-		error_log(print_R("setsession entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("setsession entered\n", TRUE) );
 
 		$response = array();
 		global $school;
@@ -2446,9 +2517,10 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function checksession($auth_session, $csrfstate)
 	{
-		error_log(print_R("before checksession\n", TRUE) , 3, LOG);
-		error_log(print_R("session: $auth_session\n", TRUE) , 3, LOG);
-		error_log(print_R("csrfstate: $csrfstate\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before checksession\n", TRUE) );
+		$app->log->debug(print_R("session: $auth_session\n", TRUE) );
+		$app->log->debug(print_R("csrfstate: $csrfstate\n", TRUE) );
 		
 		$stmt = $this->conn->prepare("SELECT id from csrf_state WHERE csrf_state = ? and auth_session = ? ");
 		$stmt->bind_param("ss", $csrfstate, $auth_session);
@@ -2465,7 +2537,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Creating new invoice
 	 */
-		error_log(print_R("createInvoice entered\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("createInvoice entered\n", TRUE) );
 		$response = array();
 		global $school;
 		$sql = "INSERT into invoice (";
@@ -2526,12 +2598,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $school
 		)
 	{
-		error_log(print_R("createAuthcode entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createAuthcode entered\n", TRUE) );
 
 		$numargs = func_num_args();
 		$arg_list = func_get_args();
 		for ($i = 0; $i < $numargs; $i++) {
-			error_log(print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE) , 3, LOG);
+			$app->log->debug(print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE) );
 		}
 
 		//find bugs
@@ -2542,7 +2615,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		(`authorization_code`, `client_id`, `user_id`, `redirect_uri`, `scope`, `id_token`, `school`, `refresh_token`, `access_token`, `user_email`) 
 		VALUES (?,?,?,?,?,?,?,?,?,?)
 		';
-		 error_log(print_R(  $sql , TRUE), 3, LOG);
+		 $app->log->debug(print_R(  $sql , TRUE));
 		try {
 			//cleanup the old
 			$stmt = $this->conn->prepare($delsql);
@@ -2569,14 +2642,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			$stmt->close();
 			return $num_affected_rows;
 		} catch(exception $e) {
-			 error_log(print_R( "sql error in createAuthcode\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in createAuthcode\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
 			return NULL;
 		}
 	}
 
 	public
 	function getStripe() {
+        global $app;
 
 	    $sql = "
 	    select * from oauth_authorization_codes where school = ?
@@ -2584,29 +2658,29 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	    
 	    global $school;
 	    
-		error_log(print_R("sql for getStripe is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getStripe is: " . $sql . "\n", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				$res = array();
-				error_log(print_R("getStripe list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStripe list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 				$res["success"]=true;
 				$res["slist"]=$slists;
 				return $res;
 			}
 			else {
-				error_log(print_R("getStripe list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStripe list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getStripe failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 	            return $errormessage;
 			}
 		}
 		else {
-			error_log(print_R("getStripe list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStripe list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getStripe failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
             return $errormessage;
@@ -2616,6 +2690,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 
  public function getUserByUsername($username) {
+        global $app;
         $stmt = $this->conn->prepare("SELECT name,lastname,username, email, api_key, status, created_at, token_hash, id as userid, school, pictureurl,options FROM users WHERE username = ?");
         $stmt->bind_param("s", $username);
         if ($stmt->execute()) {
@@ -2645,6 +2720,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 	public
 	function getStripeUser() {
+        global $app;
 
 		global $school;
 	    $sql = "
@@ -2654,7 +2730,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	    from oauth_authorization_codes where school = ? 
 	    ";
 
-		error_log(print_R("sql for getStripeUser is: " . $sql . "\n" . $school . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getStripeUser is: " . $sql . "\n" . $school . "\n", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("s", $school);
@@ -2680,14 +2756,14 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				return $user;
 			}
 			else {
-				error_log(print_R("getStripeUser list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStripeUser list execute failed", TRUE) );
 //	            $errormessage["sqlerror"] = "getStripeUser failure: ";
 //	            $errormessage["sqlerrordtl"] = $this->conn->error;
 	            return NULL;
 			}
 		}
 		else {
-			error_log(print_R("getStripeUser list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStripeUser list sql failed", TRUE) );
 //            $errormessage["sqlerror"] = "getStripeUser failure: ";
 //            $errormessage["sqlerrordtl"] = $this->conn->error;
             return NULL;
@@ -2699,7 +2775,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function removeAuthcode(
 		)
 	{
-		error_log(print_R("removeAuthcode entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("removeAuthcode entered\n", TRUE) );
 		global $school;
 		
 		$delsql = 'delete from oauth_authorization_codes where school = ?';
@@ -2715,22 +2792,23 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			$stmt->close();
 			return $num_affected_rows;
 		} catch(exception $e) {
-			 error_log(print_R( "sql error in removeAuthcode\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in removeAuthcode\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
 			return NULL;
 		}
 	}
 
     public function isStudentFKExists($id) {
+        global $app;
 
-        error_log( print_R("isStudentFKExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isStudentFKExists entered", TRUE));
 
         global $school;
         
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 //todo
 //attendance contactID
@@ -2743,7 +2821,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             union
             select count(*) as cnt, 'test candidates for student' as type from testcandidates where contactid = ? group by 2";
 
-        error_log( print_R("Student isStudentFKExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Student isStudentFKExists sql: $cntsql", TRUE));
 
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sss",
@@ -2755,7 +2833,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                 $stmt->close();
                 return $results;
             } else {
-                error_log( print_R("isStudentFKExists  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("isStudentFKExists  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
@@ -2768,8 +2846,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function removeStudent($id
     ) {
+        global $app;
 
-        error_log( print_R("removeStudent entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeStudent entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from ncontacts where ID = ?  ";
@@ -2781,7 +2860,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
-//        error_log( print_R("removeStudent sql after security: $sql", TRUE), 3, LOG);
+//        $app->log->debug( print_R("removeStudent sql after security: $sql", TRUE));
 		$totaldel=0;
 		
         if ($stmt = $this->conn->prepare($sql1)) {
@@ -2844,6 +2923,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function getStudentCols()
 	{
+        global $app;
 		        $dbname = DB_NAME;
 
 //		$sql = "desc ncontacts";
@@ -2873,7 +2953,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		)
 		AND table_schema =  ?
 		";
-		error_log(print_R("getStudentCols sql: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentCols sql: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
 	                $stmt->bind_param("s",
 				        $dbname
@@ -2884,12 +2964,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				return $slists;
 			}
 			else {
-				error_log(print_R("getStudentCols  execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentCols  execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getStudentCols  sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStudentCols  sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -2899,9 +2979,10 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function getStudentColMap()
 	{
 		global $school;
+        global $app;
 		$sql = "select name, type, id, required from map_ncontact_cols where school = ? ";
 
-		error_log(print_R("getStudentColMap sql: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("getStudentColMap sql: $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",$school);
 			if ($stmt->execute()) {
@@ -2910,12 +2991,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				return $slists;
 			}
 			else {
-				error_log(print_R("getStudentColMap  execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getStudentColMap  execute failed", TRUE) );
 				printf("Errormessage: %s\n", $this->conn->error);
 			}
 		}
 		else {
-			error_log(print_R("getStudentColMap  sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getStudentColMap  sql failed", TRUE) );
 			printf("Errormessage: %s\n", $this->conn->error);
 			return NULL;
 		}
@@ -2924,8 +3005,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     public function removeStudentColMap(
     	$id, $all
     ) {
+        global $app;
 
-        error_log( print_R("removeStudentColMap entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeStudentColMap entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from map_ncontact_cols where ID = ? and school = ?  ";
@@ -2953,13 +3035,14 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     private function isStudentColMapExists(
         $type, $name, $id
         ) {
+        global $app;
 
-        error_log( print_R("isStudentColMapExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isStudentColMapExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as StudentColMapcount from map_ncontact_cols ";
@@ -2968,7 +3051,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $cnt2sql = "select count(*) as StudentColMapcount from map_ncontact_cols ";
         $cnt2sql .= " where type = ? and name = ? and school = ? ";
 
-        error_log( print_R("StudentColMap isStudentColMapExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("StudentColMap isStudentColMapExists sql: $cntsql", TRUE));
 
 
         if ($stmt = $this->conn->prepare($cntsql)) {
@@ -2987,7 +3070,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isStudentColMapExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isStudentColMapExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -3010,7 +3093,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                     $row = null;
                     $stmt->bind_result($row);
                     while ($stmt->fetch()) { 
-                        error_log( print_R("isStudentColMapExists: " . $row . "\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("isStudentColMapExists: " . $row . "\n", TRUE));
                     }
         
                     $stmt->close();
@@ -3034,17 +3117,18 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     public function updateStudentColMap( 
         $id, $type, $name, $all, $required
         ) {
+        global $app;
         $num_affected_rows = 0;
 
         global $school;
         $dbname = DB_NAME;
-        error_log( print_R("StudentColMap update entered $school $dbname", TRUE), 3, LOG);
+        $app->log->debug( print_R("StudentColMap update entered $school $dbname", TRUE));
 
 		$errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO map_ncontact_cols( 
@@ -3079,7 +3163,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				
 				)  	";
 				
-			error_log(print_R("updateStudentColMap sql: $inssql", TRUE) , 3, LOG);
+			$app->log->debug(print_R("updateStudentColMap sql: $inssql", TRUE) );
         	
             if ($stmt = $this->conn->prepare($inssql)) {
 	                $stmt->bind_param("s",
@@ -3114,7 +3198,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	        if ($this->isStudentColMapExists(
 	        $type, $name, $id
 	            ) == 0) {
-				error_log(print_R("updateStudentColMap sql: $inssql", TRUE) , 3, LOG);
+				$app->log->debug(print_R("updateStudentColMap sql: $inssql", TRUE) );
 	
 	            if ($stmt = $this->conn->prepare($inssql)) {
 	                $stmt->bind_param("ssss",
@@ -3154,7 +3238,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	                 required = ?
 	            WHERE id = ? ";
 	
-	            error_log( print_R("StudentColMap update sql: $updsql", TRUE), 3, LOG);
+	            $app->log->debug( print_R("StudentColMap update sql: $updsql", TRUE));
 	            
 	            if ($stmt = $this->conn->prepare($updsql)) {
 	                $stmt->bind_param("sssss",
@@ -3168,8 +3252,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	//                return $num_affected_rows;
 	                
 	            } else {
-	                error_log( print_R("StudentColMap update failed", TRUE), 3, LOG);
-	                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+	                $app->log->debug( print_R("StudentColMap update failed", TRUE));
+	                $app->log->debug( print_R($this->conn->error, TRUE));
 	                $errormessage["sqlerror"] = "update failure: ";
 	                $errormessage["sqlerrordtl"] = $this->conn->error;
 	                return $errormessage;
@@ -3181,6 +3265,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function getSampleStudents() {
 		global $school;
+        global $app;
 		//random 10 percent of the records
 	    $sql = "
 		select *
@@ -3189,7 +3274,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			order by LastName, FirstName LIMIT 20 
 	    ";
 	    
-		error_log(print_R("sql for getSampleStudents is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getSampleStudents is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $school);
 		$stmt->execute();
@@ -3202,6 +3287,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function getSampleStudentRegistrations() {
 		global $school;
+        global $app;
 		//random 10 percent of the records
 	    $sql = "
 			select 
@@ -3233,7 +3319,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			order by cl.class LIMIT 20 
 	    ";
 	    
-		error_log(print_R("sql for getSampleStudents is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getSampleStudents is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $school);
 		$stmt->execute();
@@ -3246,6 +3332,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	public
 	function getSampleStudentAttendance() {
 		global $school;
+        global $app;
 		//random 10 percent of the records
 	    $sql = "
 			select contactID, classID as classid, mondayOfWeek, rank, DOWnum, attended,
@@ -3256,7 +3343,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			order by contactID, mondayOfWeek desc,DOWnum asc LIMIT 21 
 	    ";
 	    
-		error_log(print_R("sql for getSampleStudentAttendance is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getSampleStudentAttendance is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("s", $school);
 		$stmt->execute();
@@ -3271,6 +3358,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $externalid,$classname,$pgmname
 		) {
 		global $school;
+        global $app;
 		//random 10 percent of the records
 	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
 		$clsql = " select id as classid from nclass where class = ? and school = ?";	
@@ -3338,8 +3426,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	        }
 			return $res;
 	    } catch(exception $e) {
-			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in lookupExtras\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return NULL;
 		}
@@ -3356,11 +3444,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Updating student
 	 */
+        global $app;
 		global $school;
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("updateRawStudent Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("updateRawStudent Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$num_affected_rows = 0;
@@ -3393,13 +3482,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		pictureurl = ?
 		where externalid = ? and studentschool = ? ";
 
-		error_log(print_R("updateStudent sql after security: $sql", TRUE) , 3, LOG);
+		$app->log->debug(print_R("updateStudent sql after security: $sql", TRUE) );
 
 		try {
 	        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $Birthday);
 	        
 	        if ($dt === false) {
-	            error_log( print_R("updateStudent  bad date $Birthday" , TRUE), 3, LOG);
+	            $app->log->debug( print_R("updateStudent  bad date $Birthday" , TRUE));
 	            return -3;
 	        }
 	        $bdate = $dt->format('Y-m-d');
@@ -3421,8 +3510,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	
 			return $num_affected_rows > 0;
 		} catch(exception $e) {
-			error_log(print_R( "sql error in updateRawStudent\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in updateRawStudent\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -2;			
 		}
@@ -3435,12 +3524,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$altPhoneExt, $Birthday, $sex, $Parent, $EmergencyContact, $Notes, $medicalConcerns,
 		$Address, $City, $State, $ZIP, $ContactType, $quickbooklink, $GuiSize, $ShirtSize, $BeltSize, $pictureurl)
 	{
-		error_log(print_R("createFullStudentRaw entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createFullStudentRaw entered\n", TRUE) );
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createFullStudentRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("createFullStudentRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		global $school;
@@ -3448,7 +3538,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $dt = DateTime::createFromFormat('m/d/Y H:i:s', $Birthday);
         
         if ($dt === false) {
-            error_log( print_R("createFullStudentRaw  bad date $Birthday" , TRUE), 3, LOG);
+            $app->log->debug( print_R("createFullStudentRaw  bad date $Birthday" , TRUE));
             return -4;
         }
         $bdate = $dt->format('Y-m-d');
@@ -3519,8 +3609,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				return -2;
 			}
 	} catch(exception $e) {
-			error_log(print_R( "sql error in createFullStudentRaw\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in createFullStudentRaw\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -3;			
 		}
@@ -3534,11 +3624,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	 * Checking for duplicate student by email address, FirstName, LastName
 	 * @return boolean
 	 */
-		error_log(print_R("before isStudentExists\n", TRUE) , 3, LOG);
-		error_log(print_R("lastname: $LastName\n", TRUE) , 3, LOG);
-		error_log(print_R("FirstName: $FirstName\n", TRUE) , 3, LOG);
-		error_log(print_R("email: $Email\n", TRUE) , 3, LOG);
-		error_log(print_R("school: $inschool\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isStudentExists\n", TRUE) );
+		$app->log->debug(print_R("lastname: $LastName\n", TRUE) );
+		$app->log->debug(print_R("FirstName: $FirstName\n", TRUE) );
+		$app->log->debug(print_R("email: $Email\n", TRUE) );
+		$app->log->debug(print_R("school: $inschool\n", TRUE) );
 		$sql = "SELECT id from rawcontacts WHERE email = ?
 				and LastName = ? and FirstName = ? 
 				and studentschool = ?  ";
@@ -3553,8 +3644,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function removeRawStudents(
     ) {
+        global $app;
 
-        error_log( print_R("removeRawStudents entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawStudents entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawcontacts where studentschool = ?  ";
@@ -3574,8 +3666,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function removeRawStudent($id
     ) {
+        global $app;
 
-        error_log( print_R("removeRawStudent entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawStudent entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawcontacts where externalid = ? and studentschool = ? ";
@@ -3594,8 +3687,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function transferBulkStudents(
     ) {
+        global $app;
 
-        error_log( print_R("transferBulkStudents entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("transferBulkStudents entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "
@@ -3624,8 +3718,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function getRawStudentStatus(
     ) {
+        global $app;
 
-        error_log( print_R("getRawStudentStatus entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("getRawStudentStatus entered\n", TRUE ));
         global $school;
         $errormessage=array();
 
@@ -3642,8 +3737,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			$stmt->bind_param("s", $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getRawStudentStatus list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawStudentStatus list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 
                 if ($slists) {
@@ -3659,7 +3754,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                 }
 			}
 			else {
-				error_log(print_R("getRawStudentStatus list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawStudentStatus list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getRawStudentStatus failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 				$errormessage["slist"] = array();
@@ -3667,7 +3762,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			}
 		}
 		else {
-			error_log(print_R("getRawStudentStatus list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getRawStudentStatus list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getRawStudentStatus failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
 				$res["slist"] = array();
@@ -3685,11 +3780,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Updating registration
 	 */
+        global $app;
 		global $school;
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("updateRawregistration Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("updateRawregistration Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$num_affected_rows = 0;
@@ -3709,13 +3805,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			payOnDayOfMonth=?
 		where externalid = ? and school = ? and Classname = ? and Pgmname = ?";
 
-		error_log(print_R("updateregistration sql after security: $sql", TRUE) , 3, LOG);
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R("updateregistration sql after security: $sql", TRUE) );
+		$app->log->debug(print_R($sql, TRUE));
 		
         $dt = DateTime::createFromFormat('Y-m-d H:i:s', $lastPromoted);
         
         if ($dt === false) {
-            error_log( print_R("updateregistration  bad date $lastPromoted" , TRUE), 3, LOG);
+            $app->log->debug( print_R("updateregistration  bad date $lastPromoted" , TRUE));
             return -3;
         }
         $bdate = $dt->format('Y-m-d');
@@ -3740,15 +3836,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 					printf("Errormessage: %s\n", $this->conn->error);
 				}
 			} else {
-				error_log(print_R("updateRawregistration did not exist can not update", TRUE) , 3, LOG);
+				$app->log->debug(print_R("updateRawregistration did not exist can not update", TRUE) );
 				
 				return -1;	
 			}		
 	
 			return $num_affected_rows >= 0;
 		} catch(exception $e) {
-			error_log(print_R( "sql error in updateRawregistration\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in updateRawregistration\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -2;			
 		}
@@ -3761,12 +3857,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
  $Classname, $Pgmname, $Ranktype, $currentRank,
  $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus
 	){
-		error_log(print_R("createFullregistrationRaw entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createFullregistrationRaw entered\n", TRUE) );
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createFullregistrationRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("createFullregistrationRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		global $school;
@@ -3774,7 +3871,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $dt = DateTime::createFromFormat('m/d/Y H:i:s', $lastPromoted);
         
         if ($dt === false) {
-            error_log( print_R("createFullregistrationRaw  bad date $lastPromoted" , TRUE), 3, LOG);
+            $app->log->debug( print_R("createFullregistrationRaw  bad date $lastPromoted" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -3849,11 +3946,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	 * Checking for duplicate registration 
 	 * @return boolean
 	 */
-		error_log(print_R("before isRawregistrationExists\n", TRUE) , 3, LOG);
-		error_log(print_R("extid: $externalid\n", TRUE) , 3, LOG);
-		error_log(print_R("class: $Classname\n", TRUE) , 3, LOG);
-		error_log(print_R("pgm: $Pgmname\n", TRUE) , 3, LOG);
-		error_log(print_R("school: $school\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isRawregistrationExists\n", TRUE) );
+		$app->log->debug(print_R("extid: $externalid\n", TRUE) );
+		$app->log->debug(print_R("class: $Classname\n", TRUE) );
+		$app->log->debug(print_R("pgm: $Pgmname\n", TRUE) );
+		$app->log->debug(print_R("school: $school\n", TRUE) );
 		$sql = "SELECT id from rawregistration WHERE externalid = ? ";
 		$sql.= " and Classname = ? and Pgmname = ? ";
 		$sql.= " and school = ?  ";
@@ -3865,14 +3963,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$stmt->store_result();
 		$num_rows = $stmt->num_rows;
 		$stmt->close();
-		error_log(print_R("isRawregistrationExists: $num_rows\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("isRawregistrationExists: $num_rows\n", TRUE) );
 		return $num_rows > 0;
 	}
 
     public function removeRawregistrations(
     ) {
+        global $app;
 
-        error_log( print_R("removeRawregistrations entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawregistrations entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawregistration where school = ?  ";
@@ -3893,8 +3992,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     public function removeRawregistration(
     	$id,$pgm,$cls
     ) {
+        global $app;
 
-        error_log( print_R("removeRawregistration entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawregistration entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawregistration where externalid = ? and school = ? and Pgmname = ? and Classname = ?  ";
@@ -3915,8 +4015,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function transferBulkregistrations(
     ) {
+        global $app;
 
-        error_log( print_R("transferBulkregistrations entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("transferBulkregistrations entered\n", TRUE ));
         global $school;
 		$totalrec =0;
 		
@@ -4034,8 +4135,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			return $totalrec;
         
 		} catch(exception $e) {
-			error_log(print_R( "sql error in transferBulkregistrations\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in transferBulkregistrations\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -6;			
 		}
@@ -4043,8 +4144,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function getRawRegistrationStatus(
     ) {
+        global $app;
 
-        error_log( print_R("getRawregistrationStatus entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("getRawregistrationStatus entered\n", TRUE ));
         global $school;
         $errormessage=array();
 
@@ -4063,8 +4165,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			$stmt->bind_param("s", $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getRawregistrationStatus list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawregistrationStatus list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 
                 if ($slists) {
@@ -4080,7 +4182,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                 }
 			}
 			else {
-				error_log(print_R("getRawregistrationStatus list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawregistrationStatus list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getRawregistrationStatus failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 				$errormessage["slist"] = array();
@@ -4088,7 +4190,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			}
 		}
 		else {
-			error_log(print_R("getRawregistrationStatus list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getRawregistrationStatus list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getRawregistrationStatus failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
 				$res["slist"] = array();
@@ -4104,11 +4206,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	/**
 	 * Updating history
 	 */
+        global $app;
 		global $school;
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("updateRawhistory Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("updateRawhistory Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$num_affected_rows = 0;
@@ -4116,13 +4219,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			studentID=?
 		where externalid = ? and contactDate = ? and contactmgmttype = ? and school = ? ";
 
-		error_log(print_R("updatehistory sql after security: $sql", TRUE) , 3, LOG);
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R("updatehistory sql after security: $sql", TRUE) );
+		$app->log->debug(print_R($sql, TRUE));
 		
         $dt = DateTime::createFromFormat('Y-m-d H:i:s', $contactDate);
         
         if ($dt === false) {
-            error_log( print_R("updatehistory  bad date $contactDate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("updatehistory  bad date $contactDate" , TRUE));
             return -3;
         }
         $bdate = $dt->format('Y-m-d');
@@ -4145,15 +4248,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 					printf("Errormessage: %s\n", $this->conn->error);
 				}
 			} else {
-				error_log(print_R("updateRawhistory did not exist can not update", TRUE) , 3, LOG);
+				$app->log->debug(print_R("updateRawhistory did not exist can not update", TRUE) );
 				
 				return -1;	
 			}		
 	
 			return $num_affected_rows >= 0;
 		} catch(exception $e) {
-			error_log(print_R( "sql error in updateRawhistory\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in updateRawhistory\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -2;			
 		}
@@ -4164,12 +4267,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function createHistoryRaw(
 		$externalid, $contactDate,$contactmgmttype, $studentID
 	){
-		error_log(print_R("createFullhistoryRaw entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createFullhistoryRaw entered\n", TRUE) );
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createFullhistoryRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("createFullhistoryRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$response = array();
@@ -4179,7 +4283,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $dt = DateTime::createFromFormat('m/d/Y', $contactDate);
         
         if ($dt === false) {
-            error_log( print_R("createFullhistoryRaw  bad date $contactDate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("createFullhistoryRaw  bad date $contactDate" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -4239,11 +4343,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	 * Checking for duplicate history 
 	 * @return boolean
 	 */
-		error_log(print_R("before isRawhistoryExists\n", TRUE) , 3, LOG);
-		error_log(print_R("extid: $externalid\n", TRUE) , 3, LOG);
-		error_log(print_R("date: $contactDate\n", TRUE) , 3, LOG);
-		error_log(print_R("contactmgmttype: $contactmgmttype\n", TRUE) , 3, LOG);
-		error_log(print_R("school: $school\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isRawhistoryExists\n", TRUE) );
+		$app->log->debug(print_R("extid: $externalid\n", TRUE) );
+		$app->log->debug(print_R("date: $contactDate\n", TRUE) );
+		$app->log->debug(print_R("contactmgmttype: $contactmgmttype\n", TRUE) );
+		$app->log->debug(print_R("school: $school\n", TRUE) );
 		$sql = "SELECT id from rawcontactmgmt WHERE externalid = ? ";
 		$sql.= " and contactDate = ? and contactmgmttype = ? ";
 		$sql.= " and school = ?  ";
@@ -4255,14 +4360,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$stmt->store_result();
 		$num_rows = $stmt->num_rows;
 		$stmt->close();
-		error_log(print_R("isRawhistoryExists: $num_rows\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("isRawhistoryExists: $num_rows\n", TRUE) );
 		return $num_rows > 0;
 	}
 
     public function removeRawhistorys(
     ) {
+        global $app;
 
-        error_log( print_R("removeRawhistorys entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawhistorys entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawcontactmgmt where school = ?  ";
@@ -4283,8 +4389,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     public function removeRawhistory(
             $externalid,$contactmgmttype,$contactDate
     ) {
+        global $app;
 
-        error_log( print_R("removeRawhistory entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawhistory entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawcontactmgmt where externalid = ? and 
@@ -4293,7 +4400,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $dt = DateTime::createFromFormat('m/d/Y', $contactDate);
         
         if ($dt === false) {
-            error_log( print_R("removeRawhistory  bad date $contactDate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("removeRawhistory  bad date $contactDate" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -4314,8 +4421,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function transferBulkhistorys(
     ) {
+        global $app;
 
-        error_log( print_R("transferBulkhistorys entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("transferBulkhistorys entered\n", TRUE ));
         global $school;
 		$totalrec =0;
 		
@@ -4340,8 +4448,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			return $totalrec;
         
 		} catch(exception $e) {
-			error_log(print_R( "sql error in transferBulkhistorys\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in transferBulkhistorys\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -6;			
 		}
@@ -4349,8 +4457,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function getRawHistoryStatus(
     ) {
+        global $app;
 
-        error_log( print_R("getRawhistoryStatus entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("getRawhistoryStatus entered\n", TRUE ));
         global $school;
         $errormessage=array();
 
@@ -4368,8 +4477,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			$stmt->bind_param("s", $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getRawhistoryStatus list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawhistoryStatus list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 
                 if ($slists) {
@@ -4385,7 +4494,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                 }
 			}
 			else {
-				error_log(print_R("getRawhistoryStatus list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawhistoryStatus list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getRawhistoryStatus failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 				$errormessage["slist"] = array();
@@ -4393,7 +4502,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			}
 		}
 		else {
-			error_log(print_R("getRawhistoryStatus list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getRawhistoryStatus list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getRawhistoryStatus failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
 				$res["slist"] = array();
@@ -4406,6 +4515,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $externalid
 		) {
 		global $school;
+        global $app;
 
 	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
 
@@ -4434,8 +4544,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 			return $res;
 	    } catch(exception $e) {
-			 error_log(print_R( "sql error in lookupExtras\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in lookupExtras\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return NULL;
 		}
@@ -4448,6 +4558,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             $externalid,$classname
 		) {
 		global $school;
+        global $app;
 	    $idsql = " select ID as id from ncontacts where externalid = ? and studentschool = ?";
 		$clsql = " select id as classid from nclass where class = ? and school = ?";	
 
@@ -4495,8 +4606,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 			return $res;
 	    } catch(exception $e) {
-			 error_log(print_R( "sql error in lookupAttendExtras\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			 $app->log->debug(print_R( "sql error in lookupAttendExtras\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return NULL;
 		}
@@ -4506,8 +4617,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function transferBulkattendances(
     ) {
+        global $app;
 
-        error_log( print_R("transferBulkattendances entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("transferBulkattendances entered\n", TRUE ));
         global $school;
 		$totalrec =0;
 		
@@ -4534,8 +4646,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			return $totalrec;
         
 		} catch(exception $e) {
-			error_log(print_R( "sql error in transferBulkregistrations\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in transferBulkregistrations\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -6;			
 		}
@@ -4546,11 +4658,12 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $attended
 		)
 	{
+        global $app;
 		global $school;
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("updateRawattendance Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("updateRawattendance Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$num_affected_rows = 0;
@@ -4562,13 +4675,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		where externalid = ? and Classname = ? and mondayOfWeek =? and  DOWnum=? and school = ? ";
 		
 
-		error_log(print_R("updateattendance sql after security: $sql", TRUE) , 3, LOG);
-		error_log(print_R($sql, TRUE));
+		$app->log->debug(print_R("updateattendance sql after security: $sql", TRUE) );
+		$app->log->debug(print_R($sql, TRUE));
 		
         $dt = DateTime::createFromFormat('Y-m-d H:i:s', $mondayOfWeek);
         
         if ($dt === false) {
-            error_log( print_R("updateattendance  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            $app->log->debug( print_R("updateattendance  bad date $mondayOfWeek" , TRUE));
             return -3;
         }
         $bdate = $dt->format('Y-m-d');
@@ -4590,15 +4703,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 					printf("Errormessage: %s\n", $this->conn->error);
 				}
 			} else {
-				error_log(print_R("updateRawattendance did not exist can not update", TRUE) , 3, LOG);
+				$app->log->debug(print_R("updateRawattendance did not exist can not update", TRUE) );
 				
 				return -1;	
 			}		
 	
 			return $num_affected_rows >= 0;
 		} catch(exception $e) {
-			error_log(print_R( "sql error in updateRawattendance\n" , TRUE), 3, LOG);
-			error_log(print_R(  $e , TRUE), 3, LOG);
+			$app->log->debug(print_R( "sql error in updateRawattendance\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -2;			
 		}
@@ -4609,12 +4722,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function createAttendanceRaw(
 		$externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $attended
 	){
-		error_log(print_R("createFullattendanceRaw entered\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("createFullattendanceRaw entered\n", TRUE) );
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("createFullattendanceRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("createFullattendanceRaw Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 		
 		$response = array();
@@ -4624,7 +4738,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 //        $dt = DateTime::createFromFormat('m/d/Y', $mondayOfWeek);
         
         if ($dt === false) {
-            error_log( print_R("createFullattendanceRaw  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            $app->log->debug( print_R("createFullattendanceRaw  bad date $mondayOfWeek" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -4677,12 +4791,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function isRawattendanceExists(
 		$externalid, $Classname, $mondayOfWeek, $DOWnum, $school
 		 ){
-		error_log(print_R("before isRawattendanceExists\n", TRUE) , 3, LOG);
-		error_log(print_R("extid: $externalid\n", TRUE) , 3, LOG);
-		error_log(print_R("Classname: $Classname\n", TRUE) , 3, LOG);
-		error_log(print_R("mondayOfWeek: $mondayOfWeek\n", TRUE) , 3, LOG);
-		error_log(print_R("DOWnum: $DOWnum\n", TRUE) , 3, LOG);
-		error_log(print_R("school: $school\n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("before isRawattendanceExists\n", TRUE) );
+		$app->log->debug(print_R("extid: $externalid\n", TRUE) );
+		$app->log->debug(print_R("Classname: $Classname\n", TRUE) );
+		$app->log->debug(print_R("mondayOfWeek: $mondayOfWeek\n", TRUE) );
+		$app->log->debug(print_R("DOWnum: $DOWnum\n", TRUE) );
+		$app->log->debug(print_R("school: $school\n", TRUE) );
 		$sql = "SELECT id from rawattendance WHERE externalid = ? ";
 		$sql.= " and Classname = ? and mondayOfWeek = ? ";
 		$sql.= " and DOWnum = ? ";
@@ -4695,14 +4810,15 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$stmt->store_result();
 		$num_rows = $stmt->num_rows;
 		$stmt->close();
-		error_log(print_R("isRawattendanceExists: $num_rows\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("isRawattendanceExists: $num_rows\n", TRUE) );
 		return $num_rows > 0;
 	}
 
     public function removeRawattendances(
     ) {
+        global $app;
 
-        error_log( print_R("removeRawattendances entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawattendances entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawattendance where school = ?  ";
@@ -4723,8 +4839,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
     public function removeRawattendance(
             $externalid,$Classname,$mondayOfWeek,$DOWnum
     ) {
+        global $app;
 
-        error_log( print_R("removeRawattendance entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRawattendance entered\n", TRUE ));
         global $school;
                                       
         $sql1 = "DELETE from rawattendance where externalid = ? and 
@@ -4733,7 +4850,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $dt = DateTime::createFromFormat('m/d/Y', $mondayOfWeek);
         
         if ($dt === false) {
-            error_log( print_R("removeRawattendance  bad date $mondayOfWeek" , TRUE), 3, LOG);
+            $app->log->debug( print_R("removeRawattendance  bad date $mondayOfWeek" , TRUE));
             return NULL;
         }
         $bdate = $dt->format('Y-m-d');
@@ -4754,8 +4871,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
     public function getRawAttendanceStatus(
     ) {
+        global $app;
 
-        error_log( print_R("getRawattendanceStatus entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("getRawattendanceStatus entered\n", TRUE ));
         global $school;
         $errormessage=array();
 
@@ -4775,8 +4893,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			$stmt->bind_param("s", $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
-				error_log(print_R("getRawattendanceStatus list returns data", TRUE) , 3, LOG);
-				error_log(print_R($slists, TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawattendanceStatus list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
 				$stmt->close();
 
                 if ($slists) {
@@ -4792,7 +4910,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                 }
 			}
 			else {
-				error_log(print_R("getRawattendanceStatus list execute failed", TRUE) , 3, LOG);
+				$app->log->debug(print_R("getRawattendanceStatus list execute failed", TRUE) );
 	            $errormessage["sqlerror"] = "getRawattendanceStatus failure: ";
 	            $errormessage["sqlerrordtl"] = $this->conn->error;
 				$errormessage["slist"] = array();
@@ -4800,7 +4918,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			}
 		}
 		else {
-			error_log(print_R("getRawattendanceStatus list sql failed", TRUE) , 3, LOG);
+			$app->log->debug(print_R("getRawattendanceStatus list sql failed", TRUE) );
             $errormessage["sqlerror"] = "getRawattendanceStatus failure: ";
             $errormessage["sqlerrordtl"] = $this->conn->error;
 				$res["slist"] = array();

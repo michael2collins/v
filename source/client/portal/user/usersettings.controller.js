@@ -4,7 +4,6 @@ export class ModalUserSettingsInstanceController {
     Notification, portalDataService,
     $scope, util, $q, $sce, moment, $uibModal, Idle, Title) {
     'ngInject';
-    console.log('entering usersettings controller');
 
     this.$log = $log;
     this.$uibModal = $uibModal;
@@ -20,7 +19,6 @@ export class ModalUserSettingsInstanceController {
     this.Util = util;
   }
   $onInit() {
-    console.log("initializing usersettings...");
     this.userOptions = {};
     this.okoptions = [true, false];
     this.debugoptions = ["On", "Off"];
@@ -29,12 +27,13 @@ export class ModalUserSettingsInstanceController {
     this.mydelay = 10;
     this.init();
     
-    this.portalDataService.Portlet('header.controller.js');
+    this.portalDataService.Portlet('usersettings.controller.js');
+    
   }
   $onDestroy() {
-    this.$log.debug("app dismissed");
-    this.$log.debugEnabled(false);
-  };
+    this.$log.log("app dismissed");
+    //this.$log.logEnabled(false);
+  }
 
   init() {
     var vm=this;
@@ -48,20 +47,18 @@ export class ModalUserSettingsInstanceController {
     });
     vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
       var vm = event.currentScope.$ctrl;
-      vm.$log.debugEnabled(true);
-      vm.$log.debug('routechange in app for success');
 
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("ModalUserSettingsInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("ModalUserSettingsInstanceController started");
 
     });    
   }
   getUserOptions() {
     var vm=this;
-    vm.$log.debug('getUserOptions entered');
+    vm.$log.log('getUserOptions entered');
     var path = "../v1/useroptions";
     return vm.UserServices.getUserOptions(path).then(function(data) {
-        vm.$log.debug("usersettings controller service getUserOptions returned:", data);
+        vm.$log.log("usersettings controller service getUserOptions returned:", data);
         if ((typeof data.options === 'undefined' || data.options.error === true) &&
           typeof data !== 'undefined') {
           var themsg = {
@@ -74,27 +71,38 @@ export class ModalUserSettingsInstanceController {
         }
         else {
           try {
+            
             vm.userOptions = JSON.parse(data.options);
             vm.okNotify = (vm.userOptions.notify ? vm.userOptions.notify : false);
             vm.debugOn = (vm.userOptions.debug ? vm.userOptions.debug : "Off");
+            //vm.$log.logEnabled(vm.debugOn);
+
             vm.mydelay = (vm.userOptions.delay ? vm.userOptions.delay : 30);
             vm.idle = (vm.userOptions.idle ? vm.userOptions.idle : 20 * 60);
             vm.timeout = (vm.userOptions.timeout ? vm.userOptions.timeout : 5 * 60);
+
+            vm.UserServices.setUserDetailOptions(data.options);
+            
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ModalUserSettingsInstanceController',vm.UserServices.isDebugEnabled());
+        }
+
             vm.Title.setAsIdle(vm.idle);
             vm.Idle.setIdle(vm.idle);
             vm.Idle.setTimeout(vm.timeout);
             //reset the timer
             vm.Idle.watch();
 
+
           }
           catch (e) {
-            vm.$log.debug(e instanceof SyntaxError); // true
-            vm.$log.debug(e.message); // "missing ; before statement"
-            vm.$log.debug(e.name); // "SyntaxError"
-            vm.$log.debug(e.fileName); // "Scratchpad/1"
-            vm.$log.debug(e.lineNumber); // 1
-            vm.$log.debug(e.columnNumber); // 4
-            vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+            vm.$log.log(e instanceof SyntaxError); // true
+            vm.$log.log(e.message); // "missing ; before statement"
+            vm.$log.log(e.name); // "SyntaxError"
+            vm.$log.log(e.fileName); // "Scratchpad/1"
+            vm.$log.log(e.lineNumber); // 1
+            vm.$log.log(e.columnNumber); // 4
+            vm.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
             vm.Notification.error(e.message);
             return (vm.$q.reject(data));
           }
@@ -105,7 +113,7 @@ export class ModalUserSettingsInstanceController {
       },
 
       function(error) {
-        vm.$log.debug('Caught an error getUserOptions, going to notify:', error);
+        vm.$log.log('Caught an error getUserOptions, going to notify:', error);
         vm.userOptions = [];
         vm.message = error;
         vm.Notification.error({ message: error, delay: 5000 });
@@ -127,11 +135,13 @@ export class ModalUserSettingsInstanceController {
         "debug": vm.debugOn
       }
     };
-    vm.$log.debug('about setUserOptions ', thedata, updpath);
+    //vm.$log.logEnabled(vm.debugOn);
+
+    vm.$log.log('about setUserOptions ', thedata, updpath);
     return vm.UserServices.setUserOptions(updpath, thedata)
       .then(function(data) {
-        vm.$log.debug('setUserOptions returned data');
-        vm.$log.debug(data);
+        vm.$log.log('setUserOptions returned data');
+        vm.$log.log(data);
         if ((typeof data.message === 'undefined' || data.error === true) &&
           typeof data !== 'undefined') {
           var themsg = {
@@ -144,13 +154,15 @@ export class ModalUserSettingsInstanceController {
         }
         else {
           vm.Notification.success({ message: data.message, delay: 5000 });
-          vm.getUserOptions();
+
+          //vm.getUserOptions(); this is called in header controller after modal
+          
         }
 
         return data;
       }).catch(function(e) {
-        vm.$log.debug('setUserOptions failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('setUserOptions failure:');
+        vm.$log.log("error", e);
         vm.message = e;
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;

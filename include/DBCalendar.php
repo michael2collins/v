@@ -21,12 +21,14 @@ class CalendarDbHandler {
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
 
     }
 
 
     public function getUsers() {
 
+        global $app;
         global $user_id;
         global $school;
 
@@ -45,12 +47,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 $stmt->close();
                 return $users;
             } else {
-                error_log( print_R("getUsers  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getUsers  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getUsers sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getUsers sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -59,9 +61,10 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     public function removeCalendarEvent($eventID) {
 
+        global $app;
         global $user_id;
         $num_affected_rows = 0;
-        error_log( print_R("removeCalendarEvent entered $user_id $eventID\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeCalendarEvent entered $user_id $eventID\n", TRUE ));
 
         //cleanout old and replace with a new set
         $cleansql = "Delete from ncalendar where userid = ? and id = ?";
@@ -111,6 +114,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         global $user_id;
         global $school;
+        global $app;
 
        
         $sql = " SELECT  cal.id as id,  title, startdated, startdate, enddate,
@@ -135,7 +139,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         }
 
-        error_log( print_R("getCalendarEvents sql: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getCalendarEvents sql: $sql", TRUE));
         
 
         if ($stmt = $this->conn->prepare($sql)) {
@@ -149,12 +153,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 $stmt->close();
                 return $events;
             } else {
-                error_log( print_R("getCalendarEvents  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getCalendarEvents  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getCalendarEvents sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getCalendarEvents sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -168,20 +172,21 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
      */
 
      //   global $user_id;
+        global $app;
 
-        error_log( print_R("isCalendarEventExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isCalendarEventExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as eventcount from ncalendar ";
         $cntsql .= " where id = '" . $eventID . "'" ;
     //    $cntsql .= " and userid =  '" . $user_id . "'";
 
-        error_log( print_R("events isCalendarEventExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("events isCalendarEventExists sql: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
  
@@ -196,7 +201,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isCalendarEventExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isCalendarEventExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -213,7 +218,8 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     public
 	function getScheduleList() {
         global $school;
-		error_log(print_R("school for getScheduleList is: $school \n", TRUE) , 3, LOG);
+        global $app;
+		$app->log->debug(print_R("school for getScheduleList is: $school \n", TRUE));
 
 	    $sql = "
         SELECT  `DayOfWeek`, `TimeRange`, `AgeRange`, `Description`, `TakeAttendance`, 
@@ -221,7 +227,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         FROM `schedule` s left join nclass c on (s.classid = c.id and s.school = c.school) 
         WHERE s.school = ? ";
 	    
-		error_log(print_R("sql for getScheduleList is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getScheduleList is: " . $sql . "\n", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
     		$stmt->bind_param("s", $school);
@@ -230,12 +236,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 $result = $stmt->get_result();
                 $stmt->store_result();
                 $num_rows = $stmt->num_rows;
-                error_log( print_R("getScheduleList  num rows: $num_rows \n", TRUE), 3, LOG);
+                $app->log->debug( print_R("getScheduleList  num rows: $num_rows \n", TRUE));
                 
                 $stmt->close();
                 return $result;
             } else {
-                error_log( print_R("getScheduleList  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getScheduleList  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -249,9 +255,10 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     public
 	function getCalendarList($stdate, $endate) {
         global $school;
+        global $app;
 		$estr = $endate->format('Y-m-d');
 		$sstr = $stdate->format('Y-m-d');
-		error_log(print_R("school for getCalendarList is: $school $sstr $estr \n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("school for getCalendarList is: $school $sstr $estr \n", TRUE));
 
 	    $sql = "
         SELECT id, title, startdated, startdate, enddate, allDay, contactid, userid, reminder, reminderinterval,
@@ -264,34 +271,34 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         startdated >= ? and 
         startdated <= ?
 */
-		error_log(print_R("sql for getCalendarList is: " . $sql . "\n", TRUE) , 3, LOG);
+		$app->log->debug(print_R("sql for getCalendarList is: " . $sql . "\n", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
 //    		$stmt->bind_param("sss", $school, $sstr , $estr);
     		$stmt->bind_param("s", $school);
-                error_log( print_R("getCalendarList after prep \n", TRUE), 3, LOG);
+                $app->log->debug( print_R("getCalendarList after prep \n", TRUE));
 
             if ($stmt->execute()) {
-                error_log( print_R("getCalendarList after exec \n", TRUE), 3, LOG);
+                $app->log->debug( print_R("getCalendarList after exec \n", TRUE));
                 $slists = $stmt->get_result();
                 $num_rows = $slists->num_rows;
                 if ($num_rows > 0) {
-                    error_log( print_R("getCalendarList  num rows: $num_rows \n", TRUE), 3, LOG);
+                    $app->log->debug( print_R("getCalendarList  num rows: $num_rows \n", TRUE));
             //        while ($row = $slists->fetch_assoc()) {
             //            $results[] = $row;
              //       }
-            //        error_log( print_R("getCalendarList after loop \n", TRUE), 3, LOG);
-            //        error_log( print_R($results, TRUE), 3, LOG);
+            //        $app->log->debug( print_R("getCalendarList after loop \n", TRUE));
+            //        $app->log->debug( print_R($results, TRUE));
                     $stmt->close();
             //        return $results;
                     return $slists;
                 } else {
-                    error_log( print_R("getCalendarList bad num rows: $num_rows \n", TRUE), 3, LOG);
+                    $app->log->debug( print_R("getCalendarList bad num rows: $num_rows \n", TRUE));
                     return false;
                 }                
                 
             } else {
-                error_log( print_R("getCalendarList  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getCalendarList  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -305,10 +312,11 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     public function getAgeRangeList() {
         global $school;
+        global $app;
         $sql = "SELECT t.* FROM studentlist t where t.listtype = 'AgeRange' and t.school = ?" ;
 
         $sql .= " order by t.listtype, t.listorder";
-        error_log( print_R("getAgeRangeList sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAgeRangeList sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param("s",
@@ -326,12 +334,13 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         global $school;
         global $user_id;
+        global $app;
         //todo set this global
         $tz = 'America/New_York';
         $ISO = 'Y-m-d\TH:i:s.uO';
 
-        error_log( print_R("generateCalendarFromSchedule date" , TRUE), 3, LOG);
-        error_log( print_R($startdated , TRUE), 3, LOG);
+        $app->log->debug( print_R("generateCalendarFromSchedule date" , TRUE));
+        $app->log->debug( print_R($startdated , TRUE));
 
         $eventcolor = 'Orange';
         $eventtextcolor = 'rgb(0, 0, 0)';
@@ -342,7 +351,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         
 //        $dt = DateTime::createFromFormat('m/d/Y', $startdated);
         if ($dt === false) {
-            error_log( print_R("generateCalendarFromSchedule  bad date $startdated" , TRUE), 3, LOG);
+            $app->log->debug( print_R("generateCalendarFromSchedule  bad date $startdated" , TRUE));
             return NULL;
         }
         $date = $dt->format('Y-m-d');
@@ -352,7 +361,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         $startdatehhmm = DateTime::createFromFormat($ISO, $startdatestr, new DateTimeZone($tz));
         if ($startdatehhmm === false) {
-            error_log( print_R("generateCalendarFromSchedule  bad start date hhmm $startdate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("generateCalendarFromSchedule  bad start date hhmm $startdate" , TRUE));
             return NULL;
         }
         
@@ -362,7 +371,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         $enddatehhmm = DateTime::createFromFormat($ISO, $enddatestr, new DateTimeZone($tz));
         if ($enddatehhmm === false) {
-            error_log( print_R("generateCalendarFromSchedule  bad start date hhmm $enddate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("generateCalendarFromSchedule  bad start date hhmm $enddate" , TRUE));
             return NULL;
         }
         $enddatehhmmx = $enddatehhmm;
@@ -374,14 +383,14 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         `enddate`,  `color`, textcolor, eventtype, studentschool, userid, agerange, classid) VALUES (?,?,?,?,?,?,?,?,?,?,?)
         ";
         
-        error_log( print_R("generateCalendarFromSchedule  sql: $inssql\n", TRUE), 3, LOG);
-        error_log( print_R("$title\n", TRUE), 3, LOG);
-        error_log( print_R("$date\n" , TRUE), 3, LOG);
-        error_log( print_R("$hhmm\n",  TRUE), 3, LOG);
-        error_log( print_R("$endhhmm\n",  TRUE), 3, LOG);
-        error_log( print_R("$eventcolor\n",  TRUE), 3, LOG);
-        error_log( print_R("$eventtextcolor\n",  TRUE), 3, LOG);
-        error_log( print_R("$eventtype\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("generateCalendarFromSchedule  sql: $inssql\n", TRUE));
+        $app->log->debug( print_R("$title\n", TRUE));
+        $app->log->debug( print_R("$date\n" , TRUE));
+        $app->log->debug( print_R("$hhmm\n",  TRUE));
+        $app->log->debug( print_R("$endhhmm\n",  TRUE));
+        $app->log->debug( print_R("$eventcolor\n",  TRUE));
+        $app->log->debug( print_R("$eventtextcolor\n",  TRUE));
+        $app->log->debug( print_R("$eventtype\n", TRUE));
 
         if ($stmt = $this->conn->prepare($inssql)) {
             $stmt->bind_param("sssssssssss",
@@ -415,6 +424,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         $classid
     ) {
 
+        global $app;
         global $school;
         
         $inssql = " 
@@ -425,7 +435,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         VALUES (?,?,?,?,?,?,?,?,?,?)
         ";
         
-        error_log( print_R("generateCalendarFromSchedule  sql: $inssql\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("generateCalendarFromSchedule  sql: $inssql\n", TRUE));
         if ($stmt = $this->conn->prepare($inssql)) {
             $stmt->bind_param("ssssssssss",
                     $DayOfWeek, $TimeRange, $AgeRange, $Description, 
@@ -455,13 +465,14 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     public function cleanSchedule(
     ) {
+        global $app;
 
-        error_log( print_R("cleanSchedule entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("cleanSchedule entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from schedule  where school = ? ";
 
-        error_log( print_R("cleanSchedule sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("cleanSchedule sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -483,13 +494,14 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     
     public function removeCalSchedule(
     ) {
+        global $app;
 
-        error_log( print_R("removeCalSchedule entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeCalSchedule entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from ncalendar  where eventtype = 'ClassSchedule' and studentschool = ? ";
 
-        error_log( print_R("removeSchedule sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeSchedule sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -519,15 +531,16 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
      */
 
 //        global $user_id;
+        global $app;
         global $school;
 
         $num_affected_rows = 0;
- //       error_log( print_R("saveCalendarEvent  entered for $user_id" , TRUE), 3, LOG);
+ //       $app->log->debug( print_R("saveCalendarEvent  entered for $user_id" , TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         //todo set this global
@@ -535,7 +548,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         $dt = DateTime::createFromFormat('m/d/Y', $startdated);
         if ($dt === false) {
-            error_log( print_R("saveCalendarEvent  bad date $startdated" , TRUE), 3, LOG);
+            $app->log->debug( print_R("saveCalendarEvent  bad date $startdated" , TRUE));
             return NULL;
         }
         $date = $dt->format('Y-m-d');
@@ -543,7 +556,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         $ISO = 'Y-m-d\TH:i:s.uO';
         $startdatehhmm = DateTime::createFromFormat($ISO, $startdate, new DateTimeZone($tz));
         if ($startdatehhmm === false) {
-            error_log( print_R("saveCalendarEvent  bad start date hhmm $startdate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("saveCalendarEvent  bad start date hhmm $startdate" , TRUE));
             return NULL;
         }
         $startdatehhmmx = $startdatehhmm;
@@ -553,7 +566,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
         $enddatehhmm = DateTime::createFromFormat($ISO, $enddate, new DateTimeZone($tz));
         if ($enddatehhmm === false) {
-            error_log( print_R("saveCalendarEvent  bad start date hhmm $enddate" , TRUE), 3, LOG);
+            $app->log->debug( print_R("saveCalendarEvent  bad start date hhmm $enddate" , TRUE));
             return NULL;
         }
         $enddatehhmmx = $enddatehhmm;
@@ -624,7 +637,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             $updsql .= " where id = " . $eventID ;
 //            $updsql .= " and userid =  " . $user_id;
 
-            error_log( print_R("saveCalendarEvent update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("saveCalendarEvent update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssssssssssssss",
@@ -641,8 +654,8 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("saveCalendarEvent update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("saveCalendarEvent update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -653,6 +666,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     }
 
     private function createTest($eventid) {
+        global $app;
         $num_affected_rows = 0;
 
         $default_tester = "Witness";        
@@ -688,9 +702,10 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 
     public function removeTasknamelist($taskname) {
 
+        global $app;
         global $user_id;
         $num_affected_rows = 0;
-        error_log( print_R("removeTasklist entered $user_id $taskname\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeTasklist entered $user_id $taskname\n", TRUE ));
 
         //cleanout old and replace with a new set
         $cleansql = "Delete from tasknamelist where userid = ? and taskname = ?";
@@ -724,6 +739,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     public function getInstructorList() {
 
         global $school;
+        global $app;
 
         $sql = "SELECT firstname,lastname,instructortitle FROM ncontacts c, studentlist sl WHERE ";
         $sql .= " c.instructortitle = sl.listkey and sl.listtype = 'Instructor Title' and ";
@@ -737,12 +753,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 $stmt->close();
                 return $instructorlist;
             } else {
-                error_log( print_R("getInstructorList  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getInstructorList  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getInstructorList  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getInstructorList  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -752,6 +768,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     public function getTasknamelist() {
 
         global $user_id;
+        global $app;
 
         $sql = "SELECT  id as taskid, taskname, taskstatus FROM tasknamelist ";
         $sql .= " where userid = ? ";
@@ -764,12 +781,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 $stmt->close();
                 return $tasknamelist;
             } else {
-                error_log( print_R("getTasknamelist  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTasknamelist  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTasknamelist  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTasknamelist  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -783,20 +800,21 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
      */
 
         global $user_id;
+        global $app;
 
-        error_log( print_R("istasknamelistExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("istasknamelistExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as tasknamelistcount from tasknamelist ";
         $cntsql .= " where taskname = ? " ;
         $cntsql .= " and userid =  ? ";
 
-        error_log( print_R("tasknamelist istasknamelistExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("tasknamelist istasknamelistExists sql: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -814,7 +832,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("istasknamelistanceExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("istasknamelistanceExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -834,16 +852,17 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     /**
      * Updating or inserting tasknamelist
      */
+        global $app;
 
         global $user_id;
 
         $num_affected_rows = 0;
-        error_log( print_R("tasknamelist update entered for $user_id" , TRUE), 3, LOG);
+        $app->log->debug( print_R("tasknamelist update entered for $user_id" , TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
 
@@ -883,7 +902,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             $updsql .= " where taskname = ? ";
             $updsql .= " and userid =  ? ";
 
-            error_log( print_R("tasknamelist update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("tasknamelist update sql: $updsql", TRUE));
 
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sss",
@@ -895,8 +914,8 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("tasknamelist update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("tasknamelist update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }

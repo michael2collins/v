@@ -4,7 +4,7 @@ const { Stripe: Stripe } = window;
 export class PaymentTrackingController {
     constructor(
         $scope, $log, ClassServices, StudentServices, Notification,
-        Util, uiGridConstants, moment, $q, $uibModal, $routeParams, $rootScope, portalDataService
+        Util, uiGridConstants, moment, $q, $uibModal, $routeParams, $rootScope, portalDataService, UserServices
     ) {
         'ngInject';
         this.$log = $log;
@@ -20,15 +20,15 @@ export class PaymentTrackingController {
         this.$routeParams = $routeParams;
         this.$rootScope = $rootScope;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
 
     }
     $onDestroy() {
-        this.$log.debug("PaymentTrackingController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("PaymentTrackingController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     $onInit() {
-        console.log("PaymentTrackingController ...");
         /* jshint validthis: true */
         var vm = this;
         vm.isCollapsed = true;
@@ -73,9 +73,13 @@ export class PaymentTrackingController {
 
     activate() {
         var vm = this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('PaymentTrackingController',vm.UserServices.isDebugEnabled());
+        }
+        
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-paymenttracking started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-paymenttracking started");
 
         });
 
@@ -87,7 +91,7 @@ export class PaymentTrackingController {
     }
 
     formatter(modelValue, filter, defaultValue) {
-        //  $log.debug("formatter arguments", arguments);
+        //  $log.log("formatter arguments", arguments);
         if (modelValue) {
             return filter("currency")(modelValue);
         }
@@ -130,11 +134,11 @@ export class PaymentTrackingController {
 
     getPayersPartial(theinput) {
         var vm = this;
-        vm.$log.debug('getPayers entered');
+        vm.$log.log('getPayers entered');
 
         return vm.ClassServices.getPayersPartial(theinput).then(function(data) {
-            vm.$log.debug('controller getPayersPartial returned data', theinput);
-            vm.$log.debug(data);
+            vm.$log.log('controller getPayersPartial returned data', theinput);
+            vm.$log.log(data);
             if ((typeof data.payerlist === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
                 vm.message = data.message;
@@ -156,8 +160,8 @@ export class PaymentTrackingController {
             return;
         }
         return vm.StudentServices.refreshStudents(theinput).then(function(data) {
-            vm.$log.debug('controller refreshStudents returned data');
-            vm.$log.debug(data);
+            vm.$log.log('controller refreshStudents returned data');
+            vm.$log.log(data);
             if ((typeof data.refreshstudentlist === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
                 vm.message = data.message;
@@ -193,9 +197,9 @@ export class PaymentTrackingController {
         };
         var path = "../v1/payerstudent";
         return vm.StudentServices.getPayerStudent(path, thedata).then(function(data) {
-            vm.$log.debug('controller getPayerStudent returned data');
-            vm.$log.debug(data);
-            vm.$log.debug(data.message);
+            vm.$log.log('controller getPayerStudent returned data');
+            vm.$log.log(data);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof data.studentpayerlist === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -212,10 +216,10 @@ export class PaymentTrackingController {
                     vm.refreshStudents(data.studentpayerlist[0].firstname + ' ' + data.studentpayerlist[0].lastname).then(function() {
                         vm.studentpick = vm.refreshstudentlist.refreshstudentlist[0];
                         vm.getInvoices(theinput.payerid).then(function() {
-                            vm.$log.debug("got invoices");
+                            vm.$log.log("got invoices");
                         });
                         vm.getPayments(theinput.payerid).then(function() {
-                            vm.$log.debug("got payments");
+                            vm.$log.log("got payments");
                         });
                     });
                 }
@@ -223,17 +227,17 @@ export class PaymentTrackingController {
                     vm.getPayersPartial(data.studentpayerlist[0].payername).then(function() {
                         vm.payerName = vm.payers[0];
                         vm.getInvoices(theinput.payerid).then(function() {
-                            vm.$log.debug("got invoices");
+                            vm.$log.log("got invoices");
                         });
                         vm.getPayments(theinput.payerid).then(function() {
-                            vm.$log.debug("got payments");
+                            vm.$log.log("got payments");
                         });
                     });
                 }
                 vm.Notification.success({ message: vm.message, delay: 5000 });
             }
         }, function(error) {
-            vm.$log.debug('Caught an error getPayerStudent:', error);
+            vm.$log.log('Caught an error getPayerStudent:', error);
             vm.payerstudentlist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -255,9 +259,9 @@ export class PaymentTrackingController {
         };
         var path = "../v1/invoices";
         return vm.StudentServices.getInvoices(path, thedata).then(function(data) {
-            vm.$log.debug('controller getInvoices returned data');
-            vm.$log.debug(data);
-            vm.$log.debug(data.message);
+            vm.$log.log('controller getInvoices returned data');
+            vm.$log.log(data);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof data.invoicelist === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -280,7 +284,7 @@ export class PaymentTrackingController {
                 vm.Notification.success({ message: vm.message, delay: 5000 });
             }
         }, function(error) {
-            vm.$log.debug('Caught an error getPayerStudent:', error);
+            vm.$log.log('Caught an error getPayerStudent:', error);
             vm.Invoice = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -292,7 +296,7 @@ export class PaymentTrackingController {
 
     removeInvoice(input) {
         var vm = this;
-        vm.$log.debug('removeInvoice entered', input);
+        vm.$log.log('removeInvoice entered', input);
         var path = "../v1/invoice";
         var thedata = {
             id: input.id
@@ -300,8 +304,8 @@ export class PaymentTrackingController {
 
         return vm.StudentServices.removeInvoice(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeInvoice returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeInvoice returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -313,10 +317,10 @@ export class PaymentTrackingController {
                 }
 
                 vm.getInvoices(vm.thispayer).then(function(zdata) {
-                        vm.$log.debug('getInvoices returned', zdata);
+                        vm.$log.log('getInvoices returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getInvoices after remove:', error);
+                        vm.$log.log('Caught an error getInvoices after remove:', error);
                         vm.thisInvoice = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -324,8 +328,8 @@ export class PaymentTrackingController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeInvoice failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeInvoice failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -354,14 +358,14 @@ export class PaymentTrackingController {
             payfor: rowEntity.payfor
         };
 
-        vm.$log.debug('about addInvoice ', thedata, updpath, 'Add');
+        vm.$log.log('about addInvoice ', thedata, updpath, 'Add');
         return vm.StudentServices.addInvoice(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('addInvoice returned data');
-                vm.$log.debug(data);
+                vm.$log.log('addInvoice returned data');
+                vm.$log.log(data);
                 vm.thisInvoice = data;
-                vm.$log.debug(vm.thisInvoice);
-                vm.$log.debug(vm.thisInvoice.message);
+                vm.$log.log(vm.thisInvoice);
+                vm.$log.log(vm.thisInvoice.message);
                 vm.message = vm.thisInvoice.message;
                 if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
                     typeof data !== 'undefined') {
@@ -372,10 +376,10 @@ export class PaymentTrackingController {
                     vm.Notification.success({ message: vm.message, delay: 5000 });
                 }
                 vm.getInvoices(vm.thispayer).then(function(zdata) {
-                        vm.$log.debug('getInvoices returned', zdata);
+                        vm.$log.log('getInvoices returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getInvoices after remove:', error);
+                        vm.$log.log('Caught an error getInvoices after remove:', error);
                         vm.thisInvoice = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -384,8 +388,8 @@ export class PaymentTrackingController {
 
                 return vm.thisInvoice;
             }).catch(function(e) {
-                vm.$log.debug('addInvoice failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('addInvoice failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -402,9 +406,9 @@ export class PaymentTrackingController {
         };
         var path = "../v1/calcinvoice";
         return vm.StudentServices.calcInvoice(path, thedata).then(function(data) {
-            vm.$log.debug('controller calcInvoice returned data');
-            vm.$log.debug(data);
-            vm.$log.debug(data.message);
+            vm.$log.log('controller calcInvoice returned data');
+            vm.$log.log(data);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof data.InvoiceList === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -430,7 +434,7 @@ export class PaymentTrackingController {
                 vm.Notification.success({ message: vm.message, delay: 5000 });
             }
         }, function(error) {
-            vm.$log.debug('Caught an error calcInvoice:', error);
+            vm.$log.log('Caught an error calcInvoice:', error);
             vm.calcinvoice = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -461,14 +465,14 @@ export class PaymentTrackingController {
             payfor: rowEntity.payfor
         };
 
-        vm.$log.debug('about emailInvoice ', thedata, updpath, 'Add');
+        vm.$log.log('about emailInvoice ', thedata, updpath, 'Add');
         return vm.StudentServices.emailInvoice(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('emailInvoice returned data');
-                vm.$log.debug(data);
+                vm.$log.log('emailInvoice returned data');
+                vm.$log.log(data);
                 vm.thisInvoice = data;
-                vm.$log.debug(vm.thisInvoice);
-                vm.$log.debug(vm.thisInvoice.message);
+                vm.$log.log(vm.thisInvoice);
+                vm.$log.log(vm.thisInvoice.message);
                 vm.message = vm.thisInvoice.message;
                 if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
                     typeof data !== 'undefined') {
@@ -479,10 +483,10 @@ export class PaymentTrackingController {
                     vm.Notification.success({ message: vm.message, delay: 5000 });
                 }
                 vm.getInvoices(vm.thispayer).then(function(zdata) {
-                        vm.$log.debug('getInvoices returned', zdata);
+                        vm.$log.log('getInvoices returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getInvoices after remove:', error);
+                        vm.$log.log('Caught an error getInvoices after remove:', error);
                         vm.thisInvoice = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -491,8 +495,8 @@ export class PaymentTrackingController {
 
                 return vm.thisInvoice;
             }).catch(function(e) {
-                vm.$log.debug('emailInvoice failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('emailInvoice failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -521,14 +525,14 @@ export class PaymentTrackingController {
             payfor: rowEntity.payfor
         };
 
-        vm.$log.debug('about updateInvoice ', thedata, updpath, 'Update');
+        vm.$log.log('about updateInvoice ', thedata, updpath, 'Update');
         return vm.StudentServices.updateInvoice(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateInvoice returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateInvoice returned data');
+                vm.$log.log(data);
                 vm.thisInvoice = data;
-                vm.$log.debug(vm.thisInvoice);
-                vm.$log.debug(vm.thisInvoice.message);
+                vm.$log.log(vm.thisInvoice);
+                vm.$log.log(vm.thisInvoice.message);
                 vm.message = vm.thisInvoice.message;
                 if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
                     typeof data !== 'undefined') {
@@ -539,10 +543,10 @@ export class PaymentTrackingController {
                     vm.Notification.success({ message: vm.message, delay: 5000 });
 
                     vm.getPayments(vm.thispayer).then(function(zdata) {
-                            vm.$log.debug('getPayments returned', zdata);
+                            vm.$log.log('getPayments returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getPayments after updateInvoice:', error);
+                            vm.$log.log('Caught an error getPayments after updateInvoice:', error);
                             vm.thisInvoice = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -552,8 +556,8 @@ export class PaymentTrackingController {
                 return vm.thisInvoice;
 
             }).catch(function(e) {
-                vm.$log.debug('updateInvoice failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateInvoice failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -571,9 +575,9 @@ export class PaymentTrackingController {
         };
         var path = "../v1/payments";
         return vm.StudentServices.getPayments(path, thedata).then(function(data) {
-            vm.$log.debug('controller getPayments returned data');
-            vm.$log.debug(data);
-            vm.$log.debug(data.message);
+            vm.$log.log('controller getPayments returned data');
+            vm.$log.log(data);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof data.paymentlist === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -589,7 +593,7 @@ export class PaymentTrackingController {
                 vm.Notification.success({ message: vm.message, delay: 5000 });
             }
         }, function(error) {
-            vm.$log.debug('Caught an error getPayments:', error);
+            vm.$log.log('Caught an error getPayments:', error);
             vm.Invoice = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -799,16 +803,16 @@ export class PaymentTrackingController {
         });
         modalInstance.opened.then(
             function(success) {
-                vm.$log.debug('showCreditCard ui opened:', success);
+                vm.$log.log('showCreditCard ui opened:', success);
 
             },
             function(error) {
-                vm.$log.debug('showCreditCard ui failed to open, reason : ', error);
+                vm.$log.log('showCreditCard ui failed to open, reason : ', error);
             }
         );
         modalInstance.rendered.then(
             function(success) {
-                vm.$log.debug('showCreditCard ui rendered:', success);
+                vm.$log.log('showCreditCard ui rendered:', success);
                 var stripe = vm.$rootScope.stripe;
                 var elements = stripe.elements({
                     fonts: [{
@@ -928,7 +932,7 @@ export class PaymentTrackingController {
 
             },
             function(error) {
-                vm.$log.debug('showCreditCard ui failed to render, reason : ', error);
+                vm.$log.log('showCreditCard ui failed to render, reason : ', error);
             }
         );
 
@@ -957,14 +961,14 @@ export class PaymentTrackingController {
             name: additionalData.name
         };
 
-        vm.$log.debug('about payStripeInvoice ', thedata, updpath, 'Update');
+        vm.$log.log('about payStripeInvoice ', thedata, updpath, 'Update');
         return vm.StudentServices.payStripeInvoice(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('payStripeInvoice returned data');
-                vm.$log.debug(data);
+                vm.$log.log('payStripeInvoice returned data');
+                vm.$log.log(data);
                 vm.$rootScope.stripe = data;
-                vm.$log.debug(vm.$rootScope.stripe);
-                vm.$log.debug(vm.$rootScope.stripe.message);
+                vm.$log.log(vm.$rootScope.stripe);
+                vm.$log.log(vm.$rootScope.stripe.message);
                 vm.message = vm.$rootScope.stripe.message;
                 if ((typeof vm.$rootScope.stripe === 'undefined' || vm.$rootScope.stripe.error === true) &&
                     typeof data !== 'undefined') {
@@ -973,12 +977,12 @@ export class PaymentTrackingController {
                 }
                 else {
                     vm.getInvoices(vm.thispayer).then(function(zdata) {
-                            vm.$log.debug('getInvoices returned', zdata);
+                            vm.$log.log('getInvoices returned', zdata);
                             vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getPayments after remove:', error);
+                            vm.$log.log('Caught an error getPayments after remove:', error);
                             vm.thisInvoice = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -986,12 +990,12 @@ export class PaymentTrackingController {
                         });
 
                     vm.getPayments(vm.thispayer).then(function(zdata) {
-                            vm.$log.debug('getPayments returned', zdata);
+                            vm.$log.log('getPayments returned', zdata);
                             vm.paygridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getPayments after payStripeInvoice:', error);
+                            vm.$log.log('Caught an error getPayments after payStripeInvoice:', error);
                             vm.thisInvoice = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -1004,8 +1008,8 @@ export class PaymentTrackingController {
                 return vm.$rootScope.stripe;
 
             }).catch(function(e) {
-                vm.$log.debug('payStripeInvoice failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('payStripeInvoice failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -1162,11 +1166,11 @@ export class PaymentTrackingController {
 
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -1265,11 +1269,11 @@ export class PaymentTrackingController {
 
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.paygridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setpayGridLength(pageSize);
                     vm.paygridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

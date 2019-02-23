@@ -19,7 +19,6 @@ export class ModalCameraController {
 
 
   $onInit() {
-    console.log('entering ModalCameraController oninit');
 
     var vmpicmodal = this;
 
@@ -55,13 +54,13 @@ export class ModalCameraController {
   openCamera() {
     var vmpicmodal=this;
     
-    vmpicmodal.$log.debug("openCamera");
+    vmpicmodal.$log.log("openCamera");
     angular.forEach(angular.element(document).find('div'), function(node) {
-      //$log.debug('finddiv',node);
+      //$log.log('finddiv',node);
       //          if(node.id == 'photowrapper'){
       if (node.id == 'my_camera') {
         //do something   ]
-        vmpicmodal.$log.debug('mycam', node);
+        vmpicmodal.$log.log('mycam', node);
         vmpicmodal.camera_on();
         vmpicmodal.Webcam.attach(node);
       }
@@ -104,7 +103,7 @@ export class ModalCameraController {
     vmpicmodal.cameraIsOn = 'off';
     vmpicmodal.Webcam.reset();
 
-    vmpicmodal.$log.debug("Camera_off");
+    vmpicmodal.$log.log("Camera_off");
 
     vmpicmodal.pretakon();
   }
@@ -125,12 +124,12 @@ export class ModalCameraController {
   saveStudentPic(student, picnm) {
     var vmpicmodal=this;
     vmpicmodal.PhotoServices.saveStudentPic(student, picnm).then(function(data) {
-      vmpicmodal.$log.debug('saveStudentPic returned data:');
-      vmpicmodal.$log.debug(data);
+      vmpicmodal.$log.log('saveStudentPic returned data:');
+      vmpicmodal.$log.log(data);
       vmpicmodal.dataToPass.pictureurldecache = picnm + '?decache=' + Math.random();
 
     }, function(error) {
-      vmpicmodal.$log.debug('saveStudentPic', error);
+      vmpicmodal.$log.log('saveStudentPic', error);
       vmpicmodal.Notification.error({ message: error, delay: 5000 });
       return (error);
     });
@@ -139,30 +138,30 @@ export class ModalCameraController {
   save_photo(picnm, student) {
     var vmpicmodal=this;
     picnm = encodeURI(picnm);
-    vmpicmodal.$log.debug('save_photo', picnm, student);
+    vmpicmodal.$log.log('save_photo', picnm, student);
     // actually snap photo (from preview freeze) and display it
     vmpicmodal.Webcam.snap(function(data_uri) {
 
       vmpicmodal.data_uri = data_uri;
 
       var ur = '../v1/picupload?picnm=' + picnm;
-      vmpicmodal.$log.debug("picnm", ur);
+      vmpicmodal.$log.log("picnm", ur);
 
       // shut down camera, stop capturing
       vmpicmodal.Webcam.reset();
       vmpicmodal.cameraIsOn = 'off';
       vmpicmodal.Webcam.upload(data_uri, ur, function(code, text) {
-        vmpicmodal.$log.debug("upload called", code, text);
+        vmpicmodal.$log.log("upload called", code, text);
       });
       vmpicmodal.Webcam.on('error', function(err) {
         // an error occurred (see 'err')
-        vmpicmodal.$log.debug('webcam err', err);
+        vmpicmodal.$log.log('webcam err', err);
       });
       vmpicmodal.Webcam.on('uploadComplete', function(code, text) {
         // Upload complete!
         // 'code' will be the HTTP response code from the server, e.g. 200
         // 'text' will be the raw response content
-        vmpicmodal.$log.debug("uploaded", code, text);
+        vmpicmodal.$log.log("uploaded", code, text);
         //call services to save pic
         vmpicmodal.saveStudentPic(student, picnm);
 
@@ -192,7 +191,7 @@ export class ModalCameraController {
       }
     });
     vmpicmodal.modalInstance.result.then(function(selectedpic) {
-      vmpicmodal.$log.debug('pick upload modalInstance result picfile:', selectedpic);
+      vmpicmodal.$log.log('pick upload modalInstance result picfile:', selectedpic);
       vmpicmodal.picfile = selectedpic;
       vmpicmodal.dataToPass.picfile = selectedpic;
 
@@ -219,7 +218,7 @@ export class ModalCameraController {
       }
     });
     vmpicmodal.modalInstance.result.then(function(selectedpic) {
-      vmpicmodal.$log.debug('picsearch modalInstance result picfile:', selectedpic);
+      vmpicmodal.$log.log('picsearch modalInstance result picfile:', selectedpic);
 
       vmpicmodal.dataToPass.picfile = selectedpic;
     }, function(error) {

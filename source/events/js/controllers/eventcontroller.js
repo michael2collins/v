@@ -106,7 +106,7 @@
         ];
 
 function getmyFormattedDate(date) {
-    $log.debug("getmyformatted date",date);
+    $log.log("getmyformatted date",date);
   var year = date.getFullYear();
   var month = (1 + date.getMonth()).toString();
   month = month.length > 1 ? month : '0' + month;
@@ -148,17 +148,17 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
  //       vm.discount="test";
 
     if (check >= earlyfrom && check <= earlyto) {
-        $log.debug("inside the early range",check, earlyfrom, earlyto);
+        $log.log("inside the early range",check, earlyfrom, earlyto);
         vm.discount="earlybird";
 
     } else if(check > stdfrom && check <= stdto) {
-        $log.debug("inside the std range",check, stdfrom, stdto);
+        $log.log("inside the std range",check, stdfrom, stdto);
         vm.discount="regular";        
     } else if(check > latefrom && check <= lateto) {
-        $log.debug("inside the late range",check, latefrom, lateto);
+        $log.log("inside the late range",check, latefrom, lateto);
         vm.discount="late";
     } else {
-        $log.debug("not inside  range",check, earlyfrom, lateto);
+        $log.log("not inside  range",check, earlyfrom, lateto);
         vm.discount="notfound";        
     }
     
@@ -277,7 +277,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
 
         function setLimit(thelimit) {
-            $log.debug('setLimit',thelimit);
+            $log.log('setLimit',thelimit);
             vm.limit = thelimit;
         }
         
@@ -290,40 +290,40 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
         
 //        function requery() {
-//            $log.debug('requery entered');
+//            $log.log('requery entered');
 //            vm.attending=[];
 //            refreshtheEvent();
 //        }
 
 
         function setActiveTab( activeTab, thecaller ){
-            $log.debug('set activetab as:', activeTab, thecaller);
+            $log.log('set activetab as:', activeTab, thecaller);
             EventServices.setActiveTab(activeTab, thecaller);
         }
 
         function getActiveTab(){
             var atab =  EventServices.getActiveTab();
-            $log.debug('get activetab is:', atab);
+            $log.log('get activetab is:', atab);
             return atab;
         }
 
 /*        function activateorig() {
             setInitColDefs();
-            $log.debug('activate setInitColDefs returned');
+            $log.log('activate setInitColDefs returned');
             getColDefList();
             setGridHistOptions();
 
         }
   */      
         function activate() {
-            $log.debug('activate entered');
+            $log.log('activate entered');
             setGridTournamentOptions();
             setGridPaymentOptions();
             getEventNames('').then(function() {
                 getAllStudents().then(function() {
-                    $log.debug('activate get all students');
+                    $log.log('activate get all students');
                     getEventDetails().then(function(){
-                        $log.debug('activate eventdetails fetched');
+                        $log.log('activate eventdetails fetched');
                     });
                 });
                 
@@ -354,14 +354,14 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
 
         function getAllStudents() {
-            $log.debug('TournamentServices getAllStudents entered');
+            $log.log('TournamentServices getAllStudents entered');
 //            var path = '../v1/eventsource';
             var path = encodeURI('../v1/eventsource?eventname=' + vm.eventSelected );
             
-            $log.debug('getAllStudents path:', path);
+            $log.log('getAllStudents path:', path);
 
             return TournamentServices.getAllStudents(path).then(function(data){
-                   $log.debug('getAllStudents returned data', data);
+                   $log.log('getAllStudents returned data', data);
                    if (data.EventsourceList.length > 0 ) {
                     addExtraData(data.EventsourceList); 
                    }
@@ -372,7 +372,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                     return vm.gridTournamentOptions.data;
                 },
                 function (error) {
-                    $log.debug('Caught an error getAllStudents, going to notify:', error); 
+                    $log.log('Caught an error getAllStudents, going to notify:', error); 
                     vm.gridTournamentOptions.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
@@ -382,21 +382,21 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
 
         function addExtraData(data){
-           $log.debug('addExtraData entered', data);
+           $log.log('addExtraData entered', data);
             for (var i=0, len=data.length;i < len;i++ ) {
-                $log.debug('eventtype in addExtraData',data[i].EventType);
-                $log.debug('kata',data[i].EventTypeKata);
-                $log.debug('Weapons',data[i].EventTypeWeapons);
-                $log.debug('Sparring',data[i].EventTypeSparring);
+                $log.log('eventtype in addExtraData',data[i].EventType);
+                $log.log('kata',data[i].EventTypeKata);
+                $log.log('Weapons',data[i].EventTypeWeapons);
+                $log.log('Sparring',data[i].EventTypeSparring);
                 
 //                if (data[i].EventType === "NULL" && data[i][fieldname] == vm.eventfieldKata ) {
                 if ( data[i].EventType === "NULL" ) {
-                    $log.debug('def Kata');
+                    $log.log('def Kata');
                     data[i].EventTypeKata = vm.eventdefaultKata ;
                     data[i].EventTypeSparring = vm.eventdefaultSparring ;
                     data[i].EventTypeWeapons = vm.eventdefaultWeapons ;
                 } else {
-                    $log.debug('not def');
+                    $log.log('not def');
                      if (data[i].EventType.indexOf('Kata:1') > -1){
                          data[i].EventTypeKata = true;
                      }
@@ -446,7 +446,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
         function setEventInfo(info) {
             vm.EventInfo = info;
-            $log.debug('setEventInfo', vm.EventInfo);
+            $log.log('setEventInfo', vm.EventInfo);
         }
         
         function registerall() {
@@ -458,7 +458,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                 Location: vm.eventSelected.Location,
                 selectedStudents: vm.selectedStudents
             };
-            $log.debug('register entered', thedata);
+            $log.log('register entered', thedata);
             createEvent(thedata).then(function(){
                 getEventDetails();
             }
@@ -473,12 +473,12 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                 Location: vm.EventInfo.Location,
                 selectedStudents: vm.selectedStudents
             };
-            $log.debug('register entered', thedata);
+            $log.log('register entered', thedata);
             createEvent(thedata).then(function(){
                 getAllStudents().then(function() {
-                    $log.debug('activate get all students');
+                    $log.log('activate get all students');
                     getEventDetails().then(function(){
-                        $log.debug('register eventdetails fetched');
+                        $log.log('register eventdetails fetched');
                     });
                 });
             });
@@ -493,21 +493,21 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
             
             var path = "../v1/eventregistration";
 
-            $log.debug('about createEvent ', path, thedata);
+            $log.log('about createEvent ', path, thedata);
             return EventServices.createEvent(path, thedata)
                 .then(function(data){
-                    $log.debug('createEvent returned data');
-                    $log.debug(data);
+                    $log.log('createEvent returned data');
+                    $log.log(data);
                     vm.thisEvent = data;
-                    $log.debug(vm.thisEvent);
-                    $log.debug(vm.thisEvent.message);
+                    $log.log(vm.thisEvent);
+                    $log.log(vm.thisEvent.message);
                     vm.message = vm.thisEvent.message;
                    // Notification.success({message: vm.message, delay: 5000});
 
                     return vm.thisEvent;
                 }).catch(function(e) {
-                    $log.debug('createEvent failure:');
-                    $log.debug("error", e);
+                    $log.log('createEvent failure:');
+                    $log.log("error", e);
                     vm.message = e;
                     Notification.error({message: e, delay: 5000});
                     throw e;
@@ -515,20 +515,20 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
 
         function refreshtheEvent() {
-            $log.debug('refreshtheEvent entered ');
+            $log.log('refreshtheEvent entered ');
 
             var refreshpath = encodeURI('../v1/eventsource?eventname=' + vm.eventSelected + 'thelimit=' + vm.limit );
 
-            $log.debug('refreshtheEvent path:', refreshpath);
+            $log.log('refreshtheEvent path:', refreshpath);
             
              return EventServices.getEventSource(refreshpath).then(function(data){
-                    $log.debug('refreshEvents returned data');
-                    $log.debug(data);
+                    $log.log('refreshEvents returned data');
+                    $log.log(data);
                     vm.gridOptions.data = data.EventsourceList; 
                     return vm.gridOptions.data;
                 },
                 function (error) {
-                    $log.debug('Caught an error refreshtheEvent, going to notify:', error); 
+                    $log.log('Caught an error refreshtheEvent, going to notify:', error); 
                     vm.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
@@ -545,27 +545,27 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
  
 
         function onlyUniqueContactID(value, index, self) { 
-            $log.debug('onlyUnique',value.ContactID, index, self, self.indexOf(value));
+            $log.log('onlyUnique',value.ContactID, index, self, self.indexOf(value));
             var test=self.ContactID;
-            $log.debug(test);
+            $log.log(test);
             return test.indexOf(value.ContactID) == index;
         }
 
         function getEventDetails() {
-            $log.debug('getEventDetails entered:');
+            $log.log('getEventDetails entered:');
             var path = encodeURI('../v1/eventdetails?eventname=' + vm.eventSelected);
 
             
-            $log.debug('getEventDetails path:', path);
+            $log.log('getEventDetails path:', path);
             
              return EventServices.getEventDetails(path).then(function(data){
-                    $log.debug('getEventDetails returned data');
-                    $log.debug(data);
+                    $log.log('getEventDetails returned data');
+                    $log.log(data);
                     vm.gridPaymentOptions.data = data.eventdetails; 
                     var registeredStudentsarr = [];
                     var registeredStudentsInfo = {};
                     for (var i=0,len=data.eventdetails.length; i < len;i++){
-                        $log.debug('push to registeredStudentsarr',data.eventdetails[i].ContactID);
+                        $log.log('push to registeredStudentsarr',data.eventdetails[i].ContactID);
                         registeredStudentsInfo = {
                             LastName: data.eventdetails[i].LastName,
                             FirstName: data.eventdetails[i].FirstName,
@@ -575,7 +575,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                     }
                 //    vm.registeredStudents = registeredStudentsarr.filter(onlyUniqueContactID);
                     vm.registeredStudents = _.uniq(registeredStudentsarr, false, function(p){return p.ContactID});
-                    $log.debug("details",data.eventdetails[0]);
+                    $log.log("details",data.eventdetails[0]);
                     
                     //check for empty set and do message
                     var messagetxt = "EventDetails obtained";
@@ -583,7 +583,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                     return;
                 },
                 function (error) {
-                    $log.debug('Caught an error getEventDetails:', error); 
+                    $log.log('Caught an error getEventDetails:', error); 
                     vm.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
@@ -598,16 +598,16 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
 
         function getEventNames(eventpartial) {
-            $log.debug('getEventNames entered');
+            $log.log('getEventNames entered');
             var path = encodeURI('../v1/eventnames?eventpartial=' + eventpartial);
 
-            $log.debug('getEventNames path:', path);
+            $log.log('getEventNames path:', path);
             
              return EventServices.getEventNames(path).then(function(data){
-                    $log.debug('getEventNames returned data');
-                    $log.debug(data);
+                    $log.log('getEventNames returned data');
+                    $log.log(data);
                     vm.eventlist = data.eventlist; 
-                    $log.debug('default eventlist', vm.eventlist[0].event);
+                    $log.log('default eventlist', vm.eventlist[0].event);
                     
                     vm.eventSelected = vm.eventlist[0].event;
                     
@@ -619,7 +619,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                     return;
                 },
                 function (error) {
-                    $log.debug('Caught an error getEventDetails:', error); 
+                    $log.log('Caught an error getEventDetails:', error); 
                     vm.data = [];
                     vm.message = error;
                     Notification.error({message: error, delay: 5000});
@@ -650,20 +650,20 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                 invoice: rowEntity.invoice
             };
             
-            $log.debug('about updateEvent ', indata, path);
+            $log.log('about updateEvent ', indata, path);
             
             return EventServices.updateEvent(path, indata)
                 .then(function(data){
-                    $log.debug('updateEvent returned data');
-                    $log.debug(data);
+                    $log.log('updateEvent returned data');
+                    $log.log(data);
                     vm.thiscoldef = data;
-                    $log.debug(vm.thiscoldef);
-                    $log.debug(vm.thiscoldef.message);
+                    $log.log(vm.thiscoldef);
+                    $log.log(vm.thiscoldef.message);
                     vm.message = vm.thiscoldef.message;
                   
                 }).catch(function(e) {
-                    $log.debug('updateEvent failure:');
-                    $log.debug("error", e);
+                    $log.log('updateEvent failure:');
+                    $log.log("error", e);
                     vm.message = e;
                     Notification.error({message: e, delay: 5000});
                     throw e;
@@ -700,7 +700,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                 return;
             }
 
-            $log.debug("setarray", vm.selectedStudents);
+            $log.log("setarray", vm.selectedStudents);
             
         }
 
@@ -713,7 +713,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
             }
         }
         function showMe(rowEntity){
-             $log.debug("showMe", rowEntity);
+             $log.log("showMe", rowEntity);
             //               alert(vm.EventTypeWeapons);
         
              // vm.gridApi.selection.toggleRowSelection(vm.gridTournamentOptions.data[0]);
@@ -723,13 +723,13 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
         }
         
         function registerMe(rowEntity){
-             $log.debug("registerMe", rowEntity);
+             $log.log("registerMe", rowEntity);
 
             var eventcnt = 0;
             rowEntity.EventTypeWeapons ? eventcnt += 1: eventcnt += 0;
             rowEntity.EventTypeKata ? eventcnt += 1: eventcnt += 0;
             rowEntity.EventTypeSparring ? eventcnt += 1: eventcnt += 0;
-            $log.debug("registerMe count", eventcnt);
+            $log.log("registerMe count", eventcnt);
 //knife
 //          if (eventcnt <= 1){
 //medway
@@ -744,11 +744,11 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
             }
         }
         function showregister(rowEntity) {
-    //         $log.debug("showregister", rowEntity);
+    //         $log.log("showregister", rowEntity);
             return rowEntity.Include == 1;
         }        
         function showpaid(rowEntity) {
-    //         $log.debug("showregister", rowEntity);
+    //         $log.log("showregister", rowEntity);
             return rowEntity.Paid == 1;
         }        
         
@@ -806,32 +806,32 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                 appScopeProvider: vm,
 
                 onRegisterApi: function(gridApi) {
-                    $log.debug('vm gridapi onRegisterApi');
+                    $log.log('vm gridapi onRegisterApi');
                      vm.gridTournamentApi = gridApi;
 
      /*               gridApi.selection.on.rowSelectionChanged($scope,function(row){
                         var msg = 'grid row selected ' + row.entity;
-                        $log.debug(msg);
+                        $log.log(msg);
 
                         var selectedStudentarr = vm.gridTournamentApi.selection.getSelectedRows();
-                        $log.debug('selected', selectedStudentarr);
+                        $log.log('selected', selectedStudentarr);
                         setSelectedArray(selectedStudentarr);
                         
                     });
      */
     /*                    gridApi.selection.on.rowSelectionChangedBatch($scope, function(rows) {
-                            $log.debug("grid batch");  
+                            $log.log("grid batch");  
                             var selectedStudentarr = vm.gridTournamentApi.selection.getSelectedRows();
-                            $log.debug('batch selected', selectedStudentarr);
+                            $log.log('batch selected', selectedStudentarr);
                             setSelectedArray(selectedStudentarr);
 
                     });
      */               gridApi.edit.on.afterCellEdit($scope, 
                             function(rowEntity, colDef, newValue, oldValue) {
-                        $log.debug('rowEntity');
-                        $log.debug(rowEntity);
+                        $log.log('rowEntity');
+                        $log.log(rowEntity);
                         //Alert to show what info about the edit is available
-                        $log.debug('Column: ' + colDef.name  + 
+                        $log.log('Column: ' + colDef.name  + 
                             ' newValue: ' + newValue + ' oldValue: ' + oldValue    );
                         if (newValue != oldValue) {
                             //updateEvent(colDef,newValue,rowEntity);       
@@ -841,7 +841,7 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                     }
             };
 
-            $log.debug('setGridTournamentOptions Options:', vm.gridTournamentOptions);
+            $log.log('setGridTournamentOptions Options:', vm.gridTournamentOptions);
 
         }
 
@@ -890,13 +890,13 @@ var check = new Date(c[2], parseInt(c[0])-1, c[1]);
                 enableColumnResizing: true,
 
                 onRegisterApi: function(gridApi) {
-                    $log.debug('vm gridapi onRegisterApi');
+                    $log.log('vm gridapi onRegisterApi');
                      vm.gridPaymentApi = gridApi;
 
                     }
             };
 
-            $log.debug('setGridPaymentOptions Options:', vm.gridPaymentOptions);
+            $log.log('setGridPaymentOptions Options:', vm.gridPaymentOptions);
 
         }
 

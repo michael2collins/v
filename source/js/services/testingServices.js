@@ -28,7 +28,7 @@ export class TestingServices {
         return this.activeTab;
     }
     setActiveTab(thetab, thecaller) {
-        this.$log.debug('TestingServices setActiveTab called', thetab, thecaller);
+        this.$log.log('TestingServices setActiveTab called', thetab, thecaller);
         this.activeTab = thetab;
     }
 
@@ -72,22 +72,22 @@ export class TestingServices {
 */
     getTestTypes(path) {
         var self = this;
-        self.$log.debug('getTestTypes service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getTestTypes service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
     getGeneralColDefs(path) {
         var self = this;
-        self.$log.debug('getGeneralColDefs service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getGeneralColDefs service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     createtestcandidate(path, thedata) {
         var self = this;
-        self.$log.debug('createtestcandidate data before post :', thedata);
+        self.$log.log('createtestcandidate data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -100,7 +100,7 @@ export class TestingServices {
 
     removetestcandidate(path, thedata) {
         var self = this;
-        self.$log.debug('removetestcandidate data before delete :', thedata);
+        self.$log.log('removetestcandidate data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -113,7 +113,7 @@ export class TestingServices {
 
     updateTesting(path, thedata) {
         var self = this;
-        self.$log.debug('updateTesting data before put :', thedata);
+        self.$log.log('updateTesting data before put :', thedata);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -126,14 +126,14 @@ export class TestingServices {
 
     updatetestcandidate(path) {
         var self = this;
-        self.$log.debug('updatetestcandidate service entered');
-        self.$log.debug('path', path);
+        self.$log.log('updatetestcandidate service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
     promotetestcandidate(path, thedata) {
         var self = this;
-        self.$log.debug('promotetestcandidate data before post :', thedata);
+        self.$log.log('promotetestcandidate data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -146,38 +146,38 @@ export class TestingServices {
 
     getTestDates(path) {
         var self = this;
-        self.$log.debug('getTestDates service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getTestDates service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
     getRankTypes(path) {
         var self = this;
-        self.$log.debug('getRankTypes service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getRankTypes service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     gettestcandidateDetails(path) {
         var self = this;
-        self.$log.debug('gettestcandidateDetails service entered');
-        self.$log.debug('path', path);
+        self.$log.log('gettestcandidateDetails service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     gettestcandidateNames(path) {
         var self = this;
-        self.$log.debug('gettestcandidateNames service entered');
-        self.$log.debug('path', path);
+        self.$log.log('gettestcandidateNames service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
     gettestcandidateList(path) {
         var self = this;
-        self.$log.debug('gettestcandidateList service entered');
-        self.$log.debug('path', path);
+        self.$log.log('gettestcandidateList service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }

@@ -30,11 +30,11 @@ export class AppController {
         calUtil,
         Util,
         Idle,
-        portalDataService
+        portalDataService,
+        UserServices
     ) {
         /* jshint validthis: true */
         'ngInject';
-        console.log('entering app controller');
         this.$log = $log;
         this.$scope = $scope;
         this.$routeParams = $routeParams;
@@ -62,15 +62,15 @@ export class AppController {
         this.Util = Util;
         this.Idle = Idle;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
 
     $onDestroy() {
-        this.$log.debug("app dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("app dismissed");
+        ////this.$log.logEnabled(false);
     }
 
     $onInit() {
-        console.log("initializing App...");
         var self = this;
 
         this.data = {};
@@ -181,10 +181,11 @@ export class AppController {
         this.portalDataService.Portlet('app.controller.js');
 
 
+
         this.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             var vm = event.currentScope.$ctrl;
-            vm.$log.debugEnabled(true);
-            vm.$log.debug('routechange in app for success');
+            //vm.$logProvider.debugEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log('routechange in app for success');
             vm.islogin();
 
             vm.header.animation = 'fadeInUp';
@@ -193,7 +194,7 @@ export class AppController {
             }, 100);
 
             vm.data = vm.portalDataService.get(current.originalPath);
-            vm.$log.debug('data in $routeChangeSuccess', vm.data);
+            vm.$log.log('data in $routeChangeSuccess', vm.data);
 
             if (-1 == $.inArray(current.originalPath, ['/page-lock-screen', '/page-signup', '/page-signin', '/reset-pwd', '/change-pwd', '/forget-pwd'])) {
                 vm.activate();
@@ -210,7 +211,7 @@ export class AppController {
             vm.header.header_topbar = '';
             /*
                         if ('/layout-left-sidebar' === current.originalPath) {
-                            vm.$log.debug("left sidebar entered");
+                            vm.$log.log("left sidebar entered");
                             vm.header.boxed = '';
                             vm.header.layout_topbar = '';
                             vm.header.layout_menu = '';
@@ -233,11 +234,11 @@ export class AppController {
                         else if ('/' === current.originalPath) {
             */
             if ('/' === current.originalPath) {
-                vm.$log.debug("/ path entered");
+                vm.$log.log("/ path entered");
                 $('body').removeAttr('id'); // error 404, 500
             }
             else {
-                vm.$log.debug("else path entered");
+                vm.$log.log("else path entered");
                 vm.header.boxed = '';
                 vm.header.layout_topbar = '';
                 vm.header.layout_menu = '';
@@ -260,15 +261,15 @@ export class AppController {
             var mydelay = vm.CalendarServices.getIntervalValue();
             vm.$interval(vm.intervalChecker(), mydelay * 1000);
 
-            vm.$log.debug('exit app controller routechangesucess');
+            vm.$log.log('exit app controller routechangesucess');
 
 
         });
         this.$scope.$on('$routeChangeError', function(event, current, previous) {
             var vm = event.currentScope.$ctrl;
-            vm.$log.debug('routechange in app for error');
-            vm.$log.debug('originalPath');
-            vm.$log.debug(current.originalPath);
+            vm.$log.log('routechange in app for error');
+            vm.$log.log('originalPath');
+            vm.$log.log(current.originalPath);
         });
 
         $(document).ready(function() {
@@ -286,22 +287,22 @@ export class AppController {
             $('#external-events div.external-event').each(function() {
 
                 self.CalUtil.EventDrag($(this));
-                self.$log.debug('external-events after drag', $(this));
+                self.$log.log('external-events after drag', $(this));
 
             });
             $('#todos-list-sort > li > label.external-event').each(function() {
 
                 self.CalUtil.EventDrag($(this));
-                self.$log.debug('todos external-events after drag', $(this));
+                self.$log.log('todos external-events after drag', $(this));
 
             });
 
             $('#calendar').fullCalendar('destroy');
             self.getEventList(self.forUser).then(function() {
-                self.$log.debug("refetch", self.events);
+                self.$log.log("refetch", self.events);
                 self.initCalendar();
             }).catch(function(e) {
-                self.$log.debug("resetCalendar error in activate", e);
+                self.$log.log("resetCalendar error in activate", e);
             });
 
         });
@@ -309,7 +310,7 @@ export class AppController {
     }
 
     intervalChecker() {
-        this.$log.debug('appc intervalChecker entered');
+        this.$log.log('appc intervalChecker entered');
         var myoknotify = this.CalendarServices.getOkNotify();
         this.notifylist = this.CalendarServices.getNotifyList(myoknotify);
 
@@ -328,10 +329,10 @@ export class AppController {
     openCharts() {
         var vm = this;
         vm.getStats().then(function() {
-            vm.$log.debug("getStats returned");
+            vm.$log.log("getStats returned");
 
         }).catch(function(e) {
-            vm.$log.debug("getStats error", e);
+            vm.$log.log("getStats error", e);
         });
 
     }
@@ -351,14 +352,14 @@ export class AppController {
 
     activate() {
         var self = this;
-        this.$log.debug('app-controller.js activate entered');
+        this.$log.log('app-controller.js activate entered');
         this.textcolor = this.CalUtil.getColorByBgColor(this.mycolor); // Set to complement of textColor.
 
         this.CalUtil.calActivate();
 
         $("#eventPickDiv").button().on("click", function() {
             var somevlu = $("#eventpick").val();
-            self.$log.debug("click pick is", somevlu, self.studentpick2, self.studentpick, $("#studentpick").val());
+            self.$log.log("click pick is", somevlu, self.studentpick2, self.studentpick, $("#studentpick").val());
             self.studentpick2 = self.studentpick;
             self.adialog.dialog("open");
         });
@@ -366,9 +367,13 @@ export class AppController {
         this.adialog = this.CalUtil.aDialog(this);
         this.eventDrag = this.CalUtil.EventDrag();
 
-        self.getUserDetails().then(function() {
-            self.$log.debug('activate getUserDetails returned', self.userdta);
+    //    self.getUserDetails().then(function() {
+    //        self.$log.log('activate getUserDetails returned', self.userdta);
             //            self.islogin();
+            if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined ) {
+                self.$log = self.$log.getInstance('AppController',self.UserServices.isDebugEnabled());
+            }
+            
 
             self.todos();
             self.gettheTasknamelist();
@@ -376,27 +381,27 @@ export class AppController {
             //                $(document).ready(function() {
             $("select[name='forUser']").unbind('change').bind('change', function() {
                 var u = $(this).val();
-                self.$log.debug("reset cal", self.forUser, u);
+                self.$log.log("reset cal", self.forUser, u);
                 self.forUser = u;
                 //        $('#calendar').fullCalendar('removeEvents');
                 $('#calendar').fullCalendar('destroy');
                 self.getEventList(self.forUser).then(function() {
-                    self.$log.debug("refetch", self.events);
+                    self.$log.log("refetch", self.events);
                     //            $('#calendar').fullCalendar( 'refetchEventSources', this.events );
                     self.initCalendar();
                 }).catch(function(e) {
-                    self.$log.debug("resetCalendar error in activate", e);
+                    self.$log.log("resetCalendar error in activate", e);
                 });
 
             });
             self.getInstructorList().then(function() {
-                self.$log.debug("returned from getInstructorList");
+                self.$log.log("returned from getInstructorList");
             });
             self.getAgeRangeList().then(function() {
-                self.$log.debug("returned from getAgeRangeList");
+                self.$log.log("returned from getAgeRangeList");
             });
             self.getTestTypes().then(function() {
-                self.$log.debug("returned from getTesttypes");
+                self.$log.log("returned from getTesttypes");
             });
 
             //                });
@@ -409,10 +414,10 @@ export class AppController {
                 self.notifylist = self.CalendarServices.getNotifyList(self.okNotify);
                 self.intervalChecker();
             }).catch(function(e) {
-                self.$log.debug("getEventList error in activate", e);
+                self.$log.log("getEventList error in activate", e);
             });
 
-        });
+    //    });
 
     }
 
@@ -420,8 +425,8 @@ export class AppController {
         var self = this;
         var path = "../v1/ageranges";
         return self.CalendarServices.getAgeRangeList(path).then(function(data) {
-            self.$log.debug('getAgeRangeList returned data');
-            self.$log.debug(data.agerangelist);
+            self.$log.log('getAgeRangeList returned data');
+            self.$log.log(data.agerangelist);
             self.agerangelist = data.agerangelist;
 
             return self.agerangelist;
@@ -430,26 +435,26 @@ export class AppController {
 
     schedToCal() {
         var self = this;
-        self.$log.debug('schedToCal entered');
+        self.$log.log('schedToCal entered');
         var thedata = {
             'calendarscheduleDate': this.ConversionDate
         };
         var path = "../v1/calendarschedule";
         return self.CalendarServices.schedToCal(path, thedata).then(function(data) {
-                self.$log.debug("service schedToCal returned:", data);
+                self.$log.log("service schedToCal returned:", data);
                 $('#calendar').fullCalendar('destroy');
                 self.getEventList(this.forUser).then(function() {
-                    self.$log.debug("refetch", this.events);
+                    self.$log.log("refetch", this.events);
                     self.initCalendar();
                 }).catch(function(e) {
-                    self.$log.debug("resetCalendar error in activate", e);
+                    self.$log.log("resetCalendar error in activate", e);
                 });
 
                 return;
             },
 
             function(error) {
-                self.$log.debug('Caught an error schedToCal, going to notify:', error);
+                self.$log.log('Caught an error schedToCal, going to notify:', error);
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
                 return (self.$q.reject(error));
@@ -460,23 +465,23 @@ export class AppController {
 
     clearCal() {
         var self = this;
-        self.$log.debug('clearCal entered');
+        self.$log.log('clearCal entered');
         var path = "../v1/calendarschedule";
         return self.CalendarServices.clearCal(path).then(function(data) {
-                self.$log.debug("service clearCal returned:", data);
+                self.$log.log("service clearCal returned:", data);
                 $('#calendar').fullCalendar('destroy');
                 self.getEventList(self.forUser).then(function() {
-                    self.$log.debug("refetch", self.events);
+                    self.$log.log("refetch", self.events);
                     self.initCalendar();
                 }).catch(function(e) {
-                    self.$log.debug("resetCalendar error in activate", e);
+                    self.$log.log("resetCalendar error in activate", e);
                 });
 
                 return;
             },
 
             function(error) {
-                self.$log.debug('Caught an error clearCal, going to notify:', error);
+                self.$log.log('Caught an error clearCal, going to notify:', error);
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
                 return (self.$q.reject(error));
@@ -487,26 +492,26 @@ export class AppController {
 
     transferCal() {
         var self = this;
-        self.$log.debug('transferCal entered');
+        self.$log.log('transferCal entered');
         var thedata = {
             'calendarscheduleDate': self.ConversionDate
         };
         var path = "../v1/schedulecalendar";
         return self.CalendarServices.transferCal(path, thedata).then(function(data) {
-                self.$log.debug("service transferCal returned:", data);
+                self.$log.log("service transferCal returned:", data);
                 $('#calendar').fullCalendar('destroy');
                 self.getEventList(self.forUser).then(function() {
-                    self.$log.debug("refetch", self.events);
+                    self.$log.log("refetch", self.events);
                     self.initCalendar();
                 }).catch(function(e) {
-                    self.$log.debug("transferCal error in activate", e);
+                    self.$log.log("transferCal error in activate", e);
                 });
 
                 return;
             },
 
             function(error) {
-                self.$log.debug('Caught an error transferCal, going to notify:', error);
+                self.$log.log('Caught an error transferCal, going to notify:', error);
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
                 return (self.$q.reject(error));
@@ -516,7 +521,7 @@ export class AppController {
     }
 
     popinit() {
-        this.$log.debug("popinit entered");
+        this.$log.log("popinit entered");
         this.thisevent = this.CalendarServices.getCurrentEvent();
 
     }
@@ -530,7 +535,7 @@ export class AppController {
     }
 
     setstudent(mystudent) {
-        this.$log.debug("set vm student", mystudent, this.studentpick);
+        this.$log.log("set vm student", mystudent, this.studentpick);
         if (mystudent.ID === "NULL") {
             this.studentpick = { ID: "NULL", FirstName: "Not picked", LastName: "yet", FullName: "Not picked yet" };
         }
@@ -540,7 +545,7 @@ export class AppController {
     }
 
     setStudentFromPick(item) {
-        this.$log.debug("setstudentfrompick", item);
+        this.$log.log("setstudentfrompick", item);
         $("#eventpick").val(item.FullName);
         this.studentpick = item;
         $("#studentpick").val(item);
@@ -549,7 +554,7 @@ export class AppController {
     calsave(screen, title, startd, start, end, reminderCheckbox, reminderInterval,
         userpick, updateflag, theevent, contactid, eventid, eventclass, color, textcolor, eventtype,
         eventpick, typepick, agerpick, classpick) {
-        this.$log.debug('save cal',
+        this.$log.log('save cal',
             screen,
             title,
             startd,
@@ -579,24 +584,24 @@ export class AppController {
         else {
             reminderCheck = reminderCheckbox[0].checked ? 1 : 0;
         }
-        this.$log.debug('check reminderCheck', reminderCheck, $('input#reminderCheckbox:checked'));
+        this.$log.log('check reminderCheck', reminderCheck, $('input#reminderCheckbox:checked'));
 
         var eventData;
-        this.$log.debug('isTitle', title);
+        this.$log.log('isTitle', title);
         if (updateflag && theevent !== null) {
             theevent.title = title;
             theevent.startd = moment(startd, 'MM/DD/YYYY').tz('America/New_York').format('MM/DD/YYYY');
-            this.$log.debug('theevent startd set', theevent.startd);
+            this.$log.log('theevent startd set', theevent.startd);
             //add the time to the date
             var tststr = startd + ' ' + start.toString();
-            this.$log.debug('theevent start and startd combine', start, tststr);
+            this.$log.log('theevent start and startd combine', start, tststr);
             var tstd = moment(tststr, 'MM/DD/YYYY hh:mm A z');
             theevent.start = tstd;
-            this.$log.debug('theevent start set', tststr, tstd, theevent.start);
+            this.$log.log('theevent start set', tststr, tstd, theevent.start);
             tststr = startd + ' ' + end.toString();
             tstd = moment(tststr, 'MM/DD/YYYY hh:mm A z');
             theevent.end = tstd;
-            this.$log.debug('theevent end set', tststr, tstd, theevent.end);
+            this.$log.log('theevent end set', tststr, tstd, theevent.end);
 
             theevent.reminderInterval = reminderInterval;
             theevent.userpick = userpick;
@@ -617,7 +622,7 @@ export class AppController {
         }
 
         if (updateflag !== true && title) {
-            this.$log.debug("updateflag not true", startd, start, end, eventid, contactid);
+            this.$log.log("updateflag not true", startd, start, end, eventid, contactid);
             eventData = {
                 title: title.val(),
                 startd: startd,
@@ -638,7 +643,7 @@ export class AppController {
                 agerpick: agerpick.val(),
                 classpick: classpick.val()
             };
-            this.$log.debug('isTitle yes', eventData);
+            this.$log.log('isTitle yes', eventData);
             $('#calendar').fullCalendar('renderEvent', eventData, true); // stick? = true
         }
 
@@ -649,7 +654,7 @@ export class AppController {
     saveCalendarEvent(theEvent) {
         var self = this;
         var updpath = "../v1/saveCalendarEvent";
-        self.$log.debug('about saveCalendarEvent ', theEvent, updpath);
+        self.$log.log('about saveCalendarEvent ', theEvent, updpath);
         var rep = (typeof(theEvent.userpick) !== 'undefined' && theEvent.userpick !== "") ? theEvent.userpick.toString().replace("number:", "") : this.myuser;
 
         var thedata = {
@@ -674,22 +679,22 @@ export class AppController {
         };
 
 
-        self.$log.debug('about saveCalendarEvent data', thedata);
+        self.$log.log('about saveCalendarEvent data', thedata);
         return self.CalendarServices.saveCalendarEvent(updpath, thedata)
             .then(function(data) {
-                self.$log.debug('saveCalendarEvent returned data');
-                self.$log.debug(data);
+                self.$log.log('saveCalendarEvent returned data');
+                self.$log.log(data);
                 self.neweventid = data.new_eventid;
-                self.$log.debug('saveCalendarEvent newevent', self.neweventid);
+                self.$log.log('saveCalendarEvent newevent', self.neweventid);
                 self.events = data.events;
-                self.$log.debug(self.events);
-                self.$log.debug(data.message);
+                self.$log.log(self.events);
+                self.$log.log(data.message);
                 self.message = data.message;
                 self.getEventList(self.forUser).then(function(zdata) {
-                        self.$log.debug('saveCalendarEvent getEventList returned', zdata);
+                        self.$log.log('saveCalendarEvent getEventList returned', zdata);
                     },
                     function(error) {
-                        self.$log.debug('Caught an error saveCalendarEvent getEventList after update:', error);
+                        self.$log.log('Caught an error saveCalendarEvent getEventList after update:', error);
                         self.events = [];
                         self.message = error;
                         self.Notification.error({ message: error, delay: 5000 });
@@ -698,8 +703,8 @@ export class AppController {
 
                 return self.events;
             }).catch(function(e) {
-                self.$log.debug('saveCalendarEvent failure:');
-                self.$log.debug("error", e);
+                self.$log.log('saveCalendarEvent failure:');
+                self.$log.log("error", e);
                 self.message = e;
                 self.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -713,20 +718,20 @@ export class AppController {
             taskname: taskname,
             taskstatus: taskstatus
         };
-        self.$log.debug('about updateTasknamelist ', thedata, updpath);
+        self.$log.log('about updateTasknamelist ', thedata, updpath);
         return self.CalendarServices.updateTasknamelist(updpath, thedata)
             .then(function(data) {
-                self.$log.debug('updateTasknamelist returned data');
-                self.$log.debug(data);
+                self.$log.log('updateTasknamelist returned data');
+                self.$log.log(data);
                 self.thisTasknamelist = data;
-                self.$log.debug(self.thisTasknamelist);
-                self.$log.debug(self.thisTasknamelist.message);
+                self.$log.log(self.thisTasknamelist);
+                self.$log.log(self.thisTasknamelist.message);
                 self.message = self.thisTasknamelist.message;
                 self.gettheTasknamelist().then(function(zdata) {
-                        self.$log.debug('gettheTasknamelist returned', zdata);
+                        self.$log.log('gettheTasknamelist returned', zdata);
                     },
                     function(error) {
-                        self.$log.debug('Caught an error gettheTasknamelist after update:', error);
+                        self.$log.log('Caught an error gettheTasknamelist after update:', error);
                         self.tasknamelist = [];
                         self.message = error;
                         self.Notification.error({ message: error, delay: 5000 });
@@ -735,8 +740,8 @@ export class AppController {
 
                 return self.thisTasknamelist;
             }).catch(function(e) {
-                self.$log.debug('updateTasknamelist failure:');
-                self.$log.debug("error", e);
+                self.$log.log('updateTasknamelist failure:');
+                self.$log.log("error", e);
                 self.message = e;
                 self.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -749,19 +754,19 @@ export class AppController {
         var thedata = {
             taskname: taskname
         };
-        self.$log.debug('about removeTasknamelist ', thedata, updpath);
+        self.$log.log('about removeTasknamelist ', thedata, updpath);
         return self.CalendarServices.removeTasknamelist(updpath, thedata)
             .then(function(data) {
-                self.$log.debug('removeTasknamelist returned data');
-                self.$log.debug(data);
+                self.$log.log('removeTasknamelist returned data');
+                self.$log.log(data);
                 //                this.thisTasknamelist = data;
-                self.$log.debug(data);
+                self.$log.log(data);
                 self.message = data.message;
                 self.gettheTasknamelist().then(function(zdata) {
-                        self.$log.debug('gettheTasknamelist returned', zdata);
+                        self.$log.log('gettheTasknamelist returned', zdata);
                     },
                     function(error) {
-                        self.$log.debug('Caught an error gettheTasknamelist after update:', error);
+                        self.$log.log('Caught an error gettheTasknamelist after update:', error);
                         self.tasknamelist = [];
                         self.message = error;
                         self.Notification.error({ message: error, delay: 5000 });
@@ -770,8 +775,8 @@ export class AppController {
 
                 return self.thisTasknamelist;
             }).catch(function(e) {
-                self.$log.debug('removeTasknamelist failure:');
-                self.$log.debug("error", e);
+                self.$log.log('removeTasknamelist failure:');
+                self.$log.log("error", e);
                 self.message = e;
                 self.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -781,11 +786,11 @@ export class AppController {
     getStudent(path) {
         var self = this;
         return self.StudentServices.getStudent(path).then(function(data) {
-            self.$log.debug('getStudent returned data');
-            self.$log.debug(data);
+            self.$log.log('getStudent returned data');
+            self.$log.log(data);
             return data;
         }, function(error) {
-            self.$log.debug('getStudent', error);
+            self.$log.log('getStudent', error);
             self.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -798,20 +803,20 @@ export class AppController {
         var thedata = {
             eventid: eventid
         };
-        self.$log.debug('about removeCalendarEvent ', thedata, updpath);
+        self.$log.log('about removeCalendarEvent ', thedata, updpath);
         return self.CalendarServices.removeCalendarEvent(updpath, thedata)
             .then(function(data) {
-                self.$log.debug('removeCalendarEvent returned data');
-                self.$log.debug(data);
+                self.$log.log('removeCalendarEvent returned data');
+                self.$log.log(data);
                 //                this.thisTasknamelist = data;
-                self.$log.debug(data);
+                self.$log.log(data);
                 self.message = data.message;
                 self.getEventList(self.forUser).then(function(zdata) {
-                        self.$log.debug('removeCalendarEvent getEventList returned', zdata);
+                        self.$log.log('removeCalendarEvent getEventList returned', zdata);
 
                     },
                     function(error) {
-                        self.$log.debug('Caught an error removeCalendarEvent getEventList:', error);
+                        self.$log.log('Caught an error removeCalendarEvent getEventList:', error);
                         self.tasknamelist = [];
                         self.message = error;
                         self.Notification.error({ message: error, delay: 5000 });
@@ -820,8 +825,8 @@ export class AppController {
 
                 return self.events;
             }).catch(function(e) {
-                self.$log.debug('removeCalendarEvent  failure:');
-                self.$log.debug("error", e);
+                self.$log.log('removeCalendarEvent  failure:');
+                self.$log.log("error", e);
                 self.message = e;
                 self.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -830,16 +835,16 @@ export class AppController {
 
     getUserDetails() {
         var self = this;
-        self.$log.debug('getUserDetails entered');
+        self.$log.log('getUserDetails entered');
         return self.UserServices.getUserDetails().then(function(data) {
-                self.$log.debug("service getuserdetails returned:", data);
+                self.$log.log("service getuserdetails returned:", data);
                 self.userdta = data;
                 self.myuser = data.userid;
                 return self.userdta;
             },
 
             function(error) {
-                self.$log.debug('Caught an error getUserDetails, going to notify:', error);
+                self.$log.log('Caught an error getUserDetails, going to notify:', error);
                 self.userdta = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -854,17 +859,17 @@ export class AppController {
 
     getUserList() {
         var self = this;
-        self.$log.debug('getUserList entered');
+        self.$log.log('getUserList entered');
         var refreshpath = "../v1/getuserlist";
 
         return self.CalendarServices.getUsers(refreshpath).then(function(data) {
-                self.$log.debug('getUsers returned data');
-                self.$log.debug(data);
+                self.$log.log('getUsers returned data');
+                self.$log.log(data);
                 self.thisUserlist = data.users;
                 return self.thisUserlist;
             },
             function(error) {
-                self.$log.debug('Caught an error getUserList, going to notify:', error);
+                self.$log.log('Caught an error getUserList, going to notify:', error);
                 self.thisUserlist = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -879,17 +884,17 @@ export class AppController {
 
     getClassList() {
         var self = this;
-        self.$log.debug('getClassList entered');
+        self.$log.log('getClassList entered');
         var path = '../v1/class';
 
         return self.ClassServices.getClasses(path).then(function(data) {
-            self.$log.debug('getClasses returned data');
-            self.$log.debug(data);
+            self.$log.log('getClasses returned data');
+            self.$log.log(data);
 
             self.classList = data.Classlist;
 
         }, function(error) {
-            self.$log.debug('Caught an error getClassList:', error);
+            self.$log.log('Caught an error getClassList:', error);
             self.classList = [];
             self.message = error;
             self.Notification.error({ message: error, delay: 5000 });
@@ -900,17 +905,17 @@ export class AppController {
 
     gettheTasknamelist() {
         var self = this;
-        self.$log.debug('gettheTasknamelist entered');
+        self.$log.log('gettheTasknamelist entered');
         var refreshpath = "../v1/tasknamelist";
 
         return self.CalendarServices.gettasknamelist(refreshpath).then(function(data) {
-                self.$log.debug('gettasknamelists returned data');
-                self.$log.debug(data);
+                self.$log.log('gettasknamelists returned data');
+                self.$log.log(data);
                 self.thisTasknamelist = data.tasknamelist;
                 return self.thisTasknamelist;
             },
             function(error) {
-                self.$log.debug('Caught an error gettheTasknamelist, going to notify:', error);
+                self.$log.log('Caught an error gettheTasknamelist, going to notify:', error);
                 self.thisTasknamelist = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -925,12 +930,12 @@ export class AppController {
 
     getInstructorList() {
         var self = this;
-        self.$log.debug('getInstructorList entered');
+        self.$log.log('getInstructorList entered');
         var refreshpath = "../v1/instructorlist";
 
         return self.CalendarServices.getinstructorlist(refreshpath).then(function(data) {
-                self.$log.debug('getinstructorlist returned data');
-                self.$log.debug(data);
+                self.$log.log('getinstructorlist returned data');
+                self.$log.log(data);
                 self.instructorlist = data.instructorlist;
                 if (typeof data.instructorlist !== 'undefined') {
                     for (var i = 0; i < data.instructorlist.length; i++) {
@@ -947,7 +952,7 @@ export class AppController {
                 return self.instructorlist;
             },
             function(error) {
-                self.$log.debug('Caught an error getinstructorlist, going to notify:', error);
+                self.$log.log('Caught an error getinstructorlist, going to notify:', error);
                 self.thisTasknamelist = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -962,12 +967,12 @@ export class AppController {
 
     getTestTypes() {
         var self = this;
-        self.$log.debug('getTestTypes entered');
+        self.$log.log('getTestTypes entered');
         var refreshpath = "../v1/testtypes";
 
         return self.TestingServices.getTestTypes(refreshpath).then(function(data) {
-                self.$log.debug('getTestTypes returned data');
-                self.$log.debug(data);
+                self.$log.log('getTestTypes returned data');
+                self.$log.log(data);
                 self.testtypelist = data.testtypelist;
                 if (typeof data.testtypelist !== 'undefined') {
                     for (var i = 0; i < data.testtypelist.length; i++) {
@@ -985,7 +990,7 @@ export class AppController {
                 return self.testtypelist;
             },
             function(error) {
-                self.$log.debug('Caught an error getTestTypes, going to notify:', error);
+                self.$log.log('Caught an error getTestTypes, going to notify:', error);
                 self.testtypelist = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -1002,14 +1007,14 @@ export class AppController {
         var self = this;
         //                var qparm =  typeof(this.forUser) !== 'undefined' ? this.forUser : 'ALL' ;
         var refreshpath = "../v1/getEventList?username=" + qparm;
-        self.$log.debug('getEventList entered', qparm, refreshpath);
+        self.$log.log('getEventList entered', qparm, refreshpath);
 
         return self.CalendarServices.getCalendarEvents(refreshpath).then(function(data) {
-                self.$log.debug('getCalendarEvents returned data');
-                self.$log.debug(data, typeof(data.events));
+                self.$log.log('getCalendarEvents returned data');
+                self.$log.log(data, typeof(data.events));
                 if (typeof(data.events) !== "undefined") {
                     for (var i = 0; i < data.events.length; i++) {
-                        //   self.$log.debug('reformat dates', data.events[i]);
+                        //   self.$log.log('reformat dates', data.events[i]);
                         /*      var atimetoadd = {
                                   "title": data.events[i].title,
                                   "time": data.events[i].start,
@@ -1032,7 +1037,7 @@ export class AppController {
                 }
                 //temp for testing
                 // Array.prototype.push.apply(this.events, getEventListold());
-                self.$log.debug(self.events);
+                self.$log.log(self.events);
                 self.CalendarServices.setNotifyList(self.events);
 
                 $('#calendar').fullCalendar('renderEvents', self.events, true);
@@ -1040,7 +1045,7 @@ export class AppController {
                 return self.events;
             },
             function(error) {
-                self.$log.debug('Caught an error getEventList, going to notify:', error);
+                self.$log.log('Caught an error getEventList, going to notify:', error);
                 self.events = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -1055,11 +1060,11 @@ export class AppController {
     islogin() {
         var self = this;
 
-        self.$log.debug('app controller islogin');
+        self.$log.log('app controller islogin');
         self.isok = self.UserServices.isapikey();
 
         if (self.isok) {
-            self.$log.debug('setting apikey for services');
+            self.$log.log('setting apikey for services');
             var thekey = self.UserServices.getapikey();
             //    self.CalendarServices.setapikey(thekey);
             //    self.TestingServices.setapikey(thekey);
@@ -1075,14 +1080,14 @@ export class AppController {
 
             self.$q.all([
                     self.getUserList().then(function() {
-                        self.$log.debug('getUserList returned');
+                        self.$log.log('getUserList returned');
                     }),
                     self.getClassList().then(function() {
-                        self.$log.debug('getClassList returned');
+                        self.$log.log('getClassList returned');
                     })
                 ])
                 .then(function() {
-                    self.$log.debug('getAll stats done returned');
+                    self.$log.log('getAll stats done returned');
                     self.activate();
                 });
 
@@ -1097,7 +1102,7 @@ export class AppController {
             val.type === 'ContactType' &&
             val.datetype === 'inactivedate' &&
             val.summaryvalue < 0);
-        //        $log.debug('filterstat',val,pass);
+        //        $log.log('filterstat',val,pass);
 
         return (pass);
     }
@@ -1112,7 +1117,7 @@ export class AppController {
     settextcolor() {
         this.textcolor = this.CalUtil.getColorByBgColor(this.mycolor);
         //      this.textcolor = 0xFFFFFF ^ this.mycolor;
-        this.$log.debug('settextcolor', this.mycolor, this.textcolor);
+        this.$log.log('settextcolor', this.mycolor, this.textcolor);
     }
 
     getStats() {
@@ -1120,14 +1125,14 @@ export class AppController {
         var getdatestr = 'startdate';
 
 //        vm.getStudentStatsMonths(getdatestr).then(function() {
-//            self.$log.debug('getStudentStatsMonths returned');
+//            self.$log.log('getStudentStatsMonths returned');
 //        });
         vm.getStudentStats(getdatestr).then(function() {
             vm.portalDataService.slide2Down();
             vm.open2 = false;
             vm.close2 = true;
 
-            self.$log.debug('getStudentStats returned');
+            self.$log.log('getStudentStats returned');
         });
 
     }
@@ -1200,7 +1205,7 @@ export class AppController {
     }
 
     gety(x, seriesIndex) {
-        //     this.$log.debug('gety:', x, seriesIndex);
+        //     this.$log.log('gety:', x, seriesIndex);
         var retvl = [];
         if (this.getYType(seriesIndex) !== 'Net') {
             var d2_1a = this.contentForGraph(this.studentstats,
@@ -1210,11 +1215,11 @@ export class AppController {
                 this.getYType(seriesIndex),
                 this.getYStatus(seriesIndex)
             );
-            //          this.$log.debug('gety d2_1a', d2_1a, x);
+            //          this.$log.log('gety d2_1a', d2_1a, x);
             for (var iter = 0, len = d2_1a.length; iter < len; iter++) {
                 for (var diter = 0, dlen = d2_1a[iter].length; diter < dlen; diter++) {
                     if (d2_1a[iter][diter].month === x) {
-                        //                    this.$log.debug('d2_1a content', d2_1a[iter][diter].details);
+                        //                    this.$log.log('d2_1a content', d2_1a[iter][diter].details);
                         var dta = {
                             "item": {
                                 "firstname": d2_1a[iter][diter].details.firstname,
@@ -1231,13 +1236,13 @@ export class AppController {
         else {
             retvl = 'no text';
         }
-        //     this.$log.debug('gety x', JSON.stringify(retvl));
+        //     this.$log.log('gety x', JSON.stringify(retvl));
         return (JSON.stringify(retvl));
     }
 
     genGraph() {
         var self = this;
-        //      $log.debug('genGraph entered');
+        //      $log.log('genGraph entered');
         setTimeout(function() {
             var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',');
 
@@ -1247,13 +1252,13 @@ export class AppController {
                 //var d2_1 = [["Jan", 181],["Feb", 184],["Mar", 189],["Apr", 180],["May", 190],["Jun", 183],["Jul", 185],["Aug", 188],["Sep", 202]];
 
                 var d2_1 = self.datToGraph(self.studentstats, 'month', 'summaryvalue', 'ContactType', self.getYType(0));
-                //        $log.debug('d2_1', d2_1);
+                //        $log.log('d2_1', d2_1);
                 var d2_2 = self.datToGraph(self.studentstats, 'month', 'summaryvalue', 'ContactType', self.getYType(1));
-                //        $log.debug('d2_2', d2_2);
+                //        $log.log('d2_2', d2_2);
                 var d2_3 = self.datToGraph(self.studentstats, 'month', 'summaryvalue', 'ContactType', self.getYType(3));
-                //        $log.debug('d2_3', d2_3);
+                //        $log.log('d2_3', d2_3);
                 var d2_4 = self.datToGraph(self.studentstats, 'month', 'summaryvalue', 'ContactType', self.getYType(4));
-                //        $log.debug('d2_4', d2_4);
+                //        $log.log('d2_4', d2_4);
 
                 //        var d2_2 = [["Jan", -32],["Feb", -22],["Mar", -13],["Apr", -24],["May", -16],["Jun", -27],["Jul", -15],["Aug", -31],["Sep", -14]];
                 //       var d2_3 = [["Jan", -16],["Feb", -34],["Mar", -12],["Apr", -35],["May", -15],["Jun", 0],["Jul", 0],["Aug", -15],["Sep", -16]];
@@ -1263,7 +1268,7 @@ export class AppController {
                     configurable: true,
                     value: function(arr) {
                         //Array.prototype.SumArray = function(arr) {
-                        //    $log.debug('sum:',arr,this);
+                        //    $log.log('sum:',arr,this);
                         var sum = [];
                         var sumx, sumy;
                         if (arr !== null && this.length === arr.length) {
@@ -1275,7 +1280,7 @@ export class AppController {
                             return sum;
                         }
                         else {
-                            //          $log.debug('sum: nothing to add');
+                            //          $log.log('sum: nothing to add');
                             return this;
                         }
 
@@ -1323,7 +1328,7 @@ export class AppController {
 
 
                 var d2_sum = d2_1.SumArray(d2_2).SumArray(d2_3).SumArray(d2_4);
-                //   $log.debug('sumarr',d2_sum); // [6,8,10,12]
+                //   $log.log('sumarr',d2_sum); // [6,8,10,12]
 
                 $.plot("#line-chart-spline", [{
                     data: d2_1,
@@ -1370,15 +1375,15 @@ export class AppController {
                     //                   tooltip: !0,
                     /*                    tooltipOpts: {
                                             content: function(label, xval, yval, flotItem) {
-                                                //  $log.debug('flot %j',flotItem);
+                                                //  $log.log('flot %j',flotItem);
                                                 var xy = JSON.parse(self.gety(xval, flotItem.seriesIndex));
-                                 //               self.$log.debug('xy', xy, xval, yval, self.getYType(flotItem.seriesIndex));
+                                 //               self.$log.log('xy', xy, xval, yval, self.getYType(flotItem.seriesIndex));
                                                 //               return 'new students:<br/> <json-formatter json="'+ gety(xval,flotItem.seriesIndex) + 
                                                 //               '" open="1"></json-formatter> <br/> for:' + yval;
                                                 var xx = '';
                                                 if (xy !== 'no text') {
                                                     for (var iter = 0, len = xy.length; iter < len; iter++) {
-                                                        //$log.debug('each', xy[iter].item.firstname);
+                                                        //$log.log('each', xy[iter].item.firstname);
                                                         xx = xx + '<div class="row col-md-12"> name:' +
                                                             xy[iter].item.firstname + ' ' +
                                                             xy[iter].item.lastname + ' ' +
@@ -1388,7 +1393,7 @@ export class AppController {
                                                             '</div>';
                                                     }
                                                 }
-                                     //           self.$log.debug('xx', xx);
+                                     //           self.$log.log('xx', xx);
                                                 //               return 'new students: ' + xx + ' for:' + yval;
                                                 xx += 'Count:' + yval;
                                                 return xx;
@@ -1634,7 +1639,7 @@ export class AppController {
                 */
             }
             catch (e) {
-                self.$log.debug(e.message, "from", e.stack);
+                self.$log.log(e.message, "from", e.stack);
                 // You can send data to your server
                 // sendError(data);
                 //throw e;
@@ -1647,7 +1652,7 @@ export class AppController {
     }
 
     datToGraph(data, x, y, type, category) {
-        //      $log.debug('datToGraph:',data, x,y,type,category);
+        //      $log.log('datToGraph:',data, x,y,type,category);
         var res = [];
 
         for (var iter = 0, len = data.length; iter < len; iter++) {
@@ -1657,16 +1662,16 @@ export class AppController {
 
             if (data[iter].type === type &&
                 data[iter].category === category) {
-                //          $log.debug('datIf found:',d,data[iter].type,data[iter].category);
+                //          $log.log('datIf found:',d,data[iter].type,data[iter].category);
                 res.push(d);
             }
         }
-        //       $log.debug('datToGraph res:', res);
+        //       $log.log('datToGraph res:', res);
         return res;
     }
 
     contentForGraph(data, x, y, type, category, status) {
-        //  this.$log.debug('contentForGraph:', data, x, y, type, category, status);
+        //  this.$log.log('contentForGraph:', data, x, y, type, category, status);
         var res = [];
 
         for (var iter = 0, len = data.length; iter < len; iter++) {
@@ -1676,7 +1681,7 @@ export class AppController {
             var dta;
             var dtaarr = [];
             for (var diter = 0, dlen = d[1].length; diter < dlen; diter++) {
-                //        this.$log.debug('diter', d[1][diter]);
+                //        this.$log.log('diter', d[1][diter]);
                 dta = {
                     'item': diter,
                     'month': d[0],
@@ -1694,24 +1699,24 @@ export class AppController {
                 data[iter].type === type &&
                 data[iter].category === category
             ) {
-                //          this.$log.debug('contentIf found:', dtaarr, data[iter].type, data[iter].category);
+                //          this.$log.log('contentIf found:', dtaarr, data[iter].type, data[iter].category);
                 res.push(dtaarr);
             }
             if (status === 'NotActive' &&
                 data[iter].type === type &&
                 data[iter].classstatus === category
             ) {
-                //        this.$log.debug('contentIf found:', dtaarr, data[iter].type, data[iter].category);
+                //        this.$log.log('contentIf found:', dtaarr, data[iter].type, data[iter].category);
                 res.push(dtaarr);
             }
         }
-        //     this.$log.debug('contentForGraph res:', res);
+        //     this.$log.log('contentForGraph res:', res);
         return res;
     }
 
     getStudentStats(datestr) {
         var self = this;
-        self.$log.debug('getStudentStats entered');
+        self.$log.log('getStudentStats entered');
         var myTime = '1970/01/01';
         var oraFormat = "YYYY-MM-DD HH:mm:ss";
 
@@ -1726,8 +1731,8 @@ export class AppController {
         return self.StatsServices.getStudentStats(thedata).then(
 
             function(response) {
-                self.$log.debug('stats success:');
-                self.$log.debug(response);
+                self.$log.log('stats success:');
+                self.$log.log(response);
                 if ((typeof response.data === 'undefined' || response.data.error === true) &&
                     typeof response.data.message !== 'undefined') {
                     self.Notification.error({ message: response.data.message, delay: 5000 });
@@ -1751,7 +1756,7 @@ export class AppController {
                         }
                     };
                 }
-                self.$log.debug(' getStudentStats error', response.data.message);
+                self.$log.log(' getStudentStats error', response.data.message);
                 self.Notification.error({ message: response.data.message, delay: 5000 });
                 return (self.$q.reject(response));
             }
@@ -1760,7 +1765,7 @@ export class AppController {
 
     getStudentStatsMonths(datetype) {
         var self = this;
-        self.$log.debug('getStudentStatsMonths entered');
+        self.$log.log('getStudentStatsMonths entered');
 
         var myTime = '1970/01/01';
         var oraFormat = "YYYY-MM-DD HH:mm:ss";
@@ -1773,10 +1778,10 @@ export class AppController {
 
         return self.StatsServices.getStudentStatsMonths(thedata).then(
             function(data) {
-                self.$log.debug('getStudentStatsMonths returned data', data);
+                self.$log.log('getStudentStatsMonths returned data', data);
             },
             function(error) {
-                self.$log.debug(' getStudentStatsMonths error', error);
+                self.$log.log(' getStudentStatsMonths error', error);
                 self.Notification.error({ message: error, delay: 5000 });
                 return (self.$q.reject(error));
             }
@@ -1815,14 +1820,14 @@ export class AppController {
         var self = this;
         return self.StudentServices.refreshStudents(theinput).then(
             function(data) {
-                self.$log.debug('controller refreshStudents returned data');
-                self.$log.debug(data);
+                self.$log.log('controller refreshStudents returned data');
+                self.$log.log(data);
                 self.refreshstudentlist = data;
-                self.$log.debug('controller refreshstudentlist service data', self.refreshstudentlist);
+                self.$log.log('controller refreshstudentlist service data', self.refreshstudentlist);
                 return self.refreshstudentlist;
             },
             function(error) {
-                self.$log.debug(' refreshStudents error', error);
+                self.$log.log(' refreshStudents error', error);
                 self.Notification.error({ message: error, delay: 5000 });
                 return (self.$q.reject(error));
             }

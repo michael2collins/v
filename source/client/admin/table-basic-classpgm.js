@@ -3,10 +3,9 @@ import angular from 'angular';
 export class ClassPgmTableBasicController {
     constructor(
         $log, $q, $scope, $interval, ClassServices, Util,
-        uiGridConstants, Notification, moment, iddropdownFilter, portalDataService
+        uiGridConstants, Notification, moment, iddropdownFilter, portalDataService,UserServices
     ) {
         'ngInject';
-        console.log('entering ClassPgmTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -18,6 +17,7 @@ export class ClassPgmTableBasicController {
         this.Util = Util;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -48,50 +48,53 @@ export class ClassPgmTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-classpgm dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-classpgm dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-basic-class');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ClassPgmTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-class started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-class started");
 
         });
         vm.getClassPgm().then(function() {
-            vm.$log.debug('getClassPgm activate done');
+            vm.$log.log('getClassPgm activate done');
             vm.$q.all([
                     vm.getPrograms().then(function() {
-                        vm.$log.debug('getPrograms activate done', vm.programs);
+                        vm.$log.log('getPrograms activate done', vm.programs);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     }),
                     vm.getClasscats().then(function() {
-                        vm.$log.debug('getClasscats activate done', vm.classcats);
+                        vm.$log.log('getClasscats activate done', vm.classcats);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     }),
                     vm.getPgmcats().then(function() {
-                        vm.$log.debug('getPgmcats activate done', vm.pgmcats);
+                        vm.$log.log('getPgmcats activate done', vm.pgmcats);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     }),
                     vm.getAgecats().then(function() {
-                        vm.$log.debug('getAgecats activate done', vm.agecats);
+                        vm.$log.log('getAgecats activate done', vm.agecats);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     }),
                     vm.getClasses().then(function() {
-                        vm.$log.debug('getClasses activate done', vm.classes);
+                        vm.$log.log('getClasses activate done', vm.classes);
                     }, function(error) {
                         return (vm.$q.reject(error));
                     })
                 ])
                 .then(function() {
-                    vm.$log.debug(' activate done');
+                    vm.$log.log(' activate done');
                     vm.setgridOptions();
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
                 });
@@ -116,7 +119,7 @@ export class ClassPgmTableBasicController {
 
     removeClassPgm(input) {
         var vm = this;
-        vm.$log.debug('removeClassPgm entered', input);
+        vm.$log.log('removeClassPgm entered', input);
         var path = "../v1/ClassPgm";
         var thedata = {
             id: input.id
@@ -127,8 +130,8 @@ export class ClassPgmTableBasicController {
         //check ???
         return vm.ClassServices.removeClassPgm(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeClassPgm returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeClassPgm returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -141,10 +144,10 @@ export class ClassPgmTableBasicController {
                 }
 
                 vm.getClassPgm().then(function(zdata) {
-                        vm.$log.debug('getClassPgm returned', zdata);
+                        vm.$log.log('getClassPgm returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getClassPgm after remove:', error);
+                        vm.$log.log('Caught an error getClassPgm after remove:', error);
                         vm.thisClassPgm = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -152,8 +155,8 @@ export class ClassPgmTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeClassPgm failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeClassPgm failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -182,14 +185,14 @@ export class ClassPgmTableBasicController {
             nextPgmid: rowEntity.nextPgmid
         };
 
-        vm.$log.debug('about updateClassPgm ', thedata, updpath, updatetype);
+        vm.$log.log('about updateClassPgm ', thedata, updpath, updatetype);
         return vm.ClassServices.updateClassPgm(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateClassPgm returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateClassPgm returned data');
+                vm.$log.log(data);
                 vm.thisClassPgm = data;
-                vm.$log.debug(vm.thisClassPgm);
-                vm.$log.debug(vm.thisClassPgm.message);
+                vm.$log.log(vm.thisClassPgm);
+                vm.$log.log(vm.thisClassPgm.message);
                 vm.message = vm.thisClassPgm.message;
                 if ((typeof vm.thisClassPgm === 'undefined' || vm.thisClassPgm.error === true) &&
                     typeof data !== 'undefined') {
@@ -205,10 +208,10 @@ export class ClassPgmTableBasicController {
                 }
                 //                    if (updatetype === 'Add') {
                 vm.getClassPgm().then(function(zdata) {
-                        vm.$log.debug('getClassPgm returned', zdata);
+                        vm.$log.log('getClassPgm returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getClassPgm after remove:', error);
+                        vm.$log.log('Caught an error getClassPgm after remove:', error);
                         vm.thisClassPgm = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -219,8 +222,8 @@ export class ClassPgmTableBasicController {
 
                 return vm.thisClassPgm;
             }).catch(function(e) {
-                vm.$log.debug('updateClassPgm failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateClassPgm failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -229,16 +232,16 @@ export class ClassPgmTableBasicController {
 
     getClassPgm() {
         var vm = this;
-        vm.$log.debug('getClassPgm entered');
+        vm.$log.log('getClassPgm entered');
         var path = '../v1/ClassPgm';
 
         return vm.ClassServices.getClassPgms(path).then(function(data) {
-            vm.$log.debug('getClassPgmes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClassPgmes returned data');
+            vm.$log.log(data);
             vm.gridOptions.data = data.ClassPgmList;
 
         }, function(error) {
-            vm.$log.debug('Caught an error getClassPgmes:', error);
+            vm.$log.log('Caught an error getClassPgmes:', error);
             vm.ClassPgmlist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -249,14 +252,14 @@ export class ClassPgmTableBasicController {
 
     getPrograms() {
         var vm = this;
-        vm.$log.debug('getPrograms entered');
+        vm.$log.log('getPrograms entered');
         var path = '../v1/programs';
         return vm.ClassServices.getPrograms(path).then(function(data) {
-            vm.$log.debug('getPrograms returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getPrograms returned data');
+            vm.$log.log(data);
 
             vm.programs = data.Programlist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.programs === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -269,7 +272,7 @@ export class ClassPgmTableBasicController {
             }
             return vm.programs;
         }, function(error) {
-            vm.$log.debug('Caught an error getPrograms:', error);
+            vm.$log.log('Caught an error getPrograms:', error);
             vm.programs = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -279,14 +282,14 @@ export class ClassPgmTableBasicController {
     }
     getClasses() {
         var vm = this;
-        vm.$log.debug('getClasses entered');
+        vm.$log.log('getClasses entered');
         var path = '../v1/classes';
         return vm.ClassServices.getClasses(path).then(function(data) {
-            vm.$log.debug('getClasses returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClasses returned data');
+            vm.$log.log(data);
 
             vm.classes = data.ClassList;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.classes === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -303,7 +306,7 @@ export class ClassPgmTableBasicController {
             }
             return vm.classes;
         }, function(error) {
-            vm.$log.debug('Caught an error getClasses:', error);
+            vm.$log.log('Caught an error getClasses:', error);
             vm.classes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -313,13 +316,13 @@ export class ClassPgmTableBasicController {
     }
     getPgmcats() {
         var vm = this;
-        vm.$log.debug('pgmcats entered');
+        vm.$log.log('pgmcats entered');
         return vm.ClassServices.distinctPgm().then(function(data) {
-            vm.$log.debug('getpgmcats returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getpgmcats returned data');
+            vm.$log.log(data);
 
             vm.pgmcats = data.pgmcatlist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.pgmcats === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -337,7 +340,7 @@ export class ClassPgmTableBasicController {
             }
             return vm.pgmcats;
         }, function(error) {
-            vm.$log.debug('Caught an error getpgmcats:', error);
+            vm.$log.log('Caught an error getpgmcats:', error);
             vm.pgmcats = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -347,14 +350,14 @@ export class ClassPgmTableBasicController {
     }
     getClasscats() {
         var vm = this;
-        vm.$log.debug('classcats entered');
+        vm.$log.log('classcats entered');
         return vm.ClassServices.distinctCat().then(function(data) {
-            vm.$log.debug('getclasscats returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getclasscats returned data');
+            vm.$log.log(data);
 
             vm.classcats = data.classcatlist;
 
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.classcats === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -372,7 +375,7 @@ export class ClassPgmTableBasicController {
             }
             return vm.classcats;
         }, function(error) {
-            vm.$log.debug('Caught an error getclasscats:', error);
+            vm.$log.log('Caught an error getclasscats:', error);
             vm.classcats = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -382,13 +385,13 @@ export class ClassPgmTableBasicController {
     }
     getAgecats() {
         var vm = this;
-        vm.$log.debug('agecats entered');
+        vm.$log.log('agecats entered');
         return vm.ClassServices.distinctAge().then(function(data) {
-            vm.$log.debug('getagecats returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getagecats returned data');
+            vm.$log.log(data);
 
             vm.agecats = data.agecatlist;
-            vm.$log.debug(data.message);
+            vm.$log.log(data.message);
             vm.message = data.message;
             if ((typeof vm.agecats === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -407,7 +410,7 @@ export class ClassPgmTableBasicController {
             }
             return vm.agecats;
         }, function(error) {
-            vm.$log.debug('Caught an error getagecats:', error);
+            vm.$log.log('Caught an error getagecats:', error);
             vm.agecats = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -563,11 +566,11 @@ export class ClassPgmTableBasicController {
 
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

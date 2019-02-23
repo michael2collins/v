@@ -3,7 +3,7 @@ import angular from 'angular';
 export class DataImportController {
 
     constructor(
-        StudentServices, $scope, $log, Notification, portalDataService
+        StudentServices, $scope, $log, Notification, portalDataService,UserServices
     ) {
         'ngInject';
 
@@ -12,10 +12,10 @@ export class DataImportController {
         this.$log = $log;
         this.Notification = Notification;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
-        console.log('entering DataImportController oninit');
         this.$ = angular.element;
         var vm = this;
 
@@ -25,29 +25,32 @@ export class DataImportController {
     }
 
     $onDestroy() {
-        this.$log.debug("dataimport dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("dataimport dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('DataImportController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("dataimport started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("dataimport started");
 
         });
 
         vm.portalDataService.Portlet('dataimport.js');
         var thetab = vm.StudentServices.getActiveTab();
-        vm.$log.debug('activate the active tab', thetab);
+        vm.$log.log('activate the active tab', thetab);
         vm.active = thetab;
 
     }
 
     setActiveTab(activeTab, thecaller) {
         var vm = this;
-        vm.$log.debug('set activetab as:', activeTab, thecaller);
+        vm.$log.log('set activetab as:', activeTab, thecaller);
         vm.StudentServices.setActiveTab(activeTab, thecaller);
 
     }
@@ -55,7 +58,7 @@ export class DataImportController {
     getActiveTab() {
         var vm = this;
         var atab = vm.StudentServices.getActiveTab();
-        vm.$log.debug('get activetab is:', atab);
+        vm.$log.log('get activetab is:', atab);
         return atab;
     }
 

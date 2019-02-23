@@ -3,7 +3,7 @@ export class EventTableBasicController {
     constructor(
         $routeParams, $log, EventServices, $location, $window, $q,
         $scope, $route, Notification, uiGridConstants, uiGridGroupingConstants, $timeout, portalDataService,
-        Util
+        Util, UserServices
     ) {
         'ngInject';
         this.$routeParams = $routeParams;
@@ -20,11 +20,12 @@ export class EventTableBasicController {
         this.$timeout = $timeout;
         this.portalDataService = portalDataService;
         this.Util = Util;
+        this.UserServices = UserServices;
 
     }
     $onDestroy() {
-        this.$log.debug("eventcreation dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("eventcreation dismissed");
+        //this.$log.logEnabled(false);
     }
 
     $onInit() {
@@ -127,7 +128,7 @@ export class EventTableBasicController {
 
 
         vm.$scope.$watch('vm.EventStart', function(value) {
-            vm.$log.debug('vm.EventStart', value);
+            vm.$log.log('vm.EventStart', value);
             var defValue = "1/1/1900";
             if (!value || value == "NULL") {
                 vm.EventStart = new Date(defValue) //.toISOString();
@@ -140,7 +141,7 @@ export class EventTableBasicController {
         }, true);
 
         vm.$scope.$watch('vm.EventEnd', function(value) {
-            vm.$log.debug('vm.EventEnd', value);
+            vm.$log.log('vm.EventEnd', value);
             var defValue = "1/1/1900";
             if (!value || value == "NULL") {
                 vm.EventEnd = new Date(defValue) //.toISOString();
@@ -151,9 +152,13 @@ export class EventTableBasicController {
             return vm.EventEnd;
         }, true);
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('EventTableBasicController',vm.UserServices.isDebugEnabled());
+        }
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-eventcreation started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-eventcreation started");
 
         });
 
@@ -169,13 +174,13 @@ export class EventTableBasicController {
 
     setLimit(thelimit) {
         var vm = this;
-        vm.$log.debug('setLimit', thelimit);
+        vm.$log.log('setLimit', thelimit);
         vm.limit = thelimit;
     }
 
     requery() {
         var vm = this;
-        vm.$log.debug('requery entered');
+        vm.$log.log('requery entered');
         vm.attending = [];
         vm.refreshtheEvent();
     }
@@ -183,7 +188,7 @@ export class EventTableBasicController {
 
     setActiveTab(activeTab, thecaller) {
         var self = this;
-        self.$log.debug('set activetab as:', activeTab, thecaller);
+        self.$log.log('set activetab as:', activeTab, thecaller);
         self.EventServices.setActiveTab(activeTab, thecaller);
 
     }
@@ -191,7 +196,7 @@ export class EventTableBasicController {
     getActiveTab() {
         var self = this;
         var atab = self.EventServices.getActiveTab();
-        self.$log.debug('get activetab is:', atab);
+        self.$log.log('get activetab is:', atab);
         self.active = atab;
         return atab;
     }
@@ -225,21 +230,21 @@ export class EventTableBasicController {
             Location: vm.Location,
             selectedStudents: vm.selectedStudents
         };
-        vm.$log.debug('about createEvent ', path, thedata);
+        vm.$log.log('about createEvent ', path, thedata);
         return vm.EventServices.createEvent(path, thedata)
             .then(function(data) {
-                vm.$log.debug('createEvent returned data');
-                vm.$log.debug(data);
+                vm.$log.log('createEvent returned data');
+                vm.$log.log(data);
                 vm.thisEvent = data;
-                vm.$log.debug(vm.thisEvent);
-                vm.$log.debug(vm.thisEvent.message);
+                vm.$log.log(vm.thisEvent);
+                vm.$log.log(vm.thisEvent.message);
                 vm.message = vm.thisEvent.message;
                 vm.Notification.success({ message: vm.message, delay: 5000 });
                 vm.refreshtheEvent().then(function(zdata) {
-                        vm.$log.debug('refreshtheEvent returned', zdata);
+                        vm.$log.log('refreshtheEvent returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error refreshtheEvent after update:', error);
+                        vm.$log.log('Caught an error refreshtheEvent after update:', error);
                         vm.data = [];
                         vm.photos = [];
                         vm.message = error;
@@ -249,8 +254,8 @@ export class EventTableBasicController {
 
                 return vm.thisEvent;
             }).catch(function(e) {
-                vm.$log.debug('createEvent failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('createEvent failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -259,20 +264,20 @@ export class EventTableBasicController {
 
     refreshtheEvent() {
         var vm = this;
-        vm.$log.debug('refreshtheEvent entered ');
+        vm.$log.log('refreshtheEvent entered ');
 
         var refreshpath = encodeURI('../v1/eventsource?thelimit=' + vm.limit);
 
-        vm.$log.debug('refreshtheEvent path:', refreshpath);
+        vm.$log.log('refreshtheEvent path:', refreshpath);
 
         return vm.EventServices.getEventSource(refreshpath).then(function(data) {
-                vm.$log.debug('refreshEvents returned data');
-                vm.$log.debug(data);
+                vm.$log.log('refreshEvents returned data');
+                vm.$log.log(data);
                 vm.gridOptions.data = data.EventsourceList;
                 return vm.gridOptions.data;
             },
             function(error) {
-                vm.$log.debug('Caught an error refreshtheEvent, going to notify:', error);
+                vm.$log.log('Caught an error refreshtheEvent, going to notify:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -287,19 +292,19 @@ export class EventTableBasicController {
 
     getEventSource() {
         var vm = this;
-        vm.$log.debug('getEventSource entered');
+        vm.$log.log('getEventSource entered');
         var refreshpath = encodeURI('../v1/eventsource');
 
-        vm.$log.debug('getEventSource path:', refreshpath);
+        vm.$log.log('getEventSource path:', refreshpath);
 
         return vm.EventServices.getEventSource(refreshpath).then(function(data) {
-                vm.$log.debug('getEventSource returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getEventSource returned data');
+                vm.$log.log(data);
                 vm.data = data;
                 return vm.data;
             },
             function(error) {
-                vm.$log.debug('Caught an error eventsource:', error);
+                vm.$log.log('Caught an error eventsource:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -314,16 +319,16 @@ export class EventTableBasicController {
 
     getEventDetails(theevent) {
         var vm = this;
-        vm.$log.debug('getEventDetails entered:', theevent.event);
+        vm.$log.log('getEventDetails entered:', theevent.event);
         var path = encodeURI('../v1/eventdetails?event=' + theevent.event);
 
-        vm.$log.debug('getEventDetails path:', path);
+        vm.$log.log('getEventDetails path:', path);
 
         return vm.EventServices.getEventDetails(path).then(function(data) {
-                vm.$log.debug('getEventDetails returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getEventDetails returned data');
+                vm.$log.log(data);
                 vm.gridHistOptions.data = data.eventdetails;
-                vm.$log.debug("details", data.eventdetails[0]);
+                vm.$log.log("details", data.eventdetails[0]);
 
                 vm.Event = data.eventdetails[0].Event;
                 vm.EventType = data.eventdetails[0].EventType;
@@ -343,7 +348,7 @@ export class EventTableBasicController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error getEventDetails:', error);
+                vm.$log.log('Caught an error getEventDetails:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -358,14 +363,14 @@ export class EventTableBasicController {
 
     getEventNames(eventpartial) {
         var vm = this;
-        vm.$log.debug('getEventNames entered');
+        vm.$log.log('getEventNames entered');
         var path = encodeURI('../v1/eventnames?eventpartial=' + eventpartial);
 
-        vm.$log.debug('getEventNames path:', path);
+        vm.$log.log('getEventNames path:', path);
 
         return vm.EventServices.getEventNames(path).then(function(data) {
-                vm.$log.debug('getEventNames returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getEventNames returned data');
+                vm.$log.log(data);
                 vm.eventlist = data.eventlist;
                 //check for empty set and do message
                 //messagetxt = "EventDetails obtained";
@@ -373,7 +378,7 @@ export class EventTableBasicController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error getEventDetails:', error);
+                vm.$log.log('Caught an error getEventDetails:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -390,21 +395,21 @@ export class EventTableBasicController {
     setColDef(indata) {
         var vm = this;
         var path = "../v1/coldef";
-        vm.$log.debug('about setColDefs ', indata, path);
+        vm.$log.log('about setColDefs ', indata, path);
         return vm.EventServices.setColDefs(path, indata)
             .then(function(data) {
-                vm.$log.debug('setColDefs returned data');
-                vm.$log.debug(data);
+                vm.$log.log('setColDefs returned data');
+                vm.$log.log(data);
                 vm.thiscoldef = data;
-                vm.$log.debug(vm.thiscoldef);
-                vm.$log.debug(vm.thiscoldef.message);
+                vm.$log.log(vm.thiscoldef);
+                vm.$log.log(vm.thiscoldef.message);
                 vm.message = vm.thiscoldef.message;
                 vm.getColDefList();
 
 
             }).catch(function(e) {
-                vm.$log.debug('setColDefs failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('setColDefs failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -413,21 +418,21 @@ export class EventTableBasicController {
 
     changeColDef(colsubkey) {
         var vm = this;
-        vm.$log.debug('changeColDef entered');
+        vm.$log.log('changeColDef entered');
         if (vm.isNewColDef(colsubkey)) {
             vm.saveState();
         }
         vm.getColDefs(vm.colsubkey).then(function(data) {
             //vm.gcolumns is filled
-            vm.$log.debug(" controller changeColDef returned with:", data, vm.colsubkey);
-            vm.$log.debug(" controller changeColDef vmstate is:", vm.state);
+            vm.$log.log(" controller changeColDef returned with:", data, vm.colsubkey);
+            vm.$log.log(" controller changeColDef vmstate is:", vm.state);
 
             if (vm.state != {}) {
                 vm.restoreState(vm.state);
             }
 
         }, function(error) {
-            vm.$log.debug('cols not stored:', error);
+            vm.$log.log('cols not stored:', error);
         });
 
 
@@ -435,12 +440,12 @@ export class EventTableBasicController {
 
     getColDefs(colsubkey) {
         var vm = this;
-        vm.$log.debug('getColDefs entered');
+        vm.$log.log('getColDefs entered');
         var refreshpath = encodeURI('../v1/coldefs?colkey=' +
             vm.colkey + "&colsubkey=" + colsubkey);
         var holdgcol = vm.gcolumns;
 
-        vm.$log.debug('getColDefs path:', refreshpath);
+        vm.$log.log('getColDefs path:', refreshpath);
 
         if (colsubkey === null) {
             vm.error = "Nothing selected";
@@ -448,16 +453,16 @@ export class EventTableBasicController {
         }
 
         return vm.EventServices.getColDefs(refreshpath).then(function(data) {
-                vm.$log.debug('EventServices in controller getColDefs returned data');
-                vm.$log.debug(data);
+                vm.$log.log('EventServices in controller getColDefs returned data');
+                vm.$log.log(data);
                 //   vm.gcolumns = data.gcolumns[0][0]; 
-                //   $log.debug('EventServices in controller set gcolumns',vm.gcolumns);
+                //   $log.log('EventServices in controller set gcolumns',vm.gcolumns);
                 vm.state = JSON.parse(data.gcolumns[0][0]);
-                vm.$log.debug('EventServices in controller set vm.state', vm.state);
+                vm.$log.log('EventServices in controller set vm.state', vm.state);
                 return vm.state;
             },
             function(error) {
-                vm.$log.debug('Caught an error getColDefs:', error);
+                vm.$log.log('Caught an error getColDefs:', error);
                 vm.gcolumns = holdgcol;
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -472,20 +477,20 @@ export class EventTableBasicController {
 
     getColDefList() {
         var vm = this;
-        vm.$log.debug('getColDefList entered');
+        vm.$log.log('getColDefList entered');
         var refreshpath = encodeURI('../v1/coldeflist?colkey=' +
             vm.colkey);
 
-        vm.$log.debug('getColDefList path:', refreshpath);
+        vm.$log.log('getColDefList path:', refreshpath);
 
         return vm.EventServices.getColDefList(refreshpath).then(function(data) {
-                vm.$log.debug('getColDefList returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getColDefList returned data');
+                vm.$log.log(data);
                 vm.colsubkeys = data.colsubkeys;
                 return vm.data;
             },
             function(error) {
-                vm.$log.debug('Caught an error getColDefList:', error);
+                vm.$log.log('Caught an error getColDefList:', error);
                 vm.colsubkeys = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -506,20 +511,20 @@ export class EventTableBasicController {
         //if they are saved, then get those, otherwise default 
         vm.getColDefs(vm.colsubkey).then(function(data) {
             //vm.gcolumns is filled
-            vm.$log.debug(" controller getColDefs returned with:", data, vm.colsubkey);
-            vm.$log.debug(" controller getColDefs vmstate is:", vm.state);
+            vm.$log.log(" controller getColDefs returned with:", data, vm.colsubkey);
+            vm.$log.log(" controller getColDefs vmstate is:", vm.state);
 
             //         setGridOptions();
 
 
         }, function(error) {
-            vm.$log.debug('cols not stored:', error);
+            vm.$log.log('cols not stored:', error);
 
 
         });
 
         var coldef = {};
-        vm.$log.debug('setGridOptions col count', vm.listA.length);
+        vm.$log.log('setGridOptions col count', vm.listA.length);
 
         var defnumfilter = [{
                 condition: vm.uiGridConstants.filter.GREATER_THAN,
@@ -532,9 +537,9 @@ export class EventTableBasicController {
         ];
         var filt = [];
         for (var i = 0, len = vm.listA.length; i < len; i += 3) {
-            //$log.debug('vis', vm.listA[i+2]);
+            //$log.log('vis', vm.listA[i+2]);
             var val = (vm.listA[i + 2].toLowerCase() === "true");
-            //$log.debug('vis', val);
+            //$log.log('vis', val);
             var agg = (
                 vm.listA[i + 1] === "number" ? vm.uiGridConstants.aggregationTypes.avg :
                 vm.listA[i + 1] === "string" ? vm.uiGridConstants.aggregationTypes.count :
@@ -542,7 +547,7 @@ export class EventTableBasicController {
                 vm.listA[i + 1] === "boolean" ? vm.uiGridConstants.aggregationTypes.count :
                 vm.uiGridConstants.aggregationTypes.count
             );
-            //$log.debug('agg', agg);
+            //$log.log('agg', agg);
             if (vm.listA[i + 1] === "number") {
                 filt = [{
                         condition: vm.uiGridConstants.filter.GREATER_THAN,
@@ -602,7 +607,7 @@ export class EventTableBasicController {
                 filt = "";
             }
 
-            //  $log.debug('filt', filt);
+            //  $log.log('filt', filt);
 
             coldef = {
                 field: vm.listA[i],
@@ -618,12 +623,12 @@ export class EventTableBasicController {
             vm.gcolumns.push(coldef);
 
         }
-        vm.$log.debug('gcolumns in coldefs', vm.gcolumns);
+        vm.$log.log('gcolumns in coldefs', vm.gcolumns);
 
         vm.setGridOptions();
 
         vm.refreshtheEvent().then(function(zdata) {
-            vm.$log.debug('refreshtheEvent returned', zdata);
+            vm.$log.log('refreshtheEvent returned', zdata);
             if (vm.state != {}) {
                 vm.restoreState(vm.state);
             }
@@ -634,12 +639,12 @@ export class EventTableBasicController {
 
     isNewColDef(theevent) {
         var vm = this;
-        vm.$log.debug('isNewColDef', theevent);
+        vm.$log.log('isNewColDef', theevent);
         var isnew = true;
         for (var i = 0, len = vm.colsubkeys.length; i < len; i++) {
-            //  $log.debug('isNewColDef colsubkey:', vm.colsubkeys[i]);
+            //  $log.log('isNewColDef colsubkey:', vm.colsubkeys[i]);
             if (vm.colsubkeys[i] == theevent) {
-                vm.$log.debug('isfound');
+                vm.$log.log('isfound');
                 isnew = false;
                 break;
             }
@@ -650,7 +655,7 @@ export class EventTableBasicController {
     saveState() {
         var vm = this;
         vm.state = vm.gridApi.saveState.save();
-        vm.$log.debug('state', vm.state);
+        vm.$log.log('state', vm.state);
         var thedata = {
             colkey: vm.colkey,
             colsubkey: vm.colsubkey,
@@ -665,7 +670,7 @@ export class EventTableBasicController {
         
         if (!vm.Util.isEmptyObject(vm.gridApi)) {
             vm.gridApi.saveState.restore(vm.$scope, thestate);
-            vm.$log.debug('state', thestate);
+            vm.$log.log('state', thestate);
 
         }
     }
@@ -701,33 +706,33 @@ export class EventTableBasicController {
             exporterPdfMaxGridWidth: 500,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.selection.on.rowSelectionChanged(vm.$scope, function(row) {
                     var msg = 'row selected ' + row.entity.ContactID;
-                    vm.$log.debug(msg);
+                    vm.$log.log(msg);
 
                     var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                    vm.$log.debug('selected', selectedStudentarr);
+                    vm.$log.log('selected', selectedStudentarr);
                     vm.setSelectedArray(selectedStudentarr);
 
                 });
                 gridApi.selection.on.rowSelectionChangedBatch(vm.$scope, function(rows) {
-                    vm.$log.debug("batch");
+                    vm.$log.log("batch");
                     //note this will send the list of changed rows
                     /*    var selectedContacts=[];
                         for (var index=0, len=rows.length; index < len; index++) {
-                        vm.$log.debug("selected?",rows[index].isSelected);
+                        vm.$log.log("selected?",rows[index].isSelected);
                             if (rows[index].isSelected === true) {
                                 selectedContacts.push(rows[index].entity);
                             }
                         }
-                    vm.$log.debug("batch", selectedContacts);
+                    vm.$log.log("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
                     var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                    vm.$log.debug('batch selected', selectedStudentarr);
+                    vm.$log.log('batch selected', selectedStudentarr);
                     vm.setSelectedArray(selectedStudentarr);
 
                 });
@@ -736,8 +741,8 @@ export class EventTableBasicController {
             }
         };
 
-        vm.$log.debug('setGridOptions gcolumns', vm.gcolumns);
-        vm.$log.debug('setGridOptions gridOptions', vm.gridOptions);
+        vm.$log.log('setGridOptions gcolumns', vm.gcolumns);
+        vm.$log.log('setGridOptions gridOptions', vm.gridOptions);
 
     }
 
@@ -855,42 +860,42 @@ export class EventTableBasicController {
             exporterPdfMaxGridWidth: 500,
 
             onRegisterApi: function(gridHistApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridHistApi = gridHistApi;
 
                 gridHistApi.selection.on.rowSelectionChanged(vm.$scope, function(row) {
                     var msg = 'gridhist row selected ' + row.entity;
-                    vm.$log.debug(msg);
+                    vm.$log.log(msg);
 
                     //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                    //   vm.$log.debug('selected', selectedStudentarr);
+                    //   vm.$log.log('selected', selectedStudentarr);
                     //       setSelectedArray(selectedStudentarr);
 
                 });
                 gridHistApi.selection.on.rowSelectionChangedBatch(vm.$scope, function(rows) {
-                    vm.$log.debug("gridhist batch");
+                    vm.$log.log("gridhist batch");
                     //note this will send the list of changed rows
                     /*    var selectedContacts=[];
                         for (var index=0, len=rows.length; index < len; index++) {
-                        vm.$log.debug("selected?",rows[index].isSelected);
+                        vm.$log.log("selected?",rows[index].isSelected);
                             if (rows[index].isSelected === true) {
                                 selectedContacts.push(rows[index].entity);
                             }
                         }
-                    vm.$log.debug("batch", selectedContacts);
+                    vm.$log.log("batch", selectedContacts);
                         setSelectedArray(selectedContacts);
                         */
                     //        var selectedStudentarr = vm.gridApi.selection.getSelectedRows();
-                    //    vm.$log.debug('batch selected', selectedStudentarr);
+                    //    vm.$log.log('batch selected', selectedStudentarr);
                     //        setSelectedArray(selectedStudentarr);
 
                 });
                 gridHistApi.edit.on.afterCellEdit(vm.$scope,
                     function(rowEntity, colDef, newValue, oldValue) {
-                        vm.$log.debug('rowEntity');
-                        vm.$log.debug(rowEntity);
+                        vm.$log.log('rowEntity');
+                        vm.$log.log(rowEntity);
                         //Alert to show what info about the edit is available
-                        vm.$log.debug('Column: ' + colDef.name +
+                        vm.$log.log('Column: ' + colDef.name +
                             ' newValue: ' + newValue + ' oldValue: ' + oldValue);
                         if (newValue != oldValue) {
                             vm.updateEvent(colDef, newValue, rowEntity);
@@ -900,7 +905,7 @@ export class EventTableBasicController {
             }
         };
 
-        vm.$log.debug('setGridHistOptions gridOptions', vm.gridHistOptions);
+        vm.$log.log('setGridHistOptions gridOptions', vm.gridHistOptions);
 
     }
 
@@ -921,20 +926,20 @@ export class EventTableBasicController {
             ordered: rowEntity.Ordered
         };
 
-        vm.$log.debug('about updateEvent ', indata, path);
+        vm.$log.log('about updateEvent ', indata, path);
 
         return vm.EventServices.updateEvent(path, indata)
             .then(function(data) {
-                vm.$log.debug('updateEvent returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateEvent returned data');
+                vm.$log.log(data);
                 vm.thiscoldef = data;
-                vm.$log.debug(vm.thiscoldef);
-                vm.$log.debug(vm.thiscoldef.message);
+                vm.$log.log(vm.thiscoldef);
+                vm.$log.log(vm.thiscoldef.message);
                 vm.message = vm.thiscoldef.message;
 
             }).catch(function(e) {
-                vm.$log.debug('updateEvent failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateEvent failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -944,7 +949,7 @@ export class EventTableBasicController {
 
     setSelectedArray(inputArray) {
         var vm = this;
-        vm.$log.debug("setSelectedArray entered", inputArray);
+        vm.$log.log("setSelectedArray entered", inputArray);
         vm.selectedStudents = [];
 
         if (inputArray.length > 0) {
@@ -967,7 +972,7 @@ export class EventTableBasicController {
             return;
         }
 
-        vm.$log.debug("setarray", vm.selectedStudents);
+        vm.$log.log("setarray", vm.selectedStudents);
 
     }
 

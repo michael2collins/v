@@ -242,7 +242,7 @@ function rptconfig($provide) {
             }
 
             function createImage(imageParams) {
-                $log.debug("createImage entered", imageParams);
+                $log.log("createImage entered", imageParams);
                 var images = [];
                 for (var iter = 0; iter < imageParams.bodyimages.length; iter++) {
                     images[iter] = ' <img height="' + imageParams.height + '"  width="' + imageParams.width + '" src="' + imageParams.bodyimages[iter] + '"/>';
@@ -336,7 +336,7 @@ function rptconfig($provide) {
                             $scope.vm.imagelist = [];
                             $scope.vm.bodyimages = [];
                             $scope.imgLoadedCallback = function(event) {
-                                $log.debug("imgLoadedCallback entered", event);
+                                $log.log("imgLoadedCallback entered", event);
                                 $scope.vm.imagelist.push({
                                     data: event.target.currentSrc,
                                     naturalHeight: event.target.naturalHeight,
@@ -465,11 +465,11 @@ function rptconfig($provide) {
                                     display: "<div class='btn-group' uib-dropdown> <button id='single-button' type='button' class='btn btn-primary' uib-dropdown-toggle auto-close='outsideClick'>Select Option <span class='caret'></span>       </button>       <ul class='dropdown-menu' uib-dropdown-menu role='menu' aria-labelledby='single-button'>           <li role='menuitem' ng-repeat='o in options'>             <button type='button' ng-class='displayActiveToolClass(active)' ng-click='action($event, o.value)'> {{ o.name }} </button></li></ul></div>",
                                     action: function(deferred, value) {
 
-                                        $log.debug('dropdowntest deferred:',deferred);
-                                        $log.debug('dropdowntest value:', value);
+                                        $log.log('dropdowntest deferred:',deferred);
+                                        $log.log('dropdowntest value:', value);
 
                                //       if (!!event.stopPropagation) {
-                            //              $log.debug('stop');
+                            //              $log.log('stop');
                              //           event.stopPropagation();
                               //          $('body').trigger('click');
                             //          }

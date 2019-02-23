@@ -1,16 +1,16 @@
 <?php
 
 
-$app->post('/removeCalendarEvent','authenticate',  function() use($app) {
+$app->post('/removeCalendarEvent','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("removeCalendarEvent post before remove\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("removeCalendarEvent post before remove\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
       
     $eventid  = (isset($dataJsonDecode->thedata->eventid)         ? $dataJsonDecode->thedata->eventid : "");
 
@@ -34,9 +34,7 @@ $app->post('/removeCalendarEvent','authenticate',  function() use($app) {
 
 });
 
-
-
-$app->post('/saveCalendarEvent','authenticate',  function() use($app) {
+$app->post('/saveCalendarEvent','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     global $user_id;
@@ -45,9 +43,9 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("saveCalendarEvent post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("saveCalendarEvent post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $eventID  = (isset($dataJsonDecode->thedata->id)         ? $dataJsonDecode->thedata->id : "");
     $title      = (isset($dataJsonDecode->thedata->title) ? $dataJsonDecode->thedata->title : "");
@@ -82,16 +80,16 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "Calendar Event created successfully";
         $response["new_eventid"] = $new_eventid;
-        error_log( print_R("calendar created: $new_eventid\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("calendar created: $new_eventid\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($new_eventid == 1) {
         $response["error"] = false;
         $response["message"] = "Calendar Event updated successfully";
-        error_log( print_R("Calendar event already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Calendar event already existed\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after saveCalendarEvent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $new_eventid, TRUE), 3, LOG);
+        $app->log->debug( print_R("after saveCalendarEvent result bad\n", TRUE));
+        $app->log->debug( print_R( $new_eventid, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create Calendar Event. Please try again";
         echoRespnse(400, $response);
@@ -99,8 +97,7 @@ $app->post('/saveCalendarEvent','authenticate',  function() use($app) {
 
 });
 
-
-$app->get('/getuserlist', 'authenticate', function() use ($app) {
+$app->get('/getuserlist', 'authenticate', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("getUserList entered: ", TRUE));
@@ -158,9 +155,7 @@ $app->get('/getuserlist', 'authenticate', function() use ($app) {
     }
 });
 
-
-
-$app->get('/getEventList', 'authenticate', function() use ($app) {
+$app->get('/getEventList', 'authenticate', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("getEventList entered: ", TRUE));
@@ -245,18 +240,16 @@ $app->get('/getEventList', 'authenticate', function() use ($app) {
     }
 });
 
-
-
-$app->post('/removetasknamelist','authenticate',  function() use($app) {
+$app->post('/removetasknamelist','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("tasknamelist post before remove\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("tasknamelist post before remove\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
       
     $taskname  = (isset($dataJsonDecode->thedata->taskname)         ? $dataJsonDecode->thedata->taskname : "");
 
@@ -280,18 +273,16 @@ $app->post('/removetasknamelist','authenticate',  function() use($app) {
 
 });
 
-
-
-$app->post('/updatetasknamelist','authenticate',  function() use($app) {
+$app->post('/updatetasknamelist','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("tasknamelist post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("tasknamelist post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $taskname  = (isset($dataJsonDecode->thedata->taskname)         ? $dataJsonDecode->thedata->taskname : "");
     $taskstatus      = (isset($dataJsonDecode->thedata->taskstatus) ? $dataJsonDecode->thedata->taskstatus : "");
@@ -308,16 +299,16 @@ $app->post('/updatetasknamelist','authenticate',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "tasknamelist created successfully";
         $response["tasknamelist_id"] = $tasknamelist_id;
-        error_log( print_R("tasknamelist created: $tasknamelist_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("tasknamelist created: $tasknamelist_id\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($tasknamelist_id == 1) {
         $response["error"] = false;
         $response["message"] = "tasknamelist updated successfully";
-        error_log( print_R("tasknamelist already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("tasknamelist already existed\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after tasknamelist result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $tasknamelist_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after tasknamelist result bad\n", TRUE));
+        $app->log->debug( print_R( $tasknamelist_id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create tasknamelist. Please try again";
         echoRespnse(400, $response);
@@ -325,8 +316,7 @@ $app->post('/updatetasknamelist','authenticate',  function() use($app) {
 
 });
 
-
-$app->get('/instructorlist', 'authenticate', function() use ($app) {
+$app->get('/instructorlist', 'authenticate', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("instructorlist entered: ", TRUE));
@@ -378,8 +368,7 @@ $app->get('/instructorlist', 'authenticate', function() use ($app) {
     }
 });
 
-
-$app->get('/tasknamelist', 'authenticate', function() use ($app) {
+$app->get('/tasknamelist', 'authenticate','setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("tasknamelist entered: ", TRUE));
@@ -439,7 +428,7 @@ $app->get('/tasknamelist', 'authenticate', function() use ($app) {
     }
 });
 
-$app->post('/calendarschedule', 'authenticate', function() use ($app) {
+$app->post('/calendarschedule', 'authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -447,20 +436,20 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("calendarschedule before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("calendarschedule before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
     $calendarscheduleDate  = (isset($dataJsonDecode->thedata->calendarscheduleDate) ? $dataJsonDecode->thedata->calendarscheduleDate : $today);
     $cal_dt = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
     
-    error_log( print_R($cal_dt, TRUE ), 3, LOG);
-    error_log( print_R("calendarscheduleDate: $calendarscheduleDate \n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($cal_dt, TRUE ));
+    $app->log->debug( print_R("calendarscheduleDate: $calendarscheduleDate \n", TRUE ));
 
     $asunday = $cal_dt;
     if ($asunday->format('N') != 7) {
-        error_log( print_R(" createcalendarschedule not a sunday\n", TRUE), 3, LOG);
+        $app->log->debug( print_R(" createcalendarschedule not a sunday\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create  calendarschedule. Not a sunday";
         echoRespnse(400, $response);
@@ -480,9 +469,9 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
     $afriday->modify('+5 day');
     $asaturday->modify('+6 day');
 
-    error_log( print_R(" tuesday and saturday\n", TRUE), 3, LOG);
-    error_log( print_R($atuesday, TRUE ), 3, LOG);
-    error_log( print_R($asaturday, TRUE ), 3, LOG);
+    $app->log->debug( print_R(" tuesday and saturday\n", TRUE));
+    $app->log->debug( print_R($atuesday, TRUE ));
+    $app->log->debug( print_R($asaturday, TRUE ));
 
     $calendarschedulegood=0;
     $calendarschedulebad=0;
@@ -494,7 +483,7 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
 
     // creating calendarschedules based on date and who is ready
     $result = $db->getScheduleList();
-    error_log( print_R($result, TRUE), 3, LOG);
+    $app->log->debug( print_R($result, TRUE));
 
     if ($result) {
 
@@ -518,15 +507,15 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
             }
         }
     } else {
-            error_log( print_R("after getcalendarscheduleList result empty\n", TRUE), 3, LOG);
-            error_log( print_R( $result, TRUE), 3, LOG);
+            $app->log->debug( print_R("after getcalendarscheduleList result empty\n", TRUE));
+            $app->log->debug( print_R( $result, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to find calendarschedules. Please try again";
             echoRespnse(404, $response);
     }
                                 
 
-  //  error_log( print_R($resarr, TRUE ), 3, LOG);
+  //  $app->log->debug( print_R($resarr, TRUE ));
      
     for($i = 0; $i < count($resarr["calendarscheduleList"]); $i++ ) {
 
@@ -562,14 +551,14 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
             $startdate = $asunday;
         }
         if ($DayOfWeek == 'Monday') {
-            error_log( print_R("found monday\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("found monday\n", TRUE));
             $startdate = $amonday;
-            error_log( print_R( $startdate, TRUE), 3, LOG);
+            $app->log->debug( print_R( $startdate, TRUE));
         }
         if ($DayOfWeek == 'Tuesday') {
             $startdate = $atuesday;
-            error_log( print_R("found tuesday\n", TRUE), 3, LOG);
-            error_log( print_R( $startdate, TRUE), 3, LOG);
+            $app->log->debug( print_R("found tuesday\n", TRUE));
+            $app->log->debug( print_R( $startdate, TRUE));
         }
         if ($DayOfWeek == 'Wednesday') {
             $startdate = $awednesday;
@@ -593,17 +582,17 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
         $mme = substr($TimeEnd, 3, 2);
         $enddate->setTime($hhe, $mme);
 
-        error_log( print_R($resarr["calendarscheduleList"][$i]["DayOfWeek"], TRUE ), 3, LOG);
-        error_log( print_R($resarr["calendarscheduleList"][$i]["TimeRange"], TRUE ), 3, LOG);
-        error_log( print_R($resarr["calendarscheduleList"][$i]["TimeStart"], TRUE ), 3, LOG);
-        error_log( print_R($resarr["calendarscheduleList"][$i]["TimeEnd"], TRUE ), 3, LOG);
-        error_log( print_R($title, TRUE ), 3, LOG);
-        error_log( print_R("startdate b4 generateCalendarFromSchedule", TRUE ), 3, LOG);
-        error_log( print_R($startdate, TRUE ), 3, LOG);
-        error_log( print_R("enddate", TRUE ), 3, LOG);
-        error_log( print_R($enddate, TRUE ), 3, LOG);
-        error_log( print_R($hhe, TRUE ), 3, LOG);
-        error_log( print_R($mme, TRUE ), 3, LOG);
+        $app->log->debug( print_R($resarr["calendarscheduleList"][$i]["DayOfWeek"], TRUE ));
+        $app->log->debug( print_R($resarr["calendarscheduleList"][$i]["TimeRange"], TRUE ));
+        $app->log->debug( print_R($resarr["calendarscheduleList"][$i]["TimeStart"], TRUE ));
+        $app->log->debug( print_R($resarr["calendarscheduleList"][$i]["TimeEnd"], TRUE ));
+        $app->log->debug( print_R($title, TRUE ));
+        $app->log->debug( print_R("startdate b4 generateCalendarFromSchedule", TRUE ));
+        $app->log->debug( print_R($startdate, TRUE ));
+        $app->log->debug( print_R("enddate", TRUE ));
+        $app->log->debug( print_R($enddate, TRUE ));
+        $app->log->debug( print_R($hhe, TRUE ));
+        $app->log->debug( print_R($mme, TRUE ));
 
 
         $db = new CalendarDbHandler();
@@ -622,32 +611,32 @@ $app->post('/calendarschedule', 'authenticate', function() use ($app) {
             $response["error"] = false;
             $response["message"] = "calendarschedule(s) $calendarschedulegood created and notified successfully";
             $response["calendarschedule"] = $calendarschedulegood;
-            error_log( print_R("calendarschedule created: $calendarschedulegood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("calendarschedule created: $calendarschedulegood\n", TRUE ));
             echoRespnse(201, $response);
         } else if ($calendarscheduleexists > 0) {
             $response["error"] = true;
             $response["message"] = "Sorry, this $calendarscheduleexists calendarschedule already existed";
-            error_log( print_R("calendarschedule already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("calendarschedule already existed\n", TRUE ));
             echoRespnse(409, $response);
         } else {
-            error_log( print_R("after createcalendarschedule result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $calendarschedulebad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createcalendarschedule result bad\n", TRUE));
+            $app->log->debug( print_R( $calendarschedulebad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $calendarschedulebad calendarschedule. Please try again";
             echoRespnse(400, $response);
         }
 });
 
-$app->delete('/calendarschedule','authenticate', function() use ($app) {
+$app->delete('/calendarschedule','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("calendarschedule before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("calendarschedule before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $schedulegood=0;
@@ -661,15 +650,15 @@ $app->delete('/calendarschedule','authenticate', function() use ($app) {
                                 );
 
     if ($schedule > 0) {
-        error_log( print_R("schedule removed: $schedule\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("schedule removed: $schedule\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "schedule removed successfully";
         $schedulegood = 1;
         $response["schedule"] = $schedulegood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete schedule result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $schedule, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete schedule result bad\n", TRUE));
+        $app->log->debug( print_R( $schedule, TRUE));
         $schedulebad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove schedule. Please try again";
@@ -679,7 +668,7 @@ $app->delete('/calendarschedule','authenticate', function() use ($app) {
 
 });
 
-$app->post('/schedulecalendar', 'authenticate', function() use ($app) {
+$app->post('/schedulecalendar', 'authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
        //todo set this global
@@ -690,20 +679,20 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("schedulecalendar before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("schedulecalendar before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
     $calendarscheduleDate  = (isset($dataJsonDecode->thedata->calendarscheduleDate) ? $dataJsonDecode->thedata->calendarscheduleDate : $today);
     $cal_dt = new DateTime($calendarscheduleDate, new DateTimeZone( 'America/New_York' ));
     
-    error_log( print_R($cal_dt, TRUE ), 3, LOG);
-    error_log( print_R("calendarscheduleDate: $calendarscheduleDate \n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($cal_dt, TRUE ));
+    $app->log->debug( print_R("calendarscheduleDate: $calendarscheduleDate \n", TRUE ));
 
     $asunday = $cal_dt;
     if ($asunday->format('N') != 7) {
-        error_log( print_R(" createcalendarschedule not a sunday\n", TRUE), 3, LOG);
+        $app->log->debug( print_R(" createcalendarschedule not a sunday\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create  calendarschedule. Not a sunday";
         echoRespnse(400, $response);
@@ -723,14 +712,14 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
     // creating calendarschedules based on date and who is ready
     $result = $db->getCalendarList($asunday, $asaturday);
 
-    //error_log( print_R($result, TRUE), 3, LOG);
+    //$app->log->debug( print_R($result, TRUE));
 
     if ($result != NULL) {
-        error_log( print_R("getCalendarList has results", TRUE), 3, LOG);
+        $app->log->debug( print_R("getCalendarList has results", TRUE));
 
         // looping through result and preparing  arrays
         while ($slist = $result->fetch_assoc()) {
-    //        error_log( print_R($slist, TRUE), 3, LOG);
+    //        $app->log->debug( print_R($slist, TRUE));
             
             if (count($slist) > 0) {
                 $tmp = array();
@@ -746,11 +735,11 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         }
 
         $result2 = $db->cleanSchedule();
-        error_log( print_R($result2, TRUE), 3, LOG);
+        $app->log->debug( print_R($result2, TRUE));
         if ($result2 > 0) {
         } else {
-            error_log( print_R("after delete schedule result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $result2, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete schedule result bad\n", TRUE));
+            $app->log->debug( print_R( $result2, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to remove schedule. Please try again";
             echoRespnse(400, $response);
@@ -758,18 +747,18 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
 
 
     } else {
-            error_log( print_R("after getcalendarscheduleList result empty\n", TRUE), 3, LOG);
-            error_log( print_R( $result, TRUE), 3, LOG);
+            $app->log->debug( print_R("after getcalendarscheduleList result empty\n", TRUE));
+            $app->log->debug( print_R( $result, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to find calendarschedules. Please try again";
             echoRespnse(404, $response);
     }
                                 
 
-  //  error_log( print_R($resarr, TRUE ), 3, LOG);
+  //  $app->log->debug( print_R($resarr, TRUE ));
      
     for($i = 0; $i < count($resarr["calendarscheduleList"]); $i++ ) {
-        error_log( print_R("in loop\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("in loop\n", TRUE ));
 
         $dayOfMonth = date("j");
         $sortorder = $i;
@@ -777,11 +766,11 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         
         //check if the system dayofmonth = list batch1 or batch2 (1st and 15th is common)
         $DayOfWeek ='';
-//        error_log( print_R($startdated, TRUE ), 3, LOG);
+//        $app->log->debug( print_R($startdated, TRUE ));
         
-//        error_log( print_R("sunday:", TRUE ), 3, LOG);
-//        error_log( print_R($asunday, TRUE ), 3, LOG);
-//        error_log( print_R("\n", TRUE ), 3, LOG);
+//        $app->log->debug( print_R("sunday:", TRUE ));
+//        $app->log->debug( print_R($asunday, TRUE ));
+//        $app->log->debug( print_R("\n", TRUE ));
 
         $t = date('N', strtotime($startdated));
         if ($t == 7) {
@@ -806,7 +795,7 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
             $DayOfWeek = 'Saturday';
         }
         if ($DayOfWeek === '') {
-            error_log( print_R("replaceScheduleFromCalendar  bad DOW " , TRUE), 3, LOG);
+            $app->log->debug( print_R("replaceScheduleFromCalendar  bad DOW " , TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to replace calendarschedules. Please try again";
             echoRespnse(404, $response);
@@ -820,7 +809,7 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         $dt = $resarr["calendarscheduleList"][$i]["startdated"];
 
         if ($dt === false) {
-            error_log( print_R("replaceScheduleFromCalendar  bad date " , TRUE), 3, LOG);
+            $app->log->debug( print_R("replaceScheduleFromCalendar  bad date " , TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to replace calendarschedules. Please try again";
             echoRespnse(404, $response);
@@ -832,7 +821,7 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         $startdatestrsub = substr($startdatestr,0,16);
         $startdatehhmm = DateTime::createFromFormat('m/d/Y H:i', $startdatestrsub, new DateTimeZone($tz));
         if ($startdatehhmm === false) {
-            error_log( print_R("generateCalendarFromSchedule  bad start date hhmm $startdatestr" , TRUE), 3, LOG);
+            $app->log->debug( print_R("generateCalendarFromSchedule  bad start date hhmm $startdatestr" , TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to replace calendarschedules.  bad start date hhmm $startdatestr. Please try again";
             echoRespnse(404, $response);
@@ -843,7 +832,7 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         $enddatestrsub = substr($enddatestr,0,16);
         $enddatehhmm = DateTime::createFromFormat('m/d/Y H:i', $enddatestrsub, new DateTimeZone($tz));
         if ($enddatehhmm === false) {
-            error_log( print_R("generateCalendarFromSchedule  bad end date hhmm $enddatestr" , TRUE), 3, LOG);
+            $app->log->debug( print_R("generateCalendarFromSchedule  bad end date hhmm $enddatestr" , TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to replace calendarschedules.  bad start date hhmm $enddatestr. Please try again";
             echoRespnse(404, $response);
@@ -852,11 +841,11 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
         $TimeEnd = $enddatehhmm->format('H:i');
         $TimeRange  = $TimeStart . ' to ' . $TimeEnd;
 
-        error_log( print_R("before replace dow: $DayOfWeek\n", TRUE), 3, LOG);
-        error_log( print_R("before replace st: $TimeStart\n", TRUE), 3, LOG);
-        error_log( print_R("before replace e: $TimeEnd\n", TRUE), 3, LOG);
-        error_log( print_R("before replace cl: $aclassid\n", TRUE), 3, LOG);
-        error_log( print_R("before replace desc: $Description\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("before replace dow: $DayOfWeek\n", TRUE));
+        $app->log->debug( print_R("before replace st: $TimeStart\n", TRUE));
+        $app->log->debug( print_R("before replace e: $TimeEnd\n", TRUE));
+        $app->log->debug( print_R("before replace cl: $aclassid\n", TRUE));
+        $app->log->debug( print_R("before replace desc: $Description\n", TRUE));
 
         $db = new CalendarDbHandler();
         $response = array();
@@ -876,17 +865,17 @@ $app->post('/schedulecalendar', 'authenticate', function() use ($app) {
             $response["error"] = false;
             $response["message"] = "calendarschedule(s) $calendarschedulegood created and notified successfully";
             $response["calendarschedule"] = $calendarschedulegood;
-            error_log( print_R("calendarschedule replaced: $calendarschedulegood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("calendarschedule replaced: $calendarschedulegood\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createcalendarschedule result bad\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("after createcalendarschedule result bad\n", TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to replace $calendarschedulegood calendarschedule. Please try again";
             echoRespnse(400, $response);
         }
 });
 
-$app->get('/ageranges', 'authenticate', function() {
+$app->get('/ageranges', 'authenticate', 'setDebug',function() {
     $response = array();
     $db = new CalendarDbHandler();
 

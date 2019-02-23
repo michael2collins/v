@@ -34,13 +34,24 @@ $app = new \Slim\Slim();
 //$logWriter = new \Slim\LogWriter(fopen(LOG, 'a'));
 //$app = new \Slim\Slim(array('log.writer' => $logWriter));
 
-$app = new \Slim\Slim(array(
+/*$app = new \Slim\Slim(array(
     'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
         'path' => NEWLOG
         )
     )));
-
-$app->log->setEnabled(true);
+*/    
+$app = new \Slim\Slim (
+    array(
+//        'debug' => true,
+        'log.enabled' => true,
+        'log.level' => \Slim\Log::DEBUG,
+        'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
+            'path' => NEWLOG,
+            'name_format' => 'Y-m-d',
+            'message_format' => '%label% - %date% - %message%'
+        ))
+    )
+);
 /*
     const EMERGENCY = 1;
     const ALERT     = 2;
@@ -53,7 +64,7 @@ $app->log->setEnabled(true);
     const DEBUG     = 8;
 */
 
-$app->log->setLevel(\Slim\Log::WARN);
+$app->log->setLevel(\Slim\Log::DEBUG);
 
 //$app->log->debug("This is a test from the logger...");
     
@@ -95,6 +106,8 @@ require_once dirname(__FILE__) . '/routeattendance.php';
 require_once dirname(__FILE__) . '/routestats.php';
 require_once dirname(__FILE__) . '/routeutilqueries.php';
 require_once dirname(__FILE__) . '/utils.php';
+
+
 
 $app->run();
 

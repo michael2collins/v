@@ -1,7 +1,7 @@
 export class PaymentViewInstanceController {
   constructor(
     $log, $window,
-    $scope, StudentServices, Notification, $q, $uibModal, $filter, portalDataService
+    $scope, StudentServices, Notification, $q, $uibModal, $filter, portalDataService, UserServices
 
   ) {
     'ngInject';
@@ -15,27 +15,30 @@ export class PaymentViewInstanceController {
     this.Notification = Notification;
     this.selectedRow = $scope.$parent.$resolve.selectedRow;
     this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
 
   }
   $onDestroy() {
-    this.$log.debug("PaymentViewInstanceController dismissed");
-    this.$log.debugEnabled(false);
+    this.$log.log("PaymentViewInstanceController dismissed");
+    //this.$log.logEnabled(false);
   }
 
   $onInit() {
     var vm = this;
-    console.log("PaymentViewInstanceController ...");
 
-    vm.$log.debug('selectedRow', vm.selectedRow);
+    vm.$log.log('selectedRow', vm.selectedRow);
     vm.thisInvoice = {};
     vm.$scope.selectedRow = vm.selectedRow;
     vm.activate;
   }
   activate() {
     var vm = this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('PaymentViewInstanceController',vm.UserServices.isDebugEnabled());
+        }
     vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("PaymentViewInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("PaymentViewInstanceController started");
 
     });
 
@@ -88,14 +91,14 @@ export class PaymentViewInstanceController {
       payment_gross: vm.selectedRow.payment_gross
     };
 
-    vm.$log.debug('about emailInvoice ', thedata, updpath, 'Add');
+    vm.$log.log('about emailInvoice ', thedata, updpath, 'Add');
     return vm.StudentServices.emailInvoice(updpath, thedata)
       .then(function(data) {
-        vm.$log.debug('emailInvoice returned data');
-        vm.$log.debug(data);
+        vm.$log.log('emailInvoice returned data');
+        vm.$log.log(data);
         vm.thisInvoice = data;
-        vm.$log.debug(vm.thisInvoice);
-        vm.$log.debug(vm.thisInvoice.message);
+        vm.$log.log(vm.thisInvoice);
+        vm.$log.log(vm.thisInvoice.message);
         vm.message = vm.thisInvoice.message;
         if ((typeof vm.thisInvoice === 'undefined' || vm.thisInvoice.error === true) &&
           typeof data !== 'undefined') {
@@ -108,8 +111,8 @@ export class PaymentViewInstanceController {
 
         return vm.thisInvoice;
       }).catch(function(e) {
-        vm.$log.debug('email failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('email failure:');
+        vm.$log.log("error", e);
         vm.message = e;
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;

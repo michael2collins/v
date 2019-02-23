@@ -18,8 +18,8 @@ export class UserServices {
 
     getUserOptions(path) {
         var self=this;
-        self._$log.debug('getUserOptions service entered');
-        self._$log.debug('path', path);
+        self._$log.log('getUserOptions service entered');
+        self._$log.log('path', path);
         var request = self._$http({
             method: "GET",
             url: path,
@@ -31,7 +31,7 @@ export class UserServices {
 
     setUserOptions(path, thedata) {
         var self = this;
-        self._$log.debug('setUserOptions data before post :', thedata);
+        self._$log.log('setUserOptions data before post :', thedata);
         var request = self._$http({
             method: "POST",
             url: path,
@@ -58,7 +58,7 @@ export class UserServices {
 
         //cookies isn't working
         var cookiecheck = this._$cookies.getObject('globals');
-        //            self._$log.debug('cookie is:',cookiecheck, $cookies.getAll());
+        //            self._$log.log('cookie is:',cookiecheck, $cookies.getAll());
 
         if (typeof cookiecheck !== 'undefined') {
             if (typeof this.apikey !== 'undefined' && !this.Util.isEmptyObject(this.apikey)) {
@@ -81,16 +81,16 @@ export class UserServices {
 
     forgotpassword(path) {
         var self = this;
-        self._$log.debug('forgotpassword service entered');
-        self._$log.debug('path', path);
+        self._$log.log('forgotpassword service entered');
+        self._$log.log('path', path);
 
         return (self._$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     resetpassword(path) {
         var self = this;
-        self._$log.debug('resetpassword service entered');
-        self._$log.debug('path', path);
+        self._$log.log('resetpassword service entered');
+        self._$log.log('path', path);
 
         return (self._$http.get(path).then(self.handleSuccess, self.handleError));
     }
@@ -98,8 +98,8 @@ export class UserServices {
     changepassword(newpassword, oldpassword, username, email) {
         var self = this;
         var path = "/v1/changepassword";
-        self._$log.debug('changepasswordpassword service entered');
-        self._$log.debug('path', path);
+        self._$log.log('changepasswordpassword service entered');
+        self._$log.log('path', path);
         var data = {
             username: username,
             newpassword: newpassword,
@@ -124,7 +124,7 @@ export class UserServices {
             username: username,
             password: password
         };
-        self._$log.debug('UserServices login entered:', username, password, path, data);
+        self._$log.log('UserServices login entered:', username, password, path, data);
 
         var request = self._$http({
             method: "POST",
@@ -140,7 +140,7 @@ export class UserServices {
     SetCredentials(username, password, apiKey) {
         var self = this;
         //var authdata = username + ':' + password;
-        self._$log.debug('SetCredentials entered', username, apiKey);
+        self._$log.log('SetCredentials entered', username, apiKey);
         self.setapikey(apiKey);
 
         var authdata = apiKey;
@@ -164,21 +164,21 @@ export class UserServices {
         //    self._$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
         self._$http.defaults.headers.common['Authorization'] = authdata;
         //todo add expiration, secure, domain
-        self._$log.debug('SetCredentials globals', creds);
+        self._$log.log('SetCredentials globals', creds);
         self._$cookies.putObject('globals', creds, {
             "path": "/",
             "domain": "villaris.us",
             "secure": true,
             "expires": expireDate
         });
-        self._$log.debug('SetCredentials exit', self._$cookies.getObject('globals'));
+        self._$log.log('SetCredentials exit', self._$cookies.getObject('globals'));
 
     }
 
     ResetCredentials(username, apiKey) {
         var self = this;
         //var authdata = username + ':' + password;
-        self._$log.debug('ResetCredentials entered', username, apiKey);
+        self._$log.log('ResetCredentials entered', username, apiKey);
         self.setapikey(apiKey);
 
         var authdata = apiKey;
@@ -196,7 +196,7 @@ export class UserServices {
 
     ClearCredentials() {
         var self = this;
-        self._$log.debug('ClearCredentials entered');
+        self._$log.log('ClearCredentials entered');
 
         self._$rootScope.globals = {};
 //        self._$cookieStore.remove('globals');
@@ -217,7 +217,7 @@ export class UserServices {
         //    self._$http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
         self._$http.defaults.headers.common['Authorization'] = '';
         //todo add expiration, secure, domain
-        self._$log.debug('SetCredentials globals', creds);
+        self._$log.log('SetCredentials globals', creds);
         self._$cookies.putObject('globals', creds, {
             "path": "/",
             "domain": "villaris.us",
@@ -229,26 +229,38 @@ export class UserServices {
 
     getUserNames(path) {
         var self = this;
-        self._$log.debug('getUserNames service entered');
-        self._$log.debug('path', path);
+        self._$log.log('getUserNames service entered');
+        self._$log.log('path', path);
 
         return (self._$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
+    setUserDetailOptions(input) {
+        this.userdetails.options = input;
+    }
+    isDebugEnabled() {
+        if (_.isEmpty(this.userdetails)) {
+//            console.log('isdebugenabled is empty');
+            return false;
+        } else {
+ //           console.log('isdebugenabled is not empty',this.userdetails.options );
+            return JSON.parse(this.userdetails.options).debug == "Off" ? false : true;
+        }
+    }
     getUserDetails() {
         var self = this;
-        self._$log.debug('getUserDetails service entered', self.userdetails);
+        self._$log.log('getUserDetails service entered', self.userdetails);
 //        if (self.__.isEmpty(self.userdetails) && self.isapikey()) {
         var cookiecheck = self._$cookies.getObject('globals');
         if (self.__.isEmpty(self.userdetails) && cookiecheck !== undefined) {
             var usernm = cookiecheck.currentUser.username;
-            self._$log.debug('getUserDetails service refresh user', usernm);
+            self._$log.log('getUserDetails service refresh user', usernm);
 
             var path = "../v1/userdetails?usernm=" + usernm;
 
             return self.getUserNames(path).then(function(data) {
-                    self._$log.debug('userServices getUserNames returned data');
-                    self._$log.debug(data);
+                    self._$log.log('userServices getUserNames returned data');
+                    self._$log.log(data);
                     self.userdetails.username = data.username;
                     self.userdetails.firstname = data.firstname;
                     self.userdetails.lastname = data.lastname;
@@ -260,7 +272,7 @@ export class UserServices {
                     return self.userdetails;
                 },
                 function(error) {
-                    self._$log.debug('Caught an error getUserDetails refresh user , going to notify:', error);
+                    self._$log.log('Caught an error getUserDetails refresh user , going to notify:', error);
 
                     //                    Notification.error({message: error, delay: 5000});
                     return (self._$q.reject(error));
@@ -277,7 +289,7 @@ export class UserServices {
 
     createUser(path, thedata) {
         var self = this;
-        self._$log.debug('createUser data before post :', thedata);
+        self._$log.log('createUser data before post :', thedata);
         var request = self._$http({
             method: "POST",
             url: path,
@@ -290,7 +302,7 @@ export class UserServices {
 
     updateUser(path, thedata) {
         var self = this;
-        self._$log.debug('updateUser data before post :', thedata);
+        self._$log.log('updateUser data before post :', thedata);
         var request = self._$http({
             method: "PUT",
             url: path,
@@ -306,10 +318,10 @@ export class UserServices {
     // ---
     handleError(response) {
         var self = this;
-        self._$log.debug('UserServices failure:');
-        self._$log.debug(response);
-        self._$log.debug('status', response.status);
-        self._$log.debug('config', response.config);
+        self._$log.log('UserServices failure:');
+        self._$log.log(response);
+        self._$log.log('status', response.status);
+        self._$log.log('config', response.config);
         //debugger;
         if (!angular.isObject(response.data) ||
             !response.data.message
@@ -324,15 +336,15 @@ export class UserServices {
     // from the API response payload.
      handleSuccess(response) {
 /*        var self = this;
-        self._$log.debug('UserServices success:');
-        self._$log.debug(response);
+        self._$log.log('UserServices success:');
+        self._$log.log(response);
 */
         return (response.data);
     }
 
     handleLogin(response) {
 /*        var self = this;
-        self._$log.debug('UserServices self.handleLogin success:');
+        self._$log.log('UserServices self.handleLogin success:');
         
         self.userdetails.username = response.data.username;
         self.userdetails.firstname = response.data.firstname;
@@ -340,7 +352,7 @@ export class UserServices {
         self.userdetails.email = response.data.email;
         self.userdetails.pictureurl = response.data.pictureurl;
         self.userdetails.school = response.data.school;
-        self._$log.debug(response);
+        self._$log.log(response);
   */      
         return (response.data);
     }

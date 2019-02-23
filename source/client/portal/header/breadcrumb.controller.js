@@ -5,22 +5,23 @@ export class BreadcrumbController {
         $scope,
         userServices,
         portalDataService,
-        $log
+        $log,
+        UserServices
     ) {
         'ngInject';
-        console.log('breadcrumb portal controller');
 
         this.$scope = $scope;
         this.UserServices = userServices;
         this.$log = $log;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
 
     }
 
 
     $onInit() {
         var vm = this;
-        vm.$log.debug("breadcrumb controller entered");
+        vm.$log.log("breadcrumb controller entered");
         vm.userdta = { 'initial': 'init' };
         vm.data = null;
         vm.init();
@@ -28,23 +29,28 @@ export class BreadcrumbController {
     }
 
     $onDestroy() {
-        this.$log.debug("breadcrumb dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("breadcrumb dismissed");
+        //this.$log.logEnabled(false);
     }
 
     init() {
         var vm = this;
+
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('BreadcrumbController',vm.UserServices.isDebugEnabled());
+        }
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             if (event == undefined) {
                 return;
             }
-            vm.$log.debugEnabled(true);
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
             if (current.originalPath !== '/page-signin') {
-                vm.$log.debug('routechange in breadcrumb for success');
+                vm.$log.log('routechange in breadcrumb for success');
                 vm.data = vm.portalDataService.get(current.originalPath);
                 vm.isokf();
                 vm.getUserDetails().then(function() {
-                    vm.$log.debug('q return   getUserDetails returned');
+                    vm.$log.log('q return   getUserDetails returned');
                 });
             }
             else {
@@ -57,15 +63,15 @@ export class BreadcrumbController {
     getUserDetails() {
         var vm = this;
 
-        vm.$log.debug('breadcrumb controller getUserDetails entered');
+        vm.$log.log('breadcrumb controller getUserDetails entered');
         return vm.UserServices.getUserDetails().then(function(data) {
-                vm.$log.debug("breadcrumb controller service getuserdetails returned:", data);
+                vm.$log.log("breadcrumb controller service getuserdetails returned:", data);
                 vm.userdta = data;
                 return vm.userdta;
             },
 
             function(error) {
-                vm.$log.debug('Caught an error getUserDetails, going to notify:', error);
+                vm.$log.log('Caught an error getUserDetails, going to notify:', error);
                 vm.userdta = [];
                 vm.message = error;
                 return (vm.$q.reject(error));

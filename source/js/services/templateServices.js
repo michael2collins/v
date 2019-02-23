@@ -15,7 +15,7 @@ export class TemplateServices {
 */
     createtemplate(path, thedata) {
         var self = this;
-        self.$log.debug('createtemplate data before post :', thedata);
+        self.$log.log('createtemplate data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -28,7 +28,7 @@ export class TemplateServices {
 
     removetemplate(path, thedata) {
         var self = this;
-        self.$log.debug('removetemplate data before delete :', thedata);
+        self.$log.log('removetemplate data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -41,7 +41,7 @@ export class TemplateServices {
 
     updateTemplate(path, thedata) {
         var self = this;
-        self.$log.debug('updateTemplate data before put :', thedata);
+        self.$log.log('updateTemplate data before put :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -54,16 +54,16 @@ export class TemplateServices {
 
     gettemplateDetails(path) {
         var self = this;
-        self.$log.debug('gettemplateDetails service entered');
-        self.$log.debug('path', path);
+        self.$log.log('gettemplateDetails service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     gettemplateNames(path) {
         var self = this;
-        self.$log.debug('gettemplateNames service entered');
-        self.$log.debug('path', path);
+        self.$log.log('gettemplateNames service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }

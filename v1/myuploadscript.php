@@ -1,5 +1,5 @@
 <?php
-define("LOG", "/var/log/apache2/php/php.log", true);
+define("LOG", "/var/log/apache2/php/phpupload.log", true);
 
     $allGetVars = $_GET->get();
     error_log( print_R("myuploadscript entered:\n ", TRUE), 3, LOG);

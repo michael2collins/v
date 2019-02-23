@@ -21,15 +21,15 @@ export class RankSelectController {
     }
 
     $onDestroy() {
-        this.$log.debug("RankSelectController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("RankSelectController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
 
         /*        vm.getRankList().then(function() {
-                    vm.$log.debug('getRankTypes', vm.ranktypelist);
+                    vm.$log.log('getRankTypes', vm.ranktypelist);
                     // parent doesn't get notice, better for user to pick
                     //vm.rankpickparent.ranktype = vm.ranktypelist[0].ranktype;
                 });
@@ -44,7 +44,7 @@ export class RankSelectController {
     }
     update(prop, value) {
         var vm = this;
-        vm.$log.debug('update rankselect', prop, value);
+        vm.$log.log('update rankselect', prop, value);
         if (prop === 'rank') {
             //pass along value of whole parent?
             vm.onUpdate({ rankpickparent: vm.rankpickparent, prop: prop, value: vm.rankpickparent });
@@ -63,13 +63,13 @@ export class RankSelectController {
 
     getRank(theinput) {
         var vm = this;
-        vm.$log.debug('getrank', theinput, vm.rankpickparent.ranktype);
+        vm.$log.log('getrank', theinput, vm.rankpickparent.ranktype);
 
         return vm.StudentServices.getRank(vm.rankpickparent.ranktype).then(function(data) {
-            vm.$log.debug('controller getRank returned data', vm.rankpickparent.ranktype);
-            vm.$log.debug(data);
+            vm.$log.log('controller getRank returned data', vm.rankpickparent.ranktype);
+            vm.$log.log(data);
             vm.ranklist = data;
-            vm.$log.debug('controller getRank service data', vm.ranklist);
+            vm.$log.log('controller getRank service data', vm.ranklist);
             return vm.ranklist;
         });
 
@@ -82,8 +82,8 @@ export class RankSelectController {
 
             return vm.StudentServices.getRankList( path).then(function(data) {
 
-                vm.$log.debug('getRankList returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getRankList returned data');
+                vm.$log.log(data);
                 //            vm.RanksList = data;
                 if (data.rankList.length > 0) {
                     vm.RanksList = data;
@@ -100,7 +100,7 @@ export class RankSelectController {
 
                 return vm.RanksList;
             }, function(error) {
-                vm.$log.debug('Caught an error getRankList, going to notify:', error);
+                vm.$log.log('Caught an error getRankList, going to notify:', error);
                 vm.RanksList = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });

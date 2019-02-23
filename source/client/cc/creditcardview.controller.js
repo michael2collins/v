@@ -4,7 +4,7 @@ const { jQuery: $ } = window;
 export class CardViewInstanceController {
 	constructor(
 		$log, $window,
-		$scope, StudentServices, Notification, $q, $uibModal, $filter, portalDataService, $rootScope
+		$scope, StudentServices, Notification, $q, $uibModal, $filter, portalDataService, $rootScope,UserServices
 
 
 	) {
@@ -20,17 +20,17 @@ export class CardViewInstanceController {
 		this.Notification = Notification;
 		this.selectedRow = $scope.$parent.$resolve.selectedRow;
 		this.portalDataService = portalDataService;
+		this.UserServices = UserServices;
 
 	}
 	$onDestroy() {
 		var vm = this;
-		this.$log.debug("CardViewInstanceController dismissed");
-		this.$log.debugEnabled(false);
+		this.$log.log("CardViewInstanceController dismissed");
+		//this.$log.logEnabled(false);
 	}
 
 	$onInit() {
 		var vm = this;
-		console.log("CardViewInstanceController ...");
 
 		vm.stripe = {};
 
@@ -48,11 +48,11 @@ export class CardViewInstanceController {
     	var vm=this;
         var path="../v1/stripepub";
         vm.StudentServices.getStripepub(path).then(function(data) {
-            vm.$log.debug('getStripepub returned', data);
+            vm.$log.log('getStripepub returned', data);
             vm.$rootScope.stripe = Stripe(data.stripepub);
 
         }, function(error) {
-            vm.$log.debug('Caught an error getStripepub:', error);
+            vm.$log.log('Caught an error getStripepub:', error);
 
         });
 
@@ -60,9 +60,13 @@ export class CardViewInstanceController {
     
 	activate() {
 		var vm = this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('CardViewInstanceController',vm.UserServices.isDebugEnabled());
+        }
+		
 		vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-			vm.$log.debugEnabled(true);
-			vm.$log.debug("CardViewInstanceController started");
+			//vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+			vm.$log.log("CardViewInstanceController started");
 
 		});
 		vm.portalDataService.Portlet('creditcardview.controller.js');

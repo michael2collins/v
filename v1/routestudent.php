@@ -1,15 +1,15 @@
 <?php
 
-$app->put('/pic', 'authenticate', function() use($app) {
+$app->put('/pic', 'authenticate', 'setDebug', function() use($app) {
 
-    error_log( print_R("before pic request\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before pic request\n", TRUE ));
 
     $request = $app->request();
     $response = array();
     
     $body = $request->getBody();
     $student = json_decode($body);
-    error_log( print_R($student, TRUE ), 3, LOG);
+    $app->log->debug( print_R($student, TRUE ));
 
     //global $user_id;
     $studentid = $student->ID;
@@ -27,10 +27,10 @@ $app->put('/pic', 'authenticate', function() use($app) {
         $response["error"] = false;
         $response["message"] = "Pic created successfully";
         $response["pic_rslt"] = $pic_rslt;
-        error_log( print_R("picnm created: $pic_rslt\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("picnm created: $pic_rslt\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after Pic result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after Pic result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to save picture. Please try again";
         echoRespnse(400, $response);
@@ -38,18 +38,18 @@ $app->put('/pic', 'authenticate', function() use($app) {
     
 });
 
-$app->post('/picupload', function() use ($app) {
+$app->post('/picupload','setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("picupload entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("picupload entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $picnm = '';
 
     if(array_key_exists('picnm', $allGetVars)){
         $picnm = $allGetVars['picnm'];
     } else {
-        error_log( print_R("picupload result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("picupload result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to upload picture. Please try again";
         echoRespnse(400, $response);
@@ -68,22 +68,22 @@ $app->post('/picupload', function() use ($app) {
             echoRespnse(400, $response);
         }        
    #$uploadPath = "/home/michael2collins/test/x.jpg";
-   error_log( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ),3, LOG);
+   $app->log->debug( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ),3, LOG);
 
         if(move_uploaded_file( $tempPath, $uploadPath )) {
             $response["error"] = false;
             $response["message"] = "Pic created successfully";
             $response["picname"] = $picnm;
-            error_log( print_R("Pic uploaded\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Pic uploaded\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R(error_get_last(), TRUE), 3, LOG);
+            $app->log->debug( print_R(error_get_last(), TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to upload. Error write to destination file";
             echoRespnse(400, $response);
         }
     } else {
-        error_log( print_R("picupload result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("picupload result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to upload picture. Please try again";
         echoRespnse(400, $response);
@@ -91,11 +91,11 @@ $app->post('/picupload', function() use ($app) {
 
 });
 
-$app->get('/eventnames', 'authenticate', function() use ($app) {
+$app->get('/eventnames', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("eventnames entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("eventnames entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $eventpartial = '';
 
@@ -124,7 +124,7 @@ $app->get('/eventnames', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/eventdetails', 'authenticate', function() use($app){
+$app->get('/eventdetails', 'authenticate', 'setDebug', function() use($app){
 /**
  * Listing event details for an event
  * method GET
@@ -132,8 +132,8 @@ $app->get('/eventdetails', 'authenticate', function() use($app){
  */
 
     $allGetVars = $app->request->get();
-    error_log( print_R("eventdetails entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("eventdetails entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $event = '';
 
@@ -141,7 +141,7 @@ $app->get('/eventdetails', 'authenticate', function() use($app){
         $event = $allGetVars['event'];
     }
 
-    error_log( print_R("eventdetails params: event: $event \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("eventdetails params: event: $event \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -180,7 +180,7 @@ $app->get('/eventdetails', 'authenticate', function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->post('/eventregistration','authenticate', function() use ($app) {
+$app->post('/eventregistration','authenticate', 'setDebug', function() use ($app) {
 /* Event Registration
  * url - /eventregistration
  * method - POST
@@ -197,14 +197,14 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
   //      $message            = $dataJsonDecode->message;
     //    echo $message;     //'Hello world'
 
-    error_log( print_R("eventregistration before insert\n", TRUE ), 3, LOG);
-//    error_log( print_R($data, TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("eventregistration before insert\n", TRUE ));
+//    $app->log->debug( print_R($data, TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $studentarr = array();
     $studentarr = $dataJsonDecode->thedata->selectedStudents;
 
-    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($studentarr, TRUE ));
 
     $Event      = (isset($dataJsonDecode->thedata->Event)     ? $dataJsonDecode->thedata->Event : "");
     $EventDate  = (isset($dataJsonDecode->thedata->EventDate) ? $dataJsonDecode->thedata->EventDate : "");
@@ -213,8 +213,8 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
     $EventType  = (isset($dataJsonDecode->thedata->EventType) ? $dataJsonDecode->thedata->EventType : "");
     $Location   = (isset($dataJsonDecode->thedata->Location)  ? $dataJsonDecode->thedata->Location : "");
 
-    error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
-    error_log( print_R("EventDate: $EventDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("event: $Event\n", TRUE ));
+    $app->log->debug( print_R("EventDate: $EventDate\n", TRUE ));
 
     $eventgood=0;
     $eventbad=0;
@@ -222,7 +222,7 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
     
     for($i = 0; $i < count($studentarr); $i++ ) {
 
-        error_log( print_R($studentarr[$i]->ContactID, TRUE ), 3, LOG);
+        $app->log->debug( print_R($studentarr[$i]->ContactID, TRUE ));
 
         $ContactID  = (isset($studentarr[$i]->ContactID) ? 
                         $studentarr[$i]->ContactID : "");
@@ -239,7 +239,7 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
         $Ordered    = (isset($studentarr[$i]->Ordered)   ? 
                         $studentarr[$i]->Ordered : "");
 
-        error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("ContactId: $ContactID\n", TRUE ));
 
         $db = new StudentDbHandler();
         $response = array();
@@ -251,14 +251,14 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
                                     );
     
         if ($event > 0) {
-            error_log( print_R("Event created: $event\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Event created: $event\n", TRUE ));
             $eventgood += 1;
         } else if ($event == RECORD_ALREADY_EXISTED) {
-            error_log( print_R("event already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("event already existed\n", TRUE ));
             $eventexists += 1;
         } else {
-            error_log( print_R("after createEvent result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $event, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createEvent result bad\n", TRUE));
+            $app->log->debug( print_R( $event, TRUE));
             $eventbad += 1;
         }
                         
@@ -269,16 +269,16 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
             $response["error"] = false;
             $response["message"] = "Event $eventgood created successfully";
             $response["event"] = $eventgood;
-            error_log( print_R("Event created: $eventgood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Event created: $eventgood\n", TRUE ));
             echoRespnse(201, $response);
         } else if ($eventexists > 0) {
             $response["error"] = true;
             $response["message"] = "Sorry, this $eventexists event already existed";
-            error_log( print_R("event already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("event already existed\n", TRUE ));
             echoRespnse(409, $response);
         } else {
-            error_log( print_R("after createEvent result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $eventbad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createEvent result bad\n", TRUE));
+            $app->log->debug( print_R( $eventbad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $evendbad event. Please try again";
             echoRespnse(400, $response);
@@ -292,7 +292,7 @@ $app->post('/eventregistration','authenticate', function() use ($app) {
 
 });
 
-$app->put('/eventregistration','authenticate', function() use ($app) {
+$app->put('/eventregistration','authenticate', 'setDebug', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -304,9 +304,9 @@ $app->put('/eventregistration','authenticate', function() use ($app) {
   //      $message            = $dataJsonDecode->message;
     //    echo $message;     //'Hello world'
 
-    error_log( print_R("eventregistration before update\n", TRUE ), 3, LOG);
-//    error_log( print_R($data, TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("eventregistration before update\n", TRUE ));
+//    $app->log->debug( print_R($data, TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $Event      = (isset($dataJsonDecode->thedata->Event)     ? 
                     $dataJsonDecode->thedata->Event : "");
@@ -327,9 +327,9 @@ $app->put('/eventregistration','authenticate', function() use ($app) {
     $Ordered    = (isset($dataJsonDecode->thedata->Ordered)   ? 
                     $dataJsonDecode->thedata->Ordered : "");
 
-    error_log( print_R("event: $Event\n", TRUE ), 3, LOG);
-    error_log( print_R("EventDate: $EventDate\n", TRUE ), 3, LOG);
-    error_log( print_R("ContactId: $ContactID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("event: $Event\n", TRUE ));
+    $app->log->debug( print_R("EventDate: $EventDate\n", TRUE ));
+    $app->log->debug( print_R("ContactId: $ContactID\n", TRUE ));
 
 
     $eventgood=0;
@@ -345,15 +345,15 @@ $app->put('/eventregistration','authenticate', function() use ($app) {
                                 );
 
     if ($event > 0) {
-        error_log( print_R("Event updated: $event\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Event updated: $event\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "Event created successfully";
         $eventgood = 1;
         $response["event"] = $eventgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after updateEvent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $event, TRUE), 3, LOG);
+        $app->log->debug( print_R("after updateEvent result bad\n", TRUE));
+        $app->log->debug( print_R( $event, TRUE));
         $eventbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to update event. Please try again";
@@ -363,8 +363,8 @@ $app->put('/eventregistration','authenticate', function() use ($app) {
 
 });
 
-$app->get('/userprefcols/:prefkey', 'authenticate', function($prefkey) {
-    error_log( print_R("userprefcols entered with pref: $prefkey\n ", TRUE), 3, LOG);
+$app->get('/userprefcols/:prefkey', 'authenticate', 'setDebug',function($prefkey) use ($app){
+    $app->log->debug( print_R("userprefcols entered with pref: $prefkey\n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -394,13 +394,13 @@ $app->get('/userprefcols/:prefkey', 'authenticate', function($prefkey) {
     }
     $row_cnt = $result->num_rows;
 
-    error_log( print_R("userprefcols responding\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("userprefcols responding\n ", TRUE));
 
     echoRespnse(200, $response);
 });
 
-$app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($app) {
-    error_log( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE), 3, LOG);
+$app->post('/userprefcols/:prefkey', 'authenticate','setDebug', function($prefkey) use ($app) {
+    $app->log->debug( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE));
 
 //    $userid = 1; //have to convert name to id
     global $user_id;
@@ -410,8 +410,8 @@ $app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($ap
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("before userprefcols post\n", TRUE ), 3, LOG);
-    error_log( print_R("prefkey: $prefkey\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before userprefcols post\n", TRUE ));
+    $app->log->debug( print_R("prefkey: $prefkey\n", TRUE ));
 
 
 
@@ -428,10 +428,10 @@ $app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($ap
         $response["error"] = false;
         $response["message"] = "Preference created successfully";
         $response["$pref_rslt"] = $pref_rslt;
-        error_log( print_R("Preference created: $pref_rslt\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Preference created: $pref_rslt\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after Preference result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after Preference result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create Preference. Please try again";
         echoRespnse(400, $response);
@@ -440,11 +440,11 @@ $app->post('/userprefcols/:prefkey', 'authenticate', function($prefkey) use ($ap
 
 });
 
-$app->get('/studentnames', 'authenticate', function() use ($app) {
+$app->get('/studentnames', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("studentnames entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("studentnames entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $theinput = '';
 
@@ -452,7 +452,7 @@ $app->get('/studentnames', 'authenticate', function() use ($app) {
         $theinput = $allGetVars['input'];
     }
 
-    error_log( print_R("studentnames params: theinput: $theinput \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("studentnames params: theinput: $theinput \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -476,11 +476,11 @@ $app->get('/studentnames', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/rankpartial', 'authenticate', function() use ($app) {
+$app->get('/rankpartial', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("rankpartial entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("rankpartial entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $theinput = '';
     $ranktype = '';
@@ -492,8 +492,8 @@ $app->get('/rankpartial', 'authenticate', function() use ($app) {
         $ranktype = $allGetVars['ranktype'];
     }
 
-    error_log( print_R("rankpartial params: theinput: $theinput \n ", TRUE), 3, LOG);
-    error_log( print_R("rankpartial params: ranktype: $ranktype \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("rankpartial params: theinput: $theinput \n ", TRUE));
+    $app->log->debug( print_R("rankpartial params: ranktype: $ranktype \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -519,11 +519,11 @@ $app->get('/rankpartial', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/rank', 'authenticate', function() use ($app) {
+$app->get('/rank', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("rank entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("rank entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $ranktype = '';
 
@@ -531,7 +531,7 @@ $app->get('/rank', 'authenticate', function() use ($app) {
         $ranktype = $allGetVars['ranktype'];
     }
 
-    error_log( print_R("rank params: ranktype: $ranktype \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("rank params: ranktype: $ranktype \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -557,11 +557,11 @@ $app->get('/rank', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/ranktypeexcluded', 'authenticate', function() use ($app) {
+$app->get('/ranktypeexcluded', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("ranktypeexcluded entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("ranktypeexcluded entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $ContactID = '';
     
@@ -569,7 +569,7 @@ $app->get('/ranktypeexcluded', 'authenticate', function() use ($app) {
         $ContactID = $allGetVars['ContactID'];
     }
 
-    error_log( print_R("rank params: ranktype contact: $ContactID \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("rank params: ranktype contact: $ContactID \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -590,11 +590,11 @@ $app->get('/ranktypeexcluded', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/studentrank', 'authenticate', function() use ($app) {
+$app->get('/studentrank', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("studentranks entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("studentranks entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $ContactID = '';
     
@@ -625,9 +625,9 @@ $app->get('/studentrank', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/studentcols', 'authenticate', function() use ($app) {
+$app->get('/studentcols', 'authenticate', 'setDebug', function() use ($app) {
 
-    error_log( print_R("studentcols entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("studentcols entered:\n ", TRUE));
 
 
     $response = array();
@@ -641,9 +641,9 @@ $app->get('/studentcols', 'authenticate', function() use ($app) {
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
-//        error_log( print_R("slist\n ", TRUE), 3, LOG);
-//        error_log( print_R($slist, TRUE), 3, LOG);
-//        error_log( print_R("\n ", TRUE), 3, LOG);
+//        $app->log->debug( print_R("slist\n ", TRUE));
+//        $app->log->debug( print_R($slist, TRUE));
+//        $app->log->debug( print_R("\n ", TRUE));
         
             $tmp["field"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
             $tmp["id"] = (empty($slist["Field"]) ? "NULL" : $slist["Field"]);
@@ -656,9 +656,9 @@ $app->get('/studentcols', 'authenticate', function() use ($app) {
         echoRespnse(200, $response);
     
 });
-$app->get('/studentcolmap', 'authenticate', function() use ($app) {
+$app->get('/studentcolmap', 'authenticate', 'setDebug', function() use ($app) {
 
-    error_log( print_R("studentcolmap entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("studentcolmap entered:\n ", TRUE));
 
 
     $response = array();
@@ -672,9 +672,9 @@ $app->get('/studentcolmap', 'authenticate', function() use ($app) {
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
         $tmp = array();
-//        error_log( print_R("slist\n ", TRUE), 3, LOG);
-//        error_log( print_R($slist, TRUE), 3, LOG);
-//        error_log( print_R("\n ", TRUE), 3, LOG);
+//        $app->log->debug( print_R("slist\n ", TRUE));
+//        $app->log->debug( print_R($slist, TRUE));
+//        $app->log->debug( print_R("\n ", TRUE));
         
             $tmp["name"] = (empty($slist["name"]) ? "NULL" : $slist["name"]);
             $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
@@ -686,16 +686,16 @@ $app->get('/studentcolmap', 'authenticate', function() use ($app) {
         echoRespnse(200, $response);
     
 });
-$app->delete('/studentcolmap','authenticate', function() use ($app) {
+$app->delete('/studentcolmap','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Studentcolmap before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Studentcolmap before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
@@ -703,7 +703,7 @@ $app->delete('/studentcolmap','authenticate', function() use ($app) {
     $all    = (isset($test->thedata->all) ? 
                     $test->thedata->all : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
     $StudentColMapgood=0;
     $StudentColMapbad=0;
@@ -715,31 +715,31 @@ $app->delete('/studentcolmap','authenticate', function() use ($app) {
                                     );
     
         if ($StudentColMap > 0) {
-            error_log( print_R("StudentColMap removed: $StudentColMap\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("StudentColMap removed: $StudentColMap\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "StudentColMap removed successfully";
             $StudentColMapgood = 1;
             $response["StudentColMap"] = $StudentColMapgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete StudentColMap result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $StudentColMap, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete StudentColMap result bad\n", TRUE));
+            $app->log->debug( print_R( $StudentColMap, TRUE));
             $StudentColMapbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove StudentColMap. Please try again";
             echoRespnse(400, $response);
         }
 });
-$app->post('/studentcolmap','authenticate',  function() use($app) {
+$app->post('/studentcolmap','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("studentcolmap post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("studentcolmap post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 // listtype, listkey, listvalue, listorder 
 
     $all          = (isset($dataJsonDecode->thedata->all)         ? $dataJsonDecode->thedata->all : "");
@@ -754,25 +754,25 @@ $app->post('/studentcolmap','authenticate',  function() use($app) {
     $res_id = $db->updateStudentColMap(
         $id, $type, $name, $all, $required
                                      );
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
         if ($res_id["success"] > 1) {
             $response["error"] = false;
             $response["message"] = "StudentColMap created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("StudentColMap created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("StudentColMap created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "StudentColMap updated successfully";
-            error_log( print_R("StudentColMap already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("StudentColMap already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after StudentColMap result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after StudentColMap result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create StudentColMap. Please try again";
@@ -780,12 +780,12 @@ $app->post('/studentcolmap','authenticate',  function() use($app) {
     }
 
 });
-$app->get('/samplestudents', 'authenticate', function() use($app){
+$app->get('/samplestudents', 'authenticate', 'setDebug', function() use($app){
 
     checkSecurity();
     global $user_id;
     
-    error_log( print_R("samplestudents entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("samplestudents entered:\n ", TRUE));
 
     $response = array();
 
@@ -845,7 +845,7 @@ $app->get('/samplestudents', 'authenticate', function() use($app){
 
 });
 
-$app->post('/studentrank', 'authenticate', function() use ($app) {
+$app->post('/studentrank', 'authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -853,15 +853,15 @@ $app->post('/studentrank', 'authenticate', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before insert\n", TRUE ));
 
     $ContactID = (isset($dataJsonDecode->thedata->ContactID) ? $dataJsonDecode->thedata->ContactID : "");
     $currentrank = (isset($dataJsonDecode->thedata->currentrank) ? $dataJsonDecode->thedata->currentrank : "");
     $ranktype = (isset($dataJsonDecode->thedata->ranktype) ? $dataJsonDecode->thedata->ranktype : "");
 
-    error_log( print_R("ContactID: $ContactID\n", TRUE ), 3, LOG);
-    error_log( print_R("currentrank: $currentrank\n", TRUE ), 3, LOG);
-    error_log( print_R("ranktype: $ranktype\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ContactID: $ContactID\n", TRUE ));
+    $app->log->debug( print_R("currentrank: $currentrank\n", TRUE ));
+    $app->log->debug( print_R("ranktype: $ranktype\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -875,16 +875,16 @@ $app->post('/studentrank', 'authenticate', function() use ($app) {
         $response["error"] = false;
         $response["message"] = "studentranks created successfully";
         $response["studentrank_id"] = $studentrank_id;
-        error_log( print_R("Student created: $studentrank_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Student created: $studentrank_id\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($studentrank_id == RECORD_ALREADY_EXISTED) {
         $response["error"] = true;
         $response["message"] = "Sorry, this already existed";
-        error_log( print_R("studentranks already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("studentranks already existed\n", TRUE ));
         echoRespnse(409, $response);
     } else {
-        error_log( print_R("after studentranks result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $studentrank_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after studentranks result bad\n", TRUE));
+        $app->log->debug( print_R( $studentrank_id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create studentranks. Please try again";
         echoRespnse(400, $response);
@@ -893,16 +893,16 @@ $app->post('/studentrank', 'authenticate', function() use ($app) {
 
 });
 
-$app->put('/studentrank','authenticate', function() use ($app) {
+$app->put('/studentrank','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("studentrank before update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("studentrank before update\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ranktype      = (isset($test->thedata->ranktype)     ? 
@@ -912,9 +912,9 @@ $app->put('/studentrank','authenticate', function() use ($app) {
     $ContactID    = (isset($test->thedata->ContactID) ? 
                     $test->thedata->ContactID : "");
 
-    error_log( print_R("ranktype: $ranktype\n", TRUE ), 3, LOG);
-    error_log( print_R("currentrank: $currentrank\n", TRUE ), 3, LOG);
-    error_log( print_R("ContactID: $ContactID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ranktype: $ranktype\n", TRUE ));
+    $app->log->debug( print_R("currentrank: $currentrank\n", TRUE ));
+    $app->log->debug( print_R("ContactID: $ContactID\n", TRUE ));
 
 
     $studenrankgood=0;
@@ -929,15 +929,15 @@ $app->put('/studentrank','authenticate', function() use ($app) {
                                 );
 
     if ($studenrank > 0) {
-        error_log( print_R("studenrank updated: $studenrank\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("studenrank updated: $studenrank\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "studenrank updated successfully";
         $studenrankgood = 1;
         $response["studenrank"] = $studenrankgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after updatestudenrank result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $studenrank, TRUE), 3, LOG);
+        $app->log->debug( print_R("after updatestudenrank result bad\n", TRUE));
+        $app->log->debug( print_R( $studenrank, TRUE));
         $studenrankbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to update studenrank. Please try again";
@@ -947,16 +947,16 @@ $app->put('/studentrank','authenticate', function() use ($app) {
 
 });
 
-$app->delete('/studentrank','authenticate', function() use ($app) {
+$app->delete('/studentrank','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("studentrank before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("studentrank before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ranktype      = (isset($test->thedata->ranktype)     ? 
@@ -964,8 +964,8 @@ $app->delete('/studentrank','authenticate', function() use ($app) {
     $ContactID    = (isset($test->thedata->ContactID) ? 
                     $test->thedata->ContactID : "");
 
-    error_log( print_R("ranktype: $ranktype\n", TRUE ), 3, LOG);
-    error_log( print_R("ContactID: $ContactID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ranktype: $ranktype\n", TRUE ));
+    $app->log->debug( print_R("ContactID: $ContactID\n", TRUE ));
 
 
     $studenrankgood=0;
@@ -980,15 +980,15 @@ $app->delete('/studentrank','authenticate', function() use ($app) {
                                 );
 
     if ($studenrank > 0) {
-        error_log( print_R("studenrank removed: $studenrank\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("studenrank removed: $studenrank\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "studenrank removed successfully";
         $studenrankgood = 1;
         $response["studenrank"] = $studenrankgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after deleteStudentRank result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $studenrank, TRUE), 3, LOG);
+        $app->log->debug( print_R("after deleteStudentRank result bad\n", TRUE));
+        $app->log->debug( print_R( $studenrank, TRUE));
         $studenrankbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove studenrank. Please try again";
@@ -998,22 +998,22 @@ $app->delete('/studentrank','authenticate', function() use ($app) {
 
 });
 
-$app->delete('/student','authenticate', function() use ($app) {
+$app->delete('/student','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Student before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Student before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
     $Studentgood=0;
     $Studentbad=0;
@@ -1046,22 +1046,22 @@ $app->delete('/student','authenticate', function() use ($app) {
                                     );
     
         if ($Student > 0) {
-            error_log( print_R("Student removed: $Student\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Student removed: $Student\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Student removed successfully";
             $Studentgood = 1;
             $response["Student"] = $Studentgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Student result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Student, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Student result bad\n", TRUE));
+            $app->log->debug( print_R( $Student, TRUE));
             $Studentbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove Student. Please try again";
             echoRespnse(400, $response);
         }
  /*   } else {
-            error_log( print_R("before delete Student result bad\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("before delete Student result bad\n", TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to remove Student. There are records that are still attached to the Student. Please remove those first";
             echoRespnse(400, $response);
@@ -1069,7 +1069,7 @@ $app->delete('/student','authenticate', function() use ($app) {
     */
 });
 
-$app->get('/students', 'authenticate', function() use($app){
+$app->get('/students', 'authenticate', 'setDebug', function() use($app){
 /**
  * Listing all tasks of particual user
  * method GET
@@ -1081,9 +1081,9 @@ $app->get('/students', 'authenticate', function() use($app){
     
     $allGetVars = $app->request->get();
     
-    error_log( print_R("students entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("students entered:\n ", TRUE));
     
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $contacttype = '';
     $thelimit = '';
@@ -1107,9 +1107,9 @@ $app->get('/students', 'authenticate', function() use($app){
         $ranktype = $allGetVars['ranktype'];
     }
 
-    error_log( print_R("students params: contacttype: $contacttype 
+    $app->log->debug( print_R("students params: contacttype: $contacttype 
     thelimit: $thelimit therank: $therank\n status: $status ranktype: $ranktype
-    ", TRUE), 3, LOG);
+    ", TRUE));
 
     $response = array();
     $fieldlist = array();
@@ -1125,7 +1125,7 @@ $app->get('/students', 'authenticate', function() use($app){
 
     while ($field = $fields->fetch_assoc()) {
         $fieldlist["prefcolumn"] = $field["prefcolumn"];
-        //                //error_log( print_R($fieldlist["prefcolumn"],TRUE));
+        //                //$app->log->debug( print_R($fieldlist["prefcolumn"],TRUE));
         array_push($response["fields"], $fieldlist);
     }
 
@@ -1136,23 +1136,23 @@ $app->get('/students', 'authenticate', function() use($app){
     $response["students"] = array();
 
     $fldcount=count($response["fields"]);
-    //            //error_log( print_R($fldcount,TRUE));
+    //            //$app->log->debug( print_R($fldcount,TRUE));
     while ($student = $result->fetch_assoc()) {
         $tmp = array();
         for($i = 0; $i < $fldcount; $i++ ) {
-            //error_log(" in loop " . $i);
+            //$app->log->debug(" in loop " . $i);
             $ff = $response["fields"][$i]["prefcolumn"];
-            //                    //error_log(print_R( $ff,TRUE));
+            //                    //$app->log->debug(print_R( $ff,TRUE));
             $tmp[$ff] = $student[$ff];
         }
         array_push($response["students"], $tmp);
     }
-    //            //error_log( print_R($response,TRUE));
+    //            //$app->log->debug( print_R($response,TRUE));
 
     echoRespnse(200, $response);
 });
 
-$app->get('/contacttypes', 'authenticate', function() {
+$app->get('/contacttypes', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1180,12 +1180,12 @@ $app->get('/contacttypes', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in contacttypes";
-        error_log( print_R("contacttypes bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("contacttypes bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
 
-$app->get('/students/:id', 'authenticate', function($student_id) {
+$app->get('/students/:id', 'authenticate', 'setDebug',function($student_id) use ($app){
     //  global $user_id;
 
     if (!isset($student_id)) {
@@ -1244,7 +1244,7 @@ $app->get('/students/:id', 'authenticate', function($student_id) {
     }
 });
 
-$app->get('/studenthistory/:id', 'authenticate', function($student_id) {
+$app->get('/studenthistory/:id', 'authenticate','setDebug', function($student_id) use ($app) {
 /**
  * get student contact history
  * method GET
@@ -1286,7 +1286,7 @@ $app->get('/studenthistory/:id', 'authenticate', function($student_id) {
         echoRespnse(404, $response);
     }
 });
-$app->get('/studentattend/:id', 'authenticate', function($student_id) {
+$app->get('/studentattend/:id', 'authenticate','setDebug', function($student_id) use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1334,7 +1334,7 @@ $app->get('/studentattend/:id', 'authenticate', function($student_id) {
     }
 });
 
-$app->get('/samplestudenthistory', 'authenticate', function() {
+$app->get('/samplestudenthistory', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1368,7 +1368,7 @@ $app->get('/samplestudenthistory', 'authenticate', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/samplestudentattendance', 'authenticate', function() {
+$app->get('/samplestudentattendance', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1415,7 +1415,7 @@ $app->get('/samplestudentattendance', 'authenticate', function() {
 });
 
 
-$app->put('/students/:id', 'authenticate', function($student_id) use($app) {
+$app->put('/students/:id', 'authenticate','setDebug', function($student_id) use($app) {
 /**
  * Updating existing student
  * method PUT
@@ -1424,13 +1424,13 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
  */
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
-    //error_log( print_R("before request", TRUE ));
+    //$app->log->debug( print_R("before request", TRUE ));
 
 
     $request = $app->request();
     $body = $request->getBody();
     $student = json_decode($body);
-    //error_log( print_R($student, TRUE ));
+    //$app->log->debug( print_R($student, TRUE ));
 
     //global $user_id;
     $LastName = $student->LastName;
@@ -1461,14 +1461,14 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     $instructorTitle = $student->instructorTitle;
     $pictureurl = $student->pictureurl;
 
-    error_log( print_R("before update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before update\n", TRUE ));
 
-    error_log( print_R("b4 lastnm\n" , TRUE ), 3, LOG);
-    error_log( print_R( $LastName, TRUE ), 3, LOG);
-    error_log( print_R("b4 fstnm\n " , TRUE ), 3, LOG);
-    error_log( print_R( $FirstName, TRUE ), 3, LOG);
-    error_log( print_R("b4 pic\n ", TRUE), 3, LOG);
-    error_log( print_R($pictureurl, TRUE), 3, LOG);
+    $app->log->debug( print_R("b4 lastnm\n" , TRUE ));
+    $app->log->debug( print_R( $LastName, TRUE ));
+    $app->log->debug( print_R("b4 fstnm\n " , TRUE ));
+    $app->log->debug( print_R( $FirstName, TRUE ));
+    $app->log->debug( print_R("b4 pic\n ", TRUE));
+    $app->log->debug( print_R($pictureurl, TRUE));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -1505,14 +1505,14 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
 
                                 );
     if ($result) {
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Student updated successfully";
     } else {
-        error_log( print_R("after upstu result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         // task failed to update
         $response["error"] = true;
         $response["message"] = "Student failed to update. Please try again!";
@@ -1520,7 +1520,7 @@ $app->put('/students/:id', 'authenticate', function($student_id) use($app) {
     echoRespnse(200, $response);
 });
 
-$app->get('/studentlists', 'authenticate', function() {
+$app->get('/studentlists', 'authenticate', 'setDebug', function() use ($app){
     $response = array();
     $db = new StudentDbHandler();
 
@@ -1569,18 +1569,18 @@ $app->get('/studentlists', 'authenticate', function() {
         }
     }
 
-    //error_log( print_R($response["ContactTypeList"], TRUE ));
-    //error_log( print_R($response["StudentSchoolList"], TRUE ));
-    //error_log( print_R($response["GuiSizeList"], TRUE ));
-    //error_log( print_R($response["ShirtSizeList"], TRUE ));
-    //error_log( print_R($response["BeltSizeList"], TRUE ));
-    //error_log( print_R($response["instructorTitleList"], TRUE ));
+    //$app->log->debug( print_R($response["ContactTypeList"], TRUE ));
+    //$app->log->debug( print_R($response["StudentSchoolList"], TRUE ));
+    //$app->log->debug( print_R($response["GuiSizeList"], TRUE ));
+    //$app->log->debug( print_R($response["ShirtSizeList"], TRUE ));
+    //$app->log->debug( print_R($response["BeltSizeList"], TRUE ));
+    //$app->log->debug( print_R($response["instructorTitleList"], TRUE ));
 
 
     echoRespnse(200, $response);
 });
 
-$app->post('/newstudent', 'authenticate', function() use ($app) {
+$app->post('/newstudent', 'authenticate', 'setDebug', function() use ($app) {
 /* Student Registration
  * url - /newstudent
  * method - POST
@@ -1593,16 +1593,16 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before insert\n", TRUE ));
 
 
     $LastName = (isset($dataJsonDecode->thedata->LastName) ? $dataJsonDecode->thedata->LastName : "");
     $Email = (isset($dataJsonDecode->thedata->Email) ? $dataJsonDecode->thedata->Email : "");
     $FirstName = (isset($dataJsonDecode->thedata->FirstName) ? $dataJsonDecode->thedata->FirstName : "");
 
-    error_log( print_R("lastname: $LastName\n", TRUE ), 3, LOG);
-    error_log( print_R("FirstName: $FirstName\n", TRUE ), 3, LOG);
-    error_log( print_R("email: $Email\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("lastname: $LastName\n", TRUE ));
+    $app->log->debug( print_R("FirstName: $FirstName\n", TRUE ));
+    $app->log->debug( print_R("email: $Email\n", TRUE ));
 
 
     $db = new StudentDbHandler();
@@ -1618,7 +1618,7 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
         $response["error"] = false;
         $response["message"] = "Student created successfully";
         $response["student_id"] = $student_id;
-        error_log( print_R("Student created: $student_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Student created: $student_id\n", TRUE ));
         $dt1=date("Y-m-d");
         $notificationid = createNotification('newstudent','student_id',$student_id);
         $histid = createStudentHistory($student_id,'StartDate',$dt1);
@@ -1626,11 +1626,11 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
     } else if ($student_id == RECORD_ALREADY_EXISTED) {
         $response["error"] = true;
         $response["message"] = "Sorry, this email and name already existed";
-        error_log( print_R("student already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("student already existed\n", TRUE ));
         echoRespnse(409, $response);
     } else {
-        error_log( print_R("after insertStudent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $student_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after insertStudent result bad\n", TRUE));
+        $app->log->debug( print_R( $student_id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create student. Please try again";
         echoRespnse(400, $response);
@@ -1639,7 +1639,7 @@ $app->post('/newstudent', 'authenticate', function() use ($app) {
 
 });
 
-$app->get('/eventsource', 'authenticate', function() use($app) {
+$app->get('/eventsource', 'authenticate', 'setDebug', function() use($app) {
 /**
  * get student data for creating events
  * method GET
@@ -1649,7 +1649,7 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
 
     $allGetVars = $app->request->get();
 
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $limit = '';
 
@@ -1799,12 +1799,12 @@ $app->get('/eventsource', 'authenticate', function() use($app) {
     }
 });
 
-$app->get('/coldefs', 'authenticate', function() use($app){
-    error_log( print_R("coldefs entered", TRUE), 3, LOG);
+$app->get('/coldefs', 'authenticate', 'setDebug', function() use($app){
+    $app->log->debug( print_R("coldefs entered", TRUE));
 
     $allGetVars = $app->request->get();
 
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $colkey = '';
     $colsubkey = '';
@@ -1816,15 +1816,15 @@ $app->get('/coldefs', 'authenticate', function() use($app){
         $colsubkey = $allGetVars['colsubkey'];
     }
 
-    $userid = 1; //have to convert name to id
+   // $userid = 1; //have to convert name to id
     //$prefkey = "allstudents";
 
-    error_log( print_R("coldefs params: userid: $userid colkey: $colkey colsubkey: $colsubkey\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("coldefs params: colkey: $colkey colsubkey: $colsubkey\n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
 
-    $result = $db->getColDefs($colkey, $colsubkey, $userid);
+    $result = $db->getColDefs($colkey, $colsubkey);
 
     $response["error"] = false;
     $response["gcolumns"] = array();
@@ -1833,16 +1833,16 @@ $app->get('/coldefs', 'authenticate', function() use($app){
 
 //    while ($slist = $result->fetch()) {
     $slist = $result->fetch_assoc();
-        error_log( print_R("colcontent\n ", TRUE), 3, LOG);
-        error_log( print_R("\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("colcontent\n ", TRUE));
+        $app->log->debug( print_R("\n ", TRUE));
    //     $tmp[] = $colcontent;
         $tmp[] = $slist["colcontent"];
 
     array_push($response["gcolumns"], $tmp);
 
-    error_log( print_R("coldefs responding\n ", TRUE), 3, LOG);
-    error_log( print_R($response["gcolumns"], TRUE), 3, LOG);
-    error_log( print_R("\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("coldefs responding\n ", TRUE));
+    $app->log->debug( print_R($response["gcolumns"], TRUE));
+    $app->log->debug( print_R("\n ", TRUE));
 
     $row_cnt = $result->num_rows;
 
@@ -1852,7 +1852,7 @@ $app->get('/coldefs', 'authenticate', function() use($app){
     } else {
         $response["error"] = true;
         $response["message"] = "error in coldef query";
-        error_log( print_R("coldef query bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("coldef query bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 
@@ -1860,12 +1860,12 @@ $app->get('/coldefs', 'authenticate', function() use($app){
     
 });
 
-$app->get('/coldeflist', 'authenticate', function() use($app){
-    error_log( print_R("coldeflist entered", TRUE), 3, LOG);
+$app->get('/coldeflist', 'authenticate', 'setDebug', function() use($app){
+    $app->log->debug( print_R("coldeflist entered", TRUE));
 
     $allGetVars = $app->request->get();
 
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $colkey = '';
 
@@ -1876,12 +1876,12 @@ $app->get('/coldeflist', 'authenticate', function() use($app){
     $response = array();
     $db = new StudentDbHandler();
 
-    $userid = 1; //have to convert name to id
+//    $userid = 1; //have to convert name to id
     //$prefkey = "allstudents";
 
-    error_log( print_R("coldefs params: userid: $userid colkey: $colkey\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("coldefs params:  colkey: $colkey\n ", TRUE));
 
-    $result = $db->getColDefList($colkey, $userid);
+    $result = $db->getColDefList($colkey);
 
     $response["error"] = false;
     $response["colsubkeys"] = array();
@@ -1891,17 +1891,17 @@ $app->get('/coldeflist', 'authenticate', function() use($app){
 //            $tmp["ID"] = (empty($slist["ID"]) ? "NULL" : $slist["ID"]);
         $tmp = array();
         
-        error_log( print_R("colsubkey\n ", TRUE), 3, LOG);
-        error_log( print_R($slist["colsubkey"], TRUE), 3, LOG);
-        error_log( print_R("\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("colsubkey\n ", TRUE));
+        $app->log->debug( print_R($slist["colsubkey"], TRUE));
+        $app->log->debug( print_R("\n ", TRUE));
         $tmp["col"] = $slist["colsubkey"];
         array_push($response["colsubkeys"], $tmp);
     }
 
 
-    error_log( print_R("coldeflist responding\n ", TRUE), 3, LOG);
-    error_log( print_R($response["colsubkeys"], TRUE), 3, LOG);
-    error_log( print_R("\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("coldeflist responding\n ", TRUE));
+    $app->log->debug( print_R($response["colsubkeys"], TRUE));
+    $app->log->debug( print_R("\n ", TRUE));
 
     $row_cnt = $result->num_rows;
 
@@ -1911,19 +1911,19 @@ $app->get('/coldeflist', 'authenticate', function() use($app){
     } else {
         $response["error"] = true;
         $response["message"] = "error in coldeflist query";
-        error_log( print_R("coldeflist query bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("coldeflist query bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 
 
 });
 
-$app->post('/coldef', 'authenticate', function() use ($app) {
+$app->post('/coldef', 'authenticate', 'setDebug', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
 
-    $userid = 1; //have to convert name to id
+//    $userid = 1; //have to convert name to id
 
     $response = array();
 
@@ -1933,19 +1933,19 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
   //      $message            = $dataJsonDecode->message;
     //    echo $message;     //'Hello world'
 
-    error_log( print_R("coldef before insert\n", TRUE ), 3, LOG);
-//    error_log( print_R($data, TRUE ), 3, LOG);
-//    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("coldef before insert\n", TRUE ));
+//    $app->log->debug( print_R($data, TRUE ));
+//    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
 
     $colkey = (isset($dataJsonDecode->thedata->colkey) ? $dataJsonDecode->thedata->colkey : "");
     $colsubkey = (isset($dataJsonDecode->thedata->colsubkey) ? $dataJsonDecode->thedata->colsubkey : "");
     $colcontent = (isset($dataJsonDecode->thedata->colcontent) ? $dataJsonDecode->thedata->colcontent : "");
 
-    error_log( print_R("colkey: $colkey\n", TRUE ), 3, LOG);
-    error_log( print_R("colsubkey: $colsubkey\n", TRUE ), 3, LOG);
-    error_log( print_R("colcontent:\n", TRUE ), 3, LOG);
-    error_log( print_R($colcontent, TRUE ), 3, LOG);
+    $app->log->debug( print_R("colkey: $colkey\n", TRUE ));
+    $app->log->debug( print_R("colsubkey: $colsubkey\n", TRUE ));
+    $app->log->debug( print_R("colcontent:\n", TRUE ));
+    $app->log->debug( print_R($colcontent, TRUE ));
 
 
     $db = new StudentDbHandler();
@@ -1954,23 +1954,23 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
     // updating task
     $colid = $db->createColDef($colkey,
                                  $colsubkey,
-                                 $colcontent, $userid
+                                 $colcontent
                                 );
 
     if ($colid > 0) {
         $response["error"] = false;
         $response["message"] = "colcontent created successfully";
         $response["$colid"] = $colid;
-        error_log( print_R("colcontent created: $colid\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("colcontent created: $colid\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($colid == RECORD_ALREADY_EXISTED) {
         $response["error"] = true;
         $response["message"] = "Sorry, this colcontent already existed";
-        error_log( print_R("colcontent already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("colcontent already existed\n", TRUE ));
         echoRespnse(409, $response);
     } else {
-        error_log( print_R("after colcontent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $colid, TRUE), 3, LOG);
+        $app->log->debug( print_R("after colcontent result bad\n", TRUE));
+        $app->log->debug( print_R( $colid, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create colcontent. Please try again";
         echoRespnse(400, $response);
@@ -1979,7 +1979,7 @@ $app->post('/coldef', 'authenticate', function() use ($app) {
 
 });
 
-$app->post('/email', 'authenticate', function() use ($app) {
+$app->post('/email', 'authenticate', 'setDebug', function() use ($app) {
     $response = array();
 
     // reading post params
@@ -1987,7 +1987,7 @@ $app->post('/email', 'authenticate', function() use ($app) {
         $dataJsonDecode     = json_decode($data);
 
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     global $user_id;
     global $school;
@@ -2010,16 +2010,16 @@ $app->post('/email', 'authenticate', function() use ($app) {
     $studentarr = array();
     $studentarr = $dataJsonDecode->thedata->emailHead->contacts;
 
-    error_log( print_R("email route subject: $subject\n", TRUE ), 3, LOG);
-    error_log( print_R("to: $to\n", TRUE ), 3, LOG);
-    error_log( print_R("body: $body\n", TRUE ), 3, LOG);
-    error_log( print_R("inout: $inout\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("email route subject: $subject\n", TRUE ));
+    $app->log->debug( print_R("to: $to\n", TRUE ));
+    $app->log->debug( print_R("body: $body\n", TRUE ));
+    $app->log->debug( print_R("inout: $inout\n", TRUE ));
 
     // get user
     if ($inout == "") {
         $response["error"] = true;
         $response["message"] = "error missing param inout email";
-        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("user email bad\n ", TRUE));
         echoRespnse(404, $response);
         $app->stop();
     } else if ( $inout == "out" ) {
@@ -2037,11 +2037,11 @@ $app->post('/email', 'authenticate', function() use ($app) {
         } 
         $row_cnt = $result->num_rows;
 
-        error_log( print_R("out: u $userid s $schl e $from\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("out: u $userid s $schl e $from\n ", TRUE));
     } else {
         $response["error"] = true;
         $response["message"] = "error missing param inout email $inout";
-        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("user email bad\n ", TRUE));
         echoRespnse(404, $response);
         $app->stop();
         
@@ -2050,7 +2050,7 @@ $app->post('/email', 'authenticate', function() use ($app) {
     if ($row_cnt == 1 && $userid != "NULL" && $schl != "NULL") {
         for($i = 0; $i < count($studentarr); $i++ ) {
     
-            error_log( print_R($studentarr[$i]->ID, TRUE ), 3, LOG);
+            $app->log->debug( print_R($studentarr[$i]->ID, TRUE ));
     
             $ContactID  = (isset($studentarr[$i]->ID) ? 
                             $studentarr[$i]->ID : "");
@@ -2072,11 +2072,11 @@ $app->post('/email', 'authenticate', function() use ($app) {
                 $response["error"] = false;
                 $response["message"] = "Message created successfully";
                 $response["message_id"] = $message_id;
-                error_log( print_R("Message created: $message_id\n", TRUE ), 3, LOG);
+                $app->log->debug( print_R("Message created: $message_id\n", TRUE ));
                 echoRespnse(201, $response);
             } else {
-                error_log( print_R("after insert message result bad\n", TRUE), 3, LOG);
-                error_log( print_R( $message_id, TRUE), 3, LOG);
+                $app->log->debug( print_R("after insert message result bad\n", TRUE));
+                $app->log->debug( print_R( $message_id, TRUE));
                 $response["error"] = true;
                 $response["message"] = "Failed to create message. Please try again";
                 echoRespnse(400, $response);
@@ -2085,13 +2085,13 @@ $app->post('/email', 'authenticate', function() use ($app) {
     } else {
         $response["error"] = true;
         $response["message"] = "error in getuserfor email";
-        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("user email bad\n ", TRUE));
         echoRespnse(404, $response);
     }
     
 
 });
-$app->post('/message',  function() use ($app) {
+$app->post('/message', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -2100,7 +2100,7 @@ $app->post('/message',  function() use ($app) {
         $dataJsonDecode     = json_decode($data);
 
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -2118,16 +2118,16 @@ $app->post('/message',  function() use ($app) {
     $cc = (isset($dataJsonDecode->thedata->emailHead->_cc) ? $dataJsonDecode->thedata->emailHead->_cc : "");
     $bcc = (isset($dataJsonDecode->thedata->emailHead->_bcc) ? $dataJsonDecode->thedata->emailHead->_bcc : "");
 
-    error_log( print_R("route subject: $subject\n", TRUE ), 3, LOG);
-    error_log( print_R("to: $to\n", TRUE ), 3, LOG);
-    error_log( print_R("body: $body\n", TRUE ), 3, LOG);
-    error_log( print_R("date: $emailDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("route subject: $subject\n", TRUE ));
+    $app->log->debug( print_R("to: $to\n", TRUE ));
+    $app->log->debug( print_R("body: $body\n", TRUE ));
+    $app->log->debug( print_R("date: $emailDate\n", TRUE ));
 
     // get user
     if ($inout == "") {
         $response["error"] = true;
         $response["message"] = "error missing param inout email";
-        error_log( print_R("user inout email bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("user inout email bad\n ", TRUE));
         echoRespnse(404, $response);
         $app->stop();
     } else if ($inout == "in") {
@@ -2142,9 +2142,9 @@ $app->post('/message',  function() use ($app) {
         } 
         $row_cnt = $result->num_rows;
         if ($row_cnt > 0 ) {
-            error_log( print_R("before insert $row_cnt, $userid, $schl\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("before insert $row_cnt, $userid, $schl\n", TRUE ));
         } else {
-            error_log( print_R("no user from email insert $row_cnt\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("no user from email insert $row_cnt\n", TRUE ));
             $userid='';
             $schl='';
         }
@@ -2152,7 +2152,7 @@ $app->post('/message',  function() use ($app) {
     } else {
         $response["error"] = true;
         $response["message"] = "error missing param inout email $inout";
-        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("user email bad\n ", TRUE));
         echoRespnse(404, $response);
         $app->stop();
         
@@ -2174,11 +2174,11 @@ $app->post('/message',  function() use ($app) {
             $response["error"] = false;
             $response["message"] = "Message created successfully";
             $response["message_id"] = $message_id;
-            error_log( print_R("Message created: $message_id\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Message created: $message_id\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after insert message result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $message_id, TRUE), 3, LOG);
+            $app->log->debug( print_R("after insert message result bad\n", TRUE));
+            $app->log->debug( print_R( $message_id, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create message. Please try again";
             echoRespnse(400, $response);
@@ -2187,17 +2187,17 @@ $app->post('/message',  function() use ($app) {
     } else {
         $response["error"] = true;
         $response["message"] = "error in getuserfor email";
-        error_log( print_R("user email bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("user email bad\n ", TRUE));
         echoRespnse(404, $response);
     }
     
 
 });
-$app->get('/emails', 'authenticate', function() use ($app) {
+$app->get('/emails', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("studentnames entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("studentnames entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $theinput = '';
 
@@ -2205,7 +2205,7 @@ $app->get('/emails', 'authenticate', function() use ($app) {
         $theinput = $allGetVars['input'];
     }
 
-    error_log( print_R("emails params: theinput: $theinput \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("emails params: theinput: $theinput \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2230,7 +2230,7 @@ $app->get('/emails', 'authenticate', function() use ($app) {
     
 });
 
-$app->get('/emailcount', 'authenticate', function() use($app) {
+$app->get('/emailcount', 'authenticate', 'setDebug', function() use($app) {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2260,11 +2260,11 @@ $app->get('/emailcount', 'authenticate', function() use($app) {
     }
 });
 
-$app->get('/emailview', 'authenticate', function() use($app) {
+$app->get('/emailview', 'authenticate', 'setDebug', function() use($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("emailview entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("emailview entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $theinput = '';
 
@@ -2315,20 +2315,20 @@ $app->get('/emailview', 'authenticate', function() use($app) {
         echoRespnse(404, $response);
     }
 });
-$app->post('/emailview', 'authenticate', function() use ($app) {
+$app->post('/emailview', 'authenticate', 'setDebug', function() use ($app) {
      $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before insert\n", TRUE ));
 
     $id = (isset($dataJsonDecode->thedata->id) ? $dataJsonDecode->thedata->id : "");
     $status = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "");
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
-    error_log( print_R("status: $status\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
+    $app->log->debug( print_R("status: $status\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -2341,11 +2341,11 @@ $app->post('/emailview', 'authenticate', function() use ($app) {
     if ($emailid > 0) {
         $response["error"] = false;
         $response["message"] = "email updated successfully";
-        error_log( print_R("Email updated: $emailid\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Email updated: $emailid\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $emailid, TRUE), 3, LOG);
+        $app->log->debug( print_R("after email result bad\n", TRUE));
+        $app->log->debug( print_R( $emailid, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to update email. Please try again";
         echoRespnse(400, $response);
@@ -2354,22 +2354,22 @@ $app->post('/emailview', 'authenticate', function() use ($app) {
     
 
 });
-$app->delete('/emailview','authenticate', function() use ($app) {
+$app->delete('/emailview','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("email before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("email before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $id      = (isset($test->thedata->id)     ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -2377,13 +2377,13 @@ $app->delete('/emailview','authenticate', function() use ($app) {
         $id );
 
     if ($result > 0) {
-        error_log( print_R("email removed: $id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("email removed: $id\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "email removed successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after email result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to remove email. Please try again";
         echoRespnse(400, $response);
@@ -2392,7 +2392,7 @@ $app->delete('/emailview','authenticate', function() use ($app) {
 
 });
 
-$app->get('/emaillist', 'authenticate', function() use($app) {
+$app->get('/emaillist', 'authenticate', 'setDebug', function() use($app) {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2436,20 +2436,20 @@ $app->get('/emaillist', 'authenticate', function() use($app) {
         echoRespnse(404, $response);
     }
 });
-$app->post('/emaillist', 'authenticate', function() use ($app) {
+$app->post('/emaillist', 'authenticate', 'setDebug', function() use ($app) {
      $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("before insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before insert\n", TRUE ));
 
     $id = (isset($dataJsonDecode->thedata->id) ? $dataJsonDecode->thedata->id : "");
     $status = (isset($dataJsonDecode->thedata->status) ? $dataJsonDecode->thedata->status : "");
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
-    error_log( print_R("status: $status\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
+    $app->log->debug( print_R("status: $status\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -2462,11 +2462,11 @@ $app->post('/emaillist', 'authenticate', function() use ($app) {
     if ($emailid > 0) {
         $response["error"] = false;
         $response["message"] = "email updated successfully";
-        error_log( print_R("Email updated: $emailid\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Email updated: $emailid\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $emailid, TRUE), 3, LOG);
+        $app->log->debug( print_R("after email result bad\n", TRUE));
+        $app->log->debug( print_R( $emailid, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to update email. Please try again";
         echoRespnse(400, $response);
@@ -2474,22 +2474,22 @@ $app->post('/emaillist', 'authenticate', function() use ($app) {
 
 });
 
-$app->delete('/emaillist','authenticate', function() use ($app) {
+$app->delete('/emaillist','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("email before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("email before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $id      = (isset($test->thedata->id)     ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -2497,13 +2497,13 @@ $app->delete('/emaillist','authenticate', function() use ($app) {
         $id );
 
     if ($result > 0) {
-        error_log( print_R("email removed: $id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("email removed: $id\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "email removed successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after email result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after email result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to remove email. Please try again";
         echoRespnse(400, $response);
@@ -2512,7 +2512,7 @@ $app->delete('/emaillist','authenticate', function() use ($app) {
 
 });
 
-$app->get('/notification', 'authenticate', function() use($app) {
+$app->get('/notification', 'authenticate', 'setDebug', function() use($app) {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2557,22 +2557,22 @@ $app->get('/notification', 'authenticate', function() use($app) {
     }
 });
 
-$app->delete('/notification','authenticate', function() use ($app) {
+$app->delete('/notification','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("notification before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("notification before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $id      = (isset($test->thedata->id)     ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -2580,13 +2580,13 @@ $app->delete('/notification','authenticate', function() use ($app) {
         $id );
 
     if ($result > 0) {
-        error_log( print_R("notification removed: $id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("notification removed: $id\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "notification removed successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after notification result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after notification result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to remove notification. Please try again";
         echoRespnse(400, $response);
@@ -2595,8 +2595,8 @@ $app->delete('/notification','authenticate', function() use ($app) {
 
 });
 
-$app->post('/paid',   function() use($app, $ipn){
-    error_log( print_R("paid entered:\n ", TRUE), 3, LOG);
+$app->post('/paid', 'setDebug',  function() use($app, $ipn){
+    $app->log->debug( print_R("paid entered:\n ", TRUE));
 
 //only setup for natick at present
     $school='Natick';
@@ -2608,17 +2608,17 @@ $app->post('/paid',   function() use($app, $ipn){
 // Use the sandbox endpoint during testing.
     $ipn->useSandbox();
     $ipnurl = $ipn->getPaypalUri();
-    error_log( print_R("use sand: $ipnurl\n", TRUE), 3, LOG);
+    $app->log->debug( print_R("use sand: $ipnurl\n", TRUE));
     
 //    $ipn->usePHPCerts();
-//    error_log( print_R("use php certs:\n", TRUE), 3, LOG);
+//    $app->log->debug( print_R("use php certs:\n", TRUE));
 
     $paymentprocessor = 'paypal';
 
     $verified = $ipn->verifyIPN();
 //testing
 //    $verified = true;
-    error_log( print_R("after verify:\n $verified\n", TRUE), 3, LOG);
+    $app->log->debug( print_R("after verify:\n $verified\n", TRUE));
 
 
     /*
@@ -2628,8 +2628,8 @@ $app->post('/paid',   function() use($app, $ipn){
      */
 
 if ($verified) {
-    error_log( print_R("verified\n", TRUE), 3, LOG);
-    error_log( print_R($ipn->getOutput(), TRUE), 3, LOG);
+    $app->log->debug( print_R("verified\n", TRUE));
+    $app->log->debug( print_R($ipn->getOutput(), TRUE));
     
     $result = $ipn->getOutput();
 
@@ -2682,7 +2682,7 @@ if ($verified) {
             $school
                                     );
     
-            error_log( print_R("Payment created: $paid\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Payment created: $paid\n", TRUE ));
             $xn = $result['txn_id'];
 
             $result = $db->getPayment($xn);
@@ -2738,7 +2738,7 @@ if ($verified) {
                     $to = $tmp["Email"];
                 emailnotify($to , $subject, $message);
             //    emailnotify('villaris.us@gmail.com', $subject, $message);
-                error_log( print_R("email to send: $to, $subject, $message\n", TRUE ), 3, LOG);
+                $app->log->debug( print_R("email to send: $to, $subject, $message\n", TRUE ));
     
                 }
                 
@@ -2747,8 +2747,8 @@ if ($verified) {
 
     } // if result
     else {
-            error_log( print_R("after createPayment  result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $result, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createPayment  result bad\n", TRUE));
+            $app->log->debug( print_R( $result, TRUE));
         
     }    
 
@@ -2759,8 +2759,8 @@ if ($verified) {
 
     } catch (Exception $e) {
       // Something else happened, completely unrelated to Stripe
-        error_log( print_R("paypal paid exception\n ", TRUE), 3, LOG);
-        error_log( print_R($e, TRUE), 3, LOG);
+        $app->log->debug( print_R("paypal paid exception\n ", TRUE));
+        $app->log->debug( print_R($e, TRUE));
     }    
      
 // Reply with an empty 200 response to indicate to paypal the IPN was received correctly.
@@ -2769,7 +2769,7 @@ header("HTTP/1.1 200 OK");
 
 });
 
-$app->post('/invoice', 'authenticate',  function() use ($app) {
+$app->post('/invoice', 'authenticate','setDebug',  function() use ($app) {
 
     $response = array();
 
@@ -2777,8 +2777,8 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("invoice before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoice before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $invoice    = uniqid("lessons",true);
 
@@ -2795,7 +2795,7 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
     $mailoption     = (isset($dataJsonDecode->thedata->mailoption) ? $dataJsonDecode->thedata->mailoption : "NULL");
     $payfor         = (isset($dataJsonDecode->thedata->payfor) ? $dataJsonDecode->thedata->payfor : "NULL");
 
-    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoiceDate: $invoiceDate\n", TRUE ));
 
     $invoicegood=0;
     $invoicebad=0;
@@ -2840,19 +2840,19 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
                                 );
 
     if ($return > 0) {
-        error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice created: $paymentid $return\n", TRUE ));
         if ($mailoption == "Email") {
             genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
         } else {
-            error_log( print_R("invoice but no email option\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("invoice but no email option\n", TRUE ));
         }       
         $invoicegood += 1;
     } else if ($invoice == RECORD_ALREADY_EXISTED) {
-        error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice already existed\n", TRUE ));
         $invoiceexists += 1;
     } else {
-        error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $invoice, TRUE), 3, LOG);
+        $app->log->debug( print_R("after createinvoice result bad\n", TRUE));
+        $app->log->debug( print_R( $invoice, TRUE));
         $invoicebad += 1;
     }
     //as long as one worked, return success
@@ -2865,16 +2865,16 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
         }       
         
         $response["invoice"] = $invoicegood;
-        error_log( print_R("invoice created: $invoicegood\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice created: $invoicegood\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($invoiceexists > 0) {
         $response["error"] = true;
         $response["message"] = "Sorry, this $invoiceexists invoice already existed";
-        error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice already existed\n", TRUE ));
         echoRespnse(409, $response);
     } else {
-        error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $invoicebad, TRUE), 3, LOG);
+        $app->log->debug( print_R("after createinvoice result bad\n", TRUE));
+        $app->log->debug( print_R( $invoicebad, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create $invoicebad invoice. Please try again";
         echoRespnse(400, $response);
@@ -2882,7 +2882,7 @@ $app->post('/invoice', 'authenticate',  function() use ($app) {
     
 });
 
-$app->post('/invoiceemail', 'authenticate',  function() use ($app) {
+$app->post('/invoiceemail', 'authenticate','setDebug',  function() use ($app) {
 
     $response = array();
 
@@ -2890,8 +2890,8 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("invoiceemail before send\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoiceemail before send\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $invoice    = uniqid("lessons",true);
 
@@ -2908,7 +2908,7 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
     $invoice        = (isset($dataJsonDecode->thedata->invoice) ? $dataJsonDecode->thedata->invoice : "NULL");
     $payfor         = (isset($dataJsonDecode->thedata->payfor) ? $dataJsonDecode->thedata->payfor : "NULL");
 
-    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoiceDate: $invoiceDate\n", TRUE ));
 
     $invoicegood=1;
     $dayOfMonth = date("j");
@@ -2934,11 +2934,11 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
         $response["error"] = false;
         $response["message"] = "invoice notified successfully";
         $response["invoice"] = $invoicegood;
-        error_log( print_R("invoice email sent: $invoicegood\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice email sent: $invoicegood\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after invoice mail result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $invoicebad, TRUE), 3, LOG);
+        $app->log->debug( print_R("after invoice mail result bad\n", TRUE));
+        $app->log->debug( print_R( $invoicebad, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to email invoice. Please try again";
         echoRespnse(400, $response);
@@ -2946,7 +2946,7 @@ $app->post('/invoiceemail', 'authenticate',  function() use ($app) {
     
 });
 
-$app->post('/paymentemail', 'authenticate',  function() use ($app) {
+$app->post('/paymentemail', 'authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -2954,8 +2954,8 @@ $app->post('/paymentemail', 'authenticate',  function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("invoiceemail before send\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoiceemail before send\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $invoice    = uniqid("lessons",true);
 
@@ -2996,7 +2996,7 @@ $app->post('/paymentemail', 'authenticate',  function() use ($app) {
         $quantity5   = (isset($dataJsonDecode->thedata->quantity5) ? $dataJsonDecode->thedata->quantity5 : "NULL");
         $payment_gross   = (isset($dataJsonDecode->thedata->payment_gross) ? $dataJsonDecode->thedata->payment_gross : "NULL");
      
-    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoiceDate: $invoiceDate\n", TRUE ));
 
     $invoicegood=1;
     $dayOfMonth = date("j");
@@ -3026,11 +3026,11 @@ $app->post('/paymentemail', 'authenticate',  function() use ($app) {
         $response["error"] = false;
         $response["message"] = "payment notified successfully";
         $response["invoice"] = $invoicegood;
-        error_log( print_R("payment email sent: $invoicegood\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("payment email sent: $invoicegood\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after payment mail result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $invoicebad, TRUE), 3, LOG);
+        $app->log->debug( print_R("after payment mail result bad\n", TRUE));
+        $app->log->debug( print_R( $invoicebad, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to email payment receipt. Please try again";
         echoRespnse(400, $response);
@@ -3038,16 +3038,16 @@ $app->post('/paymentemail', 'authenticate',  function() use ($app) {
     
 });
 
-$app->put('/invoice','authenticate', function() use ($app) {
+$app->put('/invoice','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("invoice before update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoice before update\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $invoice = json_decode($body);
-    error_log( print_R($invoice, TRUE ), 3, LOG);
+    $app->log->debug( print_R($invoice, TRUE ));
 
     if (isset($invoice->thedata->id)) {
         $id =  $invoice->thedata->id;
@@ -3062,11 +3062,11 @@ $app->put('/invoice','authenticate', function() use ($app) {
     $payfor     = (isset($invoice->thedata->payfor)     ? 
                     $invoice->thedata->payfor : "");
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
-    error_log( print_R("amt: $amt\n", TRUE ), 3, LOG);
-    error_log( print_R("invdate: $invdate\n", TRUE ), 3, LOG);
-    error_log( print_R("status: $status\n", TRUE ), 3, LOG);
-    error_log( print_R("payfor: $payfor\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
+    $app->log->debug( print_R("amt: $amt\n", TRUE ));
+    $app->log->debug( print_R("invdate: $invdate\n", TRUE ));
+    $app->log->debug( print_R("status: $status\n", TRUE ));
+    $app->log->debug( print_R("payfor: $payfor\n", TRUE ));
 
 
     $invoicegood=0;
@@ -3081,15 +3081,15 @@ $app->put('/invoice','authenticate', function() use ($app) {
                                 );
 
     if ($invoice > 0) {
-        error_log( print_R("invoice updated: $invoice\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice updated: $invoice\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "invoice updated successfully";
         $invoicegood = 1;
         $response["invoice"] = $invoicegood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after update invoice result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $invoice, TRUE), 3, LOG);
+        $app->log->debug( print_R("after update invoice result bad\n", TRUE));
+        $app->log->debug( print_R( $invoice, TRUE));
         $invoicebad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to update invoice. Please try again";
@@ -3099,7 +3099,7 @@ $app->put('/invoice','authenticate', function() use ($app) {
 
 });
 
-$app->post('/invoices',  function() use ($app) {
+$app->post('/invoices', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -3107,8 +3107,8 @@ $app->post('/invoices',  function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("invoice before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoice before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
@@ -3117,7 +3117,7 @@ $app->post('/invoices',  function() use ($app) {
     $status   = 'new';
     $payfor = "lessons";
 
-    error_log( print_R("invoiceDate: $invoiceDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoiceDate: $invoiceDate\n", TRUE ));
 
     $invoicegood=0;
     $invoicebad=0;
@@ -3135,8 +3135,8 @@ $app->post('/invoices',  function() use ($app) {
 
         // looping through result and preparing  arrays
         while ($slist = $result->fetch_assoc()) {
-            error_log( print_R("after getInvoiceList result cnt\n", TRUE), 3, LOG);
-            error_log( print_R( count($slist), TRUE), 3, LOG);
+            $app->log->debug( print_R("after getInvoiceList result cnt\n", TRUE));
+            $app->log->debug( print_R( count($slist), TRUE));
             
             if (count($slist) > 0) {
                 $tmp = array();
@@ -3163,21 +3163,21 @@ $app->post('/invoices',  function() use ($app) {
                 $tmp["schoolReplySignature"] =  (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
                 $tmp["overduecnt"]          = (empty($slist["overduecnt"]) ? 0 : $slist["overduecnt"]);
 
-       //     error_log( print_R( $tmp, TRUE), 3, LOG);
+       //     $app->log->debug( print_R( $tmp, TRUE));
 
                 array_push($studentarr["InvoiceList"], $tmp);
             }
         }
     } else {
-            error_log( print_R("after getInvoiceList result empty\n", TRUE), 3, LOG);
-            error_log( print_R( $result, TRUE), 3, LOG);
+            $app->log->debug( print_R("after getInvoiceList result empty\n", TRUE));
+            $app->log->debug( print_R( $result, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to find invoices. Please try again";
             echoRespnse(404, $response);
     }
                                 
 
-  //  error_log( print_R($studentarr, TRUE ), 3, LOG);
+  //  $app->log->debug( print_R($studentarr, TRUE ));
      
     for($i = 0; $i < count($studentarr["InvoiceList"]); $i++ ) {
 
@@ -3251,7 +3251,7 @@ $app->post('/invoices',  function() use ($app) {
         
         //check if overdue
         if ($studentarr["InvoiceList"][$i]["overduecnt"] > 0) {
-         //   error_log( print_R("invoice overdue: $studentarr["InvoiceList"][$i]["paymentid"] \n", TRUE ), 3, LOG);
+         //   $app->log->debug( print_R("invoice overdue: $studentarr["InvoiceList"][$i]["paymentid"] \n", TRUE ));
         //todo: decide if we need overdue date logic too
         genOverdueEmail($payerName,$to,$schEmail,$schSig);
 /*
@@ -3274,13 +3274,13 @@ $message = "
 
         //    emailnotify($to, $subject, $message);
             emailnotify('villaris.us@gmail.com', $subject, $message);
-            error_log( print_R("overdue email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("overdue email to send: $to\n, $subject\n, $message\n", TRUE ));
 */
 
             }
 
         if ($goodToInvoice) {
-        error_log( print_R($studentarr["InvoiceList"][$i]["paymentid"], TRUE ), 3, LOG);
+        $app->log->debug( print_R($studentarr["InvoiceList"][$i]["paymentid"], TRUE ));
 
 
         $db = new StudentDbHandler();
@@ -3292,7 +3292,7 @@ $message = "
                                     );
     
         if ($return > 0) {
-            error_log( print_R("invoice created: $paymentid $return\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("invoice created: $paymentid $return\n", TRUE ));
 /*
 
 $message = "
@@ -3316,17 +3316,17 @@ $message = "
 
         //    emailnotify($to, $subject, $message);
             emailnotify('villaris.us@gmail.com', $subject, $message);
-            error_log( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("email to send: $to\n, $subject\n, $message\n", TRUE ));
 */            
             genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
             
             $invoicegood += 1;
         } else if ($return == RECORD_ALREADY_EXISTED) {
-            error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("invoice already existed\n", TRUE ));
             $invoiceexists += 1;
         } else {
-            error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $invoice, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createinvoice result bad\n", TRUE));
+            $app->log->debug( print_R( $invoice, TRUE));
             $invoicebad += 1;
         }
 
@@ -3339,27 +3339,27 @@ $message = "
             $response["error"] = false;
             $response["message"] = "invoice(s) $invoicegood created and notified successfully";
             $response["invoice"] = $invoicegood;
-            error_log( print_R("invoice created: $invoicegood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("invoice created: $invoicegood\n", TRUE ));
             echoRespnse(201, $response);
         } else if ($invoiceexists > 0) {
             $response["error"] = true;
             $response["message"] = "Sorry, this $invoiceexists invoice already existed";
-            error_log( print_R("invoice already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("invoice already existed\n", TRUE ));
             echoRespnse(409, $response);
         } else {
-            error_log( print_R("after createinvoice result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $invoicebad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createinvoice result bad\n", TRUE));
+            $app->log->debug( print_R( $invoicebad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $invoicebad invoice. Please try again";
             echoRespnse(400, $response);
         }
 });
 
-$app->get('/payerstudent', 'authenticate', function() use ($app) {
+$app->get('/payerstudent', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("payerstudent entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("payerstudent entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $theinput = '';
     $thetype = '';
@@ -3371,7 +3371,7 @@ $app->get('/payerstudent', 'authenticate', function() use ($app) {
         $thetype = $allGetVars['thetype'];
     }
 
-    error_log( print_R("payerstudent params: theinput: $theinput thetype: $thetype\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("payerstudent params: theinput: $theinput thetype: $thetype\n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -3401,7 +3401,7 @@ $app->get('/payerstudent', 'authenticate', function() use ($app) {
         $response["message"] = "Found student payer successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after student payer result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after student payer result bad\n", TRUE));
         $response["error"] = true;
         $response["extra"] = $result;
         $response["message"] = "Failed to get User Options. Please try again";
@@ -3410,11 +3410,11 @@ $app->get('/payerstudent', 'authenticate', function() use ($app) {
 
 
 });
-$app->get('/invoices', 'authenticate', function() use ($app) {
+$app->get('/invoices', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("invoices entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("invoices entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $payerid = '';
 
@@ -3422,7 +3422,7 @@ $app->get('/invoices', 'authenticate', function() use ($app) {
         $payerid = $allGetVars['payerid'];
     }
 
-    error_log( print_R("invoices params: payerid: $payerid \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("invoices params: payerid: $payerid \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -3453,7 +3453,7 @@ $app->get('/invoices', 'authenticate', function() use ($app) {
         $response["message"] = "Found invoices successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after invoice list result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after invoice list result bad\n", TRUE));
         $response["error"] = true;
         $response["extra"] = $result;
         $response["message"] = "Failed to get Invoice List. Please try again";
@@ -3461,11 +3461,11 @@ $app->get('/invoices', 'authenticate', function() use ($app) {
     }
 
 });
-$app->get('/calcinvoice', 'authenticate', function() use ($app) {
+$app->get('/calcinvoice', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("calcinvoice entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("calcinvoice entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $payer = '';
 
@@ -3475,7 +3475,7 @@ $app->get('/calcinvoice', 'authenticate', function() use ($app) {
 
     $status   = 'new';
 
-    error_log( print_R("preinvoices params:  payer: $payer \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("preinvoices params:  payer: $payer \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -3490,8 +3490,8 @@ $app->get('/calcinvoice', 'authenticate', function() use ($app) {
 
     // looping through result and preparing  arrays
     while ($slist = $result["slist"]->fetch_assoc()) {
-        error_log( print_R("after calcInvoice result cnt\n", TRUE), 3, LOG);
-        error_log( print_R( count($slist), TRUE), 3, LOG);
+        $app->log->debug( print_R("after calcInvoice result cnt\n", TRUE));
+        $app->log->debug( print_R( count($slist), TRUE));
         
         if (count($slist) > 0) {
             $tmp = array();
@@ -3519,7 +3519,7 @@ $app->get('/calcinvoice', 'authenticate', function() use ($app) {
             $tmp["overduecnt"]          = (empty($slist["overduecnt"]) ? 0 : $slist["overduecnt"]);
             $tmp["payfor"]                = 'lessons';
 
-   //     error_log( print_R( $tmp, TRUE), 3, LOG);
+   //     $app->log->debug( print_R( $tmp, TRUE));
 
             array_push($response["InvoiceList"], $tmp);
         }
@@ -3530,7 +3530,7 @@ $app->get('/calcinvoice', 'authenticate', function() use ($app) {
         $response["message"] = "Found calc invoice successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after calc invoice result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after calc invoice result bad\n", TRUE));
         $response["error"] = true;
         $response["extra"] = $result;
         $response["message"] = "Failed to get invoice details. Please try again";
@@ -3540,23 +3540,23 @@ $app->get('/calcinvoice', 'authenticate', function() use ($app) {
 
 });
 
-$app->delete('/invoice','authenticate', function() use ($app) {
+$app->delete('/invoice','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("invoice before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("invoice before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $invoice = json_decode($body);
-    error_log( print_R($invoice, TRUE ), 3, LOG);
+    $app->log->debug( print_R($invoice, TRUE ));
 
     if (isset($invoice->thedata->id)) {
         $id =  $invoice->thedata->id;
     } else { errorRequiredParams('id'); }
 
 
-    error_log( print_R("id: $id\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("id: $id\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -3564,13 +3564,13 @@ $app->delete('/invoice','authenticate', function() use ($app) {
         $id );
 
     if ($result > 0) {
-        error_log( print_R("invoice removed: $id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("invoice removed: $id\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "invoice removed successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after invoice result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after invoice result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to remove invoice. Please try again";
         echoRespnse(400, $response);
@@ -3579,11 +3579,11 @@ $app->delete('/invoice','authenticate', function() use ($app) {
 
 });
 
-$app->get('/payments', 'authenticate', function() use ($app) {
+$app->get('/payments', 'authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("payments entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("payments entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $payerid = '';
 
@@ -3591,7 +3591,7 @@ $app->get('/payments', 'authenticate', function() use ($app) {
         $payerid = $allGetVars['payerid'];
     }
 
-    error_log( print_R("payments params: payerid: $payerid \n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("payments params: payerid: $payerid \n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -3654,7 +3654,7 @@ $app->get('/payments', 'authenticate', function() use ($app) {
         $response["message"] = "Found payments successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after payments result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after payments result bad\n", TRUE));
         $response["error"] = true;
         $response["extra"] = $result;
         $response["message"] = "Failed to get Payments. Please try again";
@@ -3664,9 +3664,9 @@ $app->get('/payments', 'authenticate', function() use ($app) {
 
 });
 
-$app->get('/stripepub', 'authenticate', function() use ($app) {
+$app->get('/stripepub', 'authenticate',  'setDebug', function() use ($app) {
 
-    error_log( print_R("stripepub entered:" . PUBAPIKEY . "\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("stripepub entered:" . PUBAPIKEY . "\n ", TRUE));
 
     $response = array();
     $response["stripepub"] = PUBAPIKEY;
@@ -3675,7 +3675,7 @@ $app->get('/stripepub', 'authenticate', function() use ($app) {
     
 });
 
-$app->post('/paystripe', 'authenticate',  function() use ($app) {
+$app->post('/paystripe', 'authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
     global $school;
@@ -3684,8 +3684,8 @@ $app->post('/paystripe', 'authenticate',  function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("paystripe before send\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("paystripe before send\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
 
     if (isset($dataJsonDecode->thedata->id)) {
@@ -3722,7 +3722,7 @@ $err=[];
 $body =[];
 $excep=[];
 
-    error_log( print_R("paystripe before create amount => $amt currency => usd description => $desc source => $token statement_descriptor => $school metadata => [invoice => $invoice] \n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("paystripe before create amount => $amt currency => usd description => $desc source => $token statement_descriptor => $school metadata => [invoice => $invoice] \n", TRUE ));
 
     //get stripe account for school
     $db = new StudentDbHandler();
@@ -3730,7 +3730,7 @@ $excep=[];
 
     $result = $db->getStripeUser();
     if ($result == NULL) {
-        error_log( print_R("after payment getStripeUser  result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after payment getStripeUser  result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to pay due to bad Stripe User setup. Please try again";
 
@@ -3741,9 +3741,9 @@ $excep=[];
     
     $CONNECTED_STRIPE_ACCOUNT_ID  =  $result['user_id'];
 
-    error_log( print_R("CONNECTED_STRIPE_ACCOUNT_ID: $CONNECTED_STRIPE_ACCOUNT_ID\n" , TRUE ), 3, LOG);
+    $app->log->debug( print_R("CONNECTED_STRIPE_ACCOUNT_ID: $CONNECTED_STRIPE_ACCOUNT_ID\n" , TRUE ));
 //debug, remove later
-//    error_log( print_R("sec:" .  SECAPIKEY . "\n" , TRUE ), 3, LOG);
+//    $app->log->debug( print_R("sec:" .  SECAPIKEY . "\n" , TRUE ));
 
 try {
   // Use Stripe's library to make requests...
@@ -3779,15 +3779,15 @@ $charge = \Stripe\Charge::create(array(
 
 
     $invoicegood=1;
-    error_log( print_R("response:\n" , TRUE ), 3, LOG);
-    error_log( print_R($charge, TRUE ), 3, LOG);
-    error_log( print_R($charge['paid'] . PHP_EOL, TRUE ), 3, LOG);
+    $app->log->debug( print_R("response:\n" , TRUE ));
+    $app->log->debug( print_R($charge, TRUE ));
+    $app->log->debug( print_R($charge['paid'] . PHP_EOL, TRUE ));
 //can use the charge id to re-request the details for it
-    error_log( print_R($charge['id'] . PHP_EOL, TRUE ), 3, LOG);
-    error_log( print_R($charge['status'] . PHP_EOL, TRUE ), 3, LOG);
-    error_log( print_R($charge['source']['address_zip_check'] . PHP_EOL, TRUE ), 3, LOG);
-    error_log( print_R($charge['source']['cvc_check'] . PHP_EOL, TRUE ), 3, LOG);
-    error_log( print_R($charge['metadata']['invoice'] . PHP_EOL, TRUE ), 3, LOG);
+    $app->log->debug( print_R($charge['id'] . PHP_EOL, TRUE ));
+    $app->log->debug( print_R($charge['status'] . PHP_EOL, TRUE ));
+    $app->log->debug( print_R($charge['source']['address_zip_check'] . PHP_EOL, TRUE ));
+    $app->log->debug( print_R($charge['source']['cvc_check'] . PHP_EOL, TRUE ));
+    $app->log->debug( print_R($charge['metadata']['invoice'] . PHP_EOL, TRUE ));
 
     stripepaid(
         $charge,
@@ -3846,7 +3846,7 @@ $charge = \Stripe\Charge::create(array(
         $response["paymentbody"] = $charge;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after payment  result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after payment  result bad\n", TRUE));
         $response["error"] = true;
         $response["invoice"] = $invoicegood;
         $response["message"] = "Failed to pay. Please try again";
@@ -3860,20 +3860,20 @@ $charge = \Stripe\Charge::create(array(
     
 });
 
-$app->post('/setsession', 'authenticate', function() use ($app) {
+$app->post('/setsession', 'authenticate', 'setDebug', function() use ($app) {
      $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("setsession before insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("setsession before insert\n", TRUE ));
 
     $csrfstate = (isset($dataJsonDecode->thedata->csrfstate) ? $dataJsonDecode->thedata->csrfstate : "");
     $auth_session = (isset($dataJsonDecode->thedata->auth_session) ? $dataJsonDecode->thedata->auth_session : "");
 
-    error_log( print_R("csrfstate: $csrfstate\n", TRUE ), 3, LOG);
-    error_log( print_R("auth_session: $auth_session\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("csrfstate: $csrfstate\n", TRUE ));
+    $app->log->debug( print_R("auth_session: $auth_session\n", TRUE ));
 
 
     $db = new StudentDbHandler();
@@ -3887,11 +3887,11 @@ $app->post('/setsession', 'authenticate', function() use ($app) {
     if ($res > 0) {
         $response["error"] = false;
         $response["message"] = "stored state successfully";
-        error_log( print_R("State updated\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("State updated\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after state store result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res, TRUE), 3, LOG);
+        $app->log->debug( print_R("after state store result bad\n", TRUE));
+        $app->log->debug( print_R( $res, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to store state. Please try again";
         echoRespnse(400, $response);
@@ -3900,10 +3900,10 @@ $app->post('/setsession', 'authenticate', function() use ($app) {
     
 
 });
-$app->get('/storeusercred',  function() use ($app) {
+$app->get('/storeusercred', 'setDebug', function() use ($app) {
     $allGetVars = $app->request->get();
-    error_log( print_R("storeusercred entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("storeusercred entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $db = new StudentDbHandler();
     $dbu = new DbHandler();
@@ -3931,8 +3931,8 @@ $app->get('/storeusercred',  function() use ($app) {
                                 );
     if ($res < 1) {
         //failed to match session
-        error_log( print_R("after slim check result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res, TRUE), 3, LOG);
+        $app->log->debug( print_R("after slim check result bad\n", TRUE));
+        $app->log->debug( print_R( $res, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to match session $thisslim. Please try again";
         echoRedirect(400, $response, '/v/#/stripe-onboard');
@@ -3951,8 +3951,8 @@ $app->get('/storeusercred',  function() use ($app) {
             'grant_type' => 'authorization_code',
             'code' => $code
         ]);
-        error_log( print_R("after auth result resp\n", TRUE), 3, LOG);
-        error_log( print_R( $resp, TRUE), 3, LOG);
+        $app->log->debug( print_R("after auth result resp\n", TRUE));
+        $app->log->debug( print_R( $resp, TRUE));
 
         $stripe_user_id = $resp->stripe_user_id;
         $access_token = $resp->access_token;
@@ -3963,12 +3963,12 @@ $app->get('/storeusercred',  function() use ($app) {
         $scope = $resp->scope;
 
         $resp3 = \Stripe\Account::retrieve($stripe_user_id);
-        error_log( print_R("after acct retrieve result resp\n", TRUE), 3, LOG);
-        error_log( print_R( $resp3, TRUE), 3, LOG);
+        $app->log->debug( print_R("after acct retrieve result resp\n", TRUE));
+        $app->log->debug( print_R( $resp3, TRUE));
         $stripe_useremail = $resp3->email;
 
-        error_log( print_R("after acct parse result resp\n", TRUE), 3, LOG);
-        error_log( print_R( $stripe_useremail, TRUE), 3, LOG);
+        $app->log->debug( print_R("after acct parse result resp\n", TRUE));
+        $app->log->debug( print_R( $stripe_useremail, TRUE));
 
         $user = $dbu->getUserByEmail($stripe_useremail);
 
@@ -3985,13 +3985,13 @@ $app->get('/storeusercred',  function() use ($app) {
             $stripe_useremail,
             $user['school']
                                 );
-        error_log( print_R("after slim create auth result \n", TRUE), 3, LOG);
-        error_log( print_R( $res2, TRUE), 3, LOG);
+        $app->log->debug( print_R("after slim create auth result \n", TRUE));
+        $app->log->debug( print_R( $res2, TRUE));
                                 
         if ($res2 !== 1) {
             //failed to create auth
-            error_log( print_R("after slim create auth result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $res2, TRUE), 3, LOG);
+            $app->log->debug( print_R("after slim create auth result bad\n", TRUE));
+            $app->log->debug( print_R( $res2, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create auth $code. Please try again";
             //echoRespnse(400, $response);
@@ -4004,7 +4004,7 @@ $app->get('/storeusercred',  function() use ($app) {
         echoRedirect(201, $response, url() . '/v/#/stripe-onboard');
     
     } catch (\Stripe\Error\OAuth\OAuthBase $e) {
-        error_log( print_R("after storeusercred  result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after storeusercred  result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to store user credentials. Please try again";
         $response["err"] = $e->getMessage();
@@ -4015,9 +4015,9 @@ $app->get('/storeusercred',  function() use ($app) {
 
 });
 
-$app->get('/stripe', 'authenticate', function() use ($app) {
+$app->get('/stripe', 'authenticate', 'setDebug', function() use($app) {
 
-    error_log( print_R("stripe entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("stripe entered:\n ", TRUE));
 
     $response = array();
     $db = new StudentDbHandler();
@@ -4047,7 +4047,7 @@ $app->get('/stripe', 'authenticate', function() use ($app) {
         $response["message"] = "Found stripe successfully";
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after stripe result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after stripe result bad\n", TRUE));
         $response["error"] = true;
         $response["extra"] = $result;
         $response["message"] = "Failed to get stripe details. Please try again";
@@ -4057,8 +4057,8 @@ $app->get('/stripe', 'authenticate', function() use ($app) {
 
 });
 
-$app->get('/revokestripe', 'authenticate',  function() use ($app) {
-    error_log( print_R("revokestripe entered:\n ", TRUE), 3, LOG);
+$app->get('/revokestripe', 'authenticate', 'setDebug', function() use($app) {
+    $app->log->debug( print_R("revokestripe entered:\n ", TRUE));
 
     $db = new StudentDbHandler();
 
@@ -4090,13 +4090,13 @@ $app->get('/revokestripe', 'authenticate',  function() use ($app) {
         //save it
         $res2 = $db->removeAuthcode(
                                 );
-        error_log( print_R("after slim remove auth result \n", TRUE), 3, LOG);
-        error_log( print_R( $res2, TRUE), 3, LOG);
+        $app->log->debug( print_R("after slim remove auth result \n", TRUE));
+        $app->log->debug( print_R( $res2, TRUE));
                                 
         if ($res2 !== 1) {
             //failed to remove auth
-            error_log( print_R("after slim remove auth result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $res2, TRUE), 3, LOG);
+            $app->log->debug( print_R("after slim remove auth result bad\n", TRUE));
+            $app->log->debug( print_R( $res2, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to remove auth. Please try again";
             //echoRespnse(400, $response);
@@ -4109,7 +4109,7 @@ $app->get('/revokestripe', 'authenticate',  function() use ($app) {
         echoRedirect(201, $response, url() . '/v/#/stripe-onboard');
     
     } catch (\Stripe\Error\OAuth\OAuthBase $e) {
-        error_log( print_R("after remove auth  result bad\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after remove auth  result bad\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to remove user credentials. Please try again";
         $response["err"] = $e->getMessage();
@@ -4120,7 +4120,7 @@ $app->get('/revokestripe', 'authenticate',  function() use ($app) {
 
 });
 
-$app->post('/bulkstudent', 'authenticate', function() use($app) {
+$app->post('/bulkstudent', 'authenticate', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -4133,11 +4133,11 @@ $app->post('/bulkstudent', 'authenticate', function() use($app) {
             $response["message"] = "$student bulk student(s) created successfully";
             $response["student"] = $student;
             $response["student_id"] = $student;
-            error_log( print_R("Student(s) created: $student\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Student(s) created: $student\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createStudent result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $student, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createStudent result bad\n", TRUE));
+            $app->log->debug( print_R( $student, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $student bulk students. Please try again";
             $response["student_id"] = $student;
@@ -4146,20 +4146,20 @@ $app->post('/bulkstudent', 'authenticate', function() use($app) {
 
 });
 
-$app->post('/lookupextras', 'authenticate', function() use($app) {
+$app->post('/lookupextras', 'authenticate', 'setDebug', function() use($app) {
 
     $response = array();
 
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("lookupextras before lookup\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("lookupextras before lookup\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $studentarr = array();
     $studentarr = $dataJsonDecode->thedata->selectedStudents;
 
-    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($studentarr, TRUE ));
 
     $response = array();
     $response["error"] = false;
@@ -4204,20 +4204,20 @@ $app->post('/lookupextras', 'authenticate', function() use($app) {
 
 });
 
-$app->post('/lookuphistextras', 'authenticate', function() use($app) {
+$app->post('/lookuphistextras', 'authenticate', 'setDebug', function() use($app) {
 
     $response = array();
 
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("lookupextras before lookup\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("lookupextras before lookup\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $studentarr = array();
     $studentarr = $dataJsonDecode->thedata->selectedStudents;
 
-    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($studentarr, TRUE ));
 
     $response = array();
     $response["error"] = false;
@@ -4251,20 +4251,20 @@ $app->post('/lookuphistextras', 'authenticate', function() use($app) {
     echoRespnse(200, $response);
 
 });
-$app->post('/lookupattendextras', 'authenticate', function() use($app) {
+$app->post('/lookupattendextras', 'authenticate', 'setDebug', function() use($app) {
 
     $response = array();
 
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("lookupattendextras before lookup\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("lookupattendextras before lookup\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
 
     $studentarr = array();
     $studentarr = $dataJsonDecode->thedata->selectedStudents;
 
-    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($studentarr, TRUE ));
 
     $response = array();
     $response["error"] = false;
@@ -4304,7 +4304,7 @@ $app->post('/lookupattendextras', 'authenticate', function() use($app) {
 
 });
 
-$app->post('/bulkstudentregistration', 'authenticate', function() use($app) {
+$app->post('/bulkstudentregistration', 'authenticate', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -4316,11 +4316,11 @@ $app->post('/bulkstudentregistration', 'authenticate', function() use($app) {
             $response["message"] = "$registration bulk registration(s) created successfully";
             $response["registration"] = $registration;
             $response["registration_id"] = $registration;
-            error_log( print_R("registration(s) created: $registration\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("registration(s) created: $registration\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createregistration result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $registration, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createregistration result bad\n", TRUE));
+            $app->log->debug( print_R( $registration, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $registration bulk registrations. Please try again";
             $response["registration_id"] = $registration;
@@ -4329,7 +4329,7 @@ $app->post('/bulkstudentregistration', 'authenticate', function() use($app) {
 
 });
 
-$app->post('/bulkstudenthistory', 'authenticate', function() use($app) {
+$app->post('/bulkstudenthistory', 'authenticate', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -4341,11 +4341,11 @@ $app->post('/bulkstudenthistory', 'authenticate', function() use($app) {
             $response["message"] = "$history bulk history(s) created successfully";
             $response["history"] = $history;
             $response["history_id"] = $history;
-            error_log( print_R("history(s) created: $history\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("history(s) created: $history\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createhistory result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $history, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createhistory result bad\n", TRUE));
+            $app->log->debug( print_R( $history, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $history bulk historys. Please try again";
             $response["history_id"] = $history;
@@ -4354,20 +4354,20 @@ $app->post('/bulkstudenthistory', 'authenticate', function() use($app) {
 
 });
 
-$app->post('/rawstudent', 'authenticate', function() use($app) {
+$app->post('/rawstudent', 'authenticate', 'setDebug', function() use($app) {
 
 
     $response = array();
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("bulkstudentattendance before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("bulkstudentattendance before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
     
     $studentarr = array();
     $studentarr = $dataJsonDecode->thedata->selectedStudents;
 
-    error_log( print_R($studentarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($studentarr, TRUE ));
 
     $studentgood=0;
     $studentbad=0;
@@ -4411,11 +4411,11 @@ $app->post('/rawstudent', 'authenticate', function() use($app) {
                                 );    
 
         if ($student > 0) {
-            error_log( print_R("createFullStudentRaw created: $student\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullStudentRaw created: $student\n", TRUE ));
             $studentgood += 1;
         } else {
-            error_log( print_R("after createFullStudentRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $student, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullStudentRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $student, TRUE));
             $studentbad += 1;
         }
                         
@@ -4427,11 +4427,11 @@ $app->post('/rawstudent', 'authenticate', function() use($app) {
             $response["message"] = "$studentgood createFullStudentRaw(s) created successfully";
             $response["student"] = $studentgood;
             $response["student_id"] = $studentgood;
-            error_log( print_R("createFullStudentRaw(s) created: $studentgood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullStudentRaw(s) created: $studentgood\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createFullStudentRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $studentbad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullStudentRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $studentbad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $studentbad createFullStudentRaw. Please try again";
             $response["student_id"] = $studentbad;
@@ -4440,7 +4440,7 @@ $app->post('/rawstudent', 'authenticate', function() use($app) {
 
 });
 
-$app->put('/rawstudent/:id', 'authenticate', function($externalid) use($app) {
+$app->put('/rawstudent/:id', 'authenticate','setDebug', function($externalid) use($app) {
 
     $request = $app->request();
     $body = $request->getBody();
@@ -4474,12 +4474,12 @@ $app->put('/rawstudent/:id', 'authenticate', function($externalid) use($app) {
         $pictureurl = (isset($student->pictureurl) ? $student->pictureurl : "");    
 
 
-    error_log( print_R("before rawstudent update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before rawstudent update\n", TRUE ));
 
-    error_log( print_R("b4 lastnm\n" , TRUE ), 3, LOG);
-    error_log( print_R( $LastName, TRUE ), 3, LOG);
-    error_log( print_R("b4 fstnm\n " , TRUE ), 3, LOG);
-    error_log( print_R( $FirstName, TRUE ), 3, LOG);
+    $app->log->debug( print_R("b4 lastnm\n" , TRUE ));
+    $app->log->debug( print_R( $LastName, TRUE ));
+    $app->log->debug( print_R("b4 fstnm\n " , TRUE ));
+    $app->log->debug( print_R( $FirstName, TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -4514,14 +4514,14 @@ $app->put('/rawstudent/:id', 'authenticate', function($externalid) use($app) {
 
                                 );
     if ($result) {
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Raw Student updated successfully";
     } else {
-        error_log( print_R("after upstu result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         // task failed to update
         $response["error"] = true;
         $response["message"] = "Student failed to update. Please try again!";
@@ -4529,16 +4529,16 @@ $app->put('/rawstudent/:id', 'authenticate', function($externalid) use($app) {
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawstudents','authenticate', function() use ($app) {
+$app->delete('/rawstudents','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Raw Student before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Raw Student before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
     $Studentgood=0;
     $Studentbad=0;
@@ -4550,15 +4550,15 @@ $app->delete('/rawstudents','authenticate', function() use ($app) {
         $Student = $db->removeRawStudents();
     
         if ($Student > 0) {
-            error_log( print_R("Raw Students removed: $Student\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Raw Students removed: $Student\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Raw Students removed successfully";
             $Studentgood = 1;
             $response["Student"] = $Studentgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Raw Student result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Student, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Raw Student result bad\n", TRUE));
+            $app->log->debug( print_R( $Student, TRUE));
             $Studentbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove Student. Please try again";
@@ -4566,16 +4566,16 @@ $app->delete('/rawstudents','authenticate', function() use ($app) {
         }
 });
 
-$app->delete('/rawstudent','authenticate', function() use ($app) {
+$app->delete('/rawstudent','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("RawStudent before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("RawStudent before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
     if (!isset($test->thedata->externalid)) {
         $response["error"] = true;
@@ -4585,7 +4585,7 @@ $app->delete('/rawstudent','authenticate', function() use ($app) {
         $ID    = $test->thedata->externalid;
     }
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
     $Studentgood=0;
     $Studentbad=0;
@@ -4599,15 +4599,15 @@ $app->delete('/rawstudent','authenticate', function() use ($app) {
                                     );
     
         if ($Student > 0) {
-            error_log( print_R("Student removed: $Student\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Student removed: $Student\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Student removed successfully";
             $Studentgood = 1;
             $response["Student"] = $Studentgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Student result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Student, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Student result bad\n", TRUE));
+            $app->log->debug( print_R( $Student, TRUE));
             $Studentbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove Student. Please try again";
@@ -4615,7 +4615,7 @@ $app->delete('/rawstudent','authenticate', function() use ($app) {
         }
 });
 
-$app->get('/rawstudents', 'authenticate', function() use ($app){
+$app->get('/rawstudents', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -4626,8 +4626,8 @@ $app->get('/rawstudents', 'authenticate', function() use ($app){
 
     $res_id = $db->getRawStudentStatus();
                                      
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
 
@@ -4673,8 +4673,8 @@ $app->get('/rawstudents', 'authenticate', function() use ($app){
         echoRespnse(201, $response);
         
     } else {
-        error_log( print_R("after rawStudents result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after rawStudents result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to get rawStudents. Please try again";
@@ -4684,12 +4684,12 @@ $app->get('/rawstudents', 'authenticate', function() use ($app){
 
 });
 
-$app->get('/samplestudentregistrations', 'authenticate', function() use($app){
+$app->get('/samplestudentregistrations', 'authenticate', 'setDebug', function() use($app){
 
     checkSecurity();
     global $user_id;
     
-    error_log( print_R("samplestudentregistrations entered:\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("samplestudentregistrations entered:\n ", TRUE));
 
     $response = array();
 
@@ -4725,7 +4725,7 @@ $app->get('/samplestudentregistrations', 'authenticate', function() use($app){
 
 });
 
-$app->get('/rawregistrations', 'authenticate', function() use ($app){
+$app->get('/rawregistrations', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -4736,8 +4736,8 @@ $app->get('/rawregistrations', 'authenticate', function() use ($app){
 
     $res_id = $db->getRawRegistrationStatus();
                                      
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
 
@@ -4775,8 +4775,8 @@ $app->get('/rawregistrations', 'authenticate', function() use ($app){
         echoRespnse(201, $response);
         
     } else {
-        error_log( print_R("after rawRegistrations result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after rawRegistrations result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to get rawRegistrations. Please try again";
@@ -4786,20 +4786,20 @@ $app->get('/rawregistrations', 'authenticate', function() use ($app){
 
 });
 
-$app->post('/rawregistration', 'authenticate', function() use($app) {
+$app->post('/rawregistration', 'authenticate', 'setDebug', function() use($app) {
 
 
     $response = array();
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("bulkregistrationattendance before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("bulkregistrationattendance before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
     
     $registrationarr = array();
     $registrationarr = $dataJsonDecode->thedata->selectedregistrations;
 
-    error_log( print_R($registrationarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($registrationarr, TRUE ));
 
     $registrationgood=0;
     $registrationbad=0;
@@ -4847,11 +4847,11 @@ $app->post('/rawregistration', 'authenticate', function() use($app) {
                                 );    
 
         if ($registration > 0) {
-            error_log( print_R("createFullregistrationRaw created: $registration\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullregistrationRaw created: $registration\n", TRUE ));
             $registrationgood += 1;
         } else {
-            error_log( print_R("after createFullregistrationRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $registration, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullregistrationRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $registration, TRUE));
             $registrationbad += 1;
         }
                         
@@ -4863,11 +4863,11 @@ $app->post('/rawregistration', 'authenticate', function() use($app) {
             $response["message"] = "$registrationgood createFullregistrationRaw(s) created successfully";
             $response["registration"] = $registrationgood;
             $response["registration_id"] = $registrationgood;
-            error_log( print_R("createFullregistrationRaw(s) created: $registrationgood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullregistrationRaw(s) created: $registrationgood\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createFullregistrationRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $registrationbad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullregistrationRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $registrationbad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $registrationbad createFullregistrationRaw. Please try again";
             $response["registration_id"] = $registrationbad;
@@ -4876,7 +4876,7 @@ $app->post('/rawregistration', 'authenticate', function() use($app) {
 
 });
 
-$app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', function($externalid, $Classname, $Pgmname) use($app) 
+$app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', 'setDebug', function($externalid, $Classname, $Pgmname) use($app) 
 {
 
     $request = $app->request();
@@ -4899,7 +4899,7 @@ $app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', funct
         $PaymentAmount = (isset($registration->paymentAmount) ? $registration->paymentAmount : "");
         $payOnDayOfMonth = (isset($registration->payOnDayofMonth) ? $registration->payOnDayofMonth : "");
 
-    error_log( print_R("before rawregistration update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before rawregistration update\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -4910,14 +4910,14 @@ $app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', funct
  $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth
                                 );
     if ($result >= 0) {
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Raw registration updated successfully";
     } else {
-        error_log( print_R("after upstu result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         // task failed to update
         $response["error"] = true;
         $response["message"] = "registration failed to update. Please try again!";
@@ -4925,16 +4925,16 @@ $app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', funct
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawregistrations','authenticate', function() use ($app) {
+$app->delete('/rawregistrations','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Raw registration before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Raw registration before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
     $registrationgood=0;
     $registrationbad=0;
@@ -4946,15 +4946,15 @@ $app->delete('/rawregistrations','authenticate', function() use ($app) {
         $registration = $db->removeRawregistrations();
     
         if ($registration > 0) {
-            error_log( print_R("Raw registrations removed: $registration\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Raw registrations removed: $registration\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Raw registrations removed successfully";
             $registrationgood = 1;
             $response["registration"] = $registrationgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Raw registration result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $registration, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Raw registration result bad\n", TRUE));
+            $app->log->debug( print_R( $registration, TRUE));
             $registrationbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove registration. Please try again";
@@ -4962,16 +4962,16 @@ $app->delete('/rawregistrations','authenticate', function() use ($app) {
         }
 });
 
-$app->delete('/rawregistration','authenticate', function() use ($app) {
+$app->delete('/rawregistration','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Rawregistration before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Rawregistration before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
     if (!isset($test->thedata->externalid)) {
         $response["error"] = true;
@@ -4996,9 +4996,9 @@ $app->delete('/rawregistration','authenticate', function() use ($app) {
     }
 
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
-    error_log( print_R("pgm: $pgm\n", TRUE ), 3, LOG);
-    error_log( print_R("cls: $cls\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
+    $app->log->debug( print_R("pgm: $pgm\n", TRUE ));
+    $app->log->debug( print_R("cls: $cls\n", TRUE ));
 
     $registrationgood=0;
     $registrationbad=0;
@@ -5012,15 +5012,15 @@ $app->delete('/rawregistration','authenticate', function() use ($app) {
                                     );
     
         if ($registration > 0) {
-            error_log( print_R("registration removed: $registration\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("registration removed: $registration\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "registration removed successfully";
             $registrationgood = 1;
             $response["registration"] = $registrationgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete registration result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $registration, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete registration result bad\n", TRUE));
+            $app->log->debug( print_R( $registration, TRUE));
             $registrationbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove registration. Please try again";
@@ -5028,7 +5028,7 @@ $app->delete('/rawregistration','authenticate', function() use ($app) {
         }
 });
 
-$app->get('/rawhistorys', 'authenticate', function() use ($app){
+$app->get('/rawhistorys', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -5039,8 +5039,8 @@ $app->get('/rawhistorys', 'authenticate', function() use ($app){
 
     $res_id = $db->getRawHistoryStatus();
                                      
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
 
@@ -5065,8 +5065,8 @@ $app->get('/rawhistorys', 'authenticate', function() use ($app){
         echoRespnse(201, $response);
         
     } else {
-        error_log( print_R("after rawHistorys result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after rawHistorys result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to get rawHistorys. Please try again";
@@ -5076,20 +5076,20 @@ $app->get('/rawhistorys', 'authenticate', function() use ($app){
 
 });
 
-$app->post('/rawhistory', 'authenticate', function() use($app) {
+$app->post('/rawhistory', 'authenticate', 'setDebug', function() use($app) {
 
 
     $response = array();
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("rawhistory before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("rawhistory before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
     
     $historyarr = array();
     $historyarr = $dataJsonDecode->thedata->selectedhistorys;
 
-    error_log( print_R($historyarr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($historyarr, TRUE ));
 
     $historygood=0;
     $historybad=0;
@@ -5120,11 +5120,11 @@ $app->post('/rawhistory', 'authenticate', function() use($app) {
                                 );    
 
         if ($history > 0) {
-            error_log( print_R("createFullhistoryRaw created: $history\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullhistoryRaw created: $history\n", TRUE ));
             $historygood += 1;
         } else {
-            error_log( print_R("after createFullhistoryRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $history, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullhistoryRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $history, TRUE));
             $historybad += 1;
         }
                         
@@ -5136,11 +5136,11 @@ $app->post('/rawhistory', 'authenticate', function() use($app) {
             $response["message"] = "$historygood createFullhistoryRaw(s) created successfully";
             $response["history"] = $historygood;
             $response["history_id"] = $historygood;
-            error_log( print_R("createFullhistoryRaw(s) created: $historygood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullhistoryRaw(s) created: $historygood\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createFullhistoryRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $historybad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullhistoryRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $historybad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $historybad createFullhistoryRaw. Please try again";
             $response["history_id"] = $historybad;
@@ -5149,7 +5149,7 @@ $app->post('/rawhistory', 'authenticate', function() use($app) {
 
 });
 
-$app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate', function(
+$app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate', 'setDebug', function(
         $externalid, $contactmgmttype, $contactDate) use($app) 
 {
 
@@ -5159,7 +5159,7 @@ $app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate',
 
         $studentID = (isset($history->studentID) ? $history->studentID : "");
 
-    error_log( print_R("before rawhistory update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before rawhistory update\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -5169,14 +5169,14 @@ $app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate',
         $externalid, $studentID,  $contactmgmttype, $contactDate
                                 );
     if ($result >= 0) {
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Raw history updated successfully";
     } else {
-        error_log( print_R("after upstu result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         // task failed to update
         $response["error"] = true;
         $response["message"] = "history failed to update. Please try again!";
@@ -5184,16 +5184,16 @@ $app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate',
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawhistorys','authenticate', function() use ($app) {
+$app->delete('/rawhistorys','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Raw history before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Raw history before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
     $historygood=0;
     $historybad=0;
@@ -5205,15 +5205,15 @@ $app->delete('/rawhistorys','authenticate', function() use ($app) {
         $history = $db->removeRawhistorys();
     
         if ($history > 0) {
-            error_log( print_R("Raw historys removed: $history\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Raw historys removed: $history\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Raw historys removed successfully";
             $historygood = 1;
             $response["history"] = $historygood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Raw history result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $history, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Raw history result bad\n", TRUE));
+            $app->log->debug( print_R( $history, TRUE));
             $historybad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove history. Please try again";
@@ -5221,16 +5221,16 @@ $app->delete('/rawhistorys','authenticate', function() use ($app) {
         }
 });
 
-$app->delete('/rawhistory','authenticate', function() use ($app) {
+$app->delete('/rawhistory','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Rawhistory before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Rawhistory before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
     $externalid="";
     $contactmgmttype="";
     $contactDate="";
@@ -5258,9 +5258,9 @@ $app->delete('/rawhistory','authenticate', function() use ($app) {
     }
 
 
-    error_log( print_R("externalid: $externalid\n", TRUE ), 3, LOG);
-    error_log( print_R("contactmgmttype: $contactmgmttype\n", TRUE ), 3, LOG);
-    error_log( print_R("contactDate: $contactDate\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("externalid: $externalid\n", TRUE ));
+    $app->log->debug( print_R("contactmgmttype: $contactmgmttype\n", TRUE ));
+    $app->log->debug( print_R("contactDate: $contactDate\n", TRUE ));
 
     $historygood=0;
     $historybad=0;
@@ -5274,15 +5274,15 @@ $app->delete('/rawhistory','authenticate', function() use ($app) {
                                     );
     
         if ($history > 0) {
-            error_log( print_R("history removed: $history\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("history removed: $history\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "history removed successfully";
             $historygood = 1;
             $response["history"] = $historygood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete history result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $history, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete history result bad\n", TRUE));
+            $app->log->debug( print_R( $history, TRUE));
             $historybad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove history. Please try again";
@@ -5290,7 +5290,7 @@ $app->delete('/rawhistory','authenticate', function() use ($app) {
         }
 });
 
-$app->post('/bulkstudentattendance', 'authenticate', function() use($app) {
+$app->post('/bulkstudentattendance', 'authenticate', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -5302,11 +5302,11 @@ $app->post('/bulkstudentattendance', 'authenticate', function() use($app) {
             $response["message"] = "$attendance bulk attendance(s) created successfully";
             $response["attendance"] = $attendance;
             $response["attendance_id"] = $attendance;
-            error_log( print_R("attendance(s) created: $attendance\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("attendance(s) created: $attendance\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createattendance result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $attendance, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createattendance result bad\n", TRUE));
+            $app->log->debug( print_R( $attendance, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $attendance bulk attendances. Please try again";
             $response["attendance_id"] = $attendance;
@@ -5314,7 +5314,7 @@ $app->post('/bulkstudentattendance', 'authenticate', function() use($app) {
         }
 });
 
-$app->get('/rawattendances', 'authenticate', function() use ($app){
+$app->get('/rawattendances', 'authenticate', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -5325,8 +5325,8 @@ $app->get('/rawattendances', 'authenticate', function() use ($app){
 
     $res_id = $db->getRawAttendanceStatus();
                                      
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
 
@@ -5354,8 +5354,8 @@ $app->get('/rawattendances', 'authenticate', function() use ($app){
         echoRespnse(201, $response);
         
     } else {
-        error_log( print_R("after rawAttendances result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after rawAttendances result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to get rawAttendances. Please try again";
@@ -5365,20 +5365,20 @@ $app->get('/rawattendances', 'authenticate', function() use ($app){
 
 });
 
-$app->post('/rawattendance', 'authenticate', function() use($app) {
+$app->post('/rawattendance', 'authenticate', 'setDebug', function() use($app) {
 
 
     $response = array();
     $data               = file_get_contents("php://input");
     $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("rawattendance before insert\n", TRUE ), 3, LOG);
-    error_log( print_R($dataJsonDecode, TRUE ), 3, LOG);
+    $app->log->debug( print_R("rawattendance before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
     
     $attendancearr = array();
     $attendancearr = $dataJsonDecode->thedata->selectedattendances;
 
-    error_log( print_R($attendancearr, TRUE ), 3, LOG);
+    $app->log->debug( print_R($attendancearr, TRUE ));
 
     $attendancegood=0;
     $attendancebad=0;
@@ -5413,11 +5413,11 @@ $app->post('/rawattendance', 'authenticate', function() use($app) {
                                 );    
 
         if ($attendance > 0) {
-            error_log( print_R("createFullattendanceRaw created: $attendance\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullattendanceRaw created: $attendance\n", TRUE ));
             $attendancegood += 1;
         } else {
-            error_log( print_R("after createFullattendanceRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $attendance, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullattendanceRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $attendance, TRUE));
             $attendancebad += 1;
         }
                         
@@ -5429,11 +5429,11 @@ $app->post('/rawattendance', 'authenticate', function() use($app) {
             $response["message"] = "$attendancegood createFullattendanceRaw(s) created successfully";
             $response["attendance"] = $attendancegood;
             $response["attendance_id"] = $attendancegood;
-            error_log( print_R("createFullattendanceRaw(s) created: $attendancegood\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("createFullattendanceRaw(s) created: $attendancegood\n", TRUE ));
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after createFullattendanceRaw result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $attendancebad, TRUE), 3, LOG);
+            $app->log->debug( print_R("after createFullattendanceRaw result bad\n", TRUE));
+            $app->log->debug( print_R( $attendancebad, TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to create $attendancebad createFullattendanceRaw. Please try again";
             $response["attendance_id"] = $attendancebad;
@@ -5442,7 +5442,7 @@ $app->post('/rawattendance', 'authenticate', function() use($app) {
 
 });
 
-$app->put('/rawattendance/ext/:extid/cls/:cls', 'authenticate', function($externalid, $Classname) use($app) 
+$app->put('/rawattendance/ext/:extid/cls/:cls', 'authenticate', 'setDebug', function($externalid, $Classname) use($app) 
 {
 
     $request = $app->request();
@@ -5456,7 +5456,7 @@ $app->put('/rawattendance/ext/:extid/cls/:cls', 'authenticate', function($extern
         $DOWnum = (isset($attendance->DOWnum) ? $attendance->DOWnum : "");
         $attended = (isset($attendance->attended) ? $attendance->attended : "");
 
-    error_log( print_R("before rawattendance update\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before rawattendance update\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
@@ -5466,14 +5466,14 @@ $app->put('/rawattendance/ext/:extid/cls/:cls', 'authenticate', function($extern
 $externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $attended
                                 );
     if ($result >= 0) {
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
-        error_log( print_R("after upstu result good\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
+        $app->log->debug( print_R("after upstu result good\n ", TRUE));
         // task updated successfully
         $response["error"] = false;
         $response["message"] = "Raw attendance updated successfully";
     } else {
-        error_log( print_R("after upstu result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $result, TRUE), 3, LOG);
+        $app->log->debug( print_R("after upstu result bad\n", TRUE));
+        $app->log->debug( print_R( $result, TRUE));
         // task failed to update
         $response["error"] = true;
         $response["message"] = "attendance failed to update. Please try again!";
@@ -5481,16 +5481,16 @@ $externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $a
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawattendances','authenticate', function() use ($app) {
+$app->delete('/rawattendances','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Raw attendance before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Raw attendance before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
     $attendancegood=0;
     $attendancebad=0;
@@ -5501,15 +5501,15 @@ $app->delete('/rawattendances','authenticate', function() use ($app) {
         $attendance = $db->removeRawattendances();
     
         if ($attendance > 0) {
-            error_log( print_R("Raw attendances removed: $attendance\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Raw attendances removed: $attendance\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Raw attendances removed successfully";
             $attendancegood = 1;
             $response["attendance"] = $attendancegood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Raw attendance result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $attendance, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Raw attendance result bad\n", TRUE));
+            $app->log->debug( print_R( $attendance, TRUE));
             $attendancebad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove attendance. Please try again";
@@ -5517,16 +5517,16 @@ $app->delete('/rawattendances','authenticate', function() use ($app) {
         }
 });
 
-$app->delete('/rawattendance','authenticate', function() use ($app) {
+$app->delete('/rawattendance','authenticate', 'setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Rawattendance before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Rawattendance before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
     $externalid="";
     $Classname="";
     $mondayOfWeek="";
@@ -5561,9 +5561,9 @@ $app->delete('/rawattendance','authenticate', function() use ($app) {
         $DOWnum    = $test->thedata->DOWnum;
     }
 
-    error_log( print_R("Classname: $Classname\n", TRUE ), 3, LOG);
-    error_log( print_R("mondayOfWeek: $mondayOfWeek\n", TRUE ), 3, LOG);
-    error_log( print_R("DOWnum: $DOWnum\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Classname: $Classname\n", TRUE ));
+    $app->log->debug( print_R("mondayOfWeek: $mondayOfWeek\n", TRUE ));
+    $app->log->debug( print_R("DOWnum: $DOWnum\n", TRUE ));
 
     $attendancegood=0;
     $attendancebad=0;
@@ -5575,15 +5575,15 @@ $app->delete('/rawattendance','authenticate', function() use ($app) {
                                     );
     
         if ($attendance > 0) {
-            error_log( print_R("attendance removed: $attendance\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("attendance removed: $attendance\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "attendance removed successfully";
             $attendancegood = 1;
             $response["attendance"] = $attendancegood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete attendance result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $attendance, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete attendance result bad\n", TRUE));
+            $app->log->debug( print_R( $attendance, TRUE));
             $attendancebad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove attendance. Please try again";
@@ -5600,8 +5600,9 @@ function stripepaid(
         $school
 
     ){
-    error_log( print_R("stripepaid entered:\n ", TRUE), 3, LOG);
-//    error_log( print_R($inbound, TRUE), 3, LOG);
+    setDebug();    
+    $app->log->debug( print_R("stripepaid entered:\n ", TRUE));
+//    $app->log->debug( print_R($inbound, TRUE));
 
     $paymentprocessor = 'stripe';
     $result = array();
@@ -5641,8 +5642,8 @@ function stripepaid(
     $sstatus = $inbound['status'];
     $paidst = $inbound['paid'] == 1 ? "paid" : "notpaid";
     $result['payment_status'] = $sstatus . ':' . $paidst;
-    error_log( print_R("before createPayment:\n ", TRUE), 3, LOG);
-    error_log( print_R($result, TRUE), 3, LOG);
+    $app->log->debug( print_R("before createPayment:\n ", TRUE));
+    $app->log->debug( print_R($result, TRUE));
 
 
         $db = new StudentDbHandler();
@@ -5696,7 +5697,7 @@ function stripepaid(
             $invresult = $db->updateInvoiceStatus($result['payment_status'],$result['custom']);
             //todo: should we assess result and interupt this if the update fails
     
-            error_log( print_R("Stripe Payment created: $paid\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Stripe Payment created: $paid\n", TRUE ));
             $xn = $result['txn_id'];
 
             $result = $db->getPayment($xn);
@@ -5750,13 +5751,13 @@ function stripepaid(
                     $to = $tmp["Email"];
                 emailnotify($to , $subject, $message);
             //    emailnotify('villaris.us@gmail.com', $subject, $message);
-                error_log( print_R("email to send: $to, $subject, $message\n", TRUE ), 3, LOG);
+                $app->log->debug( print_R("email to send: $to, $subject, $message\n", TRUE ));
                 }
             }
     } catch (Exception $e) {
       // Something else happened, completely unrelated to Stripe
-        error_log( print_R("stripepaid dd:\n ", TRUE), 3, LOG);
-        error_log( print_R($e, TRUE), 3, LOG);
+        $app->log->debug( print_R("stripepaid dd:\n ", TRUE));
+        $app->log->debug( print_R($e, TRUE));
     }    
 
 
@@ -5764,6 +5765,8 @@ function stripepaid(
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();
+    setDebug();    
+
     $app->log->info( print_R("createStudentHistory entered: $contactid, $histtype, $histdate", TRUE));
 
     $db = new StudentDbHandler();
@@ -5780,8 +5783,8 @@ function createStudentHistory($contactid,$histtype,$histdate) {
 
         return 201;
     } else {
-        error_log( print_R("after histcontent result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $histid, TRUE), 3, LOG);
+        $app->log->debug( print_R("after histcontent result bad\n", TRUE));
+        $app->log->debug( print_R( $histid, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create histcontent. Please try again";
         echoRespnse(400, $response);
@@ -5791,6 +5794,8 @@ function createStudentHistory($contactid,$histtype,$histdate) {
 
 function genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor) {
     $app = \Slim\Slim::getInstance();
+        setDebug();    
+
     $app->log->info( print_R("genInvoiceEmail entered: $invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor", TRUE));
 
 $message = "
@@ -5821,6 +5826,8 @@ $message = "
 }
 function genOverdueEmail($payerName, $to, $schEmail,$schSig) {
     $app = \Slim\Slim::getInstance();
+        setDebug();    
+
     $app->log->info( print_R("genOverdueEmail entered: $payerName, $to, $schEmail,$schSig", TRUE));
 
 $message = "
@@ -5851,6 +5858,8 @@ function genPaymentEmail($invoiceDate,$paymentDate,$invoiceAmt,$to,$payerid,$pay
                     $quantity3,$item_name4,$mc_gross_4,$quantity4,$item_name5,$mc_gross_5,$quantity5,$payment_gross
                     ) {
     $app = \Slim\Slim::getInstance();
+        setDebug();    
+
     $app->log->info( print_R("genPaymentEmail entered: $invoiceDate,$paymentDate,$invoiceAmt,$to,$payerid,$payerlastname, $payerfirstname, 
                     $invstatus ,$paymentstatus ,$invoice ,$txnid ,$ipnid, $num_cart_items, $shipping , $schEmail, $schSig, $nptype", TRUE));
 
@@ -6242,6 +6251,8 @@ $message = remove_spaces($message);
 
 function createNotification($type,$notifkey,$value) {
     $app = \Slim\Slim::getInstance();
+        setDebug();    
+
     $app->log->info( print_R("createNotification entered: $type,$notifkey,$value", TRUE));
 
     $db = new StudentDbHandler();
@@ -6258,8 +6269,8 @@ function createNotification($type,$notifkey,$value) {
 
         return 201;
     } else {
-        error_log( print_R("after createNotification result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $notifid, TRUE), 3, LOG);
+        $app->log->debug( print_R("after createNotification result bad\n", TRUE));
+        $app->log->debug( print_R( $notifid, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create createNotification. Please try again";
         echoRespnse(400, $response);
@@ -6273,6 +6284,8 @@ function validateEmail($email) {
  */
     
     $app = \Slim\Slim::getInstance();
+    setDebug();    
+    
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $response["error"] = true;
         $response["message"] = 'Email address is not valid';
@@ -6283,12 +6296,14 @@ function validateEmail($email) {
 
 function checkSecurity() {
     $app = \Slim\Slim::getInstance();
+        setDebug();    
+
     global $role;
     global $school;
     global $user_id;
     global $rolelist;
     
-    error_log( print_R("role: $role school: $school user: $user_id\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("role: $role school: $school user: $user_id\n ", TRUE));
 
     if (!isset($school, $user_id)) {
         $response["error"] = true;
@@ -6308,23 +6323,25 @@ function checkSecurity() {
 
 function addSecurity($insql, $field, $override = 'false') {
     $app = \Slim\Slim::getInstance();
+        setDebug();    
+
     global $role;
     global $school;
     global $user_id;
-    error_log( print_R("role: $role school: $school user: $user_id\n ", TRUE), 3, LOG);
-    error_log( print_R("addSecurity: $insql\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("role: $role school: $school user: $user_id\n ", TRUE));
+    $app->log->debug( print_R("addSecurity: $insql\n ", TRUE));
 
 
     if ( $role != 'admin') {
         //admin can see all data, others need to filter by school or user  
         $insql .= " and " .  $field . " = '" . $school . "'";
-        error_log( print_R("addSecurity done: $insql\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("addSecurity done: $insql\n ", TRUE));
     } else if ( $override == 'true' ) {
         //admin can see all data, but when checking fK needs to be in the check  
         $insql .= " and " .  $field . " = '" . $school . "'";
-        error_log( print_R("addSecurity done: $insql\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("addSecurity done: $insql\n ", TRUE));
     } else {
-        error_log( print_R("addSecurity not needed for admin $override\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("addSecurity not needed for admin $override\n ", TRUE));
     }
 
     return $insql;

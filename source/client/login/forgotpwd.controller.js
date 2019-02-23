@@ -19,11 +19,9 @@ export class ForgotpwdController {
         this.UserServices = userServices;
         this.$q = $q;
 
-        $log.debug('enter ForgotpwdController');
     }
 
     $onInit() {
-        console.log("initializing Login...");
         this.username = null;
         this.password = null;
         this.dataLoading = false;
@@ -36,20 +34,20 @@ export class ForgotpwdController {
     }
 
     $onDestroy() {
-        this.$log.debug("ForgotpwdController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ForgotpwdController dismissed");
+        //this.$log.logEnabled(false);
     }
 
 
     forgotpwd() {
         var self = this;
-        self.$log.debug('controller forgotpwd function entered', self.username);
+        self.$log.log('controller forgotpwd function entered', self.username);
         var path = '../v1/forgotpassword?username=' + self.username;
         self.dataLoading = true;
 
         return self.userServices.forgotpassword(path).then(function(data) {
-                self.$log.debug('UserServices returned data');
-                self.$log.debug(data);
+                self.$log.log('UserServices returned data');
+                self.$log.log(data);
                 self.apiKey = data.apiKey;
                 alert("Check your email for reset information");
 
@@ -57,7 +55,7 @@ export class ForgotpwdController {
                 return data;
             },
             function(error) {
-                self.$log.debug('Caught an error UserServices, going to notify:', error);
+                self.$log.log('Caught an error UserServices, going to notify:', error);
                 self.UserServices.SetCredentials('', '', '');
                 self.flashService.Err(error);
                 return (self.$q.reject(error));

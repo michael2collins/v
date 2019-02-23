@@ -1,10 +1,9 @@
 export class ModalEmailViewInstanceController {
   constructor(
     $log, studentServices, $window, Notification,
-    $scope, util, $q, $sce, moment, $uibModal
+    $scope, util, $q, $sce, moment, $uibModal, UserServices
   ) {
     'ngInject';
-    console.log('entering ModalEmailViewInstanceController controller');
 
     this.$log = $log;
     this.$sce = $sce;
@@ -17,6 +16,7 @@ export class ModalEmailViewInstanceController {
     this.Util = util;
     this.$uibModal = $uibModal;
     this.item = $scope.$parent.$resolve.item;
+        this.UserServices = UserServices;
 
   }
   $onInit() {
@@ -30,26 +30,31 @@ export class ModalEmailViewInstanceController {
   }
   init() {
     var self=this;
+    var vm=this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ModalEmailViewInstanceController',vm.UserServices.isDebugEnabled());
+        }
+
     this.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
       var vm = event.currentScope.$ctrl;
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("ModalEmailViewInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("ModalEmailViewInstanceController started");
 
     });
     this.$scope.$on('$destroy', function iVeBeenDismissed() {
-      self.$log.debug("ModalEmailViewInstanceController dismissed");
-      self.$log.debugEnabled(false);
+      self.$log.log("ModalEmailViewInstanceController dismissed");
+      //self.$log.logEnabled(false);
     });
 
     
   }
   getEmailView(item) {
     var vm = this;
-    vm.$log.debug('getEmailView entered');
+    vm.$log.log('getEmailView entered');
     var input = item.id;
     return vm.StudentServices.getEmailViews(input).then(function(data) {
-      vm.$log.debug('getEmailViews returned data');
-      vm.$log.debug(data);
+      vm.$log.log('getEmailViews returned data');
+      vm.$log.log(data);
       var testdate;
 
       vm.message = data.message;
@@ -76,7 +81,7 @@ export class ModalEmailViewInstanceController {
       }
       return vm.data;
     }, function(error) {
-      vm.$log.debug('Caught an error getEmailViews:', error);
+      vm.$log.log('Caught an error getEmailViews:', error);
       vm.data = [];
       vm.message = error;
       vm.Notification.error({ message: error, delay: 5000 });
@@ -87,7 +92,7 @@ export class ModalEmailViewInstanceController {
 
   removeEmailView(input) {
     var vm = this;
-    vm.$log.debug('removeEmailView entered', input);
+    vm.$log.log('removeEmailView entered', input);
     var path = "../v1/emailview";
     var thedata = {
       id: input.id
@@ -98,8 +103,8 @@ export class ModalEmailViewInstanceController {
     //check nclasspays, nclasspgm, studentregistration, testcandidates
     return vm.StudentServices.removeEmailView(thedata, path)
       .then(function(data) {
-        vm.$log.debug('removeEmailView returned data');
-        vm.$log.debug(data);
+        vm.$log.log('removeEmailView returned data');
+        vm.$log.log(data);
         vm.message = data.message;
         if ((typeof data === 'undefined' || data.error === true) &&
           typeof data !== 'undefined') {
@@ -112,10 +117,10 @@ export class ModalEmailViewInstanceController {
         }
 
         vm.getEmailView().then(function(zdata) {
-            vm.$log.debug('getEmailView returned', zdata);
+            vm.$log.log('getEmailView returned', zdata);
           },
           function(error) {
-            vm.$log.debug('Caught an error getEmailView after remove:', error);
+            vm.$log.log('Caught an error getEmailView after remove:', error);
             vm.thisEmailView = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -123,8 +128,8 @@ export class ModalEmailViewInstanceController {
           });
         return data;
       }).catch(function(e) {
-        vm.$log.debug('removeEmailView failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('removeEmailView failure:');
+        vm.$log.log("error", e);
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;
       });
@@ -140,14 +145,14 @@ export class ModalEmailViewInstanceController {
       status: input.status
     };
 
-    vm.$log.debug('about updateEmailView ', thedata, updpath);
+    vm.$log.log('about updateEmailView ', thedata, updpath);
     return vm.StudentServices.updateEmailView(updpath, thedata)
       .then(function(data) {
-        vm.$log.debug('updateEmailView returned data');
-        vm.$log.debug(data);
+        vm.$log.log('updateEmailView returned data');
+        vm.$log.log(data);
         vm.thisEmailView = data;
-        vm.$log.debug(vm.thisEmailView);
-        vm.$log.debug(vm.thisEmailView.message);
+        vm.$log.log(vm.thisEmailView);
+        vm.$log.log(vm.thisEmailView.message);
         vm.message = vm.thisEmailView.message;
         if ((typeof vm.thisEmailView === 'undefined' || vm.thisEmailView.error === true) &&
           typeof data !== 'undefined') {
@@ -156,10 +161,10 @@ export class ModalEmailViewInstanceController {
         }
         else {
           vm.getEmailView(vm.data).then(function(zdata) {
-              vm.$log.debug('getEmailView returned', zdata);
+              vm.$log.log('getEmailView returned', zdata);
             },
             function(error) {
-              vm.$log.debug('Caught an error getEmailView after remove:', error);
+              vm.$log.log('Caught an error getEmailView after remove:', error);
               vm.thisEmailView = [];
               vm.message = error;
               vm.Notification.error({ message: error, delay: 5000 });
@@ -170,8 +175,8 @@ export class ModalEmailViewInstanceController {
 
         return vm.thisEmailView;
       }).catch(function(e) {
-        vm.$log.debug('updateEmailView failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('updateEmailView failure:');
+        vm.$log.log("error", e);
         vm.message = e;
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;
@@ -179,11 +184,11 @@ export class ModalEmailViewInstanceController {
   }
 
   eforward() {
-    this.$log.debug("eforward entered");
+    this.$log.log("eforward entered");
     this.newEmail('forward');
   }
   ereply() {
-    this.$log.debug("ereply entered");
+    this.$log.log("ereply entered");
     this.newEmail('reply');
 
   }
@@ -217,7 +222,7 @@ export class ModalEmailViewInstanceController {
     modalScope.modalInstance = emailModal.modalInstance;
 
     emailModal.modalInstance.result.then(function(retvlu) {
-      emailModal.$log.debug('search modalInstance result :', retvlu);
+      emailModal.$log.log('search modalInstance result :', retvlu);
       emailModal.retvlu = retvlu;
     }, function() {
       emailModal.$log.info('Modal dismissed at: ' + new Date());
@@ -226,13 +231,13 @@ export class ModalEmailViewInstanceController {
   }
 
   markRead() {
-    this.$log.debug("markRead entered");
+    this.$log.log("markRead entered");
     this.data.status = "read";
     this.updateEmailView(this.data);
 
   }
   markUnread() {
-    this.$log.debug("markUnread entered");
+    this.$log.log("markUnread entered");
     this.data.status = "new";
     this.updateEmailView(this.data);
 

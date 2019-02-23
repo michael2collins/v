@@ -31,50 +31,50 @@
             return activeTab;
         }
         function setActiveTab(thetab,thecaller) {
-            $log.debug('EventServices setActiveTab called', thetab, thecaller);
+            $log.log('EventServices setActiveTab called', thetab, thecaller);
             activeTab = thetab;
         }
         
         function getEventNames(path) {
-            $log.debug('getEventNames service entered');
-            $log.debug('path',path);
+            $log.log('getEventNames service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
         function getEventDetails(path) {
-            $log.debug('getEventDetails service entered');
-            $log.debug('path',path);
+            $log.log('getEventDetails service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
         
 
         function getEventSource(path) {
-            $log.debug('getEventSource service entered');
-            $log.debug('path',path);
+            $log.log('getEventSource service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
         
         function getColDefs(path) {
-            $log.debug('getColDefs service entered');
-            $log.debug('path',path);
+            $log.log('getColDefs service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
         function getColDefList(path) {
-            $log.debug('getColDefList service entered');
-            $log.debug('path',path);
+            $log.log('getColDefList service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
 
         function setColDefs(path, thedata) {
-            $log.debug('setColDefs service entered before post:', thedata);
-            $log.debug('path',path);
+            $log.log('setColDefs service entered before post:', thedata);
+            $log.log('path',path);
 
             var request = $http({
                 method: "POST",
@@ -87,7 +87,7 @@
         }
 
         function createEvent(path, thedata ) {
-                    $log.debug('createEvent data before post :' , thedata);
+                    $log.log('createEvent data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -99,7 +99,7 @@
         }        
         
         function updateEvent(path, thedata ) {
-                    $log.debug('updateEvent data before post :' , thedata);
+                    $log.log('updateEvent data before post :' , thedata);
                     var request = $http({
                         method: "PUT",
                         url: path,
@@ -114,10 +114,10 @@
         // PRIVATE METHODS.
         // ---
         function handleError( response ) {
-            $log.debug('EventServices failure:');
-            $log.debug(response);
-            $log.debug('status',response.status);
-            $log.debug('config',response.config);
+            $log.log('EventServices failure:');
+            $log.log(response);
+            $log.log('status',response.status);
+            $log.log('config',response.config);
             //debugger;
             if (
                 ! angular.isObject( response.data ) ||
@@ -132,8 +132,8 @@
         // I transform the successful response, unwrapping the application data
         // from the API response payload.
         function handleSuccess( response ) {
-            $log.debug('EventServices success:');
-            $log.debug(response);
+            $log.log('EventServices success:');
+            $log.log(response);
             return( response.data );
         }
 

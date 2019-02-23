@@ -12,7 +12,6 @@ export class PhotoUploadController {
 
     }
     $onInit() {
-        console.log('entering PhotoUploadController oninit');
         var vmstupicupload = this;
         vmstupicupload.picfile = '';
         vmstupicupload.activate();

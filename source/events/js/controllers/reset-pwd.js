@@ -31,10 +31,10 @@
             pagevm.apiKey;
             pagevm.isconfirm;
             
-            $log.debug('enter ResetpwdController');
-            $log.debug('username', pagevm.username);
-            $log.debug('password', pagevm.password);
-            $log.debug('confirm_password', pagevm.confirm_password);
+            $log.log('enter ResetpwdController');
+            $log.log('username', pagevm.username);
+            $log.log('password', pagevm.password);
+            $log.log('confirm_password', pagevm.confirm_password);
 
             pagevm.re = /^[a-zA-Z]\w{3,14}$/;
 
@@ -49,14 +49,14 @@
         //    $('body').attr('id', 'signin-page');
 
             function compare(repass) {
-                $log.debug('compare',repass);
+                $log.log('compare',repass);
                 pagevm.isconfirm = pagevm.password == repass ? true : false;
             }
     
 
             function resetpwd() {
-                $log.debug('controller resetpwd function entered', pagevm.username, pagevm.password);
-                $log.debug('token', $routeParams.token);
+                $log.log('controller resetpwd function entered', pagevm.username, pagevm.password);
+                $log.log('token', $routeParams.token);
                 pagevm.dataLoading = true;
                 var path=encodeURI('../v1/resetpassword?user=' + pagevm.username + 
                     '&token=' + $routeParams.token +
@@ -64,8 +64,8 @@
                     '&email=' + pagevm.email);
 
                  return UserServices.resetpassword(path).then(function(data){
-                    $log.debug('UserServices resetpwd returned data');
-                    $log.debug(data);
+                    $log.log('UserServices resetpwd returned data');
+                    $log.log(data);
                     pagevm.apiKey = data.api_Key;
                         UserServices.ResetCredentials(data.username, data.api_key);
                         TournamentServices.setapikey(data.api_key);
@@ -78,7 +78,7 @@
                         return data;
                 },
                 function (error) {
-                    $log.debug('Caught an error UserServices resetpwd, going to notify:', error); 
+                    $log.log('Caught an error UserServices resetpwd, going to notify:', error); 
                 //    vm.message = error;
                 //    Notification.error({message: error, delay: 5000});
                         UserServices.SetCredentials('','','');

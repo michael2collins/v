@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/attendstats', 'authenticate', function() use ($app) {
+$app->get('/attendstats', 'authenticate','setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("attendstats entered: ", TRUE));
@@ -39,8 +39,8 @@ $app->get('/attendstats', 'authenticate', function() use ($app) {
             $tmp["type"] = "NULL";
 
         }
-//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
-//        error_log( print_R($tmp, TRUE), 3, LOG);
+//        $app->log->debug( print_R("attendance push\n ", TRUE));
+//        $app->log->debug( print_R($tmp, TRUE));
         array_push($response["attendstats"], $tmp);
     }
     $row_cnt = count($response["attendstats"]);
@@ -64,7 +64,7 @@ $app->get('/attendstats', 'authenticate', function() use ($app) {
     }
 });
 
-$app->post('/studentstats', 'authenticate', function() use ($app) {
+$app->post('/studentstats', 'authenticate', 'setDebug',function() use ($app) {
 
     $app->log->setLevel(\Slim\Log::INFO);
 
@@ -228,7 +228,7 @@ $app->post('/studentstats', 'authenticate', function() use ($app) {
     
 });
 
-$app->post('/studentstatsmonths', 'authenticate', function() use ($app) {
+$app->post('/studentstatsmonths', 'authenticate','setDebug', function() use ($app) {
 
     $app->log->setLevel(\Slim\Log::INFO);
 

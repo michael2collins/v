@@ -3,11 +3,10 @@ import angular from 'angular';
 export class BasicTableBasicController {
     constructor(
 
-        $log, $q, $scope, $interval, ClassServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
+        $log, $q, $scope, $interval, ClassServices, UserServices, uiGridConstants, Notification, moment, iddropdownFilter, Util, portalDataService
 
     ) {
         'ngInject';
-        console.log('entering BasicTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -19,6 +18,7 @@ export class BasicTableBasicController {
         this.Util = Util;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -62,22 +62,26 @@ export class BasicTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-basic dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-basic dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-basic-basic');
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('BasicTableBasicController',vm.UserServices.isDebugEnabled());
+        }
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-basic started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-basic started");
 
         });
 
         vm.getBasic().then(function() {
-            vm.$log.debug('getBasic activate done');
+            vm.$log.log('getBasic activate done');
         }, function(error) {
             return (vm.$q.reject(error));
         });
@@ -97,7 +101,7 @@ export class BasicTableBasicController {
 
     removeBasic(input) {
         var vm = this;
-        vm.$log.debug('removeBasic entered', input);
+        vm.$log.log('removeBasic entered', input);
         var path = "../v1/basic";
         var thedata = {
             id: input.id
@@ -108,8 +112,8 @@ export class BasicTableBasicController {
         //check nclasspays, nclasspgm, studentregistration, testcandidates
         return vm.ClassServices.removeBasic(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeBasic returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeBasic returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -122,10 +126,10 @@ export class BasicTableBasicController {
                 }
 
                 vm.getBasic().then(function(zdata) {
-                        vm.$log.debug('getBasic returned', zdata);
+                        vm.$log.log('getBasic returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getBasic after remove:', error);
+                        vm.$log.log('Caught an error getBasic after remove:', error);
                         vm.thisBasic = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -133,8 +137,8 @@ export class BasicTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeBasic failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeBasic failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -158,14 +162,14 @@ export class BasicTableBasicController {
             listorder: rowEntity.listorder
         };
 
-        vm.$log.debug('about updateBasic ', thedata, updpath, updatetype);
+        vm.$log.log('about updateBasic ', thedata, updpath, updatetype);
         return vm.ClassServices.updateBasic(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateBasic returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateBasic returned data');
+                vm.$log.log(data);
                 vm.thisBasic = data;
-                vm.$log.debug(vm.thisBasic);
-                vm.$log.debug(vm.thisBasic.message);
+                vm.$log.log(vm.thisBasic);
+                vm.$log.log(vm.thisBasic.message);
                 vm.message = vm.thisBasic.message;
                 if ((typeof vm.thisBasic === 'undefined' || vm.thisBasic.error === true) &&
                     typeof data !== 'undefined') {
@@ -177,10 +181,10 @@ export class BasicTableBasicController {
                 }
                 if (updatetype === 'Add') {
                     vm.getBasic().then(function(zdata) {
-                            vm.$log.debug('getBasic returned', zdata);
+                            vm.$log.log('getBasic returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getBasic after remove:', error);
+                            vm.$log.log('Caught an error getBasic after remove:', error);
                             vm.thisBasic = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -191,8 +195,8 @@ export class BasicTableBasicController {
 
                 return vm.thisBasic;
             }).catch(function(e) {
-                vm.$log.debug('updateBasic failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateBasic failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -201,17 +205,17 @@ export class BasicTableBasicController {
 
     getBasic() {
         var vm = this;
-        vm.$log.debug('getBasic entered');
+        vm.$log.log('getBasic entered');
         var path = '../v1/basic';
 
         return vm.ClassServices.getBasics(path).then(function(data) {
-            vm.$log.debug('getBasics returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getBasics returned data');
+            vm.$log.log(data);
 
             vm.gridOptions.data = data.Basiclist;
 
         }, function(error) {
-            vm.$log.debug('Caught an error getBasics:', error);
+            vm.$log.log('Caught an error getBasics:', error);
             vm.Basiclist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -280,11 +284,11 @@ export class BasicTableBasicController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

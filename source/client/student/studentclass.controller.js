@@ -50,62 +50,62 @@ export class StudentClassController {
     }
 
     $onDestroy() {
-        this.$log.debug("ModalNewStudentInstanceController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ModalNewStudentInstanceController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     getClassSearchResult() {
-        this.$log.debug('search finish, get result');
+        this.$log.log('search finish, get result');
         this.vmclass.studentclass = this.ClassServices.getClassSearchResult();
     }
 
     activate() {
         var vmclass = this;
-        vmclass.$log.debug('class activate');
+        vmclass.$log.log('class activate');
         vmclass.$q.all([
 
                 vmclass.getStudentClassList().then(function() {
-                    vmclass.$log.debug('getStudentClassList ready');
+                    vmclass.$log.log('getStudentClassList ready');
                     vmclass.getStudentClassStatuses();
-                    vmclass.$log.debug("listnew in activate", vmclass.xlistnew);
+                    vmclass.$log.log("listnew in activate", vmclass.xlistnew);
 
                 }).catch(function(e) {
-                    vmclass.$log.debug("getStudentClassList error in activate", e);
+                    vmclass.$log.log("getStudentClassList error in activate", e);
                 }),
                 vmclass.getStudentClazzList().then(function() {
-                    vmclass.$log.debug('getStudentClazzList ready');
+                    vmclass.$log.log('getStudentClazzList ready');
 
                 }).catch(function(e) {
-                    vmclass.$log.debug("getStudentClassList error in activate", e);
+                    vmclass.$log.log("getStudentClassList error in activate", e);
                 }),
                 vmclass.ClassServices.distinctCat().then(function(data) {
-                    vmclass.$log.debug('distinctCat get:', data);
+                    vmclass.$log.log('distinctCat get:', data);
                     vmclass.classcategories = data.classcatlist;
-                    vmclass.$log.debug("distinctCat in activate", vmclass.classcategories);
+                    vmclass.$log.log("distinctCat in activate", vmclass.classcategories);
                 }).catch(function(e) {
-                    vmclass.$log.debug("distinctCat error in activate", e);
+                    vmclass.$log.log("distinctCat error in activate", e);
                 }),
 
                 vmclass.ClassServices.distinctAge().then(function(data) {
-                    vmclass.$log.debug('distinctAge get:', data);
+                    vmclass.$log.log('distinctAge get:', data);
                     vmclass.agecategories = data.agecatlist;
-                    vmclass.$log.debug("distinctAge in activate", vmclass.agecategories);
+                    vmclass.$log.log("distinctAge in activate", vmclass.agecategories);
                 }).catch(function(e) {
-                    vmclass.$log.debug("distinctAge error", e);
+                    vmclass.$log.log("distinctAge error", e);
                 }),
 
                 vmclass.ClassServices.distinctPgm().then(function(data) {
-                    vmclass.$log.debug('distinctPgm get:', data);
+                    vmclass.$log.log('distinctPgm get:', data);
                     vmclass.pgmcategories = data.pgmcatlist;
-                    vmclass.$log.debug("distinctPgm in activate", vmclass.pgmcategories);
+                    vmclass.$log.log("distinctPgm in activate", vmclass.pgmcategories);
                 }).catch(function(e) {
-                    vmclass.$log.debug("distinctPgm error", e);
+                    vmclass.$log.log("distinctPgm error", e);
                 }),
 
 
             ])
             .then(function() {
-                vmclass.$log.debug('studentclass activation done returned');
+                vmclass.$log.log('studentclass activation done returned');
             });
 
 
@@ -171,12 +171,12 @@ export class StudentClassController {
             mypgmid;
 
         return vmclass.ClassServices.getClassPgm(path).then(function(data) {
-            vmclass.$log.debug('getClassPgm returned data', data);
+            vmclass.$log.log('getClassPgm returned data', data);
             vmclass.studentclass = data;
             vmclass.classpictureurl = data.pictureurl;
             return vmclass.studentclass;
         }, function(error) {
-            vmclass.$log.debug('getStudentClass ', error);
+            vmclass.$log.log('getStudentClass ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -185,13 +185,13 @@ export class StudentClassController {
     getStudentClass() {
         var vmclass = this;
         return vmclass.ClassServices.getStudentClass(vmclass.path).then(function(data) {
-            vmclass.$log.debug('getStudentClass returned data', data);
+            vmclass.$log.log('getStudentClass returned data', data);
             vmclass.studentclass = data;
             vmclass.classpictureurl = data.pictureurl;
 
             return vmclass.studentclass;
         }, function(error) {
-            vmclass.$log.debug('getStudentClass ', error);
+            vmclass.$log.log('getStudentClass ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -200,7 +200,7 @@ export class StudentClassController {
 
     getStudentClazzList() {
         var vmclass = this;
-        vmclass.$log.debug('getStudentClazzList entered:' + vmclass.$routeParams.id);
+        vmclass.$log.log('getStudentClazzList entered:' + vmclass.$routeParams.id);
         var path = '../v1/studentclasslist/' + vmclass.$routeParams.id;
         return vmclass.ClassServices.getStudentClassList(path).then(function(data) {
             vmclass.studentclazzlist = data.studentclasslist;
@@ -211,10 +211,10 @@ export class StudentClassController {
                     primaryContact: vmclass.studentclazzlist[iter].primaryContact
                 };
             }
-            vmclass.$log.debug('studentclazzlist returned data', vmclass.studentclazzlist);
+            vmclass.$log.log('studentclazzlist returned data', vmclass.studentclazzlist);
             return vmclass.studentclazzlist;
         }, function(error) {
-            vmclass.$log.debug('getStudentClass ', error);
+            vmclass.$log.log('getStudentClass ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -222,11 +222,11 @@ export class StudentClassController {
     }
     getPayersPartial(theinput) {
         var vmclass = this;
-        vmclass.$log.debug('getPayers entered');
+        vmclass.$log.log('getPayers entered');
 
         return vmclass.ClassServices.getPayersPartial(theinput).then(function(data) {
-            vmclass.$log.debug('controller getPayersPartial returned data', theinput);
-            vmclass.$log.debug(data.payerlist);
+            vmclass.$log.log('controller getPayersPartial returned data', theinput);
+            vmclass.$log.log(data.payerlist);
             vmclass.payers = data.payerlist;
             return vmclass.payers;
         });
@@ -239,8 +239,8 @@ export class StudentClassController {
         return vmclass.ClassServices.getStudentClassPicture(
             vmclass.classpicpath + '/' +
             vmclass.picID).then(function(data) {
-            vmclass.$log.debug('getStudentClassPicture returned data');
-            vmclass.$log.debug(data);
+            vmclass.$log.log('getStudentClassPicture returned data');
+            vmclass.$log.log(data);
             vmclass.classpictureurl = data;
 
             return vmclass.classpictureurl;
@@ -250,8 +250,8 @@ export class StudentClassController {
         var vmclass = this;
         var path = "../v1/studentclasspicturelist/" + vmclass.$routeParams.id;
         return vmclass.ClassServices.getStudentClassPictureList(path).then(function(data) {
-            vmclass.$log.debug('getStudentClassPictureList returned data');
-            vmclass.$log.debug(data);
+            vmclass.$log.log('getStudentClassPictureList returned data');
+            vmclass.$log.log(data);
             vmclass.classpictureurllist = data.picturelist;
 
             return vmclass.classpictureurllist;
@@ -261,13 +261,13 @@ export class StudentClassController {
     getStudentClassList() {
         var vmclass = this;
         return vmclass.ClassServices.getStudentClassList(vmclass.classlistpath).then(function(data) {
-            vmclass.$log.debug('getStudentClassList returned data');
-            vmclass.$log.debug(data);
+            vmclass.$log.log('getStudentClassList returned data');
+            vmclass.$log.log(data);
             vmclass.xlistnew = data;
             vmclass.ClassServices.setxlist(vmclass.xlistnew);
             return vmclass.xlistnew;
         }, function(error) {
-            vmclass.$log.debug('getStudentClassList ', error);
+            vmclass.$log.log('getStudentClassList ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -277,8 +277,8 @@ export class StudentClassController {
         var vmclass = this;
         return vmclass.ClassServices.getStudentClassStatuses(
             vmclass.classstatuspath).then(function(data) {
-            vmclass.$log.debug('getStudentClassStatuses returned data');
-            vmclass.$log.debug(data);
+            vmclass.$log.log('getStudentClassStatuses returned data');
+            vmclass.$log.log(data);
             vmclass.classstatuses = data;
 
             return vmclass.classstatuses;
@@ -287,25 +287,25 @@ export class StudentClassController {
 
     changeStudentStatus(clazzitem) {
         var vmclass = this;
-        vmclass.$log.debug('about changeStudentStatus ', clazzitem);
+        vmclass.$log.log('about changeStudentStatus ', clazzitem);
         vmclass.changestatus = "status";
         vmclass.updateStudentClass(clazzitem);
     }
     changetestfee(clazzitem) {
         var vmclass = this;
-        vmclass.$log.debug('about changetestfee ', clazzitem);
+        vmclass.$log.log('about changetestfee ', clazzitem);
         vmclass.changestatus = "testfee";
         vmclass.updateStudentClass(clazzitem);
     }
     changeprimaryContact(clazzitem) {
         var vmclass = this;
-        vmclass.$log.debug('about changeprimaryContact ', clazzitem);
+        vmclass.$log.log('about changeprimaryContact ', clazzitem);
         vmclass.changestatus = "primaryContact";
         vmclass.updateStudentClass(clazzitem);
     }
     changeStudentPayer(clazzitem) {
         var vmclass = this;
-        vmclass.$log.debug('about changeStudentPayer ', clazzitem);
+        vmclass.$log.log('about changeStudentPayer ', clazzitem);
         vmclass.changestatus = "payer";
         vmclass.updateStudentClass(clazzitem);
     }
@@ -319,12 +319,12 @@ export class StudentClassController {
         clazzitem.payerName = clazzitem.payerList.payerName;
         clazzitem.primaryContact = clazzitem.primaryContact;
 
-        vmclass.$log.debug('about updateStudentClass ', clazzitem);
+        vmclass.$log.log('about updateStudentClass ', clazzitem);
         return vmclass.ClassServices.updateStudentClass(
             path, clazzitem).then(function(data) {
-            vmclass.$log.debug('updateStudentClass returned data');
-            vmclass.$log.debug(data);
-            vmclass.$log.debug(data.message);
+            vmclass.$log.log('updateStudentClass returned data');
+            vmclass.$log.log(data);
+            vmclass.$log.log(data.message);
             if ((typeof data === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
                 vmclass.Notification.error({ message: data.message, delay: 5000 });
@@ -336,7 +336,7 @@ export class StudentClassController {
 
             vmclass.getStudentClazzList();
         }, function(error) {
-            vmclass.$log.debug('updateStudentClass ', error);
+            vmclass.$log.log('updateStudentClass ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -353,10 +353,10 @@ export class StudentClassController {
             payerid: vmclass.studentclass.payerName.payerid,
             studentclassstatus: vmclass.studentclass.studentclassstatus
         };
-        vmclass.$log.debug('about addStudentRegistration ', path, thedata, vmclass.studentclass);
+        vmclass.$log.log('about addStudentRegistration ', path, thedata, vmclass.studentclass);
         return vmclass.ClassServices.addStudentRegistration(path, thedata).then(function(data) {
-            vmclass.$log.debug('addStudentRegistration returned data: ');
-            vmclass.$log.debug(data);
+            vmclass.$log.log('addStudentRegistration returned data: ');
+            vmclass.$log.log(data);
 
             if ((typeof data.message === 'undefined' || data.error === true) &&
                 typeof data !== 'undefined') {
@@ -371,7 +371,7 @@ export class StudentClassController {
             vmclass.getStudentClazzList();
 
         }, function(error) {
-            vmclass.$log.debug('addStudentRegistration ', error);
+            vmclass.$log.log('addStudentRegistration ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
@@ -379,7 +379,7 @@ export class StudentClassController {
 
     removeStudentRegistration(classid, pgmid) {
         var vmclass = this;
-        vmclass.$log.debug('removeStudentRegistration entered');
+        vmclass.$log.log('removeStudentRegistration entered');
         var path = "../v1/studentregistration";
         var thedata = {
             studentid: vmclass.$routeParams.id,
@@ -388,13 +388,13 @@ export class StudentClassController {
         };
         return vmclass.ClassServices.removeStudentRegistration(path, thedata)
             .then(function(data) {
-                vmclass.$log.debug('removeStudentRegistration returned data');
-                vmclass.$log.debug(data);
+                vmclass.$log.log('removeStudentRegistration returned data');
+                vmclass.$log.log(data);
                 vmclass.getStudentClazzList();
                 return data;
             }).catch(function(e) {
-                vmclass.$log.debug('removeStudentRegistration failure:');
-                vmclass.$log.debug("error", e);
+                vmclass.$log.log('removeStudentRegistration failure:');
+                vmclass.$log.log("error", e);
                 vmclass.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -411,16 +411,16 @@ export class StudentClassController {
             myclassid +
             '/mypgm/' +
             mypgmid;
-        vmclass.$log.debug('studentid: ' + mystudent);
-        vmclass.$log.debug('studentclass: ' + myclassid);
-        vmclass.$log.debug('studentpgm: ' + mypgmid);
+        vmclass.$log.log('studentid: ' + mystudent);
+        vmclass.$log.log('studentclass: ' + myclassid);
+        vmclass.$log.log('studentpgm: ' + mypgmid);
 
-        vmclass.$log.debug('about setStudentClass ', mystudent);
-        vmclass.$log.debug('for class ', myclassid);
+        vmclass.$log.log('about setStudentClass ', mystudent);
+        vmclass.$log.log('for class ', myclassid);
         return vmclass.ClassServices.setStudentClass(
             setclasspath, mystudent, myclassid, mypgmid).then(function(data) {
-            vmclass.$log.debug('setStudentClass returned data: ');
-            vmclass.$log.debug(data);
+            vmclass.$log.log('setStudentClass returned data: ');
+            vmclass.$log.log(data);
         });
     }
     */

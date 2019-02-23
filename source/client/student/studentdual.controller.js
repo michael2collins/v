@@ -2,7 +2,8 @@ import angular from 'angular';
 
 export class ctrlDualList {
    constructor(
-      $scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification, $controller, $timeout
+      $scope, $log, StudentServices, $routeParams, uiGridConstants, $window, Notification, 
+      $controller, $timeout, UserServices
    ) {
       'ngInject';
       this.$scope = $scope;
@@ -14,10 +15,12 @@ export class ctrlDualList {
   //    this.$controller = $controller;
       this.$timeout = $timeout;
       this.uiGridConstants = uiGridConstants;
+      this.UserServices = UserServices;
    }
 
    $onInit() {
       var vmDual = this;
+     // vmDual.$log.logEnabled(vmDual.UserServices.isDebugEnabled());
 
       vmDual.userprefpath = "../v1/userprefcols/allstudents";
       vmDual.path = '../v1/students';
@@ -66,37 +69,37 @@ export class ctrlDualList {
       vmDual.getUserPrefCols();
    }
    $onDestroy() {
-      this.$log.debug("ctrlDualList dismissed");
-      this.$log.debugEnabled(false);
+      this.$log.log("ctrlDualList dismissed");
+      //this.$log.logEnabled(false);
    }
 
    getUserPrefCols() {
       var vmDual = this;
-      vmDual.$log.debug('columns getUserPrefCols entered');
+      vmDual.$log.log('columns getUserPrefCols entered');
       return vmDual.StudentServices.getUserPrefCols(vmDual.userprefpath).then(function(data) {
-         vmDual.$log.debug('columns getUserPrefCols returned data');
+         vmDual.$log.log('columns getUserPrefCols returned data');
          vmDual.userprefcols = data.userprefcols;
-         vmDual.$log.debug(vmDual.userprefcols);
+         vmDual.$log.log(vmDual.userprefcols);
          var foundit;
          for (var j = 0, lenu = vmDual.userData.length; j < lenu; j++) {
             foundit = false;
             for (var i = 0, len = vmDual.userprefcols.length; i < len; i++) {
-               //$log.debug('colprefs',vmDual.userprefcols[i].prefcolumn);
+               //$log.log('colprefs',vmDual.userprefcols[i].prefcolumn);
                if (vmDual.userData[j].colname == vmDual.userprefcols[i].prefcolumn) {
                   vmDual.listA.push(vmDual.userData.slice(j, j + 1)[0]); //A is the list that we display
-                  //      $log.debug('listA:', vmDual.userData.slice(j,j+1)[0]);
+                  //      $log.log('listA:', vmDual.userData.slice(j,j+1)[0]);
                   foundit = true;
                   break; //skip as we found something
                }
             }
             if (!foundit) {
-               //    $log.debug('listB:', vmDual.userData.slice(j,j+1)[0]);
+               //    $log.log('listB:', vmDual.userData.slice(j,j+1)[0]);
                vmDual.listB.push(vmDual.userData.slice(j, j + 1)[0]); //B gets the not matches
             }
 
          }
-         vmDual.$log.debug('listA', vmDual.listA);
-         vmDual.$log.debug('listB', vmDual.listB);
+         vmDual.$log.log('listA', vmDual.listA);
+         vmDual.$log.log('listB', vmDual.listB);
 
 
 
@@ -106,9 +109,9 @@ export class ctrlDualList {
 
    submit() {
       var vmDual = this;
-      vmDual.$log.debug('hit submit');
+      vmDual.$log.log('hit submit');
       vmDual.createUserPrefCols().then(function() {
-         vmDual.$log.debug('createUserPrefCols ready to close');
+         vmDual.$log.log('createUserPrefCols ready to close');
       }).catch(function(e) {
          alert("try again", e);
       });
@@ -116,19 +119,19 @@ export class ctrlDualList {
 
    colreset() {
       var vmDual = this;
-      vmDual.$log.debug('hit reset');
+      vmDual.$log.log('hit reset');
       vmDual.listA = [];
       vmDual.listB = [];
       var thisdta;
       var foundit;
-      vmDual.$log.debug('dta:', vmDual.userData);
+      vmDual.$log.log('dta:', vmDual.userData);
 
       for (var j = 0, lenu = vmDual.userData.length; j < lenu; j++) {
-         vmDual.$log.debug("loop entered", vmDual.userData[j].default);
+         vmDual.$log.log("loop entered", vmDual.userData[j].default);
          foundit = false;
          if (vmDual.userData[j].default === "true") {
             thisdta = vmDual.userData.slice(j, j + 1)[0];
-            vmDual.$log.debug('thisdta listA', thisdta);
+            vmDual.$log.log('thisdta listA', thisdta);
             vmDual.listA.push(thisdta); //A is the list that we display
             foundit = true;
             continue; //skip as we found something
@@ -138,11 +141,11 @@ export class ctrlDualList {
             vmDual.listB.push(thisdta); //B gets the not matches
          }
       }
-      vmDual.$log.debug('listA', vmDual.listA);
+      vmDual.$log.log('listA', vmDual.listA);
 
 
       vmDual.createUserPrefCols().then(function() {
-         vmDual.$log.debug('createUserPrefCols ready to close');
+         vmDual.$log.log('createUserPrefCols ready to close');
       }).catch(function(e) {
          alert("try again", e);
       });
@@ -150,21 +153,21 @@ export class ctrlDualList {
 
    createUserPrefCols() {
       var vmDual = this;
-      vmDual.$log.debug('about createUserPrefCols ', vmDual.listA);
+      vmDual.$log.log('about createUserPrefCols ', vmDual.listA);
 
       return vmDual.StudentServices.createUserPrefCols(vmDual.userprefpath, vmDual.listA)
          .then(function(data) {
-            vmDual.$log.debug('createUserPrefCols returned data');
-            vmDual.$log.debug(data);
+            vmDual.$log.log('createUserPrefCols returned data');
+            vmDual.$log.log(data);
             vmDual.thecolumns = data;
-            vmDual.$log.debug(vmDual.thecolumns);
-            vmDual.$log.debug(vmDual.thecolumns.message);
+            vmDual.$log.log(vmDual.thecolumns);
+            vmDual.$log.log(vmDual.thecolumns.message);
             vmDual.message = vmDual.thecolumns.message;
             vmDual.$window.location.reload();
             return vmDual.thecolumns;
          }).catch(function(e) {
-            vmDual.$log.debug('createUserPrefCols failure:');
-            vmDual.$log.debug("error", e);
+            vmDual.$log.log('createUserPrefCols failure:');
+            vmDual.$log.log("error", e);
             vmDual.message = e;
             vmDual.Notification.error({ message: e, delay: 5000 });
             throw e;
@@ -182,7 +185,7 @@ export class ctrlDualList {
 
    aToB(vm) {
       var vmDual = vm;
-      vmDual.$log.debug('aToB');
+      vmDual.$log.log('aToB');
       var i;
       for (i in vmDual.selectedA) {
          if (vmDual.selectedA.hasOwnProperty(i)) {
@@ -197,7 +200,7 @@ export class ctrlDualList {
 
    bToA(vm) {
       var vmDual = vm;
-      vmDual.$log.debug('bToA');
+      vmDual.$log.log('bToA');
       var i;
       for (i in vmDual.selectedB) {
          if (vmDual.selectedB.hasOwnProperty(i)) {

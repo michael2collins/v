@@ -23,8 +23,7 @@ export class HeaderController {
         portalDataService
     ) {
         'ngInject';
-        console.log('entering portal controller');
-        
+
         this.$scope = $scope;
         this.UserServices = userServices;
         this.CalendarServices = calendarServices;
@@ -48,7 +47,7 @@ export class HeaderController {
 
 
     $onInit() {
-        this.$log.debug("header controller entered");
+        this.$log.log("header controller entered");
         this.isok = {};
         this.userdta = {'initial':'init'};
         this.myuser = null;
@@ -79,29 +78,32 @@ export class HeaderController {
 
 
     $onDestroy() {
-        this.$log.debug("main dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("main dismissed");
+        //this.$log.logEnabled(false);
     }
 
     init() {
         var self = this;
+        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined ) {
+            self.$log = self.$log.getInstance('HeaderController',self.UserServices.isDebugEnabled());
+        }
 
         self.islogin();
 
         self.$scope.$on('IdleStart', function() {
-            self.$log.debug('IdleStart');
+            self.$log.log('IdleStart');
             self.Title.original();
             self.$scope.$apply();
         });
         self.$scope.$on('IdleEnd', function() {
-            self.$log.debug('IdleEnd');
+            self.$log.log('IdleEnd');
             self.Title.restore();
             self.showTimeoutv = false;
             self.$scope.$apply();
         });
         self.$scope.$on('IdleWarn', function(e, countdown) {
             var self = e.currentScope.$ctrl;
-            self.$log.debug('IdleWarn', countdown);
+            self.$log.log('IdleWarn', countdown);
             self.$scope.remaining = { totalSeconds: countdown };
             self.$scope.remaining.minutes = Math.floor(countdown / 60);
             self.$scope.remaining.seconds = self.padLeft(countdown - self.$scope.remaining.minutes * 60, 2);
@@ -114,7 +116,7 @@ export class HeaderController {
             self.$scope.$apply();
         });
         self.$scope.$on('IdleTimeout', function() {
-            //        this.$log.debug('IdleTimeout');
+            //        this.$log.log('IdleTimeout');
             self.Title.setAsTimedOut();
             //give login 60 seconds
             self.Idle.setIdle(30);
@@ -126,7 +128,7 @@ export class HeaderController {
             self.$location.path('/page-lock-screen?pictureurl=' + picurl);
         });
         self.$scope.$on('Keepalive', function() {
-            self.$log.debug('Keepalive');
+            self.$log.log('Keepalive');
         });
 
 
@@ -136,9 +138,10 @@ export class HeaderController {
                 return;
             }
             var vm = event.currentScope.$ctrl;
-            vm.$log.debugEnabled(true);
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
             if (current.originalPath !== '/page-signin') {
-                vm.$log.debug('routechange in main for success');
+                
+                vm.$log.log('routechange in main for success');
                 vm.data = vm.portalDataService.get(current.originalPath);
                 vm.isokf();
                 var mydelay = vm.CalendarServices.getIntervalValue();
@@ -158,7 +161,7 @@ export class HeaderController {
 
     intervalChecker(input) {
         var vm = input
-        vm.$log.debug('main controller intervalChecker entered');
+        vm.$log.log('main controller intervalChecker entered');
         vm.islogin();
     }
 
@@ -175,10 +178,10 @@ export class HeaderController {
     getUserOptions() {
         var self = this;
 
-        self.$log.debug('getUserOptions entered');
+        self.$log.log('getUserOptions entered');
         var path = "../v1/useroptions";
         return self.UserServices.getUserOptions(path).then(function(data) {
-                self.$log.debug("main controller service getUserOptions returned:", data);
+                self.$log.log("main controller service getUserOptions returned:", data);
                 if ((typeof data.options === 'undefined' || data.options.error === true) &&
                     typeof data !== 'undefined') {
                     var themsg = '';
@@ -202,9 +205,16 @@ export class HeaderController {
                     try {
                         self.userOptions = JSON.parse(data.options);
                         self.okNotify = (self.userOptions.notify ? self.userOptions.notify : false);
+                        self.debugOn = (self.userOptions.debug ? self.userOptions.debug : "Off");
+                        //self.$log.logEnabled(self.debugOn);
+                        
                         self.mydelay = (self.userOptions.delay ? self.userOptions.delay : 30);
                         self.idle = (self.userOptions.idle ? self.userOptions.idle : 5);
                         self.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5);
+
+            self.UserServices.setUserDetailOptions(data.options);
+//            self.$log = self.$log.getInstance('HeaderController',self.UserServices.isDebugEnabled());
+
                         self.Title.setAsIdle(self.idle);
                         self.Idle.setIdle(self.idle);
                         self.Idle.setTimeout(self.timeout);
@@ -216,13 +226,13 @@ export class HeaderController {
                         //self.Notification.success({message: self.message, delay: 5000});
                     }
                     catch (e) {
-                        self.$log.debug(e instanceof SyntaxError); // true
-                        self.$log.debug(e.message); // "missing ; before statement"
-                        self.$log.debug(e.name); // "SyntaxError"
-                        self.$log.debug(e.fileName); // "Scratchpad/1"
-                        self.$log.debug(e.lineNumber); // 1
-                        self.$log.debug(e.columnNumber); // 4
-                        self.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+                        self.$log.log(e instanceof SyntaxError); // true
+                        self.$log.log(e.message); // "missing ; before statement"
+                        self.$log.log(e.name); // "SyntaxError"
+                        self.$log.log(e.fileName); // "Scratchpad/1"
+                        self.$log.log(e.lineNumber); // 1
+                        self.$log.log(e.columnNumber); // 4
+                        self.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
                         self.Notification.error(e.message);
                         return (self.$q.reject(data));
                     }
@@ -233,7 +243,7 @@ export class HeaderController {
             },
 
             function(error) {
-                self.$log.debug('Caught an error getUserOptions, going to notify:', error);
+                self.$log.log('Caught an error getUserOptions, going to notify:', error);
                 self.userOptions = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -262,7 +272,7 @@ export class HeaderController {
             scope: modalScope,
             resolve: {
                 classname: function() {
-                    thisModal.$log.debug('return from open');
+                    thisModal.$log.log('return from open');
                     return thisModal.retvlu;
                 }
 
@@ -271,11 +281,13 @@ export class HeaderController {
         modalScope.modalInstance = thisModal.modalInstance;
 
         thisModal.modalInstance.result.then(function(retvlu) {
-            thisModal.$log.debug('search modalInstance result :', retvlu);
+            thisModal.$log.log('search modalInstance result :', retvlu);
             thisModal.retvlu = retvlu;
         }, function() {
             thisModal.$log.info('Modal dismissed at: ' + new Date());
             thisModal.getUserOptions();
+            //debug might have changed, so reload route
+            thisModal.$window.location.reload();
         });
 
     }
@@ -309,7 +321,7 @@ export class HeaderController {
         modalScope.modalInstance = emailModal.modalInstance;
 
         emailModal.modalInstance.result.then(function(retvlu) {
-            emailModal.$log.debug('search modalInstance result :', retvlu);
+            emailModal.$log.log('search modalInstance result :', retvlu);
             emailModal.retvlu = retvlu;
         }, function() {
             emailModal.$log.info('Modal dismissed at: ' + new Date());
@@ -335,7 +347,7 @@ export class HeaderController {
             windowClass: 'my-modal-popup',
             resolve: {
                 classname: function() {
-                    emailModal.$log.debug('return from open');
+                    emailModal.$log.log('return from open');
                     return emailModal.retvlu;
                 }
 
@@ -344,7 +356,7 @@ export class HeaderController {
         modalScope.modalInstance = emailModal.modalInstance;
 
         emailModal.modalInstance.result.then(function(retvlu) {
-            emailModal.$log.debug('search modalInstance result :', retvlu);
+            emailModal.$log.log('search modalInstance result :', retvlu);
             emailModal.retvlu = retvlu;
         }, function() {
             emailModal.$log.info('Modal dismissed at: ' + new Date());
@@ -355,12 +367,12 @@ export class HeaderController {
     islogin() {
         var self = this;
 
-        self.$log.debug('islogin main controller');
+        self.$log.log('islogin main controller');
         self.isok = self.UserServices.isapikey();
 //        self.userdta = {};
 
         if (self.isok) {
-            self.$log.debug('setting apikey for services in main controller');
+            self.$log.log('setting apikey for services in main controller');
             var thekey = self.UserServices.getapikey();
             //self.CalendarServices.setapikey(thekey);
             //self.StudentServices.setapikey(thekey);
@@ -369,24 +381,24 @@ export class HeaderController {
 
             self.$q.all([
                     self.gettheTasknamelist().then(function() {
-                        self.$log.debug('gettheTasknamelist returned');
+                        self.$log.log('gettheTasknamelist returned');
                     }),
                     self.getEmailCount().then(function() {
-                        self.$log.debug('getEmailCount returned');
+                        self.$log.log('getEmailCount returned');
                     }),
                     self.getNotifications().then(function() {
-                        self.$log.debug('getNotifications returned');
+                        self.$log.log('getNotifications returned');
                     }),
                     self.getUserDetails().then(function() {
-                        self.$log.debug('q return   getUserDetails returned');
+                        self.$log.log('q return   getUserDetails returned');
                     }),
                     self.getUserOptions().then(function() {
-                        self.$log.debug('q return   getUserOptions returned');
+                        self.$log.log('q return   getUserOptions returned');
                     })
 
                 ])
                 .then(function() {
-                    self.$log.debug('getAll stats done returned');
+                    self.$log.log('getAll stats done returned');
                     self.setAlertCount();
                 });
 
@@ -404,41 +416,41 @@ export class HeaderController {
     }
 
     clearNewStudents() {
-        this.$log.debug("clearNewStudents entered");
+        this.$log.log("clearNewStudents entered");
         for (var i = 0; i < this.newstudents.length; i++) {
             this.removeNotification(this.newstudents[i].id);
         }
     }
 
     clearTestStudents() {
-        this.$log.debug("clearTestStudents entered");
+        this.$log.log("clearTestStudents entered");
         for (var i = 0; i < this.teststudents.length; i++) {
             this.removeNotification(this.teststudents[i].id);
         }
     }
 
     clearOverdueStudents() {
-        this.$log.debug("clearOverdueStudents entered");
+        this.$log.log("clearOverdueStudents entered");
     }
 
     clearNoshowStudents() {
-        this.$log.debug("clearNoshowStudents entered");
+        this.$log.log("clearNoshowStudents entered");
     }
 
     gettheTasknamelist() {
         var self = this;
 
-        self.$log.debug('gettheTasknamelist entered');
+        self.$log.log('gettheTasknamelist entered');
         var refreshpath = "../v1/tasknamelist";
 
         return self.CalendarServices.gettasknamelist(refreshpath).then(function(data) {
-                self.$log.debug('gettasknamelists returned data');
-                self.$log.debug(data);
+                self.$log.log('gettasknamelists returned data');
+                self.$log.log(data);
                 self.thisTasknamelist = data.tasknamelist;
                 return self.thisTasknamelist;
             },
             function(error) {
-                self.$log.debug('Caught an error gettheTasknamelist, going to notify:', error);
+                self.$log.log('Caught an error gettheTasknamelist, going to notify:', error);
                 self.thisTasknamelist = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -454,9 +466,9 @@ export class HeaderController {
     getUserDetails() {
         var self = this;
 
-        self.$log.debug('header controller getUserDetails entered');
+        self.$log.log('header controller getUserDetails entered');
         return self.UserServices.getUserDetails().then(function(data) {
-                self.$log.debug("header controller service getuserdetails returned:", data);
+                self.$log.log("header controller service getuserdetails returned:", data);
                 //    self.islogin();
                 self.userdta = data;
                 self.myuser = data.userid;
@@ -465,7 +477,7 @@ export class HeaderController {
             },
 
             function(error) {
-                self.$log.debug('Caught an error getUserDetails, going to notify:', error);
+                self.$log.log('Caught an error getUserDetails, going to notify:', error);
                 self.userdta = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -478,12 +490,12 @@ export class HeaderController {
     getNotifications() {
         var self = this;
 
-        self.$log.debug('getNotifications entered');
+        self.$log.log('getNotifications entered');
         var path = "../v1/notification";
         return self.StudentServices.getNotifications(path).then(function(data) {
-                self.$log.debug("service getNotifications returned:", data);
+                self.$log.log("service getNotifications returned:", data);
                 if (typeof(data.NotificationList) !== 'undefined' && data.error === false) {
-                    self.$log.debug('NotificationList', data.NotificationList);
+                    self.$log.log('NotificationList', data.NotificationList);
                     self.newstudents = [];
                     self.teststudents = [];
                     for (var i = 0; i < data.NotificationList.length; i++) {
@@ -538,7 +550,7 @@ export class HeaderController {
             },
 
             function(error) {
-                self.$log.debug('Caught an error getNotifications, going to notify:', error);
+                self.$log.log('Caught an error getNotifications, going to notify:', error);
                 self.Notifications = [];
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
@@ -551,12 +563,12 @@ export class HeaderController {
     getEmailCount() {
         var self = this;
 
-        self.$log.debug('getEmailCount entered');
+        self.$log.log('getEmailCount entered');
         var path = '../v1/emailcount';
 
         return self.StudentServices.getEmailcount(path).then(function(data) {
-            self.$log.debug('getEmailCount returned data');
-            self.$log.debug(data);
+            self.$log.log('getEmailCount returned data');
+            self.$log.log(data);
             if ((typeof self.emailcount === 'undefined' || self.emailcount.error === true) &&
                 typeof data !== 'undefined') {
                 self.Notification.error({ message: self.message, delay: 5000 });
@@ -569,7 +581,7 @@ export class HeaderController {
 
 
         }, function(error) {
-            self.$log.debug('Caught an error getEmailLists:', error);
+            self.$log.log('Caught an error getEmailLists:', error);
             self.emailcount = '';
             self.message = error;
             self.Notification.error({ message: error, delay: 5000 });
@@ -581,19 +593,19 @@ export class HeaderController {
     removeNotification(id) {
         var self = this;
 
-        self.$log.debug('removeNotification entered');
+        self.$log.log('removeNotification entered');
         var thedata = {
             id: id
         };
         return self.StudentServices.removeNotification(thedata).then(function(data) {
-                self.$log.debug("service removeNotification returned:", data);
+                self.$log.log("service removeNotification returned:", data);
                 self.getNotifications();
 
                 return;
             },
 
             function(error) {
-                self.$log.debug('Caught an error removeNotification, going to notify:', error);
+                self.$log.log('Caught an error removeNotification, going to notify:', error);
                 self.message = error;
                 self.Notification.error({ message: error, delay: 5000 });
                 return (self.$q.reject(error));
@@ -603,24 +615,24 @@ export class HeaderController {
     }
 
     isokf() {
-        //        this.$log.debug('isokf');
+        //        this.$log.log('isokf');
         this.isok = this.UserServices.isapikey();
         return this.isok;
     }
 
     loadPageHeader() {
-        this.$log.debug("loadPageHeader entered");
+        this.$log.log("loadPageHeader entered");
     }
 
     loadTopbar() {
-        this.$log.debug("loadTopbar");
+        this.$log.log("loadTopbar");
         $("[data-toggle='offcanvas']").on('click', function() {
             $('#sidebar-wrapper').toggleClass('active');
             return false;
         });
         // Setting toggle in mobile view 
         $('#setting-toggle').click(function() {
-            this.$log.debug('mobile toggle');
+            this.$log.log('mobile toggle');
             $('.topbar-main').toggle();
         });
     }

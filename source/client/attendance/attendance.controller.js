@@ -3,10 +3,9 @@ import angular from 'angular';
 export class AttendanceTableBasicController {
    constructor(
       $routeParams, $log, AttendanceServices,
-      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService
+      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService,UserServices
    ) {
       'ngInject';
-      console.log('entering AttendanceTableBasicController controller');
       this.$routeParams = $routeParams;
       this.$log = $log;
       this.AttendanceServices = AttendanceServices;
@@ -19,6 +18,7 @@ export class AttendanceTableBasicController {
       this.moment = moment;
       this.Util = Util;
       this.portalDataService = portalDataService;
+      this.UserServices = UserServices;
    }
    $onInit() {
 
@@ -79,8 +79,8 @@ export class AttendanceTableBasicController {
       vm.activate();
    }
    $onDestroy() {
-      this.$log.debug("attendance dismissed");
-      this.$log.debugEnabled(false);
+      this.$log.log("attendance dismissed");
+      //this.$log.logEnabled(false);
       this.showGrid = false;
       this.photos=[];
    };
@@ -88,12 +88,12 @@ export class AttendanceTableBasicController {
    settoday(aDay) {
       var vm = this;
       vm.todayDOW = aDay;
-      vm.$log.debug('settoday', aDay, vm.todayDOW);
+      vm.$log.log('settoday', aDay, vm.todayDOW);
    }
    refreshtheAttendanceClick() {
       var vm = this;
       vm.refreshtheAttendance().then(function() {}).catch(function(err) {
-         vm.$log.debug(err);
+         vm.$log.log(err);
       });
    }
    setday(aDay) {
@@ -102,7 +102,7 @@ export class AttendanceTableBasicController {
       vm.settoday(vm.weekday[aDay]);
       vm.getSchedule(vm.todayDOW).then(function() {
          vm.setNowChoice();
-         vm.$log.debug('nowChoice', vm.nowChoice, 'classes', vm.classes);
+         vm.$log.log('nowChoice', vm.nowChoice, 'classes', vm.classes);
          if (vm.classes.length > 0) {
             vm.setClass(vm.classes[vm.nowChoice].Description);
          }
@@ -112,7 +112,7 @@ export class AttendanceTableBasicController {
          vm.refreshtheAttendance().then(function() {
 
          }).catch(angular.noop);
-         vm.$log.debug('setClass', vm.theclass);
+         vm.$log.log('setClass', vm.theclass);
       }, function(error) {
          vm.photos = [];
          vm.nowChoice = 0;
@@ -122,12 +122,12 @@ export class AttendanceTableBasicController {
    }
    setLimit(thelimit) {
       var vm = this;
-      vm.$log.debug('setLimit', thelimit);
+      vm.$log.log('setLimit', thelimit);
       vm.limit = thelimit;
    }
    setGridsize(size) {
       var vm = this;
-      vm.$log.debug('setGridsize', size);
+      vm.$log.log('setGridsize', size);
       vm.gridsize = size;
       vm.$scope.$emit('iso-method', { name: 'arrange', params: null });
    }
@@ -139,27 +139,27 @@ export class AttendanceTableBasicController {
    setDOW(theChoice) {
       var vm = this;
       vm.dowChoice = theChoice;
-      vm.$log.debug('setDOW', vm.dowChoice);
+      vm.$log.log('setDOW', vm.dowChoice);
    }
    getDayNum(aDOW) {
       var vm = this;
-      vm.$log.debug('getDayNum', aDOW);
+      vm.$log.log('getDayNum', aDOW);
       for (var i = 0, len = vm.weekday.length; i < len; i++) {
          if (vm.weekday[i] == aDOW) {
-            vm.$log.debug('getDayNum returning', i);
+            vm.$log.log('getDayNum returning', i);
             return i;
          }
       }
    }
    setClass(aClass) {
       var vm = this;
-      vm.$log.debug('setClass', aClass);
+      vm.$log.log('setClass', aClass);
       vm.theclass = aClass;
    }
 
    requery() {
       var vm = this;
-      vm.$log.debug('requery entered');
+      vm.$log.log('requery entered');
       vm.attending = [];
       vm.refreshtheAttendanceClick();
 
@@ -180,7 +180,7 @@ export class AttendanceTableBasicController {
 
    getMonday(d) {
       var vm = this;
-      vm.$log.debug('getMonday', d);
+      vm.$log.log('getMonday', d);
       if (d === null) {
          d = new Date();
       }
@@ -195,14 +195,14 @@ export class AttendanceTableBasicController {
 
    selectItem(item, indextoggle, card, callrefresh) {
       var vm = this;
-      vm.$log.debug('selectItem', item, indextoggle, callrefresh);
+      vm.$log.log('selectItem', item, indextoggle, callrefresh);
       var found = false;
       var carddata = {};
       var a = vm.moment();
       var b;
 
       vm.checkAttendance(item).then(function() {
-         vm.$log.debug('checkAttendance returns');
+         vm.$log.log('checkAttendance returns');
 
          b = vm.moment((typeof(vm.attendancesum[0]) === 'undefined' ||
             vm.attendancesum[0].lastPromoted === null) ? '01-01-1900' : vm.attendancesum[0].lastPromoted);
@@ -213,7 +213,7 @@ export class AttendanceTableBasicController {
 
 
          for (var i = 0, len = vm.attending.length; i < len; i++) {
-            vm.$log.debug('is there?', item, vm.attending[i].attended);
+            vm.$log.log('is there?', item, vm.attending[i].attended);
             if (vm.attending[i].attended == item && indextoggle === true) {
                //already there, don't add
                //does this actually happen?
@@ -250,12 +250,12 @@ export class AttendanceTableBasicController {
             vm.attending.push(carddata);
          }
 
-         vm.$log.debug('selectedItem', vm.attending);
+         vm.$log.log('selectedItem', vm.attending);
          if (carddata != {} && callrefresh) {
             vm.updateAttendance(carddata).then(function() {
-               vm.$log.debug('updateAttendance returns');
+               vm.$log.log('updateAttendance returns');
             }, function(error) {
-               vm.$log.debug('updateAttendance', error);
+               vm.$log.log('updateAttendance', error);
                return (vm.$q.reject(error));
             });
          }
@@ -291,17 +291,20 @@ export class AttendanceTableBasicController {
       var vm = this;
 
       this.portalDataService.Portlet('table-basic-attendance');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('AttendanceTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
       vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-         vm.$log.debugEnabled(true);
-         vm.$log.debug("table-basic-attendance started");
+         //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+         vm.$log.log("table-basic-attendance started");
 
       });
       vm.setMonday();
 
       var d = new Date();
       var d2 = vm.weekday[d.getDay()];
-      vm.$log.debug('weekday', d2);
+      vm.$log.log('weekday', d2);
 
       vm.settoday(d2);
       vm.radioModel = vm.todayDOW;
@@ -320,13 +323,13 @@ export class AttendanceTableBasicController {
       vm.$scope.$watchCollection('vm.checkModel', function() {
          vm.checkResults = [];
          angular.forEach(vm.checkModel, function(value, key) {
-            vm.$log.debug('checkmodal', vm.checkResults);
+            vm.$log.log('checkmodal', vm.checkResults);
             if (value) {
                vm.checkResults.push(key);
             }
          });
       });
-      vm.$log.debug('b4 getDOW and schedule', vm.todayDOW);
+      vm.$log.log('b4 getDOW and schedule', vm.todayDOW);
 
       vm.$q.all([
             vm.getDOW().then(function() {
@@ -335,14 +338,14 @@ export class AttendanceTableBasicController {
             }),
             vm.getSchedule(vm.todayDOW).then(function() {
                vm.setNowChoice();
-               vm.$log.debug('nowChoice', vm.nowChoice, 'classes', vm.classes);
+               vm.$log.log('nowChoice', vm.nowChoice, 'classes', vm.classes);
                if (vm.classes.length > 0) {
                   vm.setClass(vm.classes[vm.nowChoice].Description);
                }
                else {
                   vm.setClass('All');
                }
-               vm.$log.debug('setClass', vm.theclass);
+               vm.$log.log('setClass', vm.theclass);
             }, function(error) {
                vm.photos = [];
                vm.nowChoice = 0;
@@ -352,7 +355,7 @@ export class AttendanceTableBasicController {
          ])
          .then(function() {
             return vm.refreshtheAttendance().then(function(zdata) {
-               vm.$log.debug('refreshtheAttendance returned', zdata);
+               vm.$log.log('refreshtheAttendance returned', zdata);
             }, function(error) {
                return (vm.$q.reject(error));
             }).catch(angular.noop);
@@ -362,14 +365,14 @@ export class AttendanceTableBasicController {
    updateAttendance(card) {
       var vm = this;
       var updpath = "../v1/updateattendance";
-      vm.$log.debug('about updateAttendance ', card, updpath);
+      vm.$log.log('about updateAttendance ', card, updpath);
       return vm.AttendanceServices.updateAttendance(updpath, card)
          .then(function(data) {
-            vm.$log.debug('updateAttendance returned data');
-            vm.$log.debug(data);
+            vm.$log.log('updateAttendance returned data');
+            vm.$log.log(data);
             vm.thisattendance = data;
-            vm.$log.debug(vm.thisattendance);
-            vm.$log.debug(vm.thisattendance.message);
+            vm.$log.log(vm.thisattendance);
+            vm.$log.log(vm.thisattendance.message);
             vm.message = vm.thisattendance.message;
             if ((typeof vm.thisattendance === 'undefined' || vm.thisattendance.error === true) &&
                typeof data !== 'undefined') {
@@ -381,10 +384,10 @@ export class AttendanceTableBasicController {
             }
 
             vm.refreshtheAttendance().then(function(zdata) {
-                  vm.$log.debug('refreshtheAttendance returned', zdata);
+                  vm.$log.log('refreshtheAttendance returned', zdata);
                },
                function(error) {
-                  vm.$log.debug('Caught an error refreshtheAttendance after update:', error);
+                  vm.$log.log('Caught an error refreshtheAttendance after update:', error);
                   vm.data = [];
                   vm.photos = [];
                   vm.message = error;
@@ -394,8 +397,8 @@ export class AttendanceTableBasicController {
 
             return vm.thisattendance;
          }).catch(function(e) {
-            vm.$log.debug('updateAttendance failure:');
-            vm.$log.debug("error", e);
+            vm.$log.log('updateAttendance failure:');
+            vm.$log.log("error", e);
             vm.message = e;
             vm.Notification.error({ message: e, delay: 5000 });
             throw e;
@@ -404,9 +407,9 @@ export class AttendanceTableBasicController {
 
    refreshtheAttendance() {
       var vm = this;
-      vm.$log.debug('refreshtheAttendance entered with radioModel', vm.radioModel);
+      vm.$log.log('refreshtheAttendance entered with radioModel', vm.radioModel);
       var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
-      vm.$log.debug('pclass:', pclass);
+      vm.$log.log('pclass:', pclass);
       var thisdaynum = vm.getDayNum(vm.radioModel);
 
       var refreshpath = encodeURI('../v1/studentregistration?thedow=' +
@@ -414,13 +417,13 @@ export class AttendanceTableBasicController {
          vm.limit + '&theclass=' +
          pclass + '&daynum=' + thisdaynum);
 
-      vm.$log.debug('refreshtheAttendance path:', refreshpath);
+      vm.$log.log('refreshtheAttendance path:', refreshpath);
 
       return vm.AttendanceServices.refreshAttendances(refreshpath).then(function(data) {
-            vm.$log.debug('refreshAttendances returned data');
-            vm.$log.debug(data);
+            vm.$log.log('refreshAttendances returned data');
+            vm.$log.log(data);
             vm.data = data;
-            vm.$log.debug(vm.data.message);
+            vm.$log.log(vm.data.message);
             vm.message = vm.data.message;
             if ((typeof vm.data === 'undefined' || vm.data.error === true) &&
                typeof data !== 'undefined') {
@@ -459,12 +462,12 @@ export class AttendanceTableBasicController {
                   vm.selectItem(vm.data.attendancelist[i].ContactId, true, vm.photos[i], false);
                }
             }
-            vm.$log.debug('photos', vm.photos);
+            vm.$log.log('photos', vm.photos);
             vm.showGrid=true;
             return vm.data;
          },
          function(error) {
-            vm.$log.debug('Caught an error refreshtheAttendance, going to notify:', error);
+            vm.$log.log('Caught an error refreshtheAttendance, going to notify:', error);
             vm.data = [];
             vm.photos = [];
             vm.message = error;
@@ -480,22 +483,22 @@ export class AttendanceTableBasicController {
 
    getAttendanceHistory() {
       var vm = this;
-      vm.$log.debug('getAttendanceHistory entered');
+      vm.$log.log('getAttendanceHistory entered');
       var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
-      vm.$log.debug('pclass:', pclass);
+      vm.$log.log('pclass:', pclass);
 
       var refreshpath = encodeURI('../v1/attendancehistory?thedow=' + vm.dowChoice + '&thelimit=' + vm.limit + '&theclass=' + pclass);
 
-      vm.$log.debug('getAttendanceHistory path:', refreshpath);
+      vm.$log.log('getAttendanceHistory path:', refreshpath);
 
       return vm.AttendanceServices.getAttendanceHistory(refreshpath).then(function(data) {
-            vm.$log.debug('getAttendanceHistory returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getAttendanceHistory returned data');
+            vm.$log.log(data);
             vm.data = data;
             return vm.data;
          },
          function(error) {
-            vm.$log.debug('Caught an error attendancehistory:', error);
+            vm.$log.log('Caught an error attendancehistory:', error);
             vm.data = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -511,8 +514,8 @@ export class AttendanceTableBasicController {
    getDOW() {
       var vm = this;
       return vm.AttendanceServices.getDOW().then(function(data) {
-         vm.$log.debug('getDOW returned data');
-         vm.$log.debug(data);
+         vm.$log.log('getDOW returned data');
+         vm.$log.log(data);
          vm.DOWlist = data.DOWlist;
          return vm.DOWlist;
       });
@@ -542,7 +545,7 @@ export class AttendanceTableBasicController {
          var dstplus = vm.isDST(d) ? 1 : 0;
          var startmm = start[1];
          var end = vm.classes[i].TimeEnd.split(":");
-         vm.$log.debug('end', end);
+         vm.$log.log('end', end);
          var endh = end[0];
          var endmm = end[1];
          var d1 = new Date(parseInt(d.getFullYear(), 10),
@@ -557,13 +560,13 @@ export class AttendanceTableBasicController {
             parseInt(endh, 10),
             parseInt(endmm, 10),
             parseInt(d.getSeconds(), 10));
-         vm.$log.debug('startdate', d1);
-         vm.$log.debug('enddate', d2);
+         vm.$log.log('startdate', d1);
+         vm.$log.log('enddate', d2);
          //         var startdate = d1.valueOf();
          //         var enddate = d2.valueOf();
          if (vm.moment().isBefore(vm.moment(d2), 'minute') && vm.moment().isSameOrAfter(vm.moment(d1), 'minute')) {
             vm.nowChoice = i; //note there may be nmultiples and this will pick the last
-            vm.$log.debug('nowChoice', vm.nowChoice);
+            vm.$log.log('nowChoice', vm.nowChoice);
          }
       }
 
@@ -575,16 +578,16 @@ export class AttendanceTableBasicController {
    }
    getSchedule(aDOW) {
       var vm = this;
-      vm.$log.debug('getSchedule', aDOW);
+      vm.$log.log('getSchedule', aDOW);
       var path = '../v1/schedule/' + aDOW;
 
       return vm.AttendanceServices.getSchedule(path).then(function(data) {
-         vm.$log.debug('getSchedule returned data');
-         vm.$log.debug(data);
+         vm.$log.log('getSchedule returned data');
+         vm.$log.log(data);
          vm.Schedulelist = data.Schedulelist;
          vm.fillClassList();
       }, function(error) {
-         vm.$log.debug('Caught an error getSchedule:', error);
+         vm.$log.log('Caught an error getSchedule:', error);
          vm.Schedulelist = [];
          vm.fillClassList();
          vm.message = error;
@@ -596,7 +599,7 @@ export class AttendanceTableBasicController {
 
    setActiveTab(activeTab) {
       var vm = this;
-      vm.$log.debug('set activetab as:', activeTab);
+      vm.$log.log('set activetab as:', activeTab);
       vm.AttendanceServices.setActiveTab(activeTab);
    }
 
@@ -607,15 +610,15 @@ export class AttendanceTableBasicController {
 
    setStudentReadyNextRank(thestudent, readyness) {
       var vm = this;
-      vm.$log.debug('about setStudentReadyNextRank ', thestudent, readyness);
+      vm.$log.log('about setStudentReadyNextRank ', thestudent, readyness);
       var path = '../v1/readynextrank/' + thestudent;
       var theclassid = vm.Util.getByValue(vm.classes, vm.theclass, 'Description', 'classid');
 
       return vm.AttendanceServices.setStudentReadyNextRank(path, readyness, theclassid).then(function(data) {
-         vm.$log.debug("setStudentReadyNextRank returned data", data);
-         vm.$log.debug(data);
+         vm.$log.log("setStudentReadyNextRank returned data", data);
+         vm.$log.log(data);
       }, function(error) {
-         vm.$log.debug('Caught an error setStudentReadyNextRank:', error);
+         vm.$log.log('Caught an error setStudentReadyNextRank:', error);
          vm.message = error;
          vm.Notification.error({ message: error, delay: 5000 });
          return (vm.$q.reject(error));
@@ -636,19 +639,19 @@ export class AttendanceTableBasicController {
    }
    checkAttendance(thestudent) {
       var vm = this;
-      vm.$log.debug('about checkAttendance ', thestudent);
+      vm.$log.log('about checkAttendance ', thestudent);
       var pclass = vm.theclass.length > 0 ? vm.theclass : 'NULL';
-      vm.$log.debug('pclass:', pclass);
+      vm.$log.log('pclass:', pclass);
 
       var path = encodeURI('../v1/Attendancesum?contactid=' + thestudent + '&theclass=' + pclass);
 
-      vm.$log.debug('checkAttendance path:', path);
+      vm.$log.log('checkAttendance path:', path);
 
       return vm.AttendanceServices.getAttendanceSum(path).then(function(data) {
-         vm.$log.debug("getAttendanceSum returned data", data);
-         vm.$log.debug(data);
+         vm.$log.log("getAttendanceSum returned data", data);
+         vm.$log.log(data);
          vm.attendancesum = data.attendancesum;
-         vm.$log.debug(vm.data.message);
+         vm.$log.log(vm.data.message);
          vm.message = vm.data.message;
          if ((typeof vm.attendancesum === 'undefined' || vm.attendancesum.error === true) &&
             typeof data !== 'undefined') {
@@ -660,7 +663,7 @@ export class AttendanceTableBasicController {
          }
 
       }, function(error) {
-         vm.$log.debug('Caught an error getAttendanceSum:', error);
+         vm.$log.log('Caught an error getAttendanceSum:', error);
          vm.message = error;
          vm.Notification.error({ message: error, delay: 5000 });
          return (vm.$q.reject(error));

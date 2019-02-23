@@ -6,7 +6,7 @@ export class ImpattendController {
 
     constructor(
         $scope, $log, StudentServices, Util, uiGridConstants, Notification, $q, portalDataService,
-        $window, uiGridValidateService, uiGridExporterConstants
+        $window, uiGridValidateService, uiGridExporterConstants, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -20,6 +20,7 @@ export class ImpattendController {
         this.$window = $window;
         this.uiGridValidateService = uiGridValidateService;
         this.uiGridExporterConstants = uiGridExporterConstants;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
@@ -68,17 +69,20 @@ export class ImpattendController {
     }
 
     $onDestroy() {
-        this.$log.debug("ImpattendController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ImpattendController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('impattendance');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ImpattendController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("impattendance started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("impattendance started");
 
         });
 
@@ -114,7 +118,7 @@ export class ImpattendController {
 
     getStudentAttendance() {
         var vm = this;
-        vm.$log.debug('getStudentAttendance entered');
+        vm.$log.log('getStudentAttendance entered');
         vm.gridexp1Options.data = [];
         var path = '../v1/samplestudentattendance';
 
@@ -202,7 +206,7 @@ export class ImpattendController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridexp1Options onRegisterApi');
+                vm.$log.log('vm gridexp1Options onRegisterApi');
                 vm.gridexp1Api = gridApi;
 
                 vm.Util.setPagination(vm.gridexp1Api, vm);
@@ -212,7 +216,7 @@ export class ImpattendController {
         vm.Util.setGridexp1OptionsDefaults(vm.gridexp1Options, 'studentattendance.csv', vm.limits, vm.initialLength, vm.rowheight, vm.gcolumns);
 
 
-        vm.$log.debug('gridexp1Options', vm.gridexp1Options);
+        vm.$log.log('gridexp1Options', vm.gridexp1Options);
     }
     setGridimp1Options() {
         var vm = this;
@@ -220,7 +224,7 @@ export class ImpattendController {
         vm.Util.setEmailValidator(vm.uiGridValidateService);
         vm.Util.setDateValidator(vm.uiGridValidateService);
         vm.Util.setImpGridDefaults(vm.impgcolumns, vm.gridimp1Options, vm.uiGridConstants, vm.limits, vm.initialLength, vm.rowheight);
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
     }
 
     setAfterCellEdit(gridApi, func, vm, scope) {
@@ -244,7 +248,7 @@ export class ImpattendController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridimp1Api onRegisterApi');
+                vm.$log.log('vm gridimp1Api onRegisterApi');
                 vm.gridimp1Api = gridApi;
 
                 vm.setAfterCellEdit(vm.gridimp1Api, "rawAttendance", vm, vm.$scope);
@@ -258,13 +262,13 @@ export class ImpattendController {
 
         };
 
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
 
     }
 
     lookupExtas() {
         var vm = this;
-        vm.$log.debug('lookupExtas entered');
+        vm.$log.log('lookupExtas entered');
         vm.importdata = vm.gridimp1Options.data;
         var path = '../v1/lookupattendextras';
         var theData = {
@@ -324,7 +328,7 @@ export class ImpattendController {
     createBulkStudentAttendance() {
         var vm = this;
         var path = '../v1/bulkstudentattendance';
-        vm.$log.debug('about createBulkStudentAttendance ');
+        vm.$log.log('about createBulkStudentAttendance ');
         var thedata = {
             selectedStudents: vm.gridimp1Options.data
         };
@@ -345,7 +349,7 @@ export class ImpattendController {
     createRawAttendances() {
         var vm = this;
         var path = '../v1/rawattendance';
-        vm.$log.debug('about createRawAttendances ');
+        vm.$log.log('about createRawAttendances ');
         var thedata = {
             selectedattendances: vm.gridimp1Options.data
         };
@@ -372,7 +376,7 @@ export class ImpattendController {
 
         input.contactDate = vm.Util.oradate(input.contactDate);
 
-        vm.$log.debug('about updateRawAttendance ', input);
+        vm.$log.log('about updateRawAttendance ', input);
 
         return vm.StudentServices.updateRawAttendance(path, input).then(function(data) {
             vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'updateRawAttendance', true);
@@ -408,7 +412,7 @@ export class ImpattendController {
     }
     removeRawAttendance(row) {
         var vm = this;
-        vm.$log.debug('removeRawAttendance entered', row.entity.externalid, row.entity.contactDate, row.entity.contactmgmttype);
+        vm.$log.log('removeRawAttendance entered', row.entity.externalid, row.entity.contactDate, row.entity.contactmgmttype);
         var path = '../v1/rawattendance';
         var thedata = {
             externalid: row.entity.externalid,
@@ -430,7 +434,7 @@ export class ImpattendController {
 
     removeRawAttendances() {
         var vm = this;
-        vm.$log.debug('removeRawAttendances entered');
+        vm.$log.log('removeRawAttendances entered');
         var path = '../v1/rawattendances';
 
         return vm.StudentServices.removeRawAttendances(path)

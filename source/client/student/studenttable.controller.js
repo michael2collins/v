@@ -3,7 +3,7 @@
 export class StudentsTableBasicController {
     constructor(
         $scope, $log, StudentServices, Util, $routeParams, uiGridConstants,
-        $window, Notification, $controller, $timeout, $q, TestingServices
+        $window, Notification, $controller, $timeout, $q, TestingServices, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -18,6 +18,7 @@ export class StudentsTableBasicController {
         this.$controller = $controller;
         this.$q = $q;
         this.TestingServices = TestingServices;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
@@ -89,8 +90,8 @@ export class StudentsTableBasicController {
     }
 
     $onDestroy() {
-        this.$log.debug("StudentsTableBasicController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("StudentsTableBasicController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     updateRankType(ranktypeparent, prop, value) {
@@ -99,7 +100,7 @@ export class StudentsTableBasicController {
         vm.ranktypeselected = vm.ranktypeparent.ranktype;
         vm.getRankList();
         vm.setRank('All');
-        vm.$log.debug('setRank', vm.Rank);
+        vm.$log.log('setRank', vm.Rank);
         vm.requery();
 
     }
@@ -110,12 +111,12 @@ export class StudentsTableBasicController {
 
     setContactType(thetype) {
         var vm = this;
-        vm.$log.debug('thetype', thetype);
+        vm.$log.log('thetype', thetype);
         vm.thecontacttype = thetype;
     }
     setRank(therank) {
         var vm = this;
-        vm.$log.debug('setRank', therank);
+        vm.$log.log('setRank', therank);
         vm.Rank = therank;
     }
     setStatus(thestatus) {
@@ -128,50 +129,53 @@ export class StudentsTableBasicController {
     }
     getRank() {
         var vm = this;
-        vm.$log.debug('getRank');
+        vm.$log.log('getRank');
         return vm.Rank;
     }
     getContactType() {
         var vm = this;
-        vm.$log.debug('getContactType');
+        vm.$log.log('getContactType');
         return vm.thecontacttype;
     }
     getLimit() {
         var vm = this;
-        vm.$log.debug('getLimit');
+        vm.$log.log('getLimit');
         return vm.limit;
     }
     setLimit(thelimit) {
         var vm = this;
-        vm.$log.debug('setLimit', thelimit);
+        vm.$log.log('setLimit', thelimit);
         vm.limit = thelimit;
     }
     activate() {
         var vm = this;
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('StudentsTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$q.all([
                 vm.getUserPrefCols().then(function() {
-                    vm.$log.debug('getUserPrefCols', vm.gcolumns);
+                    vm.$log.log('getUserPrefCols', vm.gcolumns);
                 }),
                 vm.getStudentLists().then(function() {
-                    vm.$log.debug('getStudentLists ContactTypeList', vm.StudentList.ContactTypeList);
-                    vm.$log.debug('getStudentLists ClassStatusList', vm.StudentList.ClassStatusList);
+                    vm.$log.log('getStudentLists ContactTypeList', vm.StudentList.ContactTypeList);
+                    vm.$log.log('getStudentLists ClassStatusList', vm.StudentList.ClassStatusList);
                     //   vm.setContactType(vm.StudentList.ContactTypeList[0].listvalue);
                     vm.setStatus(vm.StudentList.ClassStatusList[0].listvalue);
                     //vm.setLimit(vm.limits[1]);
                 }),
                 vm.getRankList().then(function() {
-                    vm.$log.debug('getRankList', vm.RankList);
+                    vm.$log.log('getRankList', vm.RankList);
                     vm.setRank('All');
-                    vm.$log.debug('setRank', vm.Rank);
+                    vm.$log.log('setRank', vm.Rank);
                 })
                 /*                vm.getRankTypes().then(function() {
-                                    vm.$log.debug('getRankTypes', vm.ranktypelist);
+                                    vm.$log.log('getRankTypes', vm.ranktypelist);
                                 })
                 */
             ])
             .then(function() {
-                vm.$log.debug('getAllStudents activate returned');
+                vm.$log.log('getAllStudents activate returned');
                 //                vm.doneActivate = true;
                 //vm.requery();
             });
@@ -185,8 +189,8 @@ export class StudentsTableBasicController {
         };
 
         return vm.StudentServices.getRankList(data, path).then(function(data) {
-            vm.$log.debug('getRankList returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getRankList returned data');
+            vm.$log.log(data);
             vm.RankList = data;
 
             return vm.RankList;
@@ -197,8 +201,8 @@ export class StudentsTableBasicController {
         var vm = this;
         var path = '../v1/studentlists';
         return vm.StudentServices.getStudentLists(path).then(function(data) {
-            vm.$log.debug('getStudentLists returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getStudentLists returned data');
+            vm.$log.log(data);
             vm.StudentList = data;
 
             return vm.StudentList;
@@ -208,10 +212,10 @@ export class StudentsTableBasicController {
     getContactTypes() {
         var vm = this;
         return vm.StudentServices.getContactTypeCounts().then(function(data) {
-            vm.$log.debug('controller getContactTypes returned data');
-            vm.$log.debug(data.contacttypes);
+            vm.$log.log('controller getContactTypes returned data');
+            vm.$log.log(data.contacttypes);
             vm.contacttypes = data.contacttypes;
-            vm.$log.debug('controller contacttypes service data', vm.contacttypes);
+            vm.$log.log('controller contacttypes service data', vm.contacttypes);
             return vm.contacttypes;
         });
     }
@@ -219,10 +223,10 @@ export class StudentsTableBasicController {
     refreshStudents(theinput) {
         var vm = this;
         return vm.StudentServices.refreshStudents(theinput).then(function(data) {
-            vm.$log.debug('studenttable search result controller refreshStudents returned data');
-            vm.$log.debug(data);
+            vm.$log.log('studenttable search result controller refreshStudents returned data');
+            vm.$log.log(data);
             vm.refreshstudentlist = data;
-            vm.$log.debug('controller refreshstudentlist service data', vm.refreshstudentlist);
+            vm.$log.log('controller refreshstudentlist service data', vm.refreshstudentlist);
             return vm.refreshstudentlist;
         });
 
@@ -231,19 +235,19 @@ export class StudentsTableBasicController {
     editStudentFromPick(item) {
         var vm = this;
         vm.eventResult = { item: item };
-        vm.$log.debug('editStudentFromPick', vm.eventResult);
+        vm.$log.log('editStudentFromPick', vm.eventResult);
     }
 
     toggleFiltering() {
         var vm = this;
-        vm.$log.debug('toggleFiltering');
+        vm.$log.log('toggleFiltering');
         vm.gridOptions.enableFiltering = !vm.gridOptions.enableFiltering;
     }
     requery() {
         var vm = this;
-        vm.$log.debug('requery entered');
+        vm.$log.log('requery entered');
         vm.getAllStudents().then(function() {
-            vm.$log.debug('refreshed students');
+            vm.$log.log('refreshed students');
         });
     }
 
@@ -261,35 +265,35 @@ export class StudentsTableBasicController {
 
     getUserPrefCols() {
         var vm = this;
-        vm.$log.debug('getUserPrefCols entered');
+        vm.$log.log('getUserPrefCols entered');
         return vm.StudentServices.getUserPrefCols(vm.userprefpath).then(function(data) {
-            vm.$log.debug('getUserPrefCols returned data');
+            vm.$log.log('getUserPrefCols returned data');
             vm.userprefcols = data.userprefcols;
-            vm.$log.debug(vm.userprefcols);
+            vm.$log.log(vm.userprefcols);
             var foundit;
             for (var j = 0, lenu = vm.userData.length; j < lenu; j++) {
                 foundit = false;
                 for (var i = 0, len = vm.userprefcols.length; i < len; i++) {
-                    //$log.debug('colprefs',vm.userprefcols[i].prefcolumn);
+                    //$log.log('colprefs',vm.userprefcols[i].prefcolumn);
                     if (vm.userData[j].colname == vm.userprefcols[i].prefcolumn) {
                         vm.listA.push(vm.userData.slice(j, j + 1)[0]); //A is the list that we display
-                        //      $log.debug('listA:', vm.userData.slice(j,j+1)[0]);
+                        //      $log.log('listA:', vm.userData.slice(j,j+1)[0]);
                         foundit = true;
                         break; //skip as we found something
                     }
                 }
                 if (!foundit) {
-                    //    $log.debug('listB:', vm.userData.slice(j,j+1)[0]);
+                    //    $log.log('listB:', vm.userData.slice(j,j+1)[0]);
                     vm.listB.push(vm.userData.slice(j, j + 1)[0]); //B gets the not matches
                 }
 
             }
-            vm.$log.debug('listA', vm.listA);
-            vm.$log.debug('listB', vm.listB);
+            vm.$log.log('listA', vm.listA);
+            vm.$log.log('listB', vm.listB);
 
             vm.gcolumns = [];
 
-            vm.$log.debug('setGridOptions col count', vm.listA.length);
+            vm.$log.log('setGridOptions col count', vm.listA.length);
 
             for (var i = 0, len = vm.listA.length; i < len; i++) {
                 if (vm.listA[i].colname == 'ID') {
@@ -319,10 +323,10 @@ export class StudentsTableBasicController {
 
             vm.getAllStudents().then(function(zdata) {
 
-                    vm.$log.debug('getuserpref cols getallStudent returned', zdata);
+                    vm.$log.log('getuserpref cols getallStudent returned', zdata);
                 },
                 function(error) {
-                    vm.$log.debug('Caught an error getallStudent getStudent :', error);
+                    vm.$log.log('Caught an error getallStudent getStudent :', error);
                     vm.gridOptions.data = [];
                     vm.message = error;
                     vm.Notification.error({ message: error, delay: 5000 });
@@ -335,7 +339,7 @@ export class StudentsTableBasicController {
 
     removeStudent(input) {
         var vm = this;
-        vm.$log.debug('removeStudent entered', input);
+        vm.$log.log('removeStudent entered', input);
         var path = '../v1/student';
         var thedata = {
             id: input.ID
@@ -345,8 +349,8 @@ export class StudentsTableBasicController {
 
         return vm.StudentServices.removeStudent(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeStudent returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeStudent returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -359,10 +363,10 @@ export class StudentsTableBasicController {
                 }
 
                 vm.getAllStudents().then(function(zdata) {
-                        vm.$log.debug('getStudent returned', zdata);
+                        vm.$log.log('getStudent returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getStudent after remove:', error);
+                        vm.$log.log('Caught an error getStudent after remove:', error);
                         vm.gridOptions.data = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -370,8 +374,8 @@ export class StudentsTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeStudent failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeStudent failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -380,7 +384,7 @@ export class StudentsTableBasicController {
 
     getAllStudents() {
         var vm = this;
-        vm.$log.debug('getAllStudents tb grid');
+        vm.$log.log('getAllStudents tb grid');
         vm.gridOptions.data = [];
         var path = '../v1/students';
 
@@ -391,7 +395,7 @@ export class StudentsTableBasicController {
             '&ranktype=' + vm.ranktypeselected +
             '&therank=' + vm.getRank());
 
-        vm.$log.debug('refreshtheAttendance path:', refreshpath);
+        vm.$log.log('refreshtheAttendance path:', refreshpath);
 
         return vm.StudentServices.getAllStudents(refreshpath).then(function(data) {
             vm.setGridOptions();
@@ -421,11 +425,11 @@ export class StudentsTableBasicController {
             appScopeProvider: vm,
             enableColumnResizing: true,
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -434,8 +438,8 @@ export class StudentsTableBasicController {
             }
         };
 
-        vm.$log.debug('gcolumns', vm.gcolumns);
-        vm.$log.debug('gridOptions', vm.gridOptions);
+        vm.$log.log('gcolumns', vm.gcolumns);
+        vm.$log.log('gridOptions', vm.gridOptions);
     }
 
 }

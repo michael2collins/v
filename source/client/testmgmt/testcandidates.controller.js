@@ -35,12 +35,11 @@ export class TestCandidateTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("TestCandidateTableBasicController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("TestCandidateTableBasicController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     $onInit() {
-        console.log("TestCandidateTableBasicController ...");
 
         var vm = this;
 
@@ -135,7 +134,7 @@ export class TestCandidateTableBasicController {
 
     setActiveTab(activeTab, thecaller) {
         var self = this;
-        self.$log.debug('set activetab as:', activeTab, thecaller);
+        self.$log.log('set activetab as:', activeTab, thecaller);
         self.TestingServices.setActiveTab(activeTab, thecaller);
 
     }
@@ -143,7 +142,7 @@ export class TestCandidateTableBasicController {
     getActiveTab() {
         var self = this;
         var atab = self.TestingServices.getActiveTab();
-        self.$log.debug('get activetab is:', atab);
+        self.$log.log('get activetab is:', atab);
         self.active = atab;
         return atab;
     }
@@ -188,7 +187,7 @@ export class TestCandidateTableBasicController {
             return;
         }
         vm.getGeneralColDefs('test', 'checklist').then(function() {
-            vm.$log.debug('getGeneralColDefs ready');
+            vm.$log.log('getGeneralColDefs ready');
 
             var saveResgridOptions = angular.copy(vm.resgridOptions);
             var vmTestRptmodal = vm;
@@ -243,13 +242,13 @@ export class TestCandidateTableBasicController {
                 size: 'lg',
                 resolve: {
                     classname: function() {
-                        vmTestRptmodal.$log.debug('return from open');
+                        vmTestRptmodal.$log.log('return from open');
                         return vmTestRptmodal.retvlu;
                     }
                 }
             });
             vmTestRptmodal.modalInstance.result.then(function(retvlu) {
-                vmTestRptmodal.$log.debug('search modalInstance result :', retvlu);
+                vmTestRptmodal.$log.log('search modalInstance result :', retvlu);
                 vmTestRptmodal.retvlu = retvlu;
             }, function() {
                 vmTestRptmodal.$log.info('Modal dismissed at: ' + new Date());
@@ -259,7 +258,7 @@ export class TestCandidateTableBasicController {
             //          vm.resgridOptions = saveResgridOptions;
 
         }).catch(function(e) {
-            vm.$log.debug("createTestChecklist error in activate", e);
+            vm.$log.log("createTestChecklist error in activate", e);
         });
 
     }
@@ -272,7 +271,7 @@ export class TestCandidateTableBasicController {
             return;
         }
         vm.getGeneralColDefs('test', 'promopostcard').then(function() {
-            vm.$log.debug('getGeneralColDefs ready createPromoPostcards');
+            vm.$log.log('getGeneralColDefs ready createPromoPostcards');
 
             var saveResgridOptions = angular.copy(vm.resgridOptions);
             var vmTestRptmodal = vm;
@@ -326,13 +325,13 @@ export class TestCandidateTableBasicController {
                 size: 'lg',
                 resolve: {
                     classname: function() {
-                        vmTestRptmodal.$log.debug('return from open');
+                        vmTestRptmodal.$log.log('return from open');
                         return vmTestRptmodal.retvlu;
                     }
                 }
             });
             vmTestRptmodal.modalInstance.result.then(function(retvlu) {
-                vmTestRptmodal.$log.debug('search modalInstance result :', retvlu);
+                vmTestRptmodal.$log.log('search modalInstance result :', retvlu);
                 vmTestRptmodal.retvlu = retvlu;
             }, function() {
                 vmTestRptmodal.$log.info('Modal dismissed at: ' + new Date());
@@ -342,7 +341,7 @@ export class TestCandidateTableBasicController {
             //          vm.resgridOptions = saveResgridOptions;
 
         }).catch(function(e) {
-            vm.$log.debug("createPromoPostcards error in activate", e);
+            vm.$log.log("createPromoPostcards error in activate", e);
         });
 
     }
@@ -395,7 +394,7 @@ export class TestCandidateTableBasicController {
             return;
         }
         vm.getGeneralColDefs('test', 'beltlabels').then(function() {
-            vm.$log.debug('getGeneralColDefs ready createBeltLabels');
+            vm.$log.log('getGeneralColDefs ready createBeltLabels');
 
             var saveResgridOptions = angular.copy(vm.resgridOptions);
             var vmTestRptmodal = vm;
@@ -465,13 +464,13 @@ export class TestCandidateTableBasicController {
                 size: 'lg',
                 resolve: {
                     classname: function() {
-                        vmTestRptmodal.$log.debug('return from open');
+                        vmTestRptmodal.$log.log('return from open');
                         return vmTestRptmodal.retvlu;
                     }
                 }
             });
             vmTestRptmodal.modalInstance.result.then(function(retvlu) {
-                vmTestRptmodal.$log.debug('search modalInstance result :', retvlu);
+                vmTestRptmodal.$log.log('search modalInstance result :', retvlu);
                 vmTestRptmodal.retvlu = retvlu;
             }, function() {
                 vmTestRptmodal.$log.info('Modal dismissed at: ' + new Date());
@@ -481,7 +480,7 @@ export class TestCandidateTableBasicController {
             //          vm.resgridOptions = saveResgridOptions;
 
         }).catch(function(e) {
-            vm.$log.debug("createBeltLabels error in activate", e);
+            vm.$log.log("createBeltLabels error in activate", e);
         });
 
     }
@@ -541,34 +540,38 @@ export class TestCandidateTableBasicController {
     
     changeRankType(){
         var vm=this;
-        vm.$log.debug("changeRankType", vm.ranktypeselected);
+        vm.$log.log("changeRankType", vm.ranktypeselected);
         vm.refreshList();
     }
 
     setLimit(thelimit) {
         var vm = this;
-        vm.$log.debug('setLimit', thelimit);
+        vm.$log.log('setLimit', thelimit);
         vm.limit = thelimit;
     }
 
     addToTest(testingid) {
         var vm = this;
-        vm.$log.debug('addToTest entered', testingid);
+        vm.$log.log('addToTest entered', testingid);
         vm.createtestcandidate(testingid);
     }
 
     removeFromTest(testingid) {
         var vm = this;
-        vm.$log.debug('removeFromTest entered');
+        vm.$log.log('removeFromTest entered');
         vm.removetestcandidate(testingid);
     }
 
     activate() {
         var vm = this;
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('TestCandidateTableBasicController',vm.UserServices.isDebugEnabled());
+        }
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-basic-testcandidates started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-basic-testcandidates started");
 
         });
         vm.portalDataService.Portlet('testcandidates.controller.js');
@@ -580,38 +583,38 @@ export class TestCandidateTableBasicController {
         vm.initResGridOptions();
         vm.getUserDetails();
         vm.getTemplateNames('').then(function() {
-            vm.$log.debug('activate eventdetails fetched');
+            vm.$log.log('activate eventdetails fetched');
         });
 
         vm.$q.all([
                 vm.getGeneralColDefs('test', 'checklist').then(function() {
-                    vm.$log.debug('getGeneralColDefs ready');
+                    vm.$log.log('getGeneralColDefs ready');
 
                 }).catch(function(e) {
-                    vm.$log.debug("getPayerList error in activate", e);
+                    vm.$log.log("getPayerList error in activate", e);
                 }),
                 vm.getGeneralColDefs('test', 'Testcandidatesource').then(function() {
-                    vm.$log.debug('getGeneralColDefs ready');
+                    vm.$log.log('getGeneralColDefs ready');
                     vm.setGridOptions();
 
                 }).catch(function(e) {
-                    vm.$log.debug("getPayerList error in activate", e);
+                    vm.$log.log("getPayerList error in activate", e);
                 }),
                 vm.getGeneralColDefs('test', 'Testcandidatelist').then(function() {
-                    vm.$log.debug('getGeneralColDefs ready');
+                    vm.$log.log('getGeneralColDefs ready');
                     vm.setResGridOptions();
                 }).catch(function(e) {
-                    vm.$log.debug("testcandidates error in activate", e);
+                    vm.$log.log("testcandidates error in activate", e);
                 }),
                 vm.getInstructorList().then(function() {
-                    vm.$log.debug('getInstructorList ready');
+                    vm.$log.log('getInstructorList ready');
 
                 }).catch(function(e) {
-                    vm.$log.debug("testcandidates error in activate", e);
+                    vm.$log.log("testcandidates error in activate", e);
                 })
             ])
             .then(function() {
-                vm.$log.debug('testcandidates activation done');
+                vm.$log.log('testcandidates activation done');
             });
     }
 
@@ -627,21 +630,21 @@ export class TestCandidateTableBasicController {
         }
         else if (tabname === 'tab-testmaterial') {}
         else {
-            vm.$log.debug('dont know tab', tabname);
+            vm.$log.log('dont know tab', tabname);
         }
     }
 
     getUserDetails() {
         var vm = this;
-        vm.$log.debug('getUserDetails entered');
+        vm.$log.log('getUserDetails entered');
         return vm.UserServices.getUserDetails().then(function(data) {
-                vm.$log.debug("testcandidate getuserdetails returned:", data);
+                vm.$log.log("testcandidate getuserdetails returned:", data);
                 vm.userdta = data;
                 return vm.userdta;
             },
 
             function(error) {
-                vm.$log.debug('Caught an error getUserDetails, going to notify:', error);
+                vm.$log.log('Caught an error getUserDetails, going to notify:', error);
                 vm.userdta = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -656,11 +659,11 @@ export class TestCandidateTableBasicController {
 
     getGeneralColDefs(colkey, colsubkey) {
         var vm = this;
-        vm.$log.debug('getGeneralColDefs entered', colkey, colsubkey);
+        vm.$log.log('getGeneralColDefs entered', colkey, colsubkey);
         var path = encodeURI("../v1/gencoldefs?colkey=" + colkey + "&colsubkey=" + colsubkey);
 
         return vm.TestingServices.getGeneralColDefs(path).then(function(data) {
-                vm.$log.debug("getGeneralColDefs returned:", data);
+                vm.$log.log("getGeneralColDefs returned:", data);
                 var retdata = JSON.parse(data.gcolumns[0][0]);
                 if (colsubkey === 'checklist') {
                     vm.checklistcoldef = retdata;
@@ -685,7 +688,7 @@ export class TestCandidateTableBasicController {
             },
 
             function(error) {
-                vm.$log.debug('Caught an error getGeneralColDefs, going to notify:', error);
+                vm.$log.log('Caught an error getGeneralColDefs, going to notify:', error);
                 vm.userdta = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -700,7 +703,7 @@ export class TestCandidateTableBasicController {
 
     updateTest() {
         var vm = this;
-        vm.$log.debug('updateTest entered');
+        vm.$log.log('updateTest entered');
         var path = "../v1/testing";
         var indata = {
             ID: vm.testdatelist.testingid,
@@ -710,17 +713,17 @@ export class TestCandidateTableBasicController {
             Tester4: vm.testdatelist.tester4
         };
 
-        vm.$log.debug('about updateTesting ', indata, path);
+        vm.$log.log('about updateTesting ', indata, path);
 
         return vm.TestingServices.updateTesting(path, indata)
             .then(function(data) {
-                vm.$log.debug('updateTesting returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateTesting returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
 
             }).catch(function(e) {
-                vm.$log.debug('updateTesting failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateTesting failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -729,7 +732,7 @@ export class TestCandidateTableBasicController {
 
     getInstructorList() {
         var vm = this;
-        vm.$log.debug('getInstructorList entered');
+        vm.$log.log('getInstructorList entered');
         var refreshpath = "../v1/instructorlist";
         var witnessdefault = {
             firstname: 'Witness',
@@ -738,8 +741,8 @@ export class TestCandidateTableBasicController {
             name: 'Witness'
         };
         return vm.CalendarServices.getinstructorlist(refreshpath).then(function(data) {
-                vm.$log.debug(' calservices getinstructorlist returned data');
-                vm.$log.debug(data);
+                vm.$log.log(' calservices getinstructorlist returned data');
+                vm.$log.log(data);
                 vm.instructorlist = data.instructorlist;
                 if (typeof data.instructorlist !== 'undefined') {
                     for (var i = 0; i < data.instructorlist.length; i++) {
@@ -750,7 +753,7 @@ export class TestCandidateTableBasicController {
                 return vm.instructorlist;
             },
             function(error) {
-                vm.$log.debug('Caught an error getinstructorlist, going to notify:', error);
+                vm.$log.log('Caught an error getinstructorlist, going to notify:', error);
                 vm.instructorlist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -769,15 +772,15 @@ export class TestCandidateTableBasicController {
         if (typeof testname === 'undefined') {
             return {};
         }
-        vm.$log.debug('getTestDates entered', testname);
+        vm.$log.log('getTestDates entered', testname);
         var refreshpath = encodeURI("../v1/testdates?testname=" + testname.name);
         var error;
         vm.testname = testname.name;
         vm.testtype = testname.eventtype;
 
         return vm.TestingServices.getTestDates(refreshpath).then(function(data) {
-                vm.$log.debug('getTestDates returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getTestDates returned data');
+                vm.$log.log(data);
                 if (data.testdatelist.length > 1) {
                     error = "too many testdates found:" + data.testdatelist.length;
                     vm.message = error;
@@ -790,20 +793,20 @@ export class TestCandidateTableBasicController {
                     vm.testdatelist.starttime = vm.Util.convertTime(data.testdatelist[0].startdate);
                     vm.testdatelist.endtime = vm.Util.convertTime(data.testdatelist[0].enddate);
                     vm.gettestcandidateList(vm.testname, vm.testtype).then(function(zdata) {
-                            vm.$log.debug('gettestcandidateList returned', zdata);
+                            vm.$log.log('gettestcandidateList returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error gettestcandidateList after update:', error);
+                            vm.$log.log('Caught an error gettestcandidateList after update:', error);
                             vm.data = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
                             return (vm.$q.reject(error));
                         });
                     vm.gettestcandidateDetails(vm.testdatelist.testtype).then(function(zdata) {
-                            vm.$log.debug('gettestcandidateDetails returned', zdata);
+                            vm.$log.log('gettestcandidateDetails returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error gettestcandidateDetails after update:', error);
+                            vm.$log.log('Caught an error gettestcandidateDetails after update:', error);
                             vm.data = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -823,7 +826,7 @@ export class TestCandidateTableBasicController {
                 return vm.testdatelist;
             },
             function(error) {
-                vm.$log.debug('Caught an error getTestDates, going to notify:', error);
+                vm.$log.log('Caught an error getTestDates, going to notify:', error);
                 vm.testdatelist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -838,13 +841,13 @@ export class TestCandidateTableBasicController {
 
     getRankTypes() {
         var vm = this;
-        vm.$log.debug('getRankTypes entered');
+        vm.$log.log('getRankTypes entered');
         var path = encodeURI("../v1/ranktypes");
         var error;
 
         return vm.TestingServices.getRankTypes(path).then(function(data) {
-                vm.$log.debug('getRankTypes returned data');
-                vm.$log.debug(data);
+                vm.$log.log('getRankTypes returned data');
+                vm.$log.log(data);
                 if (data.ranktypelist.length > 0) {
                     vm.ranktypelist = data.ranktypelist;
                     vm.ranktypeselected = vm.ranktypelist[0].ranktype;
@@ -860,7 +863,7 @@ export class TestCandidateTableBasicController {
                 return vm.ranktypelist;
             },
             function(error) {
-                vm.$log.debug('Caught an error ranktypelist, going to notify:', error);
+                vm.$log.log('Caught an error ranktypelist, going to notify:', error);
                 vm.ranktypelist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -877,20 +880,20 @@ export class TestCandidateTableBasicController {
         var vm = this;
 
         vm.gettestcandidateList(vm.testname, vm.testtype).then(function(zdata) {
-                vm.$log.debug('gettestcandidateList returned', zdata);
+                vm.$log.log('gettestcandidateList returned', zdata);
             },
             function(error) {
-                vm.$log.debug('Caught an error gettestcandidateList after update:', error);
+                vm.$log.log('Caught an error gettestcandidateList after update:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
                 return (vm.$q.reject(error));
             });
         vm.gettestcandidateDetails(vm.testdatelist.testtype).then(function(zdata) {
-                vm.$log.debug('gettestcandidateDetails returned', zdata);
+                vm.$log.log('gettestcandidateDetails returned', zdata);
             },
             function(error) {
-                vm.$log.debug('Caught an error gettestcandidateDetails after update:', error);
+                vm.$log.log('Caught an error gettestcandidateDetails after update:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -904,7 +907,7 @@ export class TestCandidateTableBasicController {
         if (vm.testdatelist !== undefined) {
             show = typeof(vm.testdatelist) === 'object' ? true : false;
         }
-        //         vm.$log.debug('testdateshow', typeof(vm.testdatelist), vm.testdatelist, show);
+        //         vm.$log.log('testdateshow', typeof(vm.testdatelist), vm.testdatelist, show);
         return show;
     }
 
@@ -922,21 +925,21 @@ export class TestCandidateTableBasicController {
             testingid: testingid,
             selectedStudents: vm.selectedStudents
         };
-        vm.$log.debug('about removetestcandidate ', path, thedata, vm.testname);
+        vm.$log.log('about removetestcandidate ', path, thedata, vm.testname);
         return vm.TestingServices.removetestcandidate(path, thedata)
             .then(function(data) {
-                vm.$log.debug('removetestcandidate returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removetestcandidate returned data');
+                vm.$log.log(data);
                 vm.thistestcandidate = data;
-                vm.$log.debug(vm.thistestcandidate);
-                vm.$log.debug(vm.thistestcandidate.message);
+                vm.$log.log(vm.thistestcandidate);
+                vm.$log.log(vm.thistestcandidate.message);
                 vm.message = vm.thistestcandidate.message;
                 vm.Notification.success({ message: vm.message, delay: 5000 });
                 vm.gettestcandidateList(vm.testname, vm.testtype).then(function(zdata) {
-                        vm.$log.debug('gettestcandidateList returned', zdata);
+                        vm.$log.log('gettestcandidateList returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error gettestcandidateList after update:', error);
+                        vm.$log.log('Caught an error gettestcandidateList after update:', error);
                         vm.data = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -945,8 +948,8 @@ export class TestCandidateTableBasicController {
 
                 return vm.thistestcandidate;
             }).catch(function(e) {
-                vm.$log.debug('removetestcandidate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removetestcandidate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -967,15 +970,15 @@ export class TestCandidateTableBasicController {
             testingid: testingid,
             selectedStudents: vm.selectedStudents
         };
-        vm.$log.debug('about createtestcandidate ', path, thedata, vm.testname);
+        vm.$log.log('about createtestcandidate ', path, thedata, vm.testname);
         return vm.TestingServices.createtestcandidate(path, thedata)
             .then(function(data) {
-                vm.$log.debug('createtestcandidate returned data');
-                vm.$log.debug(data);
+                vm.$log.log('createtestcandidate returned data');
+                vm.$log.log(data);
                 if (typeof(data) !== 'undefined') {
                     vm.thistestcandidate = data;
-                    vm.$log.debug(vm.thistestcandidate);
-                    vm.$log.debug(vm.thistestcandidate.message);
+                    vm.$log.log(vm.thistestcandidate);
+                    vm.$log.log(vm.thistestcandidate.message);
                     vm.message = vm.thistestcandidate.message;
                     vm.Notification.success({ message: vm.message, delay: 5000 });
                 }
@@ -983,10 +986,10 @@ export class TestCandidateTableBasicController {
                     vm.Notification.success({ message: "Not created", delay: 5000 });
                 }
                 vm.gettestcandidateList(vm.testname, vm.testtype).then(function(zdata) {
-                        vm.$log.debug('gettestcandidateList returned', zdata);
+                        vm.$log.log('gettestcandidateList returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error gettestcandidateList after update:', error);
+                        vm.$log.log('Caught an error gettestcandidateList after update:', error);
                         vm.data = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -995,8 +998,8 @@ export class TestCandidateTableBasicController {
                 return;
 
             }).catch(function(e) {
-                vm.$log.debug('createtestcandidate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('createtestcandidate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -1005,16 +1008,16 @@ export class TestCandidateTableBasicController {
 
     gettestcandidateList(thetestname, thetesttype) {
         var vm = this;
-        vm.$log.debug('gettestcandidateList entered', thetestname, thetesttype);
+        vm.$log.log('gettestcandidateList entered', thetestname, thetesttype);
         var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype+ '&ranktype=' + vm.ranktypeselected);
         var mom;
         var now = vm.moment();
 
-        vm.$log.debug('gettestcandidateList path:', refreshpath);
+        vm.$log.log('gettestcandidateList path:', refreshpath);
 
         return vm.TestingServices.gettestcandidateList(refreshpath).then(function(data) {
-                vm.$log.debug('gettestcandidateList returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettestcandidateList returned data');
+                vm.$log.log(data);
                 if (typeof(data) !== 'undefined' && data.testcandidateList.error !== false) {
                     for (var iter = 0; iter < data.testcandidateList.length; iter++) {
                         mom = vm.moment(data.testcandidateList[iter].lastpromoted);
@@ -1036,7 +1039,7 @@ export class TestCandidateTableBasicController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error gettestcandidateList:', error);
+                vm.$log.log('Caught an error gettestcandidateList:', error);
                 vm.resgridOptions.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -1053,22 +1056,22 @@ export class TestCandidateTableBasicController {
         var vm = this;
 
         //called by gettestdates
-        vm.$log.debug('gettestcandidateDetails entered:', thetesttype);
+        vm.$log.log('gettestcandidateDetails entered:', thetesttype);
         var path = encodeURI('../v1/testcandidatedetails?testtype=' + thetesttype + '&ranktype=' + vm.ranktypeselected);
         if (vm.restricted !== undefined) {
             path = path + '&supplement=' + vm.restricted;
         }
         var messagetxt;
         //view testcandidatesource
-        vm.$log.debug('gettestcandidateDetails path:', path);
+        vm.$log.log('gettestcandidateDetails path:', path);
 
         return vm.TestingServices.gettestcandidateDetails(path).then(function(data) {
-                vm.$log.debug('gettestcandidateDetails returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettestcandidateDetails returned data');
+                vm.$log.log(data);
                 if (typeof(data.testcandidatedetails) !== 'undefined' && data.testcandidatedetails.length > 0) {
                     vm.gridOptions.data = data.testcandidatedetails;
 
-                    vm.$log.debug("details", data.testcandidatedetails[0]);
+                    vm.$log.log("details", data.testcandidatedetails[0]);
 
                     vm.ContactID = data.testcandidatedetails[0].contactID;
 
@@ -1084,7 +1087,7 @@ export class TestCandidateTableBasicController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error gettestcandidateDetails:', error);
+                vm.$log.log('Caught an error gettestcandidateDetails:', error);
                 vm.data = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -1099,14 +1102,14 @@ export class TestCandidateTableBasicController {
 
     gettestcandidateNames(testcandidatepartial) {
         var vm = this;
-        vm.$log.debug('gettestcandidateNames entered');
+        vm.$log.log('gettestcandidateNames entered');
         var path = encodeURI('../v1/testcandidatenames?testcandidatepartial=' + testcandidatepartial);
 
-        vm.$log.debug('gettestcandidateNames path:', path);
+        vm.$log.log('gettestcandidateNames path:', path);
 
         return vm.TestingServices.gettestcandidateNames(path).then(function(data) {
-                vm.$log.debug('gettestcandidateNames returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettestcandidateNames returned data');
+                vm.$log.log(data);
                 vm.testcandidatenames = data.testcandidatenames;
                 //check for empty set and do message
                 //messagetxt = "testcandidateDetails obtained";
@@ -1114,7 +1117,7 @@ export class TestCandidateTableBasicController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error gettestcandidateDetails:', error);
+                vm.$log.log('Caught an error gettestcandidateDetails:', error);
                 vm.data.testcandidatelist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -1160,33 +1163,33 @@ export class TestCandidateTableBasicController {
                 return docDefinition;
             },
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.selection.on.rowSelectionChanged(vm.$scope, function(row) {
                     var msg = 'grid row selected ' + row.entity;
-                    vm.$log.debug(msg);
+                    vm.$log.log(msg);
 
                     var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                     vm.gridleftcnt = selectedStudentarr.length;
-                    vm.$log.debug('selected', selectedStudentarr);
+                    vm.$log.log('selected', selectedStudentarr);
                     vm.setSelectedArray(selectedStudentarr);
 
                 });
                 gridApi.selection.on.rowSelectionChangedBatch(vm.$scope, function(rows) {
-                    vm.$log.debug("grid batch");
+                    vm.$log.log("grid batch");
                     var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                     vm.gridleftcnt = selectedStudentarr.length;
-                    vm.$log.debug('batch selected', selectedStudentarr);
+                    vm.$log.log('batch selected', selectedStudentarr);
                     vm.setSelectedArray(selectedStudentarr);
 
                 });
                 gridApi.edit.on.afterCellEdit(vm.$scope,
                     function(rowEntity, colDef, newValue, oldValue) {
-                        vm.$log.debug('rowEntity');
-                        vm.$log.debug(rowEntity);
+                        vm.$log.log('rowEntity');
+                        vm.$log.log(rowEntity);
                         //Alert to show what info about the edit is available
-                        vm.$log.debug('Column: ' + colDef.name +
+                        vm.$log.log('Column: ' + colDef.name +
                             ' newValue: ' + newValue + ' oldValue: ' + oldValue);
                         if (newValue != oldValue) {
                             vm.updatetestcandidate(colDef, newValue, rowEntity);
@@ -1197,7 +1200,7 @@ export class TestCandidateTableBasicController {
         };
 
 
-        vm.$log.debug('setGridOptions gridOptions', vm.gridOptions);
+        vm.$log.log('setGridOptions gridOptions', vm.gridOptions);
 
     }
 
@@ -1211,7 +1214,7 @@ export class TestCandidateTableBasicController {
         };
 
 
-        vm.$log.debug('setGridOptions gridOptions', vm.gridOptions);
+        vm.$log.log('setGridOptions gridOptions', vm.gridOptions);
 
     }
 
@@ -1246,34 +1249,34 @@ export class TestCandidateTableBasicController {
             exporterPdfMaxGridWidth: 500,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('resgridapi onRegisterApi');
+                vm.$log.log('resgridapi onRegisterApi');
                 vm.resgridApi = gridApi;
 
                 gridApi.selection.on.rowSelectionChanged(vm.$scope, function(row) {
                     var msg = 'grid row selected ' + row.entity;
-                    vm.$log.debug(msg);
+                    vm.$log.log(msg);
 
                     var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                     vm.gridrightcnt = selectedStudentarr.length;
 
-                    vm.$log.debug('selected', selectedStudentarr);
+                    vm.$log.log('selected', selectedStudentarr);
                     vm.setresSelectedArray(selectedStudentarr);
 
                 });
                 gridApi.selection.on.rowSelectionChangedBatch(vm.$scope, function(rows) {
-                    vm.$log.debug("grid batch");
+                    vm.$log.log("grid batch");
                     var selectedStudentarr = this.grid.api.selection.getSelectedRows();
                     vm.gridrightcnt = selectedStudentarr.length;
-                    vm.$log.debug('batch selected', selectedStudentarr);
+                    vm.$log.log('batch selected', selectedStudentarr);
                     vm.setresSelectedArray(selectedStudentarr);
 
                 });
                 gridApi.edit.on.afterCellEdit(vm.$scope,
                     function(rowEntity, colDef, newValue, oldValue) {
-                        vm.$log.debug('rowEntity');
-                        vm.$log.debug(rowEntity);
+                        vm.$log.log('rowEntity');
+                        vm.$log.log(rowEntity);
                         //Alert to show what info about the edit is available
-                        vm.$log.debug('Column: ' + colDef.name +
+                        vm.$log.log('Column: ' + colDef.name +
                             ' newValue: ' + newValue + ' oldValue: ' + oldValue);
                         if (newValue != oldValue) {
                             vm.updatetestcandidate(colDef, newValue, rowEntity);
@@ -1283,7 +1286,7 @@ export class TestCandidateTableBasicController {
             }
         };
 
-        vm.$log.debug('setResGridOptions ', vm.resgridOptions);
+        vm.$log.log('setResGridOptions ', vm.resgridOptions);
 
     }
 
@@ -1295,7 +1298,7 @@ export class TestCandidateTableBasicController {
 
         };
 
-        vm.$log.debug('setResGridOptions ', vm.resgridOptions);
+        vm.$log.log('setResGridOptions ', vm.resgridOptions);
 
     }
 
@@ -1309,20 +1312,20 @@ export class TestCandidateTableBasicController {
             testcandidate: vm.testcandidate,
         };
 
-        vm.$log.debug('about updatetestcandidate ', indata, path);
+        vm.$log.log('about updatetestcandidate ', indata, path);
 
         return vm.TestingServices.updatetestcandidate(path, indata)
             .then(function(data) {
-                vm.$log.debug('updatetestcandidate returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updatetestcandidate returned data');
+                vm.$log.log(data);
                 vm.thiscoldef = data;
-                vm.$log.debug(vm.thiscoldef);
-                vm.$log.debug(vm.thiscoldef.message);
+                vm.$log.log(vm.thiscoldef);
+                vm.$log.log(vm.thiscoldef.message);
                 vm.message = vm.thiscoldef.message;
 
             }).catch(function(e) {
-                vm.$log.debug('updatetestcandidate failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updatetestcandidate failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -1334,7 +1337,7 @@ export class TestCandidateTableBasicController {
         var vm = this;
 
         vm.getGeneralColDefs('test', 'promotion').then(function() {
-            vm.$log.debug('getGeneralColDefs ready');
+            vm.$log.log('getGeneralColDefs ready');
 
             var saveResgridOptions = angular.copy(vm.resgridOptions);
             var vmTestRptmodal = vm;
@@ -1394,13 +1397,13 @@ export class TestCandidateTableBasicController {
                 windowClass: 'my-modal-popup',
                 resolve: {
                     classname: function() {
-                        vmTestRptmodal.$log.debug('return from open');
+                        vmTestRptmodal.$log.log('return from open');
                         return vmTestRptmodal.retvlu;
                     }
                 }
             });
             vmTestRptmodal.modalInstance.result.then(function(retvlu) {
-                vmTestRptmodal.$log.debug('search modalInstance result :', retvlu);
+                vmTestRptmodal.$log.log('search modalInstance result :', retvlu);
                 vmTestRptmodal.retvlu = retvlu;
             }, function() {
                 vmTestRptmodal.$log.info('Modal dismissed at: ' + new Date());
@@ -1410,7 +1413,7 @@ export class TestCandidateTableBasicController {
             //          vm.resgridOptions = saveResgridOptions;
 
         }).catch(function(e) {
-            vm.$log.debug("promotetestcandidate error in modal", e);
+            vm.$log.log("promotetestcandidate error in modal", e);
         });
 
 
@@ -1419,7 +1422,7 @@ export class TestCandidateTableBasicController {
 
     setSelectedArray(inputArray) {
         var vm = this;
-        vm.$log.debug("setSelectedArray entered", inputArray);
+        vm.$log.log("setSelectedArray entered", inputArray);
         vm.selectedStudents = [];
         //todo: move readyfornext rank to studentregistration
 
@@ -1468,13 +1471,13 @@ export class TestCandidateTableBasicController {
             return;
         }
 
-        vm.$log.debug("setarray", vm.selectedStudents);
+        vm.$log.log("setarray", vm.selectedStudents);
 
     }
 
     setresSelectedArray(inputArray) {
         var vm = this;
-        vm.$log.debug("setresSelectedArray entered", inputArray);
+        vm.$log.log("setresSelectedArray entered", inputArray);
         vm.selectedStudents = [];
 
         if (inputArray.length > 0) {
@@ -1534,25 +1537,25 @@ export class TestCandidateTableBasicController {
             return;
         }
 
-        vm.$log.debug("setarray", vm.selectedStudents);
+        vm.$log.log("setarray", vm.selectedStudents);
 
     }
 
     getTemplateNames(templatepartial) {
         var vm = this;
-        vm.$log.debug('getTemplateNames entered');
+        vm.$log.log('getTemplateNames entered');
         var path = encodeURI('../v1/templatenames?templatepartial=' + templatepartial);
 
-        vm.$log.debug('gettemplateNames path:', path);
+        vm.$log.log('gettemplateNames path:', path);
 
         return vm.TemplateServices.gettemplateNames(path).then(function(data) {
-                vm.$log.debug('gettemplateNames returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettemplateNames returned data');
+                vm.$log.log(data);
                 vm.templatelist = data.templatelist;
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error getTemplateNames:', error);
+                vm.$log.log('Caught an error getTemplateNames:', error);
                 vm.templatelist = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -1568,18 +1571,18 @@ export class TestCandidateTableBasicController {
     gettemplateDetails(templateSelected) {
         var vm = this;
         //called by gettestdates
-        vm.$log.debug('gettemplateDetails entered:', templateSelected.templatename);
+        vm.$log.log('gettemplateDetails entered:', templateSelected.templatename);
         var path = encodeURI('../v1/templatedetails?templatename=' + templateSelected.templatename);
         var messagetxt;
         //view templatesource
-        vm.$log.debug('gettemplateDetails path:', path);
+        vm.$log.log('gettemplateDetails path:', path);
 
         return vm.TemplateServices.gettemplateDetails(path).then(function(data) {
-                vm.$log.debug('gettemplateDetails returned data');
-                vm.$log.debug(data);
+                vm.$log.log('gettemplateDetails returned data');
+                vm.$log.log(data);
                 if (typeof(data.templatedetails) !== 'undefined' && data.templatedetails.length > 0) {
                     vm.templatedetails = data.templatedetails[0];
-                    vm.$log.debug("details", data.templatedetails[0]);
+                    vm.$log.log("details", data.templatedetails[0]);
 
                     vm.htmlcontentdata.htmlcontentheader = vm.templatedetails.htmlheader === "NULL" ? '' : vm.templatedetails.htmlheader;
                     vm.htmlcontentdata.htmlcontent = vm.templatedetails.htmlbody === "NULL" ? '' : vm.templatedetails.htmlbody;
@@ -1612,7 +1615,7 @@ export class TestCandidateTableBasicController {
                 return;
             },
             function(error) {
-                vm.$log.debug('Caught an error gettemplateDetails:', error);
+                vm.$log.log('Caught an error gettemplateDetails:', error);
                 vm.templatedetails = [];
                 vm.message = error;
                 vm.Notification.error({ message: error, delay: 5000 });
@@ -1711,7 +1714,7 @@ export class TestCandidateTableBasicController {
         var contentdtl = [];
         if (typeof(students) !== 'undefined' && students.length > 0) {
             for (var i = 0; i < students.length; i++) {
-                vm.$log.debug('process student:', students[i]);
+                vm.$log.log('process student:', students[i]);
                 if (i < students.length - 1) {
                     if (vm.pagebreak == "student") {
                         pagebreak = { pageBreak: 'before', text: '' };
@@ -1723,7 +1726,7 @@ export class TestCandidateTableBasicController {
                 else {
                     pagebreak = {};
                 }
-                vm.$log.debug("types", content.length, typeof(pagebreak));
+                vm.$log.log("types", content.length, typeof(pagebreak));
                 tmp = content;
 
                 tmp = tmp.replace(/{agecat}/g, students[i].agecat);
@@ -1770,13 +1773,13 @@ export class TestCandidateTableBasicController {
                     obj = JSON.parse('[' + tmp + ']');
                 }
                 catch (e) {
-                    vm.$log.debug(e instanceof SyntaxError); // true
-                    vm.$log.debug(e.message); // "missing ; before statement"
-                    vm.$log.debug(e.name); // "SyntaxError"
-                    vm.$log.debug(e.fileName); // "Scratchpad/1"
-                    vm.$log.debug(e.lineNumber); // 1
-                    vm.$log.debug(e.columnNumber); // 4
-                    vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+                    vm.$log.log(e instanceof SyntaxError); // true
+                    vm.$log.log(e.message); // "missing ; before statement"
+                    vm.$log.log(e.name); // "SyntaxError"
+                    vm.$log.log(e.fileName); // "Scratchpad/1"
+                    vm.$log.log(e.lineNumber); // 1
+                    vm.$log.log(e.columnNumber); // 4
+                    vm.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
                 }
                 contentdtl.push([
                     obj,
@@ -1801,6 +1804,7 @@ export class TestCandidateTableBasicController {
         var students = vm.selectedStudents;
         var program = "and is therefore awarded the rank of";
         var testfee = 25;
+        vm.calcsizes();
 
         var certdata = {
             certDate: vm.testdatelist.testdate,
@@ -1819,7 +1823,7 @@ export class TestCandidateTableBasicController {
             title4: vm._.findWhere(vm.instructorlist, { name: vm.testdatelist.tester4 }).instructortitle
         };
 
-        vm.$log.debug('after parsehmtl', mycontent, students, typeof(students), students.length);
+        vm.$log.log('after parsehmtl', mycontent, students, typeof(students), students.length);
         var contentdtl = [];
         var tmp;
         var obj;
@@ -1835,18 +1839,18 @@ export class TestCandidateTableBasicController {
             mycontentfooter = obj;
         }
         catch (e) {
-            vm.$log.debug(e instanceof SyntaxError); // true
-            vm.$log.debug(e.message); // "missing ; before statement"
-            vm.$log.debug(e.name); // "SyntaxError"
-            vm.$log.debug(e.fileName); // "Scratchpad/1"
-            vm.$log.debug(e.lineNumber); // 1
-            vm.$log.debug(e.columnNumber); // 4
-            vm.$log.debug(e.stack); // "@Scratchpad/1:2:3\n"
+            vm.$log.log(e instanceof SyntaxError); // true
+            vm.$log.log(e.message); // "missing ; before statement"
+            vm.$log.log(e.name); // "SyntaxError"
+            vm.$log.log(e.fileName); // "Scratchpad/1"
+            vm.$log.log(e.lineNumber); // 1
+            vm.$log.log(e.columnNumber); // 4
+            vm.$log.log(e.stack); // "@Scratchpad/1:2:3\n"
         }
 
         var background;
+
         if (typeof(vm.backgroundimages[0]) !== undefined && vm.backgroundimages[0] !== "") {
-            vm.calcsizes();
             var rptwidth = vm.pagewidthpx;
             var rptheight = vm.pageheightpx;
             background = {
@@ -1876,7 +1880,7 @@ export class TestCandidateTableBasicController {
         docDefinition.background = background;
 
         var myJsonString = JSON.stringify(docDefinition);
-        vm.$log.debug('doc json', myJsonString);
+        vm.$log.log('doc json', myJsonString);
 
 
         pdfMake.createPdf(docDefinition).open();

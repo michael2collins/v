@@ -19,11 +19,9 @@ export class PageSignupController {
         this.UserServices = userServices;
         this.$q = $q;
 
-        this.$log.debug('enter PageSignupController');
     }
 
     $onInit() {
-        console.log("initializing Login...");
         this.username = null;
         this.password = null;
         this.firstname = null;
@@ -42,19 +40,19 @@ export class PageSignupController {
     }
 
     $onDestroy() {
-        this.$log.debug("PageSignupController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("PageSignupController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     compare(repass) {
         var self = this;
-        self.$log.debug('compare', repass);
+        self.$log.log('compare', repass);
         self.isconfirm = self.password == repass ? true : false;
     }
 
     register() {
         var self = this;
-        self.$log.debug('controller register function entered');
+        self.$log.log('controller register function entered');
         self.dataLoading = true;
         var thedata = {
             username: self.username,
@@ -65,19 +63,19 @@ export class PageSignupController {
             password: self.password
         };
         var path = '/v1/register';
-        self.$log.debug('controller register thedata:', thedata);
+        self.$log.log('controller register thedata:', thedata);
 
         self.dataLoading = true;
 
         return self.UserServices.createUser(path, thedata).then(function(data) {
-                self.$log.debug('register returned data');
-                self.$log.debug(data);
+                self.$log.log('register returned data');
+                self.$log.log(data);
                 self.FlashService.Success('Registration successful', true);
                 self.$location.path('/page-signin');
                 return data;
             },
             function(error) {
-                self.$log.debug('Caught an error Registration, going to notify:', error);
+                self.$log.log('Caught an error Registration, going to notify:', error);
                 self.FlashService.Err(error);
                 return (self.$q.reject(error));
             }).

@@ -11,8 +11,8 @@ import modelFormatConfig from '../../vendors/ngmodel-format/ngmodel.format';
 //    });
 
 function AppConfig($locationProvider, NotificationProvider, IdleProvider, KeepaliveProvider, TitleProvider,
-    cfpLoadingBarProvider, $provide, toastr, $compileProvider,
-    $logProvider, $routeProvider) {
+    cfpLoadingBarProvider, $provide, toastr, $compileProvider, logExProvider,
+     $routeProvider) {
     'ngInject';
 
     var minus = function(event) {
@@ -24,6 +24,8 @@ function AppConfig($locationProvider, NotificationProvider, IdleProvider, Keepal
     $compileProvider.aHrefSanitizationWhitelist(/^\s*(https?|ftp|mailto|javascript):/);
     
     $locationProvider.hashPrefix('');
+
+    logExProvider.enableLogging(false);
 
     NotificationProvider.setOptions({
         delay: 10000,
@@ -69,51 +71,10 @@ function AppConfig($locationProvider, NotificationProvider, IdleProvider, Keepal
         }
     };
 
-    // decorates the $log instance to disable logging
-    $provide.decorator('$log', ['$delegate',
-        function($delegate) {
-            var $log, enabled = true;
-
-            $log = {
-                debugEnabled: function(flag) {
-                    enabled = !!flag;
-                }
-            };
-
-            // methods implemented by Angular's $log service
-            ['log', 'warn', 'info', 'error', 'debug'].forEach(function(methodName) {
-                $log[methodName] = function() {
-                    if (!enabled) return;
-
-                    var logger = $delegate;
-                    logger[methodName].apply(logger, arguments);
-                };
-            });
-
-            return $log;
-        }
-    ]);
-
-
-    /*    core.run(function($rootScope) {
-            $rootScope._ = window._;
-        });
-      */
-//    $log.debugEnabled(false);
 
     toastr.options.timeOut = 4000;
     toastr.options.positionClass = 'toast-bottom-right';
 
-/*    var config = {
-        appErrorPrefix: '[Vdojo Error] ', //Configure the exceptionHandler decorator
-        appTitle: 'Vdojo',
-        version: '1.0.0'
-    };
-*/
-    // turn debugging off/on (no info or warn)
-    if ($logProvider.debugEnabled) {
-        $logProvider.debugEnabled(true);
-    }
 
         $locationProvider.html5Mode(false);
 

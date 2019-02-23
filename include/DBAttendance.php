@@ -21,6 +21,7 @@ class AttendanceDbHandler {
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
     }
 
 
@@ -29,11 +30,12 @@ class AttendanceDbHandler {
      */
     public function getAttendanceStatus() {
         global $school;
+        global $app;
         $sql = "SELECT t.* FROM studentlist t where t.listtype = 'ClassStatus' and t.school = ? ";
 
 //        $schoolfield = "t.school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("updateStudent sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("updateStudent sql after security: $sql", TRUE));
 
         $sql .= " order by t.listtype, t.listorder";
 
@@ -51,6 +53,7 @@ class AttendanceDbHandler {
     public function getClassSchedules($DOWid) {
         
         global $school;
+        global $app;
 
         $sql = "SELECT * FROM schedule where takeAttendance in ('All Rank','Yes') ";
         $sql .= " and DayOfWeek = ? and school = ?  order by sortorder";
@@ -59,19 +62,19 @@ class AttendanceDbHandler {
             $stmt->bind_param("ss", $DOWid, $school);
 
             if ($stmt->execute()) {
-    //            error_log( print_R("getClassSchedules  stmt", TRUE), 3, LOG);
-    //            error_log( print_R($stmt, TRUE), 3, LOG);
+    //            $app->log->debug( print_R("getClassSchedules  stmt", TRUE));
+    //            $app->log->debug( print_R($stmt, TRUE));
                 $schedulelist = $stmt->get_result();
-    //            error_log( print_R("getClassSchedules  returns data", TRUE), 3, LOG);
+    //            $app->log->debug( print_R("getClassSchedules  returns data", TRUE));
                 $stmt->close();
                 return $schedulelist;
             } else {
-                error_log( print_R("getClassSchedules  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassSchedules  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassSchedules  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassSchedules  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -81,6 +84,7 @@ class AttendanceDbHandler {
     public function getClassScheduleAll() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT s.*, c.class  FROM schedule s left outer join nclass c on (c.id = s.classid and c.school = s.school) where s.school = ? ";
         
@@ -88,7 +92,7 @@ class AttendanceDbHandler {
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortorder";
         
-        error_log( print_R("getClassScheduleAll sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassScheduleAll sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -100,12 +104,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $schedulelist;
             } else {
-                error_log( print_R("getClassScheduleAll  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassScheduleAll  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassScheduleAll  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassScheduleAll  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -115,6 +119,7 @@ class AttendanceDbHandler {
     public function getClasses() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT * FROM nclass where school = ? ";
         
@@ -122,7 +127,7 @@ class AttendanceDbHandler {
  //       $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sort";
         
-        error_log( print_R("getClasses sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClasses sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -134,12 +139,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $classlist;
             } else {
-                error_log( print_R("getClasses  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClasses  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClasses  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClasses  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -149,6 +154,7 @@ class AttendanceDbHandler {
     public function getClassAges() {
 
         global $school;
+        global $app;
 
         $sql = "SELECT distinct agecat FROM nclasspgm "; 
         $sql .= " where school = ? ";
@@ -161,12 +167,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $agelist;
             } else {
-                error_log( print_R("getClassAges  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassAges  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassAges  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassAges  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -176,6 +182,7 @@ class AttendanceDbHandler {
     public function getClassPgms() {
 
         global $school;
+        global $app;
 
         $sql = "SELECT distinct pgmcat FROM nclasspgm ";
         $sql .= " where school = ? ";
@@ -188,12 +195,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $pgmlist;
             } else {
-                error_log( print_R("getClassPgms  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassPgms  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassPgms  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassPgms  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -203,6 +210,7 @@ class AttendanceDbHandler {
     public function getClassCats() {
 
         global $school;
+        global $app;
 
         $sql = "SELECT distinct classcat FROM nclasspgm ";
         $sql .= " where school = ? ";
@@ -215,12 +223,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $catlist;
             } else {
-                error_log( print_R("getClassCats  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassCats  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassCats  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassCats  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -232,6 +240,7 @@ class AttendanceDbHandler {
     public function getAttendancePgmList() {
 
         global $school;
+        global $app;
 
         $sql = "SELECT  a.class, a.pictureurl, b.class as pgm, c.classid, c.pgmid, c.classcat, c.pgmcat, c.agecat ";
         $sql .= " from nclass a, nclasslist b, nclasspgm c ";
@@ -242,20 +251,20 @@ class AttendanceDbHandler {
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s", $school);
             if ($stmt->execute()) {
-                error_log( print_R("Attendancepgm list stmt", TRUE), 3, LOG);
-                error_log( print_R($stmt, TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendancepgm list stmt", TRUE));
+                $app->log->debug( print_R($stmt, TRUE));
                 $slists = $stmt->get_result();
-                error_log( print_R("Attendancepgm list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendancepgm list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("Attendancepgm list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendancepgm list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("Attendancepgm list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("Attendancepgm list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -264,7 +273,8 @@ class AttendanceDbHandler {
     public function getDOWList() {
 
         global $school;
-        
+                global $app;
+
             $sql = "SELECT distinct DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek ";
             $sql .= " FROM attendance n, ncontacts c ";
             $sql .= " where c.ID = n.contactid ";
@@ -274,20 +284,20 @@ class AttendanceDbHandler {
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s", $school);
             if ($stmt->execute()) {
-                error_log( print_R("DOW list stmt", TRUE), 3, LOG);
-                error_log( print_R($stmt, TRUE), 3, LOG);
+                $app->log->debug( print_R("DOW list stmt", TRUE));
+                $app->log->debug( print_R($stmt, TRUE));
                 $slists = $stmt->get_result();
-                error_log( print_R("DOW list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("DOW list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("DOW list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("DOW list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("DOW list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("DOW list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -296,8 +306,9 @@ class AttendanceDbHandler {
 
     public function getAttendanceHistory($thedow = NULL, $theclass = NULL) {
         global $school;
-        error_log( print_R("getAttendanceHistory entered", TRUE), 3, LOG);
-    error_log( print_R("getAttendanceHistory entered: thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("getAttendanceHistory entered", TRUE));
+    $app->log->debug( print_R("getAttendanceHistory entered: thedow: $thedow theclass: $theclass\n ", TRUE));
 
         $sql = "SELECT a.contactid as ContactId, a.classid, n.class ";
         $sql .= ", DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek ";
@@ -315,7 +326,7 @@ class AttendanceDbHandler {
 
 //        $schoolfield = "c.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getAttendanceHistory sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAttendanceHistory sql after security: $sql", TRUE));
 
 
         if (strlen($thedow) > 0 && $thedow != 'All') {
@@ -328,35 +339,35 @@ class AttendanceDbHandler {
         $sql .= " group by contactid, classid, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d'), rank ";
         $sql .= "   order by mondayofweek desc, rank " ;
 
-        error_log( print_R("getAttendanceHistory sql: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAttendanceHistory sql: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
                               $school 
                                  );
             if ($stmt->execute()) {
-                error_log( print_R("getAttendanceHistory list stmt", TRUE), 3, LOG);
-                error_log( print_R($stmt, TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendanceHistory list stmt", TRUE));
+                $app->log->debug( print_R($stmt, TRUE));
                 $slists = $stmt->get_result();
-                error_log( print_R("getAttendanceHistory list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendanceHistory list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getAttendanceHistory list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendanceHistory list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getAttendanceHistory list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getAttendanceHistory list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
     }
 /*
     public function getAttendanceList($thedow = NULL, $thelimit, $theclass = NULL) {
-        error_log( print_R("getAttendanceList entered", TRUE), 3, LOG);
-    error_log( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAttendanceList entered", TRUE));
+    $app->log->debug( print_R("attendance entered: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE));
 
         $sql = "SELECT a.ID, DATE_FORMAT(MondayOfWeek, '%Y-%m-%d') as MondayOfWeek, a.ContactId "; 
         $sql .= " , a.DOWnum, c.firstname, c.lastname, n.class, a.classid ";
@@ -366,7 +377,7 @@ class AttendanceDbHandler {
 
         $schoolfield = "c.studentschool";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getAttendanceHistory sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAttendanceHistory sql after security: $sql", TRUE));
 
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $sql .= " and mondayofweek = '" . $thedow . "'";
@@ -376,24 +387,24 @@ class AttendanceDbHandler {
         }
         $sql .= "   order by mondayofweek desc, c.currentrank LIMIT " . $thelimit ;
 
-        error_log( print_R("getAttendanceList sql: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAttendanceList sql: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             if ($stmt->execute()) {
-                error_log( print_R("Attendance list stmt", TRUE), 3, LOG);
-                error_log( print_R($stmt, TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendance list stmt", TRUE));
+                $app->log->debug( print_R($stmt, TRUE));
                 $slists = $stmt->get_result();
-                error_log( print_R("Attendance list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendance list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("Attendance list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendance list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("Attendance list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("Attendance list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -402,7 +413,8 @@ class AttendanceDbHandler {
 
     public function getAttendanceSum($contactid, $theclass) {
         global $school;
-        error_log( print_R("getAttendanceSum entered: cont: $contactid theclass: $theclass\n ", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("getAttendanceSum entered: cont: $contactid theclass: $theclass\n ", TRUE));
 
         $sql = "SELECT a.ContactId as contactid, cr.lastpromoted, sum( a.attended ) as daysAttended ";
         $sql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt ";
@@ -416,7 +428,7 @@ class AttendanceDbHandler {
 
 //        $schoolfield = "c.studentschool";
  //       $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getAttendanceSum sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getAttendanceSum sql after security: $sql", TRUE));
 
         $sql .= "  and DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') > DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d') group by a.ContactId, cr.lastpromoted ";
 
@@ -425,17 +437,17 @@ class AttendanceDbHandler {
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getAttendanceSum list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendanceSum list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getAttendanceSum list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendanceSum list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getAttendanceSum list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getAttendanceSum list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -444,8 +456,9 @@ class AttendanceDbHandler {
 
     public function getRegistrationList($daynum, $thedow, $thelimit, $theclass) {
         global $school;
-        error_log( print_R("getRegistrationList entered", TRUE), 3, LOG);
-    error_log( print_R("attendance entered: daynum: $daynum thedow: $thedow theclass: $theclass\n ", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("getRegistrationList entered", TRUE));
+    $app->log->debug( print_R("attendance entered: daynum: $daynum thedow: $thedow theclass: $theclass\n ", TRUE));
 
 
         $sumsql = " select class, classid, studentid, currentrank, firstname, ";
@@ -455,7 +468,8 @@ class AttendanceDbHandler {
         $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, r.readyForNextRank, 0 as attended ";
         $sql .= " FROM  studentregistration  r, nclass n, ncontacts s , ncontactrank cr, notherclass no, testtypes tt ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid and cr.contactid = s.ID ";
-        $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype and s.studentschool = ? ";
+        $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype and s.studentschool = ? 
+                    and studentclassstatus = 'Active'";
 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
             $sql .= " and n.class = '" . $theclass . "'";
@@ -464,7 +478,7 @@ class AttendanceDbHandler {
 //        $schoolfield = "s.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
 
-        error_log( print_R("getRegistrationList firstsql: $sql \n", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRegistrationList firstsql: $sql \n", TRUE));
 
 //todo: currentrank from registration
 
@@ -495,7 +509,7 @@ class AttendanceDbHandler {
 //        $schoolfield = "c.studentschool";
 //        $heresql = addSecurity($heresql, $schoolfield);
 
-        error_log( print_R("getRegistrationList secondsql: $heresql \n", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRegistrationList secondsql: $heresql \n", TRUE));
 
 
         $grpsql = " ) sel  ";
@@ -503,7 +517,7 @@ class AttendanceDbHandler {
         
         $finalsql = $sumsql . $sql . $heresql . $grpsql;
         
-        error_log( print_R("getRegistrationList heresql: $finalsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRegistrationList heresql: $finalsql", TRUE));
 
         //check count, if we have non zero attendances, then get a list of who has attendance and exclude
         //from generic list, but add the attend list to the generic's that didn't have one 
@@ -514,20 +528,20 @@ class AttendanceDbHandler {
                               $school, $school 
                                  );
             if ($stmt->execute()) {
-                error_log( print_R("getRegistrationList list stmt", TRUE), 3, LOG);
-                error_log( print_R($stmt, TRUE), 3, LOG);
+                $app->log->debug( print_R("getRegistrationList list stmt", TRUE));
+                $app->log->debug( print_R($stmt, TRUE));
                 $slists = $stmt->get_result();
-                error_log( print_R("getRegistrationList list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getRegistrationList list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getRegistrationList list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getRegistrationList list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getRegistrationList list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getRegistrationList list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -536,6 +550,7 @@ class AttendanceDbHandler {
 
     public function getAttendancePayList() {
         global $school;
+        global $app;
         $sql = "SELECT distinct p.classPayName as classpaynametmp, ";
         $sql .= " c.LastName as lastname, c.FirstName as firstname, p.contactID as contactID ";
         $sql .=" FROM ncontacts c, nclasspays p WHERE c.ID = p.contactid and c.studentschool = ? ";
@@ -550,25 +565,25 @@ class AttendanceDbHandler {
                               $school 
                                  );
             if ($stmt->execute() ) {
-                error_log( print_R("Attendancepay list stmt", TRUE), 3, LOG);
-                error_log( print_R($sql, TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendancepay list stmt", TRUE));
+                $app->log->debug( print_R($sql, TRUE));
                 $slists = $stmt->get_result();
 
                 if (empty($slists)) {
                     return array();
                 }
               //  $row_cnt = $slists->num_rows;
-              //  error_log( print_R("route Result set has $row_cnt rows.", TRUE), 3, LOG);
+              //  $app->log->debug( print_R("route Result set has $row_cnt rows.", TRUE));
                 $stmt->close();
                 return $slists;
 
             } else {
-                error_log( print_R("Attendance list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("Attendance list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("Attendancepay list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("Attendancepay list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -578,26 +593,27 @@ class AttendanceDbHandler {
     public function getAttendancePicture($picID) {
         global $school;
         
+        global $app;
         $sql = "SELECT t.pictureurl FROM nclass t where t.id = ? and t.school = ? ";
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("is", $picID, $school);
 
             if ($stmt->execute()) {
-                error_log( print_R("getAttendancePicture  stmt", TRUE), 3, LOG);
-                error_log( print_R($stmt, TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendancePicture  stmt", TRUE));
+                $app->log->debug( print_R($stmt, TRUE));
                 $piclist = $stmt->get_result();
-                error_log( print_R("getAttendancePicture  returns data", TRUE), 3, LOG);
-                error_log( print_R($piclist, TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendancePicture  returns data", TRUE));
+                $app->log->debug( print_R($piclist, TRUE));
                 $stmt->close();
                 return $piclist;
             } else {
-                error_log( print_R("getAttendancePicture  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getAttendancePicture  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getAttendancePicture  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getAttendancePicture  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -610,9 +626,10 @@ class AttendanceDbHandler {
     public function getClassStudent($student_id) {
         
         global $school;
+        global $app;
         
-        error_log( print_R("get class student for id", TRUE), 3, LOG);
-        error_log( print_R($student_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("get class student for id", TRUE));
+        $app->log->debug( print_R($student_id, TRUE));
         $stmt = $this->conn->prepare("SELECT
                    t.ID,
                     t.contactid,
@@ -627,7 +644,7 @@ class AttendanceDbHandler {
                    
                    
         $stmt->bind_param("is", $student_id, $school);
-        error_log( print_R("get class student", TRUE), 3, LOG);
+        $app->log->debug( print_R("get class student", TRUE));
         if ($stmt->execute()) {
             $res = array();
             $stmt->bind_result(
@@ -653,10 +670,10 @@ class AttendanceDbHandler {
             $res["pgmseq"] = $sc_pgmseq;
             $res["Attendancestatus"] = $sc_Attendancestatus;
             $stmt->close();
-            error_log( print_R($res, TRUE), 3, LOG);
+            $app->log->debug( print_R($res, TRUE));
             return $res;
         } else {
-            error_log( print_R("get class student failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("get class student failed", TRUE));
             return NULL;
         }
     }
@@ -667,12 +684,13 @@ class AttendanceDbHandler {
      */
     private function isAttendanceExists($daynum, $mondayofweek, $classid, $studentid) {
 //school not needed
-        error_log( print_R("isAttendanceExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isAttendanceExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as attendcount from attendance ";
@@ -681,7 +699,7 @@ class AttendanceDbHandler {
         $cntsql .= " and classid =  " . $classid;
         $cntsql .= " and contactID = " . $studentid;
 
-        error_log( print_R("attendance isAttendanceExiststs sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("attendance isAttendanceExiststs sql: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
 
@@ -696,7 +714,7 @@ class AttendanceDbHandler {
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isAttendanceExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isAttendanceExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -713,13 +731,14 @@ class AttendanceDbHandler {
     private function isScheduleExists(
         $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
         ) {
+        global $app;
         global $school;
-        error_log( print_R("isScheduleExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isScheduleExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as schedulecount from schedule ";
@@ -733,11 +752,11 @@ class AttendanceDbHandler {
             $cntsql .= " where ID = " . $ID;
         } 
 
-        error_log( print_R("schedule isScheduleExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("schedule isScheduleExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isScheduleExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isScheduleExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
             if (strlen($ID) == 0 ) {
@@ -756,7 +775,7 @@ class AttendanceDbHandler {
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isScheduleExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isScheduleExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -777,13 +796,14 @@ class AttendanceDbHandler {
     public function updateAttendance($sc_ContactId,    $sc_classid,    $sc_class,    $sc_daynum,
     $sc_attend,    $sc_mondayDOW,     $sc_rank
     ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("attendance update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("attendance update entered", TRUE));
         
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO `attendance`( `contactID`, `classID`, `mondayOfWeek`, `rank`, `DOWnum`, `attended`) ";
@@ -827,7 +847,7 @@ class AttendanceDbHandler {
             $updsql .= " and mondayofweek =  '" . $sc_mondayDOW . "'";
             $updsql .= " and DOWnum =  " . $sc_daynum ;
 
-            error_log( print_R("attendance update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("attendance update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
 //                $stmt->bind_param("iiisi",
@@ -839,8 +859,8 @@ class AttendanceDbHandler {
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("attendance update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("attendance update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -856,6 +876,7 @@ class AttendanceDbHandler {
      */
     public function setStudentNextRank($sc_ContactId, $sc_ready, $sc_theclass
                                    ) {
+        global $app;
         $num_affected_rows = 0;
 
         global $user_id;
@@ -878,10 +899,10 @@ class AttendanceDbHandler {
         $sql .= " readyForNextRank = ? ";
         $sql .= " where studentid = ?  and classid = ? ";
 
-        error_log( print_R($sql . "\n", TRUE), 3, LOG);
-        error_log( print_R("id $sc_ContactId \n", TRUE), 3, LOG);
-        error_log( print_R("ready $sc_ready \n", TRUE), 3, LOG);
-        error_log( print_R("class $sc_theclass \n", TRUE), 3, LOG);
+        $app->log->debug( print_R($sql . "\n", TRUE));
+        $app->log->debug( print_R("id $sc_ContactId \n", TRUE));
+        $app->log->debug( print_R("ready $sc_ready \n", TRUE));
+        $app->log->debug( print_R("class $sc_theclass \n", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("sss",
@@ -895,7 +916,7 @@ class AttendanceDbHandler {
 
             if ($sc_ready) {
                 if ($stmt = $this->conn->prepare($nsql)) {
-                    error_log( print_R("createNotification  do insert\n", TRUE), 3, LOG);
+                    $app->log->debug( print_R("createNotification  do insert\n", TRUE));
                     $stmt->bind_param("sssss",
                                       $user_id, $school,
                                       $type, $notifkey,
@@ -908,7 +929,7 @@ class AttendanceDbHandler {
                     if ($result) {
                         $new_notif_id = $this->conn->insert_id;
                         if ($stmt = $this->conn->prepare($othsql)) {
-                            error_log( print_R("createNotification  do sub insert", TRUE), 3, LOG);
+                            $app->log->debug( print_R("createNotification  do sub insert", TRUE));
                             $stmt->bind_param("ss",
                                               $user_id, $new_notif_id
                                                  );
@@ -941,7 +962,7 @@ class AttendanceDbHandler {
                 
             } else {
                 if ($stmt = $this->conn->prepare($delsql)) {
-                    error_log( print_R("createNotification  do cleanup\n", TRUE), 3, LOG);
+                    $app->log->debug( print_R("createNotification  do cleanup\n", TRUE));
                     $stmt->bind_param("sss",
                                       $type, $notifkey,
                                       $sc_ContactId
@@ -958,8 +979,8 @@ class AttendanceDbHandler {
 
             }
         } else {
-            error_log( print_R("student setStudentNextRank update failed", TRUE), 3, LOG);
-            error_log( print_R($this->conn->error, TRUE), 3, LOG);
+            $app->log->debug( print_R("student setStudentNextRank update failed", TRUE));
+            $app->log->debug( print_R($this->conn->error, TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
         }
 
@@ -969,15 +990,16 @@ class AttendanceDbHandler {
     public function updateSchedule( $ID,
         $DayOfWeek, $TimeRange, $AgeRange, $Description, $TakeAttendance, $TimeStart, $TimeEnd, $sortorder, $classid            
                                 ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("schedule update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("schedule update entered", TRUE));
 
         global $school;
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
             $inssql = " INSERT INTO schedule( 
@@ -989,7 +1011,7 @@ class AttendanceDbHandler {
             $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $ID
             ) == 0) {
 
-            error_log( print_R("schedule insert\n $inssql\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("schedule insert\n $inssql\n", TRUE));
             if ($stmt = $this->conn->prepare($inssql)) {
 
                     $stmt->bind_param("ssssssssss",
@@ -1004,20 +1026,20 @@ class AttendanceDbHandler {
                     if ($result) {
                         $new_id = $this->conn->insert_id;
                         // User successfully inserted
-                        error_log( print_R("success insert\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("success insert\n", TRUE));
                         return $new_id;
                     } else {
                         // Failed to create 
                         printf("Insert failed Errormessage: %s\n", $this->conn->error);
-                        error_log( print_R("fail insert $result\n", TRUE), 3, LOG);
-                        error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                        $app->log->debug( print_R("fail insert $result\n", TRUE));
+                        $app->log->debug( print_R($this->conn->error, TRUE));
                         return NULL;
                     }
 
                 } else {
                     printf("Prep Errormessage: %s\n", $this->conn->error);
-                        error_log( print_R("fail prep\n", TRUE), 3, LOG);
-                    error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                        $app->log->debug( print_R("fail prep\n", TRUE));
+                    $app->log->debug( print_R($this->conn->error, TRUE));
                         return NULL;
                 }
 
@@ -1038,7 +1060,7 @@ class AttendanceDbHandler {
             classid = ? 
             WHERE ID = ? ";
 
-            error_log( print_R("schedule update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("schedule update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssssssssss",
@@ -1051,8 +1073,8 @@ class AttendanceDbHandler {
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("schedule update prep failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("schedule update prep failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -1060,15 +1082,16 @@ class AttendanceDbHandler {
     }
     public function removeSchedule($id
     ) {
+        global $app;
 
-        error_log( print_R("removeSchedule entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeSchedule entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from schedule  where ID = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeSchedule sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeSchedule sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1092,23 +1115,24 @@ class AttendanceDbHandler {
         $class, $id
         ) {
         global $school;
-        error_log( print_R("isClassExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isClassExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Classcount from nclass ";
         $cntsql .= " where class = ? ";
         $cntsql .= " and id = ? and school = ? ";
 
-        error_log( print_R("Class isClassExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Class isClassExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isClassExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isClassExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sss",
@@ -1126,7 +1150,7 @@ class AttendanceDbHandler {
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isClassExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isClassExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -1144,15 +1168,16 @@ class AttendanceDbHandler {
     public function isClassFKExists(
          $id
         ) {
+        global $app;
 
-        error_log( print_R("isClassFKExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isClassFKExists entered", TRUE));
 
         global $school;
         
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
         //attendance classID, classrank classid (school), ncalendar classname?,  nclass nextclass, nclasspays classseq, nclasspgm classid
         //studentregistration classid, testcandidates classwas
@@ -1170,7 +1195,7 @@ class AttendanceDbHandler {
             union
             select count(*) as cnt, 'next class for class' as type from nclass where nextclass = ? group by 2";
 
-        error_log( print_R("Class isClassFKExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Class isClassFKExists sql: $cntsql", TRUE));
 
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sssssssss",
@@ -1182,7 +1207,7 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $results;
             } else {
-                error_log( print_R("isClassFKExists  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("isClassFKExists  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
@@ -1196,15 +1221,16 @@ class AttendanceDbHandler {
     public function updateClass( 
         $id, $class, $sort, $nextClass, $ranklistForNextClass,$rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("Class update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("Class update entered", TRUE));
 
         global $school;
         $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO nclass( 
@@ -1259,7 +1285,7 @@ class AttendanceDbHandler {
                  school = ?
             WHERE id = ? ";
 
-            error_log( print_R("Class update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("Class update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssssssssss",
@@ -1273,8 +1299,8 @@ class AttendanceDbHandler {
 //                return $num_affected_rows;
                 
             } else {
-                error_log( print_R("Class update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("Class update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: " ;
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -1283,15 +1309,16 @@ class AttendanceDbHandler {
     }
     public function removeClass($id
     ) {
+        global $app;
 
-        error_log( print_R("removeClass entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeClass entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from nclass  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeClass sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeClass sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1311,6 +1338,7 @@ class AttendanceDbHandler {
 
     }
     public function getClassAll() {
+        global $app;
         
         global $school;
 
@@ -1321,7 +1349,7 @@ class AttendanceDbHandler {
  //       $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sort";
         
-        error_log( print_R("getClassAll sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassAll sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1333,12 +1361,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $Classlist;
             } else {
-                error_log( print_R("getClassAll  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassAll  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassAll  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassAll  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1348,6 +1376,7 @@ class AttendanceDbHandler {
     public function getClassbytype($type) {
         
         global $school;
+        global $app;
 
         $sql = "SELECT *
         FROM nclass where classtype = ? and school = ? ";
@@ -1356,7 +1385,7 @@ class AttendanceDbHandler {
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sort";
         
-        error_log( print_R("getClassbytype sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassbytype sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ss",
@@ -1368,12 +1397,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $Classlist;
             } else {
-                error_log( print_R("getClassbytype  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassbytype  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassbytype  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassbytype  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1382,11 +1411,12 @@ class AttendanceDbHandler {
 
     public function getStudentRanktype() {
         global $school;
+        global $app;
         $sql = "select listvalue as value,listorder as id from studentlist s where listtype = 'ranktypelist' and s.school = ?";
 //        $schoolfield = "s.school";
 //        $sql = addSecurity($sql, $schoolfield);
 
-        error_log( print_R("getStudentRanktype sql after security: $sql \n", TRUE), 3, LOG);
+        $app->log->debug( print_R("getStudentRanktype sql after security: $sql \n", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1394,17 +1424,17 @@ class AttendanceDbHandler {
                              );
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getStudentRanktype list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getStudentRanktype list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getStudentRanktype list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getStudentRanktype list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getStudentRanktype list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getStudentRanktype list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1412,12 +1442,13 @@ class AttendanceDbHandler {
     }
     public function getRanks($ranktype) {
         global $school;      
+        global $app;
         $sql = "select ranklist as value,rankid as id, ranktype from ranklist where ranktype = ? and school = ? ";
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= " order by sortkey ";
 
-        error_log( print_R("getRanks sql after security: $sql \n", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRanks sql after security: $sql \n", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ss",
@@ -1425,17 +1456,17 @@ class AttendanceDbHandler {
                      );
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getRanks list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getRanks list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getRanks list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getRanks list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getRanks list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getRanks list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1446,23 +1477,24 @@ class AttendanceDbHandler {
         $class, $id
         ) {
         global $school;
-        error_log( print_R("isProgramExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isProgramExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Programcount from nclasslist ";
         $cntsql .= " where class = ? ";
         $cntsql .= " and id = ? and school = ? ";
 
-        error_log( print_R("Program isProgramExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Program isProgramExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isProgramExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isProgramExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sss",
@@ -1480,7 +1512,7 @@ class AttendanceDbHandler {
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isProgramExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isProgramExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -1497,15 +1529,16 @@ class AttendanceDbHandler {
     public function isProgramFKExists(
          $id
         ) {
+        global $app;
 
-        error_log( print_R("isProgramFKExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isProgramFKExists entered", TRUE));
 
         global $school;
         
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as cnt, 'payer for class' as type from nclasspays where pgmseq = ? group by 2
@@ -1516,7 +1549,7 @@ class AttendanceDbHandler {
             union
             select count(*) as cnt, 'test candidates for class' as type from testcandidates where pgmwas = ? group by 2";
 
-        error_log( print_R("Program isProgramFKExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Program isProgramFKExists sql: $cntsql", TRUE));
 
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sssss",
@@ -1528,7 +1561,7 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $results;
             } else {
-                error_log( print_R("isProgramFKExists  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("isProgramFKExists  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
@@ -1544,15 +1577,16 @@ class AttendanceDbHandler {
     $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
             $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey
                                 ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("Program update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("Program update entered", TRUE));
 
         global $school;
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO nclasslist( 
@@ -1605,7 +1639,7 @@ class AttendanceDbHandler {
             SpecialPrice = ?, sortKey = ?, school = ?
             WHERE id = ? ";
 
-            error_log( print_R("Program update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("Program update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssssssssssss",
@@ -1618,8 +1652,8 @@ class AttendanceDbHandler {
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("Program update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("Program update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -1628,14 +1662,15 @@ class AttendanceDbHandler {
     public function removeProgram($id
     ) {
 
-        error_log( print_R("removeProgram entered\n", TRUE ),3, LOG);
         global $school;
+        global $app;
+        $app->log->debug( print_R("removeProgram entered\n", TRUE ));
                                       
         $sql = "DELETE from nclasslist  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeProgram sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeProgram sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1657,6 +1692,7 @@ class AttendanceDbHandler {
     public function getProgramAll() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT             id, class, classType, 
             12MonthPrice as _12MonthPrice, 
@@ -1672,7 +1708,7 @@ class AttendanceDbHandler {
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortKey";
         
-        error_log( print_R("getProgramAll sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getProgramAll sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1684,12 +1720,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $Programlist;
             } else {
-                error_log( print_R("getProgramAll  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getProgramAll  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getProgramAll  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getProgramAll  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1698,6 +1734,7 @@ class AttendanceDbHandler {
     public function getPrograms() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT          
             id, class as value
@@ -1707,7 +1744,7 @@ class AttendanceDbHandler {
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortKey";
         
-        error_log( print_R("getPrograms sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getPrograms sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1719,12 +1756,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $Programlist;
             } else {
-                error_log( print_R("getPrograms  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getPrograms  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getPrograms  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getPrograms  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1733,6 +1770,7 @@ class AttendanceDbHandler {
     public function getClassPrograms() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT          
             id, classid, pgmid, classcat,pgmcat,agecat,nextClassid, nextPgmid
@@ -1742,7 +1780,7 @@ class AttendanceDbHandler {
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by pgmid";
         
-        error_log( print_R("getClassPgms sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassPgms sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1754,12 +1792,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $ClassPgmList;
             } else {
-                error_log( print_R("getClassPgms  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassPgms  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassPgms  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassPgms  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1770,6 +1808,7 @@ class AttendanceDbHandler {
     public function getClassTypes() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT listvalue, listkey, listorder
         FROM studentlist where listtype = 'Classtype' and school = ? ";
@@ -1778,7 +1817,7 @@ class AttendanceDbHandler {
  //       $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by listorder";
         
-        error_log( print_R("getClassTypes sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassTypes sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -1790,12 +1829,12 @@ class AttendanceDbHandler {
                 $stmt->close();
                 return $results;
             } else {
-                error_log( print_R("getClassTypes  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassTypes  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassTypes  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassTypes  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -1805,13 +1844,14 @@ class AttendanceDbHandler {
     private function isBasicExists(
         $listtype, $listkey, $id
         ) {
+        global $app;
 
-        error_log( print_R("isBasicExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isBasicExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Basiccount from studentlist ";
@@ -1820,14 +1860,14 @@ class AttendanceDbHandler {
         $cnt2sql = "select count(*) as Basiccount from studentlist ";
         $cnt2sql .= " where listtype = ? and listkey = ? and school = ? ";
 
-        error_log( print_R("Basic isBasicExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Basic isBasicExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isBasicExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isBasicExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -1845,7 +1885,7 @@ class AttendanceDbHandler {
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isBasicExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isBasicExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -1868,7 +1908,7 @@ class AttendanceDbHandler {
                     $row = null;
                     $stmt->bind_result($row);
                     while ($stmt->fetch()) { 
-                        error_log( print_R("isBasicExists: " . $row . "\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("isBasicExists: " . $row . "\n", TRUE));
                     }
         
                     $stmt->close();
@@ -1893,15 +1933,16 @@ class AttendanceDbHandler {
     public function updateBasic( 
         $id, $listtype, $listkey, $listvalue, $listorder 
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("Basic update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("Basic update entered", TRUE));
 
         global $school;
 $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO studentlist( 
@@ -1953,7 +1994,7 @@ $errormessage=array();
                  school = ?
             WHERE id = ? ";
 
-            error_log( print_R("Basic update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("Basic update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssssss",
@@ -1967,8 +2008,8 @@ $errormessage=array();
 //                return $num_affected_rows;
                 
             } else {
-                error_log( print_R("Basic update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("Basic update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -1977,15 +2018,16 @@ $errormessage=array();
     }
     public function removeBasic($id
     ) {
+        global $app;
 
-        error_log( print_R("removeBasic entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeBasic entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from studentlist  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeBasic sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeBasic sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2007,6 +2049,7 @@ $errormessage=array();
     public function getBasicAll() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT *
         FROM studentlist 
@@ -2019,7 +2062,7 @@ $errormessage=array();
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by listtype, listorder";
         
-        error_log( print_R("getBasicAll sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getBasicAll sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
         $stmt->bind_param("s",
@@ -2031,12 +2074,12 @@ $errormessage=array();
                 $stmt->close();
                 return $Basiclist;
             } else {
-                error_log( print_R("getBasicAll  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getBasicAll  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getBasicAll  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getBasicAll  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -2047,23 +2090,24 @@ $errormessage=array();
         $ranklist, $ranktype
         ) {
         global $school;
-        error_log( print_R("isRankExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isRankExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Rankcount from ranklist ";
         $cntsql .= " where ranklist = ? ";
         $cntsql .= " and ranktype = ?  and school = ?";
 
-        error_log( print_R("Rank isRankExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Rank isRankExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isRankExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isRankExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sss",
@@ -2081,7 +2125,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isRankExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isRankExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -2099,22 +2143,23 @@ $errormessage=array();
         $id
         ) {
         global $school;
-        error_log( print_R("isRankIDExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isRankIDExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Rankcount from ranklist ";
         $cntsql .= " where rankid = ? and school = ?";
 
-        error_log( print_R("Rank isRankIDExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Rank isRankIDExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isRankIDExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isRankIDExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -2132,7 +2177,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isRankIDExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isRankIDExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -2149,15 +2194,16 @@ $errormessage=array();
     public function isRankFKExists(
          $id
         ) {
+        global $app;
 
-        error_log( print_R("isRankFKExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isRankFKExists entered", TRUE));
 
         global $school;
         
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 //todo
         $cntsql = "select count(*) as cnt, 'payer for class' as type from nclasspays where pgmseq = ? group by 2
@@ -2168,7 +2214,7 @@ $errormessage=array();
             union
             select count(*) as cnt, 'test candidates for class' as type from testcandidates where pgmwas = ? group by 2";
 
-        error_log( print_R("Rank isRankFKExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Rank isRankFKExists sql: $cntsql", TRUE));
 
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("sssss",
@@ -2180,7 +2226,7 @@ $errormessage=array();
                 $stmt->close();
                 return $results;
             } else {
-                error_log( print_R("isRankFKExists  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("isRankFKExists  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
@@ -2195,15 +2241,16 @@ $errormessage=array();
     public function updateRank( $rankid, 
         $ranktype, $ranklist, $sortkey, $rankGroup, $alphasortkey, $AttendPromoteTarget, $DurationPromoteTarget, $nextsortkey
                                 ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("Rank update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("Rank update entered", TRUE));
 
         global $school;
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO ranklist( 
@@ -2250,7 +2297,7 @@ $errormessage=array();
             school = ?
             WHERE rankid = ? ";
 
-            error_log( print_R("Rank update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("Rank update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssssssssss",
@@ -2262,8 +2309,8 @@ $errormessage=array();
                 return $num_affected_rows;
                 
             } else {
-                error_log( print_R("Rank update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("Rank update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
             }
@@ -2271,15 +2318,16 @@ $errormessage=array();
     }
     public function removeRank($id
     ) {
+        global $app;
 
-        error_log( print_R("removeRank entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeRank entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from ranklist  where rankid = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeRank sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeRank sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2301,6 +2349,7 @@ $errormessage=array();
     public function getRankAll() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT 
         ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, nextsortkey, ranklist as value,rankid as id
@@ -2310,7 +2359,7 @@ $errormessage=array();
         //$sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by alphasortkey";
         
-        error_log( print_R("getRankAll sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRankAll sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2322,12 +2371,12 @@ $errormessage=array();
                 $stmt->close();
                 return $Ranklist;
             } else {
-                error_log( print_R("getRankAll  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getRankAll  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getRankAll  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getRankAll  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -2337,6 +2386,7 @@ $errormessage=array();
     public function getRankGroups() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT listvalue, listkey, listorder
         FROM studentlist where listtype = 'rankgroup' and school = ? ";
@@ -2345,7 +2395,7 @@ $errormessage=array();
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by listorder";
         
-        error_log( print_R("getRankGroups sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRankGroups sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
           $stmt->bind_param("s",
@@ -2357,12 +2407,12 @@ $errormessage=array();
                 $stmt->close();
                 return $results;
             } else {
-                error_log( print_R("getRankGroups  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getRankGroups  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getRankGroups  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getRankGroups  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -2373,12 +2423,13 @@ $errormessage=array();
         $classid, $pgmid, $id
         ) {
         global $school;
-        error_log( print_R("isClassPgmExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isClassPgmExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as ClassPgmcount from nclasspgm ";
@@ -2387,14 +2438,14 @@ $errormessage=array();
         $cnt2sql = "select count(*) as ClassPgmcount from nclasspgm ";
         $cnt2sql .= " where classid = ? and pgmid = ? and school = ? ";
 
-        error_log( print_R("ClassPgm isClassPgmExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassPgm isClassPgmExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isClassPgmExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isClassPgmExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -2412,7 +2463,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isClassPgmExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isClassPgmExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -2435,7 +2486,7 @@ $errormessage=array();
                     $row = null;
                     $stmt->bind_result($row);
                     while ($stmt->fetch()) { 
-                        error_log( print_R("isClassPgmExists: " . $row . "\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("isClassPgmExists: " . $row . "\n", TRUE));
                     }
         
                     $stmt->close();
@@ -2461,15 +2512,16 @@ $errormessage=array();
         $id, 
         $classid, $pgmid, $classcat, $pgmcat, $agecat, $nextClassid, $nextPgmid
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("ClassPgm update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassPgm update entered", TRUE));
 
         global $school;
 $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO nclasspgm( 
@@ -2525,7 +2577,7 @@ $errormessage=array();
                  school = ?
             WHERE id = ? ";
 
-            error_log( print_R("ClassPgm update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("ClassPgm update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssssssss",
@@ -2539,8 +2591,8 @@ $errormessage=array();
 //                return $num_affected_rows;
                 
             } else {
-                error_log( print_R("ClassPgm update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("ClassPgm update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -2549,15 +2601,16 @@ $errormessage=array();
     }
     public function removeClassPgm($id
     ) {
+        global $app;
 
-        error_log( print_R("removeClassPgm entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeClassPgm entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from nclasspgm  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeClassPgm sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeClassPgm sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2580,6 +2633,7 @@ $errormessage=array();
     public function getClassRanks() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT          
             id, classid, rankid
@@ -2589,7 +2643,7 @@ $errormessage=array();
     //    $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by rankid";
         
-        error_log( print_R("getClassRanks sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClassRanks sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2601,12 +2655,12 @@ $errormessage=array();
                 $stmt->close();
                 return $ClassRankList;
             } else {
-                error_log( print_R("getClassRanks  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClassRanks  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClassRanks  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClassRanks  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -2616,12 +2670,13 @@ $errormessage=array();
         $classid, $rankid, $id
         ) {
         global $school;
-        error_log( print_R("isClassRankExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isClassRankExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as ClassRankcount from classrank ";
@@ -2630,14 +2685,14 @@ $errormessage=array();
         $cnt2sql = "select count(*) as ClassRankcount from classrank ";
         $cnt2sql .= " where classid = ? and rankid = ? and school = ? ";
 
-        error_log( print_R("ClassRank isClassRankExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassRank isClassRankExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
  //       $schoolfield = "school";
  //       $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isClassRankExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isClassRankExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -2655,7 +2710,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isClassRankExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isClassRankExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -2678,7 +2733,7 @@ $errormessage=array();
                     $row = null;
                     $stmt->bind_result($row);
                     while ($stmt->fetch()) { 
-                        error_log( print_R("isClassRankExists: " . $row . "\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("isClassRankExists: " . $row . "\n", TRUE));
                     }
         
                     $stmt->close();
@@ -2704,15 +2759,16 @@ $errormessage=array();
         $id, 
         $classid, $rankid
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("ClassRank update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassRank update entered", TRUE));
 
         global $school;
 $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO classrank( 
@@ -2763,7 +2819,7 @@ $errormessage=array();
                  school = ?
             WHERE id = ? ";
 
-            error_log( print_R("ClassRank update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("ClassRank update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssss",
@@ -2777,8 +2833,8 @@ $errormessage=array();
 //                return $num_affected_rows;
                 
             } else {
-                error_log( print_R("ClassRank update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("ClassRank update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -2787,15 +2843,16 @@ $errormessage=array();
     }
     public function removeClassRank($id
     ) {
+        global $app;
 
-        error_log( print_R("removeClassRank entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeClassRank entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from classrank  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeClassRank sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeClassRank sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2817,6 +2874,7 @@ $errormessage=array();
 
     public function getTesttypes() {
         
+        global $app;
         global $school;
 
         $sql = "SELECT          
@@ -2827,7 +2885,7 @@ $errormessage=array();
 //        $sql = addSecurity($sql, $schoolfield, 'true');
         $sql .= "   order by testtype ";
         
-        error_log( print_R("getTesttypes sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTesttypes sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -2839,12 +2897,12 @@ $errormessage=array();
                 $stmt->close();
                 return $TesttypeList;
             } else {
-                error_log( print_R("getTesttypes  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTesttypes  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTesttypes  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTesttypes  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -2853,13 +2911,14 @@ $errormessage=array();
     private function isTesttypeExists(
         $testtype, $id
         ) {
+        global $app;
         global $school;
-        error_log( print_R("isTesttypeExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isTesttypeExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Testtypecount from testtypes ";
@@ -2868,14 +2927,14 @@ $errormessage=array();
         $cnt2sql = "select count(*) as Testtypecount from testtypes ";
         $cnt2sql .= " where testtype = ? and studentschool = ? ";
 
-        error_log( print_R("Testtype isTesttypeExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Testtype isTesttypeExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "studentschool";
 //        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
 //        $schoolfield = "studentschool";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isTesttypeExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isTesttypeExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -2893,7 +2952,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isTesttypeExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isTesttypeExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -2916,7 +2975,7 @@ $errormessage=array();
                     $row = null;
                     $stmt->bind_result($row);
                     while ($stmt->fetch()) { 
-                        error_log( print_R("isTesttypeExists: " . $row . "\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("isTesttypeExists: " . $row . "\n", TRUE));
                     }
         
                     $stmt->close();
@@ -2942,15 +3001,16 @@ $errormessage=array();
         $id, 
         $testtype, $ranktype, $description
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("Testtype update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("Testtype update entered", TRUE));
 
         global $school;
         $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO testtypes( 
@@ -2959,7 +3019,7 @@ $errormessage=array();
 
         $inssql .= " VALUES (?, ?, ?, ?) ";
 
-        error_log( print_R("Testtype insert sql: $inssql \n testtype $testtype\nranktype $ranktype\n desc $description\n school  $school\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Testtype insert sql: $inssql \n testtype $testtype\nranktype $ranktype\n desc $description\n school  $school\n ", TRUE));
         
         if ($this->isTesttypeExists(
             $testtype, $id
@@ -3002,7 +3062,7 @@ $errormessage=array();
                  studentschool = ?
             WHERE id = ? ";
 
-            error_log( print_R("Testtype update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("Testtype update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssss",
@@ -3016,8 +3076,8 @@ $errormessage=array();
 //                return $num_affected_rows;
                 
             } else {
-                error_log( print_R("Testtype update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("Testtype update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -3026,15 +3086,16 @@ $errormessage=array();
     }
     public function removeTesttype($id
     ) {
+        global $app;
 
-        error_log( print_R("removeTesttype entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeTesttype entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from testtypes  where id = ?  ";
 
         $schoolfield = "studentschool";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeTesttype sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeTesttype sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -3057,6 +3118,7 @@ $errormessage=array();
     public function getClasstests() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT          
             id, classid, testtypeid, sortorder
@@ -3066,7 +3128,7 @@ $errormessage=array();
     //    $sql = addSecurity($sql, $schoolfield);
         $sql .= "   order by sortorder";
         
-        error_log( print_R("getClasstests sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getClasstests sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -3078,12 +3140,12 @@ $errormessage=array();
                 $stmt->close();
                 return $ClasstestList;
             } else {
-                error_log( print_R("getClasstests  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getClasstests  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getClasstests  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getClasstests  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -3092,13 +3154,14 @@ $errormessage=array();
     private function isClasstestExists(
         $classid, $testtypeid, $id
         ) {
+        global $app;
         global $school;
-        error_log( print_R("isClasstestExists entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("isClasstestExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as Classtestcount from notherclass ";
@@ -3107,14 +3170,14 @@ $errormessage=array();
         $cnt2sql = "select count(*) as Classtestcount from notherclass ";
         $cnt2sql .= " where classid = ? and testtypeid = ? and school = ? ";
 
-        error_log( print_R("Classtest isClasstestExists sql: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("Classtest isClasstestExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
 //        $cnt2sql = addSecurity($cnt2sql, $schoolfield, 'true');
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isClasstestExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isClasstestExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -3132,7 +3195,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isClasstestExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isClasstestExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -3155,7 +3218,7 @@ $errormessage=array();
                     $row = null;
                     $stmt->bind_result($row);
                     while ($stmt->fetch()) { 
-                        error_log( print_R("isClasstestExists: " . $row . "\n", TRUE), 3, LOG);
+                        $app->log->debug( print_R("isClasstestExists: " . $row . "\n", TRUE));
                     }
         
                     $stmt->close();
@@ -3181,15 +3244,16 @@ $errormessage=array();
         $id, 
         $classid, $testtypeid, $sortorder
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("Classtest update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("Classtest update entered", TRUE));
 
         global $school;
 $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $inssql = " INSERT INTO notherclass( 
@@ -3240,7 +3304,7 @@ $errormessage=array();
                  school = ?
             WHERE id = ? ";
 
-            error_log( print_R("Classtest update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("Classtest update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("sssss",
@@ -3253,8 +3317,8 @@ $errormessage=array();
                 return $errormessage;
 
             } else {
-                error_log( print_R("Classtest update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("Classtest update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -3263,15 +3327,16 @@ $errormessage=array();
     }
     public function removeClasstest($id
     ) {
+        global $app;
 
-        error_log( print_R("removeClasstest entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeClasstest entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from notherclass  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeClasstest sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeClasstest sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -3293,6 +3358,7 @@ $errormessage=array();
 
     public function getHtmlTemplates() {
         global $school;        
+        global $app;
 
         $sql = "SELECT          
             id, title, description, url, content
@@ -3309,12 +3375,12 @@ $errormessage=array();
                 $stmt->close();
                 return $EmailTemplateList;
             } else {
-                error_log( print_R("getEmailTemplates  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getEmailTemplates  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getEmailTemplates  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getEmailTemplates  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -3324,6 +3390,7 @@ $errormessage=array();
     public function getEmailTemplates() {
         
         global $school;
+        global $app;
 
         $sql = "SELECT          
             id, title, description, url, content
@@ -3332,7 +3399,7 @@ $errormessage=array();
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
 
-        error_log( print_R("getEmailTemplates sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getEmailTemplates sql after security: $sql", TRUE));
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",
@@ -3344,12 +3411,12 @@ $errormessage=array();
                 $stmt->close();
                 return $EmailTemplateList;
             } else {
-                error_log( print_R("getEmailTemplates  execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getEmailTemplates  execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getEmailTemplates  sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getEmailTemplates  sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -3359,12 +3426,13 @@ $errormessage=array();
          $id
         ) {
         global $school;
-        error_log( print_R("isEmailTemplateExists entered", TRUE), 3, LOG);
+        global $app;
+        $app->log->debug( print_R("isEmailTemplateExists entered", TRUE));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
         $cntsql = "select count(*) as EmailTemplatecount from htmltemplate ";
@@ -3372,7 +3440,7 @@ $errormessage=array();
 
 //        $schoolfield = "school";
 //        $cntsql = addSecurity($cntsql, $schoolfield, 'true');
-        error_log( print_R("isEmailTemplateExists sql after security: $cntsql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isEmailTemplateExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
                 $stmt->bind_param("ss",
@@ -3390,7 +3458,7 @@ $errormessage=array();
             $row = null;
             $stmt->bind_result($row);
             while ($stmt->fetch()) { 
-                error_log( print_R("isEmailTemplateExists: " . $row . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("isEmailTemplateExists: " . $row . "\n", TRUE));
             }
 
             $stmt->close();
@@ -3409,15 +3477,16 @@ $errormessage=array();
         $id, 
         $title, $description, $url, $content
         ) {
+        global $app;
         $num_affected_rows = 0;
-        error_log( print_R("EmailTemplate update entered", TRUE), 3, LOG);
+        $app->log->debug( print_R("EmailTemplate update entered", TRUE));
 
         global $school;
         $errormessage=array();
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
 
    //     $cont = json_encode($content);
@@ -3471,7 +3540,7 @@ $errormessage=array();
                  school = ?
             WHERE id = ? ";
 
-            error_log( print_R("EmailTemplate update sql: $updsql", TRUE), 3, LOG);
+            $app->log->debug( print_R("EmailTemplate update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
                 $stmt->bind_param("ssssss",
@@ -3484,8 +3553,8 @@ $errormessage=array();
                 return $errormessage;
 
             } else {
-                error_log( print_R("EmailTemplate update failed", TRUE), 3, LOG);
-                error_log( print_R($this->conn->error, TRUE), 3, LOG);
+                $app->log->debug( print_R("EmailTemplate update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
                 $errormessage["sqlerror"] = "update failure: ";
                 $errormessage["sqlerrordtl"] = $this->conn->error;
                 return $errormessage;
@@ -3494,15 +3563,16 @@ $errormessage=array();
     }
     public function removeEmailTemplate($id
     ) {
+        global $app;
 
-        error_log( print_R("removeEmailTemplate entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeEmailTemplate entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from htmlcontent  where id = ?  ";
 
         $schoolfield = "school";
         $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("removeEmailTemplate sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("removeEmailTemplate sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",

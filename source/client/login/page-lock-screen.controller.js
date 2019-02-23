@@ -10,23 +10,22 @@ export class PageLockScreenController {
 
     }
     $onInit() {
-        console.log("initializing Logout...");
         this.isok = false;
         this.init();
     }
     $onDestroy() {
-        this.$log.debug("lock dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("lock dismissed");
+        //this.$log.logEnabled(false);
     }
 
     isokf() {
-        //        this.$log.debug('isokf');
+        //        this.$log.log('isokf');
         this.isok = this.UserServices.isapikey();
         return this.isok;
     }
 
     init() {
-        this.$log.debug('PageLockScreenController init entered');
+        this.$log.log('PageLockScreenController init entered');
         //            $("body>.default-page").hide();
         $('#page-wrapper').css({ 'background-color': 'transparent' });
         $('#wrapper').css({ 'background': 'transparent' });

@@ -16,27 +16,27 @@ export class EventServices {
         return this.activeTab;
     }
     setActiveTab(thetab, thecaller) {
-        this.$log.debug('EventServices setActiveTab called', thetab, thecaller);
+        this.$log.log('EventServices setActiveTab called', thetab, thecaller);
         this.activeTab = thetab;
     }
 
     /*     setapikey(key) {
-          //  $log.debug('setapikey', key);
+          //  $log.log('setapikey', key);
              this.apikey = key;
          }
       */
     getEventNames(path) {
         var self = this;
-        self.$log.debug('getEventNames service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getEventNames service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     getEventDetails(path) {
         var self = this;
-        self.$log.debug('getEventDetails service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getEventDetails service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
@@ -44,24 +44,24 @@ export class EventServices {
 
     getEventSource(path) {
         var self = this;
-        self.$log.debug('getEventSource service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getEventSource service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     getColDefs(path) {
         var self = this;
-        self.$log.debug('getColDefs service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getColDefs service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     getColDefList(path) {
         var self = this;
-        self.$log.debug('getColDefList service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getColDefList service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
@@ -69,8 +69,8 @@ export class EventServices {
 
     setColDefs(path, thedata) {
         var self = this;
-        self.$log.debug('setColDefs service entered before post:', thedata);
-        self.$log.debug('path', path);
+        self.$log.log('setColDefs service entered before post:', thedata);
+        self.$log.log('path', path);
 
         var request = self.$http({
             method: "POST",
@@ -84,7 +84,7 @@ export class EventServices {
 
     createEvent(path, thedata) {
         var self = this;
-        self.$log.debug('createEvent data before post :', thedata);
+        self.$log.log('createEvent data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -97,7 +97,7 @@ export class EventServices {
 
     updateEvent(path, thedata) {
         var self = this;
-        self.$log.debug('updateEvent data before post :', thedata);
+        self.$log.log('updateEvent data before post :', thedata);
         var request = self.$http({
             method: "PUT",
             url: path,

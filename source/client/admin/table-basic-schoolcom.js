@@ -2,10 +2,9 @@ import angular from 'angular';
 
 export class SchoolcomTableBasicController {
     constructor(
-       $log,$q,$scope,$interval,ClassServices,Util,uiGridConstants,Notification,moment,iddropdownFilter,portalDataService
+       $log,$q,$scope,$interval,ClassServices,UserServices, Util,uiGridConstants,Notification,moment,iddropdownFilter,portalDataService
     ) {
         'ngInject';
-        console.log('entering SchoolcomTableBasicController controller');
         this.$log =$log;
         this.$q =$q;
         this.$scope = $scope;
@@ -17,6 +16,7 @@ export class SchoolcomTableBasicController {
         this.moment = moment;
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
     }
     $onInit() {
 
@@ -38,22 +38,25 @@ export class SchoolcomTableBasicController {
         vm.activate();
     }
     $onDestroy() {
-        this.$log.debug("table-Basic-Schoolcom dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-Basic-Schoolcom dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('table-Basic-Schoolcom');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('SchoolcomTableBasicController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("table-Basic-Schoolcom started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("table-Basic-Schoolcom started");
 
         });
 
         vm.getSchoolcom().then(function() {
-           vm.$log.debug('getBasic activate done');
+           vm.$log.log('getBasic activate done');
 //            vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
         }, function(error) {
             return(vm.$q.reject(error));
@@ -75,7 +78,7 @@ export class SchoolcomTableBasicController {
 
     removeSchoolcom(input) {
         var vm = this;
-       vm.$log.debug('removeSchoolcom entered', input);
+       vm.$log.log('removeSchoolcom entered', input);
         var path = "../v1/schoolcom";
         var thedata = {
             id: input.id
@@ -86,8 +89,8 @@ export class SchoolcomTableBasicController {
         //check ???
         return vm.ClassServices.removeSchoolcom(thedata, path)
             .then(function(data) {
-               vm.$log.debug('removeSchoolcom returned data');
-               vm.$log.debug(data);
+               vm.$log.log('removeSchoolcom returned data');
+               vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -100,10 +103,10 @@ export class SchoolcomTableBasicController {
                 }
 
                 vm.getSchoolcom().then(function(zdata) {
-                       vm.$log.debug('getSchoolcom returned', zdata);
+                       vm.$log.log('getSchoolcom returned', zdata);
                     },
                     function(error) {
-                       vm.$log.debug('Caught an error getSchoolcom after remove:', error);
+                       vm.$log.log('Caught an error getSchoolcom after remove:', error);
                         vm.thisSchoolcom = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -111,8 +114,8 @@ export class SchoolcomTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-               vm.$log.debug('removeSchoolcom failure:');
-               vm.$log.debug("error", e);
+               vm.$log.log('removeSchoolcom failure:');
+               vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -135,14 +138,14 @@ export class SchoolcomTableBasicController {
             invoicebatchenabled: rowEntity.invoicebatchenabled
         };
 
-       vm.$log.debug('about updateSchoolcom ', thedata, updpath, updatetype);
+       vm.$log.log('about updateSchoolcom ', thedata, updpath, updatetype);
         return vm.ClassServices.updateSchoolcom(updpath, thedata)
             .then(function(data) {
-               vm.$log.debug('updateSchoolcom returned data');
-               vm.$log.debug(data);
+               vm.$log.log('updateSchoolcom returned data');
+               vm.$log.log(data);
                 vm.thisSchoolcom = data;
-               vm.$log.debug(vm.thisSchoolcom);
-               vm.$log.debug(vm.thisSchoolcom.message);
+               vm.$log.log(vm.thisSchoolcom);
+               vm.$log.log(vm.thisSchoolcom.message);
                 vm.message = vm.thisSchoolcom.message;
                 if ((typeof vm.thisSchoolcom === 'undefined' || vm.thisSchoolcom.error === true) &&
                     typeof data !== 'undefined') {
@@ -158,10 +161,10 @@ export class SchoolcomTableBasicController {
                 }
                 //                    if (updatetype === 'Add') {
                 vm.getSchoolcom().then(function(zdata) {
-                       vm.$log.debug('getSchoolcom returned', zdata);
+                       vm.$log.log('getSchoolcom returned', zdata);
                     },
                     function(error) {
-                       vm.$log.debug('Caught an error getSchoolcom after remove:', error);
+                       vm.$log.log('Caught an error getSchoolcom after remove:', error);
                         vm.thisSchoolcom = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -172,8 +175,8 @@ export class SchoolcomTableBasicController {
 
                 return vm.thisSchoolcom;
             }).catch(function(e) {
-               vm.$log.debug('updateSchoolcom failure:');
-               vm.$log.debug("error", e);
+               vm.$log.log('updateSchoolcom failure:');
+               vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -182,18 +185,18 @@ export class SchoolcomTableBasicController {
 
     getSchoolcom() {
         var vm = this;
-       vm.$log.debug('getSchoolcom entered');
+       vm.$log.log('getSchoolcom entered');
         var path = '../v1/schoolcom';
 
         return vm.ClassServices.getSchoolcom(path).then(function(data) {
-           vm.$log.debug('getSchoolcom returned data');
-           vm.$log.debug(data);
+           vm.$log.log('getSchoolcom returned data');
+           vm.$log.log(data);
             vm.setgridOptions();
 
             vm.gridOptions.data = data.Schoolcomlist;
 
         }, function(error) {
-           vm.$log.debug('Caught an error getSchoolcom:', error);
+           vm.$log.log('Caught an error getSchoolcom:', error);
             vm.Schoolcomlist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -249,11 +252,11 @@ export class SchoolcomTableBasicController {
 
 
             onRegisterApi: function(gridApi) {
-               vm.$log.debug('vm gridapi onRegisterApi');
+               vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                   vm.$log.debug('pagination changed');
+                   vm.$log.log('pagination changed');
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 

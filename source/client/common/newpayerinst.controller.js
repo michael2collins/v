@@ -13,23 +13,23 @@ export class ModalNewPayerInstanceController {
 
   $onInit() {
     var vmnew = this;
-    vmnew.$log.debug('modal ModalNewPayerInstanceController entered');
-    vmnew.$log.debug(vmnew);
+    vmnew.$log.log('modal ModalNewPayerInstanceController entered');
+    vmnew.$log.log(vmnew);
 
     vmnew.thisPayer = '';
     vmnew.message = '';
   }
   $onDestroy() {
-    this.$log.debug("ModalNewPayerInstanceController dismissed");
-    this.$log.debugEnabled(false);
+    this.$log.log("ModalNewPayerInstanceController dismissed");
+    //this.$log.logEnabled(false);
   }
 
 
   submit() {
     var self = this;
-    self.$log.debug('hit submit');
+    self.$log.log('hit submit');
     self.createPayer().then(function() {
-      self.$log.debug('createPayer ready to close', self.thisPayer);
+      self.$log.log('createPayer ready to close', self.thisPayer);
       self.$scope.$parent.$uibModalInstance.close(self.thisPayer);
     }).catch(function(e) {
       // alert("try again", e);
@@ -42,24 +42,24 @@ export class ModalNewPayerInstanceController {
 
   createPayer() {
     var self = this;
-    self.$log.debug('about createPayer ', self);
+    self.$log.log('about createPayer ', self);
     var path = "../v1/payer";
     var thedata = {
       payerName: self.payerName
     };
     return self.PaymentServices.createPayer(path, thedata)
       .then(function(data) {
-        self.$log.debug('createPayer returned data');
-        self.$log.debug(data);
+        self.$log.log('createPayer returned data');
+        self.$log.log(data);
         self.thisPayer = data;
-        self.$log.debug(self.thisPayer);
-        self.$log.debug(self.thisPayer.message);
+        self.$log.log(self.thisPayer);
+        self.$log.log(self.thisPayer.message);
         self.message = self.thisPayer.message;
         self.Notification.success({ message: self.message, delay: 5000 });
         return self.thisPayer;
       }).catch(function(e) {
-        self.$log.debug('createPayer failure:');
-        self.$log.debug("error", e);
+        self.$log.log('createPayer failure:');
+        self.$log.log("error", e);
         self.message = e;
         self.Notification.error({ message: e, delay: 5000 });
         throw e;

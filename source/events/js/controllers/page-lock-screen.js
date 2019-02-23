@@ -24,7 +24,7 @@
             init();
             
             function init() {
-                $log.debug('PageLockScreenController init entered');
+                $log.log('PageLockScreenController init entered');
                 $("body>.default-page").hide();
                 $("body>.extra-page").html($(".page-content").html()).show();
                 $('body').attr('id', 'lock-screen');

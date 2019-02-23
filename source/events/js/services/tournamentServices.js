@@ -31,12 +31,12 @@
             return activeTab;
         }
         function setActiveTab(thetab,thecaller) {
-            $log.debug('TournamentServices setActiveTab called', thetab, thecaller);
+            $log.log('TournamentServices setActiveTab called', thetab, thecaller);
             activeTab = thetab;
         }
 
      function setapikey(key) {
-        $log.debug('TournamentServices setapikey', key);
+        $log.log('TournamentServices setapikey', key);
          apikey = key;
      }
  
@@ -46,14 +46,14 @@
           '../v1/studentnames',
           {params: params}
         ).then(function(response) {
-                    $log.debug('refreshStudents service success:');
-                    $log.debug(response.data);
+                    $log.log('refreshStudents service success:');
+                    $log.log(response.data);
           return response.data;
         });
       }
 
         function getAllStudents(path) {
-            $log.debug('getAllStudents service entered');
+            $log.log('getAllStudents service entered');
                     var request = $http({
                         method: "GET",
                         url: path
@@ -75,7 +75,7 @@
 
 
         function createStudent(path, thedata ) {
-                    $log.debug('createStudent data before post :' , thedata);
+                    $log.log('createStudent data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -100,14 +100,14 @@
                     // nomralized format. However, if the request was not handled by the
                     // server (or what not handles properly - ex. server error), then we
                     // may have to normalize it on our end, as best we can.
-                    $log.debug('TournamentServices failure:', response);
+                    $log.log('TournamentServices failure:', response);
                     if (
                         ! angular.isObject( response.data ) ||
                         ! response.data.message
                         ) {
                         return( $q.reject( "An unknown error occurred." ) );
                     }
-                    $log.debug('TournamentServices detail:', response.status);
+                    $log.log('TournamentServices detail:', response.status);
                     var status = response.status;
                     var message = response.data.message;
                     var err = {
@@ -120,8 +120,8 @@
                 // I transform the successful response, unwrapping the application data
                 // from the API response payload.
                 function handleSuccess( response ) {
-                    $log.debug(' success:');
-                    $log.debug(response.data);
+                    $log.log(' success:');
+                    $log.log(response.data);
                     return( response.data );
                 }
         
@@ -129,7 +129,7 @@
 
 
         function updateStudent(path, students) {
-                    $log.debug('updateStudent vm.data before put :' , students);
+                    $log.log('updateStudent vm.data before put :' , students);
         var request = $http({
             method: "PUT",
             url: path,
@@ -140,7 +140,7 @@
                     
         }
         function getAllZips(path) {
-            $log.debug('getAllZips entered', path, apikey);
+            $log.log('getAllZips entered', path, apikey);
         var request = $http({
             method: "get",
             url: path

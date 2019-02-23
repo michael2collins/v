@@ -15,12 +15,12 @@ export class ModalNewPayerController {
 
     vmnewPayermodal.modalInstance = undefined;
     vmnewPayermodal.thisPayer = '';
-    vmnewPayermodal.$log.debug("ModalNewPayerController entered");
+    vmnewPayermodal.$log.log("ModalNewPayerController entered");
 
   }
   $onDestroy() {
-    this.$log.debug("ModalNewPayerController dismissed");
-    this.$log.debugEnabled(false);
+    this.$log.log("ModalNewPayerController dismissed");
+    //this.$log.logEnabled(false);
   }
 
 
@@ -36,13 +36,13 @@ export class ModalNewPayerController {
       size: 'sm',
       resolve: {
         classname: function() {
-          vmnewPayermodal.$log.debug('return from open');
+          vmnewPayermodal.$log.log('return from open');
           return vmnewPayermodal.thisPayer;
         }
       }
     });
     vmnewPayermodal.modalInstance.result.then(function(thisPayer) {
-      vmnewPayermodal.$log.debug('search modalInstance result thisPayer:', thisPayer);
+      vmnewPayermodal.$log.log('search modalInstance result thisPayer:', thisPayer);
       vmnewPayermodal.thisPayer = thisPayer;
     }, function() {
       vmnewPayermodal.$log.info('Modal dismissed at: ' + new Date());

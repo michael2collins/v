@@ -21,17 +21,17 @@ export class StudentClassModalInstanceController {
   }
 
   $onDestroy() {
-    this.$log.debug("StudentClassModalInstanceController dismissed");
-    this.$log.debugEnabled(false);
+    this.$log.log("StudentClassModalInstanceController dismissed");
+    //this.$log.logEnabled(false);
   }
 
   closemodal(contactid, classid, pgmid) {
     var vmsearch = this;
-    vmsearch.$log.debug('hit close', contactid, classid, pgmid);
-    vmsearch.$log.debug('got classname for close:', vmsearch.vmclass.studentclass);
+    vmsearch.$log.log('hit close', contactid, classid, pgmid);
+    vmsearch.$log.log('got classname for close:', vmsearch.vmclass.studentclass);
 
     vmsearch.vmclass.studentclass = vmsearch.vmclass.getClassPgm(classid, pgmid);
-    vmsearch.$log.debug('got class for close:', vmsearch.vmclass.studentclass);
+    vmsearch.$log.log('got class for close:', vmsearch.vmclass.studentclass);
 
     vmsearch.$scope.$parent.$uibModalInstance.close(vmsearch.vmclass.studentclass);
 

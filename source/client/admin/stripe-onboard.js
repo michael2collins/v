@@ -7,7 +7,6 @@ export class StripeTableBasicController {
 
     ) {
         'ngInject';
-        console.log('entering StripeTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -52,9 +51,9 @@ export class StripeTableBasicController {
         vm.stripe_scope = vm.$routeParams.scope;
         vm.stripe_state = vm.$routeParams.state;
 
-        vm.$log.debug('Routeparam is:');
-        vm.$log.debug(vm.$routeParams.code, vm.$routeParams.scope, vm.$routeParams.state);
-        vm.$log.debug('location is:', vm.$location);
+        vm.$log.log('Routeparam is:');
+        vm.$log.log(vm.$routeParams.code, vm.$routeParams.scope, vm.$routeParams.state);
+        vm.$log.log('location is:', vm.$location);
 
         vm.activate();
 
@@ -62,14 +61,14 @@ export class StripeTableBasicController {
     activate() {
         var vm = this;
         vm.setsession().then(function() {
-            vm.$log.debug('setsession done');
+            vm.$log.log('setsession done');
 
         }, function(error) {
             return (vm.$q.reject(error));
         });
 
         vm.getStripe().then(function() {
-            vm.$log.debug('getStripe activate done');
+            vm.$log.log('getStripe activate done');
         }, function(error) {
             return (vm.$q.reject(error));
         });
@@ -78,7 +77,7 @@ export class StripeTableBasicController {
 
     setsession() {
         var vm = this;
-        vm.$log.debug('setsession entered');
+        vm.$log.log('setsession entered');
         var path = '../v1/setsession';
         var thedata = {
             csrfstate: vm.send_state,
@@ -86,11 +85,11 @@ export class StripeTableBasicController {
         };
 
         return vm.StudentServices.setsession(path, thedata).then(function(data) {
-            vm.$log.debug('setsession returned data');
-            vm.$log.debug(data);
+            vm.$log.log('setsession returned data');
+            vm.$log.log(data);
             return;
         }, function(error) {
-            vm.$log.debug('Caught an error setsession:', error);
+            vm.$log.log('Caught an error setsession:', error);
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
             return (vm.$q.reject(error));
@@ -102,13 +101,13 @@ export class StripeTableBasicController {
 
     removeStripe() {
         var vm = this;
-        vm.$log.debug('removeStripe entered');
+        vm.$log.log('removeStripe entered');
         var path = "../v1/revokestripe";
 
         return vm.StudentServices.removeStripe(path)
             .then(function(data) {
-                vm.$log.debug('removeStripe returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeStripe returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -120,10 +119,10 @@ export class StripeTableBasicController {
                 }
 
                 vm.getStripe().then(function(zdata) {
-                        vm.$log.debug('getStripe returned', zdata);
+                        vm.$log.log('getStripe returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getStripe after remove:', error);
+                        vm.$log.log('Caught an error getStripe after remove:', error);
                         vm.stripedata = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -131,8 +130,8 @@ export class StripeTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeStripe failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeStripe failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -140,17 +139,17 @@ export class StripeTableBasicController {
     }
     getStripe() {
         var vm = this;
-        vm.$log.debug('getStripe entered');
+        vm.$log.log('getStripe entered');
         var path = '../v1/stripe';
 
         return vm.StudentServices.getStripe(path).then(function(data) {
-            vm.$log.debug('getStripes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getStripes returned data');
+            vm.$log.log(data);
 
             vm.stripedata = data.StripeList;
             return vm.stripedata;
         }, function(error) {
-            vm.$log.debug('Caught an error getStripes:', error);
+            vm.$log.log('Caught an error getStripes:', error);
             vm.stripedata = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -175,14 +174,14 @@ export class StripeTableBasicController {
                     testdescription: rowEntity.testdescription
                 };
                 
-                $log.debug('about updateStripe ',thedata, updpath, updatetype);
+                $log.log('about updateStripe ',thedata, updpath, updatetype);
                 return StudentServices.updateStripe(updpath, thedata)
                     .then(function(data){
-                        $log.debug('updateStripe returned data');
-                        $log.debug(data);
+                        $log.log('updateStripe returned data');
+                        $log.log(data);
                         vm.thisStripe = data;
-                        $log.debug(vm.thisStripe);
-                        $log.debug(vm.thisStripe.message);
+                        $log.log(vm.thisStripe);
+                        $log.log(vm.thisStripe.message);
                         vm.message = vm.thisStripe.message;
                         if ((typeof vm.thisStripe === 'undefined' || vm.thisStripe.error === true)  
                                 && typeof data !== 'undefined') {  
@@ -194,10 +193,10 @@ export class StripeTableBasicController {
                         if (updatetype === 'Add') {
                             getStripe().then
                                 (function(zdata) {
-                                 $log.debug('getStripe returned', zdata);
+                                 $log.log('getStripe returned', zdata);
                              },
                                 function (error) {
-                                    $log.debug('Caught an error getStripe after add:', error); 
+                                    $log.log('Caught an error getStripe after add:', error); 
                                     vm.thisStripe = [];
                                     vm.message = error;
                                     Notification.error({message: error, delay: 5000});
@@ -208,8 +207,8 @@ export class StripeTableBasicController {
                         
                         return vm.thisStripe;
                     }).catch(function(e) {
-                        $log.debug('updateStripe failure:');
-                        $log.debug("error", e);
+                        $log.log('updateStripe failure:');
+                        $log.log("error", e);
                         vm.message = e;
                         Notification.error({message: e, delay: 5000});
                         throw e;
@@ -218,7 +217,7 @@ export class StripeTableBasicController {
     */
 
     /*        function storeusercred() {
-                $log.debug('storeusercred entered');
+                $log.log('storeusercred entered');
                 var path='../v1/storeusercred';
                 var thedata = {
                     csrfstate: vm.stripe_state,
@@ -230,12 +229,12 @@ export class StripeTableBasicController {
 
                 vm.csrfcheckstate = {};
                 return StudentServices.storeusercred(path, thedata).then(function(data){
-                        $log.debug('storeusercred returned data');
-                        $log.debug(data);
+                        $log.log('storeusercred returned data');
+                        $log.log(data);
                         vm.csrfcheckstate = data.csrfcheckstate;
                         return vm.csrfcheckstate;
                     }, function(error) {
-                        $log.debug('Caught an error storeusercred:', error); 
+                        $log.log('Caught an error storeusercred:', error); 
                         vm.csrfcheckstate = {};
                         vm.message = error;
                         Notification.error({message: error, delay: 5000});

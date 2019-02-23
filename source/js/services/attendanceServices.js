@@ -21,7 +21,7 @@ export class AttendanceServices {
         this.activeTab = thetab;
     }
 /*    setapikey(key) {
-        //     self.$log.debug('setapikey', key);
+        //     self.$log.log('setapikey', key);
         this.apikey = key;
     }
 */
@@ -29,24 +29,24 @@ export class AttendanceServices {
 
     refreshAttendances(path) {
         self = this;
-        self.$log.debug('refreshAttendances service entered');
-        self.$log.debug('path', path);
+        self.$log.log('refreshAttendances service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     getAttendanceHistory(path) {
         self = this;
-        self.$log.debug('getAttendanceHistory service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getAttendanceHistory service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
 
     getAttendanceSum(path) {
         self = this;
-        self.$log.debug('getAttendanceSum service entered');
-        self.$log.debug('path', path);
+        self.$log.log('getAttendanceSum service entered');
+        self.$log.log('path', path);
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
@@ -54,7 +54,7 @@ export class AttendanceServices {
     getDOW() {
         self = this;
         var path = '../v1/DOW';
-        self.$log.debug('getDOW service entered', path);
+        self.$log.log('getDOW service entered', path);
         var request = self.$http({
             method: "get",
             url: path
@@ -63,7 +63,7 @@ export class AttendanceServices {
     }
     getSchedule(path) {
         self = this;
-        self.$log.debug('getSchedule service entered', path);
+        self.$log.log('getSchedule service entered', path);
         var request = self.$http({
             method: "get",
             url: path
@@ -72,7 +72,7 @@ export class AttendanceServices {
     }
     getSchedules(path) {
         self = this;
-        self.$log.debug('getSchedules service entered', path);
+        self.$log.log('getSchedules service entered', path);
         var request = self.$http({
             method: "get",
             url: path
@@ -81,7 +81,7 @@ export class AttendanceServices {
     }
     getClasses(path) {
         self = this;
-        self.$log.debug('getClasses service entered', path);
+        self.$log.log('getClasses service entered', path);
         var request = self.$http({
             method: "get",
             url: path
@@ -91,7 +91,7 @@ export class AttendanceServices {
 
     setStudentReadyNextRank(path, readyness, theclass) {
         self = this;
-        self.$log.debug('setStudentReadyNextRank before put :', path, readyness, theclass);
+        self.$log.log('setStudentReadyNextRank before put :', path, readyness, theclass);
         var dta = {
             readyness: readyness,
             theclass: theclass
@@ -106,7 +106,7 @@ export class AttendanceServices {
 
     removeSchedule(thedata, path) {
         self = this;
-        self.$log.debug('removeSchedule data before delete :', thedata);
+        self.$log.log('removeSchedule data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -119,7 +119,7 @@ export class AttendanceServices {
 
     updateAttendance(path, thedata) {
         self = this;
-        self.$log.debug('updateAttendance data before post :', thedata);
+        self.$log.log('updateAttendance data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -134,7 +134,7 @@ export class AttendanceServices {
     }
     updateSchedule(path, thedata) {
         self = this;
-        self.$log.debug('updateSchedule data before post :', thedata);
+        self.$log.log('updateSchedule data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -151,10 +151,10 @@ export class AttendanceServices {
     // ---
     handleError(response) {
 //        self = this;
- //       self.$log.debug('failure:');
- //       self.$log.debug(response);
-  //      self.$log.debug('status', response.status);
-//        self.$log.debug('config', response.config);
+ //       self.$log.log('failure:');
+ //       self.$log.log(response);
+  //      self.$log.log('status', response.status);
+//        self.$log.log('config', response.config);
         //debugger;
         if (!angular.isObject(response.data) ||
             !response.data.message
@@ -169,10 +169,10 @@ export class AttendanceServices {
     // from the API response payload.
     handleSuccess(response) {
 //        self = this;
-//        self.$log.debug(' success:');
-//        self.$log.debug(response, response.error);
+//        self.$log.log(' success:');
+//        self.$log.log(response, response.error);
         if (response.error === true || response.data === null) {
-  //          self.$log.debug('attendanceServices error returned', response);
+  //          self.$log.log('attendanceServices error returned', response);
             response.message = "attendanceServices error returned";
             return ($q.reject(response));
         }

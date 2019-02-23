@@ -7,7 +7,6 @@ export class ProgramTableBasicController {
 
     ) {
         'ngInject';
-        console.log('entering ProgramTableBasicController controller');
         this.$log = $log;
         this.$q = $q;
         this.$scope = $scope;
@@ -43,17 +42,17 @@ export class ProgramTableBasicController {
 
     }
     $onDestroy() {
-        this.$log.debug("table-basic-program dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("table-basic-program dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
 
         vm.getProgram().then(function() {
-            vm.$log.debug('getProgram activate done');
+            vm.$log.log('getProgram activate done');
             vm.getClassTypes().then(function() {
-                vm.$log.debug('getClassTypes activate done', vm.classTypes);
+                vm.$log.log('getClassTypes activate done', vm.classTypes);
                 vm.setgridOptions();
                 vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
 
@@ -79,7 +78,7 @@ export class ProgramTableBasicController {
 
     removeProgram(input) {
         var vm = this;
-        vm.$log.debug('removeProgram entered', input);
+        vm.$log.log('removeProgram entered', input);
         var path = "../v1/program";
         var thedata = {
             id: input.id
@@ -90,8 +89,8 @@ export class ProgramTableBasicController {
         //check nclasspays, nclasspgm, studentregistration, testcandidates
         return vm.ClassServices.removeProgram(thedata, path)
             .then(function(data) {
-                vm.$log.debug('removeProgram returned data');
-                vm.$log.debug(data);
+                vm.$log.log('removeProgram returned data');
+                vm.$log.log(data);
                 vm.message = data.message;
                 if ((typeof data === 'undefined' || data.error === true) &&
                     typeof data !== 'undefined') {
@@ -104,10 +103,10 @@ export class ProgramTableBasicController {
                 }
 
                 vm.getProgram().then(function(zdata) {
-                        vm.$log.debug('getProgram returned', zdata);
+                        vm.$log.log('getProgram returned', zdata);
                     },
                     function(error) {
-                        vm.$log.debug('Caught an error getProgram after remove:', error);
+                        vm.$log.log('Caught an error getProgram after remove:', error);
                         vm.thisProgram = [];
                         vm.message = error;
                         vm.Notification.error({ message: error, delay: 5000 });
@@ -115,8 +114,8 @@ export class ProgramTableBasicController {
                     });
                 return data;
             }).catch(function(e) {
-                vm.$log.debug('removeProgram failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('removeProgram failure:');
+                vm.$log.log("error", e);
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
             });
@@ -147,14 +146,14 @@ export class ProgramTableBasicController {
 
         };
 
-        vm.$log.debug('about updateProgram ', thedata, updpath, updatetype);
+        vm.$log.log('about updateProgram ', thedata, updpath, updatetype);
         return vm.ClassServices.updateProgram(updpath, thedata)
             .then(function(data) {
-                vm.$log.debug('updateProgram returned data');
-                vm.$log.debug(data);
+                vm.$log.log('updateProgram returned data');
+                vm.$log.log(data);
                 vm.thisProgram = data;
-                vm.$log.debug(vm.thisProgram);
-                vm.$log.debug(vm.thisProgram.message);
+                vm.$log.log(vm.thisProgram);
+                vm.$log.log(vm.thisProgram.message);
                 vm.message = vm.thisProgram.message;
                 if ((typeof vm.thisProgram === 'undefined' || vm.thisProgram.error === true) &&
                     typeof data !== 'undefined') {
@@ -166,10 +165,10 @@ export class ProgramTableBasicController {
                 }
                 if (updatetype === 'Add') {
                     vm.getProgram().then(function(zdata) {
-                            vm.$log.debug('getProgram returned', zdata);
+                            vm.$log.log('getProgram returned', zdata);
                         },
                         function(error) {
-                            vm.$log.debug('Caught an error getProgram after remove:', error);
+                            vm.$log.log('Caught an error getProgram after remove:', error);
                             vm.thisProgram = [];
                             vm.message = error;
                             vm.Notification.error({ message: error, delay: 5000 });
@@ -180,8 +179,8 @@ export class ProgramTableBasicController {
 
                 return vm.thisProgram;
             }).catch(function(e) {
-                vm.$log.debug('updateProgram failure:');
-                vm.$log.debug("error", e);
+                vm.$log.log('updateProgram failure:');
+                vm.$log.log("error", e);
                 vm.message = e;
                 vm.Notification.error({ message: e, delay: 5000 });
                 throw e;
@@ -190,18 +189,18 @@ export class ProgramTableBasicController {
 
     getProgram() {
         var vm = this;
-        vm.$log.debug('getProgram entered');
+        vm.$log.log('getProgram entered');
         var path = '../v1/program';
 
         return vm.ClassServices.getPrograms(path).then(function(data) {
-            vm.$log.debug('getPrograms returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getPrograms returned data');
+            vm.$log.log(data);
 
             vm.gridOptions.data = data.Programlist;
             vm.program.sortKey = parseInt(vm.Util.maxObjArr(data.Programlist, 'sortKey'), 10) + 1;
 
         }, function(error) {
-            vm.$log.debug('Caught an error getPrograms:', error);
+            vm.$log.log('Caught an error getPrograms:', error);
             vm.Programlist = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -211,18 +210,18 @@ export class ProgramTableBasicController {
     }
     getClassTypes() {
         var vm = this;
-        vm.$log.debug('getClassTypes entered');
+        vm.$log.log('getClassTypes entered');
         var path = '../v1/classtypes';
 
         return vm.ClassServices.getClassTypes(path).then(function(data) {
-            vm.$log.debug('getClassTypes returned data');
-            vm.$log.debug(data);
+            vm.$log.log('getClassTypes returned data');
+            vm.$log.log(data);
 
             vm.classTypes = data.ClassTypelist;
             vm.program.classType = vm.classTypes[0].value;
             return vm.classTypes;
         }, function(error) {
-            vm.$log.debug('Caught an error getClassTypes:', error);
+            vm.$log.log('Caught an error getClassTypes:', error);
             vm.classTypes = [];
             vm.message = error;
             vm.Notification.error({ message: error, delay: 5000 });
@@ -334,11 +333,11 @@ export class ProgramTableBasicController {
             enableColumnResizing: true,
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridapi onRegisterApi');
+                vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
-                    vm.$log.debug('pagination changed');
+                    vm.$log.log('pagination changed');
                     //                        paginationOptions.pageSize = pageSize;
                     vm.setGridLength(pageSize);
                     vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);

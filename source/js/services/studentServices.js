@@ -16,12 +16,12 @@ export class StudentServices {
         return this.activeTab;
     }
     setActiveTab(thetab, thecaller) {
-        this.$log.debug('StudentServices setActiveTab called', thetab, thecaller);
+        this.$log.log('StudentServices setActiveTab called', thetab, thecaller);
         this.activeTab = thetab;
     }
 
 /*    setapikey(key) {
-        //        self.$log.debug('StudentServices setapikey', key);
+        //        self.$log.log('StudentServices setapikey', key);
         this.apikey = key;
     }
 */
@@ -33,8 +33,8 @@ export class StudentServices {
         return self.$http.get(
             '../v1/studentnames', { params: params }
         ).then(function(response) {
-            self.$log.debug('refreshStudents service success:');
-            self.$log.debug(response.data);
+            self.$log.log('refreshStudents service success:');
+            self.$log.log(response.data);
             return response.data;
         });
     }
@@ -80,7 +80,7 @@ export class StudentServices {
     }
     removeInvoice(thedata) {
         var self = this;
-        self.$log.debug('removeInvoice data before post :', thedata);
+        self.$log.log('removeInvoice data before post :', thedata);
         var path = "../v1/invoice";
         var request = self.$http({
             method: "DELETE",
@@ -93,7 +93,7 @@ export class StudentServices {
     }
     updateInvoice(path, thedata) {
         var self = this;
-        self.$log.debug('updateInvoice data before post :', thedata);
+        self.$log.log('updateInvoice data before post :', thedata);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -105,7 +105,7 @@ export class StudentServices {
     }
     addInvoice(path, thedata) {
         var self = this;
-        self.$log.debug('addInvoice data before post :', thedata);
+        self.$log.log('addInvoice data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -117,7 +117,7 @@ export class StudentServices {
     }
     emailInvoice(path, thedata) {
         var self = this;
-        self.$log.debug('emailInvoice data before post :', thedata);
+        self.$log.log('emailInvoice data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -151,7 +151,7 @@ export class StudentServices {
 
     getRankPartial(input, ranktype) {
         var self = this;
-        self.$log.debug('getRankPartial service entered:', input, ranktype);
+        self.$log.log('getRankPartial service entered:', input, ranktype);
         var params = {
             input: input,
             ranktype: ranktype
@@ -159,29 +159,29 @@ export class StudentServices {
         return self.$http.get(
             '../v1/rankpartial', { params: params }
         ).then(function(response) {
-            self.$log.debug('getRankPartial service success:');
-            self.$log.debug(response.data);
+            self.$log.log('getRankPartial service success:');
+            self.$log.log(response.data);
             return response.data;
         });
     }
     getRank(ranktype) {
         var self = this;
-        self.$log.debug('getRank service entered:', ranktype);
+        self.$log.log('getRank service entered:', ranktype);
         var params = {
             ranktype: ranktype
         };
         return self.$http.get(
             '../v1/rank', { params: params }
         ).then(function(response) {
-            self.$log.debug('getRank service success:');
-            self.$log.debug(response.data);
+            self.$log.log('getRank service success:');
+            self.$log.log(response.data);
             return response.data;
         });
     }
 
     getAllStudents(path) {
         var self = this;
-        self.$log.debug('getAllStudents service entered');
+        self.$log.log('getAllStudents service entered');
 
         var request = self.$http({
             method: "get",
@@ -193,7 +193,7 @@ export class StudentServices {
     }
     getSampleStudents(path) {
         var self = this;
-        self.$log.debug('getSampleStudents service entered');
+        self.$log.log('getSampleStudents service entered');
 
         var request = self.$http({
             method: "get",
@@ -205,7 +205,7 @@ export class StudentServices {
     }
     getSampleStudentRegistrations(path) {
         var self = this;
-        self.$log.debug('getSampleStudentRegistrations service entered');
+        self.$log.log('getSampleStudentRegistrations service entered');
 
         var request = self.$http({
             method: "get",
@@ -217,7 +217,7 @@ export class StudentServices {
     }
     lookupExtas(path, thedata) {
         var self = this;
-        self.$log.debug('lookupExtas data before post :', thedata);
+        self.$log.log('lookupExtas data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -229,7 +229,7 @@ export class StudentServices {
     }
     getUserPrefCols(path) {
         var self = this;
-        self.$log.debug('getUserPrefCols service entered with path:', path);
+        self.$log.log('getUserPrefCols service entered with path:', path);
         var request = self.$http({
             method: "get",
             url: path
@@ -241,7 +241,7 @@ export class StudentServices {
 
     createUserPrefCols(path, thedata) {
         var self = this;
-        self.$log.debug('createUserPrefCols data before post :', thedata);
+        self.$log.log('createUserPrefCols data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -305,7 +305,7 @@ export class StudentServices {
 
     createStudent(path, thedata) {
         var self = this;
-        self.$log.debug('createStudent data before post :', thedata);
+        self.$log.log('createStudent data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -318,7 +318,7 @@ export class StudentServices {
 
     addStudentRank(thedata) {
         var self = this;
-        self.$log.debug('addStudentRank data before post :', thedata);
+        self.$log.log('addStudentRank data before post :', thedata);
         var path = "../v1/studentrank";
         var request = self.$http({
             method: "POST",
@@ -332,7 +332,7 @@ export class StudentServices {
 
     removeStudentRank(thedata) {
         var self = this;
-        self.$log.debug('removeStudentRank data before post :', thedata);
+        self.$log.log('removeStudentRank data before post :', thedata);
         var path = "../v1/studentrank";
         var request = self.$http({
             method: "DELETE",
@@ -345,7 +345,7 @@ export class StudentServices {
     }
     removeStudent(thedata, path) {
         var self=this;
-        self.$log.debug('removeStudent data before delete :', thedata);
+        self.$log.log('removeStudent data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -375,7 +375,7 @@ export class StudentServices {
 
     updateStudent(path, students) {
         var self = this;
-        self.$log.debug('updateStudent vm.data before put :', students);
+        self.$log.log('updateStudent vm.data before put :', students);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -387,7 +387,7 @@ export class StudentServices {
     }
     updateRawStudent(path, students) {
         var self = this;
-        self.$log.debug('updateStudent vm.data before put :', students);
+        self.$log.log('updateStudent vm.data before put :', students);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -422,7 +422,7 @@ export class StudentServices {
 
     getStudentLists(path) {
         var self = this;
-        self.$log.debug('StudentServices getStudentLists entered', this.apikey);
+        self.$log.log('StudentServices getStudentLists entered', this.apikey);
         var request = self.$http({
             method: "get",
             url: path
@@ -473,7 +473,7 @@ export class StudentServices {
     }
     removeNotification(thedata) {
         var self = this;
-        self.$log.debug('removeNotification data before post :', thedata);
+        self.$log.log('removeNotification data before post :', thedata);
         var path = "../v1/notification";
         var request = self.$http({
             method: "DELETE",
@@ -503,7 +503,7 @@ export class StudentServices {
     }
     removeEmailList(thedata, path) {
         var self = this;
-        self.$log.debug('removeEmailList data before delete :', thedata);
+        self.$log.log('removeEmailList data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -515,7 +515,7 @@ export class StudentServices {
     }
     updateEmailList(path, thedata) {
         var self = this;
-        self.$log.debug('updateEmailList data before post :', thedata);
+        self.$log.log('updateEmailList data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -528,7 +528,7 @@ export class StudentServices {
 
     sendEmail(path, thedata) {
         var self = this;
-        self.$log.debug('send email data before post :', path, thedata);
+        self.$log.log('send email data before post :', path, thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -542,7 +542,7 @@ export class StudentServices {
 
     removeEmailView(thedata, path) {
         var self = this;
-        self.$log.debug('removeEmailView data before delete :', thedata);
+        self.$log.log('removeEmailView data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -554,7 +554,7 @@ export class StudentServices {
     }
     updateEmailView(path, thedata) {
         var self = this;
-        self.$log.debug('updateEmailView data before post :', thedata);
+        self.$log.log('updateEmailView data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -566,7 +566,7 @@ export class StudentServices {
     }
     payStripeInvoice(path, thedata) {
         var self = this;
-        self.$log.debug('payStripeInvoice data before post :', thedata);
+        self.$log.log('payStripeInvoice data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -631,7 +631,7 @@ export class StudentServices {
     }
     updateStudentColMap(path, thedata) {
         var self=this;
-        self.$log.debug('updateStudentColMap data before post :', thedata);
+        self.$log.log('updateStudentColMap data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -643,7 +643,7 @@ export class StudentServices {
     }    
     removeCol(thedata, path) {
         var self=this;
-        self.$log.debug('removeCol data before delete :', thedata);
+        self.$log.log('removeCol data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -683,7 +683,7 @@ export class StudentServices {
     }
     createRawStudents(path, thedata) {
         var self = this;
-        self.$log.debug('createRawStudent data before post :', thedata);
+        self.$log.log('createRawStudent data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -703,7 +703,7 @@ export class StudentServices {
     }
     createBulkStudentHistory(path, thedata) {
         var self = this;
-        self.$log.debug('createBulkStudentHistory data before post :', thedata);
+        self.$log.log('createBulkStudentHistory data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -715,7 +715,7 @@ export class StudentServices {
     }
     createBulkStudentAttendance(path, thedata) {
         var self = this;
-        self.$log.debug('createBulkStudentAttendance data before post :', thedata);
+        self.$log.log('createBulkStudentAttendance data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -735,7 +735,7 @@ export class StudentServices {
     }
     removeRawStudent(thedata, path) {
         var self=this;
-        self.$log.debug('removeRawStudent data before delete :', thedata);
+        self.$log.log('removeRawStudent data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -773,7 +773,7 @@ export class StudentServices {
     }
     removeRawRegistration(thedata, path) {
         var self=this;
-        self.$log.debug('removeRawRegistration data before delete :', thedata);
+        self.$log.log('removeRawRegistration data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -785,7 +785,7 @@ export class StudentServices {
     }
     createRawRegistrations(path, thedata) {
         var self = this;
-        self.$log.debug('createRawRegistrations data before post :', thedata);
+        self.$log.log('createRawRegistrations data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -797,7 +797,7 @@ export class StudentServices {
     }
     updateRawRegistration(path, registrations) {
         var self = this;
-        self.$log.debug('updateRawRegistration vm.data before put :', registrations);
+        self.$log.log('updateRawRegistration vm.data before put :', registrations);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -827,7 +827,7 @@ export class StudentServices {
     }
     removeRawHistory(thedata, path) {
         var self=this;
-        self.$log.debug('removeRawHistory data before delete :', thedata);
+        self.$log.log('removeRawHistory data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -839,7 +839,7 @@ export class StudentServices {
     }
     createRawHistorys(path, thedata) {
         var self = this;
-        self.$log.debug('createRawHistorys data before post :', thedata);
+        self.$log.log('createRawHistorys data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -851,7 +851,7 @@ export class StudentServices {
     }
     updateRawHistory(path, historys) {
         var self = this;
-        self.$log.debug('updateRawHistory vm.data before put :', historys);
+        self.$log.log('updateRawHistory vm.data before put :', historys);
         var request = self.$http({
             method: "PUT",
             url: path,
@@ -881,7 +881,7 @@ export class StudentServices {
     }
     removeRawAttendance(thedata, path) {
         var self=this;
-        self.$log.debug('removeRawAttendance data before delete :', thedata);
+        self.$log.log('removeRawAttendance data before delete :', thedata);
         var request = self.$http({
             method: "DELETE",
             url: path,
@@ -893,7 +893,7 @@ export class StudentServices {
     }
     createRawAttendances(path, thedata) {
         var self = this;
-        self.$log.debug('createRawAttendances data before post :', thedata);
+        self.$log.log('createRawAttendances data before post :', thedata);
         var request = self.$http({
             method: "POST",
             url: path,
@@ -905,7 +905,7 @@ export class StudentServices {
     }
     updateRawAttendance(path, historys) {
         var self = this;
-        self.$log.debug('updateRawAttendance vm.data before put :', historys);
+        self.$log.log('updateRawAttendance vm.data before put :', historys);
         var request = self.$http({
             method: "PUT",
             url: path,

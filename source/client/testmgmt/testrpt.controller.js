@@ -1,9 +1,8 @@
 export class ModalTestRptInstanceController {
   constructor(
-    $log, TestingServices, $window, Notification, uiGridConstants, $scope
+    $log, TestingServices, $window, Notification, uiGridConstants, $scope, UserServices
   ) {
     'ngInject';
-    console.log('entering ModalTestRptInstanceController controller');
 
     this.$log = $log;
     this.TestingServices = TestingServices;
@@ -11,10 +10,15 @@ export class ModalTestRptInstanceController {
     this.Notification = Notification;
     this.uiGridConstants = uiGridConstants;
     this.$scope = $scope;
+        this.UserServices = UserServices;
 
   }
   $onInit() {
     var vm = this;
+
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ModalTestRptInstanceController',vm.UserServices.isDebugEnabled());
+        }
 
     vm.rptLayout = vm.TestingServices.getRptLayout();
     vm.path = '../v1/' + vm.rptLayout;
@@ -25,13 +29,13 @@ export class ModalTestRptInstanceController {
     vm.testTime = vm.TestingServices.getTestTime();
 
     vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("ModalTestRptInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("ModalTestRptInstanceController started");
 
     });
     vm.$scope.$on('$destroy', function iVeBeenDismissed() {
-      vm.$log.debug("ModalTestRptInstanceController dismissed");
-      vm.$log.debugEnabled(false);
+      vm.$log.log("ModalTestRptInstanceController dismissed");
+    //  vm.$log.logEnabled(false);
     });
 
 
@@ -42,16 +46,16 @@ export class ModalTestRptInstanceController {
   }
   printAll() {
     var vm = this;
-    vm.$log.debug('hit print');
-    vm.$log.debug('ModalTestRptInstanceController ready to close');
+    vm.$log.log('hit print');
+    vm.$log.log('ModalTestRptInstanceController ready to close');
     vm.rptgridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.COLUMN);
     vm.rptgridApi.grid.api.exporter.pdfExport('visible', 'visible');
   }
 
   printSelected() {
     var vm = this;
-    vm.$log.debug('hit print sel');
-    vm.$log.debug('ModalTestRptInstanceController ready to close');
+    vm.$log.log('hit print sel');
+    vm.$log.log('ModalTestRptInstanceController ready to close');
     vm.rptgridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.COLUMN);
     vm.rptgridApi.grid.api.exporter.pdfExport('selected', 'visible');
   }

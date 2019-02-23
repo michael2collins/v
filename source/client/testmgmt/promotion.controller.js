@@ -1,6 +1,6 @@
 export class ModalPromotionInstanceController {
   constructor(
-    $log, TestingServices, $window, Notification, uiGridConstants, $scope, $q, portalDataService
+    $log, TestingServices, $window, Notification, uiGridConstants, $scope, $q, portalDataService, UserServices
 
   ) {
     'ngInject';
@@ -12,26 +12,29 @@ export class ModalPromotionInstanceController {
     this.Notification = Notification;
     this.uiGridConstants = uiGridConstants;
     this.portalDataService = portalDataService;
+        this.UserServices = UserServices;
   }
   $onDestroy() {
-    this.$log.debug("ModalPromotionInstanceController dismissed");
-    this.$log.debugEnabled(false);
+    this.$log.log("ModalPromotionInstanceController dismissed");
+    //this.$log.logEnabled(false);
   }
 
   $onInit() {
-    console.log("ModalPromotionInstanceController ...");
 
     var vm = this;
 
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ModalPromotionInstanceController',vm.UserServices.isDebugEnabled());
+        }
 
     vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-      vm.$log.debugEnabled(true);
-      vm.$log.debug("ModalPromotionInstanceController started");
+      //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+      vm.$log.log("ModalPromotionInstanceController started");
 
     });
     vm.$scope.$on('$destroy', function iVeBeenDismissed() {
-      vm.$log.debug("ModalPromotionInstanceController dismissed");
-      vm.$log.debugEnabled(false);
+      vm.$log.log("ModalPromotionInstanceController dismissed");
+   //   vm.$log.logEnabled(false);
     });
 
     vm.message = '';
@@ -49,16 +52,16 @@ export class ModalPromotionInstanceController {
     vm.testDate = vm.TestingServices.getTestDate();
     vm.testTime = vm.TestingServices.getTestTime();
 
-    vm.$log.debug("TestDate:", vm.testDate);
+    vm.$log.log("TestDate:", vm.testDate);
 
     vm.portalDataService.Portlet('promotion.controller.js');
     vm.rptgridOptionsnew.onRegisterApi = function(gridApi) {
       var self = this;
-      self.$log.debug('vm gridapi onRegisterApi');
+      self.$log.log('vm gridapi onRegisterApi');
       self.rptgridApi = gridApi;
 
       gridApi.pagination.on.paginationChanged(self.$scope, function(newPage, pageSize) {
-        self.$log.debug('pagination changed');
+        self.$log.log('pagination changed');
         self.setGridLength(pageSize);
         vm.gridApi.core.notifyDataChange(self.uiGridConstants.dataChange.ALL);
 
@@ -66,26 +69,26 @@ export class ModalPromotionInstanceController {
 
       gridApi.selection.on.rowSelectionChanged(self.$scope, function(row) {
         var msg = 'grid row selected ' + row.entity;
-        self.$log.debug(msg);
+        self.$log.log(msg);
 
         var selectedStudentarr = self.grid.api.selection.getSelectedRows();
-        self.$log.debug('selected', selectedStudentarr);
+        self.$log.log('selected', selectedStudentarr);
         self.setSelectedArray(selectedStudentarr);
 
       });
       gridApi.selection.on.rowSelectionChangedBatch(self.$scope, function(rows) {
-        self.$log.debug("grid batch");
+        self.$log.log("grid batch");
         var selectedStudentarr = self.grid.api.selection.getSelectedRows();
-        self.$log.debug('batch selected', selectedStudentarr);
+        self.$log.log('batch selected', selectedStudentarr);
         self.setSelectedArray(selectedStudentarr);
 
       });
       gridApi.edit.on.afterCellEdit(self.$scope,
         function(rowEntity, colDef, newValue, oldValue) {
-          self.$log.debug('rowEntity');
-          self.$log.debug(rowEntity);
+          self.$log.log('rowEntity');
+          self.$log.log(rowEntity);
           //Alert to show what info about the edit is available
-          self.$log.debug('Column: ' + colDef.name +
+          self.$log.log('Column: ' + colDef.name +
             ' newValue: ' + newValue + ' oldValue: ' + oldValue);
           if (newValue != oldValue) {
             //       updatetestcandidate(colDef,newValue,rowEntity);       
@@ -109,7 +112,7 @@ export class ModalPromotionInstanceController {
 
   setSelectedArray(inputArray) {
     var vm = this;
-    vm.$log.debug("setSelectedArray entered", inputArray);
+    vm.$log.log("setSelectedArray entered", inputArray);
     vm.selectedStudents = [];
 
     if (inputArray.length > 0) {
@@ -170,7 +173,7 @@ export class ModalPromotionInstanceController {
       return;
     }
 
-    vm.$log.debug("setarray", vm.selectedStudents);
+    vm.$log.log("setarray", vm.selectedStudents);
 
   }
 
@@ -184,20 +187,20 @@ export class ModalPromotionInstanceController {
       testcandidate: vm.testcandidate,
     };
 
-    vm.$log.debug('about updatetestcandidate ', indata, path);
+    vm.$log.log('about updatetestcandidate ', indata, path);
 
     return vm.TestingServices.updatetestcandidate(path, indata)
       .then(function(data) {
-        vm.$log.debug('updatetestcandidate returned data');
-        vm.$log.debug(data);
+        vm.$log.log('updatetestcandidate returned data');
+        vm.$log.log(data);
         vm.thiscoldef = data;
-        vm.$log.debug(vm.thiscoldef);
-        vm.$log.debug(vm.thiscoldef.message);
+        vm.$log.log(vm.thiscoldef);
+        vm.$log.log(vm.thiscoldef.message);
         vm.message = vm.thiscoldef.message;
 
       }).catch(function(e) {
-        vm.$log.debug('updatetestcandidate failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('updatetestcandidate failure:');
+        vm.$log.log("error", e);
         vm.message = e;
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;
@@ -207,7 +210,7 @@ export class ModalPromotionInstanceController {
 
   promote() {
     var vm = this;
-    vm.$log.debug('hit promote');
+    vm.$log.log('hit promote');
     vm.rptgridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.COLUMN);
 
     var path = "../v1/testcandidatepromotion";
@@ -216,12 +219,12 @@ export class ModalPromotionInstanceController {
       selectedStudents: vm.selectedStudents,
     };
 
-    vm.$log.debug('about promotetestcandidate ', thedata, path);
+    vm.$log.log('about promotetestcandidate ', thedata, path);
 
     return vm.TestingServices.promotetestcandidate(path, thedata)
       .then(function(data) {
-        vm.$log.debug('promotetestcandidate returned data');
-        vm.$log.debug(data);
+        vm.$log.log('promotetestcandidate returned data');
+        vm.$log.log(data);
         vm.message = data.message;
         if ((typeof data === 'undefined' || data.error === true) &&
           typeof data !== 'undefined') {
@@ -233,8 +236,8 @@ export class ModalPromotionInstanceController {
         }
 
       }).catch(function(e) {
-        vm.$log.debug('promotetestcandidate failure:');
-        vm.$log.debug("error", e);
+        vm.$log.log('promotetestcandidate failure:');
+        vm.$log.log("error", e);
         vm.message = e;
         vm.Notification.error({ message: e, delay: 5000 });
         throw e;

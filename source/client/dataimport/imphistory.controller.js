@@ -6,7 +6,7 @@ export class ImphistoryController {
 
     constructor(
         $scope, $log, StudentServices, Util, uiGridConstants, Notification, $q, portalDataService,
-        $window, uiGridValidateService, uiGridExporterConstants
+        $window, uiGridValidateService, uiGridExporterConstants, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -20,6 +20,7 @@ export class ImphistoryController {
         this.$window = $window;
         this.uiGridValidateService = uiGridValidateService;
         this.uiGridExporterConstants = uiGridExporterConstants;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
@@ -67,17 +68,20 @@ export class ImphistoryController {
     }
 
     $onDestroy() {
-        this.$log.debug("ImphistoryController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ImphistoryController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('imphistory');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ImphistoryController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("imphistory started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("imphistory started");
 
         });
 
@@ -115,7 +119,7 @@ export class ImphistoryController {
 
     getStudenthistory() {
         var vm = this;
-        vm.$log.debug('getStudenthistory entered');
+        vm.$log.log('getStudenthistory entered');
         vm.gridexp1Options.data = [];
         var path = '../v1/samplestudenthistory';
 
@@ -200,7 +204,7 @@ export class ImphistoryController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridexp1Options onRegisterApi');
+                vm.$log.log('vm gridexp1Options onRegisterApi');
                 vm.gridexp1Api = gridApi;
 
                 vm.Util.setPagination(vm.gridexp1Api, vm);
@@ -210,7 +214,7 @@ export class ImphistoryController {
         vm.Util.setGridexp1OptionsDefaults(vm.gridexp1Options, 'studenthistory.csv', vm.limits, vm.initialLength, vm.rowheight, vm.gcolumns);
 
 
-        vm.$log.debug('gridexp1Options', vm.gridexp1Options);
+        vm.$log.log('gridexp1Options', vm.gridexp1Options);
     }
 
     setGridimp1Options() {
@@ -219,7 +223,7 @@ export class ImphistoryController {
         vm.Util.setEmailValidator(vm.uiGridValidateService);
         vm.Util.setDateValidator(vm.uiGridValidateService);
         vm.Util.setImpGridDefaults(vm.impgcolumns, vm.gridimp1Options, vm.uiGridConstants, vm.limits, vm.initialLength, vm.rowheight);
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
     }
     setAfterCellEdit(gridApi, func, vm, scope) {
         gridApi.edit.on.afterCellEdit(scope,
@@ -242,7 +246,7 @@ export class ImphistoryController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridimp1Api onRegisterApi');
+                vm.$log.log('vm gridimp1Api onRegisterApi');
                 vm.gridimp1Api = gridApi;
 
                 vm.setAfterCellEdit(vm.gridimp1Api, "rawHistory", vm, vm.$scope);
@@ -256,13 +260,13 @@ export class ImphistoryController {
 
         };
 
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
 
     }
 
     lookupExtas() {
         var vm = this;
-        vm.$log.debug('lookupExtas entered');
+        vm.$log.log('lookupExtas entered');
         vm.importdata = vm.gridimp1Options.data;
         var path = '../v1/lookuphistextras';
         var theData = {
@@ -288,7 +292,7 @@ export class ImphistoryController {
                     var msg = 'An error was found: ' +
                         vm.importdata[j].contacterror ;
                //     vm.Notification.error({ message: msg, delay: 5000 });
-                    vm.$log.debug('lookupExtas error', msg);
+                    vm.$log.log('lookupExtas error', msg);
                 }
 
             }
@@ -318,7 +322,7 @@ export class ImphistoryController {
     createBulkStudentHistory() {
         var vm = this;
         var path = '../v1/bulkstudenthistory';
-        vm.$log.debug('about createBulkStudentHistory ');
+        vm.$log.log('about createBulkStudentHistory ');
         var thedata = {
             selectedStudents: vm.gridimp1Options.data
         };
@@ -340,7 +344,7 @@ export class ImphistoryController {
     createRawHistorys() {
         var vm = this;
         var path = '../v1/rawhistory';
-        vm.$log.debug('about createRawHistorys ');
+        vm.$log.log('about createRawHistorys ');
         var thedata = {
             selectedhistorys: vm.gridimp1Options.data
         };
@@ -367,7 +371,7 @@ export class ImphistoryController {
 
         input.contactDate = vm.Util.oradate(input.contactDate);
 
-        vm.$log.debug('about updateRawHistory ', input);
+        vm.$log.log('about updateRawHistory ', input);
 
         return vm.StudentServices.updateRawHistory(path, input).then(function(data) {
             vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'updateRawHistory', true);
@@ -403,7 +407,7 @@ export class ImphistoryController {
     }
     removeRawHistory(row) {
         var vm = this;
-        vm.$log.debug('removeRawHistory entered', row.entity.externalid, row.entity.contactDate, row.entity.contactmgmttype);
+        vm.$log.log('removeRawHistory entered', row.entity.externalid, row.entity.contactDate, row.entity.contactmgmttype);
         var path = '../v1/rawhistory';
         var thedata = {
             externalid: row.entity.externalid,
@@ -425,7 +429,7 @@ export class ImphistoryController {
 
     removeRawHistorys() {
         var vm = this;
-        vm.$log.debug('removeRawHistorys entered');
+        vm.$log.log('removeRawHistorys entered');
         var path = '../v1/rawhistorys';
 
         return vm.StudentServices.removeRawHistorys(path)

@@ -20,6 +20,7 @@ class UtilDbHandler {
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
     }
 
 
@@ -41,10 +42,11 @@ class UtilDbHandler {
 
     public function getRankList($ranktype) {
         global $school;
+        global $app;
 		$sql = "SELECT t.* FROM ranklist t  ";
 		$sql.= " where t.ranktype = ? and t.school = ? ";
 
-        error_log( print_R("getRankList sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRankList sql after security: $sql", TRUE));
 
         $sql .= " order by t.sortkey";
         

@@ -10,13 +10,13 @@ export class StatsServices {
 //        this.apikey={};
     }
 /*    setapikey(key) {
-        //        self.$log.debug('StatsServices setapikey', key);
+        //        self.$log.log('StatsServices setapikey', key);
         this.apikey = key;
     }
 */
     getStudentStats(thedata) {
         var self = this;
-        self.$log.debug('getStudentStats data before post :', thedata);
+        self.$log.log('getStudentStats data before post :', thedata);
         var path = '../v1/studentstats';
         var request = self.$http({
             method: "POST",
@@ -30,7 +30,7 @@ export class StatsServices {
 
     getStudentStatsMonths(thedata) {
         var self = this;
-        self.$log.debug('getStudentStatsMonths data before post :', thedata);
+        self.$log.log('getStudentStatsMonths data before post :', thedata);
         var path = '../v1/studentstatsmonths';
         var request = self.$http({
             method: "POST",

@@ -31,7 +31,7 @@
         return service;
         
         function setapikey(key){
-            $log.debug('UserServices setapikey', key);
+            $log.log('UserServices setapikey', key);
             apikey = key;
         }
 
@@ -39,7 +39,7 @@
 
 //cookies isn't working
             var cookiecheck = $cookies.getObject('globals');
-//            $log.debug('cookie is:',cookiecheck, $cookies.getAll());
+//            $log.log('cookie is:',cookiecheck, $cookies.getAll());
 
             if (typeof cookiecheck != 'undefined') {
                 if (typeof apikey != 'undefined') {
@@ -61,28 +61,28 @@
 
         function isapikeyorig(){
             if (typeof apikey != 'undefined') {
-    //            $log.debug('UserServices isapikey', apikey);
+    //            $log.log('UserServices isapikey', apikey);
                 return apikey.length > 0;
             } else { return false; }
 
         }
 
         function forgotpassword(path) {
-            $log.debug('forgotpassword service entered');
-            $log.debug('path',path);
+            $log.log('forgotpassword service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
         function resetpassword(path) {
-            $log.debug('resetpassword service entered');
-            $log.debug('path',path);
+            $log.log('resetpassword service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
         function changepassword(newpassword,oldpassword,username,email) {
             var path="/v1/changepassword";
-            $log.debug('changepasswordpassword service entered');
-            $log.debug('path',path);
+            $log.log('changepasswordpassword service entered');
+            $log.log('path',path);
             var data={
               username: username,
               newpassword: newpassword,
@@ -106,7 +106,7 @@
               username: username,
               password: password
             };
-            $log.debug('UserServices login entered:', username, password, path, data);
+            $log.log('UserServices login entered:', username, password, path, data);
             
             var request = $http({
                 method: "POST",
@@ -121,7 +121,7 @@
 
         function SetCredentialsorig(username, password, apiKey) {
             //var authdata = username + ':' + password;
-            $log.debug('SetCredentials entered', username,apiKey);
+            $log.log('SetCredentials entered', username,apiKey);
             setapikey(apiKey);
             
             var authdata = apiKey;
@@ -140,7 +140,7 @@
 
         function SetCredentials(username, password, apiKey) {
             //var authdata = username + ':' + password;
-            $log.debug('SetCredentials entered', username,apiKey);
+            $log.log('SetCredentials entered', username,apiKey);
             setapikey(apiKey);
             
             var authdata = apiKey;
@@ -164,14 +164,14 @@
         //    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata; // jshint ignore:line
             $http.defaults.headers.common['Authorization'] = authdata; 
             //todo add expiration, secure, domain
-            $log.debug('SetCredentials globals', creds);
+            $log.log('SetCredentials globals', creds);
             $cookies.putObject('globals', creds, {
                     "path": "/", 
                     "domain":  "villaris.us", 
                     "secure": true, 
                     "expires": expireDate
             });
-            $log.debug('SetCredentials exit', $cookies.getObject('globals'));
+            $log.log('SetCredentials exit', $cookies.getObject('globals'));
 
         }
 
@@ -179,7 +179,7 @@
 
         function ResetCredentials(username, apiKey) {
             //var authdata = username + ':' + password;
-            $log.debug('ResetCredentials entered', username,apiKey);
+            $log.log('ResetCredentials entered', username,apiKey);
             setapikey(apiKey);
             
             var authdata = apiKey;
@@ -195,7 +195,7 @@
         }
 
         function ClearCredentials() {
-            $log.debug('ClearCredentials entered');
+            $log.log('ClearCredentials entered');
             
             $rootScope.globals = {};
             $cookieStore.remove('globals');
@@ -204,30 +204,30 @@
         }
     
         function getUserNames(path) {
-            $log.debug('getUserNames service entered');
-            $log.debug('path',path);
+            $log.log('getUserNames service entered');
+            $log.log('path',path);
 
             return($http.get(path).then( handleSuccess, handleError) );
         }
 
         function getUserDetailsorig() {
-            $log.debug('getUserDetails service entered');
+            $log.log('getUserDetails service entered');
 
             return(userdetails);
         }
 
         function getUserDetails() {
-            $log.debug('getUserDetails service entered',userdetails);
+            $log.log('getUserDetails service entered',userdetails);
             if (_.isEmpty(userdetails) && isapikey()) {
                 var cookiecheck = $cookies.getObject('globals');
                 var usernm = cookiecheck.currentUser.username;
-                $log.debug('getUserDetails service refresh user',usernm);
+                $log.log('getUserDetails service refresh user',usernm);
 
                 var path="../v1/userdetails?usernm=" + usernm;
 
                 getUserNames(path).then(function(data){
-                    $log.debug('getUserNames returned data');
-                    $log.debug(data);
+                    $log.log('getUserNames returned data');
+                    $log.log(data);
                     userdetails.username = data.username;
                     userdetails.firstname = data.firstname;
                     userdetails.lastname = data.lastname;
@@ -235,7 +235,7 @@
                         return userdetails;
                 },
                 function (error) {
-                    $log.debug('Caught an error getUserDetails refresh user , going to notify:', error); 
+                    $log.log('Caught an error getUserDetails refresh user , going to notify:', error); 
                     
                     Notification.error({message: error, delay: 5000});
                     return ($q.reject(error));
@@ -249,7 +249,7 @@
         
 
         function createUser(path, thedata ) {
-                    $log.debug('createUser data before post :' , thedata);
+                    $log.log('createUser data before post :' , thedata);
                     var request = $http({
                         method: "POST",
                         url: path,
@@ -261,7 +261,7 @@
         }        
         
         function updateUser(path, thedata ) {
-                    $log.debug('updateUser data before post :' , thedata);
+                    $log.log('updateUser data before post :' , thedata);
                     var request = $http({
                         method: "PUT",
                         url: path,
@@ -276,10 +276,10 @@
         // PRIVATE METHODS.
         // ---
         function handleError( response ) {
-            $log.debug('UserServices failure:');
-            $log.debug(response);
-            $log.debug('status',response.status);
-            $log.debug('config',response.config);
+            $log.log('UserServices failure:');
+            $log.log(response);
+            $log.log('status',response.status);
+            $log.log('config',response.config);
             //debugger;
             if (
                 ! angular.isObject( response.data ) ||
@@ -294,17 +294,17 @@
         // I transform the successful response, unwrapping the application data
         // from the API response payload.
         function handleSuccess( response ) {
-            $log.debug('UserServices success:');
-            $log.debug(response);
+            $log.log('UserServices success:');
+            $log.log(response);
             return( response.data );
         }
         function handleLogin( response ) {
-            $log.debug('UserServices success:');
+            $log.log('UserServices success:');
             userdetails.username = response.data.username;
             userdetails.firstname = response.data.firstname;
             userdetails.lastname = response.data.lastname;
             userdetails.email = response.data.email;
-            $log.debug(response);
+            $log.log(response);
             return( response.data );
         }
 

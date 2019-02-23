@@ -18,12 +18,12 @@ export class ModalNewStudentController {
 
     vmnewstudentmodal.modalInstance = undefined;
     vmnewstudentmodal.thisstudent = '';
-    vmnewstudentmodal.$log.debug('ModalNewStudentController entered ');
+    vmnewstudentmodal.$log.log('ModalNewStudentController entered ');
 
   }
   $onDestroy() {
-    this.$log.debug("ModalNewStudentController dismissed");
-    this.$log.debugEnabled(false);
+    this.$log.log("ModalNewStudentController dismissed");
+    //this.$log.logEnabled(false);
   }
 
   openmodal() {
@@ -35,7 +35,7 @@ export class ModalNewStudentController {
       size: 'md',
       resolve: {
         classname: function() {
-          vmnewstudentmodal.$log.debug('return from open');
+          vmnewstudentmodal.$log.log('return from open');
           return vmnewstudentmodal.thisstudent;
         }
       }
@@ -43,16 +43,16 @@ export class ModalNewStudentController {
 
     vmnewstudentmodal.modalInstance.opened.then(
       function(success) {
-        vmnewstudentmodal.$log.debug('modalInstance ui opened:', success);
+        vmnewstudentmodal.$log.log('modalInstance ui opened:', success);
 
       },
       function(error) {
-        vmnewstudentmodal.$log.debug('modalInstance ui failed to open, reason : ', error);
+        vmnewstudentmodal.$log.log('modalInstance ui failed to open, reason : ', error);
       }
     );
 
     vmnewstudentmodal.modalInstance.result.then(function(thisstudent) {
-      vmnewstudentmodal.$log.debug('search modalInstance result thisstudent:', thisstudent);
+      vmnewstudentmodal.$log.log('search modalInstance result thisstudent:', thisstudent);
       vmnewstudentmodal.thisstudent = thisstudent;
     }, function() {
       //todo: shoudl we get the student

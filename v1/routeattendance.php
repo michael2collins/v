@@ -1,9 +1,9 @@
 <?php
-$app->get('/studentregistration','authenticate',  function() use ($app) {
+$app->get('/studentregistration','authenticate', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("studentregistration entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("studentregistration entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $daynum = '';
     $thelimit = '';
@@ -23,7 +23,7 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
         $theclass = $allGetVars['theclass'];
     }
 
-    error_log( print_R("studentregistration params: daynum: $daynum  thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("studentregistration params: daynum: $daynum  thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE));
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -62,25 +62,25 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
             $tmp["readyness"] = "NULL";
             
         }
-//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
-//        error_log( print_R($tmp, TRUE), 3, LOG);
+//        $app->log->debug( print_R("attendance push\n ", TRUE));
+//        $app->log->debug( print_R($tmp, TRUE));
         array_push($response["attendancelist"], $tmp);
     }
     $row_cnt = count($response["attendancelist"]);
-    error_log( print_R("studentregistration cnt: $row_cnt\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("studentregistration cnt: $row_cnt\n ", TRUE));
 
     if ($row_cnt > 0) {
         $response["error"] = false;
         $response["message"] = "Attendance shows $row_cnt potential students\n";
-        error_log( print_R("getRegistrationList fine with $row_cnt\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("getRegistrationList fine with $row_cnt\n ", TRUE));
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
         $response["message"] = "Warning in getRegistrationList: No records found";
-        error_log( print_R("getRegistrationList bad\n ", TRUE), 3, LOG);
-        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
-        error_log( print_R("getRegistrationList error\n ", TRUE), 3, LOG);
-        error_log( print_R($response, TRUE), 3, LOG);
+        $app->log->debug( print_R("getRegistrationList bad\n ", TRUE));
+        $app->log->debug( print_R("rowcnt error: $row_cnt\n ", TRUE));
+        $app->log->debug( print_R("getRegistrationList error\n ", TRUE));
+        $app->log->debug( print_R($response, TRUE));
         
 //note need to handle 404 data notfound
         echoRespnse(404, $response);
@@ -88,11 +88,11 @@ $app->get('/studentregistration','authenticate',  function() use ($app) {
     }
 });
 
-$app->get('/attendancehistory', 'authenticate', function() use ($app) {
+$app->get('/attendancehistory', 'authenticate','setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("attendancehistory entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("attendancehistory entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $thedow = '';
     $thelimit = '';
@@ -108,7 +108,7 @@ $app->get('/attendancehistory', 'authenticate', function() use ($app) {
         $theclass = $allGetVars['theclass'];
     }
 
-    error_log( print_R("attendancehistory params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("attendancehistory params: thedow: $thedow thelimit: $thelimit theclass: $theclass\n ", TRUE));
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -143,31 +143,31 @@ $app->get('/attendancehistory', 'authenticate', function() use ($app) {
             $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
             $tmp["rank"] = (empty($slist["rank"]) ? "NULL" : $slist["rank"]);
         }
-//        error_log( print_R("attendance push\n ", TRUE), 3, LOG);
-//        error_log( print_R($tmp, TRUE), 3, LOG);
+//        $app->log->debug( print_R("attendance push\n ", TRUE));
+//        $app->log->debug( print_R($tmp, TRUE));
         array_push($response["attendancehistory"], $tmp);
     }
     $row_cnt = count($response["attendancehistory"]);
-    error_log( print_R("attendancehistory cnt: $row_cnt\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("attendancehistory cnt: $row_cnt\n ", TRUE));
 
     if ($row_cnt > 0) {
         $response["error"] = false;
-        error_log( print_R("attendancehistory fine with $row_cnt\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("attendancehistory fine with $row_cnt\n ", TRUE));
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
         $response["message"] = "error in attendancehistory";
-        error_log( print_R("attendancehistory bad\n ", TRUE), 3, LOG);
-        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
-        error_log( print_R("attendancehistory error\n ", TRUE), 3, LOG);
-        error_log( print_R($response, TRUE), 3, LOG);
+        $app->log->debug( print_R("attendancehistory bad\n ", TRUE));
+        $app->log->debug( print_R("rowcnt error: $row_cnt\n ", TRUE));
+        $app->log->debug( print_R("attendancehistory error\n ", TRUE));
+        $app->log->debug( print_R($response, TRUE));
         
 //note need to handle 404 data notfound
         echoRespnse(404, $response);
 //        echoRespnse(200, $response);
     }
 });
-$app->get('/DOW', 'authenticate', function() {
+$app->get('/DOW', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -195,11 +195,11 @@ $app->get('/DOW', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in DOW";
-        error_log( print_R("DOW bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("DOW bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
+$app->get('/schedule/:DOW', 'authenticate','setDebug', function($DOWid) {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -239,12 +239,12 @@ $app->get('/schedule/:DOW', 'authenticate', function($DOWid) {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Schedulelist";
-        error_log( print_R("Schedulelist bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Schedulelist bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
 
-$app->get('/schedule', 'authenticate', function() {
+$app->get('/schedule', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -292,11 +292,11 @@ $app->get('/schedule', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Schedulelists";
-        error_log( print_R("Schedulelists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Schedulelists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->get('/classes', 'authenticate', function() {
+$app->get('/classes', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -326,11 +326,11 @@ $app->get('/classes', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in ClassLists";
-        error_log( print_R("ClassLists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassLists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->get('/programs', 'authenticate', function() {
+$app->get('/programs', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -360,11 +360,11 @@ $app->get('/programs', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Programlists";
-        error_log( print_R("Programlists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Programlists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->get('/ClassPgm', 'authenticate', function() {
+$app->get('/ClassPgm', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -406,20 +406,20 @@ $app->get('/ClassPgm', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in ClassPgmList";
-        error_log( print_R("ClassPgmList bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassPgmList bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/ClassPgm','authenticate',  function() use($app) {
+$app->post('/ClassPgm','authenticate',  'setDebug',function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("ClassPgm post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ClassPgm post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $classid  = (isset($dataJsonDecode->thedata->classid)       ? $dataJsonDecode->thedata->classid : "");
@@ -443,17 +443,17 @@ $app->post('/ClassPgm','authenticate',  function() use($app) {
             $response["error"] = false;
             $response["message"] = "Class Program created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Class Program created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class Program created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Class Program updated successfully";
-            error_log( print_R("Class Program already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class Program already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Class Program result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Class Program result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Class Program. Please try again";
@@ -461,22 +461,22 @@ $app->post('/ClassPgm','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/ClassPgm','authenticate', function() use ($app) {
+$app->delete('/ClassPgm','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("ClassPgm before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ClassPgm before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $ClassPgmgood=0;
@@ -490,15 +490,15 @@ $app->delete('/ClassPgm','authenticate', function() use ($app) {
                                 );
 
     if ($ClassPgm > 0) {
-        error_log( print_R("ClassPgm removed: $ClassPgm\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("ClassPgm removed: $ClassPgm\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "ClassPgm removed successfully";
         $ClassPgmgood = 1;
         $response["ClassPgm"] = $ClassPgmgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete ClassPgm result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $ClassPgm, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete ClassPgm result bad\n", TRUE));
+        $app->log->debug( print_R( $ClassPgm, TRUE));
         $ClassPgmbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove ClassPgm. Please try again";
@@ -507,16 +507,16 @@ $app->delete('/ClassPgm','authenticate', function() use ($app) {
     
 });
 
-$app->post('/schedule','authenticate',  function() use($app) {
+$app->post('/schedule','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("schedule post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("schedule post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $ID          = (isset($dataJsonDecode->thedata->ID)             ? $dataJsonDecode->thedata->ID : "");
     $DayOfWeek  = (isset($dataJsonDecode->thedata->DayOfWeek)       ? $dataJsonDecode->thedata->DayOfWeek : "");
@@ -530,7 +530,7 @@ $app->post('/schedule','authenticate',  function() use($app) {
     $classid    = (isset($dataJsonDecode->thedata->classid)         ? $dataJsonDecode->thedata->classid : "");
 
     if ($classid == "0" || $classid == "NULL") {
-        error_log( print_R("classid converted: $classid\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("classid converted: $classid\n", TRUE ));
         $classid = NULL;
     }
     $db = new AttendanceDbHandler();
@@ -546,38 +546,38 @@ $app->post('/schedule','authenticate',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "schedule created successfully";
         $response["res_id"] = $res_id;
-        error_log( print_R("schedule created: $res_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("schedule created: $res_id\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($res_id == 1 || $res_id == 0) {
         $response["error"] = false;
         $response["message"] = "schedule updated successfully";
-        error_log( print_R("schedule already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("schedule already existed\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after schedule result bad\n", TRUE), 3, LOG);
-        error_log( print_R( "resid: $res_id\n", TRUE), 3, LOG);
+        $app->log->debug( print_R("after schedule result bad\n", TRUE));
+        $app->log->debug( print_R( "resid: $res_id\n", TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create schedule. Please try again";
         echoRespnse(400, $response);
     }
 
 });
-$app->delete('/schedule','authenticate', function() use ($app) {
+$app->delete('/schedule','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("schedule before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("schedule before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->ID) ? 
                     $test->thedata->ID : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $schedulegood=0;
@@ -592,15 +592,15 @@ $app->delete('/schedule','authenticate', function() use ($app) {
                                 );
 
     if ($schedule > 0) {
-        error_log( print_R("schedule removed: $schedule\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("schedule removed: $schedule\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "schedule removed successfully";
         $schedulegood = 1;
         $response["schedule"] = $schedulegood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete schedule result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $schedule, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete schedule result bad\n", TRUE));
+        $app->log->debug( print_R( $schedule, TRUE));
         $schedulebad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove schedule. Please try again";
@@ -610,7 +610,7 @@ $app->delete('/schedule','authenticate', function() use ($app) {
 
 });
 
-$app->get('/program', 'authenticate', function() {
+$app->get('/program', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -660,20 +660,20 @@ $app->get('/program', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Programlists";
-        error_log( print_R("Programlists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Programlists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/program','authenticate',  function() use($app) {
+$app->post('/program','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Program post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Program post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 //            id, class, classType, 12MonthPrice, 6MonthPrice, MonthlyPrice, WeeklyPrice, 
 //            2ndPersonDiscount, 3rdPersonDiscount, 4thPersonDiscount, SpecialPrice, sortKey
 
@@ -703,38 +703,38 @@ $app->post('/program','authenticate',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "Program created successfully";
         $response["res_id"] = $res_id;
-        error_log( print_R("Program created: $res_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Program created: $res_id\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($res_id == 1) {
         $response["error"] = false;
         $response["message"] = "Program updated successfully";
-        error_log( print_R("Program already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Program already existed\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after Program result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Program result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create Program. Please try again";
         echoRespnse(400, $response);
     }
 
 });
-$app->delete('/program','authenticate', function() use ($app) {
+$app->delete('/program','authenticate','setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Program before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Program before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $Programgood=0;
@@ -768,28 +768,28 @@ $app->delete('/program','authenticate', function() use ($app) {
                                     );
     
         if ($Program > 0) {
-            error_log( print_R("Program removed: $Program\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Program removed: $Program\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Program removed successfully";
             $Programgood = 1;
             $response["Program"] = $Programgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Program result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Program, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Program result bad\n", TRUE));
+            $app->log->debug( print_R( $Program, TRUE));
             $Programbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove Program. Please try again";
             echoRespnse(400, $response);
         }
     } else {
-            error_log( print_R("before delete Program result bad\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("before delete Program result bad\n", TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to remove Program. There are records that are still attached to the program. Please remove those first";
             echoRespnse(400, $response);
     }
 });
-$app->get('/classtypes', 'authenticate', function() {
+$app->get('/classtypes', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -821,11 +821,11 @@ $app->get('/classtypes', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in ClassTypelists";
-        error_log( print_R("ClassTypelists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassTypelists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->get('/ranktypeids', 'authenticate', function() {
+$app->get('/ranktypeids', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -855,15 +855,15 @@ $app->get('/ranktypeids', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in RankTypelists";
-        error_log( print_R("RankTypelists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("RankTypelists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->get('/ranks', 'authenticate', function() use ($app) {
+$app->get('/ranks', 'authenticate', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("ranks entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("ranks entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $ranktype = '';
     $response = array();
@@ -879,7 +879,7 @@ $app->get('/ranks', 'authenticate', function() use ($app) {
     } else {
         $response["error"] = true;
         $response["message"] = "Missing the registration type";
-        error_log( print_R("Registration type missing bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Registration type missing bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 
@@ -913,12 +913,12 @@ $app->get('/ranks', 'authenticate', function() use ($app) {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Ranklists";
-        error_log( print_R("Ranklists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Ranklists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
 
-$app->get('/class', 'authenticate', function() {
+$app->get('/class', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -965,20 +965,20 @@ $app->get('/class', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Classlists";
-        error_log( print_R("Classlists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Classlists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/class','authenticate',  function() use($app) {
+$app->post('/class','authenticate',  'setDebug',function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Class post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Class post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $class  = (isset($dataJsonDecode->thedata->class)       ? $dataJsonDecode->thedata->class : "");
@@ -997,25 +997,25 @@ $app->post('/class','authenticate',  function() use($app) {
     $res_id = $db->updateClass(
         $id, $class, $sort, $nextClass, $ranklistForNextClass, $rankForNextClass, $ageForNextClass, $pictureurl, $registrationType
                                      );
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
         if ($res_id["success"] > 1) {
             $response["error"] = false;
             $response["message"] = "Class created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Class created\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class created\n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Class updated successfully";
-            error_log( print_R("Class already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Class result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Class result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Class. Please try again";
@@ -1023,22 +1023,22 @@ $app->post('/class','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/class','authenticate', function() use ($app) {
+$app->delete('/class','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Class before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Class before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $Classgood=0;
@@ -1072,29 +1072,29 @@ $app->delete('/class','authenticate', function() use ($app) {
                                     );
     
         if ($Class > 0) {
-            error_log( print_R("Class removed: $Class\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class removed: $Class\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Class removed successfully";
             $Classgood = 1;
             $response["Class"] = $Classgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Class result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Class, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Class result bad\n", TRUE));
+            $app->log->debug( print_R( $Class, TRUE));
             $Classbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove Class. Please try again";
             echoRespnse(400, $response);
         }
     } else {
-            error_log( print_R("before delete Class result bad\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("before delete Class result bad\n", TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to remove Class. There are records that are still attached to the Class. Please remove those first";
             echoRespnse(400, $response);
     }
 });
 
-$app->get('/basic', 'authenticate', function() {
+$app->get('/basic', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1131,20 +1131,20 @@ $app->get('/basic', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Basiclists";
-        error_log( print_R("Basiclists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Basiclists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/basic','authenticate',  function() use($app) {
+$app->post('/basic','authenticate',  'setDebug',function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Basic post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Basic post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 // listtype, listkey, listvalue, listorder 
 
     $id          = (isset($dataJsonDecode->thedata->id)         ? $dataJsonDecode->thedata->id : "");
@@ -1159,25 +1159,25 @@ $app->post('/basic','authenticate',  function() use($app) {
     $res_id = $db->updateBasic(
         $id, $listtype, $listkey, $listvalue, $listorder 
                                      );
-    error_log( print_R($res_id, TRUE ), 3, LOG);
-    error_log( print_R("\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
 
     if (isset($res_id["success"]) ) {
         if ($res_id["success"] > 1) {
             $response["error"] = false;
             $response["message"] = "Basic created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Basic created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Basic created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Basic updated successfully";
-            error_log( print_R("Basic already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Basic already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Basic result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Basic result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Basic. Please try again";
@@ -1185,22 +1185,22 @@ $app->post('/basic','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/basic','authenticate', function() use ($app) {
+$app->delete('/basic','authenticate','setDebug','setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Basic before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Basic before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $Basicgood=0;
@@ -1216,15 +1216,15 @@ $app->delete('/basic','authenticate', function() use ($app) {
                                 );
 
     if ($Basic > 0) {
-        error_log( print_R("Basic removed: $Basic\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Basic removed: $Basic\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "Basic removed successfully";
         $Basicgood = 1;
         $response["Basic"] = $Basicgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete Basic result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $Basic, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete Basic result bad\n", TRUE));
+        $app->log->debug( print_R( $Basic, TRUE));
         $Basicbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove Basic. Please try again";
@@ -1233,16 +1233,16 @@ $app->delete('/basic','authenticate', function() use ($app) {
 });
 
 
-$app->post('/updateattendance','authenticate',  function() use($app) {
+$app->post('/updateattendance','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("attendance post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("attendance post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $contactID  = (isset($dataJsonDecode->thedata->student_id) ? $dataJsonDecode->thedata->student_id : "");
     $class      = (isset($dataJsonDecode->thedata->class)      ? $dataJsonDecode->thedata->class : "");
@@ -1264,16 +1264,16 @@ $app->post('/updateattendance','authenticate',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "attend created successfully";
         $response["attendance_id"] = $attendance_id;
-        error_log( print_R("attend created: $attendance_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("attend created: $attendance_id\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($attendance_id == 1) {
         $response["error"] = false;
         $response["message"] = "attend updated successfully";
-        error_log( print_R("attend already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("attend already existed\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after attend result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $attendance_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after attend result bad\n", TRUE));
+        $app->log->debug( print_R( $attendance_id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create attend. Please try again";
         echoRespnse(400, $response);
@@ -1281,19 +1281,19 @@ $app->post('/updateattendance','authenticate',  function() use($app) {
 
 });
 
-$app->put('/readynextrank/:id', 'authenticate', function($student_id) use($app) {
+$app->put('/readynextrank/:id', 'authenticate', 'setDebug',function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
-    //error_log( print_R("before put student class paylist request", TRUE ));
+    //$app->log->debug( print_R("before put student class paylist request", TRUE ));
 
 
     $request = $app->request();
     $body = $request->getBody();
     $studentrank = json_decode($body);
 
-    error_log( print_R("readynextrank entered for student:$student_id" . "/n", TRUE ), 3, LOG);
-    error_log( print_R($studentrank, TRUE ), 3, LOG);
-    error_log( print_R("/n", TRUE ),3, LOG);
+    $app->log->debug( print_R("readynextrank entered for student:$student_id" . "/n", TRUE ));
+    $app->log->debug( print_R($studentrank, TRUE ));
+    $app->log->debug( print_R("/n", TRUE ));
 
     //global $user_id;
     $contactID = $student_id;
@@ -1321,7 +1321,7 @@ $app->put('/readynextrank/:id', 'authenticate', function($student_id) use($app) 
     echoRespnse(200, $response);
 });
 
-$app->get('/Attendancelist', 'authenticate', function() {
+$app->get('/Attendancelist', 'authenticate', 'setDebug',function() {
     $response = array();
     $db = new AttendanceDbHandler();
 
@@ -1333,7 +1333,7 @@ $app->get('/Attendancelist', 'authenticate', function() {
 
     // looping through result and preparing  arrays
     while ($slist = $result->fetch_assoc()) {
-        //error_log( print_R("student class list results", TRUE ));
+        //$app->log->debug( print_R("student class list results", TRUE ));
         $tmp = array();
         $tmp["class"] = $slist["class"];
         $tmp["classid"] = $slist["classid"];
@@ -1354,18 +1354,18 @@ $app->get('/Attendancelist', 'authenticate', function() {
 
     }
 
-    //error_log( print_R($response["Attendancelist"], TRUE ));
-    //error_log( print_R("student class list results end", TRUE ));
+    //$app->log->debug( print_R($response["Attendancelist"], TRUE ));
+    //$app->log->debug( print_R("student class list results end", TRUE ));
 
 
     echoRespnse(200, $response);
 });
 
-$app->get('/Attendancesum', 'authenticate', function() use($app) {
+$app->get('/Attendancesum', 'authenticate', 'setDebug',function() use($app) {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("Attendancesum entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("Attendancesum entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $contactid = '';
     $theclass = '';
@@ -1377,7 +1377,7 @@ $app->get('/Attendancesum', 'authenticate', function() use($app) {
         $theclass = $allGetVars['theclass'];
     }
 
-    error_log( print_R("Attendancesum params: contactid: $contactid theclass: $theclass\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("Attendancesum params: contactid: $contactid theclass: $theclass\n ", TRUE));
 
 
     $response = array();
@@ -1400,19 +1400,19 @@ $app->get('/Attendancesum', 'authenticate', function() use($app) {
 
     }
     $row_cnt = count($response["attendancesum"]);
-    error_log( print_R("attendancesum cnt: $row_cnt\n ", TRUE), 3, LOG);
+    $app->log->debug( print_R("attendancesum cnt: $row_cnt\n ", TRUE));
 
     if ($row_cnt > 0) {
         $response["error"] = false;
-        error_log( print_R("Attendancesum fine with $row_cnt\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Attendancesum fine with $row_cnt\n ", TRUE));
         echoRespnse(200, $response);
     } else {
         $response["error"] = true;
         $response["message"] = "Warning in Attendancesum: No records found";
-        error_log( print_R("Attendancesum bad\n ", TRUE), 3, LOG);
-        error_log( print_R("rowcnt error: $row_cnt\n ", TRUE), 3, LOG);
-        error_log( print_R("Attendancesum error\n ", TRUE), 3, LOG);
-        error_log( print_R($response, TRUE), 3, LOG);
+        $app->log->debug( print_R("Attendancesum bad\n ", TRUE));
+        $app->log->debug( print_R("rowcnt error: $row_cnt\n ", TRUE));
+        $app->log->debug( print_R("Attendancesum error\n ", TRUE));
+        $app->log->debug( print_R($response, TRUE));
         
 //todo: need to handle 404 data notfound
         echoRespnse(404, $response);
@@ -1420,7 +1420,7 @@ $app->get('/Attendancesum', 'authenticate', function() use($app) {
 
 });
 
-$app->get('/rrank', 'authenticate', function() {
+$app->get('/rrank', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1465,20 +1465,20 @@ $app->get('/rrank', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Ranklists";
-        error_log( print_R("Ranklists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Ranklists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/rrank','authenticate',  function() use($app) {
+$app->post('/rrank','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Rank post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Rank post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 //ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, school, nextsortkey
 
     $rankid          = (isset($dataJsonDecode->thedata->rankid) ? $dataJsonDecode->thedata->rankid : "");
@@ -1503,38 +1503,38 @@ $app->post('/rrank','authenticate',  function() use($app) {
         $response["error"] = false;
         $response["message"] = "Rank created successfully";
         $response["res_id"] = $res_id;
-        error_log( print_R("Rank created: $res_id\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Rank created: $res_id\n", TRUE ));
         echoRespnse(201, $response);
     } else if ($res_id == 1) {
         $response["error"] = false;
         $response["message"] = "Rank updated successfully";
-        error_log( print_R("Rank already existed\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Rank already existed\n", TRUE ));
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after Rank result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Rank result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["error"] = true;
         $response["message"] = "Failed to create Rank. Please try again";
         echoRespnse(400, $response);
     }
 
 });
-$app->delete('/rrank','authenticate', function() use ($app) {
+$app->delete('/rrank','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Rank before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Rank before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->rankid) ? 
                     $test->thedata->rankid : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $Rankgood=0;
@@ -1568,28 +1568,28 @@ $app->delete('/rrank','authenticate', function() use ($app) {
                                     );
     
         if ($Rank > 0) {
-            error_log( print_R("Rank removed: $Rank\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Rank removed: $Rank\n", TRUE ));
             $response["error"] = false;
             $response["message"] = "Rank removed successfully";
             $Rankgood = 1;
             $response["Rank"] = $Rankgood;
             echoRespnse(201, $response);
         } else {
-            error_log( print_R("after delete Rank result bad\n", TRUE), 3, LOG);
-            error_log( print_R( $Rank, TRUE), 3, LOG);
+            $app->log->debug( print_R("after delete Rank result bad\n", TRUE));
+            $app->log->debug( print_R( $Rank, TRUE));
             $Rankbad = 1;
             $response["error"] = true;
             $response["message"] = "Failed to remove Rank. Please try again";
             echoRespnse(400, $response);
         }
     } else {
-            error_log( print_R("before delete Rank result bad\n", TRUE), 3, LOG);
+            $app->log->debug( print_R("before delete Rank result bad\n", TRUE));
             $response["error"] = true;
             $response["message"] = "Failed to remove Rank. There are records that are still attached to the Rank. Please remove those first";
             echoRespnse(400, $response);
     }
 });
-$app->get('/rankgroups', 'authenticate', function() {
+$app->get('/rankgroups', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1621,12 +1621,12 @@ $app->get('/rankgroups', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in RankGrouplist";
-        error_log( print_R("RankGrouplist bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("RankGrouplist bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
 
-$app->get('/ClassRank', 'authenticate', function() {
+$app->get('/ClassRank', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1658,20 +1658,20 @@ $app->get('/ClassRank', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in ClassRankList";
-        error_log( print_R("ClassRankList bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClassRankList bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/ClassRank','authenticate',  function() use($app) {
+$app->post('/ClassRank','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("ClassRank post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ClassRank post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $classid  = (isset($dataJsonDecode->thedata->classid)       ? $dataJsonDecode->thedata->classid : "");
@@ -1690,17 +1690,17 @@ $app->post('/ClassRank','authenticate',  function() use($app) {
             $response["error"] = false;
             $response["message"] = "Class Rank created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Class Rank created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class Rank created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Class Rank updated successfully";
-            error_log( print_R("Class Rank already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Class Rank already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Class Rank result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Class Rank result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Class Rank. Please try again";
@@ -1708,22 +1708,22 @@ $app->post('/ClassRank','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/ClassRank','authenticate', function() use ($app) {
+$app->delete('/ClassRank','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("ClassRank before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ClassRank before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $ClassRankgood=0;
@@ -1737,15 +1737,15 @@ $app->delete('/ClassRank','authenticate', function() use ($app) {
                                 );
 
     if ($ClassRank > 0) {
-        error_log( print_R("ClassRank removed: $ClassRank\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("ClassRank removed: $ClassRank\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "ClassRank removed successfully";
         $ClassRankgood = 1;
         $response["ClassRank"] = $ClassRankgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete ClassRank result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $ClassRank, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete ClassRank result bad\n", TRUE));
+        $app->log->debug( print_R( $ClassRank, TRUE));
         $ClassRankbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove ClassRank. Please try again";
@@ -1753,11 +1753,11 @@ $app->delete('/ClassRank','authenticate', function() use ($app) {
     }
     
 });
-$app->get('/classbytype', 'authenticate', function() {
+$app->get('/classbytype', 'authenticate','setDebug', function() {
 
     $allGetVars = $app->request->get();
-    error_log( print_R("ranks entered:\n ", TRUE), 3, LOG);
-    error_log( print_R($allGetVars, TRUE), 3, LOG);
+    $app->log->debug( print_R("ranks entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
 
     $type = '';
 
@@ -1766,7 +1766,7 @@ $app->get('/classbytype', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "Missing the class type";
-        error_log( print_R("Class type missing bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Class type missing bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 
@@ -1813,12 +1813,12 @@ $app->get('/classbytype', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in Classlists";
-        error_log( print_R("Classlists bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("Classlists bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
 
-$app->get('/testtype', 'authenticate', function() {
+$app->get('/testtype', 'authenticate','setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1853,20 +1853,20 @@ $app->get('/testtype', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in TesttypeList";
-        error_log( print_R("TesttypeList bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("TesttypeList bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/testtype','authenticate',  function() use($app) {
+$app->post('/testtype','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Testtype post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Testtype post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $testtype  = (isset($dataJsonDecode->thedata->testtype)       ? $dataJsonDecode->thedata->testtype : "");
@@ -1886,17 +1886,17 @@ $app->post('/testtype','authenticate',  function() use($app) {
             $response["error"] = false;
             $response["message"] = "Test type created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Test type created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Test type created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Test type updated successfully";
-            error_log( print_R("Test type already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Test type already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Test type result bad\n", TRUE), 3, LOG);
-     //   error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Test type result bad\n", TRUE));
+     //   $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Test type. Please try again";
@@ -1904,22 +1904,22 @@ $app->post('/testtype','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/testtype','authenticate', function() use ($app) {
+$app->delete('/testtype','authenticate','setDebug', function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Testtype before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Testtype before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $Testtypegood=0;
@@ -1933,15 +1933,15 @@ $app->delete('/testtype','authenticate', function() use ($app) {
                                 );
 
     if ($Testtype > 0) {
-        error_log( print_R("Testtype removed: $Testtype\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Testtype removed: $Testtype\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "Testtype removed successfully";
         $Testtypegood = 1;
         $response["Testtype"] = $Testtypegood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete Testtype result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $Testtype, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete Testtype result bad\n", TRUE));
+        $app->log->debug( print_R( $Testtype, TRUE));
         $Testtypebad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove Testtype. Please try again";
@@ -1950,7 +1950,7 @@ $app->delete('/testtype','authenticate', function() use ($app) {
     
 });
 
-$app->get('/classtest', 'authenticate', function() {
+$app->get('/classtest', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1984,20 +1984,20 @@ $app->get('/classtest', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in ClasstestList";
-        error_log( print_R("ClasstestList bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("ClasstestList bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/classtest','authenticate',  function() use($app) {
+$app->post('/classtest','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("Classtest post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Classtest post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $classid  = (isset($dataJsonDecode->thedata->classid)       ? $dataJsonDecode->thedata->classid : "");
@@ -2017,17 +2017,17 @@ $app->post('/classtest','authenticate',  function() use($app) {
             $response["error"] = false;
             $response["message"] = "Test type created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Test type created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Test type created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Test type updated successfully";
-            error_log( print_R("Test type already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Test type already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Test type result bad\n", TRUE), 3, LOG);
-     //   error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Test type result bad\n", TRUE));
+     //   $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Test type. Please try again";
@@ -2035,22 +2035,22 @@ $app->post('/classtest','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/classtest','authenticate', function() use ($app) {
+$app->delete('/classtest','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("Classtest before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("Classtest before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $Classtestgood=0;
@@ -2064,15 +2064,15 @@ $app->delete('/classtest','authenticate', function() use ($app) {
                                 );
 
     if ($Classtest > 0) {
-        error_log( print_R("Classtest removed: $Classtest\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("Classtest removed: $Classtest\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "Classtest removed successfully";
         $Classtestgood = 1;
         $response["Classtest"] = $Classtestgood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete Classtest result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $Classtest, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete Classtest result bad\n", TRUE));
+        $app->log->debug( print_R( $Classtest, TRUE));
         $Classtestbad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove Classtest. Please try again";
@@ -2081,7 +2081,7 @@ $app->delete('/classtest','authenticate', function() use ($app) {
     
 });
 
-$app->get('/emailtemplates',   function() use($app) {
+$app->get('/emailtemplates',  'setDebug', function() use($app) {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -2114,7 +2114,7 @@ $app->get('/emailtemplates',   function() use($app) {
 
 });
 
-$app->get('/htmltemplate', 'authenticate', function() {
+$app->get('/htmltemplate', 'authenticate', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -2150,20 +2150,20 @@ $app->get('/htmltemplate', 'authenticate', function() {
     } else {
         $response["error"] = true;
         $response["message"] = "error in HtmlTemplateList";
-        error_log( print_R("HtmlTemplateList bad\n ", TRUE), 3, LOG);
+        $app->log->debug( print_R("HtmlTemplateList bad\n ", TRUE));
         echoRespnse(404, $response);
     }
 });
-$app->post('/htmltemplate','authenticate',  function() use($app) {
+$app->post('/htmltemplate','authenticate', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
-    error_log( print_R("HtmlTemplate post before update insert\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("HtmlTemplate post before update insert\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    error_log( print_R($thedata, TRUE ), 3, LOG);
+    $app->log->debug( print_R($thedata, TRUE ));
 
     $id          = (isset($dataJsonDecode->thedata->id)             ? $dataJsonDecode->thedata->id : "");
     $title  = (isset($dataJsonDecode->thedata->title)       ? $dataJsonDecode->thedata->title : "");
@@ -2183,17 +2183,17 @@ $app->post('/htmltemplate','authenticate',  function() use($app) {
             $response["error"] = false;
             $response["message"] = "template created successfully";
             $response["res_id"] = $res_id["success"];
-            error_log( print_R("Test type created: \n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Test type created: \n", TRUE ));
             echoRespnse(201, $response);
         } else if ($res_id["success"] == 1) {
             $response["error"] = false;
             $response["message"] = "Template updated successfully";
-            error_log( print_R("Template already existed\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("Template already existed\n", TRUE ));
             echoRespnse(201, $response);
         }
     } else {
-        error_log( print_R("after Test type result bad\n", TRUE), 3, LOG);
-     //   error_log( print_R( $res_id, TRUE), 3, LOG);
+        $app->log->debug( print_R("after Test type result bad\n", TRUE));
+     //   $app->log->debug( print_R( $res_id, TRUE));
         $response["extra"] = $res_id;
         $response["error"] = true;
         $response["message"] = "Failed to create Test type. Please try again";
@@ -2201,22 +2201,22 @@ $app->post('/htmltemplate','authenticate',  function() use($app) {
     }
 
 });
-$app->delete('/htmltemplate','authenticate', function() use ($app) {
+$app->delete('/htmltemplate','authenticate', 'setDebug',function() use ($app) {
 
     $response = array();
 
-    error_log( print_R("HtmlTemplate before delete\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("HtmlTemplate before delete\n", TRUE ));
     $request = $app->request();
 
     $body = $request->getBody();
     $test = json_decode($body);
-    error_log( print_R($test, TRUE ), 3, LOG);
+    $app->log->debug( print_R($test, TRUE ));
 
 
     $ID    = (isset($test->thedata->id) ? 
                     $test->thedata->id : "");
 
-    error_log( print_R("ID: $ID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("ID: $ID\n", TRUE ));
 
 
     $HtmlTemplategood=0;
@@ -2230,15 +2230,15 @@ $app->delete('/htmltemplate','authenticate', function() use ($app) {
                                 );
 
     if ($HtmlTemplate > 0) {
-        error_log( print_R("HtmlTemplate removed: $HtmlTemplate\n", TRUE ), 3, LOG);
+        $app->log->debug( print_R("HtmlTemplate removed: $HtmlTemplate\n", TRUE ));
         $response["error"] = false;
         $response["message"] = "HtmlTemplate removed successfully";
         $HtmlTemplategood = 1;
         $response["HtmlTemplate"] = $HtmlTemplategood;
         echoRespnse(201, $response);
     } else {
-        error_log( print_R("after delete HtmlTemplate result bad\n", TRUE), 3, LOG);
-        error_log( print_R( $HtmlTemplate, TRUE), 3, LOG);
+        $app->log->debug( print_R("after delete HtmlTemplate result bad\n", TRUE));
+        $app->log->debug( print_R( $HtmlTemplate, TRUE));
         $HtmlTemplatebad = 1;
         $response["error"] = true;
         $response["message"] = "Failed to remove HtmlTemplate. Please try again";

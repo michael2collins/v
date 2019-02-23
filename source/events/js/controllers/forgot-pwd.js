@@ -26,8 +26,8 @@
             pagevm.dataLoading;
             pagevm.apiKey;
             
-            $log.debug('enter ForgotpwdController');
-            $log.debug('username', pagevm.username);
+            $log.log('enter ForgotpwdController');
+            $log.log('username', pagevm.username);
 
             (function initController() {
                 // reset login status
@@ -40,13 +40,13 @@
     
 
             function forgotpwd() {
-                $log.debug('controller forgotpwd function entered', pagevm.username);
+                $log.log('controller forgotpwd function entered', pagevm.username);
                 var path = '../v1/forgotpassword?username=' + pagevm.username;
                 pagevm.dataLoading = true;
 
                  return UserServices.forgotpassword(path).then(function(data){
-                    $log.debug('UserServices returned data');
-                    $log.debug(data);
+                    $log.log('UserServices returned data');
+                    $log.log(data);
                     pagevm.apiKey = data.apiKey;
        //     $("body>.default-page").show();
         //    $("body>.extra-page").html($(".page-content").html()).hide();
@@ -57,7 +57,7 @@
                         return data;
                 },
                 function (error) {
-                    $log.debug('Caught an error UserServices, going to notify:', error); 
+                    $log.log('Caught an error UserServices, going to notify:', error); 
                 //    vm.message = error;
                 //    Notification.error({message: error, delay: 5000});
                         UserServices.SetCredentials('','','');

@@ -21,6 +21,7 @@ class TestingDbHandler {
         // opening db connection
         $db = new DbConnect();
         $this->conn = $db->connect();
+        $app = \Slim\Slim::getInstance();
 
     }
 
@@ -29,9 +30,10 @@ class TestingDbHandler {
      * @return boolean
      */
     private function istestcandidateExists($testid, $ContactID) {
+        global $app;
 
-    error_log( print_R("before istestcandidateExists\n", TRUE ), 3, LOG);
-    error_log( print_R("contactid: $ContactID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before istestcandidateExists\n", TRUE ));
+    $app->log->debug( print_R("contactid: $ContactID\n", TRUE ));
         
         
         $stmt = $this->conn->prepare("SELECT testid from testcandidates WHERE testid = ? and  contactID = ?");
@@ -44,9 +46,10 @@ class TestingDbHandler {
     }
 
     private function ispromotionExists($ranktype, $ContactID) {
+        global $app;
 
-    error_log( print_R("before ispromotionExists\n", TRUE ), 3, LOG);
-    error_log( print_R("contactid: $ContactID\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before ispromotionExists\n", TRUE ));
+    $app->log->debug( print_R("contactid: $ContactID\n", TRUE ));
         
         
         $stmt = $this->conn->prepare("SELECT id from ncontactrank WHERE ranktype = ? and  contactID = ?");
@@ -63,13 +66,14 @@ class TestingDbHandler {
      */
     public function createtestcandidate($testid, $ContactID, $nextRank, $classwas, $pgmwas
     ) {
+        global $app;
 
-        error_log( print_R("createtestcandidate entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("createtestcandidate entered\n", TRUE ));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
                                       
         $response = array();
@@ -112,13 +116,14 @@ class TestingDbHandler {
      */
     public function removetestcandidate($testid, $ContactID
     ) {
+        global $app;
 
-        error_log( print_R("removetestcandidate entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removetestcandidate entered\n", TRUE ));
 
         $numargs = func_num_args();
         $arg_list = func_get_args();
             for ($i = 0; $i < $numargs; $i++) {
-                error_log( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE), 3, LOG);
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
         }
                                       
         $response = array();
@@ -153,6 +158,7 @@ class TestingDbHandler {
     public function updatetestcandidate($testid,  $ContactID, 
             $nextRank, $classwas, $pgmwas
         ) {
+        global $app;
 
         $num_affected_rows = 0;
 
@@ -162,7 +168,7 @@ class TestingDbHandler {
         $sql .= "  pgmwas = ? ";
         $sql .= " where testid = ? and  ContactID = ? ";
 
-        error_log( print_R($sql, TRUE ), 3, LOG);
+        $app->log->debug( print_R($sql, TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -181,6 +187,7 @@ class TestingDbHandler {
 
     public function updateTesting($ID,  $tester1, $tester2, $tester3, $tester4 
         ) {
+        global $app;
 
         $num_affected_rows = 0;
 
@@ -191,7 +198,7 @@ class TestingDbHandler {
         $sql .= "  Tester4 = ?  ";
         $sql .= " where ID = ?  ";
 
-        error_log( print_R($sql, TRUE ), 3, LOG);
+        $app->log->debug( print_R($sql, TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -212,6 +219,7 @@ class TestingDbHandler {
             $testDate, $ContactID, $RankAchievedInTest, $ranktype, $promote, 
          $changeClass, $recommendedClassid, $recommendedPgmid, $classWas, $pgmWas, $crid, $rankListForNextClass, $cpid
         ) {
+        global $app;
 
         $num_affected_rows = 0;
 
@@ -246,17 +254,17 @@ class TestingDbHandler {
 
         $histtype = $testDate . ' ' . $RankAchievedInTest;
 
-        error_log( print_R("$sql $RankAchievedInTest, $testDate, $rankListForNextClass, $ContactID, $crid, cpid $cpid\n", TRUE ), 3, LOG);
-        error_log( print_R("$cpsql rcl: $recommendedClassid, rpid: $recommendedPgmid, cpid $cpid\n", TRUE ), 3, LOG);
-        error_log( print_R("$clsql $recommendedClassid,
+        $app->log->debug( print_R("$sql $RankAchievedInTest, $testDate, $rankListForNextClass, $ContactID, $crid, cpid $cpid\n", TRUE ));
+        $app->log->debug( print_R("$cpsql rcl: $recommendedClassid, rpid: $recommendedPgmid, cpid $cpid\n", TRUE ));
+        $app->log->debug( print_R("$clsql $recommendedClassid,
                                         $recommendedPgmid,
                                       $ContactID,
                                       $classWas,
-                                      $pgmWas\n", TRUE ), 3, LOG);
-        error_log( print_R("$histsql\n", TRUE ), 3, LOG);
-                    error_log( print_R("histtype: $histtype\n", TRUE ), 3, LOG);
-                    error_log( print_R("cont: $ContactID\n", TRUE ), 3, LOG);
-                    error_log( print_R("date: $testDate\n", TRUE ), 3, LOG);
+                                      $pgmWas\n", TRUE ));
+        $app->log->debug( print_R("$histsql\n", TRUE ));
+                    $app->log->debug( print_R("histtype: $histtype\n", TRUE ));
+                    $app->log->debug( print_R("cont: $ContactID\n", TRUE ));
+                    $app->log->debug( print_R("date: $testDate\n", TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -266,7 +274,7 @@ class TestingDbHandler {
             $stmt->execute();
             $num_affected_rows = $stmt->affected_rows;
             $stmt->close();
-            error_log( print_R("contactrank set: $num_affected_rows\n", TRUE ), 3, LOG);
+            $app->log->debug( print_R("contactrank set: $num_affected_rows\n", TRUE ));
 
             if ( $num_affected_rows > -1) {
                 if ($changeClass == 1) {
@@ -283,7 +291,7 @@ class TestingDbHandler {
                             $stmt->close();
                             // Check for successful insertion
                             if ($result) {
-                                error_log( print_R("studentregistration set: $result\n", TRUE ), 3, LOG);
+                                $app->log->debug( print_R("studentregistration set: $result\n", TRUE ));
                             } else {
                                 // Failed to register new class
                                 return NULL;
@@ -305,7 +313,7 @@ class TestingDbHandler {
                             $stmt->close();
                             // Check for successful insertion
                             if ($result) {
-                                error_log( print_R("classpays set: $result\n", TRUE ), 3, LOG);
+                                $app->log->debug( print_R("classpays set: $result\n", TRUE ));
                             } else {
                                 // Failed to register new class
                                 return NULL;
@@ -328,7 +336,7 @@ class TestingDbHandler {
                         $stmt->close();
                         // Check for successful insertion
                         if ($result) {
-                            error_log( print_R("contacthist set: $result\n", TRUE ), 3, LOG);
+                            $app->log->debug( print_R("contacthist set: $result\n", TRUE ));
                         } else {
                             // Failed to create history
                             return NULL;
@@ -348,6 +356,7 @@ class TestingDbHandler {
     }
 
     public function gettestcandidateList($thelimit = NULL, $testname, $testtype, $ranktype) {
+        global $app;
     global $school;
 //            where DATE_FORMAT(a.MondayOfWeek, '%Y-%m-%d') >= DATE_FORMAT(cr.lastpromoted, '%Y-%m-%d')
     
@@ -381,7 +390,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
             $sql .= "  LIMIT " . $thelimit ;
         }
 
-        error_log( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype  : and ranktype: $ranktype", TRUE), 3, LOG);
+        $app->log->debug( print_R("gettestcandidateList sql after security: $sql and testname: $testname : and testtype: $testtype  : and ranktype: $ranktype", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
 //            $stmt->bind_param("sss", $testname, $testtype, $school);
@@ -389,17 +398,17 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getTestcandidateDetails list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestcandidateDetails list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getTestcandidateDetails list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestcandidateDetails list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTestcandidateDetails list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTestcandidateDetails list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -408,6 +417,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
     public function getTestcandidateNames($theinput) {
         global $school;
+        global $app;
         $sql = "
             SELECT distinct concat(`startdated` , ' ' , `eventtype`) as name, eventtype, tt.testtype, tt.ranktype 
             FROM `ncalendar` c join testtypes tt on (tt.testdescription = c.eventtype and tt.studentschool = c.studentschool)        
@@ -416,24 +426,24 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 //        $schoolfield = "studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
         $sql .= " order by startdated desc ";
-        error_log( print_R("getTestcandidateNames sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTestcandidateNames sql after security: $sql", TRUE));
 
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s", $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getTestcandidateNames list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestcandidateNames list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getTestcandidateNames list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestcandidateNames list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTestcandidateNames list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTestcandidateNames list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -442,6 +452,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
     public function getTestcandidateDetails($testtype,$supplement,$ranktype) {
         global $school;
+        global $app;
         $sql = " Select nr.ranklist as nextrank, r.ranklist, r.ranktype, r.rankid AS rankid, 
          r.sortkey AS ranksortkey,r.rankGroup AS rankGroup,r.alphasortkey AS rankalphasortkey, t.* 
          From ((( 
@@ -453,7 +464,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
          inner join ranklist nr 
          	On nr.sortkey = r.nextsortkey and nr.school = r.school and nr.ranktype = r.ranktype ) "; 
         if ($supplement == "true") {
-            $sql .=   "  where t.testtype = ?  and t.studentschool = ?  and r.ranktype = ?";
+            $sql .=   "  where t.testtype = ?  and t.studentschool = ?  and r.ranktype = ? and t.studentclassstatus = 'Active'";
         }
         else {
             $sql .=   " where   t.studentschool = ? and r.ranktype = ?";
@@ -463,10 +474,10 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 //        $schoolfield = "t.studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
 
-        error_log( print_R("getTestcandidateDetails sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTestcandidateDetails sql after security: $sql", TRUE));
         $sql .= " order by lastname, firstname ";
         
-        error_log( print_R("getTestcandidateDetails sql: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTestcandidateDetails sql: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             if ($supplement == "true") {
@@ -477,17 +488,17 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getTestcandidateDetails list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestcandidateDetails list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getTestcandidateDetails list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestcandidateDetails list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTestcandidateDetails list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTestcandidateDetails list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -495,6 +506,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
     }
 
     public function getTestTypes() {
+        global $app;
 
         global $school;
 
@@ -509,12 +521,12 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
                 $stmt->close();
                 return $testtypelist;
             } else {
-                error_log( print_R("getTestTypes  execute failed, $sql", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestTypes  execute failed, $sql", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTestTypes  sql failed, $sql", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTestTypes  sql failed, $sql", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -522,6 +534,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
     }
 
     public function getRankTypes() {
+        global $app;
 
         global $school;
 
@@ -535,12 +548,12 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
                 $stmt->close();
                 return $typelist;
             } else {
-                error_log( print_R("getRankTypes  execute failed, $sql", TRUE), 3, LOG);
+                $app->log->debug( print_R("getRankTypes  execute failed, $sql", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getRankTypes  sql failed, $sql", TRUE), 3, LOG);
+            $app->log->debug( print_R("getRankTypes  sql failed, $sql", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -548,6 +561,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
     }
 
     public function getTestDates($testname) {
+        global $app;
 
         global $school;
 
@@ -558,7 +572,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
         $sql .= " and concat(b.startdated,  ' ', b.eventtype) = ? ";
         
         $sql .= " order by startdated";
-        error_log( print_R("getTestDates b4 execute, $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTestDates b4 execute, $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("sss", $school, $school, $testname);
@@ -567,12 +581,12 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
                 $stmt->close();
                 return $testdatelist;
             } else {
-                error_log( print_R("getTestDates  execute failed, $sql", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTestDates  execute failed, $sql", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTestDates  sql failed, $sql", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTestDates  sql failed, $sql", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -583,6 +597,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
          $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
          $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $pagebreak
         ) {
+        global $app;
 
         $num_affected_rows = 0;
         global $school;
@@ -594,8 +609,8 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
         $sql .= " where templatename = ?  and school = ?";
 
     	$null = NULL;
-        error_log( print_R($sql, TRUE ), 3, LOG);
-        error_log( print_R($backgroundimage, TRUE ), 3, LOG);
+        $app->log->debug( print_R($sql, TRUE ));
+        $app->log->debug( print_R($backgroundimage, TRUE ));
 
         //       try {
         if ($stmt = $this->conn->prepare($sql)) {
@@ -616,7 +631,8 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
     public function getGenColDefs($colkey, $colsubkey) {
         global $school;
-        error_log( print_R("getGenColDefs entered: $colkey, $colsubkey\n", TRUE ),3, LOG);
+        global $app;
+        $app->log->debug( print_R("getGenColDefs entered: $colkey, $colsubkey\n", TRUE ));
 
         $sql  = " SELECT colcontent FROM generalcoldef 
          where school = ?  
@@ -625,7 +641,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getGenColDefs sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getGenColDefs sql after security: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("sss", $school, $colkey, $colsubkey);
@@ -643,33 +659,34 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
  
     public function getTemplateNames($theinput) {
+        global $app;
         global $school;
         $sql = "SELECT distinct templatename FROM pdftemplate ";
         $sql .= " where school = ? and templatename like '%" . $theinput . "%' "; 
 
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getTemplateNames sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTemplateNames sql after security: $sql", TRUE));
 
         
         $sql .= " order by templatename ";
-        error_log( print_R("getTemplateNames sql: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTemplateNames sql: $sql", TRUE));
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s",  $school);
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getTemplateNames list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getTemplateNames list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getTemplateNames list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTemplateNames list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTemplateNames list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTemplateNames list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -677,6 +694,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
     }
 
     public function getTemplateDetails($theinput) {
+        global $app;
         global $school;
         $sql = "SELECT `id`, `htmlheader`, `htmlbody`, `htmlfooter`, `parsedheader`, `parsedbody`, `parsedfooter`, ";
         $sql .= " `headerimage`, `footerimage`, `backgroundimage`, `maxHeaderHeight`, `maxFooterHeight`, `pageMarginLeft`, ";
@@ -686,7 +704,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("getTemplateDetails sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("getTemplateDetails sql after security: $sql", TRUE));
 
 
         if ($stmt = $this->conn->prepare($sql)) {
@@ -694,17 +712,17 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
             
             if ($stmt->execute()) {
                 $slists = $stmt->get_result();
-                error_log( print_R("getTemplateDetails list returns data", TRUE), 3, LOG);
-                error_log( print_R($slists, TRUE), 3, LOG);
+                $app->log->debug( print_R("getTemplateDetails list returns data", TRUE));
+                $app->log->debug( print_R($slists, TRUE));
                 $stmt->close();
                 return $slists;
             } else {
-                error_log( print_R("getTemplateDetails list execute failed", TRUE), 3, LOG);
+                $app->log->debug( print_R("getTemplateDetails list execute failed", TRUE));
                 printf("Errormessage: %s\n", $this->conn->error);
             }
 
         } else {
-            error_log( print_R("getTemplateDetails list sql failed", TRUE), 3, LOG);
+            $app->log->debug( print_R("getTemplateDetails list sql failed", TRUE));
             printf("Errormessage: %s\n", $this->conn->error);
             return NULL;
         }
@@ -712,15 +730,16 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
     }
 
     private function isTemplateExists($Template) {
+        global $app;
 
-    error_log( print_R("before isTemplateExists\n", TRUE ), 3, LOG);
-    error_log( print_R("template: $Template\n", TRUE ), 3, LOG);
+    $app->log->debug( print_R("before isTemplateExists\n", TRUE ));
+    $app->log->debug( print_R("template: $Template\n", TRUE ));
 
         
         $sql = "SELECT templatename from pdftemplate WHERE templatename = ? and school = ? ";
 //        $schoolfield = "school";
 //        $sql = addSecurity($sql, $schoolfield);
-        error_log( print_R("isTemplateExists sql after security: $sql", TRUE), 3, LOG);
+        $app->log->debug( print_R("isTemplateExists sql after security: $sql", TRUE));
 
         $stmt = $this->conn->prepare($sql);
 
@@ -738,9 +757,10 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
          $footerimage, $backgroundimage, $maxHeaderHeight, $maxFooterHeight, $pageMarginLeft, $pageMarginRight,
          $pageMarginTop, $pageMarginBottom, $pageSize, $pageOrientation, $templateName, $pagebreak        
     ) {
+        global $app;
 
         global $school;
-        error_log( print_R("createTemplate entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("createTemplate entered\n", TRUE ));
                                       
         $response = array();
 
@@ -785,8 +805,9 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
     
     public function removeTemplate($templateName
     ) {
+        global $app;
 
-        error_log( print_R("removeTemplate entered\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("removeTemplate entered\n", TRUE ));
         global $school;
                                       
         $sql = "DELETE from pdftemplate  where templateName = ? and school = ? ";

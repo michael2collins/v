@@ -17,8 +17,6 @@ export class ModalPicListerController {
       this.Util = Util;
    }
    $onInit() {
-      console.log('entering ModalPicListerController oninit');
-
 
       var vmpicsearch = this;
       vmpicsearch.picfilelist = [];
@@ -34,8 +32,8 @@ export class ModalPicListerController {
    }
    activate() {
       var vmpicsearch = this;
-      vmpicsearch.$log.debug("picselect student");
-      vmpicsearch.$log.debug(vmpicsearch.student);
+      vmpicsearch.$log.log("picselect student");
+      vmpicsearch.$log.log(vmpicsearch.student);
       vmpicsearch.student = vmpicsearch.PhotoServices.getTheStudent();
       vmpicsearch.getFiles();
    }
@@ -43,18 +41,18 @@ export class ModalPicListerController {
 
    getFiles() {
       var vmpicsearch = this;
-      vmpicsearch.$log.debug('getfiles');
+      vmpicsearch.$log.log('getfiles');
       return vmpicsearch.PhotoServices.getstudentPicFiles(vmpicsearch.picpath).then(function(data) {
-         vmpicsearch.$log.debug('getstudentPicFiles returned data');
-         vmpicsearch.$log.debug(data);
+         vmpicsearch.$log.log('getstudentPicFiles returned data');
+         vmpicsearch.$log.log(data);
          vmpicsearch.picfileList = data;
          vmpicsearch.gridOptions.data = data.files;
          vmpicsearch.$timeout(function() {
-            vmpicsearch.$log.debug('getfiles timeout');
-            //         $log.debug(vmpicsearch.gridApi);
+            vmpicsearch.$log.log('getfiles timeout');
+            //         $log.log(vmpicsearch.gridApi);
             if (vmpicsearch.gridApi.selection.selectRow) {
                //        vmpicsearch.gridApi.selection.getSelectedRows();
-               vmpicsearch.$log.debug('selectRow');
+               vmpicsearch.$log.log('selectRow');
                vmpicsearch.gridApi.selection.selectRow(vmpicsearch.gridOptions.data[0]);
             }
          });
@@ -64,16 +62,16 @@ export class ModalPicListerController {
 
    renameFile(student, currentpicfile) {
       var vmpicsearch = this;
-      vmpicsearch.$log.debug('renameFile');
-      vmpicsearch.$log.debug(' student:');
-      vmpicsearch.$log.debug(student);
-      vmpicsearch.$log.debug('pic');
-      vmpicsearch.$log.debug(currentpicfile);
+      vmpicsearch.$log.log('renameFile');
+      vmpicsearch.$log.log(' student:');
+      vmpicsearch.$log.log(student);
+      vmpicsearch.$log.log('pic');
+      vmpicsearch.$log.log(currentpicfile);
 
       return vmpicsearch.PhotoServices.renameStudentPicFile(
          vmpicsearch.renamepath, student, currentpicfile).then(function(data) {
-         vmpicsearch.$log.debug('renameFile returned data');
-         vmpicsearch.$log.debug(data);
+         vmpicsearch.$log.log('renameFile returned data');
+         vmpicsearch.$log.log(data);
          vmpicsearch.newpicfile = data.newpicfile;
          return vmpicsearch.newpicfile;
       });
@@ -91,13 +89,13 @@ export class ModalPicListerController {
          onRegisterApi: function(gridApi) {
             //set gridApi on scope
             vmpicsearch.gridApi = gridApi;
-            vmpicsearch.$log.debug('gridApi onRegisterApi', vmpicsearch.gridApi);
-            //          $log.debug(gridApi);
-            //          $log.debug(vmpicsearch);
-            vmpicsearch.$log.debug(vmpicsearch.$scope);
+            vmpicsearch.$log.log('gridApi onRegisterApi', vmpicsearch.gridApi);
+            //          $log.log(gridApi);
+            //          $log.log(vmpicsearch);
+            vmpicsearch.$log.log(vmpicsearch.$scope);
             gridApi.selection.on.rowSelectionChanged(vmpicsearch.$scope, function(row) {
                var msg = 'row selected ' + row.entity.name;
-               vmpicsearch.$log.debug(msg);
+               vmpicsearch.$log.log(msg);
                vmpicsearch.PhotoServices.setstudentPicFile(row.entity.name);
 
             });
@@ -135,12 +133,12 @@ export class ModalPicListerController {
 
    ok() {
       var vmpicsearch = this;
-      vmpicsearch.$log.debug('hit ok');
+      vmpicsearch.$log.log('hit ok');
       var thisstudent = vmpicsearch.PhotoServices.getTheStudent();
       vmpicsearch.okpicFile = vmpicsearch.PhotoServices.getstudentPicFile();
       vmpicsearch.okpicFile = vmpicsearch.renameFile(thisstudent, vmpicsearch.okpicFile);
-      vmpicsearch.$log.debug('got file for ok:', vmpicsearch.okpicFile);
-      vmpicsearch.$log.debug('for student:', thisstudent);
+      vmpicsearch.$log.log('got file for ok:', vmpicsearch.okpicFile);
+      vmpicsearch.$log.log('for student:', thisstudent);
 
       vmpicsearch.$scope.$parent.$uibModalInstance.close(vmpicsearch.okpicFile);
    }

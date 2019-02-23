@@ -6,7 +6,7 @@ export class ImpclassController {
 
     constructor(
         $scope, $log, StudentServices, Util, uiGridConstants, Notification, $q, portalDataService,
-        $window, uiGridValidateService, uiGridExporterConstants
+        $window, uiGridValidateService, uiGridExporterConstants, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -20,6 +20,7 @@ export class ImpclassController {
         this.$window = $window;
         this.uiGridValidateService = uiGridValidateService;
         this.uiGridExporterConstants = uiGridExporterConstants;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
@@ -67,17 +68,20 @@ export class ImpclassController {
     }
 
     $onDestroy() {
-        this.$log.debug("ImpclassController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ImpclassController dismissed");
+        //this.$log.logEnabled(false);
     }
 
     activate() {
         var vm = this;
         vm.portalDataService.Portlet('impclass');
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
+            vm.$log = vm.$log.getInstance('ImpclassController',vm.UserServices.isDebugEnabled());
+        }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
-            vm.$log.debugEnabled(true);
-            vm.$log.debug("impclass started");
+            //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
+            vm.$log.log("impclass started");
 
         });
 
@@ -113,7 +117,7 @@ export class ImpclassController {
 
     getStudentRegistrations() {
         var vm = this;
-        vm.$log.debug('getStudentRegistrations entered');
+        vm.$log.log('getStudentRegistrations entered');
         vm.gridexp1Options.data = [];
         var path = '../v1/samplestudentregistrations';
 
@@ -216,7 +220,7 @@ export class ImpclassController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridexp1Options onRegisterApi');
+                vm.$log.log('vm gridexp1Options onRegisterApi');
                 vm.gridexp1Api = gridApi;
 
                 vm.Util.setPagination(vm.gridexp1Api, vm);
@@ -226,7 +230,7 @@ export class ImpclassController {
         vm.Util.setGridexp1OptionsDefaults(vm.gridexp1Options, 'studentregistrations.csv', vm.limits, vm.initialLength, vm.rowheight, vm.gcolumns);
 
 
-        vm.$log.debug('gridexp1Options', vm.gridexp1Options);
+        vm.$log.log('gridexp1Options', vm.gridexp1Options);
     }
     setGridimp1Options() {
         var vm = this;
@@ -234,7 +238,7 @@ export class ImpclassController {
         vm.Util.setEmailValidator(vm.uiGridValidateService);
         vm.Util.setDateValidator(vm.uiGridValidateService);
         vm.Util.setImpGridDefaults(vm.impgcolumns, vm.gridimp1Options, vm.uiGridConstants, vm.limits, vm.initialLength, vm.rowheight);
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
     }
     setAfterCellEdit(gridApi, func, vm, scope) {
         gridApi.edit.on.afterCellEdit(scope,
@@ -257,7 +261,7 @@ export class ImpclassController {
             },
 
             onRegisterApi: function(gridApi) {
-                vm.$log.debug('vm gridimp1Api onRegisterApi');
+                vm.$log.log('vm gridimp1Api onRegisterApi');
                 vm.gridimp1Api = gridApi;
 
                 vm.setAfterCellEdit(vm.gridimp1Api, "rawRegistration", vm, vm.$scope);
@@ -271,12 +275,12 @@ export class ImpclassController {
 
         };
 
-        vm.$log.debug('gridimp1Api', vm.gridimp1Api);
+        vm.$log.log('gridimp1Api', vm.gridimp1Api);
 
     }
     lookupExtas() {
         var vm = this;
-        vm.$log.debug('lookupExtas entered');
+        vm.$log.log('lookupExtas entered');
         vm.importdata = vm.gridimp1Options.data;
         var path = '../v1/lookupextras';
         var theData = {
@@ -314,7 +318,7 @@ export class ImpclassController {
                         vm.importdata[j].classerrror + ' ' +
                         vm.importdata[j].programerror;
                     //    vm.Notification.error({ message: msg, delay: 5000 });
-                    vm.$log.debug('lookupExtas error', msg);
+                    vm.$log.log('lookupExtas error', msg);
                 }
 
             }
@@ -339,7 +343,7 @@ export class ImpclassController {
     createBulkRegistrations() {
         var vm = this;
         var path = '../v1/bulkstudentregistration';
-        vm.$log.debug('about createBulkRegistrations ');
+        vm.$log.log('about createBulkRegistrations ');
 
 
         return vm.StudentServices.createBulkRegistrations(path)
@@ -358,7 +362,7 @@ export class ImpclassController {
     createRawRegistrations() {
         var vm = this;
         var path = '../v1/rawregistration';
-        vm.$log.debug('about createRawRegistrations ');
+        vm.$log.log('about createRawRegistrations ');
         var thedata = {
             selectedregistrations: vm.gridimp1Options.data
         };
@@ -385,7 +389,7 @@ export class ImpclassController {
 
         input.lastPromoted = vm.Util.oradate(input.lastPromoted);
 
-        vm.$log.debug('about updateRawRegistration ', input);
+        vm.$log.log('about updateRawRegistration ', input);
 
         return vm.StudentServices.updateRawRegistration(path, input).then(function(data) {
             vm.Util.checkDataSuccess(data, vm.Notification, vm.$q, 'updateRawRegistration', true);
@@ -421,7 +425,7 @@ export class ImpclassController {
     }
     removeRawRegistration(row) {
         var vm = this;
-        vm.$log.debug('removeRawRegistration entered', row.entity.externalid, row.entity.Pgmname, row.entity.Classname);
+        vm.$log.log('removeRawRegistration entered', row.entity.externalid, row.entity.Pgmname, row.entity.Classname);
         var path = '../v1/rawregistration';
         var thedata = {
             externalid: row.entity.externalid,
@@ -443,7 +447,7 @@ export class ImpclassController {
 
     removeRawRegistrations() {
         var vm = this;
-        vm.$log.debug('removeRawRegistrations entered');
+        vm.$log.log('removeRawRegistrations entered');
         var path = '../v1/rawregistrations';
 
         return vm.StudentServices.removeRawRegistrations(path)

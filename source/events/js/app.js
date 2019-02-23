@@ -84,14 +84,14 @@
     authrun.$inject = ['$rootScope', '$location', '$cookieStore', '$http', '$log', 'UserServices','$window','$cookies','Notification'];
 
 /*    function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices) {
-        $log.debug('authrun entered');
+        $log.log('authrun entered');
  */
 
 
 
 
     function authrun($rootScope, $location, $cookieStore, $http, $log, UserServices, $window, $cookies,Notification) {
-        $log.debug('authrun entered');
+        $log.log('authrun entered');
         
     $(document).ready(function() {
         console.log('fixing for drag-drop');
@@ -117,16 +117,16 @@
 //        var huh2 = $rootScope.globals || {}; 
 //        var huh = $cookieStore.get('globals') || {};
         var huh3 = $cookies.get('globals') || {};
-        $log.debug('authrun globals orig',  huh3) ;
+        $log.log('authrun globals orig',  huh3) ;
 
         if (! _.isEmpty(huh3.currentUser)) {
 //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
             $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; // jshint ignore:line
-            $log.debug('in currentUser');
+            $log.log('in currentUser');
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            $log.debug('check login on location change',$location.path());
+            $log.log('check login on location change',$location.path());
 
             // keep user logged in after page refresh
 //add later            $rootScope.globals = $cookieStore.get('globals') || {};
@@ -134,12 +134,12 @@
             var huh = $cookies.get('globals') || {};
             huh3 = _.isEmpty(huh) ? null : JSON.parse(huh);
             
-            $log.debug('authrun globals on $locationChangeStart', huh, huh3);
+            $log.log('authrun globals on $locationChangeStart', huh, huh3);
 
             if (huh3 !== null ) {
     //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
                 $http.defaults.headers.common['Authorization'] = huh3.currentUser.authdata; // jshint ignore:line
-                $log.debug('in currentUser');
+                $log.log('in currentUser');
                 loggedIn = true;
             }
 
@@ -147,11 +147,11 @@
             // redirect to login page if not logged in and trying to access a restricted page
             var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/info','/terms','/page-lock-screen','/']) === -1;
             var thekey = UserServices.isapikey();
-        $log.debug('check logn next', restrictedPage, loggedIn);
-        $log.debug('check userservices isapikey', thekey);
+        $log.log('check logn next', restrictedPage, loggedIn);
+        $log.log('check userservices isapikey', thekey);
             
             if (restrictedPage && !loggedIn) {
-                $log.debug('restricted and not logged in');
+                $log.log('restricted and not logged in');
             //    alert('restricted page');
             //    $location.path('/page-signin');
                 $location.path('/');
@@ -162,25 +162,25 @@
 /*
         // keep user logged in after page refresh
         $rootScope.globals = $cookieStore.get('globals') || {};
-        $log.debug('authrun globals', $rootScope.globals);
+        $log.log('authrun globals', $rootScope.globals);
         
         if ($rootScope.globals.currentUser) {
 //            $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
             $http.defaults.headers.common['Authorization'] = $rootScope.globals.currentUser.authdata; // jshint ignore:line
-            $log.debug('in currentUser');
+            $log.log('in currentUser');
         }
 
         $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            $log.debug('check login on location change',$location.path());
+            $log.log('check login on location change',$location.path());
             // redirect to login page if not logged in and trying to access a restricted page
             var restrictedPage = $.inArray($location.path(), ['/page-signin', '/page-signup', '/change-pwd','/reset-pwd','/forgot-pwd','/info','/terms','/page-lock-screen']) === -1;
             var loggedIn = $rootScope.globals.currentUser;
             var thekey = UserServices.isapikey();
-        $log.debug('check logn next', restrictedPage, loggedIn);
-        $log.debug('check userservices isapikey', thekey);
+        $log.log('check logn next', restrictedPage, loggedIn);
+        $log.log('check userservices isapikey', thekey);
             
             if (restrictedPage && ( !loggedIn || !thekey)) {
-                $log.debug('restricted and not logged in');
+                $log.log('restricted and not logged in');
                 $location.path('/page-signin');
             }
         });

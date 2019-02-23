@@ -73,7 +73,6 @@ constructor() {
                     $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
                 else if($(this).hasClass('fa-cog')){
-     //               console.log('portlet: cog');
                     //Show modal
                 }
                 else if($(this).hasClass('fa-refresh')){
@@ -107,7 +106,6 @@ constructor() {
                     $(this).removeClass('fa-chevron-down').addClass('fa-chevron-up');
                 }
                 else if($(this).hasClass('fa-cog')){
-     //               console.log('portlet: cog');
                     //Show modal
                 }
                 else if($(this).hasClass('fa-refresh')){

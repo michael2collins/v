@@ -92,12 +92,12 @@ function Getfloat($str) {
         $headers .= $cc;
         $headers .= $bcc;
 
-        error_log( print_R("emailoutbound about to mail: $to $subject $message $headers", TRUE), 3, LOG);
+        $app->log->debug( print_R("emailoutbound about to mail: $to $subject $message $headers", TRUE));
         
         $success = mail($to,$subject,$message,$headers);
         if (!$success) {
             $errorMessage = error_get_last()['message'];
-            error_log( print_R("emailoutbound failed: $to $subject $message $headers $errorMessage", TRUE), 3, LOG);
+            $app->log->debug( print_R("emailoutbound failed: $to $subject $message $headers $errorMessage", TRUE));
             $response["error"] = true;
             $response["message"] = 'email not sent';
             echoRespnse(400, $response);
@@ -165,15 +165,15 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
 
     
     function bulk_insert($mycon, $table, $cols, $values, $types) {
-        error_log( print_R("array insert entered\n", TRUE ),3, LOG);
-        error_log( print_R($table, TRUE), 3, LOG);
-        error_log( print_R($cols, TRUE), 3, LOG);
-        error_log( print_R($values, TRUE), 3, LOG);
-        error_log( print_R($types, TRUE), 3, LOG);
+        $app->log->debug( print_R("array insert entered\n", TRUE ));
+        $app->log->debug( print_R($table, TRUE));
+        $app->log->debug( print_R($cols, TRUE));
+        $app->log->debug( print_R($values, TRUE));
+        $app->log->debug( print_R($types, TRUE));
 
 
         $groups = count($values) / count($cols);
-        error_log( print_R("$groups\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("$groups\n", TRUE ));
         $sql = "";
         $bindvalues = "";
 
@@ -181,14 +181,14 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
         for ($i = 0; $i < count($cols); $i++) {
           $placeholder[$i] = '?';
         }
-        error_log( print_R($placeholder, TRUE ),3, LOG);
+        $app->log->debug( print_R($placeholder, TRUE ));
 
         $lastcol = count($cols) - 1;
         $vsql = 'VALUES (' . implode(", ", $placeholder) . ')';
-        error_log( print_R("\n$vsql\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("\n$vsql\n", TRUE ));
 
         $sql = 'INSERT INTO '. $table . ' (`' . implode("`, `", $cols) . '`) ' . $vsql;
-        error_log( print_R("$sql\n", TRUE ),3, LOG);
+        $app->log->debug( print_R("$sql\n", TRUE ));
 
 
         if ($stmt = $mycon->prepare($sql) ) {
@@ -198,33 +198,33 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
                 $a_param_types = array();
                 $vvlu = [];
                 
-                error_log( print_R("\ngroup number $j\n", TRUE ),3, LOG);
+                $app->log->debug( print_R("\ngroup number $j\n", TRUE ));
                 $lastcol = ($j + 1) * count($cols);
                 $begincol = $lastcol - count($cols) ;
-                error_log( print_R("begin: $begincol last: $lastcol\n", TRUE ),3, LOG);
+                $app->log->debug( print_R("begin: $begincol last: $lastcol\n", TRUE ));
                 //$vvlu =  array_slice($values,$begincol,$lastcol, true);
                 $k=0;
                 for ($i=$begincol; $i< $lastcol; $i++) {
                     $vvlu[$k] = $values[$i];
                     $k=$k+1;
                 }
-                error_log( print_R("vvlu:\n", TRUE ),3, LOG);
-                error_log( print_R($vvlu, TRUE ),3, LOG);
+                $app->log->debug( print_R("vvlu:\n", TRUE ));
+                $app->log->debug( print_R($vvlu, TRUE ));
 //                $bindvalues = "'" . $types . "'," . $vvlu; 
-  //              error_log( print_R("bindvalues: $bindvalues\n", TRUE ),3, LOG);
+  //              $app->log->debug( print_R("bindvalues: $bindvalues\n", TRUE ));
                 $param_type = '';
                 $n = count($types);
                 for($i = 0; $i < $n; $i++) {
                   $param_type .= $types[$i];
                 }
-                error_log( print_R("param_type:\n", TRUE ),3, LOG);
-                error_log( print_R($param_type, TRUE ),3, LOG);
+                $app->log->debug( print_R("param_type:\n", TRUE ));
+                $app->log->debug( print_R($param_type, TRUE ));
 
                 /* with call_user_func_array, array params must be passed by reference */
                 $a_param_types[] = & $param_type;
 
-                error_log( print_R("a_param_types:\n", TRUE ),3, LOG);
-                error_log( print_R($a_param_types, TRUE ),3, LOG);
+                $app->log->debug( print_R("a_param_types:\n", TRUE ));
+                $app->log->debug( print_R($a_param_types, TRUE ));
                 
                 for($i = 0; $i < count($vvlu); $i++) {
                   /* with call_user_func_array, array params must be passed by reference */
@@ -233,23 +233,23 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
     //              }
                   #i is default
                   $a_params[] = & $vvlu[$i];
-    //                error_log( print_R("a_params:\n", TRUE ),3, LOG);
-    //                error_log( print_R($a_params, TRUE ),3, LOG);
+    //                $app->log->debug( print_R("a_params:\n", TRUE ));
+    //                $app->log->debug( print_R($a_params, TRUE ));
                 }
                 
                 $finalarr = array_merge($a_param_types, $a_params);
-                error_log( print_R("finalarr:\n", TRUE ),3, LOG);
-                error_log( print_R($finalarr, TRUE ),3, LOG);
+                $app->log->debug( print_R("finalarr:\n", TRUE ));
+                $app->log->debug( print_R($finalarr, TRUE ));
                 
                 //$stmt->bind_param($bindvalues);
                 //mysqli_stmt_bind_param for all strings
                 call_user_func_array(array($stmt, 'bind_param'),  $finalarr);
                 
                 $result = $stmt->execute();
-                error_log( print_R("\ninsert result\n", TRUE ),3, LOG);
-                error_log( print_R($result, TRUE ),3, LOG);
+                $app->log->debug( print_R("\ninsert result\n", TRUE ));
+                $app->log->debug( print_R($result, TRUE ));
                 if (!$result) {
-                    error_log(print_R("Errormessage: $mycon->error", TRUE), 3, LOG);
+                    $app->log->debug(print_R("Errormessage: $mycon->error", TRUE));
                     printf("Errormessage: %s\n", $mycon->error);
                     return NULL;
                 }
@@ -259,7 +259,7 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
 
             return $result;  #last result?
         } else {
-            error_log(print_R("Errormessage: $mycon->error", TRUE), 3, LOG);
+            $app->log->debug(print_R("Errormessage: $mycon->error", TRUE));
             printf("Errormessage: %s\n", $mycon->error);
             return NULL;
         }

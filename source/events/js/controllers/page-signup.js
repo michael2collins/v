@@ -31,7 +31,7 @@
             vm.confirm_password;
             
             
-            $log.debug('enter PageSignupController');
+            $log.log('enter PageSignupController');
 //            $("body>.default-page").hide();
 //            $("body>.extra-page").html($(".page-content").html()).show();
 //            $('body').attr('id', 'signup-page');
@@ -39,12 +39,12 @@
             vm.re = /^[a-zA-Z]\w{3,14}$/;
            
             function compare(repass) {
-                $log.debug('compare',repass);
+                $log.log('compare',repass);
                 vm.isconfirm = vm.password == repass ? true : false;
             }
             
             function register() {
-                $log.debug('controller register function entered');
+                $log.log('controller register function entered');
                 vm.dataLoading = true;
                 var thedata = {
                     username: vm.username,
@@ -55,19 +55,19 @@
                     password: vm.password
                 };
                 var path = '/v1/register';
-                $log.debug('controller register thedata:', thedata);
+                $log.log('controller register thedata:', thedata);
                 
                 vm.dataLoading = true;
 
                  return UserServices.createUser(path, thedata).then(function(data){
-                    $log.debug('register returned data');
-                    $log.debug(data);
+                    $log.log('register returned data');
+                    $log.log(data);
                             FlashService.Success('Registration successful', true);
                             $location.path('#/page-signin');
                         return data;
                 },
                 function (error) {
-                    $log.debug('Caught an error Registration, going to notify:', error); 
+                    $log.log('Caught an error Registration, going to notify:', error); 
                 //    vm.message = error;
                 //    Notification.error({message: error, delay: 5000});
                         FlashService.Err(error);

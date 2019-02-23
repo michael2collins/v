@@ -19,11 +19,9 @@ export class ResetpwdController {
         this.userServices = userServices;
         this.$q = $q;
 
-        $log.debug('enter ResetpwdController');
     }
 
     $onInit() {
-        console.log("initializing Login...");
         this.username = null;
         this.password = null;
         this.firstname = null;
@@ -45,8 +43,8 @@ export class ResetpwdController {
     }
 
     $onDestroy() {
-        this.$log.debug("ResetpwdController dismissed");
-        this.$log.debugEnabled(false);
+        this.$log.log("ResetpwdController dismissed");
+        //this.$log.logEnabled(false);
     }
 
 
@@ -54,15 +52,15 @@ export class ResetpwdController {
 
     compare(repass) {
         var self = this;
-        self.$log.debug('compare', repass);
+        self.$log.log('compare', repass);
         self.isconfirm = self.password == repass ? true : false;
     }
 
 
     resetpwd() {
         var self = this;
-        self.$log.debug('controller resetpwd function entered', self.username, self.password);
-        self.$log.debug('token', self.$routeParams.token);
+        self.$log.log('controller resetpwd function entered', self.username, self.password);
+        self.$log.log('token', self.$routeParams.token);
         self.dataLoading = true;
         var path = encodeURI('../v1/resetpassword?user=' + self.username +
             '&token=' + self.$routeParams.token +
@@ -70,8 +68,8 @@ export class ResetpwdController {
             '&email=' + self.email);
 
         return self.userServices.resetpassword(path).then(function(data) {
-                self.$log.debug('UserServices resetpwd returned data');
-                self.$log.debug(data);
+                self.$log.log('UserServices resetpwd returned data');
+                self.$log.log(data);
                 self.apiKey = data.api_Key;
                 self.userServices.ResetCredentials(data.username, data.api_key);
                 self.$("body>.default-page").show();
@@ -83,7 +81,7 @@ export class ResetpwdController {
                 return data;
             },
             function(error) {
-                self.$log.debug('Caught an error UserServices resetpwd, going to notify:', error);
+                self.$log.log('Caught an error UserServices resetpwd, going to notify:', error);
                 self.userServices.SetCredentials('', '', '');
                 self.userServices.setapikey('');
                 self.flashService.Err(error);

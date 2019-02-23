@@ -3,7 +3,7 @@ import { BasicTableBasicController } from './table-basic-basic';
 import { ClassRankTableBasicController } from './table-basic-classrank';     
 import { ProgramTableBasicController } from './table-basic-program';   
 import { TesttypeTableBasicController } from './table-basic-testtype';
-import { RptBuilderController } from './rptbuilder.controller';  
+//import { RptBuilderController } from './rptbuilder.controller';  
 import { ClassTableBasicController } from './table-basic-class';     
 import { ClassTestTableBasicController } from './table-basic-classtest';     
 import { RankTableBasicController } from './table-basic-rank';
@@ -25,7 +25,7 @@ import classpgmtemplate from './template/table-basic-classpgm.html';
 import classtesttemplate from './template/table-basic-classtest.html';
 import programtemplate from './template/table-basic-program.html';
 import scheduletemplate from './template/table-basic-schedule.html';
-import rptbuildertemplate from './table-basic-rptbuilder.html';
+//import rptbuildertemplate from './table-basic-rptbuilder.html';
 import quickpicktemplate from './template/table-quickpick.html';
 import schoolcomtemplate from './template/table-basic-schoolcom.html';
 
@@ -59,9 +59,9 @@ bindings: {},
   template: testtypetemplate
 };
 export let rptbuilderComponent = {
-bindings: {},  
-  controller: RptBuilderController,
-  template: rptbuildertemplate
+//bindings: {},  
+//  controller: RptBuilderController,
+//  template: rptbuildertemplate
 };
 export let         classComponent = {
 bindings: {},  
