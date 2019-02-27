@@ -1,0 +1,28 @@
+<div class="col-md-12" ng-cloak>
+  <div class="" >
+        <a href="" data-ng-click="card.showIndex = !card.showIndex;mother.vm.selectItem(card.studentID,card.showIndex, card, true)">
+
+            <div class="mls photo-index" data-ng-if="card.showIndex" style='text-align: left; font-size: small;'>
+
+                <p class="balloon-wrapper">
+                    <span ng-style="(card.readyness === true ) && {'background':'lightgreen','color':'black'}  || (card.readyness === false ) && {'background':'yellow','color':'black'}" class="balloon">{{mother.vm.getAttendingCount()}}</span>
+                </p>
+
+            </div>
+
+            <div class="photo-description" style='text-align: center; font-size: large;'>
+                {{card.firstname}} {{card.lastname}}
+            </div>
+        </a>
+        <div ng-show="mother.vm.hasStats(card.studentID)&&card.showStats" style='text-align: center; font-size: large;'>
+            <p class="mls" data-ng-if="mother.vm.hasStats(card.studentID)">Time In?: {{mother.vm.daysSince}}</p>
+            <p class="mls" data-ng-if="mother.vm.hasStats(card.studentID)">Attend: {{mother.vm.daysAttended}}</p>
+            <p class="mls" data-ng-if="mother.vm.hasStats(card.studentID)">Ready?: {{card.readyness}}</p>
+            <p class="mls" data-ng-if="mother.vm.hasSelected(card.studentID)">Rank: {{card.rank}}</p>
+        </div>
+    </div>
+    <div style='text-align: center;'>
+        <button type="button" data-ng-click="mother.vm.setStudentReadyNextRank(card.studentID,card.readyness = !card.readyness)" class="mbm btn btn-green btn-sm">Ready?</button>
+        <button type="button" data-ng-click="mother.vm.checkAttendanceStats(card.studentID);card.showStats = !card.showStats" class="mbm btn btn-green btn-sm">Stats?</button>
+    </div>
+</div>

@@ -223,9 +223,9 @@ export class PortalController {
             return false;
         });
         // Setting toggle in mobile view 
-        $('#setting-toggle').click(function() {
-            this.$log.log('mobile toggle');
-            $('.topbar-main').toggle();
-        });
+//        $('#setting-toggle').click(function() {
+//            this.$log.log('mobile toggle');
+//            $('.topbar-main').toggle();
+//        });
     }
 }

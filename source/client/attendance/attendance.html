@@ -6,7 +6,7 @@
       <div class="panel-body pan">
          <div class="col-md-12">
             <div class="row">
-               <div class="col-md-4">
+               <div class="col-md-4 col-xs-12">
                   <div class="form-group">
                      <label for="inputclass" class="control-label attendance">Class</label>
                      <div class="input-icon right">
@@ -17,7 +17,7 @@
                      </div>
                   </div>
                </div>
-               <div class="col-md-4">
+               <div class="col-md-4 col-xs-6">
                   <div class="form-group">
                      <label for="inputlimit" class="control-label attendance">Limit</label>
                      <div class="input-icon right">
@@ -28,7 +28,7 @@
                      </div>
                   </div>
                </div>
-               <div class="col-md-4">
+               <div class="col-md-4 col-xs-6">
                   <div class="form-group">
                      <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
                      <div class="input-icon right">
@@ -56,8 +56,18 @@
          <div class="panel panel-blue">
             <div class="panel-heading">Class Attendance</div>
             <div class="panel-body pan">
-               <div class="row col-md-12">
-                  <div class="col-md-10">
+               <div class="row col-md-12 mtm">
+                  <div class="col-md-10 col-xs-10 attendancebuttonNoshow">
+                     <select id="dayselect" type="text" name="class" 
+                     ng-model="vm.radioModel" 
+                     ng-change="vm.setday(vm.getDayNum(vm.radioModel))" class="form-control attendance">
+                        <option ng-repeat="b in vm.dateList" 
+                        ng-selected="{{b.dateL==vm.radioModel}}"  
+                        value="{{b.dateL}}">{{b.dateL}} {{b.datev}}</option> 
+                      </select>
+                  </div>
+                  
+                  <div class="col-md-10 col-xs-10 attendancebuttonshow">
                      <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(0);" ng-model="vm.radioModel" uib-btn-radio="'Sunday'">Sunday <br/> 
                             <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>
                      <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(1);" ng-model="vm.radioModel" uib-btn-radio="'Monday'">Monday <br/>
@@ -73,14 +83,18 @@
                      <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(6);" ng-model="vm.radioModel" uib-btn-radio="'Saturday'">Saturday  <br/>
                             <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>
                   </div>
-                  <div class="col-md-2">
-                     <button ng-click="vm.refreshtheAttendanceClick()" class="btn btn-blue  attendance">Attendee List</button>
+                  <div class="col-md-2 col-xs-2">
+                     <div ng-click="vm.pics()" ng-show="vm.showpics" class="input-icon right"><i class="attendanceicon fas fa-list "></i></div>
+                     <div ng-click="vm.list()" ng-show="vm.showlist" class="input-icon right"><i class="attendanceicon fa  fa-images "></i></div>
                   </div>
                </div>
                <div class="row">
                   <div class="col-md-12">
                      <div class="deckgrid clearfix" deckgrid source="vm.photos"
-                           cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid">
+                           cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
+                     </div>
+                     <div class="deckgrid clearfix" deckgrid source="vm.photos"
+                           cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
                      </div>
                   </div>
                </div>

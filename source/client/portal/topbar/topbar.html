@@ -1,7 +1,7 @@
 <div id="topbar" role="navigation" style="margin-bottom: 0;" ng-cloak class="navbar navbar-default navbar-static-top">
    <!--class="navbar navbar-default navbar-static-top" ng-controller="HeaderController as $ctrl"> -->
    <div ng-class="[$ctrl.header.layout_topbar]" class="navbar-header">
-      <a id="setting-toggle"><i class="icon-wrench"></i></a>
+      <a id="setting-toggle" ng-click="$ctrl.openSettings()" ><i class="icon-wrench"></i></a>
       <button type="button" data-toggle="offcanvas" class="navbar-toggle">
       <span class="sr-only">Toggle navigation</span>
       <span class="icon-bar"></span>

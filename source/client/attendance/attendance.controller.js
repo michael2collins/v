@@ -33,10 +33,11 @@ export class AttendanceTableBasicController {
       vm.gridsize;
       vm.data = [];
       vm.classes = [];
-      vm.radioModel;
       vm.attendancesum = {};
       vm.showStats = '';
       vm.showGrid = true;
+      vm.showpics = true;
+      vm.showlist = false;
 
       vm.weekday = new Array(7);
       vm.weekday[0] = "Sunday";
@@ -46,7 +47,7 @@ export class AttendanceTableBasicController {
       vm.weekday[4] = "Thursday";
       vm.weekday[5] = "Friday";
       vm.weekday[6] = "Saturday";
-
+      
       vm.tdays = new Array(7);
       vm.tdays[0] = "day1";
       vm.tdays[1] = "day2";
@@ -55,6 +56,8 @@ export class AttendanceTableBasicController {
       vm.tdays[4] = "day5";
       vm.tdays[5] = "day6";
       vm.tdays[6] = "day7";
+
+      vm.dateList =[];
 
       vm.todayDOW = null;
       vm.nowChoice = 0;
@@ -85,6 +88,20 @@ export class AttendanceTableBasicController {
       this.photos=[];
    };
 
+   list(){ //switching to pics when clicked
+      var vm = this;
+      vm.showpics=true;
+      vm.showlist=false;
+      vm.$log.log('list',vm.showlist);
+      
+   }
+   pics() { //switching to list when clicked
+      var vm = this;
+      vm.showpics=false;
+      vm.showlist=true;
+      vm.$log.log('pics',vm.showpics);
+      
+   }
    settoday(aDay) {
       var vm = this;
       vm.todayDOW = aDay;
@@ -175,9 +192,27 @@ export class AttendanceTableBasicController {
       vm.ThursdayOfWeek = vm.moment(d2).add(3, 'days').format('YYYY-MM-DD');
       vm.FridayOfWeek = vm.moment(d2).add(4, 'days').format('YYYY-MM-DD');
       vm.SaturdayOfWeek = vm.moment(d2).add(5, 'days').format('YYYY-MM-DD');
+      var ofWeek = {id: 0,  datev: vm.SundayOfWeek, dateL: vm.weekday[0]};
+      vm.createOfWeek(ofWeek);
+      ofWeek=  {id: 1,  datev: vm.moment(d2).format('YYYY-MM-DD'),dateL: vm.weekday[1]};
+      vm.createOfWeek(ofWeek);
+      ofWeek= {id: 2,  datev: vm.TuesdayOfWeek,dateL: vm.weekday[2]};
+      vm.createOfWeek(ofWeek);
+      ofWeek= {id: 3,  datev: vm.WednesdayOfWeek,dateL: vm.weekday[3]};
+      vm.createOfWeek(ofWeek);
+      ofWeek= {id: 4,  datev: vm.ThursdayOfWeek,dateL: vm.weekday[4]};
+      vm.createOfWeek(ofWeek);
+      ofWeek= {id: 5,  datev: vm.FridayOfWeek,dateL: vm.weekday[5]};
+      vm.createOfWeek(ofWeek);
+      ofWeek= {id: 6,  datev: vm.SaturdayOfWeek,dateL: vm.weekday[6]};
+      vm.createOfWeek(ofWeek);
 
    }
-
+   createOfWeek(input) {
+      var vm=this;
+      var ofWeek = input;
+      vm.dateList.push(ofWeek);
+   }
    getMonday(d) {
       var vm = this;
       vm.$log.log('getMonday', d);
@@ -317,6 +352,7 @@ export class AttendanceTableBasicController {
          Friday: vm.weekday[5] == vm.todayDOW ? true : false,
          Saturday: vm.weekday[6] == vm.todayDOW ? true : false
       };
+
       vm.tday = vm.tdays[d.getDay()];
 
 

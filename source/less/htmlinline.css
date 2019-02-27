@@ -40,10 +40,6 @@
         [draggable] {
             cursor: move;
         }
-        .attendance {
-            font-size: x-large;
-            height: 70px;
-        }
 
         .watermark {
             position: absolute;
