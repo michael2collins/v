@@ -41,7 +41,7 @@ export class DataImportController {
 
         });
 
-        vm.portalDataService.Portlet('dataimport.js');
+//        vm.portalDataService.Portlet('dataimport.js');
         var thetab = vm.StudentServices.getActiveTab();
         vm.$log.log('activate the active tab', thetab);
         vm.active = thetab;

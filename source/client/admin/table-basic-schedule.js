@@ -66,7 +66,7 @@ export class ScheduleTableBasicController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-basic-schedule');
+//        vm.portalDataService.Portlet('table-basic-schedule');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('ScheduleTableBasicController',vm.UserServices.isDebugEnabled());
         }

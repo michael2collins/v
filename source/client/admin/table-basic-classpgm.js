@@ -54,7 +54,7 @@ export class ClassPgmTableBasicController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-basic-class');
+//        vm.portalDataService.Portlet('table-basic-class');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('ClassPgmTableBasicController',vm.UserServices.isDebugEnabled());
         }

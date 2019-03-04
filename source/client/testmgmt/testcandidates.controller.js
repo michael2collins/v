@@ -574,7 +574,7 @@ export class TestCandidateTableBasicController {
             vm.$log.log("table-basic-testcandidates started");
 
         });
-        vm.portalDataService.Portlet('testcandidates.controller.js');
+//        vm.portalDataService.Portlet('testcandidates.controller.js');
 
 
         vm.getTestDates();

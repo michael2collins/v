@@ -20,7 +20,8 @@ export class HeaderController {
         $location,
         $cookies,
         $window,
-        portalDataService
+        portalDataService,
+        _
     ) {
         'ngInject';
 
@@ -41,15 +42,16 @@ export class HeaderController {
         this.$location = $location;
         this.$cookies = $cookies;
         this.$window = $window;
-
+        this._ = _;
 
     }
 
 
     $onInit() {
         this.$log.log("header controller entered");
+        
         this.isok = {};
-        this.userdta = {'initial':'init'};
+        this.userdta = { 'initial': 'init' };
         this.myuser = null;
         this.message = null;
         this.data = null;
@@ -71,9 +73,10 @@ export class HeaderController {
         this.Title.store(this.origtitle);
         this.Title.idleMessage(this.origtitle);
         this.portalDataService.Portlet('header-controller.js');
-
+        this.menuclass='dropdown-menu';
+        this.mobile=false;
         this.init();
-        
+
     }
 
 
@@ -84,8 +87,9 @@ export class HeaderController {
 
     init() {
         var self = this;
-        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined ) {
-            self.$log = self.$log.getInstance('HeaderController',self.UserServices.isDebugEnabled());
+        self.loadTopbar();
+        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined) {
+            self.$log = self.$log.getInstance('HeaderController', self.UserServices.isDebugEnabled());
         }
 
         self.islogin();
@@ -140,23 +144,24 @@ export class HeaderController {
             var vm = event.currentScope.$ctrl;
             //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
             if (current.originalPath !== '/page-signin') {
-                
+
                 vm.$log.log('routechange in main for success');
                 vm.data = vm.portalDataService.get(current.originalPath);
                 vm.isokf();
                 var mydelay = vm.CalendarServices.getIntervalValue();
-                vm.$interval(vm.intervalChecker(vm),mydelay * 1000);
-            } else {
+                vm.$interval(vm.intervalChecker(vm), mydelay * 1000);
+            }
+            else {
                 event.preventDefault();
                 if (angular.isDefined(vm.intervalChecker)) {
                     vm.$interval.cancel(vm.intervalChecker(vm));
                     //vm.intervalChecker = undefined;
                 }
-          }
+            }
         });
 
         self.intervalChecker(self);
-        
+
     }
 
     intervalChecker(input) {
@@ -186,13 +191,14 @@ export class HeaderController {
                     typeof data !== 'undefined') {
                     var themsg = '';
                     if (typeof(data.extra) !== 'undefined') {
-                         themsg = {
+                        themsg = {
                             message: data.message + ': ' +
                                 (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
                             delay: 5000
                         };
-                    } else {
-                         themsg = {
+                    }
+                    else {
+                        themsg = {
                             message: data.message + ': ' +
                                 (typeof(data.error) === "string" ? data.error : ""),
                             delay: 5000
@@ -207,13 +213,13 @@ export class HeaderController {
                         self.okNotify = (self.userOptions.notify ? self.userOptions.notify : false);
                         self.debugOn = (self.userOptions.debug ? self.userOptions.debug : "Off");
                         //self.$log.logEnabled(self.debugOn);
-                        
+
                         self.mydelay = (self.userOptions.delay ? self.userOptions.delay : 30);
                         self.idle = (self.userOptions.idle ? self.userOptions.idle : 5);
                         self.timeout = (self.userOptions.timeout ? self.userOptions.timeout : 5);
 
-            self.UserServices.setUserDetailOptions(data.options);
-//            self.$log = self.$log.getInstance('HeaderController',self.UserServices.isDebugEnabled());
+                        self.UserServices.setUserDetailOptions(data.options);
+                        //            self.$log = self.$log.getInstance('HeaderController',self.UserServices.isDebugEnabled());
 
                         self.Title.setAsIdle(self.idle);
                         self.Idle.setIdle(self.idle);
@@ -307,15 +313,15 @@ export class HeaderController {
             //            template: '../../email/email.html',
             //            controller: 'ModalEmailInstanceController as vm',
             component: 'emailComponent',
-            size: 'md', 
-           // scope: emailModal.$scope,
+            size: 'md',
+            // scope: emailModal.$scope,
             windowClass: 'my-modal-popup',
             resolve: {
                 myinitial: function() { return {} },
-           /*     contactform: function() {
-                    return emailModal.$scope.form.read;
-                }
-            */    
+                /*     contactform: function() {
+                         return emailModal.$scope.form.read;
+                     }
+                 */
             }
         });
         modalScope.modalInstance = emailModal.modalInstance;
@@ -369,7 +375,7 @@ export class HeaderController {
 
         self.$log.log('islogin main controller');
         self.isok = self.UserServices.isapikey();
-//        self.userdta = {};
+        //        self.userdta = {};
 
         if (self.isok) {
             self.$log.log('setting apikey for services in main controller');
@@ -625,15 +631,54 @@ export class HeaderController {
     }
 
     loadTopbar() {
-        this.$log.log("loadTopbar");
+        var vm=this;
+        vm.$log.log("loadTopbar");
         $("[data-toggle='offcanvas']").on('click', function() {
             $('#sidebar-wrapper').toggleClass('active');
             return false;
         });
         // Setting toggle in mobile view 
         $('#setting-toggle').click(function() {
-            this.$log.log('mobile toggle');
+            vm.$log.log('mobile toggle');
+            
             $('.topbar-main').toggle();
         });
+
+        $(window).resize(vm._.debounce(function(){
+            vm.mobile = vm.$window.innerWidth < 786 ? true : false;
+            vm.mobile ? 
+                vm.menuclass='dropdown-menu-right' :
+                vm.menuclass='dropdown-menu';
+            vm.$scope.$apply();
+
+        },500));
+        
+//        $(document).ready(function() {
+            $('.dropdown-submenu a.test').on("click", function(e) {
+                $(this).next('ul').toggle();
+                e.stopPropagation();
+                e.preventDefault();
+                $(this).parent().siblings().removeClass('open');
+                $(this).parent().toggleClass('open');
+            });
+            
+
+            
+//        });
+//        $(document).ready(function() {
+
+/*            $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
+            $('ul.dropdown-menu').on('click', function(event) {
+                // Avoid following the href location when clicking
+                event.preventDefault();
+                // Avoid having the menu to close when clicking
+                event.stopPropagation();
+                // Re-add .open to parent sub-menu item
+                $(this).parent().siblings().removeClass('open');
+                $(this).parent().toggleClass('open');
+            });
+
+        });
+*/
     }
 }

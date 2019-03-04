@@ -188,7 +188,7 @@ export class AppController {
             vm.$log.log('routechange in app for success');
             vm.islogin();
 
-            vm.header.animation = 'fadeInUp';
+/*            vm.header.animation = 'fadeInUp';
             setTimeout(function() {
                 vm.header.animation = '';
             }, 100);
@@ -205,59 +205,31 @@ export class AppController {
             else {
                 window.scrollTo(0, 0);
             }
-            vm.header.boxed = '';
-            vm.header.layout_topbar = '';
-            vm.header.layout_menu = '';
-            vm.header.header_topbar = '';
-            /*
-                        if ('/layout-left-sidebar' === current.originalPath) {
-                            vm.$log.log("left sidebar entered");
-                            vm.header.boxed = '';
-                            vm.header.layout_topbar = '';
-                            vm.header.layout_menu = '';
-                            vm.header.header_topbar = '';
-                            $('#wrapper').removeClass('right-sidebar');
-                            $('body').removeClass('left-side-collapsed');
-                            $('body').removeClass('layout-boxed');
-                            $('body > .default-page').removeClass('container');
-                            $('#topbar .navbar-header').removeClass('logo-collapsed');
-                            $('body').addClass('sidebar-fixed');
-                            $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
-                                "height": $(window).height() - 50,
-                                'width': '250px',
-                                'wheelStep': 5
-                            });
-                            $('body').removeClass('right-side-collapsed');
-                            $('body').removeClass('container');
-                        }
-
-                        else if ('/' === current.originalPath) {
-            */
+//            vm.header.boxed = '';
+//            vm.header.layout_topbar = '';
+//            vm.header.layout_menu = '';
+//            vm.header.header_topbar = '';
             if ('/' === current.originalPath) {
                 vm.$log.log("/ path entered");
                 $('body').removeAttr('id'); // error 404, 500
             }
             else {
                 vm.$log.log("else path entered");
-                vm.header.boxed = '';
-                vm.header.layout_topbar = '';
-                vm.header.layout_menu = '';
-                vm.header.header_topbar = '';
-                //                $('#wrapper').removeClass('right-sidebar');
-                //                $('body').removeClass('left-side-collapsed');
-                //                $('body').removeClass('right-side-collapsed');
-                //                $('body').removeClass('layout-boxed');
-                $('body #page-wrapper').removeClass('animated');
-                $('body > .default-page').removeClass('container');
-                $('#topbar .navbar-header').removeClass('logo-collapsed');
-                $('body').addClass('sidebar-fixed');
+//                vm.header.boxed = '';
+//                vm.header.layout_topbar = '';
+//                vm.header.layout_menu = '';
+ //               vm.header.header_topbar = '';
+ //?               $('body #page-wrapper').removeClass('animated');
+    //            $('body > .default-page').removeClass('container');
+//                $('#topbar .navbar-header').removeClass('logo-collapsed');
+ //               $('body').addClass('sidebar-fixed');
                 $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
                     "height": $(window).height() - 50,
                     'width': '250px',
                     'wheelStep': 5
                 });
             }
-
+*/
             var mydelay = vm.CalendarServices.getIntervalValue();
             vm.$interval(vm.intervalChecker(), mydelay * 1000);
 
@@ -273,7 +245,7 @@ export class AppController {
         });
 
         $(document).ready(function() {
-
+/*
             $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
                 // Avoid following the href location when clicking
                 event.preventDefault();
@@ -283,7 +255,7 @@ export class AppController {
                 $(this).parent().siblings().removeClass('open');
                 $(this).parent().toggleClass('open');
             });
-
+*/
             $('#external-events div.external-event').each(function() {
 
                 self.CalUtil.EventDrag($(this));

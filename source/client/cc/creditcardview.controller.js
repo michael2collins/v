@@ -69,11 +69,10 @@ export class CardViewInstanceController {
 			vm.$log.log("CardViewInstanceController started");
 
 		});
-		vm.portalDataService.Portlet('creditcardview.controller.js');
+//		vm.portalDataService.Portlet('creditcardview.controller.js');
 
 
 		vm.styleit();
-		var vm = this;
 
 		$.cardswipe({
 			firstLineOnly: false,

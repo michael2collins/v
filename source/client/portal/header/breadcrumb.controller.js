@@ -1,3 +1,4 @@
+const { jQuery: $ } = window;
 
 export class BreadcrumbController {
 
@@ -48,6 +49,7 @@ export class BreadcrumbController {
             if (current.originalPath !== '/page-signin') {
                 vm.$log.log('routechange in breadcrumb for success');
                 vm.data = vm.portalDataService.get(current.originalPath);
+                    $("[data-toggle='offcanvas']").click();
                 vm.isokf();
                 vm.getUserDetails().then(function() {
                     vm.$log.log('q return   getUserDetails returned');

@@ -57,7 +57,7 @@ constructor() {
     }
     
     Portlet(src){
-        $("#portlet").each(function(index, element) {
+        $(".portlet").each(function(index, element) {
             var me = $(this);
             if($(">.portlet-header>.tools>i", me).hasClass('fa-chevron-init')){
                 $(">.portlet-body", me).slideUp('fast');
@@ -90,7 +90,7 @@ constructor() {
             });
             
         });
-        $("#portlet2").each(function(index, element) {
+/*        $("#portlet2").each(function(index, element) {
             var me = $(this);
             if($(">.portlet-header>.tools>i", me).hasClass('fa-chevron-init')){
                 $(">.portlet-body", me).slideUp('fast');
@@ -123,5 +123,6 @@ constructor() {
             });
             
         });
+*/
     }
 }

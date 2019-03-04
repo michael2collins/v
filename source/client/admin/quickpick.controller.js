@@ -74,7 +74,7 @@ export class QuickpickController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-Quickpick');
+//        vm.portalDataService.Portlet('table-Quickpick');
 
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('QuickpickController',vm.UserServices.isDebugEnabled());

@@ -44,7 +44,7 @@ export class SchoolcomTableBasicController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-Basic-Schoolcom');
+//        vm.portalDataService.Portlet('table-Basic-Schoolcom');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('SchoolcomTableBasicController',vm.UserServices.isDebugEnabled());
         }

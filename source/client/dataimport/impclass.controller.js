@@ -74,7 +74,7 @@ export class ImpclassController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('impclass');
+//        vm.portalDataService.Portlet('impclass');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('ImpclassController',vm.UserServices.isDebugEnabled());
         }

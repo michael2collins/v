@@ -45,35 +45,36 @@ export class StudentsTableBasicController {
         vm.listB = [];
         vm.gridOptions = {};
         vm.gridApi;
+        var studentXS=20;
+        var studentS=40;
+        var studentM=100;
+        var studentL=200;
 
         vm.userData = [
-            { id: 1, colname: 'FirstName', default: 'true' },
-            { id: 2, colname: 'ID', default: 'true' },
-            { id: 3, colname: 'LastName', default: 'true' },
-            { id: 4, colname: 'Email', default: 'true' },
-            { id: 5, colname: 'Email2', default: 'false' },
-            { id: 6, colname: 'Parent', default: 'false' },
-            { id: 7, colname: 'Phone', default: 'true' },
-            { id: 8, colname: 'AltPhone', default: 'false' },
-            { id: 9, colname: 'Address', default: 'false' },
-            { id: 10, colname: 'City', default: 'false' },
-            { id: 11, colname: 'State', default: 'false' },
-            { id: 12, colname: 'ZIP', default: 'false' },
-            { id: 13, colname: 'Notes', default: 'false' },
-            { id: 14, colname: 'Birthday', default: 'false' },
-            { id: 15, colname: 'BeltSize', default: 'false' },
-//            { id: 16, colname: 'InstructorPaymentFree', default: 'false' },
-            { id: 16, colname: 'ContactType', default: 'false' },
-            { id: 17, colname: 'InstructorFlag', default: 'false' },
-            { id: 18, colname: 'quickbooklink', default: 'false' },
-            { id: 19, colname: 'instructorTitle', default: 'false' },
-            { id: 20, colname: 'sex', default: 'false' },
-            { id: 21, colname: 'medicalConcerns', default: 'false' },
-            { id: 22, colname: 'GuiSize', default: 'false' },
-            { id: 23, colname: 'studentclassstatus', default: 'false' },
-//            { id: 24, colname: 'LastPromoted', default: 'false' },
-//            { id: 25, colname: 'currentrank', default: 'false' },
-            { id: 24, colname: 'ranktype', default: 'false' }
+            { id: 1, colname: 'FirstName', default: 'true', minsize: studentM },
+            { id: 2, colname: 'ID', default: 'true', minsize: studentS },
+            { id: 3, colname: 'LastName', default: 'true', minsize: studentM },
+            { id: 4, colname: 'Email', default: 'true', minsize: studentL },
+            { id: 5, colname: 'Email2', default: 'false', minsize: studentL },
+            { id: 6, colname: 'Parent', default: 'false', minsize: studentM },
+            { id: 7, colname: 'Phone', default: 'true', minsize: studentM },
+            { id: 8, colname: 'AltPhone', default: 'false', minsize: studentS },
+            { id: 9, colname: 'Address', default: 'false', minsize: studentL },
+            { id: 10, colname: 'City', default: 'false', minsize: studentM },
+            { id: 11, colname: 'State', default: 'false', minsize: studentXS },
+            { id: 12, colname: 'ZIP', default: 'false', minsize: studentS },
+            { id: 13, colname: 'Notes', default: 'false', minsize: studentM },
+            { id: 14, colname: 'Birthday', default: 'false', minsize: studentXS },
+            { id: 15, colname: 'BeltSize', default: 'false', minsize: studentXS },
+            { id: 16, colname: 'ContactType', default: 'false', minsize: studentM },
+            { id: 17, colname: 'InstructorFlag', default: 'false', minsize: studentXS },
+            { id: 18, colname: 'quickbooklink', default: 'false', minsize: studentS },
+            { id: 19, colname: 'instructorTitle', default: 'false', minsize: studentM },
+            { id: 20, colname: 'sex', default: 'false', minsize: studentXS },
+            { id: 21, colname: 'medicalConcerns', default: 'false', minsize: studentM },
+            { id: 22, colname: 'GuiSize', default: 'false', minsize: studentXS },
+            { id: 23, colname: 'studentclassstatus', default: 'false', minsize: studentS },
+            { id: 24, colname: 'ranktype', default: 'false', minsize: studentS }
         ];
 
         vm.gridLength = {};
@@ -152,6 +153,8 @@ export class StudentsTableBasicController {
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('StudentsTableBasicController',vm.UserServices.isDebugEnabled());
         }
+
+//        vm.portalDataService.Portlet('studenttable.controller.js');
 
         vm.$q.all([
                 vm.getUserPrefCols().then(function() {
@@ -299,7 +302,7 @@ export class StudentsTableBasicController {
                 if (vm.listA[i].colname == 'ID') {
                     continue; //skip as we will add it at the end 
                 }
-                vm.gcolumns.push({ field: vm.listA[i].colname, enableFiltering: true, enableSorting: true, headerCellClass: vm.Util.highlightFilteredHeader, enableCellEdit: false });
+                vm.gcolumns.push({ field: vm.listA[i].colname, enableFiltering: true, enableSorting: true, width: "*", headerCellClass: vm.Util.highlightFilteredHeader, minwidth: vm.listA[i].minsize, enableCellEdit: false });
 
             }
 

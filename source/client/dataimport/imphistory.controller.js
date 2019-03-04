@@ -74,7 +74,7 @@ export class ImphistoryController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('imphistory');
+//        vm.portalDataService.Portlet('imphistory');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('ImphistoryController',vm.UserServices.isDebugEnabled());
         }

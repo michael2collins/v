@@ -325,7 +325,7 @@ export class AttendanceTableBasicController {
    activate() {
       var vm = this;
 
-      this.portalDataService.Portlet('table-basic-attendance');
+//      this.portalDataService.Portlet('table-basic-attendance');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('AttendanceTableBasicController',vm.UserServices.isDebugEnabled());
         }

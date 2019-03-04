@@ -83,7 +83,7 @@ export class PaymentTrackingController {
 
         });
 
-        vm.portalDataService.Portlet('paymenttracking.controller.js');
+//        vm.portalDataService.Portlet('paymenttracking.controller.js');
 
         vm.setgridOptions();
         vm.setpaygridOptions();

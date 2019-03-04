@@ -48,7 +48,7 @@ export class TesttypeTableBasicController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-basic-testtype');
+//        vm.portalDataService.Portlet('table-basic-testtype');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('TesttypeTableBasicController',vm.UserServices.isDebugEnabled());
         }

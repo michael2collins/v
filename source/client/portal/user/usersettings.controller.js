@@ -27,7 +27,7 @@ export class ModalUserSettingsInstanceController {
     this.mydelay = 10;
     this.init();
     
-    this.portalDataService.Portlet('usersettings.controller.js');
+//    this.portalDataService.Portlet('usersettings.controller.js');
     
   }
   $onDestroy() {

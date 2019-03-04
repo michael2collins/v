@@ -52,8 +52,12 @@ let thirdparty = [
         module: 'simple-line-icons', entry: '//cdnjs.cloudflare.com/ajax/libs/simple-line-icons/2.4.1/css/simple-line-icons.min.css'
     },
     {
-        module: 'bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'
+//        module: 'bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'
+        module: 'bootstrap', entry: '//stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css'
     },
+//    {
+//        module: 'bootstrap', entry: '//stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap-theme.min.css'
+//    },
     {
         module: 'animate', entry: '//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css'
     },
@@ -134,9 +138,6 @@ let thirdparty = [
     },
     {
         module: 'html5shiv', entry: '//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js'
-    },
-    {
-        module: 'boostrap-hover-dropdown', entry: '//cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.min.js'
     },
     {
         module: 'jquery.slimscroll', entry: '//cdnjs.cloudflare.com/ajax/libs/jQuery-slimScroll/1.3.8/jquery.slimscroll.min.js'
@@ -572,8 +573,12 @@ let thirdparty = [
         module: 'bootstrap-timepicker', entry: '//cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js'
     },
     {
-        module: 'bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'
-    }
+//        module: 'bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'
+        module: 'bootstrap', entry: '//stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js'
+    },
+    {
+        module: 'boostrap-hover-dropdown', entry: '//cdnjs.cloudflare.com/ajax/libs/bootstrap-hover-dropdown/2.2.1/bootstrap-hover-dropdown.min.js'
+    },
     
 ];
 module.exports = thirdparty;

@@ -79,6 +79,7 @@ function Getfloat($str) {
 } 
 
     function emailoutbound($to,$subject,$message,$_from,$_cc,$_bcc){
+    $app = \Slim\Slim::getInstance();
 
         $from = 'From: <' . $_from . '>' ;
         $replyto = $_from . "\r\n";
@@ -165,6 +166,8 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
 
     
     function bulk_insert($mycon, $table, $cols, $values, $types) {
+    $app = \Slim\Slim::getInstance();
+        
         $app->log->debug( print_R("array insert entered\n", TRUE ));
         $app->log->debug( print_R($table, TRUE));
         $app->log->debug( print_R($cols, TRUE));

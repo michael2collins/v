@@ -162,7 +162,7 @@ export class EventTableBasicController {
 
         });
 
-        vm.portalDataService.Portlet('eventcreation.controller.js');
+//        vm.portalDataService.Portlet('eventcreation.controller.js');
         vm.activate();
 
     }

@@ -54,7 +54,7 @@ export class ModalPromotionInstanceController {
 
     vm.$log.log("TestDate:", vm.testDate);
 
-    vm.portalDataService.Portlet('promotion.controller.js');
+//    vm.portalDataService.Portlet('promotion.controller.js');
     vm.rptgridOptionsnew.onRegisterApi = function(gridApi) {
       var self = this;
       self.$log.log('vm gridapi onRegisterApi');

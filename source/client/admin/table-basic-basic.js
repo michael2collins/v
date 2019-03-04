@@ -68,7 +68,7 @@ export class BasicTableBasicController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('table-basic-basic');
+//        vm.portalDataService.Portlet('table-basic-basic');
 
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('BasicTableBasicController',vm.UserServices.isDebugEnabled());

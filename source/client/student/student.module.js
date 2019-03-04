@@ -26,6 +26,7 @@ import { FormLayoutsControllerEditStudent } from './editstudent.controller';
 import { ctrlDualList } from './studentdual.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
 
+//import { portalDataService } from '../portal/portaldata.service';
 import { StudentServices } from '../../js/services/studentServices';
 import { ClassServices } from '../../js/services/classServices';
 import { PhotoServices } from '../../js/services/photoServices';
@@ -45,6 +46,7 @@ export const StudentModule = angular
  .service('PhotoServices', PhotoServices)
  .service('PaymentServices', PaymentServices)
  .service('TestingServices', TestingServices)
+// .service('portalDataService', portalDataService)
  .service('Util', Util)
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ModalNewStudentController', ModalNewStudentController)

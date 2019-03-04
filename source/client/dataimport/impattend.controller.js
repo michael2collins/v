@@ -75,7 +75,7 @@ export class ImpattendController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('impattendance');
+//        vm.portalDataService.Portlet('impattendance');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('ImpattendController',vm.UserServices.isDebugEnabled());
         }

@@ -42,7 +42,7 @@ export class PaymentViewInstanceController {
 
     });
 
-    vm.portalDataService.Portlet('paymentview.controller.js');
+//    vm.portalDataService.Portlet('paymentview.controller.js');
 
   }
 

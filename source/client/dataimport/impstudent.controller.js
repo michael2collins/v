@@ -89,7 +89,7 @@ export class ImpstudentController {
 
     activate() {
         var vm = this;
-        vm.portalDataService.Portlet('impstudent');
+//        vm.portalDataService.Portlet('impstudent');
         if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
             vm.$log = vm.$log.getInstance('ImpstudentController',vm.UserServices.isDebugEnabled());
         }

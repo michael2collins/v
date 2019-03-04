@@ -103,7 +103,7 @@ export class FormLayoutsControllerEditStudent {
         });
 
 
-        vm.portalDataService.Portlet('form-layouts-editstudent.js');
+//        vm.portalDataService.Portlet('form-layouts-editstudent.js');
 
     }
     openPhoto() {
