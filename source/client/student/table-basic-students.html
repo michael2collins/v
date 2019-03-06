@@ -1,6 +1,6 @@
 <div ng-controller="StudentsTableBasicController as $ctrl" ng-cloak>
   <div class="row">
-    <div class="col-lg-12">
+    <div class="col-lg-12 col-md-12">
       <div class="portlet box portlet-green">
         <div class="portlet-header">
           <div class="row">
@@ -9,110 +9,116 @@
         </div>
         <div class="portlet-body">
           <div class="panel">
-            <div class="panel-body">
+            <div class="panel-header">
               <div class="table-tools">
                 <div class="row">
-                  <div class="col-md-6">
+                  <div class="col-md-4 col-xs-4">
                     <newstudent-component></newstudent-component>
 
                   </div>
-                  <div class="col-md-6">
-                    <studentdual-component></studentdual-component>
-
+                  <div class="col-md-4 col-xs-4">
+                    <button type="button" class="btn btn-blue" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'Options' : 'Collapse'}}</button>
                   </div>
                 </div>
-              </div>
-              <div class="row">
-                <div class="col-md-12">
-                  <!--
-                  <div class="input-icon right col-md-3">
-                     <label for="ranktype">Rank Type</label>
-                     <select id="ranktype" type="text" name="ranktype" ng-model="$ctrl.ranktypeselected" required ng-change="$ctrl.changeRankType()" class="form-control">
-                     <option ng-repeat="iter in $ctrl.ranktypelist" ng-selected="{{iter.ranktype==$ctrl.ranktypeselected}}" placeholder="Select" value="{{iter.ranktype}}">{{iter.ranktype}}</option>
-                     </select>
-                  </div>
--->
-                  <div class="col-md-3">
-                    <ranktype-component on-update="$ctrl.updateRankType($ctrl.ranktypeparent, prop, value)">
-                    </ranktype-component>
-                  </div>
-                  <div class="col-md-2" ng-show="$ctrl.isOkRT()">
-                    <div class="form-group">
-                      <label for="inputcontacttype" class="control-label ">Student Type</label>
-                      <div class="input-icon right">
-                        <select id="inputcontacttype" type="text" name="contacttype" ng-model="$ctrl.thecontacttype" 
-                        ng-change="$ctrl.setContactType($ctrl.thecontacttype);$ctrl.requery()" class="form-control ">
+                <div uib-collapse="$ctrl.isCollapsed">
+                  <div class="well well-xl">
+                    <div class="container-fluid">
+                      <div class="container-xl">
+                        <div class="col-md-12">
+                          <div class="col-md-3 col-xs-3">
+                            <div class="form-group">
+                              <label for="inputcontacttype" class="control-label ">Type</label>
+                              <div class="input-icon right">
+                                <select id="inputcontacttype" type="text" name="contacttype" ng-model="$ctrl.thecontacttype" ng-change="$ctrl.setContactType($ctrl.thecontacttype);$ctrl.requery()" class="form-control ">
                         <option>All</option>
                         <option ng-repeat="g in $ctrl.StudentList.ContactTypeList" 
                         ng-selected="{{(g.listvalue === $ctrl.thecontacttype) && 'selected' || 'not' }}"  
                         value="{{g.listkey}}">{{g.listvalue}}</option>
                       </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-3" ng-show="$ctrl.isOkRT()">
-                    <div class="form-group">
-                      <label for="inputRank" class="control-label ">Rank </label>
-                      <div class="input-icon right">
-                        <select id="inputRank" type="text" name="Rank" ng-model="$ctrl.Rank" ng-change="$ctrl.setRank($ctrl.Rank);$ctrl.requery()" class="form-control">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3 col-xs-3">
+                            <div class="form-group">
+                              <label for="inputRank" class="control-label ">Rank </label>
+                              <div class="input-icon right">
+                                <select id="inputRank" type="text" name="Rank" ng-model="$ctrl.Rank" ng-change="$ctrl.setRank($ctrl.Rank);$ctrl.requery()" class="form-control">
                         <option>All</option>
                         <option ng-repeat="iter in $ctrl.RankList.rankList" ng-selected="iter.ranklist === $ctrl.Rank" 
                              value="{{iter.ranklist}}">{{iter.ranklist}}</option>
                       </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-2" ng-show="$ctrl.isOkRT()">
-                    <div class="form-group">
-                      <label for="inputStatus" class="control-label ">Status </label>
-                      <div class="input-icon right">
-                        <select id="inputStatus" type="text" name="Status" ng-model="$ctrl.status" ng-change="$ctrl.setStatus($ctrl.status);$ctrl.requery()" class="form-control">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3 col-xs-3">
+                            <div class="form-group">
+                              <label for="inputStatus" class="control-label ">Status </label>
+                              <div class="input-icon right">
+                                <select id="inputStatus" type="text" name="Status" ng-model="$ctrl.status" ng-change="$ctrl.setStatus($ctrl.status);$ctrl.requery()" class="form-control">
                         <option>All</option>
                         <option ng-repeat="g in $ctrl.StudentList.ClassStatusList" 
                         ng-selected="{{(g.listvalue === $ctrl.status) && 'selected' || 'not' }}"  
                         value="{{g.listkey}}">{{g.listvalue}}</option>
                       </select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-2" ng-show="$ctrl.isOkRT()">
-                    <div class="form-group">
-                      <label for="inputlimit" class="control-label ">Limit</label>
-                      <div class="input-icon right">
-                        <select id="inputlimit" type="text" name="limit" ng-model="$ctrl.limit" ng-change="$ctrl.setLimit($ctrl.limit);$ctrl.requery()" class="form-control">
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-3 col-xs-3">
+                            <div class="form-group">
+                              <label for="inputlimit" class="control-label ">Limit</label>
+                              <div class="input-icon right">
+                                <select id="inputlimit" type="text" name="limit" ng-model="$ctrl.limit" ng-change="$ctrl.setLimit($ctrl.limit);$ctrl.requery()" class="form-control">
                         <option ng-repeat="lim in $ctrl.limits2" ng-selected="lim == $ctrl.limit"  
                             value="{{lim}}">{{lim}}</option>
                       </select>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="col-md-12 col-xs-12">
+                            <studentdual-component></studentdual-component>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="row col-md-12" style="height: 70px;" ng-show="$ctrl.isOkRT()">
+              <div class="row">
+                <div class=" col-md-4 col-xs-4">
+                  <ranktype-component on-update="$ctrl.updateRankType($ctrl.ranktypeparent, prop, value)">
+                  </ranktype-component>
+                </div>
+                <div ng-show="$ctrl.isOkRT()">
 
-                <div class="col-md-4">
-                  <div class="select-box">
-                    <ui-select ng-model="$ctrl.studentpick" theme="bootstrap" reset-search-input="false" ng-disabled="$ctrl.disabled" on-select="$ctrl.editStudentFromPick($item)" style="width: 300px;" title="Choose a student" append-to-body="true">
-                      <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
-                      <ui-select-choices repeat="stu in $ctrl.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="$ctrl.refreshStudents($select.search)" refresh-delay="0">
-                        <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
-                      </ui-select-choices>
-                    </ui-select>
+                  <div class="col-md-4 col-xs-4">
+                    <div class="input-icon right">
+                      <label for="select-box" class="control-label">Pick Student</label>
+                      <div class="select-box">
+                        <ui-select ng-model="$ctrl.studentpick" theme="bootstrap" reset-search-input="false" ng-disabled="$ctrl.disabled" on-select="$ctrl.editStudentFromPick($item)" style="width: 180px;" title="Choose a student" append-to-body="true">
+                          <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
+                          <ui-select-choices repeat="stu in $ctrl.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="$ctrl.refreshStudents($select.search)" refresh-delay="0">
+                            <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
+                          </ui-select-choices>
+                        </ui-select>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-xs-4 mtl">
+                    <a ng-href="/#/form-layouts-editstudent/id/{{$ctrl.eventResult.item.ID}}" ng-show="$ctrl.eventResult.item.ID" class="btn btn-blue ">Edit {{$ctrl.eventResult.item.FirstName}}</a>
                   </div>
                 </div>
-                <div class="col-md-4">
-                  <a ng-href="/#/form-layouts-editstudent/id/{{$ctrl.eventResult.item.ID}}" ng-show="$ctrl.eventResult.item.ID" class="btn btn-blue ">Edit {{$ctrl.eventResult.item.FirstName}}</a>
-
-                </div>
-                <div class="col-md-4">&nbsp;</div>
               </div>
+            </div>
+            <div class="panel-body">
               <div ng-show="$ctrl.isOkRT()">
-                <div class="row">
+                <!--                <div class="row">
                   <div class=" col-md-4">
                     <button ng-click="$ctrl.requery()" class="btn btn-blue ">Refresh List</button>
                   </div>
+                  
                   <div class="col-md-8">&nbsp;</div>
                 </div>
+-->
                 <div class="row">
                   <div class="col-md-12">
                     <div ui-grid="$ctrl.gridOptions" ui-if="$ctrl.gridOptions.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-pinning ui-grid-move-columns ui-grid-exporter ui-grid-auto-resize ui-grid-resize-columns ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()">

@@ -45,10 +45,10 @@ export class StudentsTableBasicController {
         vm.listB = [];
         vm.gridOptions = {};
         vm.gridApi;
-        var studentXS=20;
-        var studentS=40;
-        var studentM=100;
-        var studentL=200;
+        var studentXS=30;
+        var studentS=60;
+        var studentM=150;
+        var studentL=250;
 
         vm.userData = [
             { id: 1, colname: 'FirstName', default: 'true', minsize: studentM },
@@ -87,6 +87,8 @@ export class StudentsTableBasicController {
         vm.setGridLength(vm.initialLength);
         vm.ranktypeselected = '';
         vm.ranktypeparent = {};
+        vm.isCollapsed=true;
+        vm.setGridOptions();
         vm.activate();
     }
 
@@ -302,7 +304,7 @@ export class StudentsTableBasicController {
                 if (vm.listA[i].colname == 'ID') {
                     continue; //skip as we will add it at the end 
                 }
-                vm.gcolumns.push({ field: vm.listA[i].colname, enableFiltering: true, enableSorting: true, width: "*", headerCellClass: vm.Util.highlightFilteredHeader, minwidth: vm.listA[i].minsize, enableCellEdit: false });
+                vm.gcolumns.push({ field: vm.listA[i].colname, enableFiltering: true, enableSorting: true, width: "*", headerCellClass: vm.Util.highlightFilteredHeader, minWidth: vm.listA[i].minsize, enableCellEdit: false });
 
             }
 
@@ -320,7 +322,8 @@ export class StudentsTableBasicController {
                 enableSorting: false,
                 enableHiding: false,
                 enableCellEdit: false,
-                cellTemplate: ctpl
+                cellTemplate: ctpl,
+                width: 200
             });
 
 
@@ -418,11 +421,11 @@ export class StudentsTableBasicController {
             showGridFooter: true,
             //            enableFiltering: true,
             enableGridMenu: true,
-            //            paginationPageSizes: vm.limits,
-            paginationPageSizes: [5, 10, 100],
-            //            paginationPageSize: vm.initialLength,
-            paginationPageSize: 10,
-            //            rowHeight: vm.rowheight,
+                        paginationPageSizes: vm.limits,
+            //paginationPageSizes: [5, 10, 100],
+                        paginationPageSize: vm.initialLength,
+            //paginationPageSize: 10,
+                        rowHeight: vm.rowheight,
             enableCellEditOnFocus: true,
             columnDefs: vm.gcolumns,
             appScopeProvider: vm,
