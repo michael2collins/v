@@ -5,22 +5,38 @@
     <form action="" novalidate name="newstudent" class="form-horizontal">
         <div class="form-body pal">
             <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group" ng-class="{ 'has-error': newstudent.ContactType.$dirty && newstudent.ContactType.$error.required }">
+                        <div class="input-iconx">
+                            <label for="inputContactType" class="control-label">Type</label>
+                            <i class="fa fa-users"></i>
+                            <select id="ContactType" type="text" name="ContactType" ng-model="vmnew.ContactType" required class="form-control">
+                                <option 
+                                  ng-repeat="iter in vmnew.StudentList.ContactTypeList" 
+                                  placeholder="Type" value="{{iter.listkey}}">{{iter.listvalue}}</option>
+                              </select>
+                            <span ng-show="newstudent.ContactType.$dirty && newstudent.ContactType.$error.required" class="help-block delete-red">Type is required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col-md-6">
                     <div class="form-group" ng-class="{ 'has-error': newstudent.FirstName.$dirty && newstudent.FirstName.$error.required }">
                         <label for="FirstName" class="control-label">First Name </label>
                         <input id="FirstName" id="FirstName" value="" type="text" placeholder="First Name" name="FirstName" ng-model="vmnew.FirstName" minLength="2" maxLength="30" required class="form-control">
-            <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.required" class="help-block delete-red">First Name is required</span>
-            <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.minlength" class="help-block delete-red">First Name minLength = 2</span>
-            <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.maxlength" class="help-block delete-red">First Name maxlength = 30</span>
+                        <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.required" class="help-block delete-red">First Name is required</span>
+                        <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.minlength" class="help-block delete-red">First Name minLength = 2</span>
+                        <span ng-show="newstudent.FirstName.$dirty && newstudent.FirstName.$error.maxlength" class="help-block delete-red">First Name maxlength = 30</span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group" ng-class="{ 'has-error': newstudent.FirstName.$dirty && newstudent.FirstName.$error.required }">
                         <label for="LastName" class="control-label">Last Name </label>
                         <input id="LastName" id="LastName" value="" type="text" placeholder="Last Name" name="LastName" ng-model="vmnew.LastName" minLength="2" maxLength="30" required class="form-control">
-            <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.required" class="help-block delete-red">Last Name is required</span>
-            <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.minlength" class="help-block delete-red">Last Name minLength = 2</span>
-            <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.maxlength" class="help-block delete-red">Last Name maxlength = 30</span>
+                        <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.required" class="help-block delete-red">Last Name is required</span>
+                        <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.minlength" class="help-block delete-red">Last Name minLength = 2</span>
+                        <span ng-show="newstudent.LastName.$dirty && newstudent.LastName.$error.maxlength" class="help-block delete-red">Last Name maxlength = 30</span>
                     </div>
                 </div>
             </div>
@@ -32,7 +48,19 @@
                             <i class="fa fa-envelope"></i>
                             <input type="email" id="email" name="email" value="" placeholder="Email" class="form-control" ng-model="vmnew.Email" required />
                             <span ng-show="newstudent.email.$dirty && newstudent.email.$error.email" class="help-block  delete-red">Email is missing @ and/or a period</span>
-            <span ng-show="newstudent.email.$dirty && newstudent.email.$error.required" class="help-block delete-red">Email is required</span>
+                            <span ng-show="newstudent.email.$dirty && newstudent.email.$error.required" class="help-block delete-red">Email is required</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group" ng-class="{'has-error': newstudent.Phone.$dirty && newstudent.Phone.$invalid }">
+                        <div class="input-iconx">
+                            <label class="control-label" for="inputPhone">Phone</label>
+                            <i class="fa fa-phone"></i>
+                            <input class="form-control" id="inputPhone" name="Phone" ui-options="{clearOnBlur: false}" ng-model="vmnew.Phone" placeholder="(508) 555-5555" type="tel" required ui-mask="(999) 999-9999">
+                            <span ng-show="newstudent.Phone.$dirty && newstudent.Phone.$error.required" class="help-block delete-red">Email is required</span>
                         </div>
                     </div>
                 </div>
@@ -120,7 +148,7 @@
 </div>
 <div class="modal-footer">
     <button ng-if="vmnew.oksubmit()" ng-hide="vmnew.thisstudent.student_id" class="btn btn-primary" type="button" ng-click="vmnew.submit()">Submit</button>
-<!--    <a ng-href="/#/form-layouts-editstudent/id/{{vmnew.thisstudent.student_id}}" ng-show="vmnew.thisstudent.student_id" class="btn btn-blue ">Edit {{vmnew.FirstName}}</a> -->
+    <!--    <a ng-href="/#/form-layouts-editstudent/id/{{vmnew.thisstudent.student_id}}" ng-show="vmnew.thisstudent.student_id" class="btn btn-blue ">Edit {{vmnew.FirstName}}</a> -->
     <button ng-show="vmnew.thisstudent.student_id" class="btn btn-primary" type="button" ng-click="vmnew.finish()">Edit {{vmnew.FirstName + ' ' + vmnew.LastName}}</button>
     <button class="btn btn-warning" type="button" ng-click="vmnew.cancel()">Cancel</button>
 </div>

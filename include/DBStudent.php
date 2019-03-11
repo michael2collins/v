@@ -941,7 +941,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 	}
 
 	public
-	function createStudent($LastName, $FirstName, $Email)
+	function createStudent($LastName, $FirstName, $Email, $Phone,$ContactType)
 	{
 	/**
 	 * Creating new student
@@ -950,18 +950,16 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$app->log->debug(print_R("createStudent entered\n", TRUE) );
 		$response = array();
 		global $school;
-		$sql = "INSERT into ncontacts (";
-		$sql.= " LastName ,";
-		$sql.= " FirstName ,";
-		$sql.= " Email, ";
-		$sql.= " studentschool )";
-		$sql.= " values ( ?, ?, ?, ?)";
+		$sql = "INSERT into ncontacts (
+		LastName , FirstName , Email, Phone, ContactType,
+		studentschool ) 
+		values ( ?, ?, ?, ?, ?, ?)";
 
 		// First check if user already existed in db
 
 		if (!$this->isStudentExists($Email, $LastName, $FirstName, $school)) {
 			if ($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param("ssss", $LastName, $FirstName, $Email, $school);
+				$stmt->bind_param("ssssss", $LastName, $FirstName, $Email, $Phone,$ContactType, $school);
 				$result = $stmt->execute();
 				$stmt->close();
 
@@ -2256,10 +2254,16 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         global $app;
 
 		$num_affected_rows = 0;
-		$sql = "UPDATE invoice set ";
-		$sql.= "   status = ? ";
-		$sql.= "  where   invoice  = ? ";
+		$tot = 0;
+		$sql = "UPDATE invoice set 
+		  status = ? 
+		  where   invoice  = ? ";
 		$app->log->debug(print_R($sql, TRUE));
+		$pdsql = "
+			update npayments np set lastpaymentdate = now() where
+			np.paymentid = ( select i.paymentid from invoice i
+			WHERE invoice = ? )		";		
+		
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("ss",  $status, $invoice);
@@ -2271,9 +2275,21 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		else {
 			printf("Errormessage: %s\n", $this->conn->error);
 		}
+		$tot = $num_affected_rows;
 
+		if ($stmt = $this->conn->prepare($pdsql)) {
+			$stmt->bind_param("s",  $invoice);
+			$stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+			$app->log->debug(print_R("affected rows: $num_affected_rows\n", TRUE));
+		}
+		else {
+			printf("Errormessage: %s\n", $this->conn->error);
+		}
+		$tot = $tot + $num_affected_rows;
 
-		return $num_affected_rows;
+		return $tot;
 	}
 
 	public
@@ -2281,10 +2297,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         global $app;
 
 	    $sql = "
-	    select id, invoice, i.paymentid, amt, invdate, status, payfor
+	    	    select distinct i.id, invoice, i.paymentid, amt, invdate, status, payfor, np.paymenttype, payerEmail, address, city, zip, state, cp.payerid
 	    from invoice i
 	    join npayments np on  (np.paymentid = i.paymentid)
-	    where np.payerid = ?
+		join payer pp on (pp.id = np.payerid)
+	join nclasspays cp on (pp.id = cp.payerid)
+	join ncontacts c on (cp.contactid = c.id)
+	where np.payerid = ?
 	    ";
 	    
 		$app->log->debug(print_R("sql for getInvoices is: " . $sql . "\n", TRUE) );

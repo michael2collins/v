@@ -1599,10 +1599,14 @@ $app->post('/newstudent', 'authenticate', 'setDebug', function() use ($app) {
     $LastName = (isset($dataJsonDecode->thedata->LastName) ? $dataJsonDecode->thedata->LastName : "");
     $Email = (isset($dataJsonDecode->thedata->Email) ? $dataJsonDecode->thedata->Email : "");
     $FirstName = (isset($dataJsonDecode->thedata->FirstName) ? $dataJsonDecode->thedata->FirstName : "");
+    $Phone = (isset($dataJsonDecode->thedata->Phone) ? $dataJsonDecode->thedata->Phone : "");
+    $ContactType = (isset($dataJsonDecode->thedata->ContactType) ? $dataJsonDecode->thedata->ContactType : "");
 
     $app->log->debug( print_R("lastname: $LastName\n", TRUE ));
     $app->log->debug( print_R("FirstName: $FirstName\n", TRUE ));
     $app->log->debug( print_R("email: $Email\n", TRUE ));
+    $app->log->debug( print_R("Phone: $Phone\n", TRUE ));
+    $app->log->debug( print_R("ContactType: $ContactType\n", TRUE ));
 
 
     $db = new StudentDbHandler();
@@ -1611,7 +1615,9 @@ $app->post('/newstudent', 'authenticate', 'setDebug', function() use ($app) {
     // updating task
     $student_id = $db->createStudent($LastName,
                                  $FirstName,
-                                 $Email
+                                 $Email,
+                                 $Phone,
+                                 $ContactType
                                 );
 
     if ($student_id > 0) {
@@ -3444,6 +3450,12 @@ $app->get('/invoices', 'authenticate', 'setDebug', function() use ($app) {
             $tmp["invdate"] = (empty($slist["invdate"]) ? "NULL" : $slist["invdate"]);
             $tmp["status"] = (empty($slist["status"]) ? "NULL" : $slist["status"]);
             $tmp["payfor"] = (empty($slist["payfor"]) ? "NULL" : $slist["payfor"]);
+            $tmp["paymenttype"] = (empty($slist["paymenttype"]) ? "NULL" : $slist["paymenttype"]);
+            $tmp["payerEmail"] = (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+            $tmp["address"] = (empty($slist["address"]) ? "NULL" : $slist["address"]);
+            $tmp["city"] = (empty($slist["city"]) ? "NULL" : $slist["city"]);
+            $tmp["zip"] = (empty($slist["zip"]) ? "NULL" : $slist["zip"]);
+            $tmp["state"] = (empty($slist["state"]) ? "NULL" : $slist["state"]);
         }
         array_push($response["invoicelist"], $tmp);
     }
@@ -3672,6 +3684,95 @@ $app->get('/stripepub', 'authenticate',  'setDebug', function() use ($app) {
     $response["stripepub"] = PUBAPIKEY;
 
     echoRespnse(200, $response);
+    
+});
+
+$app->post('/payother', 'authenticate', 'setDebug', function() use ($app) {
+
+    $response = array();
+    global $school;
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    $app->log->debug( print_R("payother enter\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
+
+
+    if (isset($dataJsonDecode->thedata->amt)) {
+        $amt =  $dataJsonDecode->thedata->amt;
+    } else { errorRequiredParams('amt'); }
+    if (isset($dataJsonDecode->thedata->desc)) {
+        $desc =  $dataJsonDecode->thedata->desc;
+    } else { errorRequiredParams('desc'); }
+    if (isset($dataJsonDecode->thedata->invoice)) {
+        $invoice =  $dataJsonDecode->thedata->invoice;
+    } else { errorRequiredParams('invoice'); }
+    
+    if (isset($dataJsonDecode->thedata->address_city)) {
+        $address_city =  $dataJsonDecode->thedata->address_city;
+    } else { errorRequiredParams('address_city'); }
+    if (isset($dataJsonDecode->thedata->address_state)) {
+        $address_state =  $dataJsonDecode->thedata->address_state;
+    } else { errorRequiredParams('address_state'); }
+    if (isset($dataJsonDecode->thedata->address_zip)) {
+        $address_zip =  $dataJsonDecode->thedata->address_zip;
+    } else { errorRequiredParams('address_zip'); }
+    if (isset($dataJsonDecode->thedata->address_line1)) {
+        $address_line1 =  $dataJsonDecode->thedata->address_line1;
+    } else { errorRequiredParams('address_line1'); }
+    if (isset($dataJsonDecode->thedata->paytype)) {
+        $paytype =  $dataJsonDecode->thedata->paytype;
+    } else { errorRequiredParams('paytype'); }
+    if (isset($dataJsonDecode->thedata->checknum)) {
+        $checknum =  $dataJsonDecode->thedata->checknum;
+    } else { errorRequiredParams('checknum'); }
+    if (isset($dataJsonDecode->thedata->name)) {
+        $name =  $dataJsonDecode->thedata->name;
+    } else { errorRequiredParams('name'); }
+    if (isset($dataJsonDecode->thedata->email)) {
+        $email =  $dataJsonDecode->thedata->email;
+    } else { errorRequiredParams('email'); }
+    if (isset($dataJsonDecode->thedata->paydate)) {
+        $paydate =  $dataJsonDecode->thedata->paydate;
+    } else { errorRequiredParams('paydate'); }
+
+
+    $invoicegood=0;
+
+    $invoicegood = otherpaid(
+        $name,
+        $email,
+            $address_line1,
+            $address_city,
+            $address_zip,
+            $address_state,
+            $school,
+            $amt,
+            $desc,
+            $checknum,
+            $paytype,
+            $invoice,
+            $paydate
+        ) ;
+        $app->log->debug( print_R("after otherpaid  result $invoicegood\n", TRUE));
+
+
+    //as long as one worked, return success
+    if ($invoicegood > 0) {
+        $response["error"] = false;
+        $response["message"] = "payment successfull";
+        $response["invoice"] = $invoicegood;
+        echoRespnse(201, $response);
+    } else {
+        $app->log->debug( print_R("after payment  result bad\n", TRUE));
+        $response["error"] = true;
+        $response["invoice"] = $invoicegood;
+        $response["message"] = "Failed to pay. Please try again";
+        
+        echoRespnse(400 , $response);
+    }
     
 });
 
@@ -5590,6 +5691,78 @@ $app->delete('/rawattendance','authenticate', 'setDebug', function() use ($app) 
             echoRespnse(400, $response);
         }
 });
+
+function otherpaid(
+    $inname,
+    $email,
+        $address_line1,
+        $address_city,
+        $address_zip,
+        $address_state,
+        $school,
+        $amt,
+        $description,
+        $checknum,
+        $paytype,
+        $invoice,
+        $paydate
+    ) {
+        $app = \Slim\Slim::getInstance();
+            
+        setDebug();    
+        $app->log->debug( print_R("otherpaid entered:\n ", TRUE));
+    global $PP;
+    global $tz;
+
+        $paymentprocessor = 'school';
+        $result = array();
+//        $dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
+//        $dt->setTimestamp(substr($paydate, 0, 10));
+        
+//        $dd = $dt->format($PP);    
+
+        //$result['payment_date'] = date("Y-m-d H:i:s", substr($inbound['created'], 0, 10)); //convert from epoch
+        $result['payment_date'] = substr($paydate, 0, 10);
+
+        $result['mc_gross_1'] = $amt;
+        $result['mc_currency'] = "USD";
+        $result['payment_gross'] = $amt;
+    $result['payment_type'] = $paytype;
+    $result['item_name1'] = $description;
+    $result['quantity1'] = 1;
+    $result['num_cart_items'] = 1;
+    $result['txn_id'] = 0;
+    $result['custom'] = $invoice;
+    $result['payer_email'] = $email;
+
+    $words = explode(' ', $inname);
+    $last_word = array_pop($words);
+    $first_chunk = implode(' ', $words);    
+
+    $result['first_name'] =  $first_chunk;
+    $result['last_name'] =  $last_word;    
+
+    $result['address_zip'] = $address_zip;     
+    $result['address_state'] = $address_state;          
+    $result['address_city'] =  $address_city;         
+    $result['address_street'] = $address_line1;
+    $sstatus = 'succeeded';
+    $paidst = "paid";
+    $result['payment_status'] = $sstatus . ':' . $paidst;
+    $app->log->debug( print_R("before paycommon:\n ", TRUE));
+    $app->log->debug( print_R($result, TRUE));        
+    try {
+        return paycommon($result,$paymentprocessor,$school);
+         } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+        
+        $app->log->debug( print_R("otherpaid :\n ", TRUE));
+        $app->log->debug( print_R($e, TRUE));
+        return -2;
+    }        
+
+}
+
 function stripepaid(
     $inbound,
         $inname,
@@ -5600,6 +5773,8 @@ function stripepaid(
         $school
 
     ){
+    $app = \Slim\Slim::getInstance();
+        
     setDebug();    
     $app->log->debug( print_R("stripepaid entered:\n ", TRUE));
 //    $app->log->debug( print_R($inbound, TRUE));
@@ -5645,7 +5820,15 @@ function stripepaid(
     $app->log->debug( print_R("before createPayment:\n ", TRUE));
     $app->log->debug( print_R($result, TRUE));
 
+        return paycommon($result,$paymentprocessor,$school);
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+        $app->log->debug( print_R("stripepaid dd:\n ", TRUE));
+        $app->log->debug( print_R($e, TRUE));
+        return -3;
+    }        
 
+/*
         $db = new StudentDbHandler();
         $response = array();
     
@@ -5759,9 +5942,134 @@ function stripepaid(
         $app->log->debug( print_R("stripepaid dd:\n ", TRUE));
         $app->log->debug( print_R($e, TRUE));
     }    
+*/
 
+}
+function paycommon($result,$paymentprocessor,$school) {
+    $app = \Slim\Slim::getInstance();
+        
+    setDebug();    
+    $app->log->debug( print_R("paycommon entered:\n ", TRUE));
+    
+    try {
+    
+        $db = new StudentDbHandler();
+        $response = array();
+    
+        // creating payment
+        $paid = $db->createPayment( 
+    isset(                      $result['payment_type']) ? $result['payment_type'] : "" ,
+      isset(                    $result['payment_date']) ? $result['payment_date'] : "",          
+    isset(                      $result['payer_status']) ? $result['payer_status'] : "",          
+    isset(                      $result['first_name']) ? $result['first_name'] : "",          
+    isset(                      $result['last_name']) ? $result['last_name'] : "",          
+    isset(                      $result['payer_email']) ? $result['payer_email'] : "",          
+    isset(                      $result['address_name']) ? $result['address_name'] : "",          
+    isset(                      $result['address_country']) ? $result['address_country'] : "",          
+    isset(                      $result['address_country_code']) ? $result['address_country_code'] : "",          
+    isset(                      $result['address_zip']) ? $result['address_zip'] : "",          
+    isset(                      $result['address_state']) ? $result['address_state'] : "",          
+    isset(                      $result['address_city']) ?  $result['address_city']: "",          
+    isset(                      $result['address_street']) ? $result['address_street'] : "",          
+    isset(                       $result['payment_status']) ? $result['payment_status'] : "",          
+    isset(                      $result['mc_currency']) ? $result['mc_currency'] : "",          
+    isset(                      $result['mc_gross_1']) ?  $result['mc_gross_1']: "",          
+    isset(                      $result['item_name1']) ?  $result['item_name1']: "",          
+    isset(                      $result['txn_id']) ? $result['txn_id']  : "",          
+    isset(                      $result['reason_code']) ? $result['reason_code']: "",          
+    isset(                      $result['parent_txn_id']) ? $result['parent_txn_id'] : "",          
+    isset(                       $result['num_cart_items']) ? $result['num_cart_items'] : "",
+    isset(                       $result['quantity1']) ?   $result['quantity1'] : "",
+    isset(                       $result['quantity2']) ?  $result['quantity2'] : "",
+    isset(                       $result['quantity3']) ?  $result['quantity3'] : "",
+    isset(                       $result['quantity4']) ?  $result['quantity4'] : "",
+    isset(                       $result['quantity5']) ?  $result['quantity5'] : "",
+    isset(                      $result['item_name2']) ? $result['item_name2'] : "",          
+    isset(                      $result['item_name3']) ? $result['item_name3'] : "",          
+    isset(                      $result['item_name4']) ? $result['item_name4']: "",          
+    isset(                      $result['item_name5']) ? $result['item_name5']: "",          
+    isset(                      $result['mc_gross_2']) ? $result['mc_gross_2'] : "",          
+    isset(                      $result['mc_gross_3']) ? $result['mc_gross_3']: "",          
+    isset(                      $result['mc_gross_4']) ? $result['mc_gross_4'] : "",          
+    isset(                      $result['mc_gross_5']) ? $result['mc_gross_5'] : "",          
+    isset(                       $result['receipt_id']) ? $result['receipt_id'] : "",
+    isset(                       $result['payment_gross']) ? $result['payment_gross'] : "",
+    isset(                       $result['ipn_track_id']) ? $result['ipn_track_id'] : "",
+    isset(                       $result['custom']) ? $result['custom'] : "",
+            $paymentprocessor,
+            $school
+                                    );
+                                    
+            //mark invoice status
+            $invresult = $db->updateInvoiceStatus($result['payment_status'],$result['custom']);
+            //todo: should we assess result and interupt this if the update fails
+            $app->log->debug( print_R(" Payment updated lastpay and invoice: $invresult\n", TRUE ));
+    
+            $app->log->debug( print_R("Stripe Payment created: $paid\n", TRUE ));
+            $xn = $result['txn_id'];
 
-};
+            $result = $db->getPayment($xn);
+    //todo: get email for school with getPayment
+    
+            $row_cnt = $result->num_rows;
+
+            if ($row_cnt > 0) {
+
+                while ($slist = $result->fetch_assoc()) {
+                    $tmp = array();
+                    if (count($slist) > 0) {
+
+                        $tmp["FirstName"] = (empty($slist["first_name"]) ? "NULL" : $slist["first_name"]);
+                        $tmp["Email"] = (empty($slist["payer_email"]) ? "NULL" : $slist["payer_email"]);
+                        $tmp["Payment_gross"] = (empty($slist["payment_gross"]) ? "NULL" : $slist["payment_gross"]);
+                        $tmp["invoice"] = (empty($slist["custom"]) ? "NULL" : $slist["custom"]);
+                    } else {
+                        $tmp["FirstName"] = "NULL";
+                        $tmp["Email"] = "NULL";
+                        $tmp["Payment_gross"] = "NULL";
+                        $tmp["invoice"] = "NULL";
+                        
+                    }
+    
+                    $message = "
+                    <html>
+                    <head>
+                    <title>Invoice payment</title>
+                    </head>
+                    <body>
+                    <p>You have successfully paid for invoice  " . $tmp["invoice"] . ".  If you have any questions please contact mailto:Mark@natickmartialarts.com</p>
+                    <p>Email: " . $tmp["Email"] . "</p>
+                    <table>
+                    <tr>
+                    <th>Name</th>
+                    <th>Payment Total</th>
+                    </tr>
+                    <tr>
+                    <td>" . $tmp["FirstName"] . "</td>
+                    <td>" . $tmp["Payment_gross"] . "</td>
+                    </tr>
+                    </table>
+                    </body>
+                    </html>
+                    ";
+                    
+                    $subject = 'Invoice ' . $tmp["invoice"] . ' payment for ' . 
+                    $tmp["FirstName"] . ' ' . ' paid ';
+
+                    $to = $tmp["Email"];
+                emailnotify($to , $subject, $message);
+            //    emailnotify('villaris.us@gmail.com', $subject, $message);
+                $app->log->debug( print_R("email to send: $to, $subject, $message\n", TRUE ));
+                }
+            }
+            return 1;
+    } catch (Exception $e) {
+      // Something else happened, completely unrelated to Stripe
+      return -1;
+        $app->log->debug( print_R("stripepaid dd:\n ", TRUE));
+        $app->log->debug( print_R($e, TRUE));
+    }        
+}
 
 function createStudentHistory($contactid,$histtype,$histdate) {
     $app = \Slim\Slim::getInstance();

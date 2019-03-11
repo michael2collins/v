@@ -122,30 +122,33 @@
                         </div>
                       </div>
                       <div class="">
-                        <table class="col-md-12 table-striped table-hover table-bordered">
-                          <thead>
-                            <tr>
-                              <th>Class</th>
-                              <th>Program</th>
-                              <th>Status</th>
-                              <th>Payer</th>
-                              <th>Waive Test Fee?</th>
-                              <th>Primary Acct?</th>
-                              <th>Picture</th>
-                              <th>Action</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            <tr ng-repeat="classlist in $ctrl.studentclazzlist track by $index" style="z-index: {{200 - $index}}">
-                              <td class="col-md-1">{{classlist.class}}</td>
-                              <td class="col-md-1">{{classlist.pgmclass}}</td>
-
-                              <td class="col-md-1">
+                        <div class="col-md-12 ">
+                            <div class="row like-table">
+                              <div class="col-md-1 col-xs-3 bluecol">Class</div>
+                              <div class="col-md-1 col-xs-3 pinkcol">Program</div>
+                              <div class="col-md-1 col-xs-3 yellowcol">Status</div>
+                              <div class="col-md-2 col-xs-3 greycol">Payer</div>
+                              <div class="col-md-2 col-xs-3 orangecol">Waive Test Fee?</div>
+                              <div class="col-md-2 col-xs-3 greencol">Primary Acct?</div>
+                              <div class="col-md-2 col-xs-3 violetcol">Picture</div>
+                              <div class="col-md-1 col-xs-3 limecol">Action</div>
+                            </div>
+                            <div class="row like-table xtralike-table" ng-repeat="classlist in $ctrl.studentclazzlist track by $index" 
+                              style="z-index: {{200 - $index}}">
+                              <div class="col-md-1 col-xs-3 bluecol">{{classlist.class}}</div>
+                              <div class="col-md-1 col-xs-3 pinkcol">{{classlist.pgmclass}}</div>
+                              <div class="col-md-1 col-xs-3 yellowcol">
                                 <div ng-class="{'has-error': editstudentclass['lstudentclassstatus' + $index].$invalid,
-                                                        'has-success': !editstudentclass['lstudentclassstatus' + $index].$invalid}" class="form-group">
+                                                        'has-success': !editstudentclass['lstudentclassstatus' + $index].$invalid}"
+                                                        class="form-group">
                                   <div class="input-icon right">
-                                    <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['lstudentclassstatus' + $index].$dirty" ng-class="editstudentclass['lstudentclassstatus' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                    <select id="lstudentclassstatus{{$index}}" type="text" name="lstudentclassstatus{{$index}}" ng-model="classlist.studentclassstatus" ng-change="$ctrl.changeStudentStatus(classlist)" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                    <i data-hover="tooltip" data-original-title="Correct" 
+                                    ng-show="editstudentclass['lstudentclassstatus' + $index].$dirty" 
+                                    ng-class="editstudentclass['lstudentclassstatus' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                    <select id="lstudentclassstatus{{$index}}" type="text" name="lstudentclassstatus{{$index}}" 
+                                    ng-model="classlist.studentclassstatus" ng-change="$ctrl.changeStudentStatus(classlist)" 
+                                    minLength="2" maxLength="30" required 
+                                    ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                       class="form-control">
                                                 <option ng-repeat="iter in $ctrl.classstatuses.studentclassstatuses" 
                                                 ng-selected="{{iter.status==classlist.studentclassstatus}}" 
@@ -158,13 +161,16 @@
                                     <div ng-message="maxlength">Your field is too long</div>
                                   </div>
                                 </div>
-                              </td>
-                              <td class="col-md-2">
+                              </div>
+                              <div class="col-md-2 col-xs-3 greycol">
                                 <div class="">
-                                  <div class="pll pbl select-box">
-                                    <ui-select ng-model="classlist.payerList" theme="bootstrap" reset-search-input="false" on-select="$ctrl.changeStudentPayer(classlist)"  title="Pick Payer" append-to-body="false">
+                                  <div class="select-box">
+                                    <ui-select ng-model="classlist.payerList" theme="bootstrap" 
+                                    reset-search-input="false" on-select="$ctrl.changeStudentPayer(classlist)"  
+                                    title="Pick Payer" append-to-body="true">
                                       <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
-                                      <ui-select-choices repeat="item in $ctrl.payers | filter: $select.search" refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
+                                      <ui-select-choices repeat="item in $ctrl.payers | filter: $select.search" 
+                                        refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
                                         <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
                                       </ui-select-choices>
                                       <ui-select-no-choice>
@@ -173,8 +179,8 @@
                                     </ui-select>
                                   </div>
                                 </div>
-                              </td>
-                              <td class="col-md-1">
+                              </div>
+                              <div class="col-md-2 col-xs-3 orangecol">
                                 <div>
                                   <div ng-class="{'has-error': editstudentclass['isTestfeewaived' + $index].$invalid, 
                                         'has-success': !editstudentclass['isTestfeewaived' + $index].$invalid}" class="form-group">
@@ -190,8 +196,8 @@
                                     </div>
                                   </div>
                                 </div>
-                              </td>
-                              <td class="col-md-1">
+                              </div>
+                              <div class="col-md-2 col-xs-3 greencol">
                                 <div>
                                   <div ng-class="{'has-error': editstudentclass['primaryContact' + $index].$invalid, 
                                         'has-success': !editstudentclass['primaryContact' + $index].$invalid}" class="form-group">
@@ -207,8 +213,8 @@
                                     </div>
                                   </div>
                                 </div>
-                              </td>
-                              <td class="col-md-2">
+                              </div>
+                              <div class="col-md-2 col-xs-3 violetcol">
                                 <div class="gallery-pages">
                                   <div class="mix-grid">
                                     <div class="mix">
@@ -223,11 +229,10 @@
                                     </div>
                                   </div>
                                 </div>
-                              </td>
-                              <td class="col-md-1"><span> <a ng-click="$ctrl.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp;</a></span></td>
-                            </tr>
-                          </tbody>
-                        </table>
+                              </div>
+                              <div class="col-md-1 col-xs-3 limecol"><span> <a ng-click="$ctrl.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp;</a></span></div>
+                            </div>
+                        </div>
                       </div>
                     </div>
                   </div>

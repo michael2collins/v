@@ -1,12 +1,13 @@
 export class ModalNewStudentInstanceController {
    constructor(
-      $log, StudentServices, ClassServices, $window, Notification, $scope, $q
+      $log, StudentServices, ClassServices, UserServices, $window, Notification, $scope, $q
    ) {
       'ngInject';
       this.$log = $log;
       this.$q = $q;
       this.StudentServices = StudentServices;
       this.ClassServices = ClassServices;
+      this.UserServices = UserServices;
       this.$window = $window;
       this.Notification = Notification;
       this.$scope = $scope;
@@ -15,9 +16,12 @@ export class ModalNewStudentInstanceController {
    $onInit() {
       var vmnew = this;
       vmnew.thisstudent = '';
-      vmnew.FirstName ='';
-      vmnew.LastName ='';
-      vmnew.Email ='';
+      vmnew.FirstName = '';
+      vmnew.LastName = '';
+      vmnew.Email = '';
+      vmnew.ContactType ='';
+      vmnew.StudentList =[];
+      vmnew.Phone = '';
       vmnew.message = '';
       vmnew.quickpicks = [];
       vmnew.PaymentTypes = [];
@@ -39,8 +43,13 @@ export class ModalNewStudentInstanceController {
 
    activate() {
       var vmnew = this;
+        if (vmnew.$log.getInstance(vmnew.UserServices.isDebugEnabled()) !== undefined ) {
+            vmnew.$log = vmnew.$log.getInstance('ModalNewStudentInstanceController',vmnew.UserServices.isDebugEnabled());
+        }
+
       vmnew.getQuickpick();
       vmnew.getPaymenttypes();
+      vmnew.getStudentLists();
    }
    clear() {
       var vmnew = this;
@@ -55,20 +64,32 @@ export class ModalNewStudentInstanceController {
    finish() {
       var vmnew = this;
       var url = '/#/form-layouts-editstudent/id/' + vmnew.thisstudent.student_id;
-        vmnew.$log.log(url);
-        vmnew.$window.location.href = url;
-        vmnew.$scope.$parent.$uibModalInstance.close(vmnew.thisstudent);
-      
+      vmnew.$log.log(url);
+      vmnew.$window.location.href = url;
+      vmnew.$scope.$parent.$uibModalInstance.close(vmnew.thisstudent);
+
    }
    oksubmit() {
       var vmnew = this;
-      return (vmnew.ok && 
-               vmnew.payerName.payerid >0 && 
-               vmnew.paymenttype !=='' &&
-               vmnew.FirstName !=='' &&
-               vmnew.LastName !== '' &&
-               vmnew.Email !== ''
-               );
+      if (vmnew.ContactType === "Lead") {
+         return (
+            vmnew.FirstName !== '' &&
+            vmnew.LastName !== '' &&
+            vmnew.Phone !== '' &&
+            vmnew.ContactType !== '' &&
+            vmnew.Email !== ''
+         );
+
+      }
+      return (vmnew.ok &&
+         vmnew.payerName.payerid > 0 &&
+         vmnew.paymenttype !== '' &&
+         vmnew.FirstName !== '' &&
+         vmnew.LastName !== '' &&
+         vmnew.ContactType !== '' &&
+         vmnew.Phone !== '' &&
+         vmnew.Email !== ''
+      );
    }
    pick() {
       var vmnew = this;
@@ -113,6 +134,23 @@ export class ModalNewStudentInstanceController {
          return vmnew.payers;
       });
 
+   }
+   getStudentLists() {
+      var vm = this;
+      var sListPath = '../v1/studentlists';
+
+
+      return vm.StudentServices.getStudentLists(sListPath).then(function(data) {
+         vm.$log.log('controller getStudentLists returned data');
+         vm.$log.log(data);
+         vm.StudentList = data;
+
+         return vm.StudentList;
+      }, function(error) {
+         vm.$log.log('getStudentLists ', error);
+         vm.Notification.error({ message: error, delay: 5000 });
+         return (error);
+      });
    }
 
    getQuickpick() {
@@ -193,7 +231,9 @@ export class ModalNewStudentInstanceController {
       var thedata = {
          FirstName: vmnew.FirstName,
          LastName: vmnew.LastName,
-         Email: vmnew.Email
+         ContactType: vmnew.ContactType,
+         Email: vmnew.Email,
+         Phone: vmnew.Phone
       };
 
       return vmnew.StudentServices.createStudent(path, thedata)

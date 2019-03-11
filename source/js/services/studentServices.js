@@ -577,6 +577,19 @@ export class StudentServices {
         return (request.then(self.handleSuccess, self.handleError));
 
     }
+    payOtherInvoice(path, thedata) {
+        var self = this;
+        self.$log.log('payOtherInvoice data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+
+    }
 
     setsession(path, thedata) {
         var self = this;

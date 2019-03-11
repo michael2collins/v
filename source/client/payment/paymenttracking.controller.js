@@ -73,17 +73,17 @@ export class PaymentTrackingController {
 
     activate() {
         var vm = this;
-        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
-            vm.$log = vm.$log.getInstance('PaymentTrackingController',vm.UserServices.isDebugEnabled());
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined) {
+            vm.$log = vm.$log.getInstance('PaymentTrackingController', vm.UserServices.isDebugEnabled());
         }
-        
+
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
             vm.$log.log("table-basic-paymenttracking started");
 
         });
 
-//        vm.portalDataService.Portlet('paymenttracking.controller.js');
+        //        vm.portalDataService.Portlet('paymenttracking.controller.js');
 
         vm.setgridOptions();
         vm.setpaygridOptions();
@@ -944,6 +944,208 @@ export class PaymentTrackingController {
 
     }
 
+    showOtherPay(row) {
+        var vm = this;
+        var modalInstance = vm.$uibModal.open({
+            component: 'otherpaymentviewComponent',
+            size: 'lg',
+            resolve: {
+                selectedRow: function() {
+                    vm.thispayment = row;
+                    return row;
+                }
+            }
+        });
+        modalInstance.opened.then(
+            function(success) {
+                vm.$log.log('showotherpay ui opened:', success);
+
+            },
+            function(error) {
+                vm.$log.log('showotherpay ui failed to open, reason : ', error);
+            }
+        );
+        modalInstance.rendered.then(
+            function(success) {
+                vm.$log.log('showotherpay ui rendered:', success);
+
+                // Floating labels
+                var inputs = document.querySelectorAll('.cell.example.example1 .input');
+                Array.prototype.forEach.call(inputs, function(input) {
+                    input.addEventListener('focus', function() {
+                        input.classList.add('focused');
+                    });
+                    input.addEventListener('blur', function() {
+                        input.classList.remove('focused');
+                    });
+                    input.addEventListener('keyup', function() {
+                        if (input.value.length === 0) {
+                            input.classList.add('empty');
+                        }
+                        else {
+                            input.classList.remove('empty');
+                        }
+                    });
+                });
+
+
+                var formClass = '.example1';
+                var example = document.querySelector(formClass);
+                var exampleName = 'example1';
+
+                var form = example.querySelector('form');
+
+                function enableInputs() {
+                    Array.prototype.forEach.call(
+                        form.querySelectorAll(
+                            "input[type='text'], input[type='email'], input[type='tel']"
+                        ),
+                        function(input) {
+                            input.removeAttribute('disabled');
+                        }
+                    );
+                }
+
+                function disableInputs() {
+                    Array.prototype.forEach.call(
+                        form.querySelectorAll(
+                            "input[type='text'], input[type='email'], input[type='tel']"
+                        ),
+                        function(input) {
+                            input.setAttribute('disabled', 'true');
+                        }
+                    );
+                }
+
+                function triggerBrowserValidation() {
+                    // The only way to trigger HTML5 form validation UI is to fake a user submit
+                    // event.
+                    var submit = document.createElement('input');
+                    submit.type = 'submit';
+                    submit.style.display = 'none';
+                    form.appendChild(submit);
+                    submit.click();
+                    submit.remove();
+                }
+
+                // Listen on the form's 'submit' handler...
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    // Trigger HTML5 validation UI on the form if any of the inputs fail
+                    // validation.
+                    var plainInputsValid = true;
+                    Array.prototype.forEach.call(form.querySelectorAll('input'), function(
+                        input
+                    ) {
+                        if (input.checkValidity && !input.checkValidity()) {
+                            plainInputsValid = false;
+                            return;
+                        }
+                    });
+                    if (!plainInputsValid) {
+                        triggerBrowserValidation();
+                        return;
+                    }
+
+                    // Show a loading screen...
+                    example.classList.add('submitting');
+
+                    // Disable all inputs.
+                    disableInputs();
+
+                    // Gather additional customer data we may have collected in our form.
+                    var name = form.querySelector('#' + exampleName + '-name');
+                    var address1 = form.querySelector('#' + exampleName + '-address');
+                    var city = form.querySelector('#' + exampleName + '-city');
+                    var state = form.querySelector('#' + exampleName + '-state');
+                    var zip = form.querySelector('#' + exampleName + '-zip');
+                    var checknum = form.querySelector('#' + exampleName + '-check-number');
+                    var paytype = form.querySelector('#' + exampleName + '-paytype  option:checked');
+                    var email = form.querySelector('#' + exampleName + '-email');
+                    var additionalData = {
+                        name: name ? name.value : undefined,
+                        address_line1: address1 ? address1.value : undefined,
+                        address_city: city ? city.value : undefined,
+                        address_state: state ? state.value : undefined,
+                        address_zip: zip ? zip.value : undefined,
+                        checknum: checknum ? checknum.value : undefined,
+                        paytype: paytype ? paytype.value : undefined,
+                        email: email ? email.value : undefined
+                    };
+
+                    vm.payOtherInvoice(
+                        vm.thispayment.amt,
+                        vm.thispayment.payfor,
+                        vm.thispayment.invoice,
+                        additionalData
+                    ).then(function(data) {
+                        example.classList.remove('submitting');
+                        vm.$log.log('payOtherInvoice data returned:', data);
+                        vm.message = data.message;
+                        if ((typeof data === 'undefined' || data.error === true) &&
+                            typeof data !== 'undefined') {
+                            vm.Notification.error({ message: vm.message, delay: 5000 });
+                            enableInputs();
+                            example.classList.remove('submitted');
+                        }
+                        else {
+                            example.classList.add('submitted');
+                            vm.getInvoices(vm.thispayer).then(function(zdata) {
+                                    vm.$log.log('getInvoices returned', zdata);
+                                    vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+
+                                },
+                                function(error) {
+                                    vm.$log.log('Caught an error getPayments after remove:', error);
+                                    vm.thisInvoice = [];
+                                    vm.message = error;
+                                    vm.Notification.error({ message: error, delay: 5000 });
+                                    return (vm.$q.reject(error));
+                                });
+
+                            vm.getPayments(vm.thispayer).then(function(zdata) {
+                                    vm.$log.log('getPayments returned', zdata);
+                                    vm.paygridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+
+                                },
+                                function(error) {
+                                    vm.$log.log('Caught an error getPayments after payStripeInvoice:', error);
+                                    vm.thisInvoice = [];
+                                    vm.message = error;
+                                    vm.Notification.error({ message: error, delay: 5000 });
+                                    return (vm.$q.reject(error));
+                                });
+
+                            vm.Notification.success({ message: vm.message, delay: 5000 });
+
+                        }
+                        return data;
+                    }).catch(function(e) {
+                        vm.$log.log('payOtherInvoice failure:');
+                        vm.$log.log("error", e);
+                        vm.message = e;
+                        vm.Notification.error({ message: e, delay: 5000 });
+                        enableInputs();
+                        example.classList.remove('submitted');
+                        return (vm.$q.reject(e));
+                    });
+
+                });
+            },
+            function(error) {
+                vm.$log.log('showCreditCard ui failed to render, reason : ', error);
+            }
+        );
+
+        modalInstance.result.then(function(selectedItem) {
+            vm.$log.log('modal selected Row: ' + selectedItem);
+        }, function() {
+            vm.$log.info('Modal dismissed at: ' + new Date());
+        });
+
+    }
+
     payStripeInvoice(token, amt, payfor, invoice, additionalData) {
         var vm = this;
 
@@ -1015,6 +1217,41 @@ export class PaymentTrackingController {
                 throw e;
             });
     }
+    payOtherInvoice(amt, payfor, invoice, additionalData) {
+        var vm = this;
+
+        var updpath = "../v1/payother";
+
+        var thedata = {
+            amt: amt,
+            desc: payfor,
+            invoice: invoice,
+            address_city: additionalData.address_city,
+            address_line1: additionalData.address_line1,
+            address_state: additionalData.address_state,
+            address_zip: additionalData.address_zip,
+            name: additionalData.name,
+            paytype: additionalData.paytype,
+            checknum: additionalData.checknum,
+            email: additionalData.email,
+            paydate: vm.Util.oradate(vm.moment())
+        };
+
+        vm.$log.log('about payStripeInvoice ', thedata, updpath, 'Update');
+        return vm.StudentServices.payOtherInvoice(updpath, thedata)
+            .then(function(data) {
+                vm.$log.log('payOtherInvoice returned data');
+                vm.$log.log(data);
+                return data;
+
+            }).catch(function(e) {
+                vm.$log.log('payOtherInvoice failure:');
+                vm.$log.log("error", e);
+                vm.message = e;
+                vm.Notification.error({ message: e, delay: 5000 });
+                throw e;
+            });
+    }
 
     setgridOptions() {
         var vm = this;
@@ -1071,6 +1308,8 @@ export class PaymentTrackingController {
         ctpl += '<i class="far fa-envelope"></i>&nbsp;</a></span>';
         ctpl += '<span> <a ng-click="grid.appScope.showCreditCard(row.entity)" role="button" class="btn btn-blue " style="padding:  0px 14px;"  >';
         ctpl += '<i class="fab fa-cc-stripe fa-2x"></i></a></span>';
+        ctpl += '<span> <a ng-click="grid.appScope.showOtherPay(row.entity)" role="button" class="btn btn-blue " style="padding:  0px 14px;"  >';
+        ctpl += '<i class="fa fa-hand-holding-usd fa-2x"></i></a></span>';
         ctpl += '</div>';
 
         vm.gridOptions = {
@@ -1142,7 +1381,8 @@ export class PaymentTrackingController {
                     enableSorting: false,
                     enableHiding: false,
                     enableCellEdit: false,
-                    cellTemplate: ctpl
+                    cellTemplate: ctpl,
+                    width: 230
 
                 },
                 {
