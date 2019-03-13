@@ -1010,6 +1010,7 @@ class StudentClassDbHandler {
         $sql = "SELECT paymentid, payerid,
             `paymenttype`, `PaymentNotes`, `PaymentPlan`, `PaymentAmount`, `PriceSetby`,
             DATE_FORMAT(Pricesetdate, '%Y-%m-%d') as Pricesetdate,
+            DATE_FORMAT(LastPaymentdate, '%Y-%m-%d') as LastPaymentdate,
              `payOnDayOfMonth`
             FROM `npayments` 
             WHERE payerid = ?
@@ -1069,7 +1070,7 @@ class StudentClassDbHandler {
         return $slists;
     }
     public function updatePaymentPlan(
-        $paymentid, $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount,$Pricesetdate ,$payOnDayOfMonth, $PriceSetby, $mode
+        $paymentid, $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount,$Pricesetdate ,$LastPaymentdate, $payOnDayOfMonth, $PriceSetby, $mode
     ) {
         global $app;
         $app->log->debug( print_R("updatePaymentPlan entered\n", TRUE ));
@@ -1077,25 +1078,32 @@ class StudentClassDbHandler {
         $response = array();
 
         $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $Pricesetdate, new DateTimeZone('Etc/Zulu'));
-//        $dt = DateTime::createFromFormat(DateTime::ISO8601, $Pricesetdate);
         if ($dt === false) {
             $app->log->debug( print_R("updatePaymentPlan  bad date $Pricesetdate" , TRUE));
             return NULL;
         }
         $thedate = $dt->format('Y-m-d');
+
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $LastPaymentdate, new DateTimeZone('Etc/Zulu'));
+        if ($dt === false) {
+            $app->log->debug( print_R("updatePaymentPlan  bad date $LastPaymentdate" , TRUE));
+            return NULL;
+        }
+        $theLdate = $dt->format('Y-m-d');
+
         $new_id = null;
 
         $sql = "INSERT INTO npayments( payerid, paymenttype, PaymentNotes, 
-        PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby) VALUES ";
-        $sql .= "  ( ?, ?, ?, ?, ?, ?, ?, ? )";
+        PaymentPlan, PaymentAmount, Pricesetdate, LastPaymentdate, payOnDayOfMonth, PriceSetby) VALUES ";
+        $sql .= "  ( ?, ?, ?, ?, ?, ?, ?, ?, ? )";
 
         // First check if  already existed in db
         if ($mode == "insert") {
             $app->log->debug( print_R("updatePaymentPlan do insert\n", TRUE ));
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("ssssssss",
-        $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount, $thedate ,$payOnDayOfMonth, $PriceSetby
+                $stmt->bind_param("sssssssss",
+        $payerid, $paymenttype ,$PaymentNotes,$PaymentPlan,$PaymentAmount, $thedate ,$theLdate, $payOnDayOfMonth, $PriceSetby
                                      );
                     // Check for successful insertion
                     $result = $stmt->execute();
@@ -1119,20 +1127,20 @@ class StudentClassDbHandler {
             //  with same  existed
                 $updsql = "UPDATE npayments SET 
                 PaymentNotes= ?, PaymentAmount= ?, PriceSetby= ?,
-                Pricesetdate= ?, payOnDayOfMonth= ?, PaymentPlan = ?, 
+                Pricesetdate= ?, LastPaymentdate= ?, payOnDayOfMonth= ?, PaymentPlan = ?, 
                 paymenttype = ?
                 WHERE paymentid = ? and payerid = ? ";
             $app->log->debug( print_R("updatePaymentPlan do update: $updsql, $PaymentNotes, $PaymentAmount,$PriceSetby, 
-                    $thedate ,$payOnDayOfMonth, $PaymentPlan,
+                    $thedate , $theLdate, $payOnDayOfMonth, $PaymentPlan,
                     $paymenttype ,
                     $paymentid,
                     $payerid
                 \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("sssssssss",
+                $stmt->bind_param("ssssssssss",
                     $PaymentNotes, $PaymentAmount,$PriceSetby, 
-                    $thedate ,$payOnDayOfMonth, $PaymentPlan,
+                    $thedate , $theLdate, $payOnDayOfMonth, $PaymentPlan,
                     $paymenttype ,
                     $paymentid,
                     $payerid
@@ -1262,7 +1270,7 @@ class StudentClassDbHandler {
                 $updsql = "UPDATE paymentclasspay SET 
                 paymentid= ?, classpayid= ?
                 WHERE pcpid = ?  ";
-            $app->log->debug( print_R("updatePaymentPlan do update: $updsql, $paymentid, $classpayid, $pcpid, $mode
+            $app->log->debug( print_R("paymentclasspay do update: $updsql, $paymentid, $classpayid, $pcpid, $mode
                 \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
@@ -1444,12 +1452,10 @@ class StudentClassDbHandler {
         $sql = " SELECT
         q.id, ranktype, rank, rankid, q.classid, q.pgmid, paymentAmount, paymentPlan, payOnDayOfMonth, description,
         c.class, p.class as program 
-            FROM quickpick q, nclass c, nclasslist p
-            where q.classid = c.id
-                and p.id = q.pgmid
-                and p.school = c.school
-                and c.school = q.school           
-                and q.school = ? 
+            FROM quickpick q
+            left join nclass c on (q.school = c.school and q.classid = c.id)
+            left join nclasslist p on (p.id = q.pgmid and p.school = c.school)
+           where q.school =  ? 
                 ";
 
         $app->log->debug( print_R("sql for getQuickPicks is: " . $sql . "\n", TRUE ));

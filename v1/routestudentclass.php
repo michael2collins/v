@@ -866,6 +866,7 @@ $app->get('/paymentplan/:id', 'authenticate', 'setDebug',function($payerid) {
             $tmp["PriceSetby"] = (empty($slist["PriceSetby"]) ? "NULL" : $slist["PriceSetby"]);
             $tmp["Pricesetdate"] = (empty($slist["Pricesetdate"]) ? "01/01/1900" : $slist["Pricesetdate"]);
             $tmp["payOnDayOfMonth"] = (int) (empty($slist["payOnDayOfMonth"]) ? 0 : $slist["payOnDayOfMonth"]);
+            $tmp["LastPaymentdate"] = (empty($slist["LastPaymentdate"]) ? "01/01/1900" : $slist["LastPaymentdate"]);
         }
         array_push($response["PaymentPlanList"], $tmp);
     }
@@ -901,6 +902,7 @@ $app->post('/paymentplan', 'authenticate', 'setDebug',function() use ($app) {
     $PaymentPlan = (isset($dataJsonDecode->thedata->PaymentPlan) ? $dataJsonDecode->thedata->PaymentPlan : "");
     $PaymentAmount = (isset($dataJsonDecode->thedata->PaymentAmount) ? $dataJsonDecode->thedata->PaymentAmount : "");
     $Pricesetdate = (isset($dataJsonDecode->thedata->Pricesetdate) ? $dataJsonDecode->thedata->Pricesetdate : "");
+    $LastPaymentdate = (isset($dataJsonDecode->thedata->LastPaymentdate) ? $dataJsonDecode->thedata->LastPaymentdate : "");
     $payOnDayOfMonth = (isset($dataJsonDecode->thedata->payOnDayOfMonth) ? $dataJsonDecode->thedata->payOnDayOfMonth : "");
     $mode = (isset($dataJsonDecode->thedata->mode) ? $dataJsonDecode->thedata->mode : "");
     $PriceSetby = $user_name;
@@ -913,6 +915,7 @@ $app->post('/paymentplan', 'authenticate', 'setDebug',function() use ($app) {
     $app->log->debug( print_R("PaymentPlan: $PaymentPlan\n", TRUE ));
     $app->log->debug( print_R("PaymentAmount: $PaymentAmount\n", TRUE ));
     $app->log->debug( print_R("Pricesetdate: $Pricesetdate\n", TRUE ));
+    $app->log->debug( print_R("LastPaymentdate: $LastPaymentdate\n", TRUE ));
     $app->log->debug( print_R("payOnDayOfMonth: $payOnDayOfMonth\n", TRUE ));
     $app->log->debug( print_R("PriceSetby: $PriceSetby\n", TRUE ));
     $app->log->debug( print_R("mode: $mode\n", TRUE ));
@@ -927,9 +930,10 @@ $app->post('/paymentplan', 'authenticate', 'setDebug',function() use ($app) {
                 $PaymentPlan,
                 $PaymentAmount,
                 $Pricesetdate ,
+                $LastPaymentdate,
                 $payOnDayOfMonth, 
                 $PriceSetby,
-                'insert'
+                $mode
                                 );
 
     if ($result > -1) {

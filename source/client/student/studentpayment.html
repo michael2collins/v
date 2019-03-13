@@ -175,18 +175,19 @@
                                        <div class="">
                                           <div class="col-md-12 col-xs-12">
                                              <div class="row like-table">
-                                                <div class="col-md-2 col-xs-4 greencol">Plan</div>
+                                                <div class="col-md-1 col-xs-4 greencol">Plan</div>
                                                 <div class="col-md-1 col-xs-4 yellowcol">Type</div>
                                                 <div class="col-md-2 col-xs-4 pinkcol">Date Set</div>
                                                 <div class="col-md-1 col-xs-4 bluecol">Set by?</div>
                                                 <div class="col-md-1 col-xs-4 greycol">Amount</div>
                                                 <div class="col-md-1 col-xs-4 violetcol">Pay on<br/>DayOfMonth</div>
-                                                <div class="col-md-2 col-xs-4 orangecol">Notes</div>
-                                                <div class="col-md-2 col-xs-8 limecol">Action</div>
+                                                <div class="col-md-2 col-xs-4 pinkcol">Last Payment</div>
+                                                <div class="col-md-1 col-xs-4 orangecol">Notes</div>
+                                                <div class="col-md-2 col-xs-4 limecol">Action</div>
                                              </div>
 
                                              <div class="row like-table" ng-repeat="rowiter in $ctrl.PaymentPlanList track by $index">
-                                                <div class="col-md-2 col-xs-4 greencol">
+                                                <div class="col-md-1 col-xs-4 greencol">
                                                    <div ng-class="{'has-error': editPaymentPlan['PaymentPlan' + $index].$invalid, 
                                                     'has-success': !editPaymentPlan['PaymentPlan' + $index].$invalid}" class="form-group">
                                                       <div class="input-icon right">
@@ -287,7 +288,28 @@
                                                       </div>
                                                    </div>
                                                 </div>
-                                                <div class="col-md-2 col-xs-4 orangecol">
+                                                <div class="col-md-2 col-xs-4 pinkcol">
+                                                   <div ng-class="{'has-error': editPaymentPlan['LastPaymentdate' + $index].$invalid, 
+                                    'has-success': !editPaymentPlan['LastPaymentdate' + $index].$invalid}" class="form-group">
+                                                      <div class="col-md-9" style="padding-right: 0px;">
+                                                         <div class="input-icon right">
+                                                            <i ng-click="$ctrl.dateLopen($event, $index)" data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['LastPaymentdate' + $index].$dirty" ng-class="editPaymentPlan['LastPaymentdate' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
+                                                               class="glyphicon tooltips"></i>
+                                                            <input id="LastPaymentdate{{$index}}" type="text" placeholder="mm/dd/yyyy" name="LastPaymentdate{{$index}}" required ng-model="rowiter.LastPaymentdate" ng-change="$ctrl.updatePaymentPlan(rowiter,'update')" is-open="$ctrl.Lstatus[$index].opened" uib-datepicker-popup="{{$ctrl.bdateformat}}"
+                                                               ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                                                         </div>
+                                                      </div>
+                                                      <div class="col-md-1 col-xs-6" style="padding-right: 0px; padding-left: 0px;">
+                                                         <button type="button" class="btn btn-default" ng-click="$ctrl.dateLopen($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                      </div>
+                                                   </div>
+                                                   <div style="color:maroon" role="alert" ng-messages="editPaymentPlan['Pricesetdate' + $index].$error" class="has-error">
+                                                      <div ng-message="required">You did not enter a field</div>
+                                                      <div ng-message="minlength">Your field is too short</div>
+                                                      <div ng-message="maxlength">Your field is too long</div>
+                                                   </div>
+                                                </div>
+                                                <div class="col-md-1 col-xs-4 orangecol">
                                                    <div ng-class="{'has-error': editPaymentPlan['PaymentNotes' + $index].$invalid, 
                                     'has-success': !editPaymentPlan['PaymentNotes' + $index].$invalid}" class="form-group">
                                                       <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentNotes' + $index].$dirty" ng-class="editPaymentPlan['PaymentNotes' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
@@ -300,7 +322,7 @@
                                                       </div>
                                                    </div>
                                                 </div>
-                                                <div class="col-md-2 col-xs-8 limecol">
+                                                <div class="col-md-2 col-xs-4 limecol">
                                                    <span> <a ng-click="$ctrl.removePaymentPlan(rowiter)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a>
                                     </span>
                                                 </div>

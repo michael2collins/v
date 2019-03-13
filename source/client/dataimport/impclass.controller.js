@@ -148,6 +148,7 @@ export class ImpclassController {
             { name: "Ranktype", type: 'string', required: true },
             { name: "currentRank", type: 'string', required: true },
             { name: "lastPromoted", type: 'date', required: false },
+            { name: "lastPaymentDate", type: 'date', required: false },
             { name: "payerName", type: 'string', required: true },
             { name: "payerEmail", type: 'string', required: false },
             { name: "paymenttype", type: 'string', required: true },

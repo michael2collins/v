@@ -359,6 +359,7 @@ export class ModalNewStudentInstanceController {
          PaymentPlan: vmnew.quickpick.paymentPlan,
          PaymentAmount: vmnew.quickpick.amt,
          Pricesetdate: new Date(),
+         LastPaymentdate: new Date(),
          payOnDayOfMonth: vmnew.quickpick.payOnDayOfMonth,
          paymentid: null,
          mode: 'insert'

@@ -3318,13 +3318,14 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				sr.studentClassStatus,
 				cr.ranktype,
 				cr.currentRank,
-				cr.lastPromoted,
+DATE_FORMAT(cr.lastPromoted,'%Y-%m-%d') as lastPromoted,
 				pp.payerName,
 				pp.payerEmail,
 				np.paymenttype,
 				np.paymentplan,
 				np.paymentAmount,
 				np.payOnDayofMonth,
+DATE_FORMAT(np.lastPaymentdate,'%Y-%m-%d') as lastPaymentDate,
 				ncp.payerid
 			from studentregistration sr
 			 join nclass cl on ( sr.classid = cl.id and cl.school = ? )
@@ -3793,7 +3794,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function updateRawregistration(
 		$externalid, 
  $studentID, $pgmid, $classid, $Classname, $Pgmname, $studentClassStatus, $Ranktype, $currentRank,
- $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth
+ $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$lastPaymentDate
 		)
 	{
 	/**
@@ -3821,7 +3822,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			paymenttype=?,
 			PaymentPlan=?,
 			PaymentAmount=?,
-			payOnDayOfMonth=?
+			payOnDayOfMonth=?,
+			lastPaymentDate=?
 		where externalid = ? and school = ? and Classname = ? and Pgmname = ?";
 
 		$app->log->debug(print_R("updateregistration sql after security: $sql", TRUE) );
@@ -3834,6 +3836,13 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             return -3;
         }
         $bdate = $dt->format('Y-m-d');
+        $dt = DateTime::createFromFormat('Y-m-d H:i:s', $lastPaymentDate);
+        
+        if ($dt === false) {
+            $app->log->debug( print_R("updateregistration  bad date $lastPaymentDate" , TRUE));
+            return -31;
+        }
+        $pdate = $dt->format('Y-m-d');
 
 
       try {
@@ -3842,9 +3851,10 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 				)) {
 	
 				if ($stmt = $this->conn->prepare($sql)) {
-					$stmt->bind_param("sssssssssssssssss", 
+					$stmt->bind_param("ssssssssssssssssss", 
 				 $studentID, $pgmid, $classid, $studentClassStatus, $Ranktype, $currentRank,
 				 $bdate, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,
+				 $pdate,
 				$externalid, $school,$Classname, $Pgmname
 					);
 					$stmt->execute();
@@ -3874,7 +3884,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 	function createRegistrationRaw(
 		$externalid, $classid, $pgmid, $studentID,
  $Classname, $Pgmname, $Ranktype, $currentRank,
- $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus
+ $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus,
+ $lastPaymentDate
 	){
         global $app;
 		$app->log->debug(print_R("createFullregistrationRaw entered\n", TRUE) );
@@ -3895,18 +3906,26 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         }
         $bdate = $dt->format('Y-m-d');
 
+        $dt = DateTime::createFromFormat('m/d/Y H:i:s', $lastPaymentDate);
+        
+        if ($dt === false) {
+            $app->log->debug( print_R("createFullregistrationRaw  bad date $lastPaymentDate" , TRUE));
+            return NULL;
+        }
+        $pdate = $dt->format('Y-m-d');
+
 		
 		$sql = "INSERT INTO rawregistration (
 			externalid, classid, pgmid, studentID,
 			Classname, Pgmname, Ranktype, currentRank,
 			lastPromoted, payerName, payerEmail, paymenttype, 
-			PaymentPlan, PaymentAmount, payOnDayOfMonth, studentClassStatus,
+			PaymentPlan, PaymentAmount, payOnDayOfMonth, studentClassStatus,lastPaymentDate,
 			school)
 			values (
 			?,?,?,?,
 			?,?,?,?,
 			?,?,?,?,
-			?,?,?,?,
+			?,?,?,?,?,
 			?
 			) on duplicate key update 
 			externalid = values(externalid), classid = values(classid), 
@@ -3917,6 +3936,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 			payerEmail= values(payerEmail), paymenttype= values(paymenttype), 
 			PaymentPlan= values(PaymentPlan), PaymentAmount= values(PaymentAmount), 
 			payOnDayOfMonth= values(payOnDayOfMonth), studentClassStatus= values(studentClassStatus),
+			lastPaymentDate= values(lastPaymentDate),
 			school= values(school)
 			";
 
@@ -3924,11 +3944,11 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 
 //		if (!$this->isRawregistrationExists($externalid, $Classname, $Pgmname, $school)) {
 				if ($stmt = $this->conn->prepare($sql)) {
-		            $stmt->bind_param("sssssssssssssssss",
+		            $stmt->bind_param("ssssssssssssssssss",
 						 $externalid, $classid, $pgmid, $studentID,
 						 $Classname, $Pgmname, $Ranktype, $currentRank,
 						 $bdate, $payerName, $payerEmail, $paymenttype, 
-						 $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus,
+						 $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus,$pdate,
 						$school
 	            );
 				
@@ -4089,9 +4109,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         }
         
         $sql4 = "INSERT ignore INTO npayments( payerid, paymenttype, PaymentNotes, 
-        		PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby)
+        		PaymentPlan, PaymentAmount, Pricesetdate, payOnDayOfMonth, PriceSetby, lastpaymentdate)
         		select p.id, r.paymenttype, '',
-        		r.PaymentPlan, r.PaymentAmount, CURDATE(), r.payOnDayOfMonth, 'initialbulk' from rawregistration r
+        		r.PaymentPlan, r.PaymentAmount, CURDATE(), r.payOnDayOfMonth, 'initialbulk', lastpaymentdate from rawregistration r
         		 join payer p on r.payername = p.payername and r.school = p.school
         		where r.school = ? ";
 
@@ -4173,7 +4193,10 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         SELECT  
         c.ID as contactid, 
 		r.externalid, r.studentID, r.pgmid, r.classid, r.Classname, r.Pgmname, r.studentClassStatus, 
-		r.Ranktype, r.currentRank,DATE_FORMAT(r.lastPromoted,'%m/%d/%Y') as lastPromoted, r.payerName, 
+		r.Ranktype, r.currentRank,
+		DATE_FORMAT(r.lastPromoted,'%m/%d/%Y') as lastPromoted,
+		DATE_FORMAT(r.lastPaymentDate,'%m/%d/%Y') as lastPaymentDate,
+		r.payerName, 
 		r.payerEmail, r.paymenttype, r.PaymentPlan, r.PaymentAmount, r.payOnDayOfMonth, r.school
         FROM rawregistration r
         left join ncontacts c on (r.externalid = c.externalid and r.school = c.studentschool)

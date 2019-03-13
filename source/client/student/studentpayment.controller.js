@@ -46,6 +46,7 @@ export class StudentPaymentController {
         vmpayment.PriceListcovered = {};
 
         vmpayment.status = {};
+        vmpayment.Lstatus = {};
         vmpayment.statushead = {
             opened: false
         };
@@ -121,6 +122,11 @@ export class StudentPaymentController {
         var vmpayment = this;
         vmpayment.$log.log("dateopen:", vmpayment.status);
         vmpayment.status[iter].opened = true;
+    }
+    dateLopen($event, iter) {
+        var vmpayment = this;
+        vmpayment.$log.log("dateopen:", vmpayment.Lstatus);
+        vmpayment.Lstatus[iter].opened = true;
     }
 
     dateheadopen($event) {
@@ -303,7 +309,16 @@ export class StudentPaymentController {
                         else {
                             vmpayment.PaymentPlanList[iter].Pricesetdate = vmpayment.getPriceDate(vmpayment.PaymentPlanList[iter].Pricesetdate);
                         }
+                        if (vmpayment._.isEmpty(vmpayment.PaymentPlanList[iter].LastPaymentdate)) {
+                            vmpayment.PaymentPlanList[iter].LastPaymentdate = vmpayment.getPriceDate(new Date());
+                        }
+                        else {
+                            vmpayment.PaymentPlanList[iter].LastPaymentdate = vmpayment.getPriceDate(vmpayment.PaymentPlanList[iter].LastPaymentdate);
+                        }
                         vmpayment.status[iter] = {
+                            opened: false
+                        };
+                        vmpayment.Lstatus[iter] = {
                             opened: false
                         };
                         vmpayment.PaymentPlanList[iter].paymentidstr = vmpayment.PaymentPlanList[iter].paymentid.toString();
@@ -420,6 +435,7 @@ export class StudentPaymentController {
             PaymentPlan: input.PaymentPlan,
             PaymentAmount: input.PaymentAmount,
             Pricesetdate: input.Pricesetdate,
+            LastPaymentdate: input.LastPaymentdate,
             payOnDayOfMonth: input.payOnDayOfMonth,
             paymentid: input.paymentid,
             mode: mode

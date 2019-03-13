@@ -4818,6 +4818,7 @@ $app->get('/samplestudentregistrations', 'authenticate', 'setDebug', function() 
         $tmp["paymentplan"] = $slist["paymentplan"];
         $tmp["paymentAmount"] = $slist["paymentAmount"];
         $tmp["payOnDayofMonth"] = $slist["payOnDayofMonth"];
+        $tmp["lastPaymentDate"] = $slist["lastPaymentDate"];
 
         array_push($response["studentregistrations"], $tmp);
         
@@ -4860,6 +4861,7 @@ $app->get('/rawregistrations', 'authenticate', 'setDebug', function() use ($app)
             $tmp["Ranktype"] = (empty($slist["Ranktype"]) ? "" : $slist["Ranktype"]);
             $tmp["currentRank"] = (empty($slist["currentRank"]) ? "" : $slist["currentRank"]);
             $tmp["lastPromoted"] = (empty($slist["lastPromoted"]) ? "" : $slist["lastPromoted"]);
+            $tmp["lastPaymentDate"] = (empty($slist["lastPaymentDate"]) ? "" : $slist["lastPaymentDate"]);
             $tmp["payerName"] = (empty($slist["payerName"]) ? "" : $slist["payerName"]);
             $tmp["payerEmail"] = (empty($slist["payerEmail"]) ? "" : $slist["payerEmail"]);
             $tmp["paymenttype"] = (empty($slist["paymenttype"]) ? "" : $slist["paymenttype"]);
@@ -4916,6 +4918,7 @@ $app->post('/rawregistration', 'authenticate', 'setDebug', function() use($app) 
         $Ranktype = (isset($registrationarr[$i]->Ranktype) ? $registrationarr[$i]->Ranktype : "");
         $currentRank = (isset($registrationarr[$i]->currentRank) ? $registrationarr[$i]->currentRank : "");
         $lastPromoted = (isset($registrationarr[$i]->lastPromoted) ? $registrationarr[$i]->lastPromoted : "");
+        $lastPaymentDate = (isset($registrationarr[$i]->lastPaymentDate) ? $registrationarr[$i]->lastPaymentDate : "");
         $payerName = (isset($registrationarr[$i]->payerName) ? $registrationarr[$i]->payerName : "");
         $payerEmail = (isset($registrationarr[$i]->payerEmail) ? $registrationarr[$i]->payerEmail : "");
         $paymenttype = (isset($registrationarr[$i]->paymenttype) ? $registrationarr[$i]->paymenttype : "");
@@ -4944,7 +4947,8 @@ $app->post('/rawregistration', 'authenticate', 'setDebug', function() use($app) 
     $registration = $db->createRegistrationRaw(
 		$externalid, $classid, $pgmid, $studentID,
   $Classname, $Pgmname, $Ranktype, $currentRank,
- $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus
+ $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$studentClassStatus,
+ $lastPaymentDate
                                 );    
 
         if ($registration > 0) {
@@ -4993,6 +4997,7 @@ $app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', 'setD
         $Ranktype = (isset($registration->Ranktype) ? $registration->Ranktype : "");
         $currentRank = (isset($registration->currentRank) ? $registration->currentRank : "");
         $lastPromoted = (isset($registration->lastPromoted) ? $registration->lastPromoted : "");
+        $lastPaymentDate = (isset($registration->lastPaymentDate) ? $registration->lastPaymentDate : "");
         $payerName = (isset($registration->payerName) ? $registration->payerName : "");
         $payerEmail = (isset($registration->payerEmail) ? $registration->payerEmail : "");
         $paymenttype = (isset($registration->paymenttype) ? $registration->paymenttype : "");
@@ -5008,7 +5013,7 @@ $app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', 'setD
     // updating task
     $result = $db->updateRawregistration($externalid,
  $studentID, $pgmid, $classid, $Classname, $Pgmname, $studentClassStatus, $Ranktype, $currentRank,
- $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth
+ $lastPromoted, $payerName, $payerEmail, $paymenttype, $PaymentPlan, $PaymentAmount, $payOnDayOfMonth,$lastPaymentDate
                                 );
     if ($result >= 0) {
         $app->log->debug( print_R("after upstu result good\n ", TRUE));
