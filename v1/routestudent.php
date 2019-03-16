@@ -2541,7 +2541,7 @@ $app->get('/notification', 'authenticate', 'setDebug', function() use($app) {
                 $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
                 $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
                 $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
-                if ($tmp["notifkey"] == "overdue") {
+                if ($tmp["type"] == "overdue") {
                     $tmp["payerEmail"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
                 } else {
                     $tmp["payerEmail"] = "NULL";

@@ -1514,12 +1514,21 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		global $user_id;
 		$sql = "SELECT          
             n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname, c.ID as contactid
-        FROM notification n, ncontacts c where n.userid = ? and n.school = ? and notifkey in( 'student_id' , 'overdue')
-        and c.ID = n.value and c.studentschool = n.school
-        ";
+        FROM notification n
+        left join ncontacts c on (c.ID = n.value and c.studentschool = n.school)
+        where n.userid = ? and n.school = ? and notifkey = 'student_id'
+		union
+		SELECT          
+            n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname, c.ID as contactid
+        FROM notification n
+		left join payer p on (n.value = p.payerEmail and p.school = n.school)
+		join nclasspays cp on (cp.payerid = p.id)
+        left join ncontacts c on (c.ID = cp.contactid and c.studentschool = n.school)
+        where n.userid = ? and n.school = ? and notifkey = 'payerEmail'	";
+        
 		$app->log->debug(print_R("getNotifications sql : $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("ss", $user_id, $school);
+			$stmt->bind_param("ssss", $user_id, $school,$user_id, $school);
 			if ($stmt->execute()) {
 				$notificationList = $stmt->get_result();
 				$stmt->close();

@@ -415,7 +415,7 @@ export class HeaderController {
     setAlertCount() {
         this.alertcount = this.teststudents.length +
             this.newstudents.length +
-            this.overduestudents.overdue.length +
+            this.overduestudents.length +
             this.noshowstudents.noshow.length +
             this.thisTasknamelist.length;
 
@@ -527,6 +527,9 @@ export class HeaderController {
                                 type: data.NotificationList[i].type,
                                 notifkey: data.NotificationList[i].notifkey,
                                 value: data.NotificationList[i].value,
+                                firstname: data.NotificationList[i].firstname,
+                                lastname: data.NotificationList[i].lastname,
+                                contactid: data.NotificationList[i].contactid,
                                 payerEmail: data.NotificationList[i].payerEmail
                             };
                             self.overduestudents.push(overstu);
@@ -556,7 +559,8 @@ export class HeaderController {
                         { "id": 2, "firstname": "first2", "lastname": "last2" }
                     ]
                 };
-*/                self.noshowstudents = {
+*/         
+                self.noshowstudents = {
                     "noshow": [
                         { "id": 1, "firstname": "first1", "lastname": "last1" },
                         { "id": 2, "firstname": "first2", "lastname": "last2" }
