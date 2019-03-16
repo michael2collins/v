@@ -504,8 +504,10 @@ export class HeaderController {
                     self.$log.log('NotificationList', data.NotificationList);
                     self.newstudents = [];
                     self.teststudents = [];
+                    self.overduestudents = [];
                     for (var i = 0; i < data.NotificationList.length; i++) {
                         var newstu = {},
+                            overstu = {},
                             teststu = {};
                         if (data.NotificationList[i].type === "newstudent") {
                             newstu = {
@@ -518,6 +520,16 @@ export class HeaderController {
                                 contactid: data.NotificationList[i].contactid
                             };
                             self.newstudents.push(newstu);
+                        }
+                        if (data.NotificationList[i].type === "overdue") {
+                            overstu = {
+                                id: data.NotificationList[i].id,
+                                type: data.NotificationList[i].type,
+                                notifkey: data.NotificationList[i].notifkey,
+                                value: data.NotificationList[i].value,
+                                payerEmail: data.NotificationList[i].payerEmail
+                            };
+                            self.overduestudents.push(overstu);
                         }
                         if (data.NotificationList[i].type === "readytotest") {
                             teststu = {
@@ -538,13 +550,13 @@ export class HeaderController {
                         self.Notification.error({ message: typeof(data.message) !== 'undefined' ? data.message : 'error NotificationList', delay: 5000 });
                     } //else ok to have no ranklist
                 }
-                self.overduestudents = {
+/*                self.overduestudents = {
                     "overdue": [
                         { "id": 1, "firstname": "first1", "lastname": "last1" },
                         { "id": 2, "firstname": "first2", "lastname": "last2" }
                     ]
                 };
-                self.noshowstudents = {
+*/                self.noshowstudents = {
                     "noshow": [
                         { "id": 1, "firstname": "first1", "lastname": "last1" },
                         { "id": 2, "firstname": "first2", "lastname": "last2" }

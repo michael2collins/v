@@ -822,7 +822,7 @@ class StudentClassDbHandler {
     	    return -1;
     	}
     }
-    public function addPayer($payerName
+    public function addPayer($payerName, $payerEmail
     ) {
         global $app;
 
@@ -833,15 +833,15 @@ class StudentClassDbHandler {
 
         global $school;
 
-        $sql = "INSERT INTO payer (payerName, school) VALUES ";
-        $sql .= "  ( ?, ?)";
+        $sql = "INSERT INTO payer (payerName, payerEmail, school) VALUES
+                ( ?, ?, ?)";
         
         // First check if  already existed in db
         if (!$this->isPayerExists($payerName)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("ss",
-                                  $payerName, $school
+                $stmt->bind_param("sss",
+                                  $payerName,$payerEmail, $school
                                      );
                     // Check for successful insertion
                     $result = $stmt->execute();

@@ -652,15 +652,17 @@ $app->post('/payer', 'authenticate', 'setDebug',function() use ($app) {
     $app->log->debug( print_R("payer before insert\n", TRUE ));
 
     $payerName = (isset($dataJsonDecode->thedata->payerName) ? $dataJsonDecode->thedata->payerName : "");
+    $payerEmail = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "");
 
     $app->log->debug( print_R("payerName: $payerName\n", TRUE ));
+    $app->log->debug( print_R("payerEmail: $payerEmail\n", TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
 
     // updating task
     $payer_id = $db->addPayer(
-                                 $payerName
+                                 $payerName, $payerEmail
                                 );
 
     if ($payer_id > 0) {

@@ -2,14 +2,20 @@
         <h3 class="modal-title">Create New Payer</h3>
     </div>
     <div class="modal-body">
-        <pre>{{$ctrl.message}}</pre>
+<!--        <pre>{{$ctrl.message}}</pre> -->
         <form action="" novalidate name="newPayer" class="form-horizontal">
             <div class="form-body pal">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6 col-xs-6">
                         <div class="form-group">
                             <label for="inputPayerName" class="control-label">Payer Name </label>
                             <input id="inputPayerName" type="text" placeholder="Payer Name" name="PayerName" ng-model="$ctrl.payerName" minLength="2" maxLength="30" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xs-6">
+                        <div class="form-group">
+                            <label for="inputPayerEmail" class="control-label">Payer Email </label>
+                            <input id="inputPayerEmail" type="text" placeholder="Payer Email" name="PayerEmail" ng-model="$ctrl.payerEmail" minLength="2" maxLength="30" class="form-control">
                         </div>
                     </div>
                 </div>

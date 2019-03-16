@@ -45,7 +45,8 @@ export class ModalNewPayerInstanceController {
     self.$log.log('about createPayer ', self);
     var path = "../v1/payer";
     var thedata = {
-      payerName: self.payerName
+      payerName: self.payerName,
+      payerEmail: self.payerEmail
     };
     return self.PaymentServices.createPayer(path, thedata)
       .then(function(data) {

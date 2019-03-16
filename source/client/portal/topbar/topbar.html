@@ -90,7 +90,7 @@
                            <span class="label label-red">
                               <i class="fas fa-user fa-fw"></i></span>                           
                            <span class=""> 
-                              {{stu.firstname}} {{stu.lastname}}
+                              {{stu.firstname}} {{stu.lastname}} paid by {{stu.payerName}}
                            </span>
                            </a></li>
                         <li><a tabindex="-1" ng-click="$ctrl.clearOverdueStudents()" ng-hide="!$ctrl.overduestudents.overdue.length">

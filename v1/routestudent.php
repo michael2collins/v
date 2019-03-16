@@ -2541,7 +2541,11 @@ $app->get('/notification', 'authenticate', 'setDebug', function() use($app) {
                 $tmp["firstname"] = (empty($slist["firstname"]) ? "NULL" : $slist["firstname"]);
                 $tmp["lastname"] = (empty($slist["lastname"]) ? "NULL" : $slist["lastname"]);
                 $tmp["contactid"] = (empty($slist["contactid"]) ? "NULL" : $slist["contactid"]);
-
+                if ($tmp["notifkey"] == "overdue") {
+                    $tmp["payerEmail"] = (empty($slist["value"]) ? "NULL" : $slist["value"]);
+                } else {
+                    $tmp["payerEmail"] = "NULL";
+                }
             } else {
                 $tmp["id"] = "NULL";
                 $tmp["type"] = "NULL";
@@ -2550,6 +2554,7 @@ $app->get('/notification', 'authenticate', 'setDebug', function() use($app) {
                 $tmp["firstname"] = "NULL";
                 $tmp["lastname"] = "NULL";
                 $tmp["contactid"] = "NULL";
+                $tmp["payerEmail"] = "NULL";
             }
             array_push($response["NotificationList"], $tmp);
         }
@@ -2838,6 +2843,7 @@ $app->post('/invoice', 'authenticate','setDebug',  function() use ($app) {
     if ($overduecnt > 0) {
     //todo: decide if we need overdue date logic too
         genOverdueEmail($payerName,$to,$schEmail,$schSig);
+        createNotification('overdue','payerEmail',$to);
     }    
 
     // creating invoices
@@ -3530,6 +3536,7 @@ $app->get('/calcinvoice', 'authenticate', 'setDebug', function() use ($app) {
             $tmp["schoolReplySignature"] =  (empty($slist["schoolReplySignature"]) ? "NULL" : $slist["schoolReplySignature"]);
             $tmp["overduecnt"]          = (empty($slist["overduecnt"]) ? 0 : $slist["overduecnt"]);
             $tmp["payfor"]                = 'lessons';
+            $tmp["potential"]          = (empty($slist["potential"]) ? 0 : $slist["potential"]);
 
    //     $app->log->debug( print_R( $tmp, TRUE));
 
@@ -5736,7 +5743,7 @@ function otherpaid(
     $result['item_name1'] = $description;
     $result['quantity1'] = 1;
     $result['num_cart_items'] = 1;
-    $result['txn_id'] = 0;
+    $result['txn_id'] = uniqid("payment",true);
     $result['custom'] = $invoice;
     $result['payer_email'] = $email;
 

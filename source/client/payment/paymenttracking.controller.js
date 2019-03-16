@@ -427,6 +427,7 @@ export class PaymentTrackingController {
                 vm.Invoice.paymentplan = data.InvoiceList[0].paymentplan;
                 vm.Invoice.paymenttype = data.InvoiceList[0].paymenttype;
                 vm.Invoice.overduecnt = data.InvoiceList[0].overduecnt;
+                vm.Invoice.potential = data.InvoiceList[0].potential;
                 //                    vm.Invoice.invdate = moment().format('MM/DD/YYYY hh:mm A z');
                 vm.Invoice.invdate = new Date();
                 vm.Invoice.payfor = data.InvoiceList[0].payfor;

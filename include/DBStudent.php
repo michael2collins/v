@@ -1514,7 +1514,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		global $user_id;
 		$sql = "SELECT          
             n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname, c.ID as contactid
-        FROM notification n, ncontacts c where n.userid = ? and n.school = ? and notifkey = 'student_id' 
+        FROM notification n, ncontacts c where n.userid = ? and n.school = ? and notifkey in( 'student_id' , 'overdue')
         and c.ID = n.value and c.studentschool = n.school
         ";
 		$app->log->debug(print_R("getNotifications sql : $sql", TRUE) );
@@ -2021,7 +2021,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$num_affected_rows = 0;
 		$sql = 'UPDATE payment set 
 		receipt_id = ?, num_cart_items = ?, ipn_track_id = ?, payment_gross = ? ,
-		type = ?, date ?, payer_status = ?, first_name = ?, last_name = ?,
+		type = ?, date = ?, payer_status = ?, first_name = ?, last_name = ?,
 		payer_email = ?, status = ?, mc_currency = ?,
 		item_name1 = ?, mc_gross_1 = ?, quantity1 = ?,
 		item_name2 = ?, mc_gross_2 = ?, quantity2 = ?,
@@ -2118,7 +2118,9 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		c.studentschool, com.schoolReplyEmail, com.schoolReplySignature,
 		date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) as leadlast,
 		p.payerEmail,
-		overdue.overduecnt
+		overdue.overduecnt,
+floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as potential
+		
             from ncontacts c
 			join nclasspays cp on (cp.contactid = c.ID)
             join npayments pp on (pp.payerid = cp.payerid)
@@ -2161,6 +2163,7 @@ WHERE cp.primaryContact =1
 	function calcInvoice($payer) {
 //need to figure out overdue logic
         global $app;
+        global $school;
 	    $sql = "
 select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmonth, 
 	    pp.paymentplan, pp.paymentamount, DATE_FORMAT(pp.lastpaymentdate, '%Y-%m-%d') as lastpaymentdate , pp.nextpaymentdate, p.payername,
@@ -2168,7 +2171,8 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		c.studentschool, com.schoolReplyEmail, com.schoolReplySignature,
 		date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) as leadlast,
 		p.payerEmail,
-		overdue.overduecnt
+		overdue.overduecnt,
+floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as potential
             from ncontacts c
 			join nclasspays cp on (cp.contactid = c.ID)
             join npayments pp on (pp.payerid = cp.payerid)
@@ -2179,6 +2183,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             where
 			cp.primaryContact = 1
 			and pp.payerid = ?
+			and c.studentschool = ?
 	    ";
 	    
 	    //lastpaymentdate is actually last generated date.  The payment is in payment table for paypal. and cash/cheque?
@@ -2188,7 +2193,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$app->log->debug(print_R("sql for getPreInvoiceLIst is: " . $sql . "\n", TRUE) );
 
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("s", $payer);
+			$stmt->bind_param("ss", $payer, $school);
 			if ($stmt->execute()) {
 				$slists = $stmt->get_result();
 				$res = array();

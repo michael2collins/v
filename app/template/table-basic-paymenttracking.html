@@ -18,7 +18,7 @@
             <div class="form-body ">
               <div class="col-md-3 mlm" style="height: 80px;">
                 <div ng-class="{'has-error': editclass.payerName.$invalid, 'has-success': !editclass.payerName.$invalid}" class="form-group">
-                  <label for="payerName" class="control-label">Payer Name</label>
+                  <label for="payerName" class="control-label">Payer Name - {{vm.thispayer}}</label>
                   <div class="">
                     <i data-hover="tooltip" data-original-title="Correct" ng-show="editclass.payerName.$dirty" ng-class="editclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                     <div class="select-box">
@@ -88,6 +88,7 @@
                                         <div class="col-md-2">Type: {{vm.Invoice.paymenttype}}</div>
                                         <div class="col-md-2">Last: {{vm.Invoice.lastpaymentdate | date:'yyyy-MM-dd'}}</div>
                                         <div class="col-md-2">Overdue: {{vm.Invoice.overduecnt}}</div>
+                                        <div class="col-md-2">Potential: {{vm.Invoice.potential}}</div>
                                         <div class="col-md-2">Pay On: {{vm.Invoice.payondayofmonth}}</div>
                                       </div>
 
