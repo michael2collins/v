@@ -21,7 +21,8 @@ export class HeaderController {
         $cookies,
         $window,
         portalDataService,
-        _
+        _,
+        $rootScope
     ) {
         'ngInject';
 
@@ -43,7 +44,7 @@ export class HeaderController {
         this.$cookies = $cookies;
         this.$window = $window;
         this._ = _;
-
+        this.$rootScope = $rootScope;
     }
 
 
@@ -74,7 +75,7 @@ export class HeaderController {
         this.Title.idleMessage(this.origtitle);
         this.portalDataService.Portlet('header-controller.js');
         this.menuclass='dropdown-menu';
-        this.mobile=false;
+        this.$rootScope.mobile=false;
         this.init();
 
     }
@@ -366,6 +367,7 @@ export class HeaderController {
             emailModal.retvlu = retvlu;
         }, function() {
             emailModal.$log.info('Modal dismissed at: ' + new Date());
+            emailModal.getEmailCount();
         });
 
     }
@@ -437,6 +439,9 @@ export class HeaderController {
 
     clearOverdueStudents() {
         this.$log.log("clearOverdueStudents entered");
+        for (var i = 0; i < this.overduestudents.length; i++) {
+            this.removeNotification(this.overduestudents[i].id);
+        }
     }
 
     clearNoshowStudents() {
@@ -661,8 +666,8 @@ export class HeaderController {
         });
 
         $(window).resize(vm._.debounce(function(){
-            vm.mobile = vm.$window.innerWidth < 786 ? true : false;
-            vm.mobile ? 
+            vm.$rootScope.mobile = vm.$window.innerWidth < 786 ? true : false;
+            vm.$rootScope.mobile ? 
                 vm.menuclass='dropdown-menu-right' :
                 vm.menuclass='dropdown-menu';
             vm.$scope.$apply();

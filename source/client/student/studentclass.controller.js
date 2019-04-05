@@ -1,7 +1,7 @@
 export class StudentClassController {
     constructor(
         $scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller
+        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -15,6 +15,7 @@ export class StudentClassController {
         this.Notification = Notification;
         this.$q = $q;
         this.$controller = $controller;
+        this.UserServices = UserServices;
     }
 
     $onInit() {
@@ -46,7 +47,29 @@ export class StudentClassController {
 
         vmclass.studentclass.contactID = vmclass.$routeParams.id;
 
+
+        vmclass.Columnslist = [
+            { name: "class", htxt: "Class" },
+            { name: "pgmclass", htxt: "Program" },
+            { name: "studentclassstatus", htxt: "Status" },
+            { name: "payerList", htxt: "Payer" },
+            { name: "isTestfeewaived", htxt: "Waive Test Fee?" },
+            { name: "primaryContact", htxt: "Primary Acct?" },
+            { name: "pictureurl", htxt: "Picture" },
+            { name: "action", htxt: "Action" }
+        ];
+//if mobile true        
+//disable header
+//video control for nav clazzlist iter        
+//loop columnlist
+//vmclass.Columnslist[0].htxt  class=xs6
+//vmclass.studentclazzlist[0][vmclass.Columnslist[0].name] class=xs6
+//if mobile false
+//enable header
+//loop clazzlist
+        vmclass.iter=0;
         vmclass.activate();
+        
     }
 
     $onDestroy() {
@@ -61,6 +84,10 @@ export class StudentClassController {
 
     activate() {
         var vmclass = this;
+        if (vmclass.$log.getInstance(vmclass.UserServices.isDebugEnabled()) !== undefined) {
+            vmclass.$log = vmclass.$log.getInstance('StudentClassController', vmclass.UserServices.isDebugEnabled());
+        }
+
         vmclass.$log.log('class activate');
         vmclass.$q.all([
 
@@ -401,27 +428,27 @@ export class StudentClassController {
 
     }
 
-//studenreg handles now
-/*
-    setStudentClass(mystudent, myclassid, mypgmid) {
-        var vmclass = this;
-        var setclasspath = '../v1/studentclass/id/' +
-            mystudent +
-            '/myclass/' +
-            myclassid +
-            '/mypgm/' +
-            mypgmid;
-        vmclass.$log.log('studentid: ' + mystudent);
-        vmclass.$log.log('studentclass: ' + myclassid);
-        vmclass.$log.log('studentpgm: ' + mypgmid);
+    //studenreg handles now
+    /*
+        setStudentClass(mystudent, myclassid, mypgmid) {
+            var vmclass = this;
+            var setclasspath = '../v1/studentclass/id/' +
+                mystudent +
+                '/myclass/' +
+                myclassid +
+                '/mypgm/' +
+                mypgmid;
+            vmclass.$log.log('studentid: ' + mystudent);
+            vmclass.$log.log('studentclass: ' + myclassid);
+            vmclass.$log.log('studentpgm: ' + mypgmid);
 
-        vmclass.$log.log('about setStudentClass ', mystudent);
-        vmclass.$log.log('for class ', myclassid);
-        return vmclass.ClassServices.setStudentClass(
-            setclasspath, mystudent, myclassid, mypgmid).then(function(data) {
-            vmclass.$log.log('setStudentClass returned data: ');
-            vmclass.$log.log(data);
-        });
-    }
-    */
+            vmclass.$log.log('about setStudentClass ', mystudent);
+            vmclass.$log.log('for class ', myclassid);
+            return vmclass.ClassServices.setStudentClass(
+                setclasspath, mystudent, myclassid, mypgmid).then(function(data) {
+                vmclass.$log.log('setStudentClass returned data: ');
+                vmclass.$log.log(data);
+            });
+        }
+        */
 }

@@ -562,6 +562,7 @@ class StudentClassDbHandler {
         return $num_affected_rows;
     }
     private function isStudentRegExists($studentid, $classid, $pgmid) {
+        global $app;
 
     $app->log->debug( print_R("before isStudentRegExists\n", TRUE ));
     $app->log->debug( print_R("studentid: $studentid\n", TRUE ));
