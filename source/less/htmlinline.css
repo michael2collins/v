@@ -12,11 +12,12 @@
             border: dotted 3px green;
         }
 
+/*? not sure why
         html,
         body {
             height: 100%;
         }
-
+*/
         canvas {
             /*  background-color: #f3f3f3; */
             -webkit-box-shadow: 3px 3px 3px 0 #e3e3e3;

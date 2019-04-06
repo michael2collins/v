@@ -245,7 +245,7 @@ export class AppController {
         });
 
         $(document).ready(function() {
-/*
+
             $('ul.dropdown-menu [data-toggle=dropdown]').on('click', function(event) {
                 // Avoid following the href location when clicking
                 event.preventDefault();
@@ -255,7 +255,7 @@ export class AppController {
                 $(this).parent().siblings().removeClass('open');
                 $(this).parent().toggleClass('open');
             });
-*/
+
             $('#external-events div.external-event').each(function() {
 
                 self.CalUtil.EventDrag($(this));

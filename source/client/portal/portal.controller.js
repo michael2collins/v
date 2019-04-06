@@ -1,4 +1,5 @@
 const { jQuery: $ } = window;
+import angular from 'angular';
 
 export class PortalController {
     constructor(
@@ -13,7 +14,9 @@ export class PortalController {
         testingServices,
         templateServices,
         paymentServices,
-        statsServices
+        statsServices,
+        $window,
+        $element
     ) {
         'ngInject';
         this.$log = $log;
@@ -22,31 +25,29 @@ export class PortalController {
         this.UserServices = userServices;
         this.ClassServices = classServices;
         this.StudentServices = studentServices;
-            this.CalendarServices = calendarServices;
-            this.TestingServices = testingServices;
-            this.EventServices = eventServices;
-            this.TemplateServices = templateServices;
-            this.PaymentServices = paymentServices;
-            this.StatsServices = statsServices;
-
+        this.CalendarServices = calendarServices;
+        this.TestingServices = testingServices;
+        this.EventServices = eventServices;
+        this.TemplateServices = templateServices;
+        this.PaymentServices = paymentServices;
+        this.StatsServices = statsServices;
+        this.$window = $window;
+        this.$element = $element;
     }
-    
+
     $onDestroy() {
-            this.$log.log("portal dismissed");
-            //this.$log.logEnabled(false);
-        }
+        this.$log.log("portal dismissed");
+    }
 
     $onInit() {
-//          this.loadTopbar();
-//          this.loadSidebar();
-        this.current={};
+        this.current = {};
         this.data = null;
         this.header = {
-            layout_menu:'',
-            layout_topbar:'',
-            animation:'',
-            header_topbar:'static',
-            boxed:''
+            layout_menu: '',
+            layout_topbar: '',
+            animation: '',
+            header_topbar: 'static',
+            boxed: ''
         };
         this.init();
 
@@ -54,14 +55,54 @@ export class PortalController {
 
         this.portalDataService.Portlet('portal.controller.js');
     }
+    scrollToTop() {
+        if (typeof jQuery == 'undefined') {
+            return window.scrollTo(0, 0);
+        }
+        else {
+            var body = $('html, body');
+            body.animate({ scrollTop: 0 }, '600', 'swing');
+        }
+        $('#totop').fadeOut();
+        //        console.log("scrollToTop");
+        return true;
+    }
     init() {
-        var self=this;
+        var self = this;
 
-        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined ) {
-            self.$log = self.$log.getInstance('PortalController',self.UserServices.isDebugEnabled());
+        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined) {
+            self.$log = self.$log.getInstance('PortalController', self.UserServices.isDebugEnabled());
         }
 
+        // Setup a timer
+        var timeout;
 
+        // Listen for scroll events
+        angular.element(this.$element).on('wheel', function portalScrollListener() {
+            //console.log( 'no debounce' );
+
+            // If there's a timer, cancel it
+            if (timeout) {
+                self.$window.cancelAnimationFrame(timeout);
+            }
+
+            // Setup the new requestAnimationFrame()
+            timeout = self.$window.requestAnimationFrame(function() {
+
+                // Run our scroll functions
+                //		console.log( 'debounced' );
+                if ($('body').scrollTop() < 20) {
+                    console.log("under 20", $('body').scrollTop());
+                    $('#totop').fadeOut();
+                }
+                else {
+                    //                console.log("over 150");
+                    $('#totop').fadeIn();
+                }
+
+            });
+
+        });
         self.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             var vm = event.currentScope.$ctrl;
             vm.current = current;
@@ -75,6 +116,7 @@ export class PortalController {
                 vm.header.animation = '';
             }, 100);
 
+            vm.scrollToTop();
 
             if (-1 == $.inArray(vm.current.originalPath, ['/page-lock-screen', '/page-signup', '/page-signin', '/reset-pwd', '/change-pwd', '/forget-pwd'])) {
                 //                activate();
@@ -83,75 +125,24 @@ export class PortalController {
                 $("body>.extra-page").hide();
             }
             else {
-                window.scrollTo(0, 0);
+                vm.$window.scrollTo(0, 0);
             }
-//            vm.header.boxed = '';
- //           vm.header.layout_topbar = '';
-  //          vm.header.layout_menu = '';
-//            vm.header.header_topbar = '';
-/*
-            if ('/layout-left-sidebar' === vm.current.originalPath) {
-                vm.$log.log("left sidebar entered");
-                vm.header.boxed = '';
-                vm.header.layout_topbar = '';
-                vm.header.layout_menu = '';
-                vm.header.header_topbar = '';
-                $('#wrapper').removeClass('right-sidebar');
-                $('body').removeClass('left-side-collapsed');
-                $('body').removeClass('layout-boxed');
-                $('body > .default-page').removeClass('container');
-                $('#topbar .navbar-header').removeClass('logo-collapsed');
-                $('body').addClass('sidebar-fixed');
-                $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
-                    "height": $(window).height() - 50,
-                    'width': '250px',
-                    'wheelStep': 5,
-                    
-//            height: $(window).height() - 100,
-//            width: '250px',
-            size: '10px',
-            railVisible: true,
-            alwaysVisible: true,
-            color: 'gray',
-            railColor: 'gray'
-//            wheelStep: 5
-                    
-                });
-                
-                $('body').removeClass('right-side-collapsed');
-                $('body').removeClass('container');
-            }
-
-            else if ('/' === vm.current.originalPath) {
-*/            
             if ('/' === vm.current.originalPath) {
                 vm.$log.log("/ path entered");
                 $('body').removeAttr('id'); // error 404, 500
             }
             else {
                 vm.$log.log("else path entered");
-//                vm.header.boxed = '';
- //               vm.header.layout_topbar = '';
-  //              vm.header.layout_menu = '';
-//                vm.header.header_topbar = '';
-//                $('#wrapper').removeClass('right-sidebar');
-//                $('body').removeClass('left-side-collapsed');
-//                $('body').removeClass('right-side-collapsed');
-//                $('body').removeClass('layout-boxed');
- //               $('body #page-wrapper').removeClass('animated');
- //               $('body > .default-page').removeClass('container');
- //               $('#topbar .navbar-header').removeClass('logo-collapsed');
-  //              $('body').addClass('sidebar-fixed');
                 $('.sidebar-fixed #sidebar-wrapper #sidebar').slimScroll({
                     "height": $(window).height() - 50,
                     'width': '250px',
                     'wheelStep': 5,
-            size: '10px',
-            railVisible: true,
-            alwaysVisible: true,
-            color: 'gray',
-            railColor: 'gray'
-                    
+                    size: '10px',
+                    railVisible: true,
+                    alwaysVisible: true,
+                    color: 'gray',
+                    railColor: 'gray'
+
                 });
             }
 
@@ -168,11 +159,11 @@ export class PortalController {
             vm.$log.log(current.originalPath);
             vm.data = vm.portalDataService.get(current.originalPath);
             vm.$log.log('data in $routeChangeSuccess', vm.data);
-            
+
         });
 
 
-        
+
     }
 
     islogin() {
@@ -183,39 +174,13 @@ export class PortalController {
         if (this.isok) {
             this.$log.log('setting apikey for services');
             var thekey = this.UserServices.getapikey();
-            //this.CalendarServices.setapikey(thekey);
-            //this.TestingServices.setapikey(thekey);
-            //this.EventServices.setapikey(thekey);
-            //this.TemplateServices.setapikey(thekey);
-            //this.StudentServices.setapikey(thekey);
-            //this.PaymentServices.setapikey(thekey);
-            //this.ClassServices.setapikey(thekey);
             this.UserServices.setapikey(thekey);
-            //this.StatsServices.setapikey(thekey);
-
-
         }
 
     }
 
     isokf() {
-        //        this.$log.log('isokf');
         this.isok = this.UserServices.isapikey();
         return this.isok;
     }
-/*
-    loadTopbar() {
-        var vm=this;
-        this.$log.log("loadTopbar");
-        $("[data-toggle='offcanvas']").on('click', function() {
-            $('#sidebar-wrapper').toggleClass('active');
-            return false;
-        });
-//         Setting toggle in mobile view 
-        $('#setting-toggle').click(function() {
-            vm.$log.log('mobile toggle');
-            $('.topbar-main').toggle();
-        });
-    }
-*/    
 }

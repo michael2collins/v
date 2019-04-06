@@ -550,21 +550,7 @@ export class CalUtil {
                 defaultTime: false
             });
 
-            // Back To Top 
-            $(window).scroll(function() {
-                if ($(this).scrollTop() < 20) {
-    //                console.log("under 150",$(this).scrollTop() );
-                    $('#totop').fadeOut();
-                }
-                else {
-    //                console.log("over 150");
-                    $('#totop').fadeIn();
-                }
-            });
-            $('#totop').on('click', function() {
-                $('html, body').animate({ scrollTop: 0 }, 'fast');
-                return false;
-            });
+
 
         }
             
