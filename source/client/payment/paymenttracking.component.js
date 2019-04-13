@@ -7,6 +7,9 @@ import template from './paymentView.html';
 export const paymenttrackingComponent = {
 };
 
+export const userpayComponent = {
+};
+
 export let paymentviewComponent  = {
 bindings: {},  
   controller: PaymentViewInstanceController,

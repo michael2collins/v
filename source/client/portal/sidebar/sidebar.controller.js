@@ -4,12 +4,14 @@ export class SidebarController {
     constructor(
         $log,
         $scope,
-        userServices
+        userServices,
+        $cookies
     ) {
         'ngInject';
         this.UserServices = userServices;
         this.$log = $log;
         this.$scope = $scope;
+        this.$cookies = $cookies;
     }
 
 
@@ -46,8 +48,14 @@ export class SidebarController {
         self.isok = self.UserServices.isapikey();
 
     }
-
-
+    isPayer() {
+        return this.UserServices._$cookies.getObject('globals').currentUser.role == 'payer' ? true : false;
+    }
+    isAdminOperator() {
+        
+        return this.UserServices._$cookies.getObject('globals').currentUser.role == 'admin' 
+            || this.UserServices._$cookies.getObject('globals').currentUser.role == 'operator'  ? true : false;
+    }
     isokf() {
         //        this.$log.log('isokf');
         this.isok = this.UserServices.isapikey();

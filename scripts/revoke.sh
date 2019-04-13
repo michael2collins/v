@@ -1,0 +1,1 @@
+/opt/letsencrypt/letsencrypt-auto revoke --cert-path ./domain-crt.txt --key-path ./domain-key.txt

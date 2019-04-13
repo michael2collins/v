@@ -158,6 +158,7 @@ $app->post('/login', function() use ($app) {
             $response['apiKey'] = $user['api_key'];
             $response['createdAt'] = $user['created_at'];
             $user_name = $user['username'];
+            $role = $user['role'];
             echoRespnse(200, $response);
         } else {
             // unknown error occurred

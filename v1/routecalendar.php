@@ -1,7 +1,7 @@
 <?php
 
 
-$app->post('/removeCalendarEvent','authenticate', 'setDebug', function() use($app) {
+$app->post('/removeCalendarEvent','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -34,7 +34,7 @@ $app->post('/removeCalendarEvent','authenticate', 'setDebug', function() use($ap
 
 });
 
-$app->post('/saveCalendarEvent','authenticate', 'setDebug', function() use($app) {
+$app->post('/saveCalendarEvent','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     global $user_id;
@@ -97,7 +97,7 @@ $app->post('/saveCalendarEvent','authenticate', 'setDebug', function() use($app)
 
 });
 
-$app->get('/getuserlist', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/getuserlist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("getUserList entered: ", TRUE));
@@ -155,7 +155,7 @@ $app->get('/getuserlist', 'authenticate', 'setDebug',function() use ($app) {
     }
 });
 
-$app->get('/getEventList', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/getEventList', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("getEventList entered: ", TRUE));
@@ -240,7 +240,7 @@ $app->get('/getEventList', 'authenticate', 'setDebug',function() use ($app) {
     }
 });
 
-$app->post('/removetasknamelist','authenticate', 'setDebug', function() use($app) {
+$app->post('/removetasknamelist','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -273,7 +273,7 @@ $app->post('/removetasknamelist','authenticate', 'setDebug', function() use($app
 
 });
 
-$app->post('/updatetasknamelist','authenticate', 'setDebug', function() use($app) {
+$app->post('/updatetasknamelist','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -316,7 +316,7 @@ $app->post('/updatetasknamelist','authenticate', 'setDebug', function() use($app
 
 });
 
-$app->get('/instructorlist', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/instructorlist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("instructorlist entered: ", TRUE));
@@ -368,7 +368,7 @@ $app->get('/instructorlist', 'authenticate', 'setDebug',function() use ($app) {
     }
 });
 
-$app->get('/tasknamelist', 'authenticate','setDebug', function() use ($app) {
+$app->get('/tasknamelist', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("tasknamelist entered: ", TRUE));
@@ -428,7 +428,7 @@ $app->get('/tasknamelist', 'authenticate','setDebug', function() use ($app) {
     }
 });
 
-$app->post('/calendarschedule', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/calendarschedule', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -627,7 +627,7 @@ $app->post('/calendarschedule', 'authenticate', 'setDebug',function() use ($app)
         }
 });
 
-$app->delete('/calendarschedule','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/calendarschedule','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -668,7 +668,7 @@ $app->delete('/calendarschedule','authenticate', 'setDebug',function() use ($app
 
 });
 
-$app->post('/schedulecalendar', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/schedulecalendar', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
        //todo set this global
@@ -875,7 +875,7 @@ $app->post('/schedulecalendar', 'authenticate', 'setDebug',function() use ($app)
         }
 });
 
-$app->get('/ageranges', 'authenticate', 'setDebug',function() {
+$app->get('/ageranges', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
     $response = array();
     $db = new CalendarDbHandler();
 

@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/attendstats', 'authenticate','setDebug', function() use ($app) {
+$app->get('/attendstats', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("attendstats entered: ", TRUE));
@@ -64,7 +64,7 @@ $app->get('/attendstats', 'authenticate','setDebug', function() use ($app) {
     }
 });
 
-$app->post('/studentstats', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/studentstats', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $app->log->setLevel(\Slim\Log::INFO);
 
@@ -228,7 +228,7 @@ $app->post('/studentstats', 'authenticate', 'setDebug',function() use ($app) {
     
 });
 
-$app->post('/studentstatsmonths', 'authenticate','setDebug', function() use ($app) {
+$app->post('/studentstatsmonths', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $app->log->setLevel(\Slim\Log::INFO);
 

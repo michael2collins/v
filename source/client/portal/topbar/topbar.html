@@ -18,7 +18,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
          </button>
-         <a id="logo" href="/#/main" class="navbar-brand" style="padding: 20px; margin-left:0px">
+         <a id="logo" href="javascript:void(0)" class="navbar-brand" style="padding: 20px; margin-left:0px">
             <span class="icon-social-tumblr"></span>
             <span class="logo-text">V Dojo</span>
          </a>
@@ -29,7 +29,7 @@
          <!--      <ul class=" navbar-top-links" style="margin-left: 130px; margin-bottom: 0px;"> -->
          <ul class="mtm nav navbar-nav navbar-top-links navbar-left">
             <!--            <ul class="nav mtm"> -->
-            <li class=" dropdown" ng-show="$ctrl.isokf()">
+            <li class=" dropdown" ng-show="$ctrl.isokf() && $ctrl.isAdminOperator()">
                <!--            <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"> -->
                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <i class="far fa-comments"></i>
@@ -151,7 +151,7 @@
                      <span class="pull-right text-muted small">Last upd. 12min ago</span></li>
                </ul>
             </li>
-            <li class=" dropdown" ng-show="$ctrl.isokf()">
+            <li class=" dropdown" ng-show="$ctrl.isokf() && $ctrl.isAdminOperator()">
                <!--            <a data-hover="dropdown" href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown"> -->
                <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                <i ng-class="$ctrl.emailcount > 0 ? ' icon-envelope-open' : ' icon-envelope '"></i>
@@ -194,6 +194,7 @@
                <a href="javascript:void(0);" class="dropdown-toggle" id="simple-dropdown">
          <span class="img-responsive img-circle" ng-switch on="$ctrl.userdta.pictureurl">
          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
+         <img ng-switch-when="" ng-src='../images/students/missingstudentpicture.png'/>
          <img ng-switch-default   ng-src="{{$ctrl.userdta.pictureurl}}"/>
          </span>
          <span>&nbsp;{{$ctrl.userdta.username}}&nbsp;</span><span class="caret"></span>

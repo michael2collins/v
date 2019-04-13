@@ -2402,6 +2402,52 @@ floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as po
             return $errormessage;
 		}
 	}
+
+	public
+	function getPayerbyEmail()
+	{
+        global $app;
+        global $school;
+        global $user_id; //user is email for payer
+        $emailaddr = $user_id;
+		
+	    $sql = "
+			select p.id as payerid, p.payername, p.payerEmail
+            from payer p
+            join users u on (u.email = p.payerEmail and u.school = p.school )
+            where
+            p.school = ?
+            and u.id = ?
+	    	";	
+
+		$app->log->debug(print_R("getPayerbyEmail sql : $sql $user_id", TRUE) );
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("ss", $school, $emailaddr);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$res = array();
+				$app->log->debug(print_R("getPayerbyEmail list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
+				$stmt->close();
+				$res["success"]=true;
+				$res["slist"]=$slists;
+				return $res;
+			}
+			else {
+				$app->log->debug(print_R("getPayerbyEmail list execute failed", TRUE) );
+	            $errormessage["sqlerror"] = "getPayerbyEmail failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+	            return $errormessage;
+			}
+		}
+		else {
+			$app->log->debug(print_R("getPayerbyEmail list sql failed", TRUE) );
+            $errormessage["sqlerror"] = "getPayerbyEmail failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}
+	}
 	
 	private
 	function isInvoiceExists( $paymentid, $invdate)
@@ -2424,6 +2470,77 @@ floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as po
 		$r = $num_rows > 0;
 		$app->log->debug(print_R("invoice exists: $r\n", TRUE) );
 		return $r;
+	}
+
+	public
+	function createPayuser(
+            $invoice, $to, $payerName
+		)
+	{
+	/**
+	 * Creating user who can then later pay bill
+	 */
+        global $app;
+		$app->log->debug(print_R("createPayuser entered\n", TRUE) );
+		$response = array();
+		global $school;
+		$options= '{"delay":10,"notify":true,"idle":800,"timeout":300}';
+		$password = $invoice;
+		$username = $to;
+		$name = $payerName;
+
+        // Generating password hash
+        $password_hash = PassHash::hash($password);
+
+        // Generating API key
+        $api_key = generateApiKey();
+
+        // insert query
+        $sql = "INSERT INTO users(name, username, email, password_hash, api_key, status, school, role,options) 
+        values(?, ?, ?, ?, ?, 1, ?, 'payer', ?)
+        			on duplicate key update 
+			name = values(name), 
+			username = values(username), 
+			email = values(email), 
+			password_hash = values(password_hash), 
+			api_key = values(api_key), 
+			status = values(status),
+			school = values(school),
+			role = values(role),
+			options = values(options)
+			";
+
+        
+		try {
+			if ($stmt = $this->conn->prepare($sql)) {
+		        $stmt->bind_param("sssssss", $name, $username, $to, $password_hash, $api_key, $school, $options);
+				$result = $stmt->execute();
+				$stmt->close();
+
+				// Check for successful insertion
+
+				if ($result) {
+					$new_id = $this->conn->insert_id;
+
+					// User successfully inserted
+
+					return $new_id;
+				}
+				else {
+					// Failed to create invoice
+					return -1;
+				}
+			}
+			else {
+				printf("Errormessage: %s\n", $this->conn->error);
+				return -2;
+			}
+		} catch(exception $e) {
+			$app->log->debug(print_R( "sql error in createPayuser\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -3;			
+		}
 	}
 	
 	public

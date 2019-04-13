@@ -1,5 +1,55 @@
 <?php
+function isAdminOrOperator(\Slim\Route $route) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->setEnabled(true); //change to true if want these
+    $app->log->debug( print_R("isAdminOrOperator entered:\n ", TRUE));
 
+    global $role;
+    if ($role == 'admin' || $role == 'operator' ){
+        return true;
+    } else {
+        $app->log->debug( print_R("role is not operator or admin: $role\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Unauthorized";
+        echoRespnse(403, $response);
+        $app->stop();
+        
+    }
+}
+function allRoles(\Slim\Route $route) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->setEnabled(true); //change to true if want these
+    $app->log->debug( print_R("allRole entered:\n ", TRUE));
+
+    global $role;
+    if ($role == 'admin' || $role == 'operator' || $role == 'payer'){
+        return true;
+    } else {
+        $app->log->debug( print_R("role is not valid: $role\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Unauthorized";
+        echoRespnse(403, $response);
+        $app->stop();
+        
+    }
+}
+function isPayer(\Slim\Route $route) {
+    $app = \Slim\Slim::getInstance();
+    $app->log->setEnabled(true); //change to true if want these
+    $app->log->debug( print_R("isPayer entered:\n ", TRUE));
+
+    global $role;
+    if ($role == 'payer' ){
+        return true;
+    } else {
+        $app->log->debug( print_R("role is not payer: $role\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Unauthorized";
+        echoRespnse(403, $response);
+        $app->stop();
+        
+    }
+}
 function authenticate(\Slim\Route $route) {
 /**
  * Adding Middle Layer to authenticate every request
@@ -165,6 +215,7 @@ $app->post('/login', function() use ($app) {
             $response['school'] = $user['school'];
             $response['pictureurl'] = $user['pictureurl'];
             $response['options'] = $user['options'];
+            $response['role'] = $user['role'];
             $user_name = $user['username'];
 //            $app->log->debug( print_R("login return:", TRUE ));
 //            $app->log->debug( print_R($response, TRUE ));
@@ -302,7 +353,7 @@ $app->get('/forgotpassword', function() use ($app) {
     
 });
 
-$app->post('/changepassword', 'authenticate', function() use ($app) {
+$app->post('/changepassword', 'authenticate','allRoles', function() use ($app) {
 
     $response = array();
 
@@ -473,11 +524,12 @@ $app->get('/userdetails', 'authenticate', function() use ($app) {
     $response['school'] = $user['school'];
     $response['pictureurl'] = $user['pictureurl'];
     $response['options'] = $user['options'];
+    $response['role'] = $user['role'];
     echoRespnse(200, $response);
 
 });
 
-$app->get('/useroptions', 'authenticate', function() use ($app) {
+$app->get('/useroptions', 'authenticate',  function() use ($app) {
 
     $app->log->debug( print_R("useroptions entered:\n ", TRUE));
 
@@ -506,7 +558,7 @@ $app->get('/useroptions', 'authenticate', function() use ($app) {
 
 
 });
-$app->post('/useroptions', 'authenticate', function() use ($app) {
+$app->post('/useroptions', 'authenticate', 'allRoles', function() use ($app) {
      $response = array();
 
     // reading post params
@@ -540,7 +592,6 @@ $app->post('/useroptions', 'authenticate', function() use ($app) {
     }
 
 });
-
 
 $app->get('/resetpassword',  function() use ($app) {
 

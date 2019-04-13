@@ -1,5 +1,5 @@
 <?php
-$app->get('/studentregistration','authenticate', 'setDebug', function() use ($app) {
+$app->get('/studentregistration','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("studentregistration entered:\n ", TRUE));
@@ -88,7 +88,7 @@ $app->get('/studentregistration','authenticate', 'setDebug', function() use ($ap
     }
 });
 
-$app->get('/attendancehistory', 'authenticate','setDebug', function() use ($app) {
+$app->get('/attendancehistory', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("attendancehistory entered:\n ", TRUE));
@@ -167,7 +167,7 @@ $app->get('/attendancehistory', 'authenticate','setDebug', function() use ($app)
 //        echoRespnse(200, $response);
     }
 });
-$app->get('/DOW', 'authenticate','setDebug', function() {
+$app->get('/DOW', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -199,7 +199,7 @@ $app->get('/DOW', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/schedule/:DOW', 'authenticate','setDebug', function($DOWid) {
+$app->get('/schedule/:DOW', 'authenticate', 'isAdminOrOperator', 'setDebug', function($DOWid) {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -244,7 +244,7 @@ $app->get('/schedule/:DOW', 'authenticate','setDebug', function($DOWid) {
     }
 });
 
-$app->get('/schedule', 'authenticate','setDebug', function() {
+$app->get('/schedule', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -296,7 +296,7 @@ $app->get('/schedule', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/classes', 'authenticate', 'setDebug',function() {
+$app->get('/classes', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -330,7 +330,7 @@ $app->get('/classes', 'authenticate', 'setDebug',function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/programs', 'authenticate','setDebug', function() {
+$app->get('/programs', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -364,7 +364,7 @@ $app->get('/programs', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/ClassPgm', 'authenticate', 'setDebug',function() {
+$app->get('/ClassPgm', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -461,7 +461,7 @@ $app->post('/ClassPgm','authenticate',  'setDebug',function() use($app) {
     }
 
 });
-$app->delete('/ClassPgm','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/ClassPgm','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -507,7 +507,7 @@ $app->delete('/ClassPgm','authenticate', 'setDebug',function() use ($app) {
     
 });
 
-$app->post('/schedule','authenticate', 'setDebug', function() use($app) {
+$app->post('/schedule','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -562,7 +562,7 @@ $app->post('/schedule','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/schedule','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/schedule','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -610,7 +610,7 @@ $app->delete('/schedule','authenticate', 'setDebug',function() use ($app) {
 
 });
 
-$app->get('/program', 'authenticate', 'setDebug',function() {
+$app->get('/program', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -664,7 +664,7 @@ $app->get('/program', 'authenticate', 'setDebug',function() {
         echoRespnse(404, $response);
     }
 });
-$app->post('/program','authenticate', 'setDebug', function() use($app) {
+$app->post('/program','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -719,7 +719,7 @@ $app->post('/program','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/program','authenticate','setDebug', function() use ($app) {
+$app->delete('/program','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -789,7 +789,7 @@ $app->delete('/program','authenticate','setDebug', function() use ($app) {
             echoRespnse(400, $response);
     }
 });
-$app->get('/classtypes', 'authenticate','setDebug', function() {
+$app->get('/classtypes', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -825,7 +825,7 @@ $app->get('/classtypes', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/ranktypeids', 'authenticate','setDebug', function() {
+$app->get('/ranktypeids', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -859,7 +859,7 @@ $app->get('/ranktypeids', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->get('/ranks', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/ranks', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("ranks entered:\n ", TRUE));
@@ -918,7 +918,7 @@ $app->get('/ranks', 'authenticate', 'setDebug',function() use ($app) {
     }
 });
 
-$app->get('/class', 'authenticate', 'setDebug',function() {
+$app->get('/class', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1023,7 +1023,7 @@ $app->post('/class','authenticate',  'setDebug',function() use($app) {
     }
 
 });
-$app->delete('/class','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/class','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -1094,7 +1094,7 @@ $app->delete('/class','authenticate', 'setDebug',function() use ($app) {
     }
 });
 
-$app->get('/basic', 'authenticate', 'setDebug',function() {
+$app->get('/basic', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1185,7 +1185,7 @@ $app->post('/basic','authenticate',  'setDebug',function() use($app) {
     }
 
 });
-$app->delete('/basic','authenticate','setDebug','setDebug', function() use ($app) {
+$app->delete('/basic','authenticate', 'isAdminOrOperator', 'setDebug','setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1233,7 +1233,7 @@ $app->delete('/basic','authenticate','setDebug','setDebug', function() use ($app
 });
 
 
-$app->post('/updateattendance','authenticate', 'setDebug', function() use($app) {
+$app->post('/updateattendance','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -1281,7 +1281,7 @@ $app->post('/updateattendance','authenticate', 'setDebug', function() use($app) 
 
 });
 
-$app->put('/readynextrank/:id', 'authenticate', 'setDebug',function($student_id) use($app) {
+$app->put('/readynextrank/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //$app->log->debug( print_R("before put student class paylist request", TRUE ));
@@ -1321,7 +1321,7 @@ $app->put('/readynextrank/:id', 'authenticate', 'setDebug',function($student_id)
     echoRespnse(200, $response);
 });
 
-$app->get('/Attendancelist', 'authenticate', 'setDebug',function() {
+$app->get('/Attendancelist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
     $response = array();
     $db = new AttendanceDbHandler();
 
@@ -1361,7 +1361,7 @@ $app->get('/Attendancelist', 'authenticate', 'setDebug',function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/Attendancesum', 'authenticate', 'setDebug',function() use($app) {
+$app->get('/Attendancesum', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("Attendancesum entered:\n ", TRUE));
@@ -1420,7 +1420,7 @@ $app->get('/Attendancesum', 'authenticate', 'setDebug',function() use($app) {
 
 });
 
-$app->get('/rrank', 'authenticate','setDebug', function() {
+$app->get('/rrank', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1469,7 +1469,7 @@ $app->get('/rrank', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->post('/rrank','authenticate', 'setDebug', function() use($app) {
+$app->post('/rrank','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -1519,7 +1519,7 @@ $app->post('/rrank','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/rrank','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/rrank','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -1589,7 +1589,7 @@ $app->delete('/rrank','authenticate', 'setDebug',function() use ($app) {
             echoRespnse(400, $response);
     }
 });
-$app->get('/rankgroups', 'authenticate','setDebug', function() {
+$app->get('/rankgroups', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1626,7 +1626,7 @@ $app->get('/rankgroups', 'authenticate','setDebug', function() {
     }
 });
 
-$app->get('/ClassRank', 'authenticate', 'setDebug',function() {
+$app->get('/ClassRank', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1662,7 +1662,7 @@ $app->get('/ClassRank', 'authenticate', 'setDebug',function() {
         echoRespnse(404, $response);
     }
 });
-$app->post('/ClassRank','authenticate', 'setDebug', function() use($app) {
+$app->post('/ClassRank','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -1708,7 +1708,7 @@ $app->post('/ClassRank','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/ClassRank','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/ClassRank','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -1753,7 +1753,7 @@ $app->delete('/ClassRank','authenticate', 'setDebug',function() use ($app) {
     }
     
 });
-$app->get('/classbytype', 'authenticate','setDebug', function() {
+$app->get('/classbytype', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("ranks entered:\n ", TRUE));
@@ -1818,7 +1818,7 @@ $app->get('/classbytype', 'authenticate','setDebug', function() {
     }
 });
 
-$app->get('/testtype', 'authenticate','setDebug', function() {
+$app->get('/testtype', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1857,7 +1857,7 @@ $app->get('/testtype', 'authenticate','setDebug', function() {
         echoRespnse(404, $response);
     }
 });
-$app->post('/testtype','authenticate', 'setDebug', function() use($app) {
+$app->post('/testtype','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -1904,7 +1904,7 @@ $app->post('/testtype','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/testtype','authenticate','setDebug', function() use ($app) {
+$app->delete('/testtype','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1950,7 +1950,7 @@ $app->delete('/testtype','authenticate','setDebug', function() use ($app) {
     
 });
 
-$app->get('/classtest', 'authenticate', 'setDebug',function() {
+$app->get('/classtest', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -1988,7 +1988,7 @@ $app->get('/classtest', 'authenticate', 'setDebug',function() {
         echoRespnse(404, $response);
     }
 });
-$app->post('/classtest','authenticate', 'setDebug', function() use($app) {
+$app->post('/classtest','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -2035,7 +2035,7 @@ $app->post('/classtest','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/classtest','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/classtest','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -2114,7 +2114,7 @@ $app->get('/emailtemplates',  'setDebug', function() use($app) {
 
 });
 
-$app->get('/htmltemplate', 'authenticate', 'setDebug',function() {
+$app->get('/htmltemplate', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new AttendanceDbHandler();
@@ -2154,7 +2154,7 @@ $app->get('/htmltemplate', 'authenticate', 'setDebug',function() {
         echoRespnse(404, $response);
     }
 });
-$app->post('/htmltemplate','authenticate', 'setDebug', function() use($app) {
+$app->post('/htmltemplate','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -2201,7 +2201,7 @@ $app->post('/htmltemplate','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->delete('/htmltemplate','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/htmltemplate','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 

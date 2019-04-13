@@ -43,6 +43,10 @@ export class CardViewInstanceController {
 		vm.stripeConfig();
 		vm.activate();
 	}
+    isPayer() {
+    	var vm=this;
+        return vm.UserServices.userdetails.role == 'payer' ? true : false;
+    }
 
     stripeConfig() {
     	var vm=this;

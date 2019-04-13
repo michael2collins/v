@@ -138,9 +138,9 @@
             $cookieStore.put('globals', $rootScope.globals);
         }
 
-        function SetCredentials(username, password, apiKey) {
+        function SetCredentials(username, password, apiKey, role) {
             //var authdata = username + ':' + password;
-            $log.log('SetCredentials entered', username,apiKey);
+            $log.log('SetCredentials entered', username,apiKey, role);
             setapikey(apiKey);
             
             var authdata = apiKey;

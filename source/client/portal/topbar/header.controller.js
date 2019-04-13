@@ -21,6 +21,7 @@ export class HeaderController {
         $cookies,
         $window,
         portalDataService,
+        UserServices,
         _,
         $rootScope
     ) {
@@ -45,6 +46,7 @@ export class HeaderController {
         this.$window = $window;
         this._ = _;
         this.$rootScope = $rootScope;
+        this.UserServices = UserServices;
     }
 
 
@@ -450,6 +452,10 @@ export class HeaderController {
 
     gettheTasknamelist() {
         var self = this;
+        if (self.UserServices._$cookies.getObject('globals').currentUser.role != 'admin' 
+            && self.UserServices._$cookies.getObject('globals').currentUser.role != 'operator'  ) {
+            return (self.$q.resolve());
+        }
 
         self.$log.log('gettheTasknamelist entered');
         var refreshpath = "../v1/tasknamelist";
@@ -500,7 +506,11 @@ export class HeaderController {
 
     getNotifications() {
         var self = this;
-
+        if (self.UserServices._$cookies.getObject('globals').currentUser.role != 'admin' 
+            && self.UserServices._$cookies.getObject('globals').currentUser.role != 'operator'  ) {
+            return (self.$q.resolve());
+        }
+        
         self.$log.log('getNotifications entered');
         var path = "../v1/notification";
         return self.StudentServices.getNotifications(path).then(function(data) {
@@ -590,6 +600,11 @@ export class HeaderController {
     getEmailCount() {
         var self = this;
 
+        if (self.UserServices._$cookies.getObject('globals').currentUser.role != 'admin' 
+            && self.UserServices._$cookies.getObject('globals').currentUser.role != 'operator'  ) {
+            return (self.$q.resolve());
+        }
+
         self.$log.log('getEmailCount entered');
         var path = '../v1/emailcount';
 
@@ -639,6 +654,15 @@ export class HeaderController {
             }).
         finally(function() {});
 
+    }
+
+    isPayer() {
+        return this.UserServices._$cookies.getObject('globals').currentUser.role == 'payer' ? true : false;
+    }
+    isAdminOperator() {
+        
+        return this.UserServices._$cookies.getObject('globals').currentUser.role == 'admin' 
+            || this.UserServices._$cookies.getObject('globals').currentUser.role == 'operator'  ? true : false;
     }
 
     isokf() {

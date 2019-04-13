@@ -1,6 +1,6 @@
 <?php
 
-$app->put('/pic', 'authenticate', 'setDebug', function() use($app) {
+$app->put('/pic', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $app->log->debug( print_R("before pic request\n", TRUE ));
 
@@ -91,7 +91,7 @@ $app->post('/picupload','setDebug', function() use ($app) {
 
 });
 
-$app->get('/eventnames', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/eventnames', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("eventnames entered:\n ", TRUE));
@@ -124,7 +124,7 @@ $app->get('/eventnames', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->get('/eventdetails', 'authenticate', 'setDebug', function() use($app){
+$app->get('/eventdetails', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
 /**
  * Listing event details for an event
  * method GET
@@ -180,7 +180,7 @@ $app->get('/eventdetails', 'authenticate', 'setDebug', function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->post('/eventregistration','authenticate', 'setDebug', function() use ($app) {
+$app->post('/eventregistration','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 /* Event Registration
  * url - /eventregistration
  * method - POST
@@ -292,7 +292,7 @@ $app->post('/eventregistration','authenticate', 'setDebug', function() use ($app
 
 });
 
-$app->put('/eventregistration','authenticate', 'setDebug', function() use ($app) {
+$app->put('/eventregistration','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -363,7 +363,7 @@ $app->put('/eventregistration','authenticate', 'setDebug', function() use ($app)
 
 });
 
-$app->get('/userprefcols/:prefkey', 'authenticate', 'setDebug',function($prefkey) use ($app){
+$app->get('/userprefcols/:prefkey', 'authenticate', 'isAdminOrOperator', 'setDebug',function($prefkey) use ($app){
     $app->log->debug( print_R("userprefcols entered with pref: $prefkey\n ", TRUE));
 
     $response = array();
@@ -399,7 +399,7 @@ $app->get('/userprefcols/:prefkey', 'authenticate', 'setDebug',function($prefkey
     echoRespnse(200, $response);
 });
 
-$app->post('/userprefcols/:prefkey', 'authenticate','setDebug', function($prefkey) use ($app) {
+$app->post('/userprefcols/:prefkey', 'authenticate', 'isAdminOrOperator', 'setDebug', function($prefkey) use ($app) {
     $app->log->debug( print_R("userprefcols post entered with pref: $prefkey\n ", TRUE));
 
 //    $userid = 1; //have to convert name to id
@@ -440,7 +440,7 @@ $app->post('/userprefcols/:prefkey', 'authenticate','setDebug', function($prefke
 
 });
 
-$app->get('/studentnames', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/studentnames', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("studentnames entered:\n ", TRUE));
@@ -476,7 +476,7 @@ $app->get('/studentnames', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->get('/rankpartial', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/rankpartial', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("rankpartial entered:\n ", TRUE));
@@ -519,7 +519,7 @@ $app->get('/rankpartial', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->get('/rank', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/rank', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("rank entered:\n ", TRUE));
@@ -557,7 +557,7 @@ $app->get('/rank', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->get('/ranktypeexcluded', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/ranktypeexcluded', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("ranktypeexcluded entered:\n ", TRUE));
@@ -590,7 +590,7 @@ $app->get('/ranktypeexcluded', 'authenticate', 'setDebug', function() use ($app)
     
 });
 
-$app->get('/studentrank', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/studentrank', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("studentranks entered:\n ", TRUE));
@@ -625,7 +625,7 @@ $app->get('/studentrank', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->get('/studentcols', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/studentcols', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $app->log->debug( print_R("studentcols entered:\n ", TRUE));
 
@@ -656,7 +656,7 @@ $app->get('/studentcols', 'authenticate', 'setDebug', function() use ($app) {
         echoRespnse(200, $response);
     
 });
-$app->get('/studentcolmap', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/studentcolmap', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $app->log->debug( print_R("studentcolmap entered:\n ", TRUE));
 
@@ -686,7 +686,7 @@ $app->get('/studentcolmap', 'authenticate', 'setDebug', function() use ($app) {
         echoRespnse(200, $response);
     
 });
-$app->delete('/studentcolmap','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/studentcolmap','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -730,7 +730,7 @@ $app->delete('/studentcolmap','authenticate', 'setDebug', function() use ($app) 
             echoRespnse(400, $response);
         }
 });
-$app->post('/studentcolmap','authenticate', 'setDebug', function() use($app) {
+$app->post('/studentcolmap','authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $response = array();
 
     // reading post params
@@ -780,7 +780,7 @@ $app->post('/studentcolmap','authenticate', 'setDebug', function() use($app) {
     }
 
 });
-$app->get('/samplestudents', 'authenticate', 'setDebug', function() use($app){
+$app->get('/samplestudents', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
 
     checkSecurity();
     global $user_id;
@@ -845,7 +845,7 @@ $app->get('/samplestudents', 'authenticate', 'setDebug', function() use($app){
 
 });
 
-$app->post('/studentrank', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/studentrank', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -893,7 +893,7 @@ $app->post('/studentrank', 'authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->put('/studentrank','authenticate', 'setDebug', function() use ($app) {
+$app->put('/studentrank','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -947,7 +947,7 @@ $app->put('/studentrank','authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->delete('/studentrank','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/studentrank','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -998,7 +998,7 @@ $app->delete('/studentrank','authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->delete('/student','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/student','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1069,7 +1069,7 @@ $app->delete('/student','authenticate', 'setDebug', function() use ($app) {
     */
 });
 
-$app->get('/students', 'authenticate', 'setDebug', function() use($app){
+$app->get('/students', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
 /**
  * Listing all tasks of particual user
  * method GET
@@ -1152,7 +1152,7 @@ $app->get('/students', 'authenticate', 'setDebug', function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->get('/contacttypes', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/contacttypes', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1185,7 +1185,7 @@ $app->get('/contacttypes', 'authenticate', 'setDebug', function() use ($app){
     }
 });
 
-$app->get('/students/:id', 'authenticate', 'setDebug',function($student_id) use ($app){
+$app->get('/students/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) use ($app){
     //  global $user_id;
 
     if (!isset($student_id)) {
@@ -1244,7 +1244,7 @@ $app->get('/students/:id', 'authenticate', 'setDebug',function($student_id) use 
     }
 });
 
-$app->get('/studenthistory/:id', 'authenticate','setDebug', function($student_id) use ($app) {
+$app->get('/studenthistory/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($student_id) use ($app) {
 /**
  * get student contact history
  * method GET
@@ -1286,7 +1286,7 @@ $app->get('/studenthistory/:id', 'authenticate','setDebug', function($student_id
         echoRespnse(404, $response);
     }
 });
-$app->get('/studentattend/:id', 'authenticate','setDebug', function($student_id) use ($app){
+$app->get('/studentattend/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($student_id) use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1334,7 +1334,7 @@ $app->get('/studentattend/:id', 'authenticate','setDebug', function($student_id)
     }
 });
 
-$app->get('/samplestudenthistory', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/samplestudenthistory', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1368,7 +1368,7 @@ $app->get('/samplestudenthistory', 'authenticate', 'setDebug', function() use ($
         echoRespnse(404, $response);
     }
 });
-$app->get('/samplestudentattendance', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/samplestudentattendance', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -1415,7 +1415,7 @@ $app->get('/samplestudentattendance', 'authenticate', 'setDebug', function() use
 });
 
 
-$app->put('/students/:id', 'authenticate','setDebug', function($student_id) use($app) {
+$app->put('/students/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($student_id) use($app) {
 /**
  * Updating existing student
  * method PUT
@@ -1520,7 +1520,7 @@ $app->put('/students/:id', 'authenticate','setDebug', function($student_id) use(
     echoRespnse(200, $response);
 });
 
-$app->get('/studentlists', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/studentlists', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
     $response = array();
     $db = new StudentDbHandler();
 
@@ -1580,7 +1580,7 @@ $app->get('/studentlists', 'authenticate', 'setDebug', function() use ($app){
     echoRespnse(200, $response);
 });
 
-$app->post('/newstudent', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/newstudent', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 /* Student Registration
  * url - /newstudent
  * method - POST
@@ -1645,7 +1645,7 @@ $app->post('/newstudent', 'authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->get('/eventsource', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/eventsource', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 /**
  * get student data for creating events
  * method GET
@@ -1805,7 +1805,7 @@ $app->get('/eventsource', 'authenticate', 'setDebug', function() use($app) {
     }
 });
 
-$app->get('/coldefs', 'authenticate', 'setDebug', function() use($app){
+$app->get('/coldefs', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
     $app->log->debug( print_R("coldefs entered", TRUE));
 
     $allGetVars = $app->request->get();
@@ -1866,7 +1866,7 @@ $app->get('/coldefs', 'authenticate', 'setDebug', function() use($app){
     
 });
 
-$app->get('/coldeflist', 'authenticate', 'setDebug', function() use($app){
+$app->get('/coldeflist', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
     $app->log->debug( print_R("coldeflist entered", TRUE));
 
     $allGetVars = $app->request->get();
@@ -1924,7 +1924,7 @@ $app->get('/coldeflist', 'authenticate', 'setDebug', function() use($app){
 
 });
 
-$app->post('/coldef', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/coldef', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -1985,7 +1985,7 @@ $app->post('/coldef', 'authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->post('/email', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/email', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
     $response = array();
 
     // reading post params
@@ -2199,7 +2199,7 @@ $app->post('/message', 'setDebug', function() use ($app) {
     
 
 });
-$app->get('/emails', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/emails', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("studentnames entered:\n ", TRUE));
@@ -2236,7 +2236,7 @@ $app->get('/emails', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->get('/emailcount', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/emailcount', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2266,7 +2266,7 @@ $app->get('/emailcount', 'authenticate', 'setDebug', function() use($app) {
     }
 });
 
-$app->get('/emailview', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/emailview', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("emailview entered:\n ", TRUE));
@@ -2321,7 +2321,7 @@ $app->get('/emailview', 'authenticate', 'setDebug', function() use($app) {
         echoRespnse(404, $response);
     }
 });
-$app->post('/emailview', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/emailview', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
      $response = array();
 
     // reading post params
@@ -2360,7 +2360,7 @@ $app->post('/emailview', 'authenticate', 'setDebug', function() use ($app) {
     
 
 });
-$app->delete('/emailview','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/emailview','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -2398,7 +2398,7 @@ $app->delete('/emailview','authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->get('/emaillist', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/emaillist', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2442,7 +2442,7 @@ $app->get('/emaillist', 'authenticate', 'setDebug', function() use($app) {
         echoRespnse(404, $response);
     }
 });
-$app->post('/emaillist', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/emaillist', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
      $response = array();
 
     // reading post params
@@ -2480,7 +2480,7 @@ $app->post('/emaillist', 'authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->delete('/emaillist','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/emaillist','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -2518,7 +2518,7 @@ $app->delete('/emaillist','authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->get('/notification', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/notification', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $response = array();
     $db = new StudentDbHandler();
@@ -2568,7 +2568,7 @@ $app->get('/notification', 'authenticate', 'setDebug', function() use($app) {
     }
 });
 
-$app->delete('/notification','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/notification','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -2780,7 +2780,7 @@ header("HTTP/1.1 200 OK");
 
 });
 
-$app->post('/invoice', 'authenticate','setDebug',  function() use ($app) {
+$app->post('/invoice', 'authenticate', 'isAdminOrOperator', 'setDebug',  function() use ($app) {
 
     $response = array();
 
@@ -2853,6 +2853,13 @@ $app->post('/invoice', 'authenticate','setDebug',  function() use ($app) {
 
     if ($return > 0) {
         $app->log->debug( print_R("invoice created: $paymentid $return\n", TRUE ));
+
+        // creating pay user
+        $retuser = $db->createPayuser(
+            $invoice, $to, $payerName
+                                );
+        
+        
         if ($mailoption == "Email") {
             genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
         } else {
@@ -2894,7 +2901,7 @@ $app->post('/invoice', 'authenticate','setDebug',  function() use ($app) {
     
 });
 
-$app->post('/invoiceemail', 'authenticate','setDebug',  function() use ($app) {
+$app->post('/invoiceemail', 'authenticate', 'isAdminOrOperator', 'setDebug',  function() use ($app) {
 
     $response = array();
 
@@ -2939,6 +2946,11 @@ $app->post('/invoiceemail', 'authenticate','setDebug',  function() use ($app) {
         }
     }
 
+    // creating pay user.  Seems unlikely to be needed
+    $retuser = $db->createPayuser(
+        $invoice, $to, $payerName
+                            );
+
     genInvoiceEmail($invoice,$payerName,$schEmail,$invoiceAmt,$invoiceDate,$schSig,$to,$payfor);
 
     //as long as one worked, return success
@@ -2958,7 +2970,7 @@ $app->post('/invoiceemail', 'authenticate','setDebug',  function() use ($app) {
     
 });
 
-$app->post('/paymentemail', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/paymentemail', 'authenticate', 'allRoles', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -3050,7 +3062,7 @@ $app->post('/paymentemail', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->put('/invoice','authenticate', 'setDebug', function() use ($app) {
+$app->put('/invoice','authenticate', 'allRoles', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -3305,6 +3317,12 @@ $message = "
     
         if ($return > 0) {
             $app->log->debug( print_R("invoice created: $paymentid $return\n", TRUE ));
+            
+                    // creating pay user
+        $retuser = $db->createPayuser(
+            $invoice, $to, $payerName
+                                );
+
 /*
 
 $message = "
@@ -3367,7 +3385,7 @@ $message = "
         }
 });
 
-$app->get('/payerstudent', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/payerstudent', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("payerstudent entered:\n ", TRUE));
@@ -3422,7 +3440,45 @@ $app->get('/payerstudent', 'authenticate', 'setDebug', function() use ($app) {
 
 
 });
-$app->get('/invoices', 'authenticate', 'setDebug', function() use ($app) {
+
+$app->get('/payerbyemail', 'authenticate', 'isPayer', 'setDebug', function() use ($app) {
+
+    $app->log->debug( print_R("payerbyemail entered:\n ", TRUE));
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $result = $db->getPayerbyEmail();
+    $response["error"] = false;
+    $response["payerlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result["slist"]->fetch_assoc()) {
+        $tmp = array();
+            $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+            $tmp["payername"] = (empty($slist["payername"]) ? "NULL" : $slist["payername"]);
+            $tmp["payerEmail"] = (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+        array_push($response["payerlist"], $tmp);
+    }
+
+    if ($result["success"] ) {
+        $response["error"] = false;
+        $response["message"] = "Found payer successfully";
+        echoRespnse(201, $response);
+    } else {
+        $app->log->debug( print_R("after payer result bad\n", TRUE));
+        $response["error"] = true;
+        $response["extra"] = $result;
+        $response["message"] = "Failed to get Payer. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+
+$app->get('/invoices', 'authenticate', 'allRoles', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("invoices entered:\n ", TRUE));
@@ -3479,7 +3535,7 @@ $app->get('/invoices', 'authenticate', 'setDebug', function() use ($app) {
     }
 
 });
-$app->get('/calcinvoice', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/calcinvoice', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("calcinvoice entered:\n ", TRUE));
@@ -3559,7 +3615,7 @@ $app->get('/calcinvoice', 'authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->delete('/invoice','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/invoice','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -3598,7 +3654,7 @@ $app->delete('/invoice','authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->get('/payments', 'authenticate', 'setDebug', function() use ($app) {
+$app->get('/payments', 'authenticate', 'allRoles', 'setDebug', function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("payments entered:\n ", TRUE));
@@ -3683,7 +3739,7 @@ $app->get('/payments', 'authenticate', 'setDebug', function() use ($app) {
 
 });
 
-$app->get('/stripepub', 'authenticate',  'setDebug', function() use ($app) {
+$app->get('/stripepub', 'authenticate', 'allRoles',  'setDebug', function() use ($app) {
 
     $app->log->debug( print_R("stripepub entered:" . PUBAPIKEY . "\n ", TRUE));
 
@@ -3694,7 +3750,7 @@ $app->get('/stripepub', 'authenticate',  'setDebug', function() use ($app) {
     
 });
 
-$app->post('/payother', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/payother', 'authenticate', 'allRoles', 'setDebug', function() use ($app) {
 
     $response = array();
     global $school;
@@ -3783,7 +3839,7 @@ $app->post('/payother', 'authenticate', 'setDebug', function() use ($app) {
     
 });
 
-$app->post('/paystripe', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/paystripe', 'authenticate', 'allRoles', 'setDebug', function() use ($app) {
 
     $response = array();
     global $school;
@@ -3968,7 +4024,7 @@ $charge = \Stripe\Charge::create(array(
     
 });
 
-$app->post('/setsession', 'authenticate', 'setDebug', function() use ($app) {
+$app->post('/setsession', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
      $response = array();
 
     // reading post params
@@ -4123,7 +4179,7 @@ $app->get('/storeusercred', 'setDebug', function() use ($app) {
 
 });
 
-$app->get('/stripe', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/stripe', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $app->log->debug( print_R("stripe entered:\n ", TRUE));
 
@@ -4165,7 +4221,7 @@ $app->get('/stripe', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->get('/revokestripe', 'authenticate', 'setDebug', function() use($app) {
+$app->get('/revokestripe', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
     $app->log->debug( print_R("revokestripe entered:\n ", TRUE));
 
     $db = new StudentDbHandler();
@@ -4228,7 +4284,7 @@ $app->get('/revokestripe', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->post('/bulkstudent', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/bulkstudent', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -4254,7 +4310,7 @@ $app->post('/bulkstudent', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->post('/lookupextras', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/lookupextras', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $response = array();
 
@@ -4312,7 +4368,7 @@ $app->post('/lookupextras', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->post('/lookuphistextras', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/lookuphistextras', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $response = array();
 
@@ -4359,7 +4415,7 @@ $app->post('/lookuphistextras', 'authenticate', 'setDebug', function() use($app)
     echoRespnse(200, $response);
 
 });
-$app->post('/lookupattendextras', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/lookupattendextras', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
     $response = array();
 
@@ -4412,7 +4468,7 @@ $app->post('/lookupattendextras', 'authenticate', 'setDebug', function() use($ap
 
 });
 
-$app->post('/bulkstudentregistration', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/bulkstudentregistration', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -4437,7 +4493,7 @@ $app->post('/bulkstudentregistration', 'authenticate', 'setDebug', function() us
 
 });
 
-$app->post('/bulkstudenthistory', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/bulkstudenthistory', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -4462,7 +4518,7 @@ $app->post('/bulkstudenthistory', 'authenticate', 'setDebug', function() use($ap
 
 });
 
-$app->post('/rawstudent', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/rawstudent', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
 
     $response = array();
@@ -4548,7 +4604,7 @@ $app->post('/rawstudent', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->put('/rawstudent/:id', 'authenticate','setDebug', function($externalid) use($app) {
+$app->put('/rawstudent/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($externalid) use($app) {
 
     $request = $app->request();
     $body = $request->getBody();
@@ -4637,7 +4693,7 @@ $app->put('/rawstudent/:id', 'authenticate','setDebug', function($externalid) us
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawstudents','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawstudents','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -4674,7 +4730,7 @@ $app->delete('/rawstudents','authenticate', 'setDebug', function() use ($app) {
         }
 });
 
-$app->delete('/rawstudent','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawstudent','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -4723,7 +4779,7 @@ $app->delete('/rawstudent','authenticate', 'setDebug', function() use ($app) {
         }
 });
 
-$app->get('/rawstudents', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/rawstudents', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -4792,7 +4848,7 @@ $app->get('/rawstudents', 'authenticate', 'setDebug', function() use ($app){
 
 });
 
-$app->get('/samplestudentregistrations', 'authenticate', 'setDebug', function() use($app){
+$app->get('/samplestudentregistrations', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
 
     checkSecurity();
     global $user_id;
@@ -4834,7 +4890,7 @@ $app->get('/samplestudentregistrations', 'authenticate', 'setDebug', function() 
 
 });
 
-$app->get('/rawregistrations', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/rawregistrations', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -4896,7 +4952,7 @@ $app->get('/rawregistrations', 'authenticate', 'setDebug', function() use ($app)
 
 });
 
-$app->post('/rawregistration', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/rawregistration', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
 
     $response = array();
@@ -4988,7 +5044,7 @@ $app->post('/rawregistration', 'authenticate', 'setDebug', function() use($app) 
 
 });
 
-$app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', 'setDebug', function($externalid, $Classname, $Pgmname) use($app) 
+$app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', 'isAdminOrOperator', 'setDebug', function($externalid, $Classname, $Pgmname) use($app) 
 {
 
     $request = $app->request();
@@ -5038,7 +5094,7 @@ $app->put('/rawregistration/ext/:extid/cls/:cls/pgm/:pgm', 'authenticate', 'setD
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawregistrations','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawregistrations','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -5075,7 +5131,7 @@ $app->delete('/rawregistrations','authenticate', 'setDebug', function() use ($ap
         }
 });
 
-$app->delete('/rawregistration','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawregistration','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -5141,7 +5197,7 @@ $app->delete('/rawregistration','authenticate', 'setDebug', function() use ($app
         }
 });
 
-$app->get('/rawhistorys', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/rawhistorys', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -5189,7 +5245,7 @@ $app->get('/rawhistorys', 'authenticate', 'setDebug', function() use ($app){
 
 });
 
-$app->post('/rawhistory', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/rawhistory', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
 
     $response = array();
@@ -5262,7 +5318,7 @@ $app->post('/rawhistory', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate', 'setDebug', function(
+$app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate', 'isAdminOrOperator', 'setDebug', function(
         $externalid, $contactmgmttype, $contactDate) use($app) 
 {
 
@@ -5297,7 +5353,7 @@ $app->put('/rawhistory/ext/:extid/type/:type/date/:contactDate', 'authenticate',
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawhistorys','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawhistorys','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -5334,7 +5390,7 @@ $app->delete('/rawhistorys','authenticate', 'setDebug', function() use ($app) {
         }
 });
 
-$app->delete('/rawhistory','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawhistory','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -5403,7 +5459,7 @@ $app->delete('/rawhistory','authenticate', 'setDebug', function() use ($app) {
         }
 });
 
-$app->post('/bulkstudentattendance', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/bulkstudentattendance', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
         $db = new StudentDbHandler();
         $response = array();
@@ -5427,7 +5483,7 @@ $app->post('/bulkstudentattendance', 'authenticate', 'setDebug', function() use(
         }
 });
 
-$app->get('/rawattendances', 'authenticate', 'setDebug', function() use ($app){
+$app->get('/rawattendances', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
     $db = new StudentDbHandler();
@@ -5478,7 +5534,7 @@ $app->get('/rawattendances', 'authenticate', 'setDebug', function() use ($app){
 
 });
 
-$app->post('/rawattendance', 'authenticate', 'setDebug', function() use($app) {
+$app->post('/rawattendance', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app) {
 
 
     $response = array();
@@ -5555,7 +5611,7 @@ $app->post('/rawattendance', 'authenticate', 'setDebug', function() use($app) {
 
 });
 
-$app->put('/rawattendance/ext/:extid/cls/:cls', 'authenticate', 'setDebug', function($externalid, $Classname) use($app) 
+$app->put('/rawattendance/ext/:extid/cls/:cls', 'authenticate', 'isAdminOrOperator', 'setDebug', function($externalid, $Classname) use($app) 
 {
 
     $request = $app->request();
@@ -5594,7 +5650,7 @@ $externalid, $studentID, $classID, $Classname, $mondayOfWeek, $rank, $DOWnum, $a
     echoRespnse(200, $response);
 });
 
-$app->delete('/rawattendances','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawattendances','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -5630,7 +5686,7 @@ $app->delete('/rawattendances','authenticate', 'setDebug', function() use ($app)
         }
 });
 
-$app->delete('/rawattendance','authenticate', 'setDebug', function() use ($app) {
+$app->delete('/rawattendance','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -6130,6 +6186,7 @@ $message = "
 <p>For: " . $payfor . "</p>
 <p>Amount: $ " . $invoiceAmt . "</p>
 <p>Date: " . $invoiceDate . "</p>
+<p>You can payonline at " . url() . " .  Use your Invoice #: " . $invoice . " as your password, and your email as your username</p>
 <p>You will receive an email after you have paid.</p>
 <p> " . $schSig . "</p>
 </body>

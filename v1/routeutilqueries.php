@@ -5,7 +5,7 @@
  * method GET
  * url /zips
  */
-$app->get('/zips', 'authenticate','setDebug', function() {
+$app->get('/zips', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
     $response = array();
     $db = new UtilDbHandler();
 
@@ -27,8 +27,7 @@ $app->get('/zips', 'authenticate','setDebug', function() {
 });
 
 
-//$app->get('/ranklist', 'authenticate', function() {
-$app->get('/ranklist', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/ranklist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("util ranklist entered:\n ", TRUE));
@@ -62,7 +61,7 @@ $app->get('/ranklist', 'authenticate', 'setDebug',function() use ($app) {
     echoRespnse(200, $response);
 });
 
-$app->put('/renamefile', 'authenticate', 'setDebug',function() use($app) {
+$app->put('/renamefile', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app) {
 
     $app->log->debug( print_R("before request\n", TRUE ));
 
@@ -108,7 +107,7 @@ $app->put('/renamefile', 'authenticate', 'setDebug',function() use($app) {
     
 });
 
-$app->get('/studentfiles', 'authenticate', 'setDebug',function() {
+$app->get('/studentfiles', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     //$app->log->debug( print_R("enter get studentfiles\n", TRUE ));
 

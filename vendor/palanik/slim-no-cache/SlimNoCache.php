@@ -1,0 +1,16 @@
+<?php
+namespace SlimNoCache;
+
+// https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching_FAQ
+class SlimNoCache extends \Slim\Middleware {
+
+    public function call() {
+    	// Based on http://stackoverflow.com/a/13640164
+        header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+        header("Cache-Control: post-check=0, pre-check=0", false);
+        header("Pragma: no-cache");
+
+        $this->next->call();
+    }
+}
+?>

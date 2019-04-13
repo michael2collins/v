@@ -137,10 +137,10 @@ export class UserServices {
 
     }
 
-    SetCredentials(username, password, apiKey) {
+    SetCredentials(username, password, apiKey, role) {
         var self = this;
         //var authdata = username + ':' + password;
-        self._$log.log('SetCredentials entered', username, apiKey);
+        self._$log.log('SetCredentials entered', username, apiKey, role);
         self.setapikey(apiKey);
 
         var authdata = apiKey;
@@ -148,12 +148,14 @@ export class UserServices {
         self._$rootScope.globals = {
             currentUser: {
                 username: username,
+                role: role,
                 authdata: authdata
             }
         };
         var creds = {
             currentUser: {
                 username: username,
+                role: role,
                 authdata: authdata
             }
         };
@@ -269,6 +271,7 @@ export class UserServices {
                     self.userdetails.school = data.school;
                     self.userdetails.pictureurl = data.pictureurl;
                     self.userdetails.options = data.options;
+                    self.userdetails.role = data.role;
                     return self.userdetails;
                 },
                 function(error) {

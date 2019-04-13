@@ -1,6 +1,6 @@
 <?php
 
-$app->put('/testing','authenticate', 'setDebug',function() use ($app) {
+$app->put('/testing','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -64,7 +64,7 @@ $app->put('/testing','authenticate', 'setDebug',function() use ($app) {
 
 });
 
-$app->delete('/testcandidateregistration', 'authenticate', 'setDebug',function() use ($app) {
+$app->delete('/testcandidateregistration', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -140,7 +140,7 @@ $app->delete('/testcandidateregistration', 'authenticate', 'setDebug',function()
 
 });
 
-$app->get('/gencoldefs', 'authenticate','setDebug', function() use($app){
+$app->get('/gencoldefs', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use($app){
     $app->log->debug( print_R("gencoldefs entered", TRUE));
 
     $allGetVars = $app->request->get();
@@ -197,7 +197,7 @@ $app->get('/gencoldefs', 'authenticate','setDebug', function() use($app){
 });
 
 
-$app->post('/testcandidateregistration', 'authenticate','setDebug', function() use ($app) {
+$app->post('/testcandidateregistration', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 
@@ -357,7 +357,7 @@ $subject = 'Test Candidate Invitation for ' .
 
 });
 
-$app->get('/testtypes', 'authenticate', 'setDebug',function() use($app){
+$app->get('/testtypes', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app){
 
     $app->log->debug( print_R("testtypes entered:\n ", TRUE));
 
@@ -383,7 +383,7 @@ $app->get('/testtypes', 'authenticate', 'setDebug',function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->get('/testdates', 'authenticate', 'setDebug',function() use($app){
+$app->get('/testdates', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app){
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("testdates entered:\n ", TRUE));
@@ -426,7 +426,7 @@ $app->get('/testdates', 'authenticate', 'setDebug',function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->get('/ranktypes', 'authenticate', 'setDebug',function() use($app){
+$app->get('/ranktypes', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app){
 
     $response = array();
     $db = new TestingDbHandler();
@@ -446,7 +446,7 @@ $app->get('/ranktypes', 'authenticate', 'setDebug',function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->get('/testcandidatenames', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/testcandidatenames', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("testcandidatenames entered:\n ", TRUE));
@@ -479,7 +479,7 @@ $app->get('/testcandidatenames', 'authenticate', 'setDebug',function() use ($app
     
 });
 
-$app->get('/testcandidatelist', 'authenticate', 'setDebug',function() use($app) {
+$app->get('/testcandidatelist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app) {
     //  global $user_id;
 
     $allGetVars = $app->request->get();
@@ -579,7 +579,7 @@ $app->get('/testcandidatelist', 'authenticate', 'setDebug',function() use($app) 
     }
 });
 
-$app->get('/testcandidatedetails', 'authenticate', 'setDebug',function() use($app){
+$app->get('/testcandidatedetails', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app){
 
     $app->log->debug( print_R("testcandidatedetails entered:\n ", TRUE));
 
@@ -649,7 +649,7 @@ $app->get('/testcandidatedetails', 'authenticate', 'setDebug',function() use($ap
     echoRespnse(200, $response);
 });
 
-$app->get('/templatenames', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/templatenames', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("templatenames entered:\n ", TRUE));
@@ -681,7 +681,7 @@ $app->get('/templatenames', 'authenticate', 'setDebug',function() use ($app) {
     
 });
 
-$app->get('/templatedetails', 'authenticate', 'setDebug',function() use($app){
+$app->get('/templatedetails', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use($app){
 
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("templatedetails entered:\n ", TRUE));
@@ -733,7 +733,7 @@ $app->get('/templatedetails', 'authenticate', 'setDebug',function() use($app){
     echoRespnse(200, $response);
 });
 
-$app->post('/template', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/template', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
 
     $response = array();
@@ -798,7 +798,7 @@ $app->post('/template', 'authenticate', 'setDebug',function() use ($app) {
 
 });
 
-$app->post('/templateupdate','authenticate', 'setDebug',function() use ($app) {
+$app->post('/templateupdate','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -866,7 +866,7 @@ $app->post('/templateupdate','authenticate', 'setDebug',function() use ($app) {
  
 });
 
-$app->delete('/template','authenticate','setDebug', function() use ($app) {
+$app->delete('/template','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -914,7 +914,7 @@ $app->delete('/template','authenticate','setDebug', function() use ($app) {
 
 });
 
-$app->post('/testcandidatepromotion', 'authenticate','setDebug', function() use ($app) {
+$app->post('/testcandidatepromotion', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
     // check for required params
 //    verifyRequiredParams(array('name', 'email', 'password'));
 

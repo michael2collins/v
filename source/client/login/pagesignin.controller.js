@@ -50,12 +50,14 @@ export class PageSigninController {
 
         return self.UserServices.Login(self.username, self.password).then(function(data) {
                 if (data.error === true) {
-                    self.UserServices.SetCredentials('', '', '');
+                    self.UserServices.SetCredentials('', '', '','');
                     self.FlashService.Err(data.message);
                     return (self.$q.reject(data));
                 }
                 self.apiKey = data.apiKey;
-                self.UserServices.SetCredentials(self.username, self.password, self.apiKey);
+                self.UserServices.SetCredentials(self.username, self.password, self.apiKey, data.role);
+        var location = data.role == 'admin' 
+                || data.role == 'operator'  ? '/main' : '/userpay';
 
                 $("body>portal-component>div.default-page").show();
                 $("body>.extra-page").html($(".page-content").html()).hide();
@@ -63,7 +65,7 @@ export class PageSigninController {
                 $('#page-wrapper').css({ 'background-color': '' });
                 $('#wrapper').css({ 'background': '' });
 
-                self.$location.path('/main');
+                self.$location.path(location);
                 return data;
             },
             function(error) {
@@ -72,7 +74,7 @@ export class PageSigninController {
                 }
                 
                 self.$log.log('Caught an error UserServices, going to notify:', error);
-                self.UserServices.SetCredentials('', '', '');
+                self.UserServices.SetCredentials('', '', '', '');
                 self.UserServices.setapikey('');
                 self.FlashService.Err(error);
                 return (self.$q.reject(error));

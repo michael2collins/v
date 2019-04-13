@@ -8,10 +8,12 @@ import { ClassServices } from '../../js/services/classServices';
 
 import { PaymentViewInstanceController } from './paymentview.controller';
 import { PaymentTrackingController } from './paymenttracking.controller';
+import { UserPayController } from './userpay.controller';
 import { Util } from '../../js/utility/utility';
 
 import template from './template/table-basic-paymenttracking.html';
-import { paymenttrackingComponent, paymentviewComponent } from './paymenttracking.component';
+import userpaytemplate from './template/userpay.html';
+import { paymenttrackingComponent, paymentviewComponent, userpayComponent } from './paymenttracking.component';
 //import { creditcardviewComponent } from '../cc/creditcardview.component';
 
 import { CCModule } from '../cc/cc.module';
@@ -36,10 +38,11 @@ export const PaymentModule = angular
       'ui.grid.saveState'
    ])
    .component('paymenttrackingComponent', paymenttrackingComponent)
+   .component('userpayComponent', userpayComponent)
    .component('paymentviewComponent', paymentviewComponent)
-//   .component('creditcardviewComponent', creditcardviewComponent)
    .controller('PaymentViewInstanceController', PaymentViewInstanceController)
    .controller('PaymentTrackingController', PaymentTrackingController)
+   .controller('UserPayController', UserPayController)
    .service('StudentServices', StudentServices)
    .service('ClassServices', ClassServices)
    .service('portalDataService', portalDataService)
@@ -53,6 +56,8 @@ export const PaymentModule = angular
 function config($routeProvider) {
    'ngInject';
    $routeProvider
+      .when('/userpay', {
+         template: userpaytemplate})
       .when('/table-basic-paymenttracking', {
          template: template
       });

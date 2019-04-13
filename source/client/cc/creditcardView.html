@@ -57,7 +57,7 @@
           </div>
           <h3 class="title" data-tid="elements_examples.success.title">Payment successful</h3>
           <p class="message"><span data-tid="elements_examples.success.message">Thanks for paying with Stripe </span>
-  <!--        <span class="token">tok_189gMN2eZvKYlo2CwTBv9KKh</span> -->
+         <span class="token"></span>
           </p>
           <a class="reset" href="#">
             <svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -69,7 +69,7 @@
 
       </div>
 </section>
-<section>
+<section ng-hide="vm.isPayer()">
 	<h4>Information to paste into credit card fields</h4>
 	<div class="result">
 		<ul id="properties">

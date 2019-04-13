@@ -164,7 +164,10 @@ $params = '-f"michael2collins@villaris.us" -F"Info Service"';
         mail($to,$subject,$body,$headers,$params);
     }
 
-    
+    function generateApiKey() {
+        return md5(uniqid(rand(), true));
+    }
+
     function bulk_insert($mycon, $table, $cols, $values, $types) {
     $app = \Slim\Slim::getInstance();
         

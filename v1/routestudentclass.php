@@ -1,6 +1,6 @@
 <?php
 
-$app->get('/studentclass/:id', 'authenticate', 'setDebug',function($student_id) {
+$app->get('/studentclass/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) {
     //  global $user_id;
     //$app->log->debug( print_R("before get student class request", TRUE ));
 
@@ -30,7 +30,7 @@ $app->get('/studentclass/:id', 'authenticate', 'setDebug',function($student_id) 
     }
 });
 
-$app->get('/studentclass/myclass/:class/mypgm/:pgm', 'authenticate', 'setDebug',function( $classseq, $pgmseq) {
+$app->get('/studentclass/myclass/:class/mypgm/:pgm', 'authenticate', 'isAdminOrOperator', 'setDebug',function( $classseq, $pgmseq) {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -53,7 +53,7 @@ $app->get('/studentclass/myclass/:class/mypgm/:pgm', 'authenticate', 'setDebug',
     }
 });
 
-$app->get('/studentclasslist/:id', 'authenticate', 'setDebug',function($student_id) {
+$app->get('/studentclasslist/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) {
     //  global $user_id;
     //$app->log->debug( print_R("before get student class request", TRUE ));
 
@@ -114,8 +114,10 @@ $app->get('/studentclasslist/:id', 'authenticate', 'setDebug',function($student_
     
 });
 
-$app->get('/payerpartial', 'authenticate', 'setDebug',function() use ($app) {
-
+$app->get('/payerpartial', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
+    global $role;
+    $app->log->debug( print_R("payerpartial entered with role: $role\n ", TRUE));
+    
     $allGetVars = $app->request->get();
     $app->log->debug( print_R("payerpartial entered:\n ", TRUE));
     $app->log->debug( print_R($allGetVars, TRUE));
@@ -148,7 +150,7 @@ $app->get('/payerpartial', 'authenticate', 'setDebug',function() use ($app) {
     
 });
 
-$app->get('/classages', 'authenticate', 'setDebug',function() {
+$app->get('/classages', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -181,7 +183,7 @@ $app->get('/classages', 'authenticate', 'setDebug',function() {
     }
 });
 
-$app->get('/classpgms', 'authenticate', 'setDebug',function() {
+$app->get('/classpgms', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -214,7 +216,7 @@ $app->get('/classpgms', 'authenticate', 'setDebug',function() {
     }
 });
 
-$app->get('/classcats', 'authenticate', 'setDebug',function() {
+$app->get('/classcats', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
     $response = array();
     $db = new StudentClassDbHandler();
@@ -247,7 +249,7 @@ $app->get('/classcats', 'authenticate', 'setDebug',function() {
     }
 });
 
-$app->put('/studentclass/:id', 'authenticate', 'setDebug',function($student_id) use($app) {
+$app->put('/studentclass/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) use($app) {
 
     $request = $app->request();
     $body = $request->getBody();
@@ -338,7 +340,7 @@ $app->put('/studentclass/:id', 'authenticate', 'setDebug',function($student_id) 
     
 });
 
-$app->put('/studentclasspaylist/:id', 'authenticate','setDebug', function($student_id) use($app) {
+$app->put('/studentclasspaylist/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($student_id) use($app) {
     // check for required params
     //verifyRequiredParams(array('task', 'status'));
     //$app->log->debug( print_R("before put student class paylist request", TRUE ));
@@ -379,7 +381,7 @@ $app->put('/studentclasspaylist/:id', 'authenticate','setDebug', function($stude
     echoRespnse(200, $response);
 });
 
-$app->get('/studentclasslist', 'authenticate', 'setDebug',function() {
+$app->get('/studentclasslist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -419,7 +421,7 @@ $app->get('/studentclasslist', 'authenticate', 'setDebug',function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/studentclasspaylist', 'authenticate', 'setDebug',function() {
+$app->get('/studentclasspaylist', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -456,7 +458,7 @@ $app->get('/studentclasspaylist', 'authenticate', 'setDebug',function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/studentclassstatuses', 'authenticate','setDebug', function() {
+$app->get('/studentclassstatuses', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -480,7 +482,7 @@ $app->get('/studentclassstatuses', 'authenticate','setDebug', function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/studentclasspicture/:picID', 'authenticate', 'setDebug',function($picID) {
+$app->get('/studentclasspicture/:picID', 'authenticate', 'isAdminOrOperator', 'setDebug',function($picID) {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -500,7 +502,7 @@ $app->get('/studentclasspicture/:picID', 'authenticate', 'setDebug',function($pi
     echoRespnse(200, $response);
 });
 
-$app->get('/studentclasspicturelist/:student_id', 'authenticate', 'setDebug',function($student_id) {
+$app->get('/studentclasspicturelist/:student_id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -532,7 +534,7 @@ $app->get('/studentclasspicturelist/:student_id', 'authenticate', 'setDebug',fun
 
 });
 
-$app->post('/studentregistration', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/studentregistration', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -590,7 +592,7 @@ $app->post('/studentregistration', 'authenticate', 'setDebug',function() use ($a
 
 });
 
-$app->delete('/studentregistration','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/studentregistration','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -641,7 +643,7 @@ $app->delete('/studentregistration','authenticate', 'setDebug',function() use ($
 
 });
 
-$app->post('/payer', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/payer', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -687,7 +689,7 @@ $app->post('/payer', 'authenticate', 'setDebug',function() use ($app) {
 
 });
 
-$app->get('/payers/:id', 'authenticate', 'setDebug',function($student_id) {
+$app->get('/payers/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) {
     //  global $user_id;
     $response = array();
     $db = new StudentClassDbHandler();
@@ -723,7 +725,7 @@ $app->get('/payers/:id', 'authenticate', 'setDebug',function($student_id) {
     }
 });
 
-$app->get('/family/:id', 'authenticate', 'setDebug',function($payerid) {
+$app->get('/family/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($payerid) {
     //  global $user_id;
     $response = array();
     $db = new StudentClassDbHandler();
@@ -766,7 +768,7 @@ $app->get('/family/:id', 'authenticate', 'setDebug',function($payerid) {
     }
 });
 
-$app->get('/listprices/:id', 'authenticate', 'setDebug',function($payerid) {
+$app->get('/listprices/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($payerid) {
     //  global $user_id;
     $response = array();
     $db = new StudentClassDbHandler();
@@ -841,7 +843,7 @@ $app->get('/listprices/:id', 'authenticate', 'setDebug',function($payerid) {
     }
 });
 
-$app->get('/paymentplan/:id', 'authenticate', 'setDebug',function($payerid) {
+$app->get('/paymentplan/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($payerid) {
     //  global $user_id;
     $response = array();
     $db = new StudentClassDbHandler();
@@ -885,7 +887,7 @@ $app->get('/paymentplan/:id', 'authenticate', 'setDebug',function($payerid) {
     }
 });
 
-$app->post('/paymentplan', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/paymentplan', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
     global $user_name;
@@ -954,7 +956,7 @@ $app->post('/paymentplan', 'authenticate', 'setDebug',function() use ($app) {
 
 
 });
-$app->delete('/paymentplan','authenticate','setDebug', function() use ($app) {
+$app->delete('/paymentplan','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1001,7 +1003,7 @@ $app->delete('/paymentplan','authenticate','setDebug', function() use ($app) {
 
 });
 
-$app->get('/paymentplans', 'authenticate', 'setDebug',function() {
+$app->get('/paymentplans', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -1020,7 +1022,7 @@ $app->get('/paymentplans', 'authenticate', 'setDebug',function() {
 
     echoRespnse(200, $response);
 });
-$app->get('/paymenttypes', 'authenticate', 'setDebug',function() {
+$app->get('/paymenttypes', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -1040,7 +1042,7 @@ $app->get('/paymenttypes', 'authenticate', 'setDebug',function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/paymentpays/:id', 'authenticate', 'setDebug',function($payerid) {
+$app->get('/paymentpays/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($payerid) {
     //  global $user_id;
     $response = array();
     $db = new StudentClassDbHandler();
@@ -1077,7 +1079,7 @@ $app->get('/paymentpays/:id', 'authenticate', 'setDebug',function($payerid) {
         echoRespnse(404, $response);
     }
 });
-$app->get('/payerpayments/:id', 'authenticate','setDebug', function($payerid) {
+$app->get('/payerpayments/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($payerid) {
     //  global $user_id;
     $response = array();
     $db = new StudentClassDbHandler();
@@ -1124,7 +1126,7 @@ $app->get('/payerpayments/:id', 'authenticate','setDebug', function($payerid) {
         echoRespnse(404, $response);
     }
 });
-$app->post('/paymentpay', 'authenticate','setDebug', function() use ($app) {
+$app->post('/paymentpay', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
     global $user_name;
@@ -1168,7 +1170,7 @@ $app->post('/paymentpay', 'authenticate','setDebug', function() use ($app) {
 
 
 });
-$app->delete('/paymentpay','authenticate','setDebug', function() use ($app) {
+$app->delete('/paymentpay','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1212,7 +1214,7 @@ $app->delete('/paymentpay','authenticate','setDebug', function() use ($app) {
                         
 
 });
-$app->delete('/payer','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/payer','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -1257,7 +1259,7 @@ $app->delete('/payer','authenticate', 'setDebug',function() use ($app) {
 
 });
 
-$app->post('/quickpick', 'authenticate','setDebug', function() use ($app) {
+$app->post('/quickpick', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1304,7 +1306,7 @@ $app->post('/quickpick', 'authenticate','setDebug', function() use ($app) {
 
 
 });
-$app->delete('/quickpick','authenticate', 'setDebug',function() use ($app) {
+$app->delete('/quickpick','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
 
@@ -1349,7 +1351,7 @@ $app->delete('/quickpick','authenticate', 'setDebug',function() use ($app) {
 
 });
 
-$app->get('/quickpicks', 'authenticate','setDebug', function() {
+$app->get('/quickpicks', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -1396,7 +1398,7 @@ $app->get('/quickpicks', 'authenticate','setDebug', function() {
     echoRespnse(200, $response);
 });
 
-$app->get('/quickpick', 'authenticate', 'setDebug',function() use ($app) {
+$app->get('/quickpick', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
     $response = array();
 
     $allGetVars = $app->request->get();
@@ -1456,7 +1458,7 @@ $app->get('/quickpick', 'authenticate', 'setDebug',function() use ($app) {
     echoRespnse(200, $response);
 });
 
-$app->get('/picklist', 'authenticate','setDebug', function() {
+$app->get('/picklist', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
@@ -1492,7 +1494,7 @@ $app->get('/picklist', 'authenticate','setDebug', function() {
     echoRespnse(200, $response);
 });
 
-$app->post('/schoolcom', 'authenticate', 'setDebug',function() use ($app) {
+$app->post('/schoolcom', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
     global $user_name;
@@ -1541,7 +1543,7 @@ $app->post('/schoolcom', 'authenticate', 'setDebug',function() use ($app) {
     }
 
 });
-$app->delete('/schoolcom','authenticate','setDebug', function() use ($app) {
+$app->delete('/schoolcom','authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
 
     $response = array();
 
@@ -1586,7 +1588,7 @@ $app->delete('/schoolcom','authenticate','setDebug', function() use ($app) {
 
 });
 
-$app->get('/schoolcom', 'authenticate','setDebug', function() {
+$app->get('/schoolcom', 'authenticate', 'isAdminOrOperator', 'setDebug', function() {
     $response = array();
     $db = new StudentClassDbHandler();
 
