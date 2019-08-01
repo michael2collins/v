@@ -8,7 +8,7 @@
             <div class="col-md-6" ng-show="$ctrl.isOk()">
                 <label for="inputpRank" class="control-label">Rank </label>
                 <div class="input-icon right">
-                    <select id="inputpRank" type="text" name="pRank" ng-disabled="form.pRankType.$invalid" ng-model="$ctrl.rankpickparent.rankpick" required field-value="$ctrl.rankpickparent.rankpick" required ng-change="$ctrl.update('rank', $ctrl.rankpickparent.rankpick)"
+                    <select id="inputpRank" type="text" name="pRank" ng-disabled="form.pRankType.$invalid" ng-model="$ctrl.rankpickparent.rankpick"  field-value="$ctrl.rankpickparent.rankpick"  ng-change="$ctrl.update('rank', $ctrl.rankpickparent.rankpick)"
                         class="form-control">
                         <option 
                           ng-repeat="r in $ctrl.ranklist.ranklist track by r.rankid" 

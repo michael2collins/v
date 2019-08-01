@@ -539,7 +539,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
         global $school;
 
         $sql = "SELECT  distinct ranktype FROM ranklist WHERE school = ? ";
-        $sql .= " order by alphasortkey";
+//        $sql .= " order by alphasortkey";
 
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("s", $school);

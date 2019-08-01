@@ -338,7 +338,7 @@
                           <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
                             <label for="inputAddress" class="control-label">Address </label>
                             <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputAddress" autocomplete='street-address' type="text" placeholder="999 Street Address" name="Address" ng-model="$ctrl.students.Address" ng-change="$ctrl.updateStudent()" minLength="5" maxLength="120" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                              <input id="inputAddress" autocomplete='street-address' type="text" placeholder="999 Street Address" name="Address" ng-model="$ctrl.students.Address" ng-change="$ctrl.updateStudent(editstudent)" minLength="5" maxLength="120" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                 class="form-control">
                             </div>
                             <div style="color:maroon" role="alert" ng-messages="editstudent.Address.$error" class="has-error">

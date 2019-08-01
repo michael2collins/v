@@ -5,7 +5,7 @@
         <select id="ranktype" type="text" name="ranktype" 
         ng-model="$ctrl.ranktypeparent.ranktype"
         field-value="$ctrl.ranktypeparent.ranktype"
-        required 
+         
         ng-change="$ctrl.update('ranktype', $ctrl.ranktypeparent.ranktype)"
         class="form-control">
      <option ng-repeat="iter in $ctrl.ranktypelist" ng-selected="{{iter.ranktype==$ctrl.ranktypeparent.ranktype}}" 

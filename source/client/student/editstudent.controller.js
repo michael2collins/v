@@ -424,10 +424,13 @@ export class FormLayoutsControllerEditStudent {
         });
     }
 
-    updateStudent() {
+    updateStudent(form) {
         var vm = this;
-        vm.$log.log('about updateStudent ', vm.students);
+        vm.$log.log('about updateStudent ', vm.students,form);
         vm.$log.log('with Birthday', vm.students.Birthday);
+        if (form.$invalid) {
+            return;
+        }
 
         return vm.StudentServices.updateStudent(vm.path, vm.students).then(function(data) {
             vm.$log.log('updateStudent returned data: goto', vm.path);
