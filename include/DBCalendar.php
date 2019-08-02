@@ -524,7 +524,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
     public function saveCalendarEvent($eventID,
                                        $title, $startdated, $startdate, $enddate,
                                        $contactid, $reminder, $reminderInterval, $userpick, $classname, $color, $textcolor, $eventtype,
-                                       $eventpick,$typepick,$agerpick,$classpick
+                                       $eventpick,$typepick,$agerpick,$classpick=0
                                       ) {
     /**
      * Updating or inserting calEvent
@@ -533,7 +533,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
 //        global $user_id;
         global $app;
         global $school;
-
+        try {
         $num_affected_rows = 0;
  //       $app->log->debug( print_R("saveCalendarEvent  entered for $user_id" , TRUE));
 
@@ -576,25 +576,32 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         $inssql = " INSERT INTO `ncalendar`( `title`, `startdated`, `startdate`, `enddate`, `contactid`, `userid`, `reminder`, 
         `reminderinterval`, `classname`, `color`, textcolor, eventtype, 
         agerange, classid,
-        studentschool) 
-        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ";
+        studentschool, allday) 
+        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,'') ";
         
         if ($this->isCalendarEventExists($eventID) == 0 || $eventID == "" ) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("sssssssssssssss",
+                $stmt->bind_param("ssssiiissssssis",
                                   $title, $date , $hhmm, $endhhmm,
                                        $contactid, $userpick, $reminder, $reminderInterval, 
                                        $classname, $color, $textcolor, $eventtype, 
                                        $agerpick, $classpick,
                                        $school
                                      );
-                    $result = $stmt->execute();
+//                    $result = $stmt->execute();
+                    if (!$stmt->execute() ) {
 
-                    $stmt->close();
-                    // Check for successful insertion
-                    if ($result) {
+                        // Failed to create ncal
+                        printf("Insert Cal2 Errormessage: %s\n", $this->conn->error);
+                        $app->log->debug( print_R("Insert Cal2  failed", TRUE));
+                        $app->log->debug( print_R($this->conn->error, TRUE));
+                        $stmt->close();
+                        return NULL;
+                    } else {
+                        $stmt->close();
                         $new_event_id = $this->conn->insert_id;
+                    // Check for successful insertion
                         if ( strpos($eventtype, 'Test') !== false) {
                             if ($this->createTest($new_event_id) == 0 ) {
                                 printf("Createtest 2 Errormessage: %s\n", $this->conn->error);
@@ -603,12 +610,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                         }
                         // User successfully inserted
                         return $new_event_id;
-                    } else {
-                        // Failed to create ncal
-                        printf("Insert Cal2 Errormessage: %s\n", $this->conn->error);
-                        return NULL;
                     }
-
                 } else {
                     printf("Insert cal Errormessage: %s\n", $this->conn->error);
                         return NULL;
@@ -640,19 +642,25 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             $app->log->debug( print_R("saveCalendarEvent update sql: $updsql", TRUE));
             
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("ssssssssssssss",
+                $stmt->bind_param("ssssiiissssssi",
                                   $title, $date , $hhmm, $endhhmm,
                                        $contactid, $userpick, $reminder, $reminderInterval, 
                                        $classname, $color, $textcolor, $eventtype, 
                                        $agerpick, $classpick
                                      );
                 
-                $stmt->execute();
-                $num_affected_rows = $stmt->affected_rows;
-
-                $stmt->close();
-                return $num_affected_rows;
-                
+                    if (!$stmt->execute() ) {
+                        printf("Update Cal2 Errormessage: %s\n", $this->conn->error);
+                        $app->log->debug( print_R("Update Cal2  failed", TRUE));
+                        $app->log->debug( print_R($this->conn->error, TRUE));
+                        $stmt->close();
+                        return -1;
+                    } else {
+                        $num_affected_rows = $stmt->affected_rows;
+        
+                        $stmt->close();
+                        return $num_affected_rows;
+                    }
             } else {
                 $app->log->debug( print_R("saveCalendarEvent update failed", TRUE));
                 $app->log->debug( print_R($this->conn->error, TRUE));
@@ -661,6 +669,12 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
             }
 
         }
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in saveCalendarEvent\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -3;
+		}
 
 
     }

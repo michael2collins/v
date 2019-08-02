@@ -425,7 +425,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
 
 //        $schoolfield = "studentschool";
 //        $sql = addSecurity($sql, $schoolfield);
-        $sql .= " order by startdated desc ";
+        $sql .= " order by name desc ";
         $app->log->debug( print_R("getTestcandidateNames sql after security: $sql", TRUE));
 
 

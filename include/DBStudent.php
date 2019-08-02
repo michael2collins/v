@@ -848,11 +848,19 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$app->log->debug(print_R($pictureurl, TRUE));
 		$app->log->debug(print_R($student_id, TRUE));
 
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $Birthday, new DateTimeZone('Etc/Zulu'));
+        
+        if ($dt === false) {
+            $app->log->debug( print_R("updateStudent  bad date $Birthday" , TRUE));
+            return NULL;
+        }
+        $bdate = $dt->format('Y-m-d');
+
 		//       try {
 
 		if ($stmt = $this->conn->prepare($sql)) {
 			$stmt->bind_param("sssssssssssssssssssssssssss", 
-			$LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $Birthday, $sex, 
+			$LastName, $FirstName, $Email, $Email2, $Phone, $AltPhone, $phoneExt, $altPhoneExt, $bdate, $sex, 
 			$Parent, $EmergencyContact, $Notes, $medicalConcerns, $Address, $City, $State, $ZIP, $ContactType, 
 			$quickbooklink, $StudentSchool, $GuiSize, $ShirtSize, $BeltSize, $instructorTitle, $pictureurl, $student_id);
 			$stmt->execute();
@@ -952,8 +960,8 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		global $school;
 		$sql = "INSERT into ncontacts (
 		LastName , FirstName , Email, Phone, ContactType,
-		studentschool ) 
-		values ( ?, ?, ?, ?, ?, ?)";
+		studentschool,address ) 
+		values ( ?, ?, ?, ?, ?, ?, '')";
 
 		// First check if user already existed in db
 

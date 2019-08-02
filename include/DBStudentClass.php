@@ -365,7 +365,7 @@ class StudentClassDbHandler {
 //        $sql = addSecurity($sql, $schoolfield);
         $app->log->debug( print_R("getPayerPartial sql after security: $sql", TRUE));
 
-        $sql .= " order by t.payerName";
+        $sql .= " order by t.payerName limit 10";
         
         if ($stmt = $this->conn->prepare($sql)) {
             $stmt->bind_param("ss", $inp, $school);
@@ -601,7 +601,7 @@ class StudentClassDbHandler {
 
         $sql = "INSERT INTO studentregistration (studentid, classid, pgmid, studentclassstatus) VALUES ";
         $sql .= "  ( ?, ?, ?, ? )";
-
+    try {
         // First check if  already existed in db
         if (!$this->isStudentRegExists($studentid, $classid, $pgmid)) {
 
@@ -637,7 +637,16 @@ class StudentClassDbHandler {
             return RECORD_ALREADY_EXISTED;
         }
 
+
         return $response;
+        
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in addStudentRegistration\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -3;
+		}
+
     }
 
     public function removeStudentReg($studentid, $classid, $pgmid
@@ -708,13 +717,12 @@ class StudentClassDbHandler {
         global $app;
         $num_affected_rows = 0;
 
-
+        try {
         $updsql = "UPDATE nclasspays  set ";
         $updsql .= " isTestFeeWaived = ?, payerid = ? , primaryContact = ?";
         $updsql .= " where contactID = ?  and classseq = ? and pgmseq = ? ";
 
-        $inssql = "INSERT INTO `nclasspays`( `contactid`, `isTestFeeWaived`, `classseq`, `pgmseq`, `payerid`, primaryContact)  VALUES ";
-        $inssql .= " ( ?, ?, ?, ?,?,? ) ";
+        $inssql = "INSERT INTO nclasspays ( contactid, isTestFeeWaived, classseq, pgmseq, payerid, primaryContact)  VALUES ( ?, ?, ?, ?, ?, ? ) ";
 
 
         $app->log->debug( print_R("contact $sc_ContactId\n", TRUE ));
@@ -730,14 +738,18 @@ class StudentClassDbHandler {
                               $sc_pgmseq)) {
             $app->log->debug( print_R($updsql, TRUE ));
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("ssssss",
+                $stmt->bind_param("isisss",
                                   $testfee, $payer, 
                                   $primaryContact,
                                   $sc_ContactId,
                                   $sc_classseq,
                                   $sc_pgmseq
                                  );
-                    $stmt->execute();
+                if (!$stmt->execute() ) {
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                    printf("Exec Errormessage: %s\n", $this->conn->error);
+                    
+                }
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {
@@ -749,18 +761,33 @@ class StudentClassDbHandler {
         } else {
             $app->log->debug( print_R($inssql, TRUE ));
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("ssssss", 
+                if (!$stmt->bind_param("sisssi", 
                                     $sc_ContactId,
                                     $testfee,
                                     $sc_classseq,
                                     $sc_pgmseq, 
                                     $payer,
                                     $primaryContact
-                                 );
-                $stmt->execute();
+                                 )) {
+                    printf("bind Errormessage: %s\n", $this->conn->error);
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                                     
+                                 }
+                if (!$stmt->execute() ) {
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                    printf("Exec Errormessage: %s\n", $this->conn->error);
+                    
+                }
                 $num_affected_rows = $stmt->affected_rows;
                 $stmt->close();
-    
+                $app->log->debug( print_R("student class status insert results: $num_affected_rows\n", TRUE ));
+                $app->log->debug( print_R("contact $sc_ContactId\n", TRUE ));
+                $app->log->debug( print_R("fee $testfee\n", TRUE ));
+                $app->log->debug( print_R("class $sc_classseq\n", TRUE ));
+                $app->log->debug( print_R("pgm $sc_pgmseq\n", TRUE ));
+                $app->log->debug( print_R("payer $payer\n", TRUE ));
+                $app->log->debug( print_R("primary $primaryContact\n", TRUE ));
+
             } else {
                 $app->log->debug( print_R("student class status insert failed", TRUE ));
                 $app->log->debug( print_R($this->conn->error, TRUE ));
@@ -769,6 +796,14 @@ class StudentClassDbHandler {
             }
         }
         return $num_affected_rows;
+
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in setStudentClass\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -3;
+		}
+
     }
 
     private function isPayerExists($payerName) {
@@ -1278,7 +1313,12 @@ class StudentClassDbHandler {
                 $stmt->bind_param("sss",
                     $paymentid, $classpayid, $pcpid
                                  );
-                    $stmt->execute();
+                if (!$stmt->execute() ) {
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                    printf("Exec Errormessage: %s\n", $this->conn->error);
+                    
+                }
+
                     $num_affected_rows = $stmt->affected_rows;
                     $stmt->close();
             } else {

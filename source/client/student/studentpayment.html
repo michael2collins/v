@@ -525,7 +525,7 @@
                                                     'has-success': !editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$invalid}" class="form-group">
                                                             <div class="input-icon right">
                                                                <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$dirty" ng-class="editPaymentPlan['PaymentID' + rowiterpcp.pcpid].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                                               <select id="PaymentID{{rowiterpcp.pcpid}}" type="text" name="PaymentID{{rowiterpcp.pcpid}}" ng-model="rowiterpcp.paymentidstr" ng-change="$ctrl.updatePaymentPays(rowiterpcp,'update')" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                               <select id="PaymentID{{rowiterpcp.pcpid}}" type="text" name="PaymentID{{rowiterpcp.pcpid}}" ng-model="rowiterpcp.paymentidstr" ng-change="$ctrl.updatePaymentPay(rowiterpcp,'update')" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                                                   class="form-control">
                                             <option ng-repeat="iter1 in $ctrl.PaymentPlanList" value="{{ iter1.paymentid-0 }}"  
                                             ng-selected="{{(iter1.paymentidstr == rowiterpcp.paymentidstr) && 'true' || 'false' }}" 
@@ -544,7 +544,7 @@
                                     'has-success': !editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$invalid}" class="form-group">
                                                             <div class="input-icon right">
                                                                <i data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$dirty" ng-class="editPaymentPlan['ClassPayID' + rowiterpcp.pcpid].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                                               <select id="ClassPayID{{rowiterpcp.pcpid}}" type="text" name="ClassPayID{{rowiterpcp.pcpid}}" ng-model="rowiterpcp.classpayidstr" ng-change="$ctrl.updatePaymentPays(rowiterpcp,'update')" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                                               <select id="ClassPayID{{rowiterpcp.pcpid}}" type="text" name="ClassPayID{{rowiterpcp.pcpid}}" ng-model="rowiterpcp.classpayidstr" ng-change="$ctrl.updatePaymentPay(rowiterpcp,'update')" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                                                   class="form-control">
                                             <option ng-repeat="iter2 in $ctrl.PayerPaymentList" ng-selected="{{iter2.classpayidstr==rowiterpcp.classpayidstr}}" 
                                             placeholder="Select" value="{{iter2.classpayid}}">

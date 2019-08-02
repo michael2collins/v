@@ -53,7 +53,7 @@ $app->get('/studentclass/myclass/:class/mypgm/:pgm', 'authenticate', 'isAdminOrO
     }
 });
 
-$app->get('/studentclasslist/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) {
+$app->get('/studentclasslist/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', function($student_id) use ($app) {
     //  global $user_id;
     //$app->log->debug( print_R("before get student class request", TRUE ));
 

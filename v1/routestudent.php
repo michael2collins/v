@@ -68,7 +68,7 @@ $app->post('/picupload','setDebug', function() use ($app) {
             echoRespnse(400, $response);
         }        
    #$uploadPath = "/home/michael2collins/test/x.jpg";
-   $app->log->debug( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ),3, LOG);
+   $app->log->debug( print_R("temppath:" . $tempPath . "\nuploadpath:" . $uploadPath . "\n", TRUE ));
 
         if(move_uploaded_file( $tempPath, $uploadPath )) {
             $response["error"] = false;
