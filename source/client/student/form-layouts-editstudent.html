@@ -460,16 +460,19 @@
                                     <tr>
                                       <th>Type</th>
                                       <th>Rank</th>
+                                      <th>Last Promoted</th>
                                       <th>Action</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="item in $ctrl.studentranks track by $index">
-                                      <td class="col-md-4">{{item.ranktype}}
+                                      <td class="col-md-2">{{item.ranktype}}
                                       </td>
                                       <td class="col-md-4">{{item.currentrank}}
                                       </td>
-                                      <td class="col-md-4"><span> <a ng-click="$ctrl.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></td>
+                                      <td class="col-md-3">{{item.lastPromoted}}
+                                      </td>
+                                      <td class="col-md-2"><span> <a ng-click="$ctrl.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></td>
                                     </tr>
                                   </tbody>
                                 </table>

@@ -452,7 +452,7 @@ class StudentDbHandler
 	function getStudentRank($student_id)
 	{
         global $app;
-		$sql = "SELECT c.ID as id, ContactID, r.currentrank as currentrank, r.ranktype as ranktype FROM ncontactrank r, ncontacts c ";
+		$sql = "SELECT c.ID as id, ContactID, r.currentrank as currentrank, r.ranktype as ranktype, r.lastPromoted FROM ncontactrank r, ncontacts c ";
 		$sql.= " where c.ID = r.ContactID ";
 		$sql.= " and c.ID = ? ";
 		$schoolfield = "studentschool";
@@ -2136,7 +2136,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) as leadlast,
 		p.payerEmail,
 		overdue.overduecnt,
-floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as potential
+(floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount) as potential
 		
             from ncontacts c
 			join nclasspays cp on (cp.contactid = c.ID)
@@ -2144,7 +2144,7 @@ floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as po
             join payer p on (p.id = pp.payerid and p.school = c.studentschool)
             join schoolCommunication com on (com.school = c.studentschool)
 			left join paymentplan payp on (payp.type = pp.paymentplan)
-			left join (select count(*) as overduecnt, paymentid from invoice where status = 'new') as overdue on (overdue.paymentid = pp.paymentid)
+			left join (select count(*) as overduecnt, paymentid from invoice where status = 'new' group by paymentid) as overdue on (overdue.paymentid = pp.paymentid)
             where
 			cp.primaryContact = 1
 			and com.invoicebatchenabled = 1
@@ -2189,7 +2189,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		date_sub(pp.lastpaymentdate , interval payp.leadtimedays DAY) as leadlast,
 		p.payerEmail,
 		overdue.overduecnt,
-floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount as potential
+(floor(datediff(now() ,lastpaymentdate)/payp.daysinperiod)*pp.paymentamount) as potential
             from ncontacts c
 			join nclasspays cp on (cp.contactid = c.ID)
             join npayments pp on (pp.payerid = cp.payerid)
@@ -4200,8 +4200,10 @@ DATE_FORMAT(np.lastPaymentdate,'%Y-%m-%d') as lastPaymentDate,
 		$totalrec =0;
 		
 		try {
-		$sql1 = "INSERT ignore INTO ncontactrank (ContactID, ranktype, currentrank) 
-				select c.ID,ranktype, currentrank from rawregistration r
+		$sql1 = "INSERT ignore INTO ncontactrank (ContactID, ranktype, currentrank, lastPromoted) 
+				select c.ID,ranktype, r.currentrank, 
+				DATE_FORMAT(r.lastPromoted,'%Y-%m-%d')
+				from rawregistration r
 				join ncontacts c on c.externalid = r.externalid and r.school = c.studentschool
 				where r.school = ? ";
 

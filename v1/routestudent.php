@@ -618,6 +618,7 @@ $app->get('/studentrank', 'authenticate', 'isAdminOrOperator', 'setDebug', funct
             $tmp["ContactID"] = (empty($slist["ContactID"]) ? "NULL" : $slist["ContactID"]);
             $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
             $tmp["currentrank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
+            $tmp["lastPromoted"] = (empty($slist["lastPromoted"]) ? "NULL" : $slist["lastPromoted"]);
         array_push($response["studentranklist"], $tmp);
     }
         //send no errors
