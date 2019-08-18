@@ -48,6 +48,14 @@ export class TestCandidateTableBasicController {
         vm.gridLength = {};
         vm.initialLength = 10;
         vm.rowheight = 32;
+        vm.islabelCollapsed = true;
+        vm.PaddingBottom = 10;
+        vm.NumColumns = 2;
+        vm.FontSize = 7;
+        vm.BLpageMarginL = 10;
+        vm.BLpageMarginT = 0;
+        vm.BLpageMarginR = 0;
+        vm.BLpageMarginB = 0;
 
         vm.data = [];
         vm.state = {};
@@ -70,7 +78,7 @@ export class TestCandidateTableBasicController {
         vm.TestCandidateSelected = '';
         vm.testcandidatenames = [];
         vm.instructorlist = [];
-        vm.ranktypelist =[];
+        vm.ranktypelist = [];
         vm.testcandidate = '';
         vm.ContactID = '';
         vm.selected = false;
@@ -405,24 +413,28 @@ export class TestCandidateTableBasicController {
             //            rptGridOptions.data = vm.resgridOptions.data;
             //            var half_length = Math.ceil(vm.resgridOptions.data.length / 2);    
             rptGridOptions = saveResgridOptions;
+            
             rptGridOptions.data = vm.convertDataToColumns(
                 vm.selectedStudents, ['FullName', 'RankAchievedInTest', 'BeltSize'], ['Name:', 'Rank:', 'Size:'],
-                2);
+                    parseInt(vm.NumColumns,10) 
+                );
             rptGridOptions.exporterHeaderFilter = myexpHeaderFilter;
-
             function myexpHeaderFilter(displayName) {
                 return '';
             }
             rptGridOptions.enableGridMenu = true;
+
+            vm.setbeltlabelcoldef();
             rptGridOptions.columnDefs = vm.beltlabelcoldef.columns;
-            rptGridOptions.exporterPdfDefaultStyle = { fontSize: 7 };
+
+            rptGridOptions.exporterPdfDefaultStyle = { fontSize: parseInt(vm.FontSize,10) };
             rptGridOptions.exporterPdfCustomFormatter = myexporterPdfCustomFormatter;
 
             function myexporterPdfCustomFormatter(docDefinition) {
                 //                          docDefinition.content[0].layout = 'noBorders';
                 docDefinition.content[0].layout = {
                     paddingBottom: function(i, node) {
-                        return (i % 3 === 0) ? 10 : 0;
+                        return (i % 3 === 0) ? parseInt(vm.PaddingBottom,10) : 0;
                     },
                     hLineWidth: function(i, node) {
                         return (0);
@@ -431,8 +443,18 @@ export class TestCandidateTableBasicController {
                         return (0);
                     }
                 };
-                docDefinition.content[0].table.widths = ['*', '*'];
-                docDefinition.pageMargins = [10, 0, 0, 0];
+                var tablewidth=[];
+                for (var c = 0; c < parseInt(vm.NumColumns,10); c++) {
+                    tablewidth[c] = '*';
+                }
+                //                docDefinition.content[0].table.widths = ['*', '*'];
+                docDefinition.content[0].table.widths = tablewidth;
+                //                docDefinition.pageMargins = [10, 0, 0, 0];
+                docDefinition.pageMargins = [
+                    parseInt(vm.BLpageMarginL,10), 
+                    parseInt(vm.BLpageMarginT,10), 
+                    parseInt(vm.BLpageMarginR,10), 
+                    parseInt(vm.BLpageMarginB,10)];
                 /*{
                       hLineWidth: function(i, node) {
                          return (i === 0 || i === node.table.body.length) ? 2 : 1;},
@@ -537,9 +559,9 @@ export class TestCandidateTableBasicController {
                 }
         }
     }
-    
-    changeRankType(){
-        var vm=this;
+
+    changeRankType() {
+        var vm = this;
         vm.$log.log("changeRankType", vm.ranktypeselected);
         vm.refreshList();
     }
@@ -565,8 +587,8 @@ export class TestCandidateTableBasicController {
     activate() {
         var vm = this;
 
-        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
-            vm.$log = vm.$log.getInstance('TestCandidateTableBasicController',vm.UserServices.isDebugEnabled());
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined) {
+            vm.$log = vm.$log.getInstance('TestCandidateTableBasicController', vm.UserServices.isDebugEnabled());
         }
 
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
@@ -574,7 +596,7 @@ export class TestCandidateTableBasicController {
             vm.$log.log("table-basic-testcandidates started");
 
         });
-//        vm.portalDataService.Portlet('testcandidates.controller.js');
+        //        vm.portalDataService.Portlet('testcandidates.controller.js');
 
 
         vm.getTestDates();
@@ -675,7 +697,8 @@ export class TestCandidateTableBasicController {
                     vm.promotioncoldef = retdata;
                 }
                 if (colsubkey === 'beltlabels') {
-                    vm.beltlabelcoldef = retdata;
+                    //                    vm.beltlabelcoldef = retdata;
+                    vm.setbeltlabelcoldef();
                 }
                 if (colsubkey === 'Testcandidatesource') {
                     vm.tcsrccoldef = retdata;
@@ -700,7 +723,17 @@ export class TestCandidateTableBasicController {
         });
 
     }
-
+    setbeltlabelcoldef(){
+        var vm=this;
+        vm.beltlabelcoldef = {};
+        vm.beltlabelcoldef.columns = [];
+        for (var c = 1; c < parseInt(vm.NumColumns,10) + 1; c++) {
+            var colname = "column" + c;
+            var beltlabcoldef = { "field": colname, "visible": true };
+            vm.beltlabelcoldef.columns.push(beltlabcoldef);
+        }
+                
+    }
     updateTest() {
         var vm = this;
         vm.$log.log('updateTest entered');
@@ -853,7 +886,7 @@ export class TestCandidateTableBasicController {
                     vm.ranktypeselected = vm.ranktypelist[0].ranktype;
                 }
                 else {
-                    error = "No ranktpes found" ;
+                    error = "No ranktpes found";
                     vm.message = error;
                     vm.Notification.error({ message: error, delay: 5000 });
                     vm.ranktypelist = [];
@@ -900,7 +933,7 @@ export class TestCandidateTableBasicController {
                 return (vm.$q.reject(error));
             });
     }
-    
+
     testdateshow() {
         var vm = this;
         var show = false;
@@ -1009,7 +1042,7 @@ export class TestCandidateTableBasicController {
     gettestcandidateList(thetestname, thetesttype) {
         var vm = this;
         vm.$log.log('gettestcandidateList entered', thetestname, thetesttype);
-        var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype+ '&ranktype=' + vm.ranktypeselected);
+        var refreshpath = encodeURI('../v1/testcandidatelist?testname=' + thetestname + '&testtype=' + thetesttype + '&ranktype=' + vm.ranktypeselected);
         var mom;
         var now = vm.moment();
 

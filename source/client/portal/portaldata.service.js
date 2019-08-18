@@ -31,7 +31,7 @@ constructor() {
         '/table-basic-rptbuilder': {title:'Report Builder', 'breadcrumb':['Manage Studio', 'Report Builder']},
         '/table-basic-class': {title:'Class Maintenance', 'breadcrumb':['Manage Studio', 'Class Schedule']},
         '/table-basic-eventcreation': {title:'Event Creation', 'breadcrumb':['Students', 'Event Creation']},
-        '/table-basic-testcandidates': {title:'Test Creation', 'breadcrumb':['Testing', 'Test Creation']},
+        '/table-basic-testcandidates': {title:'Test Management', 'breadcrumb':['Testing', 'Test Creation']},
         '/table-basic-paymenttracking': {title:'Payment Tracking', 'breadcrumb':['Manage Studio', 'Payment Tracking']},
         '/layout-left-sidebar': {title:'Layout Left Sidebar', 'breadcrumb':['Layout', 'Layout Left Sidebar']},
         '/page-404': {title:'Page 404', 'breadcrumb':['Page', 'Page 404']},

@@ -50,19 +50,27 @@ class StudentDbHandler
 	}
 
 	public
-	function createStudentRank($contactid, $ranktype, $currentrank)
+	function createStudentRank($contactid, $ranktype, $currentrank, $lastPromoted)
 	{
         global $app;
 		$app->log->debug(print_R("createStudentRank entered\n", TRUE) );
 		$response = array();
-		$sql = "INSERT INTO ncontactrank (ContactID, ranktype, currentrank) VALUES ";
-		$sql.= "  ( ?,?,? )";
+		$sql = "INSERT INTO ncontactrank (ContactID, ranktype, currentrank, lastPromoted) VALUES ";
+		$sql.= "  ( ?,?,?,? )";
+
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $lastPromoted, new DateTimeZone('Etc/Zulu'));
+        
+        if ($dt === false) {
+            $app->log->debug( print_R("createStudentRank  bad date $lastPromoted" , TRUE));
+            return NULL;
+        }
+        $pdate = $dt->format('Y-m-d');
 
 		// First check if user already existed in db
 
 		if (!$this->isStudenrankExists($contactid, $ranktype)) {
 			if ($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param("sss", $contactid, $ranktype, $currentrank);
+				$stmt->bind_param("isss", $contactid, $ranktype, $currentrank, $pdate);
 
 				// Check for successful insertion
 
@@ -87,14 +95,24 @@ class StudentDbHandler
 	}
 
 	public
-	function updateStudentRank($contactid, $ranktype, $currentrank)
+	function updateStudentRank($contactid, $ranktype, $currentrank, $lastPromoted)
 	{
         global $app;
 		$app->log->debug(print_R("updateStudentRank entered\n", TRUE) );
 		$response = array();
-		$sql = "update ncontactrank set currentrank = ? where ContactID = ? and ranktype = ? ";
+		$sql = "update ncontactrank set currentrank = ?, lastPromoted = ? where ContactID = ? and ranktype = ? ";
+
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $lastPromoted, new DateTimeZone('Etc/Zulu'));
+        
+        if ($dt === false) {
+            $app->log->debug( print_R("updateStudentRank  bad date $lastPromoted" , TRUE));
+            return NULL;
+        }
+        $pdate = $dt->format('Y-m-d');
+
+
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("sss", $currentrank, $contactid, $ranktype);
+			$stmt->bind_param("ssis", $currentrank, $pdate, $contactid, $ranktype);
 
 			// Check for successful insertion
 

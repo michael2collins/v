@@ -289,6 +289,7 @@ export class ModalNewStudentInstanceController {
          ContactID: vmnew.thisstudent.student_id,
          currentrank: vmnew.quickpick.rank,
          ranktype: vmnew.quickpick.ranktype
+//let backend do default         lastPromoted: vmnew.moment()
       };
       return vmnew.StudentServices.addStudentRank(thedata)
          .then(function(data) {

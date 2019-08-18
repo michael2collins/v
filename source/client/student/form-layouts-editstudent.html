@@ -438,17 +438,36 @@
                             <div class="row">
                               <div uib-collapse="$ctrl.isCollapsed">
                                 <div class="well well-sm">
-                                  <div class="container-fluid">
-                                    <div class="container">
-                                      <div class="row col-md-9">
-                                        <rankselect-component on-update="$ctrl.updateRankPick($ctrl.rankpickparent, prop, value)">
-                                        </rankselect-component>
-                                      </div>
-                                      <div class="actions col-md-3" ng-show="$ctrl.isOkRT()">
-                                        <label for="rankbtn" class="control-label">&nbsp; </label>
-                                        <a role="button" class="btn btn-green form-control" ng-click="$ctrl.addStudentRank()"><i class="fa fa-plus"></i>&nbsp; Add</a>
-                                      </div>
+                                  <div class="container-fluid remove-all-margin-padding">
+                                    <div class="container remove-all-margin-padding">
+                                      <div class="row col-md-12 remove-all-margin-padding">
+                                        <div class="col-md-8 remove-all-margin-padding">
+                                          <rankselect-component on-update="$ctrl.updateRankPick($ctrl.rankpickparent, prop, value)">
+                                          </rankselect-component>
+                                        </div>
+                                        <div class="col-md-4 padding" ng-show="$ctrl.isOkRT()">
+                                          <label for="inputLastPromoted" class="control-label">Last Promoted </label>
+                                          <div class="form-group">
+                                            <div class="col-md-12 row">
+                                              <div class="col-md-11 remove-all-margin-padding">
+                                                <div class="input-icon right">
+                                                  <input id="inputLastPromoted" autocomplete='bday' type="text" placeholder="mm/dd/yyyy" name="LastPromoted" ng-model="$ctrl.lastPromoted" is-open="$ctrl.pstatus.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}" class="form-control">
+                                                </div>
+                                              </div>
+                                              <div class="col-md-1 remove-all-margin-padding">
+                                                <button type="button" class="btn btn-default" ng-click="$ctrl.pdateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
 
+                                      </div>
+                                      <div class="row col-md-12 remove-all-margin-padding">
+                                        <div class="actions col-md-3 offset-md-9 remove-all-margin-padding" ng-show="$ctrl.isOkRT()">
+                                          <label for="rankbtn" class="control-label">&nbsp; </label>
+                                          <a role="button" class="btn btn-green form-control" ng-click="$ctrl.addStudentRank()"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                        </div>
+                                      </div>
                                     </div>
 
                                   </div>
@@ -524,7 +543,8 @@
                             <label for="inputShirtSize" class="control-label">Shirt Size </label>
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ShirtSize.$dirty" ng-class="editstudent.ShirtSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="$ctrl.students.ShirtSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="$ctrl.students.ShirtSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                class="form-control">
                                 <option ng-repeat="iter in $ctrl.StudentList.ShirtSizeList" ng-selected="{{iter.listkey==$ctrl.students.ShirtSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
                               </select>
                             </div>
@@ -541,7 +561,8 @@
                             <label for="inputBeltSize" class="control-label">Belt Size </label>
                             <div class="input-icon right">
                               <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.BeltSize.$dirty" ng-class="editstudent.BeltSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputBeltSize" type="text" name="BeltSize" ng-model="$ctrl.students.BeltSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                              <select id="inputBeltSize" type="text" name="BeltSize" ng-model="$ctrl.students.BeltSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                class="form-control">
                                 <option ng-repeat="iter in $ctrl.StudentList.BeltSizeList" ng-selected="{{iter.listkey==$ctrl.students.BeltSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
                               </select>
                             </div>

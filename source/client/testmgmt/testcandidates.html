@@ -160,17 +160,29 @@
                            </div>
                            <div class="row col-md-12" style="height: 70px;">
                               <div class="col-md-3">
-                                 <div class="select-box ">
-                                    <ui-select ng-model="$ctrl.TestCandidateSelected" theme="bootstrap" reset-search-input="false" on-select="$ctrl.getTestDates($item);" style="width: 300px;" title="Filter for a Test" append-to-body="false">
-                                       <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
-                                       <ui-select-choices repeat="TestCandidate in $ctrl.testcandidatenames | filter: $select.search track by $index" refresh="$ctrl.gettestcandidateNames($select.search)" refresh-delay="0">
-                                          <div id="testerpicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
-                                       </ui-select-choices>
-                                       <ui-select-no-choice>
-                                          Dang! We couldn't find any choices...
-                                       </ui-select-no-choice>
-                                    </ui-select>
+                                 <div class="row">
+                                    <div class="select-box ">
+                                       <ui-select ng-model="$ctrl.TestCandidateSelected" theme="bootstrap" reset-search-input="false" on-select="$ctrl.getTestDates($item);" style="width: 300px;" title="Filter for a Test" append-to-body="false">
+                                          <ui-select-match placeholder="Filter the TestCandidates...">{{$select.selected.name}}</ui-select-match>
+                                          <ui-select-choices repeat="TestCandidate in $ctrl.testcandidatenames | filter: $select.search track by $index" refresh="$ctrl.gettestcandidateNames($select.search)" refresh-delay="0">
+                                             <div id="testerpicklist" ng-bind-html="TestCandidate.name | highlight: $select.search"></div>
+                                          </ui-select-choices>
+                                          <ui-select-no-choice>
+                                             Dang! We couldn't find any choices...
+                                          </ui-select-no-choice>
+                                       </ui-select>
+                                    </div>
+
                                  </div>
+                                 <div class="row">
+                                    <div class="input-icon right mtxxl">
+                                       <select id="ranktype" type="text" name="ranktype" ng-model="$ctrl.ranktypeselected" required ng-change="$ctrl.changeRankType()" class="form-control">
+                     <option ng-repeat="iter in $ctrl.ranktypelist" ng-selected="{{iter.ranktype==$ctrl.ranktypeselected}}" placeholder="Select Type" value="{{iter.ranktype}}">{{iter.ranktype}}</option>
+                     </select>
+                                    </div>
+
+                                 </div>
+
                               </div>
                               <div class="col-md-5" style="height: 70px;" ng-show="!!$ctrl.selected">
                                  <div class="col-md-7">
@@ -199,6 +211,63 @@
                                  </div>
                                  <div class="col-md-3" style="height: 70px;" ng-show="!!$ctrl.selected">
                                     <button type="button" class="btn btn-sm btn-green btn-wrap" ng-click="$ctrl.createPromoPostcards()">Promo Postcard</button>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="table-tools" ng-show="!!$ctrl.selected">
+                              <div class="row col-md-offset-10 mbs">
+                                 <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.islabelCollapsed = !$ctrl.islabelCollapsed">{{ $ctrl.islabelCollapsed ? 'Beltlabel Config' : 'Collapse'}}</button>
+                              </div>
+                           </div>
+                           <div uib-collapse="$ctrl.islabelCollapsed" ng-show="!!$ctrl.selected">
+                              <div class="well well-sm">
+                                 <div class="container-fluid ">
+                                    <div class="container ">
+                                       <div class="row col-md-12 ">
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Col </label>
+                                             <div class="input-icon right">
+                                                <input id="NumColumns" type="number" name="NumColumns" ng-model="$ctrl.NumColumns" class="form-control">
+                                             </div>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Font </label>
+                                             <div class="input-icon right">
+                                                <input id="FontSize" type="number" name="FontSize" ng-model="$ctrl.FontSize" class="form-control">
+                                             </div>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Left </label>
+                                             <div class="input-icon right">
+                                                <input id="MarginLeft" type="number" name="MarginLeft" ng-model="$ctrl.BLpageMarginL" class="form-control">
+                                             </div>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Top </label>
+                                             <div class="input-icon right">
+                                                <input id="MarginTop" type="number" name="MarginTop" ng-model="$ctrl.BLpageMarginT" class="form-control">
+                                             </div>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Col </label>
+                                             <div class="input-icon right">
+                                                <input id="MarginRight" type="number" name="MarginRight" ng-model="$ctrl.BLpageMarginR" class="form-control">
+                                             </div>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Bot </label>
+                                             <div class="input-icon right">
+                                                <input id="MarginBottom" type="number" name="MarginBottom" ng-model="$ctrl.BLpageMarginB" class="form-control">
+                                             </div>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="NumColumns" class="control-label">Pad </label>
+                                             <div class="input-icon right">
+                                                <input id="PaddingBottom" type="number" name="PaddingBottom" ng-model="$ctrl.PaddingBottom" class="form-control">
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
                                  </div>
                               </div>
                            </div>

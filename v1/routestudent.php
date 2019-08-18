@@ -602,6 +602,7 @@ $app->get('/studentrank', 'authenticate', 'isAdminOrOperator', 'setDebug', funct
         $ContactID = $allGetVars['ContactID'];
     }
 
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
     $response = array();
     $db = new StudentDbHandler();
@@ -618,7 +619,7 @@ $app->get('/studentrank', 'authenticate', 'isAdminOrOperator', 'setDebug', funct
             $tmp["ContactID"] = (empty($slist["ContactID"]) ? "NULL" : $slist["ContactID"]);
             $tmp["ranktype"] = (empty($slist["ranktype"]) ? "NULL" : $slist["ranktype"]);
             $tmp["currentrank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
-            $tmp["lastPromoted"] = (empty($slist["lastPromoted"]) ? "NULL" : $slist["lastPromoted"]);
+            $tmp["lastPromoted"] = (empty($slist["lastPromoted"]) ? $today : $slist["lastPromoted"]);
         array_push($response["studentranklist"], $tmp);
     }
         //send no errors
@@ -855,21 +856,24 @@ $app->post('/studentrank', 'authenticate', 'isAdminOrOperator', 'setDebug', func
         $dataJsonDecode     = json_decode($data);
 
     $app->log->debug( print_R("before insert\n", TRUE ));
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
     $ContactID = (isset($dataJsonDecode->thedata->ContactID) ? $dataJsonDecode->thedata->ContactID : "");
     $currentrank = (isset($dataJsonDecode->thedata->currentrank) ? $dataJsonDecode->thedata->currentrank : "");
     $ranktype = (isset($dataJsonDecode->thedata->ranktype) ? $dataJsonDecode->thedata->ranktype : "");
+    $lastPromoted = (isset($dataJsonDecode->thedata->lastPromoted) ? $dataJsonDecode->thedata->lastPromoted : $today);
 
     $app->log->debug( print_R("ContactID: $ContactID\n", TRUE ));
     $app->log->debug( print_R("currentrank: $currentrank\n", TRUE ));
     $app->log->debug( print_R("ranktype: $ranktype\n", TRUE ));
+    $app->log->debug( print_R("lastPromoted: $lastPromoted\n", TRUE ));
 
     $db = new StudentDbHandler();
     $response = array();
 
     // updating task
     $studentrank_id = $db->createStudentRank($ContactID, 
-                                 $ranktype,$currentrank
+                                 $ranktype,$currentrank,$lastPromoted
                                 );
 
     if ($studentrank_id > 0) {
@@ -904,6 +908,7 @@ $app->put('/studentrank','authenticate', 'isAdminOrOperator', 'setDebug', functi
     $body = $request->getBody();
     $test = json_decode($body);
     $app->log->debug( print_R($test, TRUE ));
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
 
     $ranktype      = (isset($test->thedata->ranktype)     ? 
@@ -912,9 +917,12 @@ $app->put('/studentrank','authenticate', 'isAdminOrOperator', 'setDebug', functi
                     $test->thedata->currentrank : "");
     $ContactID    = (isset($test->thedata->ContactID) ? 
                     $test->thedata->ContactID : "");
+    $lastPromoted      = (isset($test->thedata->lastPromoted)     ? 
+                    $test->thedata->lastPromoted : $today);
 
     $app->log->debug( print_R("ranktype: $ranktype\n", TRUE ));
     $app->log->debug( print_R("currentrank: $currentrank\n", TRUE ));
+    $app->log->debug( print_R("lastPromoted: $lastPromoted\n", TRUE ));
     $app->log->debug( print_R("ContactID: $ContactID\n", TRUE ));
 
 
@@ -926,7 +934,7 @@ $app->put('/studentrank','authenticate', 'isAdminOrOperator', 'setDebug', functi
 
     // creating studenranks
     $studenrank = $db->updateStudentRank(
-        $ContactID, $ranktype, $currentrank
+        $ContactID, $ranktype, $currentrank, $lastPromoted
                                 );
 
     if ($studenrank > 0) {

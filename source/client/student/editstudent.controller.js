@@ -37,6 +37,7 @@ export class FormLayoutsControllerEditStudent {
         vm.Rankslist = [];
         vm.rankpick;
         vm.ranktypepick;
+        vm.lastPromoted;
         vm.disabled;
         vm.studentrank = {};
         vm.students = [];
@@ -61,6 +62,9 @@ export class FormLayoutsControllerEditStudent {
 
         vm.sListPath = '../v1/studentlists';
         vm.status = {
+            opened: false
+        };
+        vm.pstatus = {
             opened: false
         };
         vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
@@ -173,6 +177,9 @@ export class FormLayoutsControllerEditStudent {
     dateopen($event) {
         this.status.opened = true;
     }
+    pdateopen($event) {
+        this.pstatus.opened = true;
+    }
 
     rankremove(ranktype) {
         this.$log.log('rankremove entered', ranktype);
@@ -225,7 +232,8 @@ export class FormLayoutsControllerEditStudent {
         vm.rankpickparent = value;
         vm.ranktypepick = vm.rankpickparent.ranktype;
         vm.rankpick = vm.rankpickparent.rankpick;
-        vm.$log.log('updateRankPick', rankpickparent, prop, value, vm.rankpick, vm.ranktypepick);
+//        vm.lastPromoted = vm.rankpickparent.lastPromoted;
+        vm.$log.log('updateRankPick', rankpickparent, prop, value, vm.rankpick, vm.ranktypepick, vm.lastPromoted);
         //        vm.getRankList();
         //        vm.setRank('All');
         //        vm.$log.log('setRank', vm.Rank);
@@ -362,7 +370,8 @@ export class FormLayoutsControllerEditStudent {
         var thedata = {
             ContactID: vm.students.ID,
             currentrank: vm.rankpick,
-            ranktype: vm.ranktypepick
+            ranktype: vm.ranktypepick,
+            lastPromoted: vm.lastPromoted
         };
         return vm.StudentServices.addStudentRank(thedata)
             .then(function(data) {
@@ -410,7 +419,8 @@ export class FormLayoutsControllerEditStudent {
         var thedata = {
             ContactID: item.ContactID,
             ranktype: item.ranktype,
-            currentrank: item.currentrank
+            currentrank: item.currentrank,
+            lastModifiedDate: item.lastPromoted
         };
 
         return vm.StudentServices.updateStudentRank(thepath, thedata).then(function(data) {

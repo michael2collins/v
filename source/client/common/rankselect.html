@@ -1,11 +1,11 @@
 <div>
     <form action="" novalidate name="form" class="form-horizontal">
         <div class="form-body">
-            <div class="col-md-6">
+            <div class="col-md-6 remove-all-margin-padding">
                 <ranktype-component on-update="$ctrl.updateRankType($ctrl.ranktypepick, prop, value)">
                 </ranktype-component>
             </div>
-            <div class="col-md-6" ng-show="$ctrl.isOk()">
+            <div class="col-md-6 remove-all-margin-padding" ng-show="$ctrl.isOk()">
                 <label for="inputpRank" class="control-label">Rank </label>
                 <div class="input-icon right">
                     <select id="inputpRank" type="text" name="pRank" ng-disabled="form.pRankType.$invalid" ng-model="$ctrl.rankpickparent.rankpick"  field-value="$ctrl.rankpickparent.rankpick"  ng-change="$ctrl.update('rank', $ctrl.rankpickparent.rankpick)"
