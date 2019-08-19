@@ -3235,7 +3235,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                          $id, $school
                                      );
 
-            $stmt->execute();
+          //  $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -3259,7 +3259,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
                              $type, $name, $school
                                          );
         
-                    $stmt->execute();
+                    //$stmt->execute();
                     if (! $stmt->execute() ){
                         $stmt->close();
                         printf("Errormessage: %s\n", $this->conn->error);

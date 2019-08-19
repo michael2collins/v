@@ -62,7 +62,6 @@ const { _: _ } = window;
             var testnextsum = 
                 next.lastIndexOf('/page-signin') + 
                 next.lastIndexOf('/page-signup') +
-                next.lastIndexOf('/change-pwd') +
                 next.lastIndexOf('/reset-pwd') +
                 next.lastIndexOf('/forgot-pwd') +
                 next.lastIndexOf('/page-lock-screen') ;
@@ -71,7 +70,7 @@ const { _: _ } = window;
 
             // redirect to login page if not logged in and trying to access a restricted page
 //            var restrictedPage = $.inArray($location.path(), ['/', '/page-signin', '/page-signup', '/change-pwd', 
-            var restrictedPage = $.inArray($location.$$path, ['/', '/page-signin', '/page-signup', '/change-pwd', 
+            var restrictedPage = $.inArray($location.$$path, ['/', '/page-signin', '/page-signup', 
             '/reset-pwd', '/forgot-pwd', '/page-lock-screen', '/stripe-onboard']) === -1;
 
             if (testnext) {

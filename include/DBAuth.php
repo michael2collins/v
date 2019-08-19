@@ -69,18 +69,18 @@ class DbHandler {
         return $response;
     }
 
-   public function changePassword($newpassword, $currentpassword,  $username) {
+   public function changePassword($newpassword, $currentpassword,  $userid) {
         require_once 'PassHash.php';
 
         // First check if user already existed in db
-        if ($this->checkLoginUser($username,$currentpassword)) {
+        if ($this->checkLoginUserId($userid,$currentpassword)) {
             // Generating password hash
             $password_hash = PassHash::hash($newpassword);
             $curpassword_hash = PassHash::hash($currentpassword);
 
             // insert query
-            $stmt = $this->conn->prepare("update users set password_hash = ? where username = ?  ");
-            $stmt->bind_param("ss",  $password_hash, $username);
+            $stmt = $this->conn->prepare("update users set password_hash = ? where id = ?  ");
+            $stmt->bind_param("si",  $password_hash, $userid);
 
             $result = $stmt->execute();
 
@@ -138,18 +138,16 @@ class DbHandler {
         $stmt = $this->conn->prepare("update users set token_hash = ? where username = ?");
         $stmt->bind_param("ss",  $token_hash, $username);
 
-        $result = $stmt->execute();
-
-        $stmt->close();
-
-        // Check for successful insertion
-        if ($result) {
-            // User successfully inserted
+        if ($stmt->execute() ) {
+            $stmt->close();
             return 1;
         } else {
-            // Failed to create user
+            $app->log->debug( print_R("saveResetToken  execute failed", TRUE));
+            printf("Errormessage: %s\n", $this->conn->error);
             return -1;
         }
+
+
 
     }
 
@@ -192,6 +190,41 @@ class DbHandler {
             $stmt->close();
 
             // user not existed with the email
+            return FALSE;
+        }
+    }
+
+    public function checkLoginUserId($userid, $password) {
+        // fetching user by username
+        $stmt = $this->conn->prepare("SELECT password_hash FROM users WHERE id = ?");
+
+        $stmt->bind_param("i", $userid);
+
+        $stmt->execute();
+
+        $stmt->bind_result($password_hash);
+
+        $stmt->store_result();
+
+        if ($stmt->num_rows > 0) {
+            // Found user with the username
+            // Now verify the password
+
+            $stmt->fetch();
+
+            $stmt->close();
+
+            if (PassHash::check_password($password_hash, $password)) {
+                // User password is correct
+                return TRUE;
+            } else {
+                // user password is incorrect
+                return FALSE;
+            }
+        } else {
+            $stmt->close();
+
+            // user not existed with the username
             return FALSE;
         }
     }

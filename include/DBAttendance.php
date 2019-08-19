@@ -703,7 +703,7 @@ class AttendanceDbHandler {
         
         if ($stmt = $this->conn->prepare($cntsql)) {
 
-            $stmt->execute();
+    //        $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -764,7 +764,7 @@ class AttendanceDbHandler {
                         $DayOfWeek,  $TimeStart, $TimeEnd, $classid, $school
                                          );
             }
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -1139,7 +1139,7 @@ class AttendanceDbHandler {
                         $class, $id, $school
                                      );
 
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -1501,7 +1501,7 @@ class AttendanceDbHandler {
                         $class, $id, $school
                                      );
 
-            $stmt->execute();
+           // $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -1874,7 +1874,7 @@ class AttendanceDbHandler {
                          $id, $school
                                      );
 
-            $stmt->execute();
+           // $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -1898,7 +1898,7 @@ class AttendanceDbHandler {
                              $listtype, $listkey, $school
                                          );
         
-                    $stmt->execute();
+                   // $stmt->execute();
                     if (! $stmt->execute() ){
                         $stmt->close();
                         printf("Errormessage: %s\n", $this->conn->error);
@@ -2114,7 +2114,7 @@ $errormessage=array();
                         $ranklist, $ranktype, $school
                                      );
 
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -2166,7 +2166,7 @@ $errormessage=array();
                          $id, $school
                                      );
 
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -2452,7 +2452,7 @@ $errormessage=array();
                          $id, $school
                                      );
 
-            $stmt->execute();
+    //        $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -2476,7 +2476,7 @@ $errormessage=array();
                              $classid, $pgmid, $school
                                          );
         
-                    $stmt->execute();
+                //    $stmt->execute();
                     if (! $stmt->execute() ){
                         $stmt->close();
                         printf("Errormessage: %s\n", $this->conn->error);
@@ -2699,7 +2699,7 @@ $errormessage=array();
                          $id, $school
                                      );
 
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -2723,7 +2723,7 @@ $errormessage=array();
                              $classid, $rankid, $school
                                          );
         
-                    $stmt->execute();
+            //        $stmt->execute();
                     if (! $stmt->execute() ){
                         $stmt->close();
                         printf("Errormessage: %s\n", $this->conn->error);
@@ -2941,7 +2941,7 @@ $errormessage=array();
                          $id, $school
                                      );
 
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -2965,7 +2965,7 @@ $errormessage=array();
                              $testtype, $school
                                          );
         
-                    $stmt->execute();
+                //    $stmt->execute();
                     if (! $stmt->execute() ){
                         $stmt->close();
                         printf("Errormessage: %s\n", $this->conn->error);
@@ -3184,7 +3184,7 @@ $errormessage=array();
                          $id, $school
                                      );
 
-            $stmt->execute();
+        //    $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -3208,7 +3208,7 @@ $errormessage=array();
                              $classid, $testtypeid, $school
                                          );
         
-                    $stmt->execute();
+                //    $stmt->execute();
                     if (! $stmt->execute() ){
                         $stmt->close();
                         printf("Errormessage: %s\n", $this->conn->error);
@@ -3447,7 +3447,7 @@ $errormessage=array();
                          $id, $school
                                      );
 
-            $stmt->execute();
+            //$stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);

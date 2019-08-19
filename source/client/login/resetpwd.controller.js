@@ -72,9 +72,9 @@ export class ResetpwdController {
                 self.$log.log(data);
                 self.apiKey = data.api_Key;
                 self.userServices.ResetCredentials(data.username, data.api_key);
-                self.$("body>.default-page").show();
-                self.$("body>.extra-page").html($(".page-content").html()).hide();
-                self.$('body').attr('id', '');
+                $("body>.default-page").show();
+                $("body>.extra-page").html($(".page-content").html()).hide();
+                $('body').attr('id', '');
                 self.flashService.Success("Password reset complete");
 
                 self.$location.path('/#');

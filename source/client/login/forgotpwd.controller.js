@@ -15,8 +15,8 @@ export class ForgotpwdController {
         this.$log = $log;
         this.$routeParams = $routeParams;
         this.$location = $location;
-        this.FlashService = flashService;
-        this.UserServices = userServices;
+        this.flashService = flashService;
+        this.userServices = userServices;
         this.$q = $q;
 
     }
@@ -26,7 +26,7 @@ export class ForgotpwdController {
         this.password = null;
         this.dataLoading = false;
         this.apiKey = {};
-        this.UserServices.ClearCredentials();
+        this.userServices.ClearCredentials();
         $('#page-wrapper').css({ 'background-color': 'transparent' });
         $('#wrapper').css({ 'background': 'transparent' });
         $('body').attr('id', 'signin-page');
@@ -56,7 +56,7 @@ export class ForgotpwdController {
             },
             function(error) {
                 self.$log.log('Caught an error UserServices, going to notify:', error);
-                self.UserServices.SetCredentials('', '', '');
+                self.userServices.SetCredentials('', '', '');
                 self.flashService.Err(error);
                 return (self.$q.reject(error));
             }).

@@ -353,7 +353,7 @@ $app->get('/forgotpassword', function() use ($app) {
     
 });
 
-$app->post('/changepassword', 'authenticate','allRoles', function() use ($app) {
+$app->post('/changepassword', 'authenticate', function() use ($app) {
 
     $response = array();
 
@@ -361,15 +361,19 @@ $app->post('/changepassword', 'authenticate','allRoles', function() use ($app) {
         $data               = file_get_contents("php://input");
         $dataJsonDecode     = json_decode($data);
 
+    global $user_id;
+
     $app->log->debug( print_R("changepassword post entered\n", TRUE ));
     $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
-    $app->log->debug( print_R($thedata, TRUE ));
+//    $app->log->debug( print_R($thedata, TRUE ));
+    $app->log->debug( print_R($user_id, TRUE ));
 
-    $username    = (isset($dataJsonDecode->thedata->username)    ? $dataJsonDecode->thedata->username : "bad");
+//    $username    = (isset($dataJsonDecode->thedata->username)    ? $dataJsonDecode->thedata->username : "bad");
     $password = (isset($dataJsonDecode->thedata->password) ? $dataJsonDecode->thedata->password : "bad");
     $oldpassword = (isset($dataJsonDecode->thedata->oldpassword) ? $dataJsonDecode->thedata->oldpassword : "bad");
 
-    if($username == "bad" ||  $password == "bad" || $oldpassword == "bad") {
+//    if($username == "bad" ||  $password == "bad" || $oldpassword == "bad") {
+    if( $password == "bad" || $oldpassword == "bad") {
         $response["error"] = true;
         $response["message"] = "Fields missing";
         echoRespnse(403, $response);
@@ -380,8 +384,9 @@ $app->post('/changepassword', 'authenticate','allRoles', function() use ($app) {
 
     $db = new DbHandler();
 
-    $user = $db->getUserByUsername($username);
+//    $user = $db->getUserByUsername($username);
 
+/*
     if ($user != NULL) {
         $response["error"] = false;
         $response['firstname'] = $user['name'];
@@ -403,15 +408,16 @@ $app->post('/changepassword', 'authenticate','allRoles', function() use ($app) {
         echoRespnse(400, $response);
         $app->stop();
     }
-
+*/
     //new not same as old checked in the frontend
     
     //update user save reset token
-    $result = $db->changePassword($password,$oldpassword, $username);
+//    $result = $db->changePassword($password,$oldpassword, $username);
+    $result = $db->changePassword($password,$oldpassword, $user_id);
     if ($result > 0) {
         //should they login with their new password 
         $response["error"] = false;
-        $user_name = $user['username'];
+        //$user_name = $user['username'];
     } else {
         // unknown error occurred
         $app->log->debug( print_R("login error\n", TRUE ));

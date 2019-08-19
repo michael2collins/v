@@ -1,12 +1,13 @@
 <div class="animated bounceInDown col-md-3 col-md-offset-3">
   <div id="signup-page-content" ng-controller="ChangepwdController as vm">
 
-    <form name="form" ng-submit="vm.changepwd()" role="form">
+    <form name="form" ng-submit="form.$valid && vm.changepwd()"  role="form" >
       <h1 class="block-heading">Change Password</h1>
         <div class="form-group"
         ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
             <div class="input-iconx mbl">
             <i class="fa fa-key"></i>
+            <input type="text" ng-model="vm.userdta.username" id="userfield" name="username" autocomplete='username' />
             <input type="password" 
                 name="oldpassword" 
                 id="oldpassword" 
@@ -14,7 +15,7 @@
                 placeholder="Old Password"
                 class="form-control" 
                 ng-model="vm.oldpassword" 
-                ng-pattern="vm.re"
+                autocomplete='current-password'
                 required />
             <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
             <span ng-show="form.password.$error.pattern" class="help-block">Not a valid password.</span>
@@ -30,8 +31,11 @@
                 placeholder="New Password"
                 class="form-control" 
                 ng-model="vm.password" 
-                ng-pattern="vm.re"
+                autocomplete='new-password'
+                ng-change="vm.analyze(vm.password)"
                 required />
+            <div ng-style="vm.passwordStrength"></div>
+                
             <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
             <span ng-show="form.password.$error.pattern" class="help-block">Not a valid password.</span>
             </div>
@@ -40,14 +44,18 @@
         <input type="password" 
             name="confirm_password" 
             value="" 
+            id="confirm_password"
             ng-keyup="vm.compare(vm.confirm_password)"
-            ng-pattern="re"
             placeholder="Confirm Password" 
+                autocomplete='new-password'
             class="form-control"
                 ng-model="vm.confirm_password" 
                 required />
 <span ng-show="vm.isconfirm || form.confirm_password.$dirty " ng-class="{true:'green',false:'red'}[vm.isconfirm]">Password does {{vm.isconfirm==true?'':'not'}} match</span>            
       </div>
+                <input type="checkbox" ng-click="vm.toggle()"> 
+    <b>Show Password</b> 
+
 
         <div class="form-actions">
             <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" 

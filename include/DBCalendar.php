@@ -190,7 +190,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
         
         if ($stmt = $this->conn->prepare($cntsql)) {
  
-            $stmt->execute();
+          //  $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);
@@ -835,7 +835,7 @@ SELECT user.id as user, user.name as firstname, user.lastname as lastname, CONCA
                                   $taskname, $user_id
                                      );
  
-            $stmt->execute();
+          //  $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
                 printf("Errormessage: %s\n", $this->conn->error);

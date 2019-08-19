@@ -35136,7 +35136,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "#lock-screen {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(" + escape(__webpack_require__(/*! ../../images/bg/bg-03.jpg */ "./source/images/bg/bg-03.jpg")) + ") center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#lock-screen #lock-screen-content {\n  width: 250px;\n  margin: 10% auto 0 auto;\n  text-align: center;\n}\n#lock-screen #lock-screen-content #lock-screen-avatar {\n  display: inline-block;\n  border: 5px solid #B33F93;\n}\n#lock-screen #lock-screen-content #lock-screen-info h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info .email {\n  margin-bottom: 20px;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info input {\n  font-size: 20px;\n  font-weight: bold;\n}\n#signin-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(" + escape(__webpack_require__(/*! ../../images/bg/bg-01.jpg */ "./source/images/bg/bg-01.jpg")) + ") center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signin-page #signin-page-content {\n  width: 360px;\n  margin: 10% auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signin-page #signin-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n#signin-page #signin-page-content .create-account a {\n  color: #ef6c00;\n}\n#signin-page #signin-page-content .create-account a:hover,\n#signin-page #signin-page-content .create-account a:focus {\n  text-decoration: uppercase;\n}\n#signup-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(" + escape(__webpack_require__(/*! ../../images/bg/bg-02.jpg */ "./source/images/bg/bg-02.jpg")) + ") center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signup-page #signup-page-content {\n  width: 480px;\n  margin: 20px auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signup-page #signup-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n/* todo move */\n/****************************/\n/******** Page Sign In *******\n#signin-page{\n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n******* Page Sign In ********/\n/****************************/\n", "", {"version":3,"sources":["/home/ubuntu/environment/source/client/login/login.less","/home/ubuntu/environment/source/client/login/login.less"],"names":[],"mappings":"AAMA;EACE,uHAAA;EACA,4BAAA;EACA,+BAAA;EACA,0BAAA;EACA,uBAAA;CCLD;ADAD;EAOI,aAAA;EACA,wBAAA;EACA,mBAAA;CCJH;ADLD;EAWM,sBAAA;EACA,0BAAA;CCHL;ADTD;EAgBQ,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,eAAA;CCJP;ADfD;EAsBQ,oBAAA;EACA,eAAA;CCJP;ADnBD;EA0BQ,gBAAA;EACA,kBAAA;CCJP;ADSD;EACE,uHAAA;EACA,4BAAA;EACA,+BAAA;EACA,0BAAA;EACA,uBAAA;CCPD;ADED;EAQI,aAAA;EACA,wBAAA;EACA,oBAAA;EACA,mBAAA;CCPH;ADJD;EAaM,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,cAAA;EACA,eAAA;CCNL;ADZD;EAsBQ,eAAA;CCPP;ADQO;;EAEE,2BAAA;CCNT;ADYD;EACE,uHAAA;EACA,4BAAA;EACA,+BAAA;EACA,0BAAA;EACA,uBAAA;CCVD;ADKD;EAOI,aAAA;EACA,yBAAA;EACA,oBAAA;EACA,mBAAA;CCTH;ADDD;EAYM,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,cAAA;EACA,eAAA;CCRL;AACD,eAAe;AACf,8BAA8B;AAC9B;;;;;;;;;;;;;;;;;;;;;;;;;;8BA0B8B;AAC9B,8BAA8B","file":"login.less","sourcesContent":["//@import \"../../../less/style\";\n//@import \"../../../less/bootstrap-custom\";\n//@import \"../../../less/style-responsive\";\n//@import \"../../../less/vendors.less\";\n@import \"../../less/global/_variables.less\";\n\n#lock-screen{\n  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-03.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n  #lock-screen-content{\n    width: 250px;\n    margin: 10% auto 0 auto;\n    text-align: center;\n    #lock-screen-avatar{\n      display: inline-block;\n      border: 5px solid @brand-primary;\n    }\n    #lock-screen-info{\n      h1{\n        font-family: 'oswald';\n        font-size: 30px;\n        font-weight: bold;\n        color: #FFFFFF;\n      }\n      .email{\n        margin-bottom: 20px;\n        color: #FFFFFF;\n      }\n      input{\n        font-size: 20px;\n        font-weight: bold;\n      }\n    }\n  }\n}\n#signin-page{\n  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-01.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n \n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n#signup-page{\n  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-02.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n  #signup-page-content{\n    width: 480px;\n    margin: 20px auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n  }\n}\n/* todo move */\n/****************************/\n/******** Page Sign In *******\n#signin-page{\n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n******* Page Sign In ********/\n/****************************/\n","#lock-screen {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../images/bg/bg-03.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#lock-screen #lock-screen-content {\n  width: 250px;\n  margin: 10% auto 0 auto;\n  text-align: center;\n}\n#lock-screen #lock-screen-content #lock-screen-avatar {\n  display: inline-block;\n  border: 5px solid #B33F93;\n}\n#lock-screen #lock-screen-content #lock-screen-info h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info .email {\n  margin-bottom: 20px;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info input {\n  font-size: 20px;\n  font-weight: bold;\n}\n#signin-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../images/bg/bg-01.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signin-page #signin-page-content {\n  width: 360px;\n  margin: 10% auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signin-page #signin-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n#signin-page #signin-page-content .create-account a {\n  color: #ef6c00;\n}\n#signin-page #signin-page-content .create-account a:hover,\n#signin-page #signin-page-content .create-account a:focus {\n  text-decoration: uppercase;\n}\n#signup-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../images/bg/bg-02.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signup-page #signup-page-content {\n  width: 480px;\n  margin: 20px auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signup-page #signup-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n/* todo move */\n/****************************/\n/******** Page Sign In *******\n#signin-page{\n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n******* Page Sign In ********/\n/****************************/\n"],"sourceRoot":""}]);
+exports.push([module.i, "#userfield {\n  display: none;\n}\n#lock-screen {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(" + escape(__webpack_require__(/*! ../../images/bg/bg-03.jpg */ "./source/images/bg/bg-03.jpg")) + ") center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#lock-screen #lock-screen-content {\n  width: 250px;\n  margin: 10% auto 0 auto;\n  text-align: center;\n}\n#lock-screen #lock-screen-content #lock-screen-avatar {\n  display: inline-block;\n  border: 5px solid #B33F93;\n}\n#lock-screen #lock-screen-content #lock-screen-info h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info .email {\n  margin-bottom: 20px;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info input {\n  font-size: 20px;\n  font-weight: bold;\n}\n#signin-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(" + escape(__webpack_require__(/*! ../../images/bg/bg-01.jpg */ "./source/images/bg/bg-01.jpg")) + ") center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signin-page #signin-page-content {\n  width: 360px;\n  margin: 10% auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signin-page #signin-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n#signin-page #signin-page-content .create-account a {\n  color: #ef6c00;\n}\n#signin-page #signin-page-content .create-account a:hover,\n#signin-page #signin-page-content .create-account a:focus {\n  text-decoration: uppercase;\n}\n#signup-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(" + escape(__webpack_require__(/*! ../../images/bg/bg-02.jpg */ "./source/images/bg/bg-02.jpg")) + ") center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signup-page #signup-page-content {\n  width: 480px;\n  margin: 20px auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signup-page #signup-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n/* todo move */\n/****************************/\n/******** Page Sign In *******\n#signin-page{\n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n******* Page Sign In ********/\n/****************************/\n", "", {"version":3,"sources":["/home/ubuntu/environment/source/client/login/login.less","/home/ubuntu/environment/source/client/login/login.less"],"names":[],"mappings":"AAME;EAAa,cAAA;CCJd;ADMD;EACE,uHAAA;EACA,4BAAA;EACA,+BAAA;EACA,0BAAA;EACA,uBAAA;CCJD;ADDD;EAOI,aAAA;EACA,wBAAA;EACA,mBAAA;CCHH;ADND;EAWM,sBAAA;EACA,0BAAA;CCFL;ADVD;EAgBQ,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,eAAA;CCHP;ADhBD;EAsBQ,oBAAA;EACA,eAAA;CCHP;ADpBD;EA0BQ,gBAAA;EACA,kBAAA;CCHP;ADQD;EACE,uHAAA;EACA,4BAAA;EACA,+BAAA;EACA,0BAAA;EACA,uBAAA;CCND;ADCD;EAQI,aAAA;EACA,wBAAA;EACA,oBAAA;EACA,mBAAA;CCNH;ADLD;EAaM,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,cAAA;EACA,eAAA;CCLL;ADbD;EAsBQ,eAAA;CCNP;ADOO;;EAEE,2BAAA;CCLT;ADWD;EACE,uHAAA;EACA,4BAAA;EACA,+BAAA;EACA,0BAAA;EACA,uBAAA;CCTD;ADID;EAOI,aAAA;EACA,yBAAA;EACA,oBAAA;EACA,mBAAA;CCRH;ADFD;EAYM,sBAAA;EACA,gBAAA;EACA,kBAAA;EACA,mBAAA;EACA,cAAA;EACA,eAAA;CCPL;AACD,eAAe;AACf,8BAA8B;AAC9B;;;;;;;;;;;;;;;;;;;;;;;;;;8BA0B8B;AAC9B,8BAA8B","file":"login.less","sourcesContent":["//@import \"../../../less/style\";\n//@import \"../../../less/bootstrap-custom\";\n//@import \"../../../less/style-responsive\";\n//@import \"../../../less/vendors.less\";\n@import \"../../less/global/_variables.less\";\n\n  #userfield { display: none; }\n\n#lock-screen{\n  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-03.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n  #lock-screen-content{\n    width: 250px;\n    margin: 10% auto 0 auto;\n    text-align: center;\n    #lock-screen-avatar{\n      display: inline-block;\n      border: 5px solid @brand-primary;\n    }\n    #lock-screen-info{\n      h1{\n        font-family: 'oswald';\n        font-size: 30px;\n        font-weight: bold;\n        color: #FFFFFF;\n      }\n      .email{\n        margin-bottom: 20px;\n        color: #FFFFFF;\n      }\n      input{\n        font-size: 20px;\n        font-weight: bold;\n      }\n    }\n  }\n}\n#signin-page{\n  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-01.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n \n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n#signup-page{\n  background: linear-gradient(rgba(0, 0, 0, 0.7),rgba(0, 0, 0, 0.7)),url('../../images/bg/bg-02.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n  #signup-page-content{\n    width: 480px;\n    margin: 20px auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n  }\n}\n/* todo move */\n/****************************/\n/******** Page Sign In *******\n#signin-page{\n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n******* Page Sign In ********/\n/****************************/\n","#userfield {\n  display: none;\n}\n#lock-screen {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../images/bg/bg-03.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#lock-screen #lock-screen-content {\n  width: 250px;\n  margin: 10% auto 0 auto;\n  text-align: center;\n}\n#lock-screen #lock-screen-content #lock-screen-avatar {\n  display: inline-block;\n  border: 5px solid #B33F93;\n}\n#lock-screen #lock-screen-content #lock-screen-info h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info .email {\n  margin-bottom: 20px;\n  color: #FFFFFF;\n}\n#lock-screen #lock-screen-content #lock-screen-info input {\n  font-size: 20px;\n  font-weight: bold;\n}\n#signin-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../images/bg/bg-01.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signin-page #signin-page-content {\n  width: 360px;\n  margin: 10% auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signin-page #signin-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n#signin-page #signin-page-content .create-account a {\n  color: #ef6c00;\n}\n#signin-page #signin-page-content .create-account a:hover,\n#signin-page #signin-page-content .create-account a:focus {\n  text-decoration: uppercase;\n}\n#signup-page {\n  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../../images/bg/bg-02.jpg') center center fixed;\n  -moz-background-size: cover;\n  -webkit-background-size: cover;\n  -o-background-size: cover;\n  background-size: cover;\n}\n#signup-page #signup-page-content {\n  width: 480px;\n  margin: 20px auto 0 auto;\n  background: #ffffff;\n  padding: 15px 20px;\n}\n#signup-page #signup-page-content h1 {\n  font-family: 'oswald';\n  font-size: 30px;\n  font-weight: bold;\n  text-align: center;\n  margin-top: 0;\n  color: #B33F93;\n}\n/* todo move */\n/****************************/\n/******** Page Sign In *******\n#signin-page{\n  #signin-page-content{\n    width: 360px;\n    margin: 10% auto 0 auto;\n    background: #ffffff;\n    padding: 15px 20px;\n    h1{\n      font-family: 'oswald';\n      font-size: 30px;\n      font-weight: bold;\n      text-align: center;\n      margin-top: 0;\n      color: @brand-primary;\n    }\n    .create-account{\n      a{\n        color: @color-orange;\n        &:hover,\n        &:focus{\n          text-decoration: uppercase;\n        }\n      }\n    }\n  }\n}\n******* Page Sign In ********/\n/****************************/\n"],"sourceRoot":""}]);
 
 // exports
 
@@ -51703,7 +51703,7 @@ module.exports = "<div ui-grid-filter>\n<div class=\"ui-grid-filter-container ng
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signup-page-content\" ng-controller=\"ChangepwdController as vm\">\n\n    <form name=\"form\" ng-submit=\"vm.changepwd()\" role=\"form\">\n      <h1 class=\"block-heading\">Change Password</h1>\n        <div class=\"form-group\"\n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx mbl\">\n            <i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"oldpassword\" \n                id=\"oldpassword\" \n                value=\"\"\n                placeholder=\"Old Password\"\n                class=\"form-control\" \n                ng-model=\"vm.oldpassword\" \n                ng-pattern=\"vm.re\"\n                required />\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n        <div class=\"form-group  mbl\" \n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"newpassword\" \n                id=\"newpassword\" \n                value=\"\"\n                placeholder=\"New Password\"\n                class=\"form-control\" \n                ng-model=\"vm.password\" \n                ng-pattern=\"vm.re\"\n                required />\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n      <div class=\"mbl\">\n        <input type=\"password\" \n            name=\"confirm_password\" \n            value=\"\" \n            ng-keyup=\"vm.compare(vm.confirm_password)\"\n            ng-pattern=\"re\"\n            placeholder=\"Confirm Password\" \n            class=\"form-control\"\n                ng-model=\"vm.confirm_password\" \n                required />\n<span ng-show=\"vm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[vm.isconfirm]\">Password does {{vm.isconfirm==true?'':'not'}} match</span>            \n      </div>\n\n        <div class=\"form-actions\">\n            <button type=\"submit\" ng-disabled=\"form.$invalid || vm.dataLoading\" \n                class=\"btn btn-lg btn-primary btn-block\">Submit</button>\n            <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n            <a href=\"/#/login\" class=\"btn btn-link\">Cancel</a>\n        </div>\n\n    </form>\n  </div>\n</div>\n    "
+module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signup-page-content\" ng-controller=\"ChangepwdController as vm\">\n\n    <form name=\"form\" ng-submit=\"form.$valid && vm.changepwd()\"  role=\"form\" >\n      <h1 class=\"block-heading\">Change Password</h1>\n        <div class=\"form-group\"\n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx mbl\">\n            <i class=\"fa fa-key\"></i>\n            <input type=\"text\" ng-model=\"vm.userdta.username\" id=\"userfield\" name=\"username\" autocomplete='username' />\n            <input type=\"password\" \n                name=\"oldpassword\" \n                id=\"oldpassword\" \n                value=\"\"\n                placeholder=\"Old Password\"\n                class=\"form-control\" \n                ng-model=\"vm.oldpassword\" \n                autocomplete='current-password'\n                required />\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n        <div class=\"form-group  mbl\" \n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"newpassword\" \n                id=\"newpassword\" \n                value=\"\"\n                placeholder=\"New Password\"\n                class=\"form-control\" \n                ng-model=\"vm.password\" \n                autocomplete='new-password'\n                ng-change=\"vm.analyze(vm.password)\"\n                required />\n            <div ng-style=\"vm.passwordStrength\"></div>\n                \n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n      <div class=\"mbl\">\n        <input type=\"password\" \n            name=\"confirm_password\" \n            value=\"\" \n            id=\"confirm_password\"\n            ng-keyup=\"vm.compare(vm.confirm_password)\"\n            placeholder=\"Confirm Password\" \n                autocomplete='new-password'\n            class=\"form-control\"\n                ng-model=\"vm.confirm_password\" \n                required />\n<span ng-show=\"vm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[vm.isconfirm]\">Password does {{vm.isconfirm==true?'':'not'}} match</span>            \n      </div>\n                <input type=\"checkbox\" ng-click=\"vm.toggle()\"> \n    <b>Show Password</b> \n\n\n        <div class=\"form-actions\">\n            <button type=\"submit\" ng-disabled=\"form.$invalid || vm.dataLoading\" \n                class=\"btn btn-lg btn-primary btn-block\">Submit</button>\n            <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n            <a href=\"/#/login\" class=\"btn btn-link\">Cancel</a>\n        </div>\n\n    </form>\n  </div>\n</div>\n    "
 
 /***/ }),
 
@@ -51752,7 +51752,7 @@ var _window = window,
     $ = __webpack_provided_window_dot_jQuery;
 
 var ChangepwdController = exports.ChangepwdController = function () {
-    ChangepwdController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', 'Notification', '$q'];
+    ChangepwdController.$inject = ["$scope", "$log", "$routeParams", "$location", "flashService", "userServices", "Notification", "$q"];
 
     function ChangepwdController($scope, $log, $routeParams, $location, flashService, userServices, Notification, $q) {
         'ngInject';
@@ -51770,7 +51770,7 @@ var ChangepwdController = exports.ChangepwdController = function () {
     }
 
     _createClass(ChangepwdController, [{
-        key: '$onInit',
+        key: "$onInit",
         value: function $onInit() {
             this.username = null;
             this.password = null;
@@ -51780,39 +51780,105 @@ var ChangepwdController = exports.ChangepwdController = function () {
             this.isconfirm = null;
             this.confirm_password = null;
             this.oldpassword = null;
-            this.re = /^[a-zA-Z]\w{3,14}$/;
+            this.userdta = null;
+
+            //in case we want to go back        
+            //        this.re = /^[a-zA-Z]\w{3,14}$/;
+            //                ng-pattern="vm.re"
+            /*
+            RegEx	Description
+            ^	The password string will start this way
+            (?=.*[a-z])	The string must contain at least 1 lowercase alphabetical character
+            (?=.*[A-Z])	The string must contain at least 1 uppercase alphabetical character
+            (?=.*[0-9])	The string must contain at least 1 numeric character
+            (?=.[!@#\$%\^&])	The string must contain at least one special character, but we are escaping reserved RegEx characters to avoid conflict
+            (?=.{8,})	The string must be eight characters or longer
+            */
+            this.strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+            this.mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
 
             this.isconfirm = null;
 
             this.dataLoading = false;
-            this.apiKey = {};
+            //        this.apiKey = {};
+            this.passwordStrength = {
+                "float": "left",
+                "width": "100px",
+                "height": "25px",
+                "margin-left": "5px"
+            };
 
-            self.userdta = this.userServices.getUserDetails();
+            //        this.getUserDetails();
             $('body').attr('id', 'signup-page');
             $('#page-wrapper').css({ 'background-color': 'transparent' });
             $('#wrapper').css({ 'background': 'transparent' });
         }
     }, {
-        key: '$onDestroy',
+        key: "$onDestroy",
         value: function $onDestroy() {
             this.$log.log("ChangepwdController dismissed");
             //this.$log.logEnabled(false);
         }
     }, {
-        key: 'compare',
+        key: "getUserDetails",
+        value: function getUserDetails() {
+            var vm = this;
+
+            vm.$log.log('ChangepwdController controller getUserDetails entered');
+            return vm.UserServices.getUserDetails().then(function (data) {
+                vm.$log.log("ChangepwdController controller service getuserdetails returned:", data);
+                vm.userdta = data;
+                return vm.userdta;
+            }, function (error) {
+                vm.$log.log('Caught an error getUserDetails, going to notify:', error);
+                vm.userdta = [];
+                vm.message = error;
+                return vm.$q.reject(error);
+            }).finally(function () {});
+        }
+    }, {
+        key: "analyze",
+        value: function analyze(value) {
+            var vm = this;
+            if (vm.strongRegex.test(value)) {
+                vm.passwordStrength["background-color"] = "green";
+            } else if (vm.mediumRegex.test(value)) {
+                vm.passwordStrength["background-color"] = "orange";
+            } else {
+                vm.passwordStrength["background-color"] = "red";
+            }
+        }
+    }, {
+        key: "toggle",
+        value: function toggle() {
+            var temp = document.getElementById("oldpassword");
+            var temp2 = document.getElementById("newpassword");
+            var temp3 = document.getElementById("confirm_password");
+            if (temp.type === "password") {
+                temp.type = "text";
+                temp2.type = "text";
+                temp3.type = "text";
+            } else {
+                temp.type = "password";
+                temp2.type = "password";
+                temp3.type = "password";
+            }
+        }
+    }, {
+        key: "compare",
         value: function compare(repass) {
             var self = this;
             self.$log.log('compare', repass);
             self.isconfirm = self.password == repass ? true : false;
         }
     }, {
-        key: 'changepwd',
+        key: "changepwd",
         value: function changepwd() {
             var self = this;
             self.$log.log('ChangepwdController register function entered');
             self.dataLoading = true;
             var thedata = {
-                username: self.userdta.username,
+                //            username: self.userdta.username,
                 confirm_password: self.confirm_password,
                 password: self.password,
                 oldpassword: self.oldpassword
@@ -51913,8 +51979,8 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
         this.$log = $log;
         this.$routeParams = $routeParams;
         this.$location = $location;
-        this.FlashService = flashService;
-        this.UserServices = userServices;
+        this.flashService = flashService;
+        this.userServices = userServices;
         this.$q = $q;
     }
 
@@ -51925,7 +51991,7 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
             this.password = null;
             this.dataLoading = false;
             this.apiKey = {};
-            this.UserServices.ClearCredentials();
+            this.userServices.ClearCredentials();
             $('#page-wrapper').css({ 'background-color': 'transparent' });
             $('#wrapper').css({ 'background': 'transparent' });
             $('body').attr('id', 'signin-page');
@@ -51954,7 +52020,7 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
                 return data;
             }, function (error) {
                 self.$log.log('Caught an error UserServices, going to notify:', error);
-                self.UserServices.SetCredentials('', '', '');
+                self.userServices.SetCredentials('', '', '');
                 self.flashService.Err(error);
                 return self.$q.reject(error);
             }).finally(function () {
@@ -52621,9 +52687,9 @@ var ResetpwdController = exports.ResetpwdController = function () {
                 self.$log.log(data);
                 self.apiKey = data.api_Key;
                 self.userServices.ResetCredentials(data.username, data.api_key);
-                self.$("body>.default-page").show();
-                self.$("body>.extra-page").html($(".page-content").html()).hide();
-                self.$('body').attr('id', '');
+                $("body>.default-page").show();
+                $("body>.extra-page").html($(".page-content").html()).hide();
+                $('body').attr('id', '');
                 self.flashService.Success("Password reset complete");
 
                 self.$location.path('/#');
@@ -66352,13 +66418,13 @@ function authrun($rootScope, $location, $http, $log, $window, userServices, $coo
 
         // $log.log('authrun globals on $locationChangeStart', huh, huh3);
 
-        var testnextsum = next.lastIndexOf('/page-signin') + next.lastIndexOf('/page-signup') + next.lastIndexOf('/change-pwd') + next.lastIndexOf('/reset-pwd') + next.lastIndexOf('/forgot-pwd') + next.lastIndexOf('/page-lock-screen');
+        var testnextsum = next.lastIndexOf('/page-signin') + next.lastIndexOf('/page-signup') + next.lastIndexOf('/reset-pwd') + next.lastIndexOf('/forgot-pwd') + next.lastIndexOf('/page-lock-screen');
         //                next.lastIndexOf('/stripe-onboard') ;
         var testnext = testnextsum < 0 ? false : true;
 
         // redirect to login page if not logged in and trying to access a restricted page
         //            var restrictedPage = $.inArray($location.path(), ['/', '/page-signin', '/page-signup', '/change-pwd', 
-        var restrictedPage = $.inArray($location.$$path, ['/', '/page-signin', '/page-signup', '/change-pwd', '/reset-pwd', '/forgot-pwd', '/page-lock-screen', '/stripe-onboard']) === -1;
+        var restrictedPage = $.inArray($location.$$path, ['/', '/page-signin', '/page-signup', '/reset-pwd', '/forgot-pwd', '/page-lock-screen', '/stripe-onboard']) === -1;
 
         if (testnext) {
             $log.log('need to clearCredentials');
