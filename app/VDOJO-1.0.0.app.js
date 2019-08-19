@@ -51703,7 +51703,7 @@ module.exports = "<div ui-grid-filter>\n<div class=\"ui-grid-filter-container ng
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signup-page-content\" ng-controller=\"ChangepwdController as vm\">\n\n    <form name=\"form\" ng-submit=\"form.$valid && vm.changepwd()\"  role=\"form\" >\n      <h1 class=\"block-heading\">Change Password</h1>\n        <div class=\"form-group\"\n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx mbl\">\n            <i class=\"fa fa-key\"></i>\n            <input type=\"text\" ng-model=\"vm.userdta.username\" id=\"userfield\" name=\"username\" autocomplete='username' />\n            <input type=\"password\" \n                name=\"oldpassword\" \n                id=\"oldpassword\" \n                value=\"\"\n                placeholder=\"Old Password\"\n                class=\"form-control\" \n                ng-model=\"vm.oldpassword\" \n                autocomplete='current-password'\n                required />\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n        <div class=\"form-group  mbl\" \n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"newpassword\" \n                id=\"newpassword\" \n                value=\"\"\n                placeholder=\"New Password\"\n                class=\"form-control\" \n                ng-model=\"vm.password\" \n                autocomplete='new-password'\n                ng-change=\"vm.analyze(vm.password)\"\n                required />\n            <div ng-style=\"vm.passwordStrength\"></div>\n                \n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n      <div class=\"mbl\">\n        <input type=\"password\" \n            name=\"confirm_password\" \n            value=\"\" \n            id=\"confirm_password\"\n            ng-keyup=\"vm.compare(vm.confirm_password)\"\n            placeholder=\"Confirm Password\" \n                autocomplete='new-password'\n            class=\"form-control\"\n                ng-model=\"vm.confirm_password\" \n                required />\n<span ng-show=\"vm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[vm.isconfirm]\">Password does {{vm.isconfirm==true?'':'not'}} match</span>            \n      </div>\n                <input type=\"checkbox\" ng-click=\"vm.toggle()\"> \n    <b>Show Password</b> \n\n\n        <div class=\"form-actions\">\n            <button type=\"submit\" ng-disabled=\"form.$invalid || vm.dataLoading\" \n                class=\"btn btn-lg btn-primary btn-block\">Submit</button>\n            <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n            <a href=\"/#/login\" class=\"btn btn-link\">Cancel</a>\n        </div>\n\n    </form>\n  </div>\n</div>\n    "
+module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signup-page-content\" ng-controller=\"ChangepwdController as vm\">\n\n    <form name=\"form\" ng-submit=\"form.$valid && vm.changepwd()\"  role=\"form\" >\n      <h1 class=\"block-heading\">Change Password</h1>\n        <div class=\"form-group\"\n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx mbl\">\n            <i class=\"fa fa-key\"></i>\n            <input type=\"text\" ng-model=\"vm.userdta.username\" id=\"userfield\" name=\"username\" autocomplete='username' />\n            <input type=\"password\" \n                name=\"oldpassword\" \n                id=\"oldpassword\" \n                value=\"\"\n                placeholder=\"Old Password\"\n                class=\"form-control\" \n                ng-model=\"vm.oldpassword\" \n                autocomplete='current-password'\n                required />\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n        <div class=\"form-group  mbl\" \n        ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n            <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"newpassword\" \n                id=\"newpassword\" \n                value=\"\"\n                placeholder=\"New Password\"\n                class=\"form-control\" \n                ng-model=\"vm.password\" \n                autocomplete='new-password'\n                ng-change=\"vm.analyze(vm.password)\"\n                required />\n            <div ng-style=\"vm.passwordStrength\"></div>\n                \n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n            </div>\n        </div>\n      <div class=\"mbl\">\n        <input type=\"password\" \n            name=\"confirm_password\" \n            value=\"\" \n            id=\"confirm_password\"\n            ng-keyup=\"vm.compare(vm.confirm_password)\"\n            placeholder=\"Confirm Password\" \n                autocomplete='new-password'\n            class=\"form-control\"\n                ng-model=\"vm.confirm_password\" \n                required />\n<span ng-show=\"vm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[vm.isconfirm]\">Password does {{vm.isconfirm==true?'':'not'}} match</span>            \n      </div>\n                <input type=\"checkbox\" ng-click=\"vm.toggle()\"> \n    <b>Show Password</b> \n\n\n        <div class=\"form-actions\">\n            <button type=\"submit\" ng-disabled=\"form.$invalid || vm.dataLoading\" \n                class=\"btn btn-lg btn-primary btn-block\">Submit</button>\n            <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n            <a href=\"/#/login\" class=\"btn btn-link\">Cancel</a>\n        </div>\n\n    </form>\n         <div class=\"jumbotron\" ng-if=\"vm.flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': vm.flash, 'alert-success': vm.flash.type === 'success', 'alert-danger': vm.flash.type === 'error' }\" ng-bind=\"vm.flash.message\"></div>\n               </div>\n            </div>\n         </div>\n\n  </div>\n</div>\n    "
 
 /***/ }),
 
@@ -51752,9 +51752,9 @@ var _window = window,
     $ = __webpack_provided_window_dot_jQuery;
 
 var ChangepwdController = exports.ChangepwdController = function () {
-    ChangepwdController.$inject = ["$scope", "$log", "$routeParams", "$location", "flashService", "userServices", "Notification", "$q"];
+    ChangepwdController.$inject = ["$scope", "$log", "$routeParams", "$location", "flashService", "userServices", "Notification", "$rootScope", "$q"];
 
-    function ChangepwdController($scope, $log, $routeParams, $location, flashService, userServices, Notification, $q) {
+    function ChangepwdController($scope, $log, $routeParams, $location, flashService, userServices, Notification, $rootScope, $q) {
         'ngInject';
 
         _classCallCheck(this, ChangepwdController);
@@ -51765,6 +51765,7 @@ var ChangepwdController = exports.ChangepwdController = function () {
         this.$location = $location;
         this.flashService = flashService;
         this.userServices = userServices;
+        this.$rootScope = $rootScope;
         this.$q = $q;
         this.notification = Notification;
     }
@@ -51781,6 +51782,7 @@ var ChangepwdController = exports.ChangepwdController = function () {
             this.confirm_password = null;
             this.oldpassword = null;
             this.userdta = null;
+            this.flash = this.$rootScope.flash;
 
             //in case we want to go back        
             //        this.re = /^[a-zA-Z]\w{3,14}$/;
@@ -51808,7 +51810,6 @@ var ChangepwdController = exports.ChangepwdController = function () {
                 "margin-left": "5px"
             };
 
-            //        this.getUserDetails();
             $('body').attr('id', 'signup-page');
             $('#page-wrapper').css({ 'background-color': 'transparent' });
             $('#wrapper').css({ 'background': 'transparent' });
@@ -51818,23 +51819,6 @@ var ChangepwdController = exports.ChangepwdController = function () {
         value: function $onDestroy() {
             this.$log.log("ChangepwdController dismissed");
             //this.$log.logEnabled(false);
-        }
-    }, {
-        key: "getUserDetails",
-        value: function getUserDetails() {
-            var vm = this;
-
-            vm.$log.log('ChangepwdController controller getUserDetails entered');
-            return vm.UserServices.getUserDetails().then(function (data) {
-                vm.$log.log("ChangepwdController controller service getuserdetails returned:", data);
-                vm.userdta = data;
-                return vm.userdta;
-            }, function (error) {
-                vm.$log.log('Caught an error getUserDetails, going to notify:', error);
-                vm.userdta = [];
-                vm.message = error;
-                return vm.$q.reject(error);
-            }).finally(function () {});
         }
     }, {
         key: "analyze",
@@ -51878,7 +51862,6 @@ var ChangepwdController = exports.ChangepwdController = function () {
             self.$log.log('ChangepwdController register function entered');
             self.dataLoading = true;
             var thedata = {
-                //            username: self.userdta.username,
                 confirm_password: self.confirm_password,
                 password: self.password,
                 oldpassword: self.oldpassword
@@ -51891,6 +51874,13 @@ var ChangepwdController = exports.ChangepwdController = function () {
             return self.userServices.createUser(path, thedata).then(function (data) {
                 self.$log.log('register returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '', '');
+                    self.FlashService.Err(data.message, false);
+                    self.flash = self.$rootScope.flash;
+                    return self.$q.reject(data);
+                }
+
                 //                            alert('Change successful', true);
                 self.notification.success({ message: 'Change successful', delay: 5000 });
 
@@ -51899,6 +51889,7 @@ var ChangepwdController = exports.ChangepwdController = function () {
             }, function (error) {
                 self.$log.log('Caught an error , going to notify:', error);
                 self.flashService.Err(error);
+                self.flash = self.$rootScope.flash;
                 return self.$q.reject(error);
             }).finally(function () {
                 self.dataLoading = false;
@@ -51919,7 +51910,7 @@ var ChangepwdController = exports.ChangepwdController = function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signin-page-content\" ng-controller=\"ForgotpwdController as pagevm\">\n    <form name=\"form\" ng-submit=\"form.$valid && pagevm.forgotpwd()\" class=\"form\" role=\"form\" novalidate> \n      <h1 class=\"block-heading\">Forgot Password</h1>\n      <p>Dear user, enter your username and we will send an email to what we have on record to reset your passsword!</p>\n        <div class=\"form-group\" \n        ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">        \n        <div class=\"input-iconx\"><i class=\"fa fa-user\"></i>\n          <input type=\"text\" \n            placeholder=\"Username\" \n            name=\"username\" \n            autocomplete=\"on\"\n            required\n            id=\"username\" \n            ng-model=\"pagevm.username\"\n            class=\"form-control\"/>\n            <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n\n        </div>\n      </div>\n        <div class=\"form-actions\">\n            <button type=\"submit\" \n                ng-disabled=\"form.$invalid || pagevm.dataLoading\" \n                class=\"btn btn-primary\">\n                  Reset\n                  &nbsp;<i class=\"fa fa-chevron-circle-right\"></i>\n            </button>\n            <img ng-if=\"pagevm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n        </div>\n\n      <hr/>\n      <div class=\"create-account\">\n        <p>\n          Don't have an account yet?\n          &nbsp;<a id=\"btn-register\" href=\"/#/page-signup\">Create an account</a>\n        </p>\n      </div>\n\n    </form>\n  </div>\n</div>"
+module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signin-page-content\" ng-controller=\"ForgotpwdController as pagevm\">\n    <form name=\"form\" ng-submit=\"form.$valid && pagevm.forgotpwd()\" class=\"form\" role=\"form\" novalidate> \n      <h1 class=\"block-heading\">Forgot Password</h1>\n      <p>Dear user, enter your username and we will send an email to what we have on record to reset your passsword!</p>\n        <div class=\"form-group\" \n        ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">        \n        <div class=\"input-iconx\"><i class=\"fa fa-user\"></i>\n          <input type=\"text\" \n            placeholder=\"Username\" \n            name=\"username\" \n            autocomplete=\"on\"\n            required\n            id=\"username\" \n            ng-model=\"pagevm.username\"\n            class=\"form-control\"/>\n            <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n\n        </div>\n      </div>\n        <div class=\"form-actions\">\n            <button type=\"submit\" \n                ng-disabled=\"form.$invalid || pagevm.dataLoading\" \n                class=\"btn btn-primary\">\n                  Reset\n                  &nbsp;<i class=\"fa fa-chevron-circle-right\"></i>\n            </button>\n            <img ng-if=\"pagevm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n        </div>\n\n      <hr/>\n      <div class=\"create-account\">\n        <p>\n          Don't have an account yet?\n          &nbsp;<a id=\"btn-register\" href=\"/#/page-signup\">Create an account</a>\n        </p>\n      </div>\n\n    </form>\n         <div class=\"jumbotron\" ng-if=\"pagevm.flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': pagevm.flash, 'alert-success': pagevm.flash.type === 'success', 'alert-danger': pagevm.flash.type === 'error' }\" ng-bind=\"pagevm.flash.message\"></div>\n               </div>\n            </div>\n         </div>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -51968,9 +51959,9 @@ var _window = window,
     $ = __webpack_provided_window_dot_jQuery;
 
 var ForgotpwdController = exports.ForgotpwdController = function () {
-    ForgotpwdController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', '$q'];
+    ForgotpwdController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', '$rootScope', '$q'];
 
-    function ForgotpwdController($scope, $log, $routeParams, $location, flashService, userServices, $q) {
+    function ForgotpwdController($scope, $log, $routeParams, $location, flashService, userServices, $rootScope, $q) {
         'ngInject';
 
         _classCallCheck(this, ForgotpwdController);
@@ -51980,6 +51971,7 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
         this.$routeParams = $routeParams;
         this.$location = $location;
         this.flashService = flashService;
+        this.$rootScope = $rootScope;
         this.userServices = userServices;
         this.$q = $q;
     }
@@ -51992,6 +51984,8 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
             this.dataLoading = false;
             this.apiKey = {};
             this.userServices.ClearCredentials();
+            this.flash = this.$rootScope.flash;
+
             $('#page-wrapper').css({ 'background-color': 'transparent' });
             $('#wrapper').css({ 'background': 'transparent' });
             $('body').attr('id', 'signin-page');
@@ -52013,6 +52007,13 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
             return self.userServices.forgotpassword(path).then(function (data) {
                 self.$log.log('UserServices returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '', '');
+                    self.FlashService.Err(data.message, false);
+                    self.flash = self.$rootScope.flash;
+                    return self.$q.reject(data);
+                }
+
                 self.apiKey = data.apiKey;
                 alert("Check your email for reset information");
 
@@ -52022,6 +52023,7 @@ var ForgotpwdController = exports.ForgotpwdController = function () {
                 self.$log.log('Caught an error UserServices, going to notify:', error);
                 self.userServices.SetCredentials('', '', '');
                 self.flashService.Err(error);
+                self.flash = self.$rootScope.flash;
                 return self.$q.reject(error);
             }).finally(function () {
                 self.dataLoading = false;
@@ -52312,7 +52314,7 @@ module.exports = "<div class=\"animated slideInLeft\" >\n  <div id=\"lock-screen
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signin-page-content\" ng-controller=\"PageSigninController as vm\">\n    <!--<div id=\"signin-page-content\" >    -->\n    <form name=\"form\" ng-submit=\"form.$valid && vm.login()\" class=\"form\" role=\"form\" novalidate>\n      <h1 class=\"block-heading\">Sign In</h1>\n      <p>Dear user, log in to access the registration area!</p>\n      <div class=\"form-group\" ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">\n        <div class=\"input-iconx\"><i class=\"fa fa-user\"></i>\n          <input type=\"text\" placeholder=\"Username\" name=\"username\" autocomplete=\"on\" required id=\"username\" ng-model=\"vm.username\" class=\"form-control\" />\n          <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n\n        </div>\n      </div>\n      <div class=\"form-group\" ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n\n        <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n          <input type=\"password\" placeholder=\"Password\" name=\"password\" autocomplete=\"on\" id=\"password\" class=\"form-control\" ng-model=\"vm.password\" required />\n          <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n\n        </div>\n      </div>\n      <div class=\"form-actions\">\n        <!--                ng-disabled=\"form.$invalid || vm.dataLoading\"  -->\n\n        <button type=\"submit\" class=\"btn btn-primary\">\n                  Login\n                  &nbsp;<i class=\"fa fa-chevron-circle-right\"></i>\n            </button>\n        <a id=\"btn-forgot-pwd\" href=\"/#/forgot-pwd\" class=\"mlm\">Forgot your password?</a>\n        <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\"\n        />\n      </div>\n\n      <hr/>\n      <div class=\"create-account\">\n        <p>\n          Don't have an account yet? &nbsp;\n          <a id=\"btn-register\" href=\"/#/page-signup\">Create an account</a>\n        </p>\n      </div>\n\n    </form>\n  </div>\n\n</div>\n"
+module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signin-page-content\" ng-controller=\"PageSigninController as vm\">\n    <!--<div id=\"signin-page-content\" >    -->\n    <form name=\"form\" ng-submit=\"form.$valid && vm.login()\" class=\"form\" role=\"form\" novalidate>\n      <h1 class=\"block-heading\">Sign In</h1>\n      <p>Dear user, log in to access the registration area!</p>\n      <div class=\"form-group\" ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">\n        <div class=\"input-iconx\"><i class=\"fa fa-user\"></i>\n          <input type=\"text\" placeholder=\"Username\" name=\"username\" autocomplete='username' required id=\"username\" ng-model=\"vm.username\" class=\"form-control\" />\n          <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n\n        </div>\n      </div>\n      <div class=\"form-group\" ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n\n        <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n          <input type=\"password\" placeholder=\"Password\" name=\"password\" autocomplete='current-password' id=\"password\" class=\"form-control\" ng-model=\"vm.password\" required />\n          <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n\n        </div>\n      </div>\n      <div class=\"form-actions\">\n        <!--                ng-disabled=\"form.$invalid || vm.dataLoading\"  -->\n\n        <button type=\"submit\" class=\"btn btn-primary\">\n                  Login\n                  &nbsp;<i class=\"fa fa-chevron-circle-right\"></i>\n            </button>\n        <a id=\"btn-forgot-pwd\" href=\"/#/forgot-pwd\" class=\"mlm\">Forgot your password?</a>\n        <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\"\n        />\n      </div>\n\n      <hr/>\n      <div class=\"create-account\">\n        <p>\n          Don't have an account yet? &nbsp;\n          <a id=\"btn-register\" href=\"/#/page-signup\">Create an account</a>\n        </p>\n      </div>\n\n    </form>\n         <div class=\"jumbotron\" ng-if=\"vm.flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': vm.flash, 'alert-success': vm.flash.type === 'success', 'alert-danger': vm.flash.type === 'error' }\" ng-bind=\"vm.flash.message\"></div>\n               </div>\n            </div>\n         </div>\n    \n  </div>\n\n</div>\n"
 
 /***/ }),
 
@@ -52323,7 +52325,7 @@ module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n    <div id=\"signup-page-content\" ng-controller=\"PageSignupController as vm\">\n\n        <form name=\"form\" ng-submit=\"vm.register()\" role=\"form\">\n            <h1 class=\"block-heading\">Sign Up</h1>\n            <div class=\"row mbl\">\n                <div class=\"col-md-6\">\n                    <div class=\"form-group\" \n                    ng-class=\"{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }\">\n                        <input type=\"text\" name=\"firstName\" value=\"\" id=\"firstName\" class=\"form-control\" \n                        ng-model=\"vm.firstname\" required placeholder=\"First Name\" />\n                        <span ng-show=\"form.firstName.$dirty && form.firstName.$error.required\" class=\"help-block\">First name is required</span>\n                    </div>\n                </div>\n\n                <div class=\"col-md-6\">\n                    <div class=\"form-group\" \n                    ng-class=\"{ 'has-error': form.lastName.$dirty && form.lastName.$error.required }\">\n                        <input type=\"text\" name=\"lastName\" id=\"lastName\" class=\"form-control\"\n                        ng-model=\"vm.lastname\" required placeholder=\"Last Name\" />\n                        <span ng-show=\"form.lastName.$dirty && form.lastName.$error.required\" class=\"help-block\">Last name is required</span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"form-group\" \n            ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">\n                <input type=\"text\" name=\"username\" id=\"username\" class=\"form-control\" ng-model=\"vm.username\" required placeholder=\"User Name\" />\n                <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n            </div>\n            <div class=\"form-group\" \n            ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n                <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n                    <input type=\"password\" name=\"password\" id=\"password\" value=\"\" placeholder=\"Password\" class=\"form-control\" ng-model=\"vm.password\" ng-pattern=\"re\" required />\n                    <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n                    <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n                </div>\n            </div>\n            <div class=\"form-group\">\n                <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n                    <input type=\"password\" name=\"confirm_password\" value=\"\" ng-keyup=\"vm.compare(vm.confirm_password)\" ng-pattern=\"re\" placeholder=\"Confirm Password\" class=\"form-control\" ng-model=\"vm.confirm_password\" required />\n                    <span ng-show=\"vm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[vm.isconfirm]\">Password does {{vm.isconfirm==true?'':'not'}} match</span>\n                </div>\n            </div>\n            <div class=\"form-group\" ng-class=\"{ 'has-error': form.email.$dirty && form.email.$error.required }\">\n                <div class=\"input-iconx\">\n                    <i class=\"fa fa-envelope\"></i>\n                    <input type=\"email\" name=\"email\" value=\"\" placeholder=\"Your Email\" class=\"form-control\" ng-model=\"vm.email\" required />\n                    <span ng-show=\"form.email.$error.email\" class=\"help-block\">Not valid email.</span>\n                </div>\n            </div>\n            <span class=\"help-block mtm mbl text-muted\">By clicking Create my account, you agree to our<a href=\"/terms\"> Terms and Data Use Policy</a></span>\n\n            <div class=\"form-actions\">\n                <button type=\"submit\" ng-disabled=\"form.$invalid || vm.dataLoading\" class=\"btn btn-lg btn-primary btn-block\">Create my account</button>\n                <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\"\n                />\n                <a href=\"/#/login\" class=\"btn btn-link\">Cancel</a>\n            </div>\n\n        </form>\n    </div>\n</div>\n"
+module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n    <div id=\"signup-page-content\" ng-controller=\"PageSignupController as vm\">\n\n        <form name=\"form\" ng-submit=\"form.$valid && vm.register()\" role=\"form\" class=\"form\" >\n            <h1 class=\"block-heading\">Sign Up</h1>\n            <div class=\"row mbl\">\n                <div class=\"col-md-6\">\n                    <div class=\"form-group\" \n                    ng-class=\"{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }\">\n                        <input type=\"text\" name=\"firstName\" value=\"\" id=\"firstName\" class=\"form-control\" \n                        ng-model=\"vm.firstname\" autocomplete='given-name' required placeholder=\"First Name\" />\n                        <span ng-show=\"form.firstName.$dirty && form.firstName.$error.required\" class=\"help-block\">First name is required</span>\n                    </div>\n                </div>\n\n                <div class=\"col-md-6\">\n                    <div class=\"form-group\" \n                    ng-class=\"{ 'has-error': form.lastName.$dirty && form.lastName.$error.required }\">\n                        <input type=\"text\" name=\"lastName\" id=\"lastName\" class=\"form-control\"\n                        ng-model=\"vm.lastname\" autocomplete='family-name' required placeholder=\"Last Name\" />\n                        <span ng-show=\"form.lastName.$dirty && form.lastName.$error.required\" class=\"help-block\">Last name is required</span>\n                    </div>\n                </div>\n            </div>\n            <div class=\"form-group\" \n            ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">\n                <input type=\"text\" name=\"username\" id=\"username\" autocomplete='username' class=\"form-control\" ng-model=\"vm.username\" required placeholder=\"User Name\" />\n                <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n            </div>\n            <div class=\"form-group\" \n            ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\">\n                <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n                    <input type=\"password\" name=\"password\" id=\"newpassword\" autocomplete='new-password' \n                    value=\"\" placeholder=\"Password\" class=\"form-control\" \n                    ng-change=\"vm.analyze(vm.password)\"\n                    ng-model=\"vm.password\" required />\n            <div ng-style=\"vm.passwordStrength\"></div>\n                    \n                    <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n                    <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n                </div>\n            </div>\n            <div class=\"form-group\">\n                <div class=\"input-iconx\"><i class=\"fa fa-key\"></i>\n                    <input type=\"password\" name=\"confirm_password\" id=\"confirm_password\" value=\"\" autocomplete='new-password' \n                    ng-keyup=\"vm.compare(vm.confirm_password)\" placeholder=\"Confirm Password\" class=\"form-control\" \n                    ng-model=\"vm.confirm_password\" required />\n                    <span ng-show=\"vm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[vm.isconfirm]\">Password does {{vm.isconfirm==true?'':'not'}} match</span>\n                </div>\n            </div>\n            <div class=\"form-group\" ng-class=\"{ 'has-error': form.email.$dirty && form.email.$error.required }\">\n                <div class=\"input-iconx\">\n                    <i class=\"fa fa-envelope\"></i>\n                    <input type=\"email\" name=\"email\" value=\"\" placeholder=\"Your Email\" class=\"form-control\" ng-model=\"vm.email\" required />\n                    <span ng-show=\"form.email.$error.email\" class=\"help-block\">Not valid email.</span>\n                </div>\n            </div>\n            <select id=\"inputStudentSchool\" type=\"text\" name=\"StudentSchool\" ng-model=\"vm.school\" \n                 required \n                    class=\"form-control\">\n                    <option ng-repeat=\"iter in vm.StudentList.StudentSchoolList\" ng-selected=\"{{iter.school==vm.school}}\" placeholder=\"Select\" value=\"{{iter.school}}\">{{iter.school}}</option>\n                  </select>\n                              \n            <span class=\"help-block mtm mbl text-muted\">By clicking Create my account, you agree to our<a href=\"/terms\"> Terms and Data Use Policy</a></span>\n\n                <input type=\"checkbox\" ng-click=\"vm.toggle()\"> \n    <b>Show Password</b> \n\n            <div class=\"form-actions\">\n                <button type=\"submit\" ng-disabled=\"form.$invalid || vm.dataLoading\" class=\"btn btn-lg btn-primary btn-block\">Create my account</button>\n                <img ng-if=\"vm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\"\n                />\n                <a href=\"/#/login\" class=\"btn btn-link\">Cancel</a>\n            </div>\n\n        </form>\n         <div class=\"jumbotron\" ng-if=\"vm.flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': vm.flash, 'alert-success': vm.flash.type === 'success', 'alert-danger': vm.flash.type === 'error' }\" ng-bind=\"vm.flash.message\"></div>\n               </div>\n            </div>\n         </div>\n        \n    </div>\n</div>\n"
 
 /***/ }),
 
@@ -52349,9 +52351,9 @@ var _window = window,
     $ = __webpack_provided_window_dot_jQuery;
 
 var PageSigninController = exports.PageSigninController = function () {
-    PageSigninController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', 'calendarServices', 'studentServices', 'classServices', '$q'];
+    PageSigninController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', 'calendarServices', 'studentServices', 'classServices', '$rootScope', '$q'];
 
-    function PageSigninController($scope, $log, $routeParams, $location, flashService, userServices, calendarServices, studentServices, classServices, $q) {
+    function PageSigninController($scope, $log, $routeParams, $location, flashService, userServices, calendarServices, studentServices, classServices, $rootScope, $q) {
         'ngInject';
 
         _classCallCheck(this, PageSigninController);
@@ -52360,6 +52362,7 @@ var PageSigninController = exports.PageSigninController = function () {
         this.$log = $log;
         this.$routeParams = $routeParams;
         this.$location = $location;
+        this.$rootScope = $rootScope;
         this.FlashService = flashService;
         this.UserServices = userServices;
         this.CalendarServices = calendarServices;
@@ -52376,6 +52379,7 @@ var PageSigninController = exports.PageSigninController = function () {
             this.dataLoading = false;
             this.apiKey = {};
             this.UserServices.ClearCredentials();
+            this.flash = this.$rootScope.flash;
             $('body').attr('id', 'signin-page');
             $('#page-wrapper').css({ 'background-color': 'transparent' });
             $('#wrapper').css({ 'background': 'transparent' });
@@ -52396,7 +52400,8 @@ var PageSigninController = exports.PageSigninController = function () {
             return self.UserServices.Login(self.username, self.password).then(function (data) {
                 if (data.error === true) {
                     self.UserServices.SetCredentials('', '', '', '');
-                    self.FlashService.Err(data.message);
+                    self.FlashService.Err(data.message, false);
+                    self.flash = self.$rootScope.flash;
                     return self.$q.reject(data);
                 }
                 self.apiKey = data.apiKey;
@@ -52419,7 +52424,8 @@ var PageSigninController = exports.PageSigninController = function () {
                 self.$log.log('Caught an error UserServices, going to notify:', error);
                 self.UserServices.SetCredentials('', '', '', '');
                 self.UserServices.setapikey('');
-                self.FlashService.Err(error);
+                self.FlashService.Err(error, false);
+                self.flash = self.$rootScope.flash;
                 return self.$q.reject(error);
             }).finally(function () {
                 self.dataLoading = false;
@@ -52478,9 +52484,9 @@ var _window = window,
     $ = __webpack_provided_window_dot_jQuery;
 
 var PageSignupController = exports.PageSignupController = function () {
-    PageSignupController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', '$q'];
+    PageSignupController.$inject = ["$scope", "$log", "$routeParams", "$location", "flashService", "userServices", "StudentServices", "$rootScope", "$q"];
 
-    function PageSignupController($scope, $log, $routeParams, $location, flashService, userServices, $q) {
+    function PageSignupController($scope, $log, $routeParams, $location, flashService, userServices, StudentServices, $rootScope, $q) {
         'ngInject';
 
         _classCallCheck(this, PageSignupController);
@@ -52491,11 +52497,13 @@ var PageSignupController = exports.PageSignupController = function () {
         this.$location = $location;
         this.FlashService = flashService;
         this.UserServices = userServices;
+        this.StudentServices = StudentServices;
+        this.$rootScope = $rootScope;
         this.$q = $q;
     }
 
     _createClass(PageSignupController, [{
-        key: '$onInit',
+        key: "$onInit",
         value: function $onInit() {
             this.username = null;
             this.password = null;
@@ -52504,30 +52512,88 @@ var PageSignupController = exports.PageSignupController = function () {
             this.email = null;
             this.isconfirm = null;
             this.confirm_password = null;
-            this.re = /^[a-zA-Z]\w{3,14}$/;
+            this.flash = this.$rootScope.flash;
+            this.StudentList = [];
+            this.school = null;
+
+            this.strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+            this.mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+
+            this.isconfirm = null;
 
             this.dataLoading = false;
-            this.apiKey = {};
+            //        this.apiKey = {};
+            this.passwordStrength = {
+                "float": "left",
+                "width": "100px",
+                "height": "25px",
+                "margin-left": "5px"
+            };
+
             this.UserServices.ClearCredentials();
+            this.getStudentLists();
             $('body').attr('id', 'signup-page');
             $('#page-wrapper').css({ 'background-color': 'transparent' });
             $('#wrapper').css({ 'background': 'transparent' });
         }
     }, {
-        key: '$onDestroy',
+        key: "$onDestroy",
         value: function $onDestroy() {
             this.$log.log("PageSignupController dismissed");
             //this.$log.logEnabled(false);
         }
     }, {
-        key: 'compare',
+        key: "analyze",
+        value: function analyze(value) {
+            var vm = this;
+            if (vm.strongRegex.test(value)) {
+                vm.passwordStrength["background-color"] = "green";
+            } else if (vm.mediumRegex.test(value)) {
+                vm.passwordStrength["background-color"] = "orange";
+            } else {
+                vm.passwordStrength["background-color"] = "red";
+            }
+        }
+    }, {
+        key: "toggle",
+        value: function toggle() {
+            var temp2 = document.getElementById("newpassword");
+            var temp3 = document.getElementById("confirm_password");
+            if (temp2.type === "password") {
+                temp2.type = "text";
+                temp3.type = "text";
+            } else {
+                temp2.type = "password";
+                temp3.type = "password";
+            }
+        }
+    }, {
+        key: "compare",
         value: function compare(repass) {
             var self = this;
             self.$log.log('compare', repass);
             self.isconfirm = self.password == repass ? true : false;
         }
     }, {
-        key: 'register',
+        key: "getStudentLists",
+        value: function getStudentLists() {
+            var vm = this;
+            var sListPath = '../v1/studentschools';
+
+            return vm.StudentServices.getStudentLists(sListPath).then(function (data) {
+                vm.$log.log('controller getStudentLists returned data');
+                vm.$log.log(data);
+                vm.StudentList = data;
+
+                return vm.StudentList;
+            }, function (error) {
+                vm.$log.log('getStudentLists ', error);
+                vm.Notification.error({ message: error, delay: 5000 });
+                return error;
+            });
+        }
+    }, {
+        key: "register",
         value: function register() {
             var self = this;
             self.$log.log('controller register function entered');
@@ -52538,7 +52604,8 @@ var PageSignupController = exports.PageSignupController = function () {
                 firstname: self.firstname,
                 lastname: self.lastname,
                 email: self.email,
-                password: self.password
+                password: self.password,
+                school: self.school
             };
             var path = '/v1/register';
             self.$log.log('controller register thedata:', thedata);
@@ -52548,12 +52615,21 @@ var PageSignupController = exports.PageSignupController = function () {
             return self.UserServices.createUser(path, thedata).then(function (data) {
                 self.$log.log('register returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '', '');
+                    self.FlashService.Err(data.message, false);
+                    self.flash = self.$rootScope.flash;
+                    return self.$q.reject(data);
+                }
+
                 self.FlashService.Success('Registration successful', true);
+                self.flash = self.$rootScope.flash;
                 self.$location.path('/page-signin');
                 return data;
             }, function (error) {
                 self.$log.log('Caught an error Registration, going to notify:', error);
                 self.FlashService.Err(error);
+                self.flash = self.$rootScope.flash;
                 return self.$q.reject(error);
             }).finally(function () {
                 self.dataLoading = false;
@@ -52574,7 +52650,7 @@ var PageSignupController = exports.PageSignupController = function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signin-page-content\" ng-controller=\"ResetpwdController as pagevm\">\n    <form name=\"form\" ng-submit=\"form.$valid && pagevm.resetpwd()\" class=\"form\" role=\"form\" novalidate> \n      <h1 class=\"block-heading\">Reset Password</h1>\n      <p>Dear user, please enter your new password!</p>\n        <div class=\"form-group\" \n        ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">        \n        <div class=\"input-icon\"><i class=\"fa fa-user\"></i>\n          <input type=\"text\" \n            placeholder=\"Username\" \n            name=\"username\" \n            autocomplete=\"on\"\n            required\n            id=\"username\" \n            ng-model=\"pagevm.username\"\n            class=\"form-control\"/>\n            <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n\n        </div>\n      </div>\n        <div class=\"form-group input-icon mbl\" ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\"><i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"password\" \n                id=\"password\" \n                value=\"\"\n                placeholder=\"Password\"\n                class=\"form-control\" \n                ng-keyup=\"pagevm.compare(pagevm.confirm_password)\"\n                ng-model=\"pagevm.password\" \n                ng-pattern=\"pagevm.re\"\n                required />\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n        </div>\n      <div class=\"mbl\">\n        <input type=\"password\" \n            name=\"confirm_password\" \n            value=\"\" \n            id=\"confirm_password\"\n            ng-keyup=\"pagevm.compare(pagevm.confirm_password)\"\n            ng-pattern=\"pagevm.re\"\n            placeholder=\"Confirm Password\" \n            class=\"form-control\"\n                ng-model=\"pagevm.confirm_password\" \n                required />\n<span ng-show=\"pagevm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[pagevm.isconfirm]\">Password does {{pagevm.isconfirm==true?'':'not'}} match</span>            \n      </div>\n      <div class=\"input-icon mbl\" \n        ng-class=\"{ 'has-error': form.email.$dirty && form.email.$error.required }\">\n        <i class=\"fa fa-envelope\"></i>\n        <input type=\"email\" \n            name=\"email\" \n            value=\"\" \n            placeholder=\"Your Email\" \n            class=\"form-control\"\n                ng-model=\"pagevm.email\" \n                required />\n            <span ng-show=\"form.email.$error.email\" class=\"help-block\">Not valid email.</span>\n      </div>\n\n        <div class=\"form-actions\">\n            <button type=\"submit\" \n                ng-disabled=\"form.$invalid || pagevm.dataLoading\" \n                class=\"btn btn-primary\">\n                  Reset\n                  &nbsp;<i class=\"fa fa-chevron-circle-right\"></i>\n            </button>\n            <a id=\"btn-forgot-pwd\" href=\"/#/forgot-pwd\" class=\"mlm\">Forgot your password?</a>\n            <img ng-if=\"pagevm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n        </div>\n\n      <hr/>\n      <div class=\"create-account\">\n        <p>\n          Don't have an account yet?\n          &nbsp;<a id=\"btn-register\" href=\"/#/page-signup\">Create an account</a>\n        </p>\n      </div>\n\n    </form>\n  </div>\n</div>"
+module.exports = "<div class=\"animated bounceInDown col-md-3 col-md-offset-3\">\n  <div id=\"signin-page-content\" ng-controller=\"ResetpwdController as pagevm\">\n    <form name=\"form\" ng-submit=\"form.$valid && pagevm.resetpwd()\" class=\"form\" role=\"form\" novalidate> \n      <h1 class=\"block-heading\">Reset Password</h1>\n      <p>Dear user, please enter your new password!</p>\n        <div class=\"form-group\" \n        ng-class=\"{ 'has-error': form.username.$dirty && form.username.$error.required }\">        \n        <div class=\"input-icon\"><i class=\"fa fa-user\"></i>\n          <input type=\"text\" \n            placeholder=\"Username\" \n            name=\"username\" \n            autocomplete='username'\n            required\n            id=\"username\" \n            ng-model=\"pagevm.username\"\n            class=\"form-control\"/>\n            <span ng-show=\"form.username.$dirty && form.username.$error.required\" class=\"help-block\">Username is required</span>\n\n        </div>\n      </div>\n        <div class=\"form-group input-icon mbl\" ng-class=\"{ 'has-error': form.password.$dirty && form.password.$error.required }\"><i class=\"fa fa-key\"></i>\n            <input type=\"password\" \n                name=\"password\" \n                id=\"newpassword\" \n                autocomplete=\"new-password\"\n                value=\"\"\n                placeholder=\"Password\"\n                class=\"form-control\" \n                ng-keyup=\"pagevm.compare(pagevm.confirm_password)\"\n                ng-model=\"pagevm.password\" \n                ng-change=\"pagevm.analyze(pagevm.password)\"\n                required />\n            <div ng-style=\"pagevm.passwordStrength\"></div>\n\n            <span ng-show=\"form.password.$dirty && form.password.$error.required\" class=\"help-block\">Password is required</span>\n            <span ng-show=\"form.password.$error.pattern\" class=\"help-block\">Not a valid password.</span>\n        </div>\n      <div class=\"mbl\">\n        <input type=\"password\" \n            name=\"confirm_password\" \n            value=\"\" \n            id=\"confirm_password\"\n            ng-keyup=\"pagevm.compare(pagevm.confirm_password)\"\n                autocomplete='new-password'\n            placeholder=\"Confirm Password\" \n            class=\"form-control\"\n                ng-model=\"pagevm.confirm_password\" \n                required />\n<span ng-show=\"pagevm.isconfirm || form.confirm_password.$dirty \" ng-class=\"{true:'green',false:'red'}[pagevm.isconfirm]\">Password does {{pagevm.isconfirm==true?'':'not'}} match</span>            \n      </div>\n      <div class=\"input-icon mbl\" \n        ng-class=\"{ 'has-error': form.email.$dirty && form.email.$error.required }\">\n        <i class=\"fa fa-envelope\"></i>\n        <input type=\"email\" \n            name=\"email\" \n            value=\"\" \n            placeholder=\"Your Email\" \n            class=\"form-control\"\n                ng-model=\"pagevm.email\" \n                required />\n            <span ng-show=\"form.email.$error.email\" class=\"help-block\">Not valid email.</span>\n      </div>\n                <input type=\"checkbox\" ng-click=\"pagevm.toggle()\"> \n    <b>Show Password</b> \n\n        <div class=\"form-actions\">\n            <button type=\"submit\" \n                ng-disabled=\"form.$invalid || pagevm.dataLoading\" \n                class=\"btn btn-primary\">\n                  Reset\n                  &nbsp;<i class=\"fa fa-chevron-circle-right\"></i>\n            </button>\n            <a id=\"btn-forgot-pwd\" href=\"/#/forgot-pwd\" class=\"mlm\">Forgot your password?</a>\n            <img ng-if=\"pagevm.dataLoading\" src=\"data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==\" />\n        </div>\n\n      <hr/>\n      <div class=\"create-account\">\n        <p>\n          Don't have an account yet?\n          &nbsp;<a id=\"btn-register\" href=\"/#/page-signup\">Create an account</a>\n        </p>\n      </div>\n\n    </form>\n         <div class=\"jumbotron\" ng-if=\"pagevm.flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': pagevm.flash, 'alert-success': pagevm.flash.type === 'success', 'alert-danger': pagevm.flash.type === 'error' }\" ng-bind=\"pagevm.flash.message\"></div>\n               </div>\n            </div>\n         </div>\n\n  </div>\n</div>"
 
 /***/ }),
 
@@ -52623,9 +52699,9 @@ var _window = window,
     $ = __webpack_provided_window_dot_jQuery;
 
 var ResetpwdController = exports.ResetpwdController = function () {
-    ResetpwdController.$inject = ['$scope', '$log', '$routeParams', '$location', 'flashService', 'userServices', '$q'];
+    ResetpwdController.$inject = ["$scope", "$log", "$routeParams", "$location", "flashService", "userServices", "$rootScope", "$q"];
 
-    function ResetpwdController($scope, $log, $routeParams, $location, flashService, userServices, $q) {
+    function ResetpwdController($scope, $log, $routeParams, $location, flashService, userServices, $rootScope, $q) {
         'ngInject';
 
         _classCallCheck(this, ResetpwdController);
@@ -52636,11 +52712,12 @@ var ResetpwdController = exports.ResetpwdController = function () {
         this.$location = $location;
         this.flashService = flashService;
         this.userServices = userServices;
+        this.$rootScope = $rootScope;
         this.$q = $q;
     }
 
     _createClass(ResetpwdController, [{
-        key: '$onInit',
+        key: "$onInit",
         value: function $onInit() {
             this.username = null;
             this.password = null;
@@ -52649,7 +52726,17 @@ var ResetpwdController = exports.ResetpwdController = function () {
             this.email = null;
             this.isconfirm = null;
             this.confirm_password = null;
-            this.re = /^[a-zA-Z]\w{3,14}$/;
+            //        this.re = /^[a-zA-Z]\w{3,14}$/;
+            this.strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+            this.mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+            this.flash = this.$rootScope.flash;
+
+            this.passwordStrength = {
+                "float": "left",
+                "width": "100px",
+                "height": "25px",
+                "margin-left": "5px"
+            };
 
             this.isconfirm = null;
 
@@ -52661,20 +52748,45 @@ var ResetpwdController = exports.ResetpwdController = function () {
             $('#wrapper').css({ 'background': 'transparent' });
         }
     }, {
-        key: '$onDestroy',
+        key: "$onDestroy",
         value: function $onDestroy() {
             this.$log.log("ResetpwdController dismissed");
             //this.$log.logEnabled(false);
         }
     }, {
-        key: 'compare',
+        key: "analyze",
+        value: function analyze(value) {
+            var vm = this;
+            if (vm.strongRegex.test(value)) {
+                vm.passwordStrength["background-color"] = "green";
+            } else if (vm.mediumRegex.test(value)) {
+                vm.passwordStrength["background-color"] = "orange";
+            } else {
+                vm.passwordStrength["background-color"] = "red";
+            }
+        }
+    }, {
+        key: "toggle",
+        value: function toggle() {
+            var temp2 = document.getElementById("newpassword");
+            var temp3 = document.getElementById("confirm_password");
+            if (temp2.type === "password") {
+                temp2.type = "text";
+                temp3.type = "text";
+            } else {
+                temp2.type = "password";
+                temp3.type = "password";
+            }
+        }
+    }, {
+        key: "compare",
         value: function compare(repass) {
             var self = this;
             self.$log.log('compare', repass);
             self.isconfirm = self.password == repass ? true : false;
         }
     }, {
-        key: 'resetpwd',
+        key: "resetpwd",
         value: function resetpwd() {
             var self = this;
             self.$log.log('controller resetpwd function entered', self.username, self.password);
@@ -52685,12 +52797,20 @@ var ResetpwdController = exports.ResetpwdController = function () {
             return self.userServices.resetpassword(path).then(function (data) {
                 self.$log.log('UserServices resetpwd returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '', '');
+                    self.FlashService.Err(data.message, false);
+                    self.flash = self.$rootScope.flash;
+                    return self.$q.reject(data);
+                }
+
                 self.apiKey = data.api_Key;
                 self.userServices.ResetCredentials(data.username, data.api_key);
                 $("body>.default-page").show();
                 $("body>.extra-page").html($(".page-content").html()).hide();
                 $('body').attr('id', '');
-                self.flashService.Success("Password reset complete");
+                self.flashService.Success("Password reset complete", false);
+                self.flash = self.$rootScope.flash;
 
                 self.$location.path('/#');
                 return data;
@@ -52698,7 +52818,8 @@ var ResetpwdController = exports.ResetpwdController = function () {
                 self.$log.log('Caught an error UserServices resetpwd, going to notify:', error);
                 self.userServices.SetCredentials('', '', '');
                 self.userServices.setapikey('');
-                self.flashService.Err(error);
+                self.flashService.Err(error, false);
+                self.flash = self.$rootScope.flash;
                 return self.$q.reject(error);
             }).finally(function () {
                 self.dataLoading = false;
@@ -58547,7 +58668,7 @@ var PortalController = exports.PortalController = function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<div class=\"default-page\" ng-controller=\"PortalController as $ctrl\" ng-cloak> -->\n<div id=\"portal\" class=\"default-page\"  ng-cloak>\n   <a id=\"totop\" ng-click=\"$ctrl.scrollToTop()\"><i class=\"fa fa-angle-up\"></i></a>\n<!--<div id=\"wrapper\" ng-class=\"$ctrl.header.layout_menu\" ng-cloak> -->\n<div id=\"wrapper\" ng-cloak> \n      <header-component ng-show=\"$ctrl.isokf()\"></header-component>\n      <sidebar-component ng-show=\"$ctrl.isokf()\"></sidebar-component>\n      <div id=\"page-wrapper\" ng-class=\"$ctrl.header.animation\" class=\"animated\">\n         <breadcrumb-component ng-show=\"$ctrl.isokf()\"></breadcrumb-component>\n         <div class=\"jumbotron\" ng-if=\"flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }\" ng-bind=\"flash.message\"></div>\n               </div>\n            </div>\n         </div>\n         <div ng-view=\"\" class=\"page-content\"></div>\n\n         <div class=\"page-footer\">\n            <div class=\"copyright\">2015-2018 © V - Dojo .</div>\n         </div>\n      </div>\n   </div>\n</div>\n</div>\n"
+module.exports = "<!--<div class=\"default-page\" ng-controller=\"PortalController as $ctrl\" ng-cloak> -->\n<div id=\"portal\" class=\"default-page\"  ng-cloak>\n   <a id=\"totop\" ng-click=\"$ctrl.scrollToTop()\"><i class=\"fa fa-angle-up\"></i></a>\n<!--<div id=\"wrapper\" ng-class=\"$ctrl.header.layout_menu\" ng-cloak> -->\n<div id=\"wrapper\" ng-cloak> \n      <header-component ng-show=\"$ctrl.isokf()\"></header-component>\n      <sidebar-component ng-show=\"$ctrl.isokf()\"></sidebar-component>\n      <div id=\"page-wrapper\" ng-class=\"$ctrl.header.animation\" class=\"animated\">\n         <breadcrumb-component ng-show=\"$ctrl.isokf()\"></breadcrumb-component>\n         <div class=\"jumbotron\" ng-if=\"$ctrl.flash\">\n            <div class=\"container\">\n               <div class=\"col-sm-8 col-sm-offset-2\">\n                  <div ng-class=\"{ 'alert': $ctrl.flash, 'alert-success': $ctrl.flash.type === 'success', 'alert-danger': $ctrl.flash.type === 'error' }\" ng-bind=\"$ctrl.flash.message\"></div>\n               </div>\n            </div>\n         </div>\n         <div ng-view=\"\" class=\"page-content\"></div>\n\n         <div class=\"page-footer\">\n            <div class=\"copyright\">2015-2018 © V - Dojo .</div>\n         </div>\n      </div>\n   </div>\n</div>\n</div>\n"
 
 /***/ }),
 

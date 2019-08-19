@@ -10,6 +10,7 @@ export class PageSigninController {
         calendarServices,
         studentServices,
         classServices,
+        $rootScope,
         $q
     ) {
         'ngInject';
@@ -17,6 +18,7 @@ export class PageSigninController {
         this.$log = $log;
         this.$routeParams = $routeParams;
         this.$location = $location;
+        this.$rootScope=$rootScope;
         this.FlashService = flashService;
         this.UserServices = userServices;
         this.CalendarServices = calendarServices;
@@ -31,6 +33,7 @@ export class PageSigninController {
         this.dataLoading = false;
         this.apiKey = {};
         this.UserServices.ClearCredentials();
+        this.flash = this.$rootScope.flash;
         $('body').attr('id', 'signin-page');
         $('#page-wrapper').css({ 'background-color': 'transparent' });
         $('#wrapper').css({ 'background': 'transparent' });
@@ -51,7 +54,8 @@ export class PageSigninController {
         return self.UserServices.Login(self.username, self.password).then(function(data) {
                 if (data.error === true) {
                     self.UserServices.SetCredentials('', '', '','');
-                    self.FlashService.Err(data.message);
+                    self.FlashService.Err(data.message,false);
+                    self.flash=self.$rootScope.flash;
                     return (self.$q.reject(data));
                 }
                 self.apiKey = data.apiKey;
@@ -76,7 +80,8 @@ export class PageSigninController {
                 self.$log.log('Caught an error UserServices, going to notify:', error);
                 self.UserServices.SetCredentials('', '', '', '');
                 self.UserServices.setapikey('');
-                self.FlashService.Err(error);
+                self.FlashService.Err(error,false);
+                self.flash=self.$rootScope.flash;
                 return (self.$q.reject(error));
             }).
         finally(function() {

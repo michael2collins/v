@@ -368,6 +368,24 @@ class StudentDbHandler
 	}
 
 	public
+	function getStudentListsNoSchool()
+	{
+	/**
+	 * Fetching lookup lists for students
+	 */
+		global $school;
+        global $app;
+		$sql = "SELECT distinct school FROM studentlist ";
+		$app->log->debug(print_R("getStudentLists sql after security: $sql", TRUE) );
+		$stmt = $this->conn->prepare($sql);
+
+		$stmt->execute();
+		$slists = $stmt->get_result();
+		$stmt->close();
+		return $slists;
+	}
+
+	public
 	function getStudentNames($theinput)
 	{
         global $app;

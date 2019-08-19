@@ -6,7 +6,7 @@
       <p>Dear user, log in to access the registration area!</p>
       <div class="form-group" ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
         <div class="input-iconx"><i class="fa fa-user"></i>
-          <input type="text" placeholder="Username" name="username" autocomplete="on" required id="username" ng-model="vm.username" class="form-control" />
+          <input type="text" placeholder="Username" name="username" autocomplete='username' required id="username" ng-model="vm.username" class="form-control" />
           <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
 
         </div>
@@ -14,7 +14,7 @@
       <div class="form-group" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
 
         <div class="input-iconx"><i class="fa fa-key"></i>
-          <input type="password" placeholder="Password" name="password" autocomplete="on" id="password" class="form-control" ng-model="vm.password" required />
+          <input type="password" placeholder="Password" name="password" autocomplete='current-password' id="password" class="form-control" ng-model="vm.password" required />
           <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
 
         </div>
@@ -40,6 +40,14 @@
       </div>
 
     </form>
+         <div class="jumbotron" ng-if="vm.flash">
+            <div class="container">
+               <div class="col-sm-8 col-sm-offset-2">
+                  <div ng-class="{ 'alert': vm.flash, 'alert-success': vm.flash.type === 'success', 'alert-danger': vm.flash.type === 'error' }" ng-bind="vm.flash.message"></div>
+               </div>
+            </div>
+         </div>
+    
   </div>
 
 </div>

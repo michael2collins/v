@@ -1,14 +1,14 @@
 <div class="animated bounceInDown col-md-3 col-md-offset-3">
     <div id="signup-page-content" ng-controller="PageSignupController as vm">
 
-        <form name="form" ng-submit="vm.register()" role="form">
+        <form name="form" ng-submit="form.$valid && vm.register()" role="form" class="form" >
             <h1 class="block-heading">Sign Up</h1>
             <div class="row mbl">
                 <div class="col-md-6">
                     <div class="form-group" 
                     ng-class="{ 'has-error': form.firstName.$dirty && form.firstName.$error.required }">
                         <input type="text" name="firstName" value="" id="firstName" class="form-control" 
-                        ng-model="vm.firstname" required placeholder="First Name" />
+                        ng-model="vm.firstname" autocomplete='given-name' required placeholder="First Name" />
                         <span ng-show="form.firstName.$dirty && form.firstName.$error.required" class="help-block">First name is required</span>
                     </div>
                 </div>
@@ -17,27 +17,34 @@
                     <div class="form-group" 
                     ng-class="{ 'has-error': form.lastName.$dirty && form.lastName.$error.required }">
                         <input type="text" name="lastName" id="lastName" class="form-control"
-                        ng-model="vm.lastname" required placeholder="Last Name" />
+                        ng-model="vm.lastname" autocomplete='family-name' required placeholder="Last Name" />
                         <span ng-show="form.lastName.$dirty && form.lastName.$error.required" class="help-block">Last name is required</span>
                     </div>
                 </div>
             </div>
             <div class="form-group" 
             ng-class="{ 'has-error': form.username.$dirty && form.username.$error.required }">
-                <input type="text" name="username" id="username" class="form-control" ng-model="vm.username" required placeholder="User Name" />
+                <input type="text" name="username" id="username" autocomplete='username' class="form-control" ng-model="vm.username" required placeholder="User Name" />
                 <span ng-show="form.username.$dirty && form.username.$error.required" class="help-block">Username is required</span>
             </div>
             <div class="form-group" 
             ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }">
                 <div class="input-iconx"><i class="fa fa-key"></i>
-                    <input type="password" name="password" id="password" value="" placeholder="Password" class="form-control" ng-model="vm.password" ng-pattern="re" required />
+                    <input type="password" name="password" id="newpassword" autocomplete='new-password' 
+                    value="" placeholder="Password" class="form-control" 
+                    ng-change="vm.analyze(vm.password)"
+                    ng-model="vm.password" required />
+            <div ng-style="vm.passwordStrength"></div>
+                    
                     <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
                     <span ng-show="form.password.$error.pattern" class="help-block">Not a valid password.</span>
                 </div>
             </div>
             <div class="form-group">
                 <div class="input-iconx"><i class="fa fa-key"></i>
-                    <input type="password" name="confirm_password" value="" ng-keyup="vm.compare(vm.confirm_password)" ng-pattern="re" placeholder="Confirm Password" class="form-control" ng-model="vm.confirm_password" required />
+                    <input type="password" name="confirm_password" id="confirm_password" value="" autocomplete='new-password' 
+                    ng-keyup="vm.compare(vm.confirm_password)" placeholder="Confirm Password" class="form-control" 
+                    ng-model="vm.confirm_password" required />
                     <span ng-show="vm.isconfirm || form.confirm_password.$dirty " ng-class="{true:'green',false:'red'}[vm.isconfirm]">Password does {{vm.isconfirm==true?'':'not'}} match</span>
                 </div>
             </div>
@@ -48,7 +55,16 @@
                     <span ng-show="form.email.$error.email" class="help-block">Not valid email.</span>
                 </div>
             </div>
+            <select id="inputStudentSchool" type="text" name="StudentSchool" ng-model="vm.school" 
+                 required 
+                    class="form-control">
+                    <option ng-repeat="iter in vm.StudentList.StudentSchoolList" ng-selected="{{iter.school==vm.school}}" placeholder="Select" value="{{iter.school}}">{{iter.school}}</option>
+                  </select>
+                              
             <span class="help-block mtm mbl text-muted">By clicking Create my account, you agree to our<a href="/terms"> Terms and Data Use Policy</a></span>
+
+                <input type="checkbox" ng-click="vm.toggle()"> 
+    <b>Show Password</b> 
 
             <div class="form-actions">
                 <button type="submit" ng-disabled="form.$invalid || vm.dataLoading" class="btn btn-lg btn-primary btn-block">Create my account</button>
@@ -58,5 +74,13 @@
             </div>
 
         </form>
+         <div class="jumbotron" ng-if="vm.flash">
+            <div class="container">
+               <div class="col-sm-8 col-sm-offset-2">
+                  <div ng-class="{ 'alert': vm.flash, 'alert-success': vm.flash.type === 'success', 'alert-danger': vm.flash.type === 'error' }" ng-bind="vm.flash.message"></div>
+               </div>
+            </div>
+         </div>
+        
     </div>
 </div>

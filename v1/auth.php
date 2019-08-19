@@ -145,6 +145,9 @@ $app->post('/register', function() use ($app) {
         $username = $dataJsonDecode->thedata->username;
     } else { errorRequiredParams('username'); }
 
+    if (isset($dataJsonDecode->thedata->school)) {
+        $school = $dataJsonDecode->thedata->school;
+    } else { errorRequiredParams('school'); }
 
     $response = array();
 
@@ -153,7 +156,7 @@ $app->post('/register', function() use ($app) {
     validateEmail($email);
 
     $db = new DbHandler();
-    $res = $db->createUser($firstname, $lastname, $email, $password, $username);
+    $res = $db->createUser($firstname, $lastname, $email, $password, $username,$school);
 
     if ($res == USER_CREATED_SUCCESSFULLY) {
         $response["error"] = false;

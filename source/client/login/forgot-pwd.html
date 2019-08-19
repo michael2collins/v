@@ -37,5 +37,13 @@
       </div>
 
     </form>
+         <div class="jumbotron" ng-if="pagevm.flash">
+            <div class="container">
+               <div class="col-sm-8 col-sm-offset-2">
+                  <div ng-class="{ 'alert': pagevm.flash, 'alert-success': pagevm.flash.type === 'success', 'alert-danger': pagevm.flash.type === 'error' }" ng-bind="pagevm.flash.message"></div>
+               </div>
+            </div>
+         </div>
+
   </div>
 </div>

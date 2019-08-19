@@ -33,9 +33,10 @@ class DbHandler {
      * @param String $email User login email id
      * @param String $password User login password
      */
-    public function createUser($name,$lastname, $email, $password, $username) {
+    public function createUser($name,$lastname, $email, $password, $username, $school) {
         require_once 'PassHash.php';
         $response = array();
+        global $app;
 
         // First check if user already existed in db
         if (!$this->isUserExists($email)) {
@@ -46,21 +47,18 @@ class DbHandler {
             $api_key = $this->generateApiKey();
 
             // insert query
-            $stmt = $this->conn->prepare("INSERT INTO users(name, username, lastname, email, password_hash, api_key, status) values(?, ?, ?, ?, ?, ?, 1)");
-            $stmt->bind_param("ssssss", $name, $username, $lastname, $email, $password_hash, $api_key);
+            $stmt = $this->conn->prepare("INSERT INTO users(name, username, lastname, email, password_hash, api_key, school, status, pictureurl,systememail) values(?, ?, ?, ?, ?, ?, ?, 1, 'null','null')");
+            $stmt->bind_param("sssssss", $name, $username, $lastname, $email, $password_hash, $api_key, $school);
 
-            $result = $stmt->execute();
-
-            $stmt->close();
-
-            // Check for successful insertion
-            if ($result) {
-                // User successfully inserted
-                return USER_CREATED_SUCCESSFULLY;
+            if ($stmt->execute() ) {
+                $stmt->close();
+                    return USER_CREATED_SUCCESSFULLY;
             } else {
-                // Failed to create user
-                return USER_CREATE_FAILED;
+                $app->log->debug( print_R("createUser  execute failed", TRUE));
+//                printf("Errormessage: %s\n", $this->conn->error);
+                    return USER_CREATE_FAILED;
             }
+
         } else {
             // User with same email already existed in the db
             return USER_ALREADY_EXISTED;
@@ -130,6 +128,7 @@ class DbHandler {
 
     public function saveResetToken($token, $username) {
         require_once 'PassHash.php';
+        global $app;
 
         // Generating token hash
         $token_hash = PassHash::hash($token);
@@ -143,7 +142,7 @@ class DbHandler {
             return 1;
         } else {
             $app->log->debug( print_R("saveResetToken  execute failed", TRUE));
-            printf("Errormessage: %s\n", $this->conn->error);
+//            printf("Errormessage: %s\n", $this->conn->error);
             return -1;
         }
 

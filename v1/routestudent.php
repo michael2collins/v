@@ -1529,6 +1529,28 @@ $app->put('/students/:id', 'authenticate', 'isAdminOrOperator', 'setDebug', func
     echoRespnse(200, $response);
 });
 
+$app->get('/studentschools', 'setDebug', function() use ($app){
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetching all user tasks
+    $result = $db->getStudentListsNoSchool();
+
+    $response["error"] = false;
+    $response["StudentSchoolList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        $tmp["school"] = (empty($slist["school"]) ? "NULL" : $slist["school"]);
+
+            array_push($response["StudentSchoolList"], $tmp);
+    }
+
+    echoRespnse(200, $response);
+});
+
+
 $app->get('/studentlists', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
     $response = array();
     $db = new StudentDbHandler();

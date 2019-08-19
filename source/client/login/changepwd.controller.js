@@ -8,6 +8,7 @@ export class ChangepwdController {
         flashService,
         userServices,
         Notification,
+        $rootScope,
         $q
     ) {
         'ngInject';
@@ -18,6 +19,7 @@ export class ChangepwdController {
         this.$location = $location;
         this.flashService = flashService;
         this.userServices = userServices;
+        this.$rootScope = $rootScope;
         this.$q = $q;
         this.notification = Notification;
 
@@ -33,6 +35,7 @@ export class ChangepwdController {
         this.confirm_password = null;
         this.oldpassword = null;
         this.userdta = null;
+        this.flash = this.$rootScope.flash;
 
 //in case we want to go back        
 //        this.re = /^[a-zA-Z]\w{3,14}$/;
@@ -60,7 +63,6 @@ RegEx	Description
             "margin-left": "5px"
         };
 
-//        this.getUserDetails();
         $('body').attr('id', 'signup-page');
         $('#page-wrapper').css({ 'background-color': 'transparent' });
         $('#wrapper').css({ 'background': 'transparent' });
@@ -72,25 +74,7 @@ RegEx	Description
         //this.$log.logEnabled(false);
     }
 
-    getUserDetails() {
-        var vm = this;
 
-        vm.$log.log('ChangepwdController controller getUserDetails entered');
-        return vm.UserServices.getUserDetails().then(function(data) {
-                vm.$log.log("ChangepwdController controller service getuserdetails returned:", data);
-                vm.userdta = data;
-                return vm.userdta;
-            },
-
-            function(error) {
-                vm.$log.log('Caught an error getUserDetails, going to notify:', error);
-                vm.userdta = [];
-                vm.message = error;
-                return (vm.$q.reject(error));
-            }).
-        finally(function() {});
-
-    }
 
     analyze(value) {
         var vm=this;
@@ -130,7 +114,6 @@ RegEx	Description
         self.$log.log('ChangepwdController register function entered');
         self.dataLoading = true;
         var thedata = {
-//            username: self.userdta.username,
             confirm_password: self.confirm_password,
             password: self.password,
             oldpassword: self.oldpassword
@@ -143,6 +126,13 @@ RegEx	Description
         return self.userServices.createUser(path, thedata).then(function(data) {
                 self.$log.log('register returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '','');
+                    self.FlashService.Err(data.message,false);
+                    self.flash=self.$rootScope.flash;
+                    return (self.$q.reject(data));
+                }
+                
                 //                            alert('Change successful', true);
                 self.notification.success({ message: 'Change successful', delay: 5000 });
 
@@ -152,6 +142,7 @@ RegEx	Description
             function(error) {
                 self.$log.log('Caught an error , going to notify:', error);
                 self.flashService.Err(error);
+                    self.flash=self.$rootScope.flash;
                 return (self.$q.reject(error));
             }).
         finally(function() {

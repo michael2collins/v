@@ -7,6 +7,7 @@ export class ForgotpwdController {
         $location,
         flashService,
         userServices,
+        $rootScope,
         $q
     ) {
         'ngInject';
@@ -16,6 +17,7 @@ export class ForgotpwdController {
         this.$routeParams = $routeParams;
         this.$location = $location;
         this.flashService = flashService;
+        this.$rootScope = $rootScope;
         this.userServices = userServices;
         this.$q = $q;
 
@@ -27,6 +29,8 @@ export class ForgotpwdController {
         this.dataLoading = false;
         this.apiKey = {};
         this.userServices.ClearCredentials();
+        this.flash = this.$rootScope.flash;
+
         $('#page-wrapper').css({ 'background-color': 'transparent' });
         $('#wrapper').css({ 'background': 'transparent' });
         $('body').attr('id', 'signin-page');
@@ -48,6 +52,13 @@ export class ForgotpwdController {
         return self.userServices.forgotpassword(path).then(function(data) {
                 self.$log.log('UserServices returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '','');
+                    self.FlashService.Err(data.message,false);
+                    self.flash=self.$rootScope.flash;
+                    return (self.$q.reject(data));
+                }
+                
                 self.apiKey = data.apiKey;
                 alert("Check your email for reset information");
 
@@ -58,6 +69,7 @@ export class ForgotpwdController {
                 self.$log.log('Caught an error UserServices, going to notify:', error);
                 self.userServices.SetCredentials('', '', '');
                 self.flashService.Err(error);
+                    self.flash=self.$rootScope.flash;
                 return (self.$q.reject(error));
             }).
         finally(function() {

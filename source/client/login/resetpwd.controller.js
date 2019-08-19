@@ -7,6 +7,7 @@ export class ResetpwdController {
         $location,
         flashService,
         userServices,
+        $rootScope,
         $q
     ) {
         'ngInject';
@@ -17,6 +18,7 @@ export class ResetpwdController {
         this.$location = $location;
         this.flashService = flashService;
         this.userServices = userServices;
+        this.$rootScope = $rootScope;
         this.$q = $q;
 
     }
@@ -29,7 +31,17 @@ export class ResetpwdController {
         this.email = null;
         this.isconfirm = null;
         this.confirm_password = null;
-        this.re = /^[a-zA-Z]\w{3,14}$/;
+//        this.re = /^[a-zA-Z]\w{3,14}$/;
+        this.strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+        this.mediumRegex = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+        this.flash = this.$rootScope.flash;
+
+        this.passwordStrength = {
+            "float": "left",
+            "width": "100px",
+            "height": "25px",
+            "margin-left": "5px"
+        };
 
         this.isconfirm = null;
 
@@ -48,6 +60,29 @@ export class ResetpwdController {
     }
 
 
+    analyze(value) {
+        var vm=this;
+        if(vm.strongRegex.test(value)) {
+            vm.passwordStrength["background-color"] = "green";
+        } else if(vm.mediumRegex.test(value)) {
+            vm.passwordStrength["background-color"] = "orange";
+        } else {
+            vm.passwordStrength["background-color"] = "red";
+        }
+    }
+
+     toggle() { 
+            var temp2 = document.getElementById("newpassword"); 
+            var temp3 = document.getElementById("confirm_password"); 
+            if (temp2.type === "password") { 
+                temp2.type = "text"; 
+                temp3.type = "text"; 
+            } 
+            else { 
+                temp2.type = "password"; 
+                temp3.type = "password"; 
+            } 
+        } 
 
 
     compare(repass) {
@@ -70,12 +105,20 @@ export class ResetpwdController {
         return self.userServices.resetpassword(path).then(function(data) {
                 self.$log.log('UserServices resetpwd returned data');
                 self.$log.log(data);
+                if (data.error === true) {
+                    self.UserServices.SetCredentials('', '', '','');
+                    self.FlashService.Err(data.message,false);
+                    self.flash=self.$rootScope.flash;
+                    return (self.$q.reject(data));
+                }
+                
                 self.apiKey = data.api_Key;
                 self.userServices.ResetCredentials(data.username, data.api_key);
                 $("body>.default-page").show();
                 $("body>.extra-page").html($(".page-content").html()).hide();
                 $('body').attr('id', '');
-                self.flashService.Success("Password reset complete");
+                self.flashService.Success("Password reset complete",false);
+                    self.flash=self.$rootScope.flash;
 
                 self.$location.path('/#');
                 return data;
@@ -84,7 +127,8 @@ export class ResetpwdController {
                 self.$log.log('Caught an error UserServices resetpwd, going to notify:', error);
                 self.userServices.SetCredentials('', '', '');
                 self.userServices.setapikey('');
-                self.flashService.Err(error);
+                self.flashService.Err(error,false);
+                    self.flash=self.$rootScope.flash;
                 return (self.$q.reject(error));
             }).
         finally(function() {

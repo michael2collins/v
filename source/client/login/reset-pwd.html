@@ -9,7 +9,7 @@
           <input type="text" 
             placeholder="Username" 
             name="username" 
-            autocomplete="on"
+            autocomplete='username'
             required
             id="username" 
             ng-model="pagevm.username"
@@ -21,14 +21,17 @@
         <div class="form-group input-icon mbl" ng-class="{ 'has-error': form.password.$dirty && form.password.$error.required }"><i class="fa fa-key"></i>
             <input type="password" 
                 name="password" 
-                id="password" 
+                id="newpassword" 
+                autocomplete="new-password"
                 value=""
                 placeholder="Password"
                 class="form-control" 
                 ng-keyup="pagevm.compare(pagevm.confirm_password)"
                 ng-model="pagevm.password" 
-                ng-pattern="pagevm.re"
+                ng-change="pagevm.analyze(pagevm.password)"
                 required />
+            <div ng-style="pagevm.passwordStrength"></div>
+
             <span ng-show="form.password.$dirty && form.password.$error.required" class="help-block">Password is required</span>
             <span ng-show="form.password.$error.pattern" class="help-block">Not a valid password.</span>
         </div>
@@ -38,7 +41,7 @@
             value="" 
             id="confirm_password"
             ng-keyup="pagevm.compare(pagevm.confirm_password)"
-            ng-pattern="pagevm.re"
+                autocomplete='new-password'
             placeholder="Confirm Password" 
             class="form-control"
                 ng-model="pagevm.confirm_password" 
@@ -57,6 +60,8 @@
                 required />
             <span ng-show="form.email.$error.email" class="help-block">Not valid email.</span>
       </div>
+                <input type="checkbox" ng-click="pagevm.toggle()"> 
+    <b>Show Password</b> 
 
         <div class="form-actions">
             <button type="submit" 
@@ -78,5 +83,13 @@
       </div>
 
     </form>
+         <div class="jumbotron" ng-if="pagevm.flash">
+            <div class="container">
+               <div class="col-sm-8 col-sm-offset-2">
+                  <div ng-class="{ 'alert': pagevm.flash, 'alert-success': pagevm.flash.type === 'success', 'alert-danger': pagevm.flash.type === 'error' }" ng-bind="pagevm.flash.message"></div>
+               </div>
+            </div>
+         </div>
+
   </div>
 </div>
