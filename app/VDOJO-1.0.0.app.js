@@ -64039,35 +64039,34 @@ var ModalPromotionInstanceController = exports.ModalPromotionInstanceController 
 
       //    vm.portalDataService.Portlet('promotion.controller.js');
       vm.rptgridOptionsnew.onRegisterApi = function (gridApi) {
-        var self = this;
-        self.$log.log('vm gridapi onRegisterApi');
-        self.rptgridApi = gridApi;
+        vm.$log.log('vm gridapi onRegisterApi');
+        vm.rptgridApi = gridApi;
 
-        gridApi.pagination.on.paginationChanged(self.$scope, function (newPage, pageSize) {
-          self.$log.log('pagination changed');
-          self.setGridLength(pageSize);
-          vm.gridApi.core.notifyDataChange(self.uiGridConstants.dataChange.ALL);
+        gridApi.pagination.on.paginationChanged(vm.$scope, function (newPage, pageSize) {
+          vm.$log.log('pagination changed');
+          vm.setGridLength(pageSize);
+          vm.rptgridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
         });
 
-        gridApi.selection.on.rowSelectionChanged(self.$scope, function (row) {
+        gridApi.selection.on.rowSelectionChanged(vm.$scope, function (row) {
           var msg = 'grid row selected ' + row.entity;
-          self.$log.log(msg);
+          vm.$log.log(msg);
 
-          var selectedStudentarr = self.grid.api.selection.getSelectedRows();
-          self.$log.log('selected', selectedStudentarr);
-          self.setSelectedArray(selectedStudentarr);
+          var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+          vm.$log.log('selected', selectedStudentarr);
+          vm.setSelectedArray(selectedStudentarr);
         });
-        gridApi.selection.on.rowSelectionChangedBatch(self.$scope, function (rows) {
-          self.$log.log("grid batch");
-          var selectedStudentarr = self.grid.api.selection.getSelectedRows();
-          self.$log.log('batch selected', selectedStudentarr);
-          self.setSelectedArray(selectedStudentarr);
+        gridApi.selection.on.rowSelectionChangedBatch(vm.$scope, function (rows) {
+          vm.$log.log("grid batch");
+          var selectedStudentarr = this.grid.api.selection.getSelectedRows();
+          vm.$log.log('batch selected', selectedStudentarr);
+          vm.setSelectedArray(selectedStudentarr);
         });
-        gridApi.edit.on.afterCellEdit(self.$scope, function (rowEntity, colDef, newValue, oldValue) {
-          self.$log.log('rowEntity');
-          self.$log.log(rowEntity);
+        gridApi.edit.on.afterCellEdit(vm.$scope, function (rowEntity, colDef, newValue, oldValue) {
+          vm.$log.log('rowEntity');
+          vm.$log.log(rowEntity);
           //Alert to show what info about the edit is available
-          self.$log.log('Column: ' + colDef.name + ' newValue: ' + newValue + ' oldValue: ' + oldValue);
+          vm.$log.log('Column: ' + colDef.name + ' newValue: ' + newValue + ' oldValue: ' + oldValue);
           if (newValue != oldValue) {
             //       updatetestcandidate(colDef,newValue,rowEntity);       
           }
@@ -64099,11 +64098,11 @@ var ModalPromotionInstanceController = exports.ModalPromotionInstanceController 
         vm.selected = true;
         for (var i = 0, len = inputArray.length; i < len; i++) {
           var info = {
-            ContactID: inputArray[i].contactID,
+            ContactID: inputArray[i].ContactID,
             studentname: inputArray[i].FirstName + ' ' + inputArray[i].LastName,
             FirstName: inputArray[i].FirstName,
             LastName: inputArray[i].LastName,
-            rankType: inputArray[i].ranktype,
+            rankType: inputArray[i].rankType,
             nextClass: inputArray[i].nextClass,
             classcat: inputArray[i].classcat,
             agecat: inputArray[i].agecat,
