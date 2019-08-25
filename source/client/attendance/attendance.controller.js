@@ -3,7 +3,7 @@ import angular from 'angular';
 export class AttendanceTableBasicController {
    constructor(
       $routeParams, $log, AttendanceServices,
-      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService,UserServices
+      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService, UserServices
    ) {
       'ngInject';
       this.$routeParams = $routeParams;
@@ -25,8 +25,8 @@ export class AttendanceTableBasicController {
       var vm = this;
 
       vm.DOWlist = [];
-      vm.limit = 0;
-      vm.limits = [10, 20, 50, 100, 200, 500];
+      vm.limit = "100";
+      vm.limits = ["10", "20", "50", "100", "200", "500"];
       vm.dowChoice = '';
       vm.theclass = '';
       vm.theclassid = '';
@@ -39,6 +39,13 @@ export class AttendanceTableBasicController {
       vm.showpics = true;
       vm.showlist = false;
 
+      vm.estatus = {
+         opened: false
+      };
+      vm.sstatus = {
+         opened: false
+      };
+
       vm.weekday = new Array(7);
       vm.weekday[0] = "Sunday";
       vm.weekday[1] = "Monday";
@@ -47,7 +54,10 @@ export class AttendanceTableBasicController {
       vm.weekday[4] = "Thursday";
       vm.weekday[5] = "Friday";
       vm.weekday[6] = "Saturday";
+      vm.EndDate = vm.moment().format(vm.bdateformato);
+      vm.StartDate =vm.moment();
       
+
       vm.tdays = new Array(7);
       vm.tdays[0] = "day1";
       vm.tdays[1] = "day2";
@@ -57,7 +67,7 @@ export class AttendanceTableBasicController {
       vm.tdays[5] = "day6";
       vm.tdays[6] = "day7";
 
-      vm.dateList =[];
+      vm.dateList = [];
 
       vm.todayDOW = null;
       vm.nowChoice = 0;
@@ -77,6 +87,10 @@ export class AttendanceTableBasicController {
       vm.checkModel = [];
       vm.daysSince = '';
       vm.daysAttended = '';
+      vm.datearr = [];
+      vm.bdateformat = "yyyy-MM-dd";
+      vm.bdateformato = "YYYY-MM-DD";
+
 
       //setGridsize('col-md-12');
       vm.activate();
@@ -85,22 +99,121 @@ export class AttendanceTableBasicController {
       this.$log.log("attendance dismissed");
       //this.$log.logEnabled(false);
       this.showGrid = false;
-      this.photos=[];
+      this.photos = [];
    };
 
-   list(){ //switching to pics when clicked
+   sdateopen($event) {
       var vm = this;
-      vm.showpics=true;
-      vm.showlist=false;
-      vm.$log.log('list',vm.showlist);
-      
+      vm.sstatus.opened = true;
+   }
+   edateopen($event) {
+      var vm = this;
+      vm.estatus.opened = true;
+   }
+   changeDateo() {
+      var vm = this;
+      vm.datearr = [];
+      // Get "next" monday
+      var tmp = vm.moment(vm.StartDate).clone().day(1);
+      if (tmp.isAfter(vm.moment(vm.StartDate), 'd')) {
+         vm.datearr.push(tmp.format(vm.bdateformato));
+      }
+      while (tmp.isBefore(vm.moment(vm.EndDate))) {
+         tmp.add(7, 'days');
+         vm.datearr.push(tmp.format(vm.bdateformato));
+      }
+   }
+   changeDate() {
+      //see https://github.com/kodie/moment-weekdaysin
+      var vm=this;
+      vm.datearr=[];
+      var tmparr = vm.moment(vm.StartDate).weekdaysInBetween(vm.EndDate,'Monday');
+      for (var i=tmparr.length;i>0;i--) {
+         vm.datearr.push(vm.moment(tmparr[i]).format(vm.bdateformato));
+      }
+   }
+/*
+ days(start, end, weekdays, index) {
+    var vm=this;
+    var days = [], d = vm.moment(start).startOf('day');
+    var isIndexed = (typeof index !== 'undefined' && index !== null);
+
+    if (typeof weekdays !== 'undefined' && weekdays !== null) {
+      if (weekdays.constructor !== Array) { weekdays = [weekdays]; }
+
+      for (var w = 0; w < weekdays.length; w++) {
+        weekdays[w] = vm.moment(start).day(weekdays[w]).day();
+      }
+    } else {
+      weekdays = [0,1,2,3,4,5,6];
+    }
+
+    for (var i = 0; i < (vm.moment(end).endOf('day').diff(vm.moment(start), 'days') + 1); i++) {
+      var wd = d.day();
+
+      if (isIndexed && !days[wd]) { days[wd] = []; }
+
+      if (weekdays.indexOf(wd) !== -1) {
+        if (isIndexed) {
+          days[wd].push(vm.moment(d));
+        } else {
+          days.push(vm.moment(d));
+        }
+      }
+
+      d.add(1, 'day');
+    }
+
+    if (isIndexed) {
+      var nDays = [];
+
+      if (index.constructor !== Array) { index = [index]; }
+
+      for (var a = 0; a < days.length; a++) {
+        if (!days[a].length) { continue; }
+
+        for (var n = 0; n < index.length; n++) {
+          var ind = parseInt(index[n]);
+          if (isNaN(ind)) { continue; }
+          var ni = (ind - 1);
+          if (ind < 0) { ni = (days[a].length + ind); }
+          nDays.push(days[a][ni]);
+        }
+      }
+
+      days = nDays;
+    }
+
+    days = days
+      .sort(function(a, b){ return vm.moment.utc(a).diff(vm.moment.utc(b)); })
+      .filter(function(o, p, a){ return (o != null && !o.isSame(a[p - 1])); });
+
+    if (!days.length) { return false; }
+    if (days.length === 1) { return days[0]; }
+
+    return days;
+  }
+
+  weekdaysInBetween(date, weekdays, index) {
+     var vm=this;
+    if (!date) { date = new Date(); }
+    return vm.days(vm.moment(this).add(1, 'day'), vm.moment(date).subtract(1, 'day'), weekdays, index);
+  }
+*/
+
+   list() { //switching to pics when clicked
+      var vm = this;
+      vm.showpics = true;
+      vm.showlist = false;
+      vm.$log.log('list', vm.showlist);
+
    }
    pics() { //switching to list when clicked
       var vm = this;
-      vm.showpics=false;
-      vm.showlist=true;
-      vm.$log.log('pics',vm.showpics);
-      
+      vm.showpics = false;
+      vm.showlist = true;
+      vm.$log.log('pics', vm.showpics);
+
    }
    settoday(aDay) {
       var vm = this;
@@ -157,6 +270,8 @@ export class AttendanceTableBasicController {
       var vm = this;
       vm.dowChoice = theChoice;
       vm.$log.log('setDOW', vm.dowChoice);
+      vm.setMonday();
+      
    }
    getDayNum(aDOW) {
       var vm = this;
@@ -184,7 +299,9 @@ export class AttendanceTableBasicController {
 
    setMonday() {
       var vm = this;
-      vm.MondayOfWeek = vm.getMonday(new Date());
+//      vm.MondayOfWeek = vm.getMonday(new Date());
+      
+      vm.MondayOfWeek = vm.getMonday(vm.dowChoice == "" ? new Date() : vm.dowChoice);
       var d2 = new Date(vm.MondayOfWeek);
       vm.SundayOfWeek = vm.moment(d2).add(-1, 'days').format('YYYY-MM-DD');
       vm.TuesdayOfWeek = vm.moment(d2).add(1, 'days').format('YYYY-MM-DD');
@@ -192,24 +309,24 @@ export class AttendanceTableBasicController {
       vm.ThursdayOfWeek = vm.moment(d2).add(3, 'days').format('YYYY-MM-DD');
       vm.FridayOfWeek = vm.moment(d2).add(4, 'days').format('YYYY-MM-DD');
       vm.SaturdayOfWeek = vm.moment(d2).add(5, 'days').format('YYYY-MM-DD');
-      var ofWeek = {id: 0,  datev: vm.SundayOfWeek, dateL: vm.weekday[0]};
+      var ofWeek = { id: 0, datev: vm.SundayOfWeek, dateL: vm.weekday[0] };
       vm.createOfWeek(ofWeek);
-      ofWeek=  {id: 1,  datev: vm.moment(d2).format('YYYY-MM-DD'),dateL: vm.weekday[1]};
+      ofWeek = { id: 1, datev: vm.moment(d2).format('YYYY-MM-DD'), dateL: vm.weekday[1] };
       vm.createOfWeek(ofWeek);
-      ofWeek= {id: 2,  datev: vm.TuesdayOfWeek,dateL: vm.weekday[2]};
+      ofWeek = { id: 2, datev: vm.TuesdayOfWeek, dateL: vm.weekday[2] };
       vm.createOfWeek(ofWeek);
-      ofWeek= {id: 3,  datev: vm.WednesdayOfWeek,dateL: vm.weekday[3]};
+      ofWeek = { id: 3, datev: vm.WednesdayOfWeek, dateL: vm.weekday[3] };
       vm.createOfWeek(ofWeek);
-      ofWeek= {id: 4,  datev: vm.ThursdayOfWeek,dateL: vm.weekday[4]};
+      ofWeek = { id: 4, datev: vm.ThursdayOfWeek, dateL: vm.weekday[4] };
       vm.createOfWeek(ofWeek);
-      ofWeek= {id: 5,  datev: vm.FridayOfWeek,dateL: vm.weekday[5]};
+      ofWeek = { id: 5, datev: vm.FridayOfWeek, dateL: vm.weekday[5] };
       vm.createOfWeek(ofWeek);
-      ofWeek= {id: 6,  datev: vm.SaturdayOfWeek,dateL: vm.weekday[6]};
+      ofWeek = { id: 6, datev: vm.SaturdayOfWeek, dateL: vm.weekday[6] };
       vm.createOfWeek(ofWeek);
 
    }
    createOfWeek(input) {
-      var vm=this;
+      var vm = this;
       var ofWeek = input;
       vm.dateList.push(ofWeek);
    }
@@ -325,10 +442,16 @@ export class AttendanceTableBasicController {
    activate() {
       var vm = this;
 
-//      this.portalDataService.Portlet('table-basic-attendance');
-        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
-            vm.$log = vm.$log.getInstance('AttendanceTableBasicController',vm.UserServices.isDebugEnabled());
-        }
+      vm.EndDate = vm.moment();
+      vm.StartDate = vm.moment();
+      vm.StartDate = vm.StartDate.subtract(60, "days");
+      vm.StartDate = vm.StartDate.toDate();
+      vm.EndDate = vm.EndDate.toDate();
+
+      //      this.portalDataService.Portlet('table-basic-attendance');
+      if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined) {
+         vm.$log = vm.$log.getInstance('AttendanceTableBasicController', vm.UserServices.isDebugEnabled());
+      }
 
       vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
          //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
@@ -367,11 +490,10 @@ export class AttendanceTableBasicController {
       });
       vm.$log.log('b4 getDOW and schedule', vm.todayDOW);
 
+      vm.getDOW();
+      vm.setDOW(vm.Util.geteFormattedDate(vm.MondayOfWeek));
+
       vm.$q.all([
-            vm.getDOW().then(function() {
-               vm.setDOW(vm.Util.geteFormattedDate(vm.MondayOfWeek));
-               vm.setLimit(100);
-            }),
             vm.getSchedule(vm.todayDOW).then(function() {
                vm.setNowChoice();
                vm.$log.log('nowChoice', vm.nowChoice, 'classes', vm.classes);
@@ -499,7 +621,7 @@ export class AttendanceTableBasicController {
                }
             }
             vm.$log.log('photos', vm.photos);
-            vm.showGrid=true;
+            vm.showGrid = true;
             return vm.data;
          },
          function(error) {
@@ -549,12 +671,16 @@ export class AttendanceTableBasicController {
 
    getDOW() {
       var vm = this;
-      return vm.AttendanceServices.getDOW().then(function(data) {
+/*      return vm.AttendanceServices.getDOW().then(function(data) {
          vm.$log.log('getDOW returned data');
          vm.$log.log(data);
          vm.DOWlist = data.DOWlist;
          return vm.DOWlist;
       });
+*/
+      vm.changeDate();
+      vm.DOWlist = vm.datearr;
+      return vm.DOWlist;
    }
 
    fillClassList() {

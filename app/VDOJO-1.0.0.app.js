@@ -44818,8 +44818,8 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          var vm = this;
 
          vm.DOWlist = [];
-         vm.limit = 0;
-         vm.limits = [10, 20, 50, 100, 200, 500];
+         vm.limit = "100";
+         vm.limits = ["10", "20", "50", "100", "200", "500"];
          vm.dowChoice = '';
          vm.theclass = '';
          vm.theclassid = '';
@@ -44832,6 +44832,13 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          vm.showpics = true;
          vm.showlist = false;
 
+         vm.estatus = {
+            opened: false
+         };
+         vm.sstatus = {
+            opened: false
+         };
+
          vm.weekday = new Array(7);
          vm.weekday[0] = "Sunday";
          vm.weekday[1] = "Monday";
@@ -44840,6 +44847,8 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          vm.weekday[4] = "Thursday";
          vm.weekday[5] = "Friday";
          vm.weekday[6] = "Saturday";
+         vm.EndDate = vm.moment().format(vm.bdateformato);
+         vm.StartDate = vm.moment();
 
          vm.tdays = new Array(7);
          vm.tdays[0] = "day1";
@@ -44870,6 +44879,9 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          vm.checkModel = [];
          vm.daysSince = '';
          vm.daysAttended = '';
+         vm.datearr = [];
+         vm.bdateformat = "yyyy-MM-dd";
+         vm.bdateformato = "YYYY-MM-DD";
 
          //setGridsize('col-md-12');
          vm.activate();
@@ -44882,6 +44894,113 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          this.showGrid = false;
          this.photos = [];
       }
+   }, {
+      key: 'sdateopen',
+      value: function sdateopen($event) {
+         var vm = this;
+         vm.sstatus.opened = true;
+      }
+   }, {
+      key: 'edateopen',
+      value: function edateopen($event) {
+         var vm = this;
+         vm.estatus.opened = true;
+      }
+   }, {
+      key: 'changeDateo',
+      value: function changeDateo() {
+         var vm = this;
+         vm.datearr = [];
+         // Get "next" monday
+         var tmp = vm.moment(vm.StartDate).clone().day(1);
+         if (tmp.isAfter(vm.moment(vm.StartDate), 'd')) {
+            vm.datearr.push(tmp.format(vm.bdateformato));
+         }
+         while (tmp.isBefore(vm.moment(vm.EndDate))) {
+            tmp.add(7, 'days');
+            vm.datearr.push(tmp.format(vm.bdateformato));
+         }
+      }
+   }, {
+      key: 'changeDate',
+      value: function changeDate() {
+         //see https://github.com/kodie/moment-weekdaysin
+         var vm = this;
+         vm.datearr = [];
+         var tmparr = vm.moment(vm.StartDate).weekdaysInBetween(vm.EndDate, 'Monday');
+         for (var i = tmparr.length; i > 0; i--) {
+            vm.datearr.push(vm.moment(tmparr[i]).format(vm.bdateformato));
+         }
+      }
+      /*
+       days(start, end, weekdays, index) {
+          var vm=this;
+          var days = [], d = vm.moment(start).startOf('day');
+          var isIndexed = (typeof index !== 'undefined' && index !== null);
+      
+          if (typeof weekdays !== 'undefined' && weekdays !== null) {
+            if (weekdays.constructor !== Array) { weekdays = [weekdays]; }
+      
+            for (var w = 0; w < weekdays.length; w++) {
+              weekdays[w] = vm.moment(start).day(weekdays[w]).day();
+            }
+          } else {
+            weekdays = [0,1,2,3,4,5,6];
+          }
+      
+          for (var i = 0; i < (vm.moment(end).endOf('day').diff(vm.moment(start), 'days') + 1); i++) {
+            var wd = d.day();
+      
+            if (isIndexed && !days[wd]) { days[wd] = []; }
+      
+            if (weekdays.indexOf(wd) !== -1) {
+              if (isIndexed) {
+                days[wd].push(vm.moment(d));
+              } else {
+                days.push(vm.moment(d));
+              }
+            }
+      
+            d.add(1, 'day');
+          }
+      
+          if (isIndexed) {
+            var nDays = [];
+      
+            if (index.constructor !== Array) { index = [index]; }
+      
+            for (var a = 0; a < days.length; a++) {
+              if (!days[a].length) { continue; }
+      
+              for (var n = 0; n < index.length; n++) {
+                var ind = parseInt(index[n]);
+                if (isNaN(ind)) { continue; }
+                var ni = (ind - 1);
+                if (ind < 0) { ni = (days[a].length + ind); }
+                nDays.push(days[a][ni]);
+              }
+            }
+      
+            days = nDays;
+          }
+      
+          days = days
+            .sort(function(a, b){ return vm.moment.utc(a).diff(vm.moment.utc(b)); })
+            .filter(function(o, p, a){ return (o != null && !o.isSame(a[p - 1])); });
+      
+          if (!days.length) { return false; }
+          if (days.length === 1) { return days[0]; }
+      
+          return days;
+        }
+      
+        weekdaysInBetween(date, weekdays, index) {
+           var vm=this;
+          if (!date) { date = new Date(); }
+          return vm.days(vm.moment(this).add(1, 'day'), vm.moment(date).subtract(1, 'day'), weekdays, index);
+        }
+      */
+
    }, {
       key: 'list',
       value: function list() {
@@ -44965,6 +45084,7 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          var vm = this;
          vm.dowChoice = theChoice;
          vm.$log.log('setDOW', vm.dowChoice);
+         vm.setMonday();
       }
    }, {
       key: 'getDayNum',
@@ -44997,7 +45117,9 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
       key: 'setMonday',
       value: function setMonday() {
          var vm = this;
-         vm.MondayOfWeek = vm.getMonday(new Date());
+         //      vm.MondayOfWeek = vm.getMonday(new Date());
+
+         vm.MondayOfWeek = vm.getMonday(vm.dowChoice == "" ? new Date() : vm.dowChoice);
          var d2 = new Date(vm.MondayOfWeek);
          vm.SundayOfWeek = vm.moment(d2).add(-1, 'days').format('YYYY-MM-DD');
          vm.TuesdayOfWeek = vm.moment(d2).add(1, 'days').format('YYYY-MM-DD');
@@ -45141,6 +45263,12 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
       value: function activate() {
          var vm = this;
 
+         vm.EndDate = vm.moment();
+         vm.StartDate = vm.moment();
+         vm.StartDate = vm.StartDate.subtract(60, "days");
+         vm.StartDate = vm.StartDate.toDate();
+         vm.EndDate = vm.EndDate.toDate();
+
          //      this.portalDataService.Portlet('table-basic-attendance');
          if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined) {
             vm.$log = vm.$log.getInstance('AttendanceTableBasicController', vm.UserServices.isDebugEnabled());
@@ -45181,10 +45309,10 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          });
          vm.$log.log('b4 getDOW and schedule', vm.todayDOW);
 
-         vm.$q.all([vm.getDOW().then(function () {
-            vm.setDOW(vm.Util.geteFormattedDate(vm.MondayOfWeek));
-            vm.setLimit(100);
-         }), vm.getSchedule(vm.todayDOW).then(function () {
+         vm.getDOW();
+         vm.setDOW(vm.Util.geteFormattedDate(vm.MondayOfWeek));
+
+         vm.$q.all([vm.getSchedule(vm.todayDOW).then(function () {
             vm.setNowChoice();
             vm.$log.log('nowChoice', vm.nowChoice, 'classes', vm.classes);
             if (vm.classes.length > 0) {
@@ -45345,12 +45473,16 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
       key: 'getDOW',
       value: function getDOW() {
          var vm = this;
-         return vm.AttendanceServices.getDOW().then(function (data) {
-            vm.$log.log('getDOW returned data');
-            vm.$log.log(data);
-            vm.DOWlist = data.DOWlist;
-            return vm.DOWlist;
-         });
+         /*      return vm.AttendanceServices.getDOW().then(function(data) {
+                  vm.$log.log('getDOW returned data');
+                  vm.$log.log(data);
+                  vm.DOWlist = data.DOWlist;
+                  return vm.DOWlist;
+               });
+         */
+         vm.changeDate();
+         vm.DOWlist = vm.datearr;
+         return vm.DOWlist;
       }
    }, {
       key: 'fillClassList',
@@ -45511,7 +45643,7 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "\n<div ng-controller=\"AttendanceTableBasicController as vm\" ng-init=\"active[vm.getActiveTab()]= true\" ng-cloak>\n\n   <div class=\"panel panel-blue\">\n      <div class=\"panel-heading\">Attendance Filters</div>\n      <div class=\"panel-body pan\">\n         <div class=\"col-md-12\">\n            <div class=\"row\">\n               <div class=\"col-md-4 col-xs-12\">\n                  <div class=\"form-group\">\n                     <label for=\"inputclass\" class=\"control-label attendance\">Class</label>\n                     <div class=\"input-icon right\">\n                        <select id=\"inputclass\" type=\"text\" name=\"class\" ng-model=\"vm.theclass\" ng-change=\"vm.setClass(vm.theclass);vm.refreshtheAttendanceClick()\" class=\"form-control attendance\">\n                        <option ng-repeat=\"g in vm.classes\" ng-selected=\"{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}\"  value=\"{{g.Description}}\">{{g.Description}} {{g.TimeRange}}</option> \n                        <option>All</option>\n                      </select>\n                     </div>\n                  </div>\n               </div>\n               <div class=\"col-md-4 col-xs-6\">\n                  <div class=\"form-group\">\n                     <label for=\"inputlimit\" class=\"control-label attendance\">Limit</label>\n                     <div class=\"input-icon right\">\n                        <select id=\"inputlimit\" type=\"text\" name=\"limit\" ng-model=\"vm.limit\" ng-change=\"vm.setLimit(vm.limit);vm.refreshtheAttendanceClick()\" class=\"form-control attendance\">\n                        <option ng-repeat=\"lim in vm.limits\" ng-selected=\"lim == vm.limit\"  \n                            value=\"{{lim}}\">{{lim}}</option>\n                      </select>\n                     </div>\n                  </div>\n               </div>\n               <div class=\"col-md-4 col-xs-6\">\n                  <div class=\"form-group\">\n                     <label for=\"inputDOW\" class=\"control-label attendance\">Monday Of Week </label>\n                     <div class=\"input-icon right\">\n                        <select id=\"inputDOW\" type=\"text\" name=\"DOW\" ng-model=\"vm.dowChoice\" ng-change=\"vm.setDOW(vm.dowChoice);vm.refreshtheAttendanceClick();vm.getAttendanceHistory()\" class=\"form-control attendance\">\n                        <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option>\n                        <option ng-repeat=\"iter in vm.DOWlist\" \n                            ng-selected=\"iter.MondayOfWeek === vm.dowChoice\" \n                             value=\"{{iter.MondayOfWeek}}\">{{iter.MondayOfWeek}}</option>\n                      </select>\n\n                     </div>\n                  </div>\n\n               </div>\n            </div>\n\n         </div>\n      </div>\n      <div class=\"panel-footer\"></div>\n   </div>\n\n   <uib-tabset type=\"pills\">\n\n      <uib-tab id=\"tab-attend\" heading=\"Take Attendance\" active=\"active.attend\" select=\"vm.setActiveTab('attend');vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek))\">\n         <div class=\"panel panel-blue\">\n            <div class=\"panel-heading\">Class Attendance</div>\n            <div class=\"panel-body pan\">\n               <div class=\"row col-md-12 mtm\">\n                  <div class=\"col-md-10 col-xs-10 attendancebuttonNoshow\">\n                     <select id=\"dayselect\" type=\"text\" name=\"class\" \n                     ng-model=\"vm.radioModel\" \n                     ng-change=\"vm.setday(vm.getDayNum(vm.radioModel))\" class=\"form-control attendance\">\n                        <option ng-repeat=\"b in vm.dateList\" \n                        ng-selected=\"{{b.dateL==vm.radioModel}}\"  \n                        value=\"{{b.dateL}}\">{{b.dateL}} {{b.datev}}</option> \n                      </select>\n                  </div>\n                  \n                  <div class=\"col-md-10 col-xs-10 attendancebuttonshow\">\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(0);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Sunday'\">Sunday <br/> \n                            <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(1);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Monday'\">Monday <br/>\n                            <div style='font-size: small;'>{{vm.Util.geteFormattedDate(vm.MondayOfWeek)}} </div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(2);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Tuesday'\">Tuesday  <br/>\n                            <div style='font-size: small;'> {{vm.TuesdayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(3);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Wednesday'\">Wednesday  <br/>\n                            <div style='font-size: small;'> {{vm.WednesdayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(4);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Thursday'\">Thursday  <br/>\n                            <div style='font-size: small;'> {{vm.ThursdayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(5);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Friday'\">Friday  <br/>\n                            <div style='font-size: small;'> {{vm.FridayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(6);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Saturday'\">Saturday  <br/>\n                            <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>\n                  </div>\n                  <div class=\"col-md-2 col-xs-2\">\n                     <div ng-click=\"vm.pics()\" ng-show=\"vm.showpics\" class=\"input-icon right\"><i class=\"attendanceicon fas fa-list \"></i></div>\n                     <div ng-click=\"vm.list()\" ng-show=\"vm.showlist\" class=\"input-icon right\"><i class=\"attendanceicon fa  fa-images \"></i></div>\n                  </div>\n               </div>\n               <div class=\"row\">\n                  <div class=\"col-md-12\">\n                     <div class=\"deckgrid clearfix\" deckgrid source=\"vm.photos\"\n                           cardTemplate=\"/template/attendance-card.html\" ng-if=\"vm.showGrid\" ng-show=\"vm.showpics\">\n                     </div>\n                     <div class=\"deckgrid clearfix\" deckgrid source=\"vm.photos\"\n                           cardTemplate=\"/template/attendance-cardlist.html\" ng-if=\"vm.showGrid\" ng-show=\"vm.showlist\">\n                     </div>\n                  </div>\n               </div>\n            </div>\n            <div class=\"panel-footer\"></div>\n         </div>\n\n\n      </uib-tab>\n\n      <uib-tab id=\"tab-attendhist\" heading=\"Attendance History\" active=\"active.attendhistory\" select=\"vm.setActiveTab('attendhistory');vm.setDOW(vm.DOWlist[0].MondayOfWeek);vm.getAttendanceHistory()\">\n         <div class=\"panel panel-blue\">\n            <div class=\"panel-heading\">Attendance History</div>\n            <div class=\"panel-body pan\">\n               <div class=\"col-lg-12\">\n                  <div class=\"row\">\n                     <button ng-click=\"vm.getAttendanceHistory()\" class=\"btn btn-blue  attendance\">Refresh List</button>\n                  </div>\n                  <div class=\"row\">\n                     <div class=\"col-md-12\">\n                        <div class=\"col-md-1\">MondayOfWeek</div>\n                        <div class=\"col-md-1\">Name</div>\n                        <div class=\"col-md-1\">Rank</div>\n                        <div class=\"col-md-1\">Class</div>\n                        <div class=\"col-md-1\">Monday</div>\n                        <div class=\"col-md-1\">Tuesday</div>\n                        <div class=\"col-md-1\">Wednesday</div>\n                        <div class=\"col-md-1\">Thursday</div>\n                        <div class=\"col-md-1\">Friday</div>\n                        <div class=\"col-md-1\">Saturday</div>\n                        <div class=\"col-md-1\">Sunday</div>\n                     </div>\n\n                     <div class=\"col-md-12\" ng-repeat=\"student in vm.data.attendancehistory\">\n                        <div class=\"col-md-1\">{{student.MondayOfWeek}}</div>\n                        <div class=\"col-md-1\">{{student.firstname}} {{student.lastname}}</div>\n                        <div class=\"col-md-1\">{{student.rank}}</div>\n                        <div class=\"col-md-1\">{{student.class}}</div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day1 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day2 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day3 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day4 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day5 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day6 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day7 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                     </div>\n\n                  </div>\n               </div>\n            </div>\n            <div class=\"panel-footer\"></div>\n         </div>\n\n\n      </uib-tab>\n   </uib-tabset>\n\n</div>\n"
+module.exports = "<div ng-controller=\"AttendanceTableBasicController as vm\" ng-init=\"active[vm.getActiveTab()]= true\" ng-cloak>\n\n   <div class=\"panel panel-blue\">\n      <div class=\"panel-heading\">Attendance Filters</div>\n      <div class=\"panel-body pan\">\n         <div class=\"col-md-12\">\n            <div class=\"row\">\n               <div class=\"col-md-4 col-xs-12\">\n                  <div class=\"form-group\">\n                     <label for=\"inputclass\" class=\"control-label attendance\">Class</label>\n                     <div class=\"input-icon right\">\n                        <select id=\"inputclass\" type=\"text\" name=\"class\" ng-model=\"vm.theclass\" ng-change=\"vm.setClass(vm.theclass);vm.refreshtheAttendanceClick()\" class=\"form-control attendance\">\n                        <option ng-repeat=\"g in vm.classes\" ng-selected=\"{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}\"  value=\"{{g.Description}}\">{{g.Description}} {{g.TimeRange}}</option> \n                        <option>All</option>\n                      </select>\n                     </div>\n                  </div>\n               </div>\n               <div class=\"col-md-1 col-xs-6\">\n                  <div class=\"form-group\">\n                     <label for=\"inputlimit\" class=\"control-label attendance\">Limit</label>\n                     <div class=\"input-icon right\">\n                        <!--vm.setLimit(vm.limit)-->\n                        <select id=\"inputlimit\" type=\"text\" name=\"limit\" ng-model=\"vm.limit\" ng-change=\"vm.refreshtheAttendanceClick()\" class=\"form-control attendance\">\n                        <option ng-repeat=\"lim in vm.limits\" ng-selected=\"{{lim==vm.limit}}\"  \n                            value=\"{{lim}}\">{{lim}}</option>\n                      </select>\n                     </div>\n                  </div>\n               </div>\n               <div class=\"col-md-7 col-xs-6\">\n                  <div class=\"form-group\">\n                     <label for=\"inputDOW\" class=\"control-label attendance\">Monday Of Week </label>\n                     <div class=\"input-icon right\">\n                        <select id=\"inputDOW\" type=\"text\" name=\"DOW\" ng-model=\"vm.dowChoice\" ng-change=\"vm.setDOW(vm.dowChoice);vm.refreshtheAttendanceClick();vm.getAttendanceHistory()\" class=\"form-control attendance\">\n<!--                        <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option> -->\n                        <option ng-repeat=\"iter in vm.DOWlist\" \n                            ng-selected=\"iter === vm.dowChoice\" \n                             value=\"{{iter}}\">{{iter}}</option>\n                      </select>\n\n                     </div>\n                  </div>\n                     <div class=\"row col-md-12\">\n                        <div class=\"col-md-6\">\n                           <label for=\"inputStartdate\" class=\"control-label\">Start of Range </label>\n                           <div class=\"form-group\">\n                              <div class=\"col-md-9\">\n                                 <div class=\"input-icon right\">\n                                    <input id=\"inputStartdate\" type=\"date\"  name=\"startDate\" ng-model=\"vm.StartDate\" \n                                     class=\"form-control\" \n                                    ng-change=\"vm.getDOW()\"\n                                    ng-model-options=\"{ updateOn: 'default blur', \n                                        debounce: { 'default': 1500, 'blur': 0 } }\" >\n                                 </div>\n                              </div>\n<!--                              <div class=\"\">\n                                 <button type=\"button\" class=\"btn btn-default\" ng-click=\"vm.sdateopen($event)\">\n                                <i class=\"glyphicon glyphicon-calendar\"></i></button>\n                              </div>\n-->                              \n                           </div>\n                        </div>\n                        <div class=\"col-md-6\">\n                           <label for=\"inputEnddate\" class=\"control-label\">End of Range </label>\n                           <div class=\"form-group\">\n                              <div class=\"col-md-9\">\n                                 <div class=\"input-icon right\">\n                                    <input id=\"inputEnddate\" type=\"date\"  name=\"endDate\" ng-model=\"vm.EndDate\" \n                                     class=\"form-control\"\n                                    ng-change=\"vm.getDOW()\"/>\n<!--                                    <input id=\"inputEnddate\" type=\"text\" placeholder=\"yyyy-mm-dd\" name=\"endDate\" ng-model=\"vm.EndDate\" \n                                    is-open=\"vm.estatus.opened\" uib-datepicker-popup=\"{{vm.bdateformat}}\" class=\"form-control\"\n                                    ng-change=\"vm.getDOW()\"/>\n-->                                    \n                                 </div>\n                              </div>\n                           </div>\n                        </div>\n                     </div>\n\n               </div>\n            </div>\n\n         </div>\n      </div>\n      <div class=\"panel-footer\"></div>\n   </div>\n\n   <uib-tabset type=\"pills\">\n<!--vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek)) -->\n      <uib-tab id=\"tab-attend\" heading=\"Take Attendance\" active=\"active.attend\" select=\"vm.setActiveTab('attend');\">\n         <div class=\"panel panel-blue\">\n            <div class=\"panel-heading\">Class Attendance</div>\n            <div class=\"panel-body pan\">\n               <div class=\"row col-md-12 mtm\">\n                  <div class=\"col-md-10 col-xs-10 attendancebuttonNoshow\">\n                     <select id=\"dayselect\" type=\"text\" name=\"class\" ng-model=\"vm.radioModel\" ng-change=\"vm.setday(vm.getDayNum(vm.radioModel))\" class=\"form-control attendance\">\n                        <option ng-repeat=\"b in vm.dateList\" \n                        ng-selected=\"{{b.dateL==vm.radioModel}}\"  \n                        value=\"{{b.dateL}}\">{{b.dateL}} {{b.datev}}</option> \n                      </select>\n                  </div>\n\n                  <div class=\"col-md-10 col-xs-10 attendancebuttonshow\">\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(0);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Sunday'\">Sunday <br/> \n                            <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(1);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Monday'\">Monday <br/>\n                            <div style='font-size: small;'>{{vm.Util.geteFormattedDate(vm.MondayOfWeek)}} </div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(2);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Tuesday'\">Tuesday  <br/>\n                            <div style='font-size: small;'> {{vm.TuesdayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(3);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Wednesday'\">Wednesday  <br/>\n                            <div style='font-size: small;'> {{vm.WednesdayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(4);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Thursday'\">Thursday  <br/>\n                            <div style='font-size: small;'> {{vm.ThursdayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(5);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Friday'\">Friday  <br/>\n                            <div style='font-size: small;'> {{vm.FridayOfWeek}}</div></label>\n                     <label class=\"btn btn-green btn-primary attendance\" ng-click=\"vm.setday(6);\" ng-model=\"vm.radioModel\" uib-btn-radio=\"'Saturday'\">Saturday  <br/>\n                            <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>\n                  </div>\n                  <div class=\"col-md-2 col-xs-2\">\n                     <div ng-click=\"vm.pics()\" ng-show=\"vm.showpics\" class=\"input-icon right\"><i class=\"attendanceicon fas fa-list \"></i></div>\n                     <div ng-click=\"vm.list()\" ng-show=\"vm.showlist\" class=\"input-icon right\"><i class=\"attendanceicon fa  fa-images \"></i></div>\n                  </div>\n               </div>\n               <div class=\"row\">\n                  <div class=\"col-md-12\">\n                     <div class=\"deckgrid clearfix\" deckgrid source=\"vm.photos\" cardTemplate=\"/template/attendance-card.html\" ng-if=\"vm.showGrid\" ng-show=\"vm.showpics\">\n                     </div>\n                     <div class=\"deckgrid clearfix\" deckgrid source=\"vm.photos\" cardTemplate=\"/template/attendance-cardlist.html\" ng-if=\"vm.showGrid\" ng-show=\"vm.showlist\">\n                     </div>\n                  </div>\n               </div>\n            </div>\n            <div class=\"panel-footer\"></div>\n         </div>\n\n\n      </uib-tab>\n<!--vm.setDOW(vm.DOWlist[0].MondayOfWeek); -->\n      <uib-tab id=\"tab-attendhist\" heading=\"Attendance History\" active=\"active.attendhistory\" select=\"vm.setActiveTab('attendhistory');vm.getAttendanceHistory()\">\n         <div class=\"panel panel-blue\">\n            <div class=\"panel-heading\">Attendance History</div>\n            <div class=\"panel-body pan\">\n               <div class=\"col-lg-12\">\n                  <div class=\"row\">\n                     <button ng-click=\"vm.getAttendanceHistory()\" class=\"btn btn-blue  attendance\">Refresh List</button>\n                  </div>\n                  <div class=\"row\">\n                     <div class=\"col-md-12\">\n                        <div class=\"col-md-1\">MondayOfWeek</div>\n                        <div class=\"col-md-1\">Name</div>\n                        <div class=\"col-md-1\">Rank</div>\n                        <div class=\"col-md-1\">Class</div>\n                        <div class=\"col-md-1\">Monday</div>\n                        <div class=\"col-md-1\">Tuesday</div>\n                        <div class=\"col-md-1\">Wednesday</div>\n                        <div class=\"col-md-1\">Thursday</div>\n                        <div class=\"col-md-1\">Friday</div>\n                        <div class=\"col-md-1\">Saturday</div>\n                        <div class=\"col-md-1\">Sunday</div>\n                     </div>\n\n                     <div class=\"col-md-12\" ng-repeat=\"student in vm.data.attendancehistory\">\n                        <div class=\"col-md-1\">{{student.MondayOfWeek}}</div>\n                        <div class=\"col-md-1\">{{student.firstname}} {{student.lastname}}</div>\n                        <div class=\"col-md-1\">{{student.rank}}</div>\n                        <div class=\"col-md-1\">{{student.class}}</div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day1 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day2 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day3 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day4 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day5 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day6 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                        <div class=\"col-md-1\">\n                           <i ng-class=\"student.day7 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'\" style=\"color:green;\">\n                          </i>\n                        </div>\n                     </div>\n\n                  </div>\n               </div>\n            </div>\n            <div class=\"panel-footer\"></div>\n         </div>\n\n\n      </uib-tab>\n   </uib-tabset>\n\n</div>\n"
 
 /***/ }),
 

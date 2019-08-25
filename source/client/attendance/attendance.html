@@ -1,4 +1,3 @@
-
 <div ng-controller="AttendanceTableBasicController as vm" ng-init="active[vm.getActiveTab()]= true" ng-cloak>
 
    <div class="panel panel-blue">
@@ -17,30 +16,68 @@
                      </div>
                   </div>
                </div>
-               <div class="col-md-4 col-xs-6">
+               <div class="col-md-1 col-xs-6">
                   <div class="form-group">
                      <label for="inputlimit" class="control-label attendance">Limit</label>
                      <div class="input-icon right">
-                        <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.setLimit(vm.limit);vm.refreshtheAttendanceClick()" class="form-control attendance">
-                        <option ng-repeat="lim in vm.limits" ng-selected="lim == vm.limit"  
+                        <!--vm.setLimit(vm.limit)-->
+                        <select id="inputlimit" type="text" name="limit" ng-model="vm.limit" ng-change="vm.refreshtheAttendanceClick()" class="form-control attendance">
+                        <option ng-repeat="lim in vm.limits" ng-selected="{{lim==vm.limit}}"  
                             value="{{lim}}">{{lim}}</option>
                       </select>
                      </div>
                   </div>
                </div>
-               <div class="col-md-4 col-xs-6">
+               <div class="col-md-7 col-xs-6">
                   <div class="form-group">
                      <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
                      <div class="input-icon right">
                         <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendanceClick();vm.getAttendanceHistory()" class="form-control attendance">
-                        <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option>
+<!--                        <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option> -->
                         <option ng-repeat="iter in vm.DOWlist" 
-                            ng-selected="iter.MondayOfWeek === vm.dowChoice" 
-                             value="{{iter.MondayOfWeek}}">{{iter.MondayOfWeek}}</option>
+                            ng-selected="iter === vm.dowChoice" 
+                             value="{{iter}}">{{iter}}</option>
                       </select>
 
                      </div>
                   </div>
+                     <div class="row col-md-12">
+                        <div class="col-md-6">
+                           <label for="inputStartdate" class="control-label">Start of Range </label>
+                           <div class="form-group">
+                              <div class="col-md-9">
+                                 <div class="input-icon right">
+                                    <input id="inputStartdate" type="date"  name="startDate" ng-model="vm.StartDate" 
+                                     class="form-control" 
+                                    ng-change="vm.getDOW()"
+                                    ng-model-options="{ updateOn: 'default blur', 
+                                        debounce: { 'default': 1500, 'blur': 0 } }" >
+                                 </div>
+                              </div>
+<!--                              <div class="">
+                                 <button type="button" class="btn btn-default" ng-click="vm.sdateopen($event)">
+                                <i class="glyphicon glyphicon-calendar"></i></button>
+                              </div>
+-->                              
+                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <label for="inputEnddate" class="control-label">End of Range </label>
+                           <div class="form-group">
+                              <div class="col-md-9">
+                                 <div class="input-icon right">
+                                    <input id="inputEnddate" type="date"  name="endDate" ng-model="vm.EndDate" 
+                                     class="form-control"
+                                    ng-change="vm.getDOW()"/>
+<!--                                    <input id="inputEnddate" type="text" placeholder="yyyy-mm-dd" name="endDate" ng-model="vm.EndDate" 
+                                    is-open="vm.estatus.opened" uib-datepicker-popup="{{vm.bdateformat}}" class="form-control"
+                                    ng-change="vm.getDOW()"/>
+-->                                    
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
 
                </div>
             </div>
@@ -51,22 +88,20 @@
    </div>
 
    <uib-tabset type="pills">
-
-      <uib-tab id="tab-attend" heading="Take Attendance" active="active.attend" select="vm.setActiveTab('attend');vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek))">
+<!--vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek)) -->
+      <uib-tab id="tab-attend" heading="Take Attendance" active="active.attend" select="vm.setActiveTab('attend');">
          <div class="panel panel-blue">
             <div class="panel-heading">Class Attendance</div>
             <div class="panel-body pan">
                <div class="row col-md-12 mtm">
                   <div class="col-md-10 col-xs-10 attendancebuttonNoshow">
-                     <select id="dayselect" type="text" name="class" 
-                     ng-model="vm.radioModel" 
-                     ng-change="vm.setday(vm.getDayNum(vm.radioModel))" class="form-control attendance">
+                     <select id="dayselect" type="text" name="class" ng-model="vm.radioModel" ng-change="vm.setday(vm.getDayNum(vm.radioModel))" class="form-control attendance">
                         <option ng-repeat="b in vm.dateList" 
                         ng-selected="{{b.dateL==vm.radioModel}}"  
                         value="{{b.dateL}}">{{b.dateL}} {{b.datev}}</option> 
                       </select>
                   </div>
-                  
+
                   <div class="col-md-10 col-xs-10 attendancebuttonshow">
                      <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(0);" ng-model="vm.radioModel" uib-btn-radio="'Sunday'">Sunday <br/> 
                             <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>
@@ -90,11 +125,9 @@
                </div>
                <div class="row">
                   <div class="col-md-12">
-                     <div class="deckgrid clearfix" deckgrid source="vm.photos"
-                           cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
+                     <div class="deckgrid clearfix" deckgrid source="vm.photos" cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
                      </div>
-                     <div class="deckgrid clearfix" deckgrid source="vm.photos"
-                           cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
+                     <div class="deckgrid clearfix" deckgrid source="vm.photos" cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
                      </div>
                   </div>
                </div>
@@ -104,8 +137,8 @@
 
 
       </uib-tab>
-
-      <uib-tab id="tab-attendhist" heading="Attendance History" active="active.attendhistory" select="vm.setActiveTab('attendhistory');vm.setDOW(vm.DOWlist[0].MondayOfWeek);vm.getAttendanceHistory()">
+<!--vm.setDOW(vm.DOWlist[0].MondayOfWeek); -->
+      <uib-tab id="tab-attendhist" heading="Attendance History" active="active.attendhistory" select="vm.setActiveTab('attendhistory');vm.getAttendanceHistory()">
          <div class="panel panel-blue">
             <div class="panel-heading">Attendance History</div>
             <div class="panel-body pan">

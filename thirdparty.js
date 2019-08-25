@@ -215,6 +215,9 @@ let thirdparty = [
         module: 'moment-timezone', entry: '//cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.14/moment-timezone-with-data.min.js'
     },
     {
+        module: 'moment-weekdaysin', entry: '//cdn.jsdelivr.net/npm/moment-weekdaysin@1.0.1/moment-weekdaysin.min.js'
+    },
+    {
         module: 'angular-moment', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-moment/1.2.0/angular-moment.min.js'
     },
     {
