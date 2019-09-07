@@ -461,7 +461,7 @@ left join nclasslist nextp on (p.nextPgmid = nextp.id and nextp.school = p.schoo
           on cr.contactid = t.contactid) 
              left join ranklist r 
          On r.ranklist = cr.currentrank and r.ranktype = cr.ranktype and r.school = t.studentschool)   
-         inner join ranklist nr 
+         left join ranklist nr 
          	On nr.sortkey = r.nextsortkey and nr.school = r.school and nr.ranktype = r.ranktype ) "; 
         if ($supplement == "true") {
             $sql .=   "  where t.testtype = ?  and t.studentschool = ?  and r.ranktype = ? and t.studentclassstatus = 'Active'";

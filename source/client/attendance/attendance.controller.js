@@ -334,10 +334,10 @@ export class AttendanceTableBasicController {
       var vm = this;
       vm.$log.log('getMonday', d);
       if (d === null) {
-         d = new Date();
+         d = new Date(vm.moment());
       }
       else {
-         d = new Date(d);
+         d = new Date(vm.moment(d));
       }
       var day = d.getDay(),
          diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday

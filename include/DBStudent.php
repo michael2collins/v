@@ -450,6 +450,64 @@ class StudentDbHandler
 			return NULL;
 		}
 	}
+	
+	public
+	function getContactHistories() {
+		global $app;
+		global $school;
+        $app->log->debug( print_R("getContactHistories entered\n", TRUE ));
+        $errormessage=array();
+		
+		$sql = 'SELECT c.ID, `LastName`, `FirstName`, `Email`, `Email2`, `Parent`, `Phone`, `AltPhone`, 
+		`Address`, `City`, `State`, `ZIP`, `Notes`, `Birthday`,  `ContactType`,  `sex`, `medicalConcerns`,
+		`phoneExt`, `altPhoneExt`, `EmergencyContact`,cm.contactmgmttype, cm.contactdate
+		FROM ncontactmgmt cm join ncontacts c on c.id = cm.contactid 
+		where c.studentschool = ?';
+		
+		try {
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$app->log->debug(print_R("getContactHistories list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
+				$stmt->close();
+
+                if ($slists) {
+                    $errormessage["success"] = true;
+					$errormessage["slist"]=$slists;
+                    return $errormessage;
+                } else {
+                    // Failed to find 
+                    $errormessage["sqlerror"] = "getContactHistories Select failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+					$errormessage["slist"] = array();
+                    return $errormessage;
+                }
+			}
+			else {
+				$app->log->debug(print_R("getContactHistories list execute failed", TRUE) );
+	            $errormessage["sqlerror"] = "getContactHistories failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$errormessage["slist"] = array();
+	            return $errormessage;
+			}
+		}
+		else {
+			$app->log->debug(print_R("getContactHistories list sql failed", TRUE) );
+            $errormessage["sqlerror"] = "getRawattendanceStatus failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$res["slist"] = array();
+            return $errormessage;
+		}
+		} catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in getContactHistories\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+		
+	}
 
 	public
 	function getRankPartial($theinput, $ranktype)

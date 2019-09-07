@@ -45155,9 +45155,9 @@ var AttendanceTableBasicController = exports.AttendanceTableBasicController = fu
          var vm = this;
          vm.$log.log('getMonday', d);
          if (d === null) {
-            d = new Date();
+            d = new Date(vm.moment());
          } else {
-            d = new Date(d);
+            d = new Date(vm.moment(d));
          }
          var day = d.getDay(),
              diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
@@ -58917,6 +58917,7 @@ var portalDataService = exports.portalDataService = function () {
             '/form-layouts-newweek': { title: 'Form Layouts', 'breadcrumb': ['Form', 'Form Layouts'] },
             '/impstudent': { title: 'Import Students', 'breadcrumb': ['Students', 'Student Import'] },
             '/table-basic-students': { title: 'Student List', 'breadcrumb': ['Students', 'Student List'] },
+            '/table-basic-studenthistories': { title: 'Student Histories', 'breadcrumb': ['Students', 'Student Histories'] },
             '/table-basic-leads': { title: 'Table Basic', 'breadcrumb': ['Table', 'Table Basic'] },
             '/table-basic-attendance': { title: 'Attendance', 'breadcrumb': ['Students', 'Attendance'] },
             '/table-basic-schedule': { title: 'Class Schedule', 'breadcrumb': ['Manage Studio', 'Class Schedule'] },
@@ -59188,7 +59189,7 @@ var SidebarController = exports.SidebarController = function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div id=\"sidebar-wrapper\" ng-menu=\"\" ng-cloak>\n<nav id=\"sidebar\" role=\"navigation\" class=\"navbar-default navbar-static-side\">\n  <div class=\"sidebar-collapse menu-scroll\">\n    <ul id=\"side-menu\" ng-menu=\"\" class=\"nav\">\n      <li class=\"sidebar-heading\" ng-show=\"$ctrl.isAdminOperator()\">\n        <h4>Main</h4>\n      </li>\n      <li ng-show=\"$ctrl.isAdminOperator()\">\n        <a href=\"/#/main\"><i class=\"icon-speedometer\"></i><span class=\"menu-title\">Studio Dashboard</span></a>\n          \n      </li>\n      <li ng-hide=\"$ctrl.isokf()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Login</span><span class=\"fa arrow\"></span>\n      </a>\n        <ul class=\"nav nav-second-level\">\n          <li ng-hide=\"$ctrl.isokf()\"><a href=\"/#/page-signin\">Login</a></li>\n          <li ng-hide=\"$ctrl.isokf()\"><a href=\"/#/page-signup\">Create User</a></li> \n        </ul>\n      </li>\n      <li ng-show=\"$ctrl.isokf() && $ctrl.isAdminOperator()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Students</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/table-basic-students\" >Student List</a></li>\n          <li><a href=\"/#/table-basic-attendance\">Attendance List</a></li>\n          <li><a href=\"/#/table-basic-eventcreation\">Create Events</a></li>\n          <li><a href=\"/#/impstudent\">Import Students</a></li>\n        </ul>\n      </li>\n      <li ng-show=\"$ctrl.isokf()  && $ctrl.isAdminOperator()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Testing</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/table-basic-testcandidates\">Manage Tests</a></li>\n        </ul>\n      </li>\n      <li ng-show=\"$ctrl.isokf()  && $ctrl.isAdminOperator()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Manage Studio</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/table-basic-paymenttracking\">Payment Tracking</a></li>\n          <li ng-show=\"$ctrl.isokf()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Setup Data</span><span class=\"fa arrow\"></span></a>\n            <ul class=\"nav nav-third-level\">\n              <li><a href=\"/#/table-basic-basic\">Basic Info</a></li>\n              <li><a href=\"/#/stripe-onboard\">Stripe Onboard</a></li>\n              <li><a href=\"/#/table-basic-rank\">Ranks</a></li>\n              <li><a href=\"/#/table-basic-program\">Program</a></li>\n              <li><a href=\"/#/table-basic-class\">Class</a></li>\n              <li><a href=\"/#/table-basic-classpgm\">Class Program</a></li>\n              <li><a href=\"/#/table-basic-classrank\">Class Rank</a></li>\n              <li><a href=\"/#/table-basic-schoolcom\">School Communication</a></li>\n              <li><a href=\"/#/table-basic-schedule\">Class Schedule</a></li>\n              <li><a href=\"/#/table-basic-testtype\">Test Type</a></li>\n              <li><a href=\"/#/table-basic-classtest\">Class Test</a></li>\n              <li><a href=\"/#/table-basic-rptbuilder\">Report Builder</a></li>\n              <li><a href=\"/#/table-basic-htmltemplate\">Email Templates</a></li>\n              <li><a href=\"/#/table-quickpick\">New Student Quickpick</a></li>\n            </ul>\n          </li>\n          <li role=\"separator\" class=\"divider\">&nbsp;</li>\n\n        </ul>\n      </li>\n      <li class=\"sidebar-heading\" ng-show=\"$ctrl.isPayer()\">\n        <h4>Payer</h4>\n      </li>\n      <li ng-show=\"$ctrl.isokf()  && $ctrl.isPayer()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Student Services</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/userpay\">Pay Invoice</a></li>\n          <li role=\"separator\" class=\"divider\">&nbsp;</li>\n\n        </ul>\n      </li>\n\n    </ul>\n  </div>\n</nav>\n\n</div>\n"
+module.exports = "<div id=\"sidebar-wrapper\" ng-menu=\"\" ng-cloak>\n<nav id=\"sidebar\" role=\"navigation\" class=\"navbar-default navbar-static-side\">\n  <div class=\"sidebar-collapse menu-scroll\">\n    <ul id=\"side-menu\" ng-menu=\"\" class=\"nav\">\n      <li class=\"sidebar-heading\" ng-show=\"$ctrl.isAdminOperator()\">\n        <h4>Main</h4>\n      </li>\n      <li ng-show=\"$ctrl.isAdminOperator()\">\n        <a href=\"/#/main\"><i class=\"icon-speedometer\"></i><span class=\"menu-title\">Studio Dashboard</span></a>\n          \n      </li>\n      <li ng-hide=\"$ctrl.isokf()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Login</span><span class=\"fa arrow\"></span>\n      </a>\n        <ul class=\"nav nav-second-level\">\n          <li ng-hide=\"$ctrl.isokf()\"><a href=\"/#/page-signin\">Login</a></li>\n          <li ng-hide=\"$ctrl.isokf()\"><a href=\"/#/page-signup\">Create User</a></li> \n        </ul>\n      </li>\n      <li ng-show=\"$ctrl.isokf() && $ctrl.isAdminOperator()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Students</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/table-basic-students\" >Student List</a></li>\n          <li><a href=\"/#/table-basic-studenthistories\" >Student Histories</a></li>\n          <li><a href=\"/#/table-basic-attendance\">Attendance List</a></li>\n          <li><a href=\"/#/table-basic-eventcreation\">Create Events</a></li>\n          <li><a href=\"/#/impstudent\">Import Students</a></li>\n        </ul>\n      </li>\n      <li ng-show=\"$ctrl.isokf()  && $ctrl.isAdminOperator()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Testing</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/table-basic-testcandidates\">Manage Tests</a></li>\n        </ul>\n      </li>\n      <li ng-show=\"$ctrl.isokf()  && $ctrl.isAdminOperator()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Manage Studio</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/table-basic-paymenttracking\">Payment Tracking</a></li>\n          <li ng-show=\"$ctrl.isokf()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Setup Data</span><span class=\"fa arrow\"></span></a>\n            <ul class=\"nav nav-third-level\">\n              <li><a href=\"/#/table-basic-basic\">Basic Info</a></li>\n              <li><a href=\"/#/stripe-onboard\">Stripe Onboard</a></li>\n              <li><a href=\"/#/table-basic-rank\">Ranks</a></li>\n              <li><a href=\"/#/table-basic-program\">Program</a></li>\n              <li><a href=\"/#/table-basic-class\">Class</a></li>\n              <li><a href=\"/#/table-basic-classpgm\">Class Program</a></li>\n              <li><a href=\"/#/table-basic-classrank\">Class Rank</a></li>\n              <li><a href=\"/#/table-basic-schoolcom\">School Communication</a></li>\n              <li><a href=\"/#/table-basic-schedule\">Class Schedule</a></li>\n              <li><a href=\"/#/table-basic-testtype\">Test Type</a></li>\n              <li><a href=\"/#/table-basic-classtest\">Class Test</a></li>\n              <li><a href=\"/#/table-basic-rptbuilder\">Report Builder</a></li>\n              <li><a href=\"/#/table-basic-htmltemplate\">Email Templates</a></li>\n              <li><a href=\"/#/table-quickpick\">New Student Quickpick</a></li>\n            </ul>\n          </li>\n          <li role=\"separator\" class=\"divider\">&nbsp;</li>\n\n        </ul>\n      </li>\n      <li class=\"sidebar-heading\" ng-show=\"$ctrl.isPayer()\">\n        <h4>Payer</h4>\n      </li>\n      <li ng-show=\"$ctrl.isokf()  && $ctrl.isPayer()\"><a href=\"javascript:void(0);\"><i class=\"icon-screen-desktop\"></i><span class=\"menu-title\">Student Services</span><span class=\"fa arrow\"></span></a>\n        <ul class=\"nav nav-second-level\">\n          <li><a href=\"/#/userpay\">Pay Invoice</a></li>\n          <li role=\"separator\" class=\"divider\">&nbsp;</li>\n\n        </ul>\n      </li>\n\n    </ul>\n  </div>\n</nav>\n\n</div>\n"
 
 /***/ }),
 
@@ -61576,6 +61577,10 @@ var _tableBasicStudents = __webpack_require__(/*! ./table-basic-students.html */
 
 var _tableBasicStudents2 = _interopRequireDefault(_tableBasicStudents);
 
+var _tableBasicStudenthistories = __webpack_require__(/*! ./table-basic-studenthistories.html */ "./source/client/student/table-basic-studenthistories.html");
+
+var _tableBasicStudenthistories2 = _interopRequireDefault(_tableBasicStudenthistories);
+
 var _formLayoutsEditstudent = __webpack_require__(/*! ./form-layouts-editstudent.html */ "./source/client/student/form-layouts-editstudent.html");
 
 var _formLayoutsEditstudent2 = _interopRequireDefault(_formLayoutsEditstudent);
@@ -61598,6 +61603,8 @@ var _studentpayment = __webpack_require__(/*! ./studentpayment.component */ "./s
 
 var _studenttable = __webpack_require__(/*! ./studenttable.component */ "./source/client/student/studenttable.component.js");
 
+var _studenthistoriestable = __webpack_require__(/*! ./studenthistoriestable.component */ "./source/client/student/studenthistoriestable.component.js");
+
 var _studentpayment2 = __webpack_require__(/*! ./studentpayment.controller */ "./source/client/student/studentpayment.controller.js");
 
 var _newstudent2 = __webpack_require__(/*! ./newstudent.controller */ "./source/client/student/newstudent.controller.js");
@@ -61615,6 +61622,8 @@ var _editstudent2 = __webpack_require__(/*! ./editstudent.controller */ "./sourc
 var _studentdual2 = __webpack_require__(/*! ./studentdual.controller */ "./source/client/student/studentdual.controller.js");
 
 var _studenttable2 = __webpack_require__(/*! ./studenttable.controller */ "./source/client/student/studenttable.controller.js");
+
+var _studenthistoriestable2 = __webpack_require__(/*! ./studenthistoriestable.controller */ "./source/client/student/studenthistoriestable.controller.js");
 
 var _studentServices = __webpack_require__(/*! ../../js/services/studentServices */ "./source/js/services/studentServices.js");
 
@@ -61647,13 +61656,15 @@ studentconfig.$inject = ['$routeProvider'];
 
 var StudentModule = exports.StudentModule = _angular2.default.module('ngadmin.student', [_photo.PhotoModule, _core.CoreModule, _directive.DirectiveModule, _common.CommonModule]).service('StudentServices', _studentServices.StudentServices).service('ClassServices', _classServices.ClassServices).service('PhotoServices', _photoServices.PhotoServices).service('PaymentServices', _paymentServices.PaymentServices).service('TestingServices', _testingServices.TestingServices)
 // .service('portalDataService', portalDataService)
-.service('Util', _utility.Util).controller('StudentPaymentController', _studentpayment2.StudentPaymentController).controller('ModalNewStudentController', _newstudent2.ModalNewStudentController).controller('ModalNewStudentInstanceController', _newstudentinst2.ModalNewStudentInstanceController).controller('StudentClassController', _studentclass2.StudentClassController).controller('StudentHistoryController', _studenthistory2.StudentHistoryController).controller('StudentAttendController', _studentattend2.StudentAttendController).controller('FormLayoutsControllerEditStudent', _editstudent2.FormLayoutsControllerEditStudent).controller('StudentPaymentController', _studentpayment2.StudentPaymentController).controller('ctrlDualList', _studentdual2.ctrlDualList).controller('StudentsTableBasicController', _studenttable2.StudentsTableBasicController).component('editstudentComponent', _editstudent.editstudentComponent).component('newstudentComponent', _newstudent.newstudentComponent).component('newstudentinstComponent', _newstudentinst.newstudentinstComponent).component('studentclassComponent', _studentclass.studentclassComponent).component('studentdualComponent', _studentdual.studentdualComponent).component('studentdualgridComponent', _studentdual.studentdualgridComponent).component('studenthistoryComponent', _studenthistory.studenthistoryComponent).component('studentattendComponent', _studentattend.studentattendComponent).component('studentpaymentComponent', _studentpayment.studentpaymentComponent).component('studenttableComponent', _studenttable.studenttableComponent).config(studentconfig).name;
+.service('Util', _utility.Util).controller('StudentPaymentController', _studentpayment2.StudentPaymentController).controller('ModalNewStudentController', _newstudent2.ModalNewStudentController).controller('ModalNewStudentInstanceController', _newstudentinst2.ModalNewStudentInstanceController).controller('StudentClassController', _studentclass2.StudentClassController).controller('StudentHistoryController', _studenthistory2.StudentHistoryController).controller('StudentAttendController', _studentattend2.StudentAttendController).controller('FormLayoutsControllerEditStudent', _editstudent2.FormLayoutsControllerEditStudent).controller('StudentPaymentController', _studentpayment2.StudentPaymentController).controller('ctrlDualList', _studentdual2.ctrlDualList).controller('StudentsTableBasicController', _studenttable2.StudentsTableBasicController).controller('StudentHistoriesController', _studenthistoriestable2.StudentHistoriesController).component('editstudentComponent', _editstudent.editstudentComponent).component('newstudentComponent', _newstudent.newstudentComponent).component('newstudentinstComponent', _newstudentinst.newstudentinstComponent).component('studentclassComponent', _studentclass.studentclassComponent).component('studentdualComponent', _studentdual.studentdualComponent).component('studentdualgridComponent', _studentdual.studentdualgridComponent).component('studenthistoryComponent', _studenthistory.studenthistoryComponent).component('studentattendComponent', _studentattend.studentattendComponent).component('studentpaymentComponent', _studentpayment.studentpaymentComponent).component('studenttableComponent', _studenttable.studenttableComponent).component('studenthistoriestableComponent', _studenthistoriestable.studenthistoriestableComponent).config(studentconfig).name;
 
 function studentconfig($routeProvider) {
   'ngInject';
 
   $routeProvider.when('/table-basic-students', {
     template: _tableBasicStudents2.default
+  }).when('/table-basic-studenthistories', {
+    template: _tableBasicStudenthistories2.default
   }).when('/form-layouts-editstudent/id/:id', {
     template: _formLayoutsEditstudent2.default
   }).when('/form-layouts-editstudent/id/:id/myclass/:myclass', {
@@ -62733,6 +62744,260 @@ module.exports = "<div ng-controller=\"ctrlDualList as vmDual\">\n    <div class
 
 /***/ }),
 
+/***/ "./source/client/student/studenthistoriestable.component.js":
+/*!******************************************************************!*\
+  !*** ./source/client/student/studenthistoriestable.component.js ***!
+  \******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.studenthistoriestableComponent = undefined;
+
+var _tableBasicStudenthistories = __webpack_require__(/*! ./table-basic-studenthistories.html */ "./source/client/student/table-basic-studenthistories.html");
+
+var _tableBasicStudenthistories2 = _interopRequireDefault(_tableBasicStudenthistories);
+
+__webpack_require__(/*! ./student.less */ "./source/client/student/student.less");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var studenthistoriestableComponent = exports.studenthistoriestableComponent = {
+  template: _tableBasicStudenthistories2.default
+};
+
+/***/ }),
+
+/***/ "./source/client/student/studenthistoriestable.controller.js":
+/*!*******************************************************************!*\
+  !*** ./source/client/student/studenthistoriestable.controller.js ***!
+  \*******************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+//import angular from 'angular';
+
+var StudentHistoriesController = exports.StudentHistoriesController = function () {
+    StudentHistoriesController.$inject = ['$scope', '$log', 'StudentServices', 'Util', '$routeParams', 'uiGridConstants', '$window', 'Notification', '$controller', '$timeout', '$q', 'TestingServices', 'UserServices'];
+
+    function StudentHistoriesController($scope, $log, StudentServices, Util, $routeParams, uiGridConstants, $window, Notification, $controller, $timeout, $q, TestingServices, UserServices) {
+        'ngInject';
+
+        _classCallCheck(this, StudentHistoriesController);
+
+        this.$scope = $scope;
+        this.$log = $log;
+        this.StudentServices = StudentServices;
+        this.Util = Util;
+        this.$routeParams = $routeParams;
+        this.uiGridConstants = uiGridConstants;
+        this.$window = $window;
+        this.Notification = Notification;
+        this.$timeout = $timeout;
+        this.$controller = $controller;
+        this.UserServices = UserServices;
+    }
+
+    _createClass(StudentHistoriesController, [{
+        key: '$onInit',
+        value: function $onInit() {
+
+            var vm = this;
+
+            vm.gcolumns = [];
+            vm.gridOptions = {};
+            vm.gridApi;
+
+            var studentXS = 30;
+            var studentS = 60;
+            var studentM = 150;
+            var studentL = 250;
+
+            vm.listA = [{ id: 1, colname: 'FirstName', default: 'true', minsize: studentM }, { id: 2, colname: 'ID', default: 'true', minsize: studentS }, { id: 3, colname: 'LastName', default: 'true', minsize: studentM }, { id: 4, colname: 'Email', default: 'true', minsize: studentL }, { id: 5, colname: 'Email2', default: 'false', minsize: studentL }, { id: 6, colname: 'Parent', default: 'false', minsize: studentM }, { id: 7, colname: 'Phone', default: 'true', minsize: studentM }, { id: 8, colname: 'AltPhone', default: 'false', minsize: studentS }, { id: 9, colname: 'Address', default: 'false', minsize: studentL }, { id: 10, colname: 'City', default: 'false', minsize: studentM }, { id: 11, colname: 'State', default: 'false', minsize: studentXS }, { id: 12, colname: 'ZIP', default: 'false', minsize: studentS }, { id: 13, colname: 'Notes', default: 'false', minsize: studentM }, { id: 14, colname: 'Birthday', default: 'false', minsize: studentXS }, { id: 15, colname: 'ContactType', default: 'false', minsize: studentM }, { id: 16, colname: 'sex', default: 'false', minsize: studentXS }, { id: 17, colname: 'medicalConcerns', default: 'false', minsize: studentM }, { id: 18, colname: 'contactmgmttype', default: 'true', minsize: studentM }, { id: 19, colname: 'contactdate', default: 'true', minsize: studentM }];
+
+            vm.gridLength = {};
+            vm.limits = [5, 10, 20, 50, 100, 200];
+            vm.initialLength = 10;
+            vm.rowheight = 32;
+            vm.headerheight = 140;
+            vm.setGridLength(vm.initialLength);
+            vm.isCollapsed = true;
+            vm.setColumns();
+            vm.setGridOptions();
+            vm.activate();
+        }
+    }, {
+        key: '$onDestroy',
+        value: function $onDestroy() {
+            this.$log.log("StudentHistoriesController dismissed");
+            //this.$log.logEnabled(false);
+        }
+    }, {
+        key: 'getLimit',
+        value: function getLimit() {
+            var vm = this;
+            vm.$log.log('getLimit');
+            return vm.limit;
+        }
+    }, {
+        key: 'setLimit',
+        value: function setLimit(thelimit) {
+            var vm = this;
+            vm.$log.log('setLimit', thelimit);
+            vm.limit = thelimit;
+        }
+    }, {
+        key: 'setColumns',
+        value: function setColumns() {
+            var vm = this;
+            vm.gcolumns = [];
+
+            vm.$log.log('setGridOptions col count', vm.listA.length);
+
+            for (var i = 0, len = vm.listA.length; i < len; i++) {
+                if (vm.listA[i].colname == 'ID') {
+                    continue; //skip as we will add it at the end 
+                }
+                vm.gcolumns.push({
+                    field: vm.listA[i].colname,
+                    enableFiltering: true,
+                    enableSorting: true,
+                    visible: vm.listA[i].default == 'true' ? true : false,
+                    width: "*",
+                    headerCellClass: vm.Util.highlightFilteredHeader,
+                    minWidth: vm.listA[i].minsize,
+                    enableCellEdit: false
+                });
+            }
+
+            var ctpl = '<div class="ui-grid-cell-contents"><span>';
+            ctpl += '<a role="button" class="btn btn-blue" style="padding:  0px 14px;" ';
+            ctpl += ' href="/#/form-layouts-editstudent/id/{{COL_FIELD}}" ><i class="fa fa-edit"></i>&nbsp; Edit</a></span>';
+            ctpl += '</div>';
+
+            vm.gcolumns.push({
+                name: 'ID',
+                displayName: 'Edit',
+                enableFiltering: false,
+                enableSorting: false,
+                enableHiding: false,
+                enableCellEdit: false,
+                cellTemplate: ctpl,
+                width: 200
+            });
+        }
+    }, {
+        key: 'activate',
+        value: function activate() {
+            var vm = this;
+            if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined) {
+                vm.$log = vm.$log.getInstance('StudentHistoriesController', vm.UserServices.isDebugEnabled());
+            }
+
+            vm.getStudentHistories().then(function () {});
+        }
+    }, {
+        key: 'setGridLength',
+        value: function setGridLength(size) {
+            var vm = this;
+            vm.gridLength = {
+                height: size * vm.rowheight + vm.headerheight + 'px'
+            };
+        }
+    }, {
+        key: 'getGridLength',
+        value: function getGridLength() {
+            var vm = this;
+            return vm.gridLength;
+        }
+    }, {
+        key: 'getStudentHistories',
+        value: function getStudentHistories() {
+
+            var vm = this;
+            var path = "../v1/contacthistories";
+            vm.gridOptions.data = [];
+
+            return vm.StudentServices.getStudentHistories(path).then(function (data) {
+                vm.Util.checkDataSuccessv2(data, data.contacthistorieslist, vm.Notification, vm.$q, 'getStudentHistories', true);
+
+                vm.gridOptions.data = data.contacthistorieslist;
+            }, function (error) {
+                vm.Util.exceptionError(error, "getStudentHistories", vm.Notification);
+                vm.gridOptions.data = [];
+                return vm.$q.reject(error);
+            });
+        }
+    }, {
+        key: 'setGridOptions',
+        value: function setGridOptions() {
+            var vm = this;
+
+            vm.gridOptions = {
+                showGridFooter: true,
+                enableFiltering: true,
+                enableGridMenu: true,
+                paginationPageSizes: vm.limits,
+                paginationPageSize: vm.initialLength,
+                rowHeight: vm.rowheight,
+                enableCellEditOnFocus: true,
+                columnDefs: vm.gcolumns,
+                exporterCsvFilename: 'studenthistories.csv',
+                exporterPdfDefaultStyle: { fontSize: 9 },
+                exporterPdfTableStyle: { margin: [30, 30, 30, 30] },
+                exporterPdfTableHeaderStyle: { fontSize: 10, bold: true, italics: true, color: 'red' },
+                exporterPdfHeader: { text: "My Header", style: 'headerStyle' },
+                exporterPdfFooter: function exporterPdfFooter(currentPage, pageCount) {
+                    return { text: currentPage.toString() + ' of ' + pageCount.toString(), style: 'footerStyle' };
+                },
+                exporterPdfCustomFormatter: function exporterPdfCustomFormatter(docDefinition) {
+                    docDefinition.styles.headerStyle = { fontSize: 22, bold: true };
+                    docDefinition.styles.footerStyle = { fontSize: 10, bold: true };
+                    return docDefinition;
+                },
+                exporterPdfOrientation: 'portrait',
+                exporterPdfPageSize: 'LETTER',
+                exporterPdfMaxGridWidth: 500,
+                appScopeProvider: vm,
+                enableColumnResizing: true,
+                onRegisterApi: function onRegisterApi(gridApi) {
+                    vm.$log.log('vm gridapi onRegisterApi');
+                    vm.gridApi = gridApi;
+
+                    gridApi.pagination.on.paginationChanged(vm.$scope, function (newPage, pageSize) {
+                        vm.$log.log('pagination changed');
+                        vm.setGridLength(pageSize);
+                        vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+                    });
+                }
+            };
+
+            vm.$log.log('gcolumns', vm.gcolumns);
+            vm.$log.log('gridOptions', vm.gridOptions);
+        }
+    }]);
+
+    return StudentHistoriesController;
+}();
+
+/***/ }),
+
 /***/ "./source/client/student/studenthistory.component.js":
 /*!***********************************************************!*\
   !*** ./source/client/student/studenthistory.component.js ***!
@@ -63596,8 +63861,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.studenttableComponent = undefined;
 
-var _studenttable = __webpack_require__(/*! ./studenttable.controller */ "./source/client/student/studenttable.controller.js");
-
 var _tableBasicStudents = __webpack_require__(/*! ./table-basic-students.html */ "./source/client/student/table-basic-students.html");
 
 var _tableBasicStudents2 = _interopRequireDefault(_tableBasicStudents);
@@ -63606,6 +63869,7 @@ __webpack_require__(/*! ./student.less */ "./source/client/student/student.less"
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//import { StudentsTableBasicController } from './studenttable.controller';
 var studenttableComponent = exports.studenttableComponent = {
   //bindings: {},  
   //  controller: StudentsTableBasicController,
@@ -64077,6 +64341,17 @@ var StudentsTableBasicController = exports.StudentsTableBasicController = functi
 
     return StudentsTableBasicController;
 }();
+
+/***/ }),
+
+/***/ "./source/client/student/table-basic-studenthistories.html":
+/*!*****************************************************************!*\
+  !*** ./source/client/student/table-basic-studenthistories.html ***!
+  \*****************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "<div ng-controller=\"StudentHistoriesController as $ctrl\" ng-cloak>\n  <div class=\"row\">\n    <div class=\"col-lg-12 col-md-12\">\n      <div class=\"portlet box portlet-green\">\n        <div class=\"portlet-header\">\n          <div class=\"row\">\n            <div class=\"caption\">Student History List</div>\n          </div>\n        </div>\n        <div class=\"portlet-body\">\n          <div class=\"panel\">\n            <div class=\"panel-header\">\n            </div>\n            <div class=\"panel-body\">\n                <div class=\"row\">\n                  <div class=\"col-md-12\">\n                    <div ui-grid=\"$ctrl.gridOptions\" ui-if=\"$ctrl.gridOptions.data.length>0\" ui-grid-pagination ui-grid-selection ui-grid-cellNav ui-grid-pinning ui-grid-move-columns ui-grid-exporter ui-grid-auto-resize ui-grid-resize-columns ui-grid-edit class=\"mygrid\" ng-style=\"$ctrl.getGridLength()\">\n                      <div class=\"watermark\" ng-show=\"!$ctrl.gridOptions.data.length\">No data available</div>\n                    </div>\n                  </div>\n              </div>\n            </div>\n          </div>\n        </div>\n      </div>\n    </div>\n  </div>\n</div>\n"
 
 /***/ }),
 
@@ -71291,6 +71566,17 @@ var StudentServices = exports.StudentServices = function () {
                 method: "get",
                 url: path
             });
+            return request.then(self.handleSuccess, self.handleError);
+        }
+    }, {
+        key: 'getStudentHistories',
+        value: function getStudentHistories(path) {
+            var self = this;
+            var request = self.$http({
+                method: "get",
+                url: path
+            });
+
             return request.then(self.handleSuccess, self.handleError);
         }
     }]);

@@ -1,5 +1,6 @@
 import angular from 'angular';
 import studenttemplate from './table-basic-students.html';
+import studenthistoriestemplate from './table-basic-studenthistories.html';
 import editstudenttempate from './form-layouts-editstudent.html';
 
 
@@ -15,6 +16,7 @@ import { studenthistoryComponent } from './studenthistory.component';
 import { studentattendComponent } from './studentattend.component';
 import { studentpaymentComponent } from './studentpayment.component';
 import { studenttableComponent } from './studenttable.component';
+import { studenthistoriestableComponent } from './studenthistoriestable.component';
 
 import { StudentPaymentController } from './studentpayment.controller';
 import { ModalNewStudentController } from './newstudent.controller';
@@ -25,6 +27,7 @@ import { StudentAttendController } from './studentattend.controller';
 import { FormLayoutsControllerEditStudent } from './editstudent.controller';
 import { ctrlDualList } from './studentdual.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
+import { StudentHistoriesController } from './studenthistoriestable.controller';
 
 //import { portalDataService } from '../portal/portaldata.service';
 import { StudentServices } from '../../js/services/studentServices';
@@ -58,6 +61,7 @@ export const StudentModule = angular
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ctrlDualList', ctrlDualList)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
+ .controller('StudentHistoriesController', StudentHistoriesController)
  .component('editstudentComponent', editstudentComponent)
  .component('newstudentComponent', newstudentComponent)
  .component('newstudentinstComponent', newstudentinstComponent)
@@ -68,6 +72,7 @@ export const StudentModule = angular
  .component('studentattendComponent', studentattendComponent)
  .component('studentpaymentComponent', studentpaymentComponent)
  .component('studenttableComponent', studenttableComponent)
+ .component('studenthistoriestableComponent', studenthistoriestableComponent)
  .config(studentconfig)
  .name;
 
@@ -77,6 +82,10 @@ function studentconfig($routeProvider) {
  $routeProvider
   .when('/table-basic-students', {
    template: studenttemplate
+  })
+
+  .when('/table-basic-studenthistories', {
+   template: studenthistoriestemplate
   })
 
   .when('/form-layouts-editstudent/id/:id', {

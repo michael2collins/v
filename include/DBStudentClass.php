@@ -1120,12 +1120,15 @@ class StudentClassDbHandler {
         }
         $thedate = $dt->format('Y-m-d');
 
+
         $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $LastPaymentdate, new DateTimeZone('Etc/Zulu'));
         if ($dt === false) {
-            $app->log->debug( print_R("updatePaymentPlan  bad date $LastPaymentdate" , TRUE));
-            return NULL;
+            $app->log->debug( print_R("2updatePaymentPlan  bad date $LastPaymentdate" , TRUE));
+            $theLdate = date('Y-m-d');
+        } else {
+            $theLdate = $dt->format('Y-m-d');
         }
-        $theLdate = $dt->format('Y-m-d');
+        
 
         $new_id = null;
 

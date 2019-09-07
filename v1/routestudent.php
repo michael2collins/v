@@ -5514,6 +5514,70 @@ $app->post('/bulkstudentattendance', 'authenticate', 'isAdminOrOperator', 'setDe
         }
 });
 
+$app->get('/contacthistories', 'authenticate', 'allRoles', 'setDebug', function() use ($app){
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $response["error"] = false;
+    $response["contacthistorieslist"] = array();
+
+    $res_id = $db->getContactHistories();
+                                     
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
+
+    if (isset($res_id["success"]) ) {
+
+    // looping through result and preparing  arrays
+        while ($slist = $res_id["slist"]->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+
+        $tmp["ID"] = $slist["ID"];
+        $tmp["LastName"] = $slist["LastName"];
+        $tmp["FirstName"] = $slist["FirstName"];
+        $tmp["Email"] = $slist["Email"];
+        $tmp["Email2"] = $slist["Email2"];
+        $tmp["Parent"] = $slist["Parent"];
+        $tmp["Phone"] = $slist["Phone"];
+        $tmp["AltPhone"] = $slist["AltPhone"];
+        $tmp["Address"] = $slist["Address"];
+        $tmp["City"] = $slist["City"];
+        $tmp["State"] = $slist["State"];
+        $tmp["ZIP"] = $slist["ZIP"];
+        $tmp["Notes"] = $slist["Notes"];
+        $tmp["Birthday"] = $slist["Birthday"];
+        $tmp["ContactType"] = $slist["ContactType"];
+        $tmp["sex"] = $slist["sex"];
+        $tmp["medicalConcerns"] = $slist["medicalConcerns"];
+        $tmp["phoneExt"] = $slist["phoneExt"];
+        $tmp["altPhoneExt"] = $slist["altPhoneExt"];
+        $tmp["EmergencyContact"] = $slist["EmergencyContact"];
+        $tmp["contactmgmttype"] = $slist["contactmgmttype"];
+        $tmp["contactdate"] = $slist["contactdate"];
+            }
+            array_push($response["contacthistorieslist"], $tmp);
+        }
+        $response["error"] = false;
+        $response["message"] = "Found getContactHistories successfully";
+        $response["res_id"] = $res_id["success"];
+        echoRespnse(201, $response);
+        
+    } else {
+        $app->log->debug( print_R("after getContactHistories result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to get getContactHistories. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
+
+
 $app->get('/rawattendances', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
     $response = array();
