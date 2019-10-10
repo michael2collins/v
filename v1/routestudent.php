@@ -3490,6 +3490,7 @@ $app->get('/payerbyemail', 'authenticate', 'isPayer', 'setDebug', function() use
             $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
             $tmp["payername"] = (empty($slist["payername"]) ? "NULL" : $slist["payername"]);
             $tmp["payerEmail"] = (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+            $tmp["createInvoice"] = (empty($slist["createInvoice"]) ? "NULL" : $slist["createInvoice"]);
         array_push($response["payerlist"], $tmp);
     }
 

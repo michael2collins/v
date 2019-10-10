@@ -602,6 +602,41 @@ $app->post('/useroptions', 'authenticate', 'allRoles', function() use ($app) {
 
 });
 
+$app->post('/userpictuure', 'authenticate', 'allRoles', function() use ($app) {
+     $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    $app->log->debug( print_R("userpictuure before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));    
+
+    $pictureurl = (isset($dataJsonDecode->thedata->pictureurl) ? $dataJsonDecode->thedata->pictureurl : "");
+
+    $app->log->debug( print_R("pictureurl:\n", TRUE ));    
+    $app->log->debug( print_R($pictureurl, TRUE ));    
+
+    $db = new DbHandler();
+    $response = array();
+
+    $id = $db->updateUserPicture($pictureurl 
+                                );
+    if ($id > 0) {
+        $response["error"] = false;
+        $response["message"] = "Picture updated successfully";
+        $app->log->debug( print_R("Picture updated: $id\n", TRUE ));
+        echoRespnse(201, $response);
+    } else {
+        $app->log->debug( print_R("after picture result bad\n", TRUE));
+        $app->log->debug( print_R( $id, TRUE));
+        $response["error"] = true;
+        $response["message"] = "Failed to update picture. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+
 $app->get('/resetpassword',  function() use ($app) {
 
     $allGetVars = $app->request->get();

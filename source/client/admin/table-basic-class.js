@@ -153,16 +153,17 @@ export class ClassTableBasicController {
         var updpath = "../v1/class";
 
         var vlu = {};
-        //            vlu.rankForNextClass = vm.Util.getByValue(vm.thisranks, rowEntity.rankForNextClass, 'value', 'label');
-        //            vlu.ranklistForNextClass = vm.Util.getByValue(vm.rankTypes, rowEntity.ranklistForNextClass, 'id', 'value');
+        vlu.rankForNextClass = vm.Util.getByValue(vm.ranks, rowEntity.rankForNextClass, 'value', 'label');
+        vlu.ranklistForNextClass = vm.Util.getByValue(vm.rankTypes, rowEntity.ranklistForNextClass, 'id', 'value');
+        vlu.registrationType = vm.Util.getByValue(vm.rankTypes, rowEntity.registrationType, 'id', 'value');
 
         var thedata = {
             id: rowEntity.id,
             class: rowEntity.class,
-            registrationType: rowEntity.registrationType,
+            registrationType: vlu.registrationType,
             nextClass: rowEntity.nextClass,
-            ranklistForNextClass: rowEntity.ranklistForNextClass,
-            rankForNextClass: rowEntity.rankForNextClass,
+            ranklistForNextClass: vlu.ranklistForNextClass,
+            rankForNextClass: vlu.rankForNextClass,
             ageForNextClass: rowEntity.ageForNextClass,
             sort: rowEntity.sort,
             pictureurl: rowEntity.pictureurl

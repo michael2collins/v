@@ -535,13 +535,29 @@ export class StudentPaymentController {
         var thedata = {
             payerid: vmpayment.studentpayer
         };
+        var data = {};
+        data.PayerExistsList = {};
+        
+        //check nclasspays, npayments
         return vmpayment.ClassServices.removePayer(path, thedata)
             .then(function(data) {
                 vmpayment.$log.log('removePayer returned data');
                 vmpayment.$log.log(data);
+                vmpayment.message = data.message;
+                if ((typeof data === 'undefined' || data.error === true) &&
+                    typeof data !== 'undefined') {
+                    vmpayment.Notification.error({ message: vmpayment.message, delay: 5000 });
+                    vmpayment.PayerFKExists = data.PayerExistsList;
+                    return (vmpayment.$q.reject(data));
+                }
+                else {
+
+                    vmpayment.Notification.success({ message: vmpayment.message, delay: 5000 });
+                }
                 vmpayment.getPayerList();
                 vmpayment.getPaymentpays();
                 vmpayment.getListPrices();
+
                 return data;
             }).catch(function(e) {
                 vmpayment.$log.log('removePayer failure:');

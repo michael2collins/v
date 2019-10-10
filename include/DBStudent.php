@@ -2242,6 +2242,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
             where
 			cp.primaryContact = 1
 			and com.invoicebatchenabled = 1
+			and p.createInvoice <> 0
 			and c.studentschool = ?
 	    ";
 	    
@@ -2514,7 +2515,7 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
         $emailaddr = $user_id;
 		
 	    $sql = "
-			select p.id as payerid, p.payername, p.payerEmail
+			select p.id as payerid, p.payername, p.payerEmail, p.creeateInvoice
             from payer p
             join users u on (u.email = p.payerEmail and u.school = p.school )
             where

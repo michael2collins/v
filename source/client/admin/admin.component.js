@@ -1,5 +1,6 @@
 
 import { BasicTableBasicController } from './table-basic-basic';
+import { PayerTableBasicController } from './table-payer';
 import { ClassRankTableBasicController } from './table-basic-classrank';     
 import { ProgramTableBasicController } from './table-basic-program';   
 import { TesttypeTableBasicController } from './table-basic-testtype';
@@ -28,6 +29,7 @@ import scheduletemplate from './template/table-basic-schedule.html';
 //import rptbuildertemplate from './table-basic-rptbuilder.html';
 import quickpicktemplate from './template/table-quickpick.html';
 import schoolcomtemplate from './template/table-basic-schoolcom.html';
+import tablepayertemplate from './template/table-basic-payer.html';
 
 
 import './textblockimage.html';
@@ -37,6 +39,11 @@ export let basicComponent = {
 bindings: {},  
   controller: BasicTableBasicController,
   template: basictemplate
+};
+export let tablePayerComponent = {
+bindings: {},  
+  controller: PayerTableBasicController,
+  template: tablepayertemplate
 };
 export let quickpickComponent = {
 bindings: {},  

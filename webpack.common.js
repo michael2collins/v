@@ -241,6 +241,12 @@
                 from:'./source/**/template/*',
                 to:'template',
                 flatten: true
+            },
+            {
+             "test": /\.html$/,
+                from:'./source/**/includes/*',
+                to:'templates/includes',
+                flatten: true
             } 
         ]),          
          new MiniCssExtractPlugin({

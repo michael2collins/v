@@ -41,6 +41,18 @@ export class UserServices {
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
+    updatePicture(path, thedata) {
+        var self = this;
+        self._$log.log('updatePicture data before post :', thedata);
+        var request = self._$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
 
     setapikey(key) {
         var self = this;
@@ -241,7 +253,8 @@ export class UserServices {
         this.userdetails.options = input;
     }
     isDebugEnabled() {
-        if (_.isEmpty(this.userdetails)) {
+        var self=this;
+        if (self._.isEmpty(this.userdetails)) {
 //            console.log('isdebugenabled is empty');
             return false;
         } else {

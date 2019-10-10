@@ -27,6 +27,30 @@ class DbHandler {
 
        /* ------------- `users` table method ------------------ */
 
+    public function updateUserPicture($pictureurl){
+        global $app;
+        global $user_id;
+        global $school;
+		$response = array();
+		$sql = "update users set pictureurl = ? ";
+		$sql .= " where id = ? and school = ? ";
+
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("sss", $pictureurl, $user_id, $school);
+
+			$stmt->execute();
+			$num_affected_rows = $stmt->affected_rows;
+			$stmt->close();
+
+			return $num_affected_rows >= 0;
+		}
+        else {
+			$app->log->debug(print_R("updateUserPicture  sql failed", TRUE));
+            $errormessage["sqlerror"] = "updateUserPicture failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+            return $errormessage;
+		}        
+    }
     /**
      * Creating new user
      * @param String $name User full name

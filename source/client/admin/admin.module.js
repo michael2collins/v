@@ -19,6 +19,7 @@ import scheduletemplate from './template/table-basic-schedule.html';
 import rptbuildertemplate from './table-basic-rptbuilder.html';
 import quickpicktemplate from './template/table-quickpick.html';
 import schoolcomtemplate from './template/table-basic-schoolcom.html';
+import tablepayertemplate from './template/table-basic-payer.html';
 
 import { BasicTableBasicController } from './table-basic-basic';
 import { ClassRankTableBasicController } from './table-basic-classrank';
@@ -34,6 +35,7 @@ import { TemplateTableBasicController } from './table-basic-htmltemplate';
 import { ScheduleTableBasicController } from './table-basic-schedule';
 import { QuickpickController } from './quickpick.controller';
 import { SchoolcomTableBasicController } from './table-basic-schoolcom';
+import { PayerTableBasicController } from './table-payer';
 
 import { ClassServices } from '../../js/services/classServices';
 import { TestingServices } from '../../js/services/testingServices';
@@ -51,6 +53,7 @@ import iddropdown from '../../js/filters/iddropdown.filter';
 
 import {
     basicComponent,
+    tablePayerComponent,
     classrankComponent,
     programComponent,
     testtypeComponent,
@@ -95,6 +98,7 @@ export const AdminModule = angular
     .service('calendarServices', CalendarServices)
 
     .controller('BasicTableBasicController', BasicTableBasicController)
+    .controller('PayerTableBasicController', PayerTableBasicController)
     .controller('ClassRankTableBasicController', ClassRankTableBasicController)
     .controller('ProgramTableBasicController', ProgramTableBasicController)
     .controller('TesttypeTableBasicController', TesttypeTableBasicController)
@@ -111,6 +115,7 @@ export const AdminModule = angular
     .filter('iddropdown', iddropdown)
 
     .component('basicComponent', basicComponent)
+    .component('tablePayerComponent', tablePayerComponent)
     .component('classrankComponent', classrankComponent)
     .component('programComponent', programComponent)
     .component('testtypeComponent', testtypeComponent)
@@ -552,6 +557,7 @@ function config($routeProvider) {
     $routeProvider
         .when('/stripe-onboard', { template: stripeonboardtemplate })
         .when('/table-basic-class', { template: classtemplate })
+        .when('/table-basic-payer', { template: tablepayertemplate })
         .when('/table-basic-classrank', { template: classranktemplate })
         .when('/table-basic-htmltemplate', { template: htmltemplate })
         .when('/table-basic-rank', { template: rankstemplate })

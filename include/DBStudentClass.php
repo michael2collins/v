@@ -421,6 +421,85 @@ class StudentClassDbHandler {
 
     }
 
+    public function isPayerFKExists($id) {
+        global $app;
+
+        $app->log->debug( print_R("isPayerFKExists entered", TRUE));
+
+        global $school;
+        
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
+        }
+//npayments, nclasspays
+        $cntsql = "select count(*) as cnt, 'payments for student' as type from npayments where payerid = ? group by 2
+            union
+            select count(*) as cnt, 'classes paid by payers  ' as type from nclasspays where payerid = ? group by 2";
+
+        $app->log->debug( print_R("Payer isPayerFKExists sql: $cntsql", TRUE));
+
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("ss",
+                         $id, $id
+                                     );
+
+            if ($stmt->execute()) {
+                $results = $stmt->get_result();
+                $stmt->close();
+                return $results;
+            } else {
+                $app->log->debug( print_R("isPayerFKExists  execute failed", TRUE));
+                printf("Errormessage: %s\n", $this->conn->error);
+            }
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+   public function getPayers() {
+        global $school;
+        global $app;
+        
+        try {
+            $sql = "Select  payerName, payerEmail, createInvoice, id from payer where school = ?";
+    
+            $app->log->debug( print_R("getPayers sql after security: $sql", TRUE));
+    
+            $sql .= " order by payerName";
+            
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("s", $school);
+                if ($stmt->execute()) {
+                    $slists = $stmt->get_result();
+                    $app->log->debug( print_R("getPayers list returns data", TRUE));
+                    $app->log->debug( print_R($slists, TRUE));
+                    $stmt->close();
+                    return $slists;
+                } else {
+                    $app->log->debug( print_R("getPayers list execute failed", TRUE));
+                    printf("Errormessage: %s\n", $this->conn->error);
+                    return NULL;
+                }
+    
+            } else {
+                $app->log->debug( print_R("getPayers list sql failed", TRUE));
+                printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+            }
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in getPayers\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+
+    }
+
     public function getClassStudentlist($student_id) {
         global $app;
         $app->log->debug( print_R("get class student list for id", TRUE ));
@@ -858,7 +937,7 @@ class StudentClassDbHandler {
     	    return -1;
     	}
     }
-    public function addPayer($payerName, $payerEmail
+    public function addPayer($payerName, $payerEmail, $createInvoice
     ) {
         global $app;
 
@@ -869,15 +948,15 @@ class StudentClassDbHandler {
 
         global $school;
 
-        $sql = "INSERT INTO payer (payerName, payerEmail, school) VALUES
+        $sql = "INSERT INTO payer (payerName, payerEmail, createInvoice, school) VALUES
                 ( ?, ?, ?)";
         
         // First check if  already existed in db
         if (!$this->isPayerExists($payerName)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("sss",
-                                  $payerName,$payerEmail, $school
+                $stmt->bind_param("ssis",
+                                  $payerName,$payerEmail, $createInvoice, $school
                                      );
                     // Check for successful insertion
                     $result = $stmt->execute();
@@ -1391,6 +1470,234 @@ class StudentClassDbHandler {
                 return NULL;
         }
 
+    }
+
+    public function setCreateInvoice($payerid, $createInvoice
+    ) {
+        global $app;
+
+        $app->log->debug( print_R("setCreateInvoice entered\n", TRUE ));
+                                      
+        $sql = "Update payer set createInvoice = ?  where id = ? ";
+        try {
+            if ($stmt = $this->conn->prepare($sql)) {
+                $stmt->bind_param("ii",
+                                $createInvoice,
+                                  $payerid
+                                     );
+                    // Check for success
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+
+                if (!$stmt->execute() ) {
+                    $num_affected_rows = $stmt->affected_rows;	                        
+                    printf("Update Cal2 Errormessage: %s\n", $this->conn->error);
+                    $app->log->debug( print_R("Update Cal2  failed", TRUE));
+                    $stmt->close();	                        
+                    $app->log->debug( print_R($this->conn->error, TRUE));
+                    return $num_affected_rows;	                        
+                    $stmt->close();
+                    return -1;
+                } else {
+                    $num_affected_rows = $stmt->affected_rows;
+    
+                    $stmt->close();
+                    return $num_affected_rows;
+                }
+    
+            } else {
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+            }
+
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in setCreateInvoice\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -1;
+		}
+
+    }
+
+    private function isPayerFullExists(
+            $payername, $payeremail, $payerid
+        ) {
+        global $app;
+        global $school;
+
+        $app->log->debug( print_R("isPayerFullExists entered", TRUE));
+
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
+        }
+
+        $cntsql = "select count(*) as Payercount from payer
+                     where id = ?  and school = ?";
+
+        $cnt2sql = "select count(*) as Payercount from payer ";
+        $cnt2sql .= " where ( payername = ? or payeremail = ? ) and school = ?";
+
+        $app->log->debug( print_R("Payer isPayerExists sql: $cntsql", TRUE));
+
+        $app->log->debug( print_R("isPayerExists2 sql : $cnt2sql", TRUE));
+        
+        if ($stmt = $this->conn->prepare($cntsql)) {
+                $stmt->bind_param("is",
+                         $payerid, $school
+                                     );
+
+           // $stmt->execute();
+            if (! $stmt->execute() ){
+                $stmt->close();
+                printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                
+            }
+
+            $row = null;
+            $stmt->bind_result($row);
+            while ($stmt->fetch()) { 
+                $app->log->debug( print_R("isPayerExists: " . $row . "\n", TRUE));
+            }
+
+            $stmt->close();
+
+            if ($row) {
+                return $row;
+            } else {
+                if ($stmt = $this->conn->prepare($cnt2sql)) {
+                    $stmt->bind_param("sss",
+                             $payername, $payeremail, $school
+                                         );
+        
+                   // $stmt->execute();
+                    if (! $stmt->execute() ){
+                        $stmt->close();
+                        printf("Errormessage: %s\n", $this->conn->error);
+                            return -1;
+                    }
+        
+                    $row = null;
+                    $stmt->bind_result($row);
+                    while ($stmt->fetch()) { 
+                        $app->log->debug( print_R("isPayer2Exists: " . $row . "\n", TRUE));
+                    }
+        
+                    $stmt->close();
+                    return $row;
+                    
+                } else {
+                    printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+                }
+                
+            }
+
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return -1;
+        }
+
+    }
+
+    public function updatePayer( 
+        $payerid,$payername, $payeremail, $createInvoice
+
+        ) {
+        global $app;
+        global $school;
+        $num_affected_rows = 0;
+        $app->log->debug( print_R("Payer update entered", TRUE));
+
+        global $school;
+        $errormessage=array();
+        $numargs = func_num_args();
+        $arg_list = func_get_args();
+            for ($i = 0; $i < $numargs; $i++) {
+                $app->log->debug( print_R("Argument $i is: " . $arg_list[$i] . "\n", TRUE));
+        }
+
+        $inssql = " INSERT INTO payer( 
+             payername, payeremail, createinvoice,school ) ";
+
+        $inssql .= " VALUES (?, ?, ?, ?) ";
+
+        try {
+        if ($this->isPayerFullExists(
+            $payername, $payeremail, $payerid
+            ) == 0) {
+
+            if ($stmt = $this->conn->prepare($inssql)) {
+                $stmt->bind_param("ssis",
+        $payername, $payeremail, $createInvoice, $school
+                                     );
+                    $result = $stmt->execute();
+
+                    $stmt->close();
+                    // Check for successful insertion
+                    if ($result) {
+                        $new_id = $this->conn->insert_id;
+                        // User successfully inserted
+                $errormessage["success"] = $new_id;
+                return $errormessage;
+//                        return $new_id;
+                    } else {
+                        // Failed to create 
+                $app->log->debug( print_R("Payer insert failed", TRUE));
+                $app->log->debug( print_R($result, TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+                    }
+
+                } else {
+                $errormessage["sqlerror"] = "Insert failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+                }
+
+
+        } else {
+
+            // already existed in the db, update
+            $updsql = "UPDATE payer SET 
+                 payername = ?, 
+                 payeremail = ?, 
+                 createInvoice = ? 
+            WHERE id = ? ";
+
+            $app->log->debug( print_R("Payer update sql: $updsql", TRUE));
+            
+            if ($stmt = $this->conn->prepare($updsql)) {
+                $stmt->bind_param("ssii",
+        $payername, $payeremail, $createInvoice, $payerid
+                                     );
+                $stmt->execute();
+                $num_affected_rows = $stmt->affected_rows;
+                $stmt->close();
+                $errormessage["success"] = $num_affected_rows;
+                return $errormessage;
+//                return $num_affected_rows;
+                
+            } else {
+                $app->log->debug( print_R("Payer update failed", TRUE));
+                $app->log->debug( print_R($this->conn->error, TRUE));
+                $errormessage["sqlerror"] = "update failure: ";
+                $errormessage["sqlerrordtl"] = $this->conn->error;
+                return $errormessage;
+            }
+        }
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in setCreateInvoice\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -1;
+		}
+        
     }
 
     public function updateQuickPick(

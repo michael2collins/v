@@ -643,6 +643,7 @@ $app->delete('/studentregistration','authenticate', 'isAdminOrOperator', 'setDeb
 
 });
 
+/*
 $app->post('/payer', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
@@ -655,16 +656,18 @@ $app->post('/payer', 'authenticate', 'isAdminOrOperator', 'setDebug',function() 
 
     $payerName = (isset($dataJsonDecode->thedata->payerName) ? $dataJsonDecode->thedata->payerName : "");
     $payerEmail = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "");
+    $createInvoice = (isset($dataJsonDecode->thedata->createInvoice) ? $dataJsonDecode->thedata->createInvoice : "");
 
     $app->log->debug( print_R("payerName: $payerName\n", TRUE ));
     $app->log->debug( print_R("payerEmail: $payerEmail\n", TRUE ));
+    $app->log->debug( print_R("createInvoice: $createInvoice\n", TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
 
     // updating task
     $payer_id = $db->addPayer(
-                                 $payerName, $payerEmail
+                                 $payerName, $payerEmail, $createInvoice
                                 );
 
     if ($payer_id > 0) {
@@ -688,6 +691,7 @@ $app->post('/payer', 'authenticate', 'isAdminOrOperator', 'setDebug',function() 
 
 
 });
+*/
 
 $app->get('/payers/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',function($student_id) {
     //  global $user_id;
@@ -706,9 +710,11 @@ $app->get('/payers/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',functio
         if (count($slist) > 0) {
             $tmp["payername"] = (empty($slist["payerName"]) ? "NULL" : $slist["payerName"]);
             $tmp["payerid"] = (empty($slist["payerid"]) ? "NULL" : $slist["payerid"]);
+            $tmp["createInvoice"] = (empty($slist["createInvoice"]) ? "NULL" : $slist["createInvoice"]);
         } else {
             $tmp["payername"] = "NULL";
             $tmp["payerid"] = "NULL";
+            $tmp["createInvoice"] = "NULL";
         }
         array_push($response["payerlist"], $tmp);
     }
@@ -716,6 +722,56 @@ $app->get('/payers/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',functio
     $row_cnt = $result->num_rows;
 
     if ($result != NULL) {
+        $response["error"] = false;
+        echoRespnse(200, $response);
+    } else {
+        $response["error"] = true;
+        $response["message"] = "The requested payers do not exist";
+        echoRespnse(404, $response);
+    }
+});
+
+$app->get('/payers', 'authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
+    //  global $user_id;
+    $response = array();
+    $db = new StudentClassDbHandler();
+
+    // fetch task
+    $result = $db->getPayers();
+
+    $response["error"] = false;
+    $response["payerlist"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            
+            $tmp["payername"] = (empty($slist["payerName"]) ? "NULL" : $slist["payerName"]);
+            $tmp["payeremail"] = (empty($slist["payerEmail"]) ? "NULL" : $slist["payerEmail"]);
+            $tmp["payerid"] = (empty($slist["id"]) ? "NULL" : $slist["id"]);
+            $tmp["createInvoice"] = $slist["createInvoice"];
+/*$str = $slist["id"];
+    $app->log->debug( print_R("payerid: $str\n", TRUE ));
+$str = $slist["createInvoice"];
+    $app->log->debug( print_R("createInvoice: $str\n", TRUE ));
+*/
+        } else {
+            $tmp["payername"] = "NULL";
+            $tmp["payeremail"] = "NULL";
+            $tmp["payerid"] = "NULL";
+            $tmp["createInvoice"] = "NULL";
+        }
+  //  $app->log->debug( print_R($tmp, TRUE ));
+
+        array_push($response["payerlist"], $tmp);
+    }
+    
+    $row_cnt = $result->num_rows;
+
+    if ($result != NULL) {
+//        $app->log->debug( print_R($response, TRUE ));
+        
         $response["error"] = false;
         echoRespnse(200, $response);
     } else {
@@ -1214,6 +1270,123 @@ $app->delete('/paymentpay','authenticate', 'isAdminOrOperator', 'setDebug', func
                         
 
 });
+
+$app->post('/payerinvoice', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app) {
+
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    $app->log->debug( print_R("payerinvoice before insert\n", TRUE ));
+    $app->log->debug( print_R($dataJsonDecode, TRUE ));
+
+    $studentarr = array();
+    $studentarr = $dataJsonDecode->thedata->selectedPayers;
+
+    $app->log->debug( print_R($studentarr, TRUE ));
+
+    $createInvoicegood=0;
+    $createInvoicebad=0;
+    $createInvoiceexists=0;
+
+    $invoicevlu  = (isset($dataJsonDecode->thedata->invoicevlu) ? $dataJsonDecode->thedata->invoicevlu : 0);
+     
+    for($i = 0; $i < count($studentarr); $i++ ) {
+
+        $app->log->debug( print_R("payerid: " . $studentarr[$i]->payerid . "\n", TRUE ));
+
+        $payerid  = (isset($studentarr[$i]->payerid) ? 
+                        $studentarr[$i]->payerid : "");
+//        $createInvoice  = (isset($studentarr[$i]->createInvoice) ? 
+ //                       $studentarr[$i]->createInvoice : "");
+
+        $db = new StudentClassDbHandler();
+        $response = array();
+    
+        $createInvoice = $db->setCreateInvoice(
+            $payerid, $invoicevlu
+                                    );
+    
+        if ($createInvoice > -1) {
+            $app->log->debug( print_R("Number of invoice values updated: $createInvoice\n", TRUE ));
+
+            $createInvoicegood += 1;
+        } else {
+            $app->log->debug( print_R("after createcreateInvoice result bad\n", TRUE));
+            $app->log->debug( print_R( $createInvoice, TRUE));
+            $createInvoicebad += 1;
+        }
+
+    }
+
+    //as long as one worked, return success
+        if ($createInvoicegood > 0) {
+            $response["error"] = false;
+            $response["message"] = "createInvoice $createInvoicegood created successfully";
+            $response["createInvoice"] = $createInvoicegood;
+            $app->log->debug( print_R("createInvoice created: $createInvoicegood\n", TRUE ));
+            echoRespnse(201, $response);
+        } else {
+            $app->log->debug( print_R("post loop after reateInvoice result bad\n", TRUE));
+            $app->log->debug( print_R( $createInvoicebad, TRUE));
+            $response["error"] = true;
+            $response["message"] = "Failed to create $createInvoicebad createInvoice. Please try again";
+            echoRespnse(400, $response);
+        }
+
+});
+
+$app->post('/payer','authenticate', 'isAdminOrOperator',  'setDebug',function() use($app) {
+    $response = array();
+
+    // reading post params
+        $data               = file_get_contents("php://input");
+        $dataJsonDecode     = json_decode($data);
+
+    $app->log->debug( print_R("Basic post before update insert\n", TRUE ));
+    $thedata  = (isset($dataJsonDecode->thedata) ? $dataJsonDecode->thedata : "");
+    $app->log->debug( print_R($thedata, TRUE ));
+
+    $payerName = (isset($dataJsonDecode->thedata->payerName) ? $dataJsonDecode->thedata->payerName : "");
+    $payerEmail = (isset($dataJsonDecode->thedata->payerEmail) ? $dataJsonDecode->thedata->payerEmail : "");
+    $createInvoice = (isset($dataJsonDecode->thedata->createInvoice) ? $dataJsonDecode->thedata->createInvoice : 0);
+    $payerid          = (isset($dataJsonDecode->thedata->payerid)         ? $dataJsonDecode->thedata->payerid : "");
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+    // updating task
+    $res_id = $db->updatePayer(
+        $payerid,$payerName, $payerEmail, $createInvoice
+                                     );
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
+
+    if (isset($res_id["success"]) ) {
+        if ($res_id["success"] > 1) {
+            $response["error"] = false;
+            $response["message"] = "Payer created successfully";
+            $response["res_id"] = $res_id["success"];
+            $app->log->debug( print_R("Payer created: \n", TRUE ));
+            echoRespnse(201, $response);
+        } else if ($res_id["success"] == 1) {
+            $response["error"] = false;
+            $response["message"] = "Payer updated successfully";
+            $app->log->debug( print_R("Payer already existed\n", TRUE ));
+            echoRespnse(201, $response);
+        }
+    } else {
+        $app->log->debug( print_R("after Payer result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to create Payer. Please try again";
+        echoRespnse(400, $response);
+    }
+
+});
+
 $app->delete('/payer','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
     $response = array();
@@ -1233,6 +1406,27 @@ $app->delete('/payer','authenticate', 'isAdminOrOperator', 'setDebug',function()
     $payer_bad=0;
 
     $db = new StudentClassDbHandler();
+
+    $result = $db->isPayerFKExists($payerid);
+    $response["error"] = false;
+    $response["PayerExistsList"] = array();
+
+    // looping through result and preparing  arrays
+    while ($slist = $result->fetch_assoc()) {
+        $tmp = array();
+        if (count($slist) > 0) {
+            $tmp["type"] = (empty($slist["type"]) ? "NULL" : $slist["type"]);
+            $tmp["cnt"] = (empty($slist["cnt"]) ? "0" : $slist["cnt"]);
+        } else {
+            $tmp["type"] = "NULL";
+            $tmp["cnt"] = "0";
+        }
+        array_push($response["PayerExistsList"], $tmp);
+    }
+    $row_cnt = $result->num_rows;
+//todo fix the check later
+ //   if ($row_cnt == 0) {
+
     $response = array();
 
     // removing payer
@@ -1241,9 +1435,9 @@ $app->delete('/payer','authenticate', 'isAdminOrOperator', 'setDebug',function()
                                 );
 
     if ($res > 0) {
-        $app->log->debug( print_R("paymentpay removed for: $payerid \n", TRUE ));
+        $app->log->debug( print_R("payer removed for: $payerid \n", TRUE ));
         $response["error"] = false;
-        $response["message"] = "paymentpay removed successfully";
+        $response["message"] = "payer removed successfully";
         $payer_good = 1;
         $response["payer"] = $payer_good;
         echoRespnse(201, $response);
@@ -1252,10 +1446,17 @@ $app->delete('/payer','authenticate', 'isAdminOrOperator', 'setDebug',function()
         $app->log->debug( print_R( $payerid, TRUE));
         $payer_bad = 1;
         $response["error"] = true;
-        $response["message"] = "Failed to remove paymentpay. Please try again";
+        $response["message"] = "Failed to remove payer. Please try again";
         echoRespnse(400, $response);
     }
-                        
+
+ /*   } else {
+            $app->log->debug( print_R("before delete Payer result bad\n", TRUE));
+            $response["error"] = true;
+            $response["message"] = "Failed to remove Payer. There are records that are still attached to the Payer. Please remove those first";
+            echoRespnse(400, $response);
+    }
+    */                        
 
 });
 

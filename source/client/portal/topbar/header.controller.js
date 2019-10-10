@@ -262,6 +262,103 @@ export class HeaderController {
 
     }
 
+    openPhoto() {
+        var vm=this;
+        vm.openPhotoModal(vm, vm);
+    }
+
+openPhotoModal(vm, dataToPass) {
+        var photoModal = vm;
+        photoModal.dataToPass = dataToPass; 
+        photoModal.animationsEnabled = true;
+
+        photoModal.modalInstance = undefined;
+        photoModal.retvlu = '';
+
+        photoModal.modalInstance = this.$uibModal.open({
+            animation: photoModal.animationsEnabled,
+            component: 'photoComponent',
+            size: 'md',
+            windowClass: 'my-modal-popup',
+            resolve: {
+                dataToPass: function() {
+                    photoModal.$log.log('resolve datatopass', photoModal.dataToPass);
+                    return photoModal.dataToPass;
+                }
+
+            }
+        });
+
+        photoModal.modalInstance.opened.then(
+            function(success) {
+                photoModal.$log.log('photoModal ui opened:', success);
+
+            },
+            function(error) {
+                photoModal.$log.log('photoModal ui failed to open, reason : ', error);
+            }
+        );
+        photoModal.modalInstance.rendered.then(
+            function(success) {
+                photoModal.$log.log('photomodal ui rendered:', success);
+            },
+            function(error) {
+                photoModal.$log.log('photoModal ui failed to render, reason : ', error);
+            }
+        );
+
+        photoModal.modalInstance.result.then(
+            function(retvlu) {
+                photoModal.$log.log('search modalInstance result :', retvlu);
+ //               photoModal.activate();
+                photoModal.updatePicture(retvlu);
+
+            },
+            function(error) {
+                photoModal.$log.log('photomodal ui failed to result, reason : ', error);
+                photoModal.$log.info('Modal dismissed at: ' + new Date());
+//                photoModal.activate();
+            });
+
+    }
+ 
+  updatePicture(pictureurl) {
+    var vm=this;
+    var updpath = "../v1/userpicture";
+    var thedata = {
+        "pictureurl": pictureurl,
+    };
+
+    vm.$log.log('about updatePicture ', thedata, updpath);
+    return vm.UserServices.updatePicture(updpath, thedata)
+      .then(function(data) {
+        vm.$log.log('updatePicture returned data');
+        vm.$log.log(data);
+        if ((typeof data.message === 'undefined' || data.error === true) &&
+          typeof data !== 'undefined') {
+          var themsg = {
+            message: data.message + ': ' +
+              (typeof(data.extra.sqlerror) === "string" ? data.extra.sqlerror : ""),
+            delay: 5000
+          };
+          vm.Notification.error(themsg);
+          return (vm.$q.reject(data));
+        }
+        else {
+          vm.Notification.success({ message: data.message, delay: 5000 });
+
+        }
+
+        return data;
+      }).catch(function(e) {
+        vm.$log.log('updatePicture failure:');
+        vm.$log.log("error", e);
+        vm.message = e;
+        vm.Notification.error({ message: e, delay: 5000 });
+        throw e;
+      });
+  }
+    
     openSettings() {
         var thisModal = this;
 
@@ -280,7 +377,7 @@ export class HeaderController {
             windowClass: 'my-modal-popup',
             scope: modalScope,
             resolve: {
-                classname: function() {
+                picname: function() {
                     thisModal.$log.log('return from open');
                     return thisModal.retvlu;
                 }

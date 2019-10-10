@@ -451,6 +451,12 @@ export class ClassServices {
 
         return (self.$http.get(path).then(self.handleSuccess, self.handleError));
     }
+    getPayers(path) {
+        var self=this;
+        self.$log.log('getPayers service entered', path);
+
+        return (self.$http.get(path).then(self.handleSuccess, self.handleError));
+    }
     getFamily(path) {
         var self=this;
         self.$log.log('getFamily service entered', path);
@@ -540,6 +546,30 @@ export class ClassServices {
         self.$log.log('removePayer data before post :', path, thedata);
         var request = self.$http({
             method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    updatePayer(path, thedata) {
+        var self=this;
+        self.$log.log('updatePayer data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
+    invoiceset(path, thedata) {
+        var self = this;
+        self.$log.log('invoiceset data before post :', thedata);
+        var request = self.$http({
+            method: "POST",
             url: path,
             data: {
                 thedata: thedata

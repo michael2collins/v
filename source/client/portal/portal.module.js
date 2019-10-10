@@ -26,10 +26,11 @@ import { BreadcrumbController } from './header/breadcrumb.controller';
 import { CoreModule } from '../../js/core/core.module';
 import { EmailModule } from '../email/email.module';
 import { DirectiveModule } from '../../js/directives/directive.module';
+import { PhotoModule } from '../photos/photo.module';
 
 
 export const PortalModule = angular
-    .module('ngadmin.portal', [CoreModule, EmailModule,DirectiveModule])
+    .module('ngadmin.portal', [PhotoModule,CoreModule, EmailModule,DirectiveModule])
     .component('headerComponent', headerComponent)
     .component('breadcrumbComponent', breadcrumbComponent)
     //    .component('sidebarComponent',sidebarComponent)

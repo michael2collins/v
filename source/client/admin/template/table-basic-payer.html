@@ -1,0 +1,148 @@
+<div ng-controller="PayerTableBasicController as vm">
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Payer</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Payers</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                		<div class="well well-lg" ng-show="!!vm.selected">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+                                    <div class="caption">Update selected rows</div>
+                                    <div class="col-md-12" style="height: 88px;">
+                                        <form action="" novalidate name="edit" class="form-horizontal">
+                                            <div class="col-md-2">
+                                                <label for="invoicevalue" class="control-label">Invoice Value?</label>
+                                                <div class="input-icon right">
+                                                    <toggle-switch 
+                                                            on-label="Yes" 
+                                                            off-label="No" 
+                                                            id="invoicevalue" 
+                                                            type="checkbox" 
+                                                            name="invoicevalue" 
+                                                            ng-model="vm.invoicevalue" 
+                                                        class="switch-primary">
+                                                    </toggle-switch>
+                                                </div>                
+                                            </div>
+                                             <div class="col-md-3"  >
+                                                <label for="rankbtn" class="control-label">&nbsp; </label>                                                 
+                                                <button type="button" class="btn btn-green form-control" ng-click="vm.changeInvoicing()">Change Invoicing for Selected</button>
+                                             </div>
+                                            <div class="col-md-7"></div>
+                                        </form> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="row col-md-offset-10 mbs">
+                            
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+                                    <div class="col-md-12" style="height: 88px;">
+                                        <!-- payername, payeremail, invoiceCreate -->
+                                        <form action="" novalidate name="editschedule2" class="form-horizontal">
+                                            <div class="col-md-4">
+                                                
+    <div class="form-group">
+        <label for="payername" class="control-label">Name<br/>&nbsp;</label>
+
+        <div>
+            <input  id="payername" 
+                    type="text" 
+                    placeholder="Enter Name" 
+                    name="payername" 
+                    ng-model="vm.Payer.payername" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                                </div>
+                                            <div class="col-md-4">
+                                                
+    <div class="form-group">
+        <label for="payeremail" class="control-label">Email<br/> &nbsp;</label>
+
+        <div>
+            <input  id="payeremail" 
+                    type="text" 
+                    placeholder="Enter Email" 
+                    name="payeremail" 
+                    ng-model="vm.Payer.payeremail" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                                </div>
+                                            <div class="col-md-2">
+                                                    <div ng-class="{'has-error': editschedule2.createinvoice.$invalid, 
+                    'has-success': !editschedule2.createinvoice.$invalid}" class="form-group">
+        <label for="createinvoice" class="control-label">Create<br/>Invoice?</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.createinvoice.$dirty" 
+            ng-class="editschedule2.createinvoice.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <toggle-switch 
+                    on-label="Yes" 
+                    off-label="No" 
+                    id="createinvoice" 
+                    type="checkbox" 
+                    name="createinvoice" 
+                    ng-model="vm.Payer.createinvoice" 
+                required                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="switch-primary">
+            </toggle-switch>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.createinvoice.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+                                                </div>
+                                            <div class="col-md-2 btn" style="margin-top: 18px;">
+                                                     <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addPayer(vm.Payer)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                                </div>
+                                        </form> 
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-selection
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
