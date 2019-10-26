@@ -23,6 +23,7 @@ export class ModalCameraController {
     var vmpicmodal = this;
 
     vmpicmodal.picfile = vmpicmodal.dataToPass.pictureurl;
+    vmpicmodal.path = vmpicmodal.dataToPass.type == "student" ? "students" : "avatar";
     vmpicmodal.animationsEnabled = true;
 
     vmpicmodal.cameraIsOn = 'off';
@@ -43,8 +44,9 @@ export class ModalCameraController {
 
   activate() {
     var vmpicmodal=this;
-    vmpicmodal.student = vmpicmodal.PhotoServices.setTheStudent(vmpicmodal.dataToPass);
-
+//    if (vmpicmodal.dataToPass.type == "student" ) {
+      vmpicmodal.student = vmpicmodal.PhotoServices.setTheStudent(vmpicmodal.dataToPass);
+//    }
   }
   cancel() {
     this.$scope.$parent.$uibModalInstance.dismiss('cancel');
@@ -144,7 +146,7 @@ export class ModalCameraController {
 
       vmpicmodal.data_uri = data_uri;
 
-      var ur = '../v1/picupload?picnm=' + picnm;
+      var ur = '../v1/picupload?picnm=' + picnm + '&type=' + student.type;
       vmpicmodal.$log.log("picnm", ur);
 
       // shut down camera, stop capturing
@@ -182,7 +184,7 @@ export class ModalCameraController {
       animation: vmpicmodal.animationsEnabled,
 //      templateUrl: 'myPickupload.html',
 //      controller: 'ModalPicSearchController as vmpicselect',
-      component: 'pickuploadComponent',
+      component: 'picuploadComponent',
       size: 'lg',
       resolve: {
         picfile: function() {
@@ -214,7 +216,12 @@ export class ModalCameraController {
       resolve: {
         picfile: function() {
           return vmpicmodal.picFile;
+        },
+        dataToPass: function() {
+            vmpicmodal.$log.log('resolve datatopass', vmpicmodal.dataToPass);
+            return vmpicmodal.dataToPass;
         }
+
       }
     });
     vmpicmodal.modalInstance.result.then(function(selectedpic) {

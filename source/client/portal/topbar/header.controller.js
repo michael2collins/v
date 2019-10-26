@@ -55,6 +55,7 @@ export class HeaderController {
         
         this.isok = {};
         this.userdta = { 'initial': 'init' };
+        this.picurl = '';
         this.myuser = null;
         this.message = null;
         this.data = null;
@@ -72,6 +73,7 @@ export class HeaderController {
         this.timeout = 32;
 
         this.origtitle = 'V Dojo';
+        this.pictureurldecache = undefined;
 
         this.Title.store(this.origtitle);
         this.Title.idleMessage(this.origtitle);
@@ -91,9 +93,9 @@ export class HeaderController {
     init() {
         var self = this;
         self.loadTopbar();
-        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined) {
-            self.$log = self.$log.getInstance('HeaderController', self.UserServices.isDebugEnabled());
-        }
+//mlc todo        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined) {
+ //           self.$log = self.$log.getInstance('HeaderController', self.UserServices.isDebugEnabled());
+  //      }
 
         self.islogin();
 
@@ -131,7 +133,7 @@ export class HeaderController {
             //self.showTimeoutv = false;
             self.UserServices.ClearCredentials();
             self.$scope.$apply();
-            var picurl = self.$scope.$ctrl.userdta.pictureurl;
+            var picurl = self.$scope.$ctrl.userdta.pictureurl + '?decache=' + Math.random();
             self.$location.path('/page-lock-screen?pictureurl=' + picurl);
         });
         self.$scope.$on('Keepalive', function() {
@@ -168,7 +170,7 @@ export class HeaderController {
     }
 
     intervalChecker(input) {
-        var vm = input
+        var vm = input;
         vm.$log.log('main controller intervalChecker entered');
         vm.islogin();
     }
@@ -264,14 +266,27 @@ export class HeaderController {
 
     openPhoto() {
         var vm=this;
-        vm.openPhotoModal(vm, vm);
+        var dataToPass={};
+        dataToPass.pictureurl = vm.userdta.pictureurl; 
+        dataToPass.LastName = vm.userdta.lastname;
+        dataToPass.FirstName = vm.userdta.firstname;
+        dataToPass.ID = vm.userdta.userid;
+        dataToPass.type = "user";
+        if (vm._.isEmpty(vm.userdta.pictureurl)) {
+            vm.$log.log('empty picture');
+            dataToPass.pictureurldecache = 'missingstudentpicture.png';
+        }
+        else {
+            dataToPass.pictureurldecache = vm.userdta.pictureurl + '?decache=' + Math.random();
+        }
+        
+        vm.openPhotoModal(vm, dataToPass);
     }
 
 openPhotoModal(vm, dataToPass) {
         var photoModal = vm;
-        photoModal.dataToPass = dataToPass; 
         photoModal.animationsEnabled = true;
-
+        photoModal.dataToPass = dataToPass;
         photoModal.modalInstance = undefined;
         photoModal.retvlu = '';
 
@@ -311,7 +326,8 @@ openPhotoModal(vm, dataToPass) {
             function(retvlu) {
                 photoModal.$log.log('search modalInstance result :', retvlu);
  //               photoModal.activate();
-                photoModal.updatePicture(retvlu);
+ //               photoModal.updatePicture(retvlu);
+            photoModal.pictureurldecache = photoModal.userdta.pictureurl + '?decache=' + Math.random();
 
             },
             function(error) {
@@ -321,7 +337,8 @@ openPhotoModal(vm, dataToPass) {
             });
 
     }
- 
+
+/* 
   updatePicture(pictureurl) {
     var vm=this;
     var updpath = "../v1/userpicture";
@@ -358,7 +375,7 @@ openPhotoModal(vm, dataToPass) {
         throw e;
       });
   }
-    
+  */  
     openSettings() {
         var thisModal = this;
 
@@ -586,6 +603,7 @@ openPhotoModal(vm, dataToPass) {
                 //    self.islogin();
                 self.userdta = data;
                 self.myuser = data.userid;
+                self.picurl = self.userdta.pictureurl + '?decache=' + Math.random();
 
                 return self.userdta;
             },

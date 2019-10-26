@@ -150,13 +150,25 @@ class StudentDbHandler
 	}
 
 	public
-	function savepic($studentid, $picnm)
+	function savepic($studentid, $picnm, $type)
 	{
         global $app;
 		$num_affected_rows = 0;
-		$sql = "UPDATE ncontacts set ";
-		$sql.= "  pictureurl = ? ";
-		$sql.= " where ID =  ? ";
+		
+		$usersql = "update users set pictureurl = ? where id = ?";
+		$studsql = "UPDATE ncontacts set 
+		  pictureurl = ? 
+		 where ID =  ? ";
+		
+		if ($type == "student") {
+			$sql = $studsql;
+		} else if ($type == "user") {
+			$sql = $usersql;
+		} else {
+			//not known
+			return -1;
+		}
+		 
 		$app->log->debug(print_R($sql, TRUE));
 
 		//       try {

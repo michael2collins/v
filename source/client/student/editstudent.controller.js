@@ -38,7 +38,7 @@ export class FormLayoutsControllerEditStudent {
         vm.rankpick;
         vm.ranktypepick;
         vm.lastPromoted;
-        vm.disabled;
+//        vm.disabled = false;
         vm.studentrank = {};
         vm.students = [];
         vm.genders = [];
@@ -119,6 +119,7 @@ export class FormLayoutsControllerEditStudent {
     openPhotoModal(vm, dataToPass) {
         var photoModal = vm;
         photoModal.dataToPass = dataToPass;
+        photoModal.dataToPass.type = "student";
         photoModal.animationsEnabled = true;
 
         photoModal.modalInstance = undefined;

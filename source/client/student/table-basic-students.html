@@ -83,42 +83,36 @@
                   </div>
                 </div>
               </div>
+              <div class="row" style="height: 80px">
+                <div class="col-md-4 col-xs-4">
+                  <div class="input-icon right">
+                    <label for="select-box" class="control-label">Pick Student</label>
+                    <div class="select-box">
+                      <ui-select ng-model="$ctrl.studentpick" theme="bootstrap" reset-search-input="false"  on-select="$ctrl.editStudentFromPick($item)" style="width: 300px;" title="Choose a student" append-to-body="true">
+                        <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
+                        <ui-select-choices repeat="stu in $ctrl.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="$ctrl.refreshStudents($select.search)" refresh-delay="0">
+                          <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
+                        </ui-select-choices>
+                        <ui-select-no-choice>
+                          Dang! We couldn't find any choices...
+                        </ui-select-no-choice>
+                      </ui-select>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-xs-6 mtl">
+                  <a ng-href="/#/form-layouts-editstudent/id/{{$ctrl.eventResult.item.ID}}" ng-show="$ctrl.eventResult.item.ID" class="btn btn-blue ">Edit {{$ctrl.eventResult.item.FirstName}}</a>
+                </div>
+              </div>
               <div class="row">
                 <div class=" col-md-4 col-xs-4">
                   <ranktype-component on-update="$ctrl.updateRankType($ctrl.ranktypeparent, prop, value)">
                   </ranktype-component>
                 </div>
-                <div ng-show="$ctrl.isOkRT()">
-
-                  <div class="col-md-4 col-xs-4">
-                    <div class="input-icon right">
-                      <label for="select-box" class="control-label">Pick Student</label>
-                      <div class="select-box">
-                        <ui-select ng-model="$ctrl.studentpick" theme="bootstrap" reset-search-input="false" ng-disabled="$ctrl.disabled" on-select="$ctrl.editStudentFromPick($item)" style="width: 180px;" title="Choose a student" append-to-body="true">
-                          <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
-                          <ui-select-choices repeat="stu in $ctrl.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="$ctrl.refreshStudents($select.search)" refresh-delay="0">
-                            <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
-                          </ui-select-choices>
-                        </ui-select>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-xs-4 mtl">
-                    <a ng-href="/#/form-layouts-editstudent/id/{{$ctrl.eventResult.item.ID}}" ng-show="$ctrl.eventResult.item.ID" class="btn btn-blue ">Edit {{$ctrl.eventResult.item.FirstName}}</a>
-                  </div>
-                </div>
               </div>
             </div>
             <div class="panel-body">
               <div ng-show="$ctrl.isOkRT()">
-                <!--                <div class="row">
-                  <div class=" col-md-4">
-                    <button ng-click="$ctrl.requery()" class="btn btn-blue ">Refresh List</button>
-                  </div>
-                  
-                  <div class="col-md-8">&nbsp;</div>
-                </div>
--->
                 <div class="row">
                   <div class="col-md-12">
                     <div ui-grid="$ctrl.gridOptions" ui-if="$ctrl.gridOptions.data.length>0" ui-grid-pagination ui-grid-cellNav ui-grid-pinning ui-grid-move-columns ui-grid-exporter ui-grid-auto-resize ui-grid-resize-columns ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()">

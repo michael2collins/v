@@ -195,7 +195,7 @@
          <span class="img-responsive img-circle" ng-switch on="$ctrl.userdta.pictureurl">
          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
          <img ng-switch-when="" ng-src='../images/students/missingstudentpicture.png'/>
-         <img ng-switch-default   ng-src="{{$ctrl.userdta.pictureurl}}"/>
+         <img ng-switch-default   ng-src="../images/avatar/{{$ctrl.picurl}}"/>
          </span>
          <span>&nbsp;{{$ctrl.userdta.username}}&nbsp;</span><span class="caret"></span>
          </a>
@@ -223,7 +223,7 @@
                         <div class="navbar-footer-content">
                            <div class="row">
                               <div class="col-md-6 col-xs-6"><a href="/#/change-pwd" class="btn btn-green btn-sm">Change Password</a></div>
-                              <div class="col-md-6 col-xs-6"><a href="/#/page-lock-screen?pictureurl={{$ctrl.userdta.pictureurl}}" class="btn btn-green btn-sm pull-right">Sign Out</a></div>
+                              <div class="col-md-6 col-xs-6"><a href="/#/page-lock-screen?pictureurl=/images/avatar/{{$ctrl.userdta.pictureurl}}" class="btn btn-green btn-sm pull-right">Sign Out</a></div>
                            </div>
                         </div>
                      </div>

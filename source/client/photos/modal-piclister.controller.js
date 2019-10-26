@@ -14,13 +14,15 @@ export class ModalPicListerController {
       this.$timeout = $timeout;
       this.$route = $route;
       this.picfile = $scope.$parent.$resolve.picfile;
+      this.dataToPass = $scope.$parent.$resolve.dataToPass;
       this.Util = Util;
    }
    $onInit() {
 
       var vmpicsearch = this;
       vmpicsearch.picfilelist = [];
-      vmpicsearch.picpath = '../v1/studentfiles';
+      vmpicsearch.path = vmpicsearch.dataToPass.type == "student" ? "students" : "avatar";
+      vmpicsearch.picpath = '../v1/studentfiles' + '?type=' + vmpicsearch.dataToPass.type;
       vmpicsearch.renamepath = '../v1/renamefile';
       vmpicsearch.student = {};
       vmpicsearch.newpicfile = '';
@@ -86,6 +88,7 @@ export class ModalPicListerController {
          multiSelect: false,
          rowHeight: 128,
          showGridFooter: true,
+            appScopeProvider: vmpicsearch,
          onRegisterApi: function(gridApi) {
             //set gridApi on scope
             vmpicsearch.gridApi = gridApi;
@@ -121,7 +124,7 @@ export class ModalPicListerController {
                field: 'name',
                headerCellClass: vmpicsearch.Util.highlightFilteredHeader,
                enableCellEdit: false,
-               cellTemplate: '<div class="ui-grid-cell-contents"><span> <img width="80px" ng-src="./images/students/{{grid.getCellValue(row, col)}}"/></span></div>'
+               cellTemplate: '<div class="ui-grid-cell-contents"><span> <img width="80px" ng-src="./images/{{grid.appScope.path}}/{{grid.getCellValue(row, col)}}"/></span></div>'
             }
 
          ]

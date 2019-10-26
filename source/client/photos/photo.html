@@ -13,7 +13,7 @@
                   <div class="col-lg-12">
                      <span class="thumbnail" ng-switch on="vmpicmodal.dataToPass.pictureurldecache">
                          <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
-                         <img ng-switch-default   ng-src='../images/students/{{vmpicmodal.dataToPass.pictureurldecache}}'/>
+                         <img ng-switch-default   ng-src='../images/{{vmpicmodal.path}}/{{vmpicmodal.dataToPass.pictureurldecache}}'/>
                       </span>
 
                      <div class="row row-icons">
@@ -57,7 +57,7 @@
                               <input class="form-control" id="picfile" name="picfile" ng-show="false" ng-model="vmpicmodal.dataToPass.picfile" placeholder="File Name" type="text">
                               <button class="btn btn-green" ng-click="vmpicmodal.saveStudentPic(vmpicmodal.dataToPass,vmpicmodal.dataToPass.picfile);" ng-show="vmpicmodal.dataToPass.picfile" type="button">Save Picture</button>
 
-                              <div class="thumbnail" ng-show="vmpicmodal.dataToPass.picfile"><img ng-src="./images/students/{{vmpicmodal.dataToPass.oldpicfile}}.bkup" />
+                              <div class="thumbnail" ng-show="vmpicmodal.dataToPass.picfile"><img ng-src="../images/{{vmpicmodal.path}}/{{vmpicmodal.dataToPass.oldpicfile}}.bkup" />
                               </div>
                            </div>
 

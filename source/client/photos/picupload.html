@@ -2,7 +2,8 @@
    <h3 class="modal-title">Select Picture</h3>
 </div>
 <div class="modal-body">
-   <div class="row" ng-controller="PhotoUploadController as vmstupicupload" nv-file-drop="" uploader="vmstupicupload.uploader">
+<!--   <div class="row" ng-controller="PhotoUploadController as vmstupicupload" nv-file-drop="" uploader="vmstupicupload.uploader"> -->
+   <div class="row"  nv-file-drop="" uploader="vmstupicupload.uploader">
       <div class="col-lg-12">
          <div>
 
@@ -74,6 +75,6 @@
 
 </div>
 <div class="modal-footer">
-   <button class="btn btn-primary" type="button" ng-click="vmpicselect.ok()">OK</button>
-   <button class="btn btn-warning" type="button" ng-click="vmpicselect.cancel()">Cancel</button>
+   <button class="btn btn-primary" type="button" ng-click="vmstupicupload.ok()">OK</button>
+   <button class="btn btn-warning" type="button" ng-click="vmstupicupload.cancel()">Cancel</button>
 </div>

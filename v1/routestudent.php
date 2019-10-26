@@ -14,13 +14,14 @@ $app->put('/pic', 'authenticate', 'isAdminOrOperator', 'setDebug', function() us
     //global $user_id;
     $studentid = $student->ID;
     $picnm = $student->picnm;
+    $type = $student->type;
 
     $db = new StudentDbHandler();
     $response = array();
 
     // updating task
     $pic_rslt = $db->savepic($studentid,
-                                 $picnm
+                                 $picnm, $type
                                 );
 
     if ($pic_rslt > 0) {
@@ -49,19 +50,44 @@ $app->post('/picupload','setDebug', function() use ($app) {
     if(array_key_exists('picnm', $allGetVars)){
         $picnm = $allGetVars['picnm'];
     } else {
-        $app->log->debug( print_R("picupload result bad\n", TRUE));
+        $app->log->debug( print_R("picupload result bad - missing picnm\n", TRUE));
         $response["error"] = true;
-        $response["message"] = "Failed to upload picture. Please try again";
+        $response["message"] = "Failed to upload picture missing picnm. Please try again";
+        echoRespnse(400, $response);
+    }
+    if(array_key_exists('type', $allGetVars)){
+        $type = $allGetVars['type'];
+    } else {
+        $app->log->debug( print_R("picupload result bad - missing type\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Failed to upload picture missing type. Please try again";
         echoRespnse(400, $response);
     }
 
     if ( !empty( $_FILES ) ) {
         $tempPath = $_FILES[ 'webcam' ][ 'tmp_name' ];
-        $uploadPath = dirname( __FILE__ ) . 
-            DIRECTORY_SEPARATOR . '../app' . 
-            DIRECTORY_SEPARATOR . 'images' . 
-            DIRECTORY_SEPARATOR . 'students' . 
-            DIRECTORY_SEPARATOR . $picnm;
+
+        if ($type == "student") {
+            $uploadPath = dirname( __FILE__ ) . 
+                DIRECTORY_SEPARATOR . '../app' . 
+                DIRECTORY_SEPARATOR . 'images' . 
+                DIRECTORY_SEPARATOR . 'students' . 
+                DIRECTORY_SEPARATOR . $picnm;
+        } else if ($type == "user") {
+            $uploadPath = dirname( __FILE__ ) . 
+                DIRECTORY_SEPARATOR . '../app' . 
+                DIRECTORY_SEPARATOR . 'images' . 
+                DIRECTORY_SEPARATOR . 'avatar' . 
+                DIRECTORY_SEPARATOR . $picnm;
+            
+        } else {
+            $app->log->debug( print_R("picupload result bad - bad type\n", TRUE));
+            $response["error"] = true;
+            $response["message"] = "Failed to upload picture bad type. Please try again";
+            echoRespnse(400, $response);
+            
+        }
+
         if (!is_writeable($uploadPath)) {
             $response["error"] = true;
             $response["message"] = "Failed to upload. Cannot write to destination file";

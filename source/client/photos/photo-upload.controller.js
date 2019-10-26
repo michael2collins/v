@@ -46,6 +46,36 @@ export class PhotoUploadController {
         };
         console.info('uploader', vmstupicupload.uploader);
     }
+   renameFile(student, currentpicfile) {
+      var vmstupicupload = this;
+      vmstupicupload.$log.log('renameFile');
+      vmstupicupload.$log.log(' student:');
+      vmstupicupload.$log.log(student);
+      vmstupicupload.$log.log('pic');
+      vmstupicupload.$log.log(currentpicfile);
 
+      return vmstupicupload.PhotoServices.renameStudentPicFile(vmstupicupload.renamepath, student, currentpicfile).then(function(data) {
+         vmstupicupload.$log.log('renameFile returned data');
+         vmstupicupload.$log.log(data);
+         vmstupicupload.newpicfile = data.newpicfile;
+         return vmstupicupload.newpicfile;
+      });
+   }
+
+   ok() {
+      var vmstupicupload = this;
+      vmstupicupload.$log.log('hit ok');
+      var thisstudent = vmstupicupload.PhotoServices.getTheStudent();
+      vmstupicupload.picfile = vmstupicupload.PhotoServices.getstudentPicFile();
+      vmstupicupload.picfile = vmstupicupload.renameFile(thisstudent, vmstupicupload.picfile);
+      vmstupicupload.$log.log('got file for ok:', vmstupicupload.picfile);
+//      vmstupicupload.$log.log('for student:', thisstudent);
+
+      vmstupicupload.$scope.$parent.$uibModalInstance.close(vmstupicupload.picfile);
+   }
+
+   cancel() {
+      this.$scope.$parent.$uibModalInstance.dismiss('cancel');
+   }
 
 }

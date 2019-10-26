@@ -76,14 +76,30 @@ $app->put('/renamefile', 'authenticate', 'isAdminOrOperator', 'setDebug',functio
     $LastName = $student->LastName;
     $FirstName = $student->FirstName;
     $studentid = $student->ID;
+    $type = $student->type;
     $newpicfile = $LastName . '.' . $FirstName . '.' . $studentid . ".jpg";
-    $newpicfile2 = STUPICDIR . $newpicfile;
-    $oldpicfile = STUPICDIR . $student->oldpicfile;
+
+    if ($type == "student") {
+        $newpicfile2 = STUPICDIR . $newpicfile;
+        $oldpicfile = STUPICDIR . $student->oldpicfile;
+        $picdir = STUPICDIR;
+        
+    } else if ($type == "user") {
+        $newpicfile2 = USERPICDIR . $newpicfile;
+        $oldpicfile = USERPICDIR . $student->oldpicfile;
+        $picdir = USERPICDIR;
+    } else {
+        $app->log->debug( print_R("renamefile result bad - bad type\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Failed to rename files bad type. Please try again";
+        echoRespnse(400, $response);
+        
+    }
     
     $app->log->debug( print_R("new: " . $newpicfile2 . "\n", TRUE ));
     $app->log->debug( print_R("old: " . $oldpicfile . "\n", TRUE ));
 
-    if ($oldpicfile == STUPICDIR ) {
+    if ($oldpicfile == $picdir ) {
         $app->log->debug( print_R("old pic is empty, using new pic\n", TRUE));
         $response["newpicfile"] = $newpicfile;
         
@@ -92,10 +108,12 @@ $app->put('/renamefile', 'authenticate', 'isAdminOrOperator', 'setDebug',functio
         if (!copy($oldpicfile, $oldpicfile . ".bkup")) {
             echo "failed to copy $oldpicfile...\n";
             $response["error"] = true;
+            echoRespnse(400, $response);
         }        
         if (!rename($oldpicfile, $newpicfile2)) {
             echo "failed to rename $oldpicfile...\n";
             $response["error"] = true;
+            echoRespnse(400, $response);
         }
         $response["newpicfile"] = $newpicfile;
         
@@ -109,17 +127,37 @@ $app->put('/renamefile', 'authenticate', 'isAdminOrOperator', 'setDebug',functio
 
 $app->get('/studentfiles', 'authenticate', 'isAdminOrOperator', 'setDebug',function() {
 
-    //$app->log->debug( print_R("enter get studentfiles\n", TRUE ));
 
     $app = \Slim\Slim::getInstance();
 
-  //return list of files/pictures from student dir
+    $allGetVars = $app->request->get();
+    $app->log->debug( print_R("picupload entered:\n ", TRUE));
+    $app->log->debug( print_R($allGetVars, TRUE));
+
+    if(array_key_exists('type', $allGetVars)){
+        $type = $allGetVars['type'];
+    } else {
+        $app->log->debug( print_R("studentfiles result bad - missing type\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Failed to find files missing type. Please try again";
+        echoRespnse(400, $response);
+    }
 
 
     $files = array();
     $response["files"] = array();
+    if ($type == "student") {
+        $studentImageDir = "../app/images/students/";
+    } else if ($type == "user") {
+        $studentImageDir = "../app/images/avatar/";
+    } else {
+        $app->log->debug( print_R("studentfiles result bad - bad type\n", TRUE));
+        $response["error"] = true;
+        $response["message"] = "Failed to find files  bad type. Please try again";
+        echoRespnse(400, $response);
+        
+    }
 
-    $studentImageDir = "../app/images/students/";
 
     $dir = opendir($studentImageDir);
     while (false !== ($file = readdir($dir))) {

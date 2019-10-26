@@ -12,7 +12,7 @@ export class UserServices {
         this._$rootScope = $rootScope;
 //        this._$cookieStore = $cookieStore;
         this._$cookies = $cookies;
-        this.__ = _;
+        this._ = _;
         this.Util = Util;
     }
 
@@ -267,7 +267,7 @@ export class UserServices {
         self._$log.log('getUserDetails service entered', self.userdetails);
 //        if (self.__.isEmpty(self.userdetails) && self.isapikey()) {
         var cookiecheck = self._$cookies.getObject('globals');
-        if (self.__.isEmpty(self.userdetails) && cookiecheck !== undefined) {
+        if (self._.isEmpty(self.userdetails) && cookiecheck !== undefined) {
             var usernm = cookiecheck.currentUser.username;
             self._$log.log('getUserDetails service refresh user', usernm);
 

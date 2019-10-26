@@ -17,7 +17,10 @@ export class ModalPicSearchController {
    $onInit() {
       var vmpicselect = this;
       vmpicselect.picfilelist = [];
-      vmpicselect.picpath = '../v1/studentfiles';
+      vmpicselect.path = vmpicselect.dataToPass.type == "student" ? "students" : "avatar";
+
+      vmpicselect.picpath = '../v1/studentfiles' + '?type=' + vmpicselect.dataToPass.type;
+
       vmpicselect.renamepath = '../v1/renamefile';
       vmpicselect.student = {};
       vmpicselect.newpicfile = '';

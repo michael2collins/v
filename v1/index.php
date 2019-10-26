@@ -6,9 +6,11 @@ require_once dirname(__FILE__) . '/mode.php';
 if ( $mode == 'prod' ) {
     define("LOG", "/var/log/apache2/php/php.log", true);
     define("STUPICDIR", "/home/michael2collins/Web/v/v/app/images/students/", true);
+    define("USERPICDIR", "/home/michael2collins/Web/v/v/app/images/avatar/", true);
 } else if ( $mode == 'test' ) {
     define("LOG", "/var/log/apache2/php/phptest.log", true);
     define("STUPICDIR", "/home/michael2collins/Web/vtest/v/app/images/students/", true);
+    define("USERPICDIR", "/home/michael2collins/Web/vtest/v/app/images/avatar/", true);
 }
 
 require_once '../include/DBAuth.php';
