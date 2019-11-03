@@ -136,15 +136,14 @@
                             </div>
                             <div class="col-md-2">
                                 <?php require_once('../includes/table-basic.php');
-                                        print strColTemplate(
+                                        print btnColTemplate(
                                             array(
-                                                'field'=>'pictureurl',
-                                                'model'=>'$ctrl.Class.pictureurl',
-                                                'label'=>'Class<br/> Picture',
-                                                'placeholder'=>'',
-                                                'required'=>true
+                                                'field'=>'picbtn',
+                                                'label'=>'Set Photo',
+                                                'click'=>'$ctrl.setPhoto($ctrl.Class)'
                                                 )
                                         );
+
                                 ?>
                             </div>
                             <div class="col-md-1 btn" style="margin-top: 18px;">

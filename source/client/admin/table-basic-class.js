@@ -2,7 +2,7 @@ import angular from 'angular';
 
 export class ClassTableBasicController {
     constructor(
-       $log,$q,$scope,$interval,ClassServices,UserServices, Util,uiGridConstants,Notification,moment,iddropdownFilter,portalDataService
+       $log,$q,$scope,$interval,ClassServices,UserServices, Util,uiGridConstants,Notification,moment,iddropdownFilter,portalDataService, _, PhotoUtil
     ) {
         'ngInject';
         this.$log =$log;
@@ -17,6 +17,8 @@ export class ClassTableBasicController {
         this.iddropdownFilter = iddropdownFilter;
         this.portalDataService = portalDataService;
         this.UserServices = UserServices;
+        this._ = _;
+        this.PhotoUtil = PhotoUtil;
     }
     $onInit() {
 
@@ -36,7 +38,7 @@ export class ClassTableBasicController {
         vm.thisClass = [];
         vm.gridLength = {};
         vm.initialLength = 5;
-        vm.rowheight = 32;
+        vm.rowheight = 130; //32
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
 
@@ -380,8 +382,38 @@ export class ClassTableBasicController {
         var vm = this;
         return vm.imgsrc + input;
     }
+    setPhoto(rowentity) {
+        var vm=this;
+        var dataToPass={};
+        dataToPass.pictureurl = ""; 
+        dataToPass.picnm = rowentity.class;
+        vm.openPhoto(dataToPass);
+    }
+    openPhoto(rowentity) {
+        var vm=this;
+        var dataToPass={};
+        dataToPass.pictureurl = rowentity.pictureurl; 
+        dataToPass.picnm = rowentity.class;
+        dataToPass.LastName = "";
+        dataToPass.type = "classes";
+        if (vm._.isEmpty(dataToPass.pictureurl)) {
+            vm.$log.log('empty picture');
+            dataToPass.pictureurldecache = 'missingstudentpicture.png';
+        }
+        else {
+            dataToPass.pictureurldecache = dataToPass.pictureurl + '?decache=' + Math.random();
+        }
+        vm.PhotoUtil.openPhotoModal(vm, dataToPass);
+
+    }
+    
     setgridOptions() {
         var vm = this;
+
+        var tpl = '<div class="ui-grid-cell-contents"> <zoom ng-src="{{grid.appScope.geturl(grid.getCellValue(row, col))}}" ';
+        tpl = tpl + ' frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>';
+        tpl = tpl + ' <span>  <a ng-click="grid.appScope.openPhoto(row.entity)" role="button" ';
+        tpl = tpl + ' class="btn btn-blue" style="padding:  0px 14px;"  ><i class="fas fa-pencil-alt"></i>&nbsp; Edit</a></span></div>';
 
         vm.gridOptions = {
             enableFiltering: true,
@@ -480,7 +512,7 @@ export class ClassTableBasicController {
                     displayName: 'Picture',
                     headerCellClass: vm.Util.highlightFilteredHeader,
                     enableCellEdit: false,
-                    cellTemplate: '<zoom ng-src="{{grid.appScope.geturl(grid.getCellValue(row, col))}}" frame="example{{rowRenderIndex}}" img="image{{rowRenderIndex}}"  zoomlvl="2.5" lazy-src></zoom>'
+                    cellTemplate: tpl
                 }, {
                     field: 'id',
                     displayName: 'Action',

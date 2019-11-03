@@ -193,22 +193,9 @@
 
                                 </div>
                             <div class="col-md-2">
-                                
-    <div class="form-group">
-        <label for="pictureurl" class="control-label">Class<br/> Picture</label>
-
-        <div>
-            <input  id="pictureurl" 
-                    type="text" 
-                    placeholder="" 
-                    name="pictureurl" 
-                    ng-model="$ctrl.Class.pictureurl" 
-                    required 
-                     
-                    class="form-control">
-        </div>
-    </div>
-
+                                        <label for="picbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="$ctrl.setPhoto($ctrl.Class)"><i class="fa fa-plus"></i>&nbsp; Set Photo</a>
                                 </div>
                             <div class="col-md-1 btn" style="margin-top: 18px;">
                                         <label for="rankbtn" class="control-label">&nbsp; </label>

@@ -6,7 +6,7 @@ php2html ./source/client/payment/userpay.php > ./source/client/payment/template/
 rm -rf source/client/admin/template
 mkdir  source/client/admin/template
 #https://stackoverflow.com/questions/48402621/how-to-switch-between-php-5-6-7-2-on-cloude v8.16.0
-#nvm use v8.16.0
+nvm use v8.16.0
 
 php2html ./source/client/admin/stripe_onboard.php     > ./source/client/admin/template/stripe_onboard.html
 php2html ./source/client/admin/table-basic-class.php    > ./source/client/admin/template/table-basic-class.html

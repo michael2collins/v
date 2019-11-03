@@ -5,7 +5,7 @@ export class FormLayoutsControllerEditStudent {
     constructor(
         StudentServices, $scope, $rootScope, $routeParams,
         $log, $location, Notification, ClassServices, _, $q, PhotoServices, $uibModal,
-        portalDataService, $window, UserServices
+        portalDataService, $window, UserServices, PhotoUtil
 
     ) {
         'ngInject';
@@ -25,6 +25,7 @@ export class FormLayoutsControllerEditStudent {
         this.$uibModal = $uibModal;
         this.portalDataService = portalDataService;
         this.UserServices = UserServices;
+        this.PhotoUtil = PhotoUtil;
     }
 
     $onInit() {
@@ -111,70 +112,9 @@ export class FormLayoutsControllerEditStudent {
 
     }
     openPhoto() {
-        this.openPhotoModal(this, this.students);
-
-
+        this.students.type = "student";
+        this.PhotoUtil.openPhotoModal(this, this.students);
     }
-
-    openPhotoModal(vm, dataToPass) {
-        var photoModal = vm;
-        photoModal.dataToPass = dataToPass;
-        photoModal.dataToPass.type = "student";
-        photoModal.animationsEnabled = true;
-
-        photoModal.modalInstance = undefined;
-        photoModal.retvlu = '';
-
-        photoModal.modalInstance = this.$uibModal.open({
-            animation: photoModal.animationsEnabled,
-            //    templateUrl: 'templates/photos/photo.html',
-            //    controller: 'ModalCameraController',
-            component: 'photoComponent',
-            //todo create photocomponent
-            //controllerAs: 'vmpicmodal',
-            size: 'md',
-            windowClass: 'my-modal-popup',
-            resolve: {
-                dataToPass: function() {
-                    photoModal.$log.log('resolve datatopass', photoModal.dataToPass);
-                    return photoModal.dataToPass;
-                }
-
-            }
-        });
-
-        photoModal.modalInstance.opened.then(
-            function(success) {
-                photoModal.$log.log('photoModal ui opened:', success);
-
-            },
-            function(error) {
-                photoModal.$log.log('photoModal ui failed to open, reason : ', error);
-            }
-        );
-        photoModal.modalInstance.rendered.then(
-            function(success) {
-                photoModal.$log.log('photomodal ui rendered:', success);
-            },
-            function(error) {
-                photoModal.$log.log('photoModal ui failed to render, reason : ', error);
-            }
-        );
-
-        photoModal.modalInstance.result.then(
-            function(retvlu) {
-                photoModal.$log.log('search modalInstance result :', retvlu);
-                photoModal.activate();
-
-            },
-            function(error) {
-                photoModal.$log.log('photomodal ui failed to result, reason : ', error);
-                photoModal.$log.info('Modal dismissed at: ' + new Date());
-                photoModal.activate();
-            });
-
-    }
-
     dateopen($event) {
         this.status.opened = true;
     }

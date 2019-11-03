@@ -3,7 +3,7 @@ import angular from 'angular';
 export class ModalCameraController {
 
   constructor(
-    $scope, $log, $uibModal, $document, $window, PhotoServices, Notification
+    $scope, $log, $uibModal, $document, $window, PhotoServices, Notification, PhotoUtil
 
   ) {
     'ngInject';
@@ -15,6 +15,7 @@ export class ModalCameraController {
     this.Notification = Notification;
     this.PhotoServices = PhotoServices;
     this.dataToPass = $scope.$parent.$resolve.dataToPass;
+    this.PhotoUtil = PhotoUtil;
   }
 
 
@@ -23,7 +24,8 @@ export class ModalCameraController {
     var vmpicmodal = this;
 
     vmpicmodal.picfile = vmpicmodal.dataToPass.pictureurl;
-    vmpicmodal.path = vmpicmodal.dataToPass.type == "student" ? "students" : "avatar";
+    vmpicmodal.path = vmpicmodal.PhotoUtil.getPath(vmpicmodal.dataToPass.type);
+    
     vmpicmodal.animationsEnabled = true;
 
     vmpicmodal.cameraIsOn = 'off';
@@ -137,9 +139,13 @@ export class ModalCameraController {
     });
 
   }
-  save_photo(picnm, student) {
+  save_photo( student) {
     var vmpicmodal=this;
-    picnm = encodeURI(picnm);
+    var picnm = encodeURI(
+        vmpicmodal.dataToPass.LastName == "" ? vmpicmodal.dataToPass.picnm : vmpicmodal.dataToPass.LastName + '.'
+              				+ vmpicmodal.dataToPass.FirstName + '.' 
+              				+ vmpicmodal.dataToPass.ID + '.jpg'
+      );
     vmpicmodal.$log.log('save_photo', picnm, student);
     // actually snap photo (from preview freeze) and display it
     vmpicmodal.Webcam.snap(function(data_uri) {

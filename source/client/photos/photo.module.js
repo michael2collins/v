@@ -7,6 +7,7 @@ import { ModalCameraController } from './modal-camera.controller';
 import { photoComponent, piclisterComponent, picsearchComponent, picuploadComponent } from './photo.component';
 import { PhotoServices } from '../../js/services/photoServices';
 import { Util } from '../../js/utility/utility';
+import { PhotoUtil } from './photoutil';
 
 export const PhotoModule = angular
    .module('ngadmin.photo', [])
@@ -21,4 +22,5 @@ export const PhotoModule = angular
    .component('picuploadComponent', picuploadComponent)
    .service('PhotoServices', PhotoServices)
    .service('Util', Util)
+   .service('PhotoUtil', PhotoUtil)
    .name;

@@ -3,7 +3,7 @@
 export class ModalPicSearchController {
 
    constructor(
-      $scope, $log, PhotoServices, $route
+      $scope, $log, PhotoServices, $route, PhotoUtil
 
    ) {
       'ngInject';
@@ -12,12 +12,12 @@ export class ModalPicSearchController {
       this.PhotoServices = PhotoServices;
       this.$route = $route;
       this.picfile = $scope.$parent.$resolve.picfile;
-
+      this.PhotoUtil = PhotoUtil;
    }
    $onInit() {
       var vmpicselect = this;
       vmpicselect.picfilelist = [];
-      vmpicselect.path = vmpicselect.dataToPass.type == "student" ? "students" : "avatar";
+      vmpicselect.path = vmpicselect.PhotoUtil.getPath(vmpicselect.dataToPass.type);
 
       vmpicselect.picpath = '../v1/studentfiles' + '?type=' + vmpicselect.dataToPass.type;
 

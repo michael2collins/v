@@ -150,6 +150,8 @@ $app->get('/studentfiles', 'authenticate', 'isAdminOrOperator', 'setDebug',funct
         $studentImageDir = "../app/images/students/";
     } else if ($type == "user") {
         $studentImageDir = "../app/images/avatar/";
+    } else if ($type == "classes") {
+        $studentImageDir = "../app/images/classes/";
     } else {
         $app->log->debug( print_R("studentfiles result bad - bad type\n", TRUE));
         $response["error"] = true;

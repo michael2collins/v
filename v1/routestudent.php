@@ -79,6 +79,12 @@ $app->post('/picupload','setDebug', function() use ($app) {
                 DIRECTORY_SEPARATOR . 'images' . 
                 DIRECTORY_SEPARATOR . 'avatar' . 
                 DIRECTORY_SEPARATOR . $picnm;
+        } else if ($type == "classes") {
+            $uploadPath = dirname( __FILE__ ) . 
+                DIRECTORY_SEPARATOR . '../app' . 
+                DIRECTORY_SEPARATOR . 'images' . 
+                DIRECTORY_SEPARATOR . 'classes' . 
+                DIRECTORY_SEPARATOR . $picnm;
             
         } else {
             $app->log->debug( print_R("picupload result bad - bad type\n", TRUE));

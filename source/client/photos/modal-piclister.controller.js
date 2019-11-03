@@ -3,7 +3,7 @@
 export class ModalPicListerController {
 
    constructor(
-      $scope, $log, PhotoServices, uiGridConstants, $timeout, $route, Util
+      $scope, $log, PhotoServices, uiGridConstants, $timeout, $route, Util, PhotoUtil
 
    ) {
       'ngInject';
@@ -16,12 +16,13 @@ export class ModalPicListerController {
       this.picfile = $scope.$parent.$resolve.picfile;
       this.dataToPass = $scope.$parent.$resolve.dataToPass;
       this.Util = Util;
+      this.PhotoUtil = PhotoUtil;
    }
    $onInit() {
 
       var vmpicsearch = this;
       vmpicsearch.picfilelist = [];
-      vmpicsearch.path = vmpicsearch.dataToPass.type == "student" ? "students" : "avatar";
+      vmpicsearch.path = vmpicsearch.PhotoUtil.getPath(vmpicsearch.dataToPass.type);
       vmpicsearch.picpath = '../v1/studentfiles' + '?type=' + vmpicsearch.dataToPass.type;
       vmpicsearch.renamepath = '../v1/renamefile';
       vmpicsearch.student = {};
