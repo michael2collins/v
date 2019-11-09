@@ -1477,9 +1477,9 @@ $app->post('/quickpick', 'authenticate', 'isAdminOrOperator', 'setDebug', functi
     $rankid = (isset($dataJsonDecode->thedata->rankid) ? $dataJsonDecode->thedata->rankid : "");
     $classid = (isset($dataJsonDecode->thedata->classid) ? $dataJsonDecode->thedata->classid : "");
     $pgmid = (isset($dataJsonDecode->thedata->pgmid) ? $dataJsonDecode->thedata->pgmid : "");
-    $paymentAmount = (isset($dataJsonDecode->thedata->paymentAmount) ? $dataJsonDecode->thedata->paymentAmount : "");
+    $paymentAmount = (isset($dataJsonDecode->thedata->paymentAmount) ? (float) $dataJsonDecode->thedata->paymentAmount : (float) 0);
     $paymentPlan = (isset($dataJsonDecode->thedata->paymentPlan) ? $dataJsonDecode->thedata->paymentPlan : "");
-    $payOnDayOfMonth = (isset($dataJsonDecode->thedata->payOnDayOfMonth) ? $dataJsonDecode->thedata->payOnDayOfMonth : "");
+    $payOnDayOfMonth = (isset($dataJsonDecode->thedata->payOnDayOfMonth) ? $dataJsonDecode->thedata->payOnDayOfMonth : 1);
     $mode = (isset($dataJsonDecode->thedata->mode) ? $dataJsonDecode->thedata->mode : "");
     $description = (isset($dataJsonDecode->thedata->description) ? $dataJsonDecode->thedata->description : "");
 

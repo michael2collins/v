@@ -75,9 +75,9 @@ export class ModalNewStudentInstanceController {
          return (
             vmnew.FirstName !== '' &&
             vmnew.LastName !== '' &&
-            vmnew.Phone !== '' &&
-            vmnew.ContactType !== '' &&
-            vmnew.Email !== ''
+       //     vmnew.Phone !== '' &&
+            vmnew.ContactType !== '' 
+      //      vmnew.Email !== ''
          );
 
       }

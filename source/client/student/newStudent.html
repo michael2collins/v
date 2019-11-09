@@ -46,7 +46,7 @@
                         <div class="input-iconx">
                             <label for="email" class="control-label">Email </label>
                             <i class="fa fa-envelope"></i>
-                            <input type="email" id="email" name="email" value="" placeholder="Email" class="form-control" ng-model="vmnew.Email" required />
+                            <input type="email" lead-notrequired id="email" name="email" value="" placeholder="Email" class="form-control" ng-model="vmnew.Email" ng-required />
                             <span ng-show="newstudent.email.$dirty && newstudent.email.$error.email" class="help-block  delete-red">Email is missing @ and/or a period</span>
                             <span ng-show="newstudent.email.$dirty && newstudent.email.$error.required" class="help-block delete-red">Email is required</span>
                         </div>
@@ -59,7 +59,7 @@
                         <div class="input-iconx">
                             <label class="control-label" for="inputPhone">Phone</label>
                             <i class="fa fa-phone"></i>
-                            <input class="form-control" id="inputPhone" name="Phone" ui-options="{clearOnBlur: false}" ng-model="vmnew.Phone" placeholder="(508) 555-5555" type="tel" required ui-mask="(999) 999-9999">
+                            <input class="form-control" lead-notrequired id="inputPhone" name="Phone" ui-options="{clearOnBlur: false}" ng-model="vmnew.Phone" placeholder="(508) 555-5555" type="tel" ng-required ui-mask="(999) 999-9999">
                             <span ng-show="newstudent.Phone.$dirty && newstudent.Phone.$error.required" class="help-block delete-red">Email is required</span>
                         </div>
                     </div>

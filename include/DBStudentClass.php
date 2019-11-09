@@ -1701,7 +1701,7 @@ class StudentClassDbHandler {
     }
 
     public function updateQuickPick(
-        $id, $ranktype,$rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth, $mode, $description
+        $id, $ranktype, $rankin, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth, $mode, $description
     ) {
         global $app;
         $app->log->debug( print_R("updateQuickPick entered\n", TRUE ));
@@ -1721,7 +1721,7 @@ class StudentClassDbHandler {
 
             if ($stmt = $this->conn->prepare($sql)) {
                 $stmt->bind_param("ssssssssss",
-        $ranktype, $rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth,$description, $school
+        $ranktype, $rankin, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth,$description, $school
                                      );
                     // Check for successful insertion
                     $result = $stmt->execute();
@@ -1744,17 +1744,17 @@ class StudentClassDbHandler {
         } else {
             //  with same  existed
                 $updsql = "UPDATE quickpick SET 
-        ranktype =?, rank=?, rankid=? classid=?, pgmid=?, paymentAmount=?, paymentPlan=?,
+        ranktype =?, rank=?, rankid=?, classid=?, pgmid=?, paymentAmount=?, paymentPlan=?,
          payOnDayOfMonth=?, description=?, school=?
                 WHERE id = ?  ";
             $app->log->debug( print_R("updateQuickPick do update: $updsql     
-        $ranktype, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $paymenttype, $payOnDayOfMonth, $school, $mode, $id
+        $ranktype, $rankin, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth, $description, $school,
+        $id
                 \n", TRUE ));
 
             if ($stmt = $this->conn->prepare($updsql)) {
-                $stmt->bind_param("sssssssssss",
-        $ranktype, $rank, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth,$description, $school,
-        $id
+                $stmt->bind_param("ssiiidsissi",
+        $ranktype, $rankin, $rankid, $classid, $pgmid, $paymentAmount, $paymentPlan, $payOnDayOfMonth,$description, $school, $id
                                  );
                     $stmt->execute();
                     $num_affected_rows = $stmt->affected_rows;

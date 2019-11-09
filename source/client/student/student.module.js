@@ -37,6 +37,8 @@ import { PaymentServices } from '../../js/services/paymentServices';
 import { TestingServices } from '../../js/services/testingServices';
 import { Util } from '../../js/utility/utility';
 
+import { leadnotRequired } from './leadNotrequired.directive';
+
 import { CommonModule } from '../common/common.module';
 import { PhotoModule } from '../photos/photo.module';
 import { DirectiveModule } from '../../js/directives/directive.module';
@@ -73,6 +75,7 @@ export const StudentModule = angular
  .component('studentpaymentComponent', studentpaymentComponent)
  .component('studenttableComponent', studenttableComponent)
  .component('studenthistoriestableComponent', studenthistoriestableComponent)
+ .directive('leadnotRequired',leadnotRequired)
  .config(studentconfig)
  .name;
 
