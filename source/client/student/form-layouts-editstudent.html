@@ -230,14 +230,14 @@
                             <div class="col-md-6">
                               <label for="inputBirthday" class="control-label">Birthday </label>
                               <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
-                                <div class="col-md-11" style="padding-right: 0px;">
+                                <div class="col-md-11 prn" >
                                   <div class="input-icon right">
                                     <i ng-click="$ctrl.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                     <input id="inputBirthday" autocomplete='bday' type="text" placeholder="mm/dd/yyyy" name="Birthday" required ng-model="$ctrl.students.Birthday" ng-change="$ctrl.updateStudent(editstudent)" is-open="$ctrl.status.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}"
                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                   </div>
                                 </div>
-                                <div class="col-md-1" style="padding-right: 0px; padding-left: 0px;">
+                                <div class="col-md-1 pln prn" >
                                   <button type="button" class="btn btn-default" ng-click="$ctrl.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </div>
                                 <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">

@@ -2,8 +2,8 @@ import angular from 'angular';
 
 export class AttendanceTableBasicController {
    constructor(
-      $routeParams, $log, AttendanceServices,
-      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService, UserServices
+      $routeParams, $log, AttendanceServices, StudentServices,
+      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService, UserServices, $filter
    ) {
       'ngInject';
       this.$routeParams = $routeParams;
@@ -19,6 +19,8 @@ export class AttendanceTableBasicController {
       this.Util = Util;
       this.portalDataService = portalDataService;
       this.UserServices = UserServices;
+      this.StudentServices = StudentServices;
+      this.$filter = $filter;
    }
    $onInit() {
 
@@ -34,10 +36,16 @@ export class AttendanceTableBasicController {
       vm.data = [];
       vm.classes = [];
       vm.attendancesum = {};
+        vm.refreshstudentlist = [];
+        vm.eventResult ={};
+        vm.studentpickparent = {};
+        vm.studentpick='';
+
       vm.showStats = '';
       vm.showGrid = true;
       vm.showpics = true;
       vm.showlist = false;
+      vm.ellipsis = false;
 
       vm.estatus = {
          opened: false
@@ -75,6 +83,7 @@ export class AttendanceTableBasicController {
       vm.selectedItem = null;
       vm.checkResults = [];
       vm.photos = [];
+      vm.filteredphotos = [];
       vm.attending = [];
       vm.MondayOfWeek = null;
       vm.TuesdayOfWeek = null;
@@ -101,6 +110,12 @@ export class AttendanceTableBasicController {
       this.showGrid = false;
       this.photos = [];
    };
+   
+   expand() {
+        var vm = this;
+        vm.$log.log('expand');
+        vm.ellipsis = !vm.ellipsis;
+   }
 
    sdateopen($event) {
       var vm = this;
@@ -201,6 +216,14 @@ export class AttendanceTableBasicController {
   }
 */
 
+   filter() {
+      var vm=this;
+      vm.filteredphotos = vm.$filter('filter')(vm.photos, {studentID: vm.eventResult.ID});
+   }
+   clearFilter() {
+      var vm=this;
+      vm.filteredphotos = vm.photos;
+   }
    list() { //switching to pics when clicked
       var vm = this;
       vm.showpics = true;
@@ -343,6 +366,13 @@ export class AttendanceTableBasicController {
          diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is sunday
       return new Date(d.setDate(diff));
    }
+
+    editStudentFromPick(studentpickparent, prop, value) {
+        var vm = this;
+        vm.studentpickparent[prop] = value;
+         vm.eventResult = vm.studentpickparent.studentpick;
+         vm.filter();
+    }
 
 
    selectItem(item, indextoggle, card, callrefresh) {
@@ -621,6 +651,7 @@ export class AttendanceTableBasicController {
                }
             }
             vm.$log.log('photos', vm.photos);
+            vm.filteredphotos = vm.photos;
             vm.showGrid = true;
             return vm.data;
          },

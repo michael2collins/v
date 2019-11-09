@@ -85,14 +85,14 @@
                                                          <label for="PricesetdateHead" class="control-label">Date Set</label>
                                                          <div ng-class="{'has-error': editPaymentPlan['PricesetdateHead'].$invalid, 
                                       'has-success': !editPaymentPlan['PricesetdateHead'].$invalid}" class="form-group">
-                                                            <div class="col-md-9" style="padding-right: 0px;">
+                                                            <div class="col-md-9 prn" >
                                                                <div class="input-icon right">
                                                                   <i ng-click="$ctrl.dateopen($event, 'head')" data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['PricesetdateHead'].$dirty" ng-class="editPaymentPlan['PricesetdateHead'].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                                                   <input id="PricesetdateHead" type="text" placeholder="mm/dd/yyyy" name="PricesetdateHead" required ng-model="$ctrl.head.Pricesetdate" ng-change="" is-open="$ctrl.statushead.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
                                                                      class="form-control">
                                                                </div>
                                                             </div>
-                                                            <div class="col-md-1 col-xs-6" style="padding-right: 0px; padding-left: 0px;">
+                                                            <div class="col-md-1 col-xs-6 pln prn" >
                                                                <button type="button" class="btn btn-default" ng-click="$ctrl.dateheadopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                                             </div>
                                                          </div>
@@ -237,7 +237,7 @@
                                              <div class="col-md-2 col-xs-6">
                                                 <div ng-class="{'has-error': editPaymentPlan['Pricesetdate' + $index].$invalid, 
                                     'has-success': !editPaymentPlan['Pricesetdate' + $index].$invalid}" class="form-group">
-                                                   <div class="col-md-9" style="padding-right: 0px;">
+                                                   <div class="col-md-9 prn" >
                                                       <div class="input-icon right">
                                                          <i ng-click="$ctrl.dateopen($event, $index)" data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['Pricesetdate' + $index].$dirty" ng-class="editPaymentPlan['Pricesetdate' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
                                                             class="glyphicon tooltips"></i>
@@ -245,7 +245,7 @@
                                                             ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                                       </div>
                                                    </div>
-                                                   <div class="col-md-1 col-xs-6" style="padding-right: 0px; padding-left: 0px;">
+                                                   <div class="col-md-1 col-xs-6 prn pln" >
                                                       <button type="button" class="btn btn-default" ng-click="$ctrl.dateopen($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
                                                    </div>
                                                 </div>
@@ -306,7 +306,7 @@
                                              <div class="col-md-2 col-xs-6">
                                                 <div ng-class="{'has-error': editPaymentPlan['LastPaymentdate' + $index].$invalid, 
                                     'has-success': !editPaymentPlan['LastPaymentdate' + $index].$invalid}" class="form-group">
-                                                   <div class="col-md-9" style="padding-right: 0px;">
+                                                   <div class="col-md-9 prn" >
                                                       <div class="input-icon right">
                                                          <i ng-click="$ctrl.dateLopen($event, $index)" data-hover="tooltip" data-original-title="Correct" ng-show="editPaymentPlan['LastPaymentdate' + $index].$dirty" ng-class="editPaymentPlan['LastPaymentdate' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
                                                             class="glyphicon tooltips"></i>
@@ -314,7 +314,7 @@
                                                             ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                                       </div>
                                                    </div>
-                                                   <div class="col-md-1 col-xs-6" style="padding-right: 0px; padding-left: 0px;">
+                                                   <div class="col-md-1 col-xs-6 prn pln" >
                                                       <button type="button" class="btn btn-default" ng-click="$ctrl.dateLopen($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
                                                    </div>
                                                 </div>

@@ -2,6 +2,7 @@ import angular from 'angular';
 
 import { DirectiveModule } from '../../js/directives/directive.module';
 import { CoreModule } from '../../js/core/core.module';
+import { CommonModule } from '../common/common.module';
 
 import { AttendanceServices } from '../../js/services/attendanceServices';
 import { Util } from '../../js/utility/utility';
@@ -11,7 +12,7 @@ import { attendanceComponent } from './attendance.component';
 import attendancetemplate from './attendance.html';
 
 export const AttendanceModule = angular
-   .module('ngadmin.attendance', [DirectiveModule,CoreModule])
+   .module('ngadmin.attendance', [DirectiveModule,CoreModule,CommonModule])
    .service('AttendanceServices', AttendanceServices)
    .service('Util', Util)
    .controller('AttendanceTableBasicController', AttendanceTableBasicController)

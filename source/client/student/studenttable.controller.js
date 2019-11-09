@@ -36,6 +36,7 @@ export class StudentsTableBasicController {
         vm.refreshstudentlist = [];
         vm.studentpick;
         vm.eventResult;
+        vm.studentpickparent = {};
 
         vm.userprefpath = "../v1/userprefcols/allstudents";
 
@@ -94,7 +95,6 @@ export class StudentsTableBasicController {
 
     $onDestroy() {
         this.$log.log("StudentsTableBasicController dismissed");
-        //this.$log.logEnabled(false);
     }
 
     updateRankType(ranktypeparent, prop, value) {
@@ -225,6 +225,8 @@ export class StudentsTableBasicController {
         });
     }
 
+/*
+
     refreshStudents(theinput) {
         var vm = this;
         return vm.StudentServices.refreshStudents(theinput).then(function(data) {
@@ -236,11 +238,16 @@ export class StudentsTableBasicController {
         });
 
     }
-
     editStudentFromPick(item) {
         var vm = this;
         vm.eventResult = { item: item };
         vm.$log.log('editStudentFromPick', vm.eventResult);
+    }
+*/    
+    editStudentFromPick(studentpickparent, prop, value) {
+        var vm = this;
+        vm.studentpickparent[prop] = value;
+         vm.eventResult = vm.studentpickparent.studentpick;
     }
 
     toggleFiltering() {

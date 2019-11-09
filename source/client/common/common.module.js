@@ -14,6 +14,7 @@ import { studentclassmodalComponent } from './studentclassmodal.component';
 import { studentclassmodalinstComponent } from './studentclassmodalinst.component';
 import { newpayerComponent } from './newpayer.component';
 import { newpayerinstComponent } from './newpayerinst.component';
+import { studentpickerComponent } from './studentpicker.component';
 
 import { RankTypeController } from './ranktype.controller';
 import { RankSelectController } from './rankselect.controller';
@@ -21,6 +22,8 @@ import { ModalSetStudentClassController } from './studentclassmodal.controller';
 import { StudentClassModalInstanceController } from './studentclassmodalinst.controller';
 import { ModalNewPayerController } from './newpayer.controller';
 import { ModalNewPayerInstanceController } from './newpayerinst.controller';
+
+import { StudentPickerController } from './studentpicker.controller';
 
 export const CommonModule = angular
  .module('ngadmin.common', [ CoreModule,DirectiveModule ])
@@ -30,12 +33,14 @@ export const CommonModule = angular
  .component('studentclassmodalinstComponent', studentclassmodalinstComponent)
  .component('newpayerComponent', newpayerComponent)
  .component('newpayerinstComponent', newpayerinstComponent)
+ .component('studentpickerComponent', studentpickerComponent)
  .controller('RankTypeController', RankTypeController)
  .controller('RankSelectController', RankSelectController)
  .controller('ModalSetStudentClassController', ModalSetStudentClassController)
  .controller('StudentClassModalInstanceController', StudentClassModalInstanceController)
  .controller('ModalNewPayerController', ModalNewPayerController)
  .controller('ModalNewPayerInstanceController', ModalNewPayerInstanceController)
+ .controller('StudentPickerController',StudentPickerController)
  .service('TestingServices', TestingServices)
  .service('ClassServices', ClassServices)
  .service('StudentServices', StudentServices)

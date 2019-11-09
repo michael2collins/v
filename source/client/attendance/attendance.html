@@ -29,36 +29,30 @@
                   </div>
                </div>
                <div class="col-md-7 col-xs-6">
+                  <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
                   <div class="form-group">
-                     <label for="inputDOW" class="control-label attendance">Monday Of Week </label>
-                     <div class="input-icon right">
-                        <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendanceClick();vm.getAttendanceHistory()" class="form-control attendance">
-<!--                        <option>{{vm.MondayOfWeek | date:'yyyy-MM-dd'}}</option> -->
-                        <option ng-repeat="iter in vm.DOWlist" 
-                            ng-selected="iter === vm.dowChoice" 
-                             value="{{iter}}">{{iter}}</option>
-                      </select>
-
+                     <div class="col-md-11 col-xs-11 prn">
+                        <div class="input-icon right">
+                           <select id="inputDOW" type="text" name="DOW" ng-model="vm.dowChoice" ng-change="vm.setDOW(vm.dowChoice);vm.refreshtheAttendanceClick();vm.getAttendanceHistory()" class="form-control attendance">
+                           <option ng-repeat="iter in vm.DOWlist" 
+                               ng-selected="iter === vm.dowChoice" 
+                                value="{{iter}}">{{iter}}</option>
+                            </select>
+                        </div>
                      </div>
-                  </div>
-                     <div class="row col-md-12">
+                     <div class="col-md-1 col-xs-1 pln prn">
+                        <button type="button" class="attendance btn-blue btn" ng-click="vm.expand()"><i class="fas fa-ellipsis-h" ></i></button>
+                     </div>
+                     <div class="row col-md-12" ng-show="vm.ellipsis">
                         <div class="col-md-6">
                            <label for="inputStartdate" class="control-label">Start of Range </label>
                            <div class="form-group">
                               <div class="col-md-9">
                                  <div class="input-icon right">
-                                    <input id="inputStartdate" type="date"  name="startDate" ng-model="vm.StartDate" 
-                                     class="form-control" 
-                                    ng-change="vm.getDOW()"
-                                    ng-model-options="{ updateOn: 'default blur', 
-                                        debounce: { 'default': 1500, 'blur': 0 } }" >
+                                    <input id="inputStartdate" type="date" name="startDate" ng-model="vm.StartDate" class="form-control" ng-change="vm.getDOW()" ng-model-options="{ updateOn: 'default blur', 
+                                        debounce: { 'default': 1500, 'blur': 0 } }">
                                  </div>
                               </div>
-<!--                              <div class="">
-                                 <button type="button" class="btn btn-default" ng-click="vm.sdateopen($event)">
-                                <i class="glyphicon glyphicon-calendar"></i></button>
-                              </div>
--->                              
                            </div>
                         </div>
                         <div class="col-md-6">
@@ -66,20 +60,27 @@
                            <div class="form-group">
                               <div class="col-md-9">
                                  <div class="input-icon right">
-                                    <input id="inputEnddate" type="date"  name="endDate" ng-model="vm.EndDate" 
-                                     class="form-control"
-                                    ng-change="vm.getDOW()"/>
-<!--                                    <input id="inputEnddate" type="text" placeholder="yyyy-mm-dd" name="endDate" ng-model="vm.EndDate" 
-                                    is-open="vm.estatus.opened" uib-datepicker-popup="{{vm.bdateformat}}" class="form-control"
-                                    ng-change="vm.getDOW()"/>
--->                                    
+                                    <input id="inputEnddate" type="date" name="endDate" ng-model="vm.EndDate" class="form-control" ng-change="vm.getDOW()" />
                                  </div>
                               </div>
                            </div>
                         </div>
                      </div>
+                  </div>
 
                </div>
+            </div>
+            <div class="row" style="height: 80px">
+               <studentpicker-component on-update="vm.editStudentFromPick(vm.studentpick, prop, value)">
+               </studentpicker-component>
+               <div class="col-md-2 col-xs-2 mtl">
+                  <button ng-show="vm.eventResult.ID" ng-click="vm.filter()" class="btn btn-blue  attendance">Filter {{vm.eventResult.FirstName}}</button>
+
+               </div>
+               <div class="col-md-1 col-xs-1 mtl">
+                  <button ng-show="vm.eventResult.ID" ng-click="vm.clearFilter()" class="btn btn-blue  attendance">Clear Filter</button>
+               </div>
+
             </div>
 
          </div>
@@ -88,7 +89,7 @@
    </div>
 
    <uib-tabset type="pills">
-<!--vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek)) -->
+      <!--vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek)) -->
       <uib-tab id="tab-attend" heading="Take Attendance" active="active.attend" select="vm.setActiveTab('attend');">
          <div class="panel panel-blue">
             <div class="panel-heading">Class Attendance</div>
@@ -125,9 +126,9 @@
                </div>
                <div class="row">
                   <div class="col-md-12">
-                     <div class="deckgrid clearfix" deckgrid source="vm.photos" cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
+                     <div class="deckgrid clearfix" deckgrid source="vm.filteredphotos" cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
                      </div>
-                     <div class="deckgrid clearfix" deckgrid source="vm.photos" cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
+                     <div class="deckgrid clearfix" deckgrid source="vm.filteredphotos" cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
                      </div>
                   </div>
                </div>
@@ -137,7 +138,7 @@
 
 
       </uib-tab>
-<!--vm.setDOW(vm.DOWlist[0].MondayOfWeek); -->
+      <!--vm.setDOW(vm.DOWlist[0].MondayOfWeek); -->
       <uib-tab id="tab-attendhist" heading="Attendance History" active="active.attendhistory" select="vm.setActiveTab('attendhistory');vm.getAttendanceHistory()">
          <div class="panel panel-blue">
             <div class="panel-heading">Attendance History</div>
