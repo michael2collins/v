@@ -79,7 +79,7 @@
     "node": ">=0.8.0"
   },
   "dependencies": {
-    "angular": "1.6.10",
+    "angular": "1.7.9",
     "angular-idle-service": "^1.0.3",
     "angular-ui-notification": "^0.3.6",
     "dotenv": "^6.0.0",
