@@ -31,13 +31,6 @@ export class StudentPickerController {
         });
 
     }
-/*
-    editStudentFromPick(item) {
-        var vm = this;
-        vm.eventResult = { item: item };
-        vm.$log.log('editStudentFromPick', vm.eventResult);
-    }
-*/
     update(prop, value) {
         var vm=this;
            vm.onUpdate( {studentpickparent: vm.studentpickparent, prop: prop, value: vm.studentpickparent.studentpick});

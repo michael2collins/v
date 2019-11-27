@@ -14,7 +14,7 @@ export  const CoreModule = angular.module('ngadmin.core', [
          * Angular modules
          */
         'ngAnimate', 'ngRoute', 'ngSanitize',
-        'ngIdle', 'ngCookies', 'ngMessages',
+        'ngIdle', 'ngCookies', 'ngMessages','ngAria',
 
         /*
          * Our reusable cross app code modules

@@ -103,6 +103,29 @@
                      </ul>
                   </li>
                   <li class="dropdown-submenu">
+                     <a class="test" ng-hide="!$ctrl.expirestudents.length" tabindex="-1" href="javascript:void(0);" 
+                     class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                     <span class="label label-red"><i class="fas fa-fire fa-fw"></i></span>
+                     <span class="menu-title">{{$ctrl.expirestudents.length}} Trial ending</span>
+                     <span class="caret"></span></a>
+                     <ul ng-class="$ctrl.menuclass">
+                        <li ng-repeat="stu in $ctrl.expirestudents">
+                           <a tabindex="-1" href="/#/form-layouts-editstudent/id/{{stu.contactid}}">
+                           <span class="label label-red">
+                              <i class="fas fa-user fa-fw"></i></span>                           
+                           <span class=""> 
+                              {{stu.firstname}} {{stu.lastname}} 
+                           </span>
+                           </a></li>
+                        <li><a tabindex="-1" ng-click="$ctrl.clearExpireStudents()" ng-hide="!$ctrl.expirestudents.length">
+                           <span class="label label-grey">
+                              <i class="fas fa-eraser fa-fw"></i></span>                           
+                           <span class="menu-title">Clear Alert</span>
+                        </a></li>
+
+                     </ul>
+                  </li>
+                  <li class="dropdown-submenu">
                      <a class="test" ng-hide="!$ctrl.noshowstudents.noshow.length" tabindex="-1" href="javascript:void(0);">
                         <span class="label label-blue"><i class="fas fa-coffee fa-fw"></i></span><span class="menu-title">{{$ctrl.noshowstudents.noshow.length}} No show Students +2wk</span>
                      <span class="caret"></span></a>

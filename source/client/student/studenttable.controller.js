@@ -225,25 +225,6 @@ export class StudentsTableBasicController {
         });
     }
 
-/*
-
-    refreshStudents(theinput) {
-        var vm = this;
-        return vm.StudentServices.refreshStudents(theinput).then(function(data) {
-            vm.$log.log('studenttable search result controller refreshStudents returned data');
-            vm.$log.log(data);
-            vm.refreshstudentlist = data;
-            vm.$log.log('controller refreshstudentlist service data', vm.refreshstudentlist);
-            return vm.refreshstudentlist;
-        });
-
-    }
-    editStudentFromPick(item) {
-        var vm = this;
-        vm.eventResult = { item: item };
-        vm.$log.log('editStudentFromPick', vm.eventResult);
-    }
-*/    
     editStudentFromPick(studentpickparent, prop, value) {
         var vm = this;
         vm.studentpickparent[prop] = value;

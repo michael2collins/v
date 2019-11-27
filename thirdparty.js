@@ -236,6 +236,9 @@ let thirdparty = [
         module: 'angular-messages', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-messages.min.js'
     },
     {
+        module: 'angular-aria', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-aria.min.js'
+    },
+    {
         module: 'angular-resource', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-resource.min.js'
     },
     {

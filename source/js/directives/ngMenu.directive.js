@@ -1,4 +1,5 @@
 const { jQuery: $ } = window;
+const {Element} = window;
 
 export const NgMenu = ($parse, $compile) => {
   'ngInject';
@@ -20,8 +21,8 @@ export const NgMenu = ($parse, $compile) => {
             $scope._menu.collapse = function(i){
           //      console.log('collapse');
                 $scope._menu.status[i] = !$scope._menu.status[i];
-
-                var current = attributes.$$element.find('a[index='+i+']');
+                var str = 'a[index='+i+']';
+                var current = attributes.$$element.find(str);
 
                 current.parent('li').addClass('active').siblings().removeClass('active').children('ul').each(function(){
                     $scope._menu.status[$(this).attr('index')] = true;

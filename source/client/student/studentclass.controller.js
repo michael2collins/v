@@ -1,7 +1,7 @@
 export class StudentClassController {
     constructor(
         $scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices
+        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices, StudentUtil, _
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -16,6 +16,8 @@ export class StudentClassController {
         this.$q = $q;
         this.$controller = $controller;
         this.UserServices = UserServices;
+        this.StudentUtil = StudentUtil;
+        this._ = _;
     }
 
     $onInit() {
@@ -68,6 +70,21 @@ export class StudentClassController {
 //enable header
 //loop clazzlist
         vmclass.iter=0;
+        
+        vmclass.studentpickparent = {};
+        vmclass.studentclassparent = vmclass;
+        vmclass.eventResult={};
+        
+        vmclass.add = {nam: 'add'};
+        vmclass.update = {nam: 'update'};
+        
+        vmclass.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate', 'MM/dd/yyyy'];
+        vmclass.bdateformat = vmclass.formats[4];
+        vmclass.status = {};
+        vmclass.expiresOnHead = {
+            opened: false
+        };
+        
         vmclass.activate();
         
     }
@@ -93,17 +110,25 @@ export class StudentClassController {
 
                 vmclass.getStudentClassList().then(function() {
                     vmclass.$log.log('getStudentClassList ready');
-                    vmclass.getStudentClassStatuses();
+//                    vmclass.getStudentClassStatuses();
+//                    vmclass.$log.log("listnew in activate", vmclass.xlistnew);
                     vmclass.$log.log("listnew in activate", vmclass.xlistnew);
 
                 }).catch(function(e) {
                     vmclass.$log.log("getStudentClassList error in activate", e);
                 }),
-                vmclass.getStudentClazzList().then(function() {
+                vmclass.getStudentClassStatuses().then(function() {
+                    vmclass.$log.log("getStudentClassStatuses in activate");
+
+                }).catch(function(e) {
+                    vmclass.$log.log("getStudentClassStatuses error in activate", e);
+                }),
+                vmclass.StudentUtil.getStudentClazzList(vmclass).then(function(data) {
+                    vmclass.studentclazzlist = data;
                     vmclass.$log.log('getStudentClazzList ready');
 
                 }).catch(function(e) {
-                    vmclass.$log.log("getStudentClassList error in activate", e);
+                    vmclass.$log.log("getStudentClazzList error in activate", e);
                 }),
                 vmclass.ClassServices.distinctCat().then(function(data) {
                     vmclass.$log.log('distinctCat get:', data);
@@ -137,7 +162,6 @@ export class StudentClassController {
 
 
     }
-
     clearSelect() {
         var vmclass = this;
         vmclass.categorys = '';
@@ -225,29 +249,20 @@ export class StudentClassController {
 
     }
 
-    getStudentClazzList() {
-        var vmclass = this;
-        vmclass.$log.log('getStudentClazzList entered:' + vmclass.$routeParams.id);
-        var path = '../v1/studentclasslist/' + vmclass.$routeParams.id;
-        return vmclass.ClassServices.getStudentClassList(path).then(function(data) {
-            vmclass.studentclazzlist = data.studentclasslist;
-            for (var iter = 0, len = vmclass.studentclazzlist.length; iter < len; iter++) {
-                vmclass.studentclazzlist[iter].payerList = {
-                    payerName: vmclass.studentclazzlist[iter].payerName,
-                    payerid: vmclass.studentclazzlist[iter].payerid,
-                    primaryContact: vmclass.studentclazzlist[iter].primaryContact
-                };
-            }
-            vmclass.$log.log('studentclazzlist returned data', vmclass.studentclazzlist);
-            return vmclass.studentclazzlist;
-        }, function(error) {
-            vmclass.$log.log('getStudentClass ', error);
-            vmclass.Notification.error({ message: error, delay: 5000 });
-            return (error);
-        });
-
+    dateopen($event, iter) {
+        var vmpayment = this;
+        vmpayment.$log.log("dateopen:", vmpayment.status);
+        vmpayment.status[iter].opened = true;
     }
+    dateheadopen($event) {
+        var vmpayment = this;
+        vmpayment.$log.log("dateheadopen:", vmpayment.expiresOnHead);
+        vmpayment.expiresOnHead.opened = true;
+    }
+
     getPayersPartial(theinput) {
+        var vmclass = this;
+//        vmclass.payers = vmclass.StudentUtil.getPayersPartial(theinput);
         var vmclass = this;
         vmclass.$log.log('getPayers entered');
 
@@ -260,6 +275,11 @@ export class StudentClassController {
 
     }
 
+    editStudentFromPick(studentpickparent, prop, value) {
+        var vm = this;
+        vm.studentpickparent[prop] = value;
+         vm.eventResult = vm.studentpickparent.studentpick;
+    }
 
     getStudentClassPicture() {
         var vmclass = this;
@@ -324,6 +344,13 @@ export class StudentClassController {
         vmclass.changestatus = "testfee";
         vmclass.updateStudentClass(clazzitem);
     }
+    changeExpireson(clazzitem) {
+        var vmclass = this;
+        vmclass.$log.log('about changeExpireson ', clazzitem);
+        vmclass.changestatus = "expireson";
+        vmclass.updateStudentClass(clazzitem);
+    }
+
     changeprimaryContact(clazzitem) {
         var vmclass = this;
         vmclass.$log.log('about changeprimaryContact ', clazzitem);
@@ -345,6 +372,7 @@ export class StudentClassController {
         clazzitem.payerid = clazzitem.payerList.payerid;
         clazzitem.payerName = clazzitem.payerList.payerName;
         clazzitem.primaryContact = clazzitem.primaryContact;
+        clazzitem.expiresOn = clazzitem.expiresOn;
 
         vmclass.$log.log('about updateStudentClass ', clazzitem);
         return vmclass.ClassServices.updateStudentClass(
@@ -361,13 +389,15 @@ export class StudentClassController {
                 vmclass.Notification.success({ message: data.message, delay: 5000 });
             }
 
-            vmclass.getStudentClazzList();
+            vmclass.StudentUtil.getStudentClazzList(vmclass);
+            vmclass.isCollapsed = true;
         }, function(error) {
             vmclass.$log.log('updateStudentClass ', error);
             vmclass.Notification.error({ message: error, delay: 5000 });
             return (error);
         });
     }
+
 
     addStudentRegistration() {
         var vmclass = this;
@@ -378,7 +408,8 @@ export class StudentClassController {
             pgmseq: vmclass.studentclass.pgmseq,
             payerName: vmclass.studentclass.payerName.payerName,
             payerid: vmclass.studentclass.payerName.payerid,
-            studentclassstatus: vmclass.studentclass.studentclassstatus
+            studentclassstatus: vmclass.studentclass.studentclassstatus,
+            expiresOn: vmclass.studentclass.expiresOn
         };
         vmclass.$log.log('about addStudentRegistration ', path, thedata, vmclass.studentclass);
         return vmclass.ClassServices.addStudentRegistration(path, thedata).then(function(data) {
@@ -395,7 +426,7 @@ export class StudentClassController {
             }
 
             //if we added a payer for the registration, then refresh the list on the payment page
-            vmclass.getStudentClazzList();
+            vmclass.StudentUtil.getStudentClazzList(vmclass);
 
         }, function(error) {
             vmclass.$log.log('addStudentRegistration ', error);
@@ -417,7 +448,7 @@ export class StudentClassController {
             .then(function(data) {
                 vmclass.$log.log('removeStudentRegistration returned data');
                 vmclass.$log.log(data);
-                vmclass.getStudentClazzList();
+                vmclass.StudentUtil.getStudentClazzList(vmclass);
                 return data;
             }).catch(function(e) {
                 vmclass.$log.log('removeStudentRegistration failure:');
@@ -428,27 +459,46 @@ export class StudentClassController {
 
     }
 
-    //studenreg handles now
-    /*
-        setStudentClass(mystudent, myclassid, mypgmid) {
-            var vmclass = this;
-            var setclasspath = '../v1/studentclass/id/' +
-                mystudent +
-                '/myclass/' +
-                myclassid +
-                '/mypgm/' +
-                mypgmid;
-            vmclass.$log.log('studentid: ' + mystudent);
-            vmclass.$log.log('studentclass: ' + myclassid);
-            vmclass.$log.log('studentpgm: ' + mypgmid);
-
-            vmclass.$log.log('about setStudentClass ', mystudent);
-            vmclass.$log.log('for class ', myclassid);
-            return vmclass.ClassServices.setStudentClass(
-                setclasspath, mystudent, myclassid, mypgmid).then(function(data) {
-                vmclass.$log.log('setStudentClass returned data: ');
-                vmclass.$log.log(data);
-            });
+    updateStudentRegistration(studentclassparent, prop, value, oldclassseq, oldpgmseq) {
+        var vmclass = this;
+        var clazzitem = {};
+        if (value.classseq == null) {
+            //notify error
+            vmclass.Notification.warning({ message: "No update", delay: 5000 });
+            return;
         }
-        */
+        var path = '../v1/studentclass/' + vmclass.$routeParams.id;
+        clazzitem.contactID = vmclass.$routeParams.id;
+        clazzitem.newclassseq =  vmclass.studentclass.classseq;
+        clazzitem.newpgmseq =  vmclass.studentclass.pgmseq;
+        clazzitem.classseq =  oldclassseq;
+        clazzitem.pgmseq =  oldpgmseq;
+        clazzitem.changestatus = "classpgm";
+        clazzitem.class = vmclass.studentclass.class;
+        clazzitem.pgmclass = vmclass.studentclass.pgmclass;
+
+        vmclass.$log.log('about updateStudentClassPgm ', clazzitem);
+        return vmclass.ClassServices.updateStudentClass(
+            path, clazzitem).then(function(data) {
+            vmclass.$log.log('updateStudentClass returned data');
+            vmclass.$log.log(data);
+            vmclass.$log.log(data.message);
+            if ((typeof data === 'undefined' || data.error === true) &&
+                typeof data !== 'undefined') {
+                vmclass.Notification.error({ message: data.message, delay: 5000 });
+                return (vmclass.$q.reject(data));
+            }
+            else {
+                vmclass.Notification.success({ message: data.message, delay: 5000 });
+            }
+
+            vmclass.StudentUtil.getStudentClazzList(vmclass);
+        }, function(error) {
+            vmclass.$log.log('updateStudentClass ', error);
+            vmclass.Notification.error({ message: error, delay: 5000 });
+            return (error);
+        });
+    
+    }
+
 }

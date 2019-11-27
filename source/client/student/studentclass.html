@@ -3,195 +3,74 @@
     <div class="panel panel-blue">
       <div class="panel-heading">Programs</div>
       <div class="panel-body pan">
-        <div>
-          <form action="" novalidate name="editstudentclass" class="form-horizontal">
-            <div class="form-body pal">
-              <h3 class="block-heading">Class Information</h3>
-              <div class="row">
-                <div class="portlet portlet-primary col-md-12">
-                  <div class="portlet-header">
-                    <div class="caption">Student Class Registration</div>
+        <form action="" novalidate name="editstudentclass" class="form-horizontal">
+          <div class="form-body pal">
+            <h3 class="block-heading">Class Information</h3>
+            <div class="portlet portlet-primary col-md-12">
+              <div class="portlet-header">
+                <div class="caption">Student Class Registration</div>
+              </div>
+              <div class="portlet-body">
+                <div class="table-tools">
+                  <div class="row col-md-offset-10 mbs">
+                    <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed;">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
                   </div>
-                  <div class="portlet-body">
-                    <div class="table-tools">
-                      <div class="row col-md-offset-10 mbs">
-                        <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
-                      </div>
-                    </div>
-                    <div class="container-fluid">
-                      <div class="row">
-                        <div class="col-md-12">
-                          <div uib-collapse="$ctrl.isCollapsed">
-                            <div class="well well-lg">
-                              <div class="container-fluid">
-                                <div class="container col-md-12">
-                                  <div class="row">
-                                    <div class="col-md-2 btn" style="margin-top: 10px;">
-                                      <studentclassmodal-component></studentclassmodal-component>
+                </div>
+                <div class="container-fluid">
+                  <div class="col-md-12">
+                    <div uib-collapse="$ctrl.isCollapsed">
+                      <div class="well well-lg">
+                        <div class="container-fluid">
+                          <div class="container col-md-12">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <div class=" btn">
+                                  <studentclassmodal-component mode="add"></studentclassmodal-component>
+                                </div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label for="inputsc_Class" class="control-label">Student Class</label>
+                                    <div>
+                                      <input id="inputsc_Class" type="text" placeholder="Student Class" name="sc_Class" ng-model="$ctrl.studentclass.class" ng-disabled="true" required class="form-control">
                                     </div>
-                                    <div class="col-md-8">
-                                      <div class="col-md-3">
-                                        <div class="form-group">
-                                          <label for="inputsc_Class" class="control-label">Student Class</label>
-                                          <div>
-                                            <input id="inputsc_Class" type="text" placeholder="Student Class" name="sc_Class" ng-model="$ctrl.studentclass.class" ng-disabled="true" required class="form-control">
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="col-md-3">
-                                        <div class="form-group">
-                                          <label for="inputsc_pgmclass" class="control-label">Student Program</label>
-                                          <div>
-                                            <input id="inputsc_pgmclass" type="text" placeholder="Student Program" name="pgmclass" ng-model="$ctrl.studentclass.pgmclass" ng-disabled="true" required class="form-control">
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="col-md-3">
-                                        <div ng-class="{'has-error': editstudentclass.studentclassstatus.$invalid, 'has-success': !editstudentclass.studentclassstatus.$invalid}" class="form-group">
-                                          <label for="inputsc_Classstatus" class="control-label">Student Status</label>
-                                          <div class="input-icon right">
-                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.studentclassstatus.$dirty" ng-class="editstudentclass.studentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                            <select id="inputsc_Classstatus" type="text" name="studentclassstatus" ng-model="$ctrl.studentclass.studentclassstatus" ng-change="" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                              class="form-control">
+                                  </div>
+                                </div>
+                                <div class="col-md-3">
+                                  <div class="form-group">
+                                    <label for="inputsc_pgmclass" class="control-label">Student Program</label>
+                                    <div>
+                                      <input id="inputsc_pgmclass" type="text" placeholder="Student Program" name="pgmclass" ng-model="$ctrl.studentclass.pgmclass" ng-disabled="true" required class="form-control">
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-2">
+                                  <div ng-class="{'has-error': editstudentclass.studentclassstatus.$invalid, 'has-success': !editstudentclass.studentclassstatus.$invalid}" class="form-group">
+                                    <label for="inputsc_Classstatus" class="control-label">Student Status</label>
+                                    <div class="input-icon right">
+                                      <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.studentclassstatus.$dirty" ng-class="editstudentclass.studentclassstatus.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                      <select id="inputsc_Classstatus" type="text" name="studentclassstatus" ng-model="$ctrl.studentclass.studentclassstatus" ng-change="" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                        class="form-control">
                                                     <option ng-repeat="iter in $ctrl.classstatuses.studentclassstatuses" ng-selected="{{iter.status==$ctrl.studentclass.studentclassstatus}}" placeholder="Select" value="{{iter.status}}">{{iter.status}}</option>
                                                   </select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudentclass.studentclassstatus.$error" class="has-error">
-                                            <div ng-message="required">You did not enter a field</div>
-                                            <div ng-message="minlength">Your field is too short</div>
-                                            <div ng-message="maxlength">Your field is too long</div>
-                                            <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                      <div class="col-md-3">
-                                        <div ng-class="{'has-error': editstudentclass.payerName.$invalid, 'has-success': !editstudentclass.payerName.$invalid}" class="form-group">
-                                          <label for="inputsc_payerName" class="control-label">Payer Name</label>
-                                          <div class="input-icon right">
-                                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.payerName.$dirty" ng-class="editstudentclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                            <ui-select ng-model="$ctrl.studentclass.payerName" theme="bootstrap" reset-search-input="false" style="width: 300px;" title="Pick Payer" append-to-body="false">
-                                              <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
-                                              <ui-select-choices repeat="item in $ctrl.payers | filter: $select.search track by $index" refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
-                                                <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
-                                              </ui-select-choices>
-                                              <ui-select-no-choice>
-                                                Dang! We couldn't find any choices...
-                                              </ui-select-no-choice>
-                                            </ui-select>
-                                          </div>
-                                          <div style="color:maroon" role="alert" ng-messages="editstudentclass.payerName.$error" class="has-error">
-                                            <div ng-message="required">You did not enter a field</div>
-                                            <div ng-message="minlength">Your field is too short</div>
-                                            <div ng-message="maxlength">Your field is too long</div>
-                                            <div ng-message="email">Your email is missing @ and/or a period</div>
-                                          </div>
-                                        </div>
-                                      </div>
                                     </div>
-                                    <div class="col-md-2">
-                                      <div class="gallery-pages">
-                                        <div class="mix-grid">
-                                          <div class="mix">
-                                            <div class="hover-effect">
-                                              <div class="img" ng-if="$ctrl.studentclass.pictureurl">
-                                                <img ng-src="images/classes/{{$ctrl.studentclass.pictureurl}}" alt="" class="img-responsive img-max" />
-                                              </div>
-                                              <div class="info">
-                                                <h3>{{$ctrl.studentclass.class}} - {{$ctrl.studentclass.pgmclass}}</h3>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div class="row">
-                                    <div class="col-md-2 btn" style="margin-top: 18px;">
-                                      <div class="table-tools">
-                                        <div class="row">
-                                          <newpayer-component></newpayer-component>
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="col-md-2 btn" style="margin-top: 18px;">
-                                      <label for="rankbtn" class="control-label">&nbsp; </label>
-                                      <a role="button" ng-disabled="editstudentclass.studentclassstatus.$invalid || editstudentclass.pgmclass.$invalid" class="btn btn-green form-control" ng-click="$ctrl.addStudentRegistration()"><i class="fa fa-plus"></i>&nbsp; Register</a>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="container-fluid">
-                            <div class="col-md-12 ">
-                              <!--                              <div class="row" ng-show="$ctrl.$rootScope.mobile">
-                                <div class="col-xs-1"><span> 
-                                <a ng-click="$ctrl.first()" role="button" class="btn btn-green"  >
-                                  <i class="fa fa-fast-backward"></i>&nbsp;</a></span></div>
-                                <div class="col-xs-1"><span> 
-                                <a ng-click="$ctrl.prev()" role="button" class="btn btn-green"  >
-                                  <i class="fa fa-backward"></i>&nbsp;</a></span></div>
-                                <div class="col-xs-1"><span> 
-                                <a ng-click="$ctrl.next()" role="button" class="btn btn-green"  >
-                                  <i class="fa fa-forward"></i>&nbsp;</a></span></div>
-                                <div class="col-xs-1"><span> 
-                                <a ng-click="$ctrl.last()" role="button" class="btn btn-green"  >
-                                  <i class="fa fa-fast-forward"></i>&nbsp;</a></span></div>
-
-                              </div>
-                              <div class="row like-table xtralike-table" ng-show="$ctrl.$rootScope.mobile" 
-                              ng-repeat="ccol in $ctrl.Columnslist">
-                                <div class="col-xs-6 ">{{ccol.htxt}}</div>
-                                <div class="col-xs-6 ">{{$ctrl.studentclazzlistcol[$ctrl.iter][ccol.name]}}</div>
-                              </div>
--->
-                              <div class="row like-tableheader" ng-hide="$ctrl.$rootScope.mobile">
-                                <div class="col-md-1  ">Class</div>
-                                <div class="col-md-1  ">Program</div>
-                                <div class="col-md-1  ">Status</div>
-                                <div class="col-md-2  ">Payer</div>
-                                <div class="col-md-2  ">Waive Test Fee?</div>
-                                <div class="col-md-2  ">Primary Acct?</div>
-                                <div class="col-md-2  ">Picture</div>
-                                <div class="col-md-1  ">Action</div>
-                              </div>
-                              <div class="row like-table xtralike-table" ng-repeat="classlist in $ctrl.studentclazzlist track by $index" style="z-index: {{200 - $index}}">
-                                <div class="row mobileheader" ng-show="$ctrl.$rootScope.mobile">
-                                  <div class=" col-xs-6 ">Column</div>
-                                  <div class=" col-xs-6 ">Value</div>
-                                </div>
-
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Class</div>
-                                <div class="col-md-1 col-xs-6">{{classlist.class}}</div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Program</div>
-                                <div class="col-md-1 col-xs-6 ">{{classlist.pgmclass}}</div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Status</div>
-                                <div class="col-md-1 col-xs-6 ">
-                                  <div ng-class="{'has-error': editstudentclass['lstudentclassstatus' + $index].$invalid,
-                                                        'has-success': !editstudentclass['lstudentclassstatus' + $index].$invalid}" class="form-group">
-                                    <div class="input-icon right">
-                                      <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['lstudentclassstatus' + $index].$dirty" ng-class="editstudentclass['lstudentclassstatus' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                      <select id="lstudentclassstatus{{$index}}" type="text" name="lstudentclassstatus{{$index}}" ng-model="classlist.studentclassstatus" ng-change="$ctrl.changeStudentStatus(classlist)" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                        class="form-control">
-                                                <option ng-repeat="iter in $ctrl.classstatuses.studentclassstatuses" 
-                                                ng-selected="{{iter.status==classlist.studentclassstatus}}" 
-                                                placeholder="Select" value="{{iter.status}}">{{iter.status}}</option>
-                                              </select>
-                                    </div>
-                                    <div style="color:maroon" role="alert" ng-messages="editstudentclass['lstudentclassstatus'  + $index].$error" class="has-error">
+                                    <div style="color:maroon" role="alert" ng-messages="editstudentclass.studentclassstatus.$error" class="has-error">
                                       <div ng-message="required">You did not enter a field</div>
                                       <div ng-message="minlength">Your field is too short</div>
                                       <div ng-message="maxlength">Your field is too long</div>
+                                      <div ng-message="email">Your email is missing @ and/or a period</div>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Payer</div>
-                                <div class="col-md-2 col-xs-6">
-                                  <div class="">
-                                    <div class="select-box">
-                                      <ui-select ng-model="classlist.payerList" theme="bootstrap" reset-search-input="false" on-select="$ctrl.changeStudentPayer(classlist)" title="Pick Payer" append-to-body="true">
+                                <div class="col-md-2">
+                                  <div ng-class="{'has-error': editstudentclass.payerName.$invalid, 'has-success': !editstudentclass.payerName.$invalid}" class="form-group">
+                                    <label for="inputsc_payerName" class="control-label">Payer Name</label>
+                                    <div class="input-icon right">
+                                      <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.payerName.$dirty" ng-class="editstudentclass.payerName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                      <ui-select ng-model="$ctrl.studentclass.payerName" theme="bootstrap" reset-search-input="false" style="width: 300px;" title="Pick Payer" append-to-body="false">
                                         <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
-                                        <ui-select-choices repeat="item in $ctrl.payers | filter: $select.search" refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
+                                        <ui-select-choices repeat="item in $ctrl.payers  | filter: $select.search track by $index" refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
                                           <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
                                         </ui-select-choices>
                                         <ui-select-no-choice>
@@ -199,63 +78,63 @@
                                         </ui-select-no-choice>
                                       </ui-select>
                                     </div>
-                                  </div>
-                                </div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Waive Test Fee?</div>
-                                <div class="col-md-2 col-xs-6 ">
-                                  <div>
-                                    <div ng-class="{'has-error': editstudentclass['isTestfeewaived' + $index].$invalid, 
-                                        'has-success': !editstudentclass['isTestfeewaived' + $index].$invalid}" class="form-group">
-                                      <div class=""><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['isTestfeewaived' + $index].$dirty" ng-class="editstudentclass['isTestfeewaived' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
-                                          class="glyphicon tooltips"></i>
-
-                                        <toggle-switch on-label="Waive" off-label="Charge" id="isTestfeewaived{{$index}}" type="checkbox" name="isTestfeewaived{{$index}}" ng-model="classlist.isTestfeewaived" ng-change="$ctrl.changetestfee(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                          class="switch-primary switch-mini"></toggle-switch>
-
-                                      </div>
-                                      <div style="color:maroon" role="alert" ng-messages="editstudentclass['isTestfeewaived' + $index].$error" class="has-error">
-                                        <div ng-message="required">You did not enter a field</div>
-                                      </div>
+                                    <div style="color:maroon" role="alert" ng-messages="editstudentclass.payerName.$error" class="has-error">
+                                      <div ng-message="required">You did not enter a field</div>
+                                      <div ng-message="minlength">Your field is too short</div>
+                                      <div ng-message="maxlength">Your field is too long</div>
+                                      <div ng-message="email">Your email is missing @ and/or a period</div>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Primary Acct?</div>
-                                <div class="col-md-2 col-xs-6 ">
-                                  <div>
-                                    <div ng-class="{'has-error': editstudentclass['primaryContact' + $index].$invalid, 
-                                        'has-success': !editstudentclass['primaryContact' + $index].$invalid}" class="form-group">
-                                      <div class=""><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['primaryContact' + $index].$dirty" ng-class="editstudentclass['primaryContact' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' "
-                                          class="glyphicon tooltips"></i>
-
-                                        <toggle-switch on-label="Primary" off-label="Not" id="primaryContact{{$index}}" type="checkbox" name="primaryContact{{$index}}" ng-model="classlist.primaryContact" ng-change="$ctrl.changeprimaryContact(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                          class="switch-primary switch-mini"></toggle-switch>
-
+                                <div class="col-md-2">
+                                  <div ng-class="{'has-error': editstudentclass.expiresOnHead.$invalid, 
+                                      'has-success': !editstudentclass.expiresOnHead.$invalid}" class="form-group">
+                                    <label for="expiresOnHead" class="control-label">Expires On</label>
+                                    <div class="col-md-9 prn">
+                                      <div class="input-icon right">
+                                        <i ng-click="$ctrl.dateheadopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass.expiresOnHead.$dirty" ng-class="editstudentclass.expiresOnHead.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                                        <input id="expiresOnHead" type="text" placeholder="mm/dd/yyyy" name="expiresOnHead" ng-model="$ctrl.studentclass.expiresOn" ng-change="" is-open="$ctrl.expiresOnHead.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                          class="form-control">
                                       </div>
-                                      <div style="color:maroon" role="alert" ng-messages="editstudentclass['primaryContact' + $index].$error" class="has-error">
-                                        <div ng-message="required">You did not enter a field</div>
-                                      </div>
+                                    </div>
+                                    <div class="col-md-1 col-xs-6 pln prn">
+                                      <button type="button" class="btn btn-default" ng-click="$ctrl.dateheadopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </div>
+                                    <div style="color:maroon" role="alert" ng-messages="editstudentclass.expiresOnHead.$error" class=" has-error">
+                                      <div ng-message="minlength">Your field is too short</div>
+                                      <div ng-message="maxlength">Your field is too long</div>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Picture</div>
-                                <div class="col-md-2 col-xs-6 img-max ">
-                                  <div class="gallery-pages">
-                                    <div class="mix-grid">
-                                      <div class="mix">
-                                        <div class="hover-effect">
-                                          <div class="img" ng-if="classlist.pictureurl">
-                                            <img ng-src="images/classes/{{classlist.pictureurl}}" alt="" class="img-responsive img-max" />
-                                          </div>
-                                          <div class="info">
-                                            <h3>{{classlist.class}} - {{classlist.pgmclass}}</h3>
-                                          </div>
+                              </div>
+                              <div class="col-md-4">
+                                <div class="gallery-pages">
+                                  <div class="mix-grid">
+                                    <div class="mix">
+                                      <div class="hover-effect">
+                                        <div class="img" ng-if="$ctrl.studentclass.pictureurl">
+                                          <img ng-src="images/classes/{{$ctrl.studentclass.pictureurl}}" alt="" class="img-responsive img-max" />
+                                        </div>
+                                        <div class="info">
+                                          <h3>{{$ctrl.studentclass.class}} - {{$ctrl.studentclass.pgmclass}}</h3>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                                <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Action</div>
-                                <div class="col-md-1 col-xs-6 mobilecol"><span> <a ng-click="$ctrl.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp;</a></span></div>
+                              </div>
+                              <div class="col-md-12">
+                                <div class="col-md-2 btn" style="margin-top: 18px;">
+                                  <div class="table-tools">
+                                    <div class="row">
+                                      <newpayer-component></newpayer-component>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="col-md-2 btn" style="margin-top: 18px;">
+                                  <label for="rankbtn" class="control-label">&nbsp; </label>
+                                  <a role="button" ng-disabled="editstudentclass.studentclassstatus.$invalid || editstudentclass.pgmclass.$invalid" class="btn btn-green form-control" ng-click="$ctrl.addStudentRegistration()"><i class="fa fa-plus"></i>&nbsp; Register</a>
+                                </div>
                               </div>
                             </div>
                           </div>
@@ -264,12 +143,153 @@
                     </div>
                   </div>
                 </div>
+                <div class="container-fluid">
+                  <div class="col-md-12 ">
+                    <div class="row like-tableheader" ng-hide="$ctrl.$rootScope.mobile">
+                      <div class="col-md-1  ">Class / Program</div>
+                      <div class="col-md-1  ">Status</div>
+                      <div class="col-md-2  ">Payer</div>
+                      <div class="col-md-2  ">Expires On</div>
+                      <div class="col-md-1  ">Waive Test Fee?</div>
+                      <div class="col-md-1  ">Primary Acct?</div>
+                      <div class="col-md-2  ">Picture</div>
+                      <div class="col-md-1  ">Action</div>
+                    </div>
+                    <div class="row like-table xtralike-table" ng-repeat="classlist in $ctrl.studentclazzlist track by $index" style="z-index: {{200 - $index}}">
+                      <div class="row mobileheader" ng-show="$ctrl.$rootScope.mobile">
+                        <div class=" col-xs-6 ">Column</div>
+                        <div class=" col-xs-6 ">Value</div>
+                      </div>
+
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Class / Program</div>
+                      <div class="col-md-1 col-xs-6">{{classlist.class}} {{classlist.pgmclass}}
+                        <div class="row btn" ng-show="$ctrl.isCollapsed">
+                          <studentclassmodal-component mode="update" on-update="$ctrl.updateStudentRegistration($ctrl.studentclassparent, prop, value, classlist.classseq, classlist.pgmseq)"></studentclassmodal-component>
+                        </div>
+                      </div>
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Status</div>
+                      <div class="col-md-1 col-xs-6 ">
+                        <div ng-class="{'has-error': editstudentclass['lstudentclassstatus' + $index].$invalid,
+                                                        'has-success': !editstudentclass['lstudentclassstatus' + $index].$invalid}" class="form-group">
+                          <div class="input-icon right">
+                            <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['lstudentclassstatus' + $index].$dirty" ng-class="editstudentclass['lstudentclassstatus' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                            <select id="lstudentclassstatus{{$index}}" type="text" name="lstudentclassstatus{{$index}}" ng-model="classlist.studentclassstatus" ng-change="$ctrl.changeStudentStatus(classlist)" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                              class="form-control">
+                                                <option ng-repeat="iter in $ctrl.classstatuses.studentclassstatuses" 
+                                                ng-selected="{{iter.status==classlist.studentclassstatus}}" 
+                                                placeholder="Select" value="{{iter.status}}">{{iter.status}}</option>
+                                              </select>
+                          </div>
+                          <div style="color:maroon" role="alert" ng-messages="editstudentclass['lstudentclassstatus'  + $index].$error" class="has-error">
+                            <div ng-message="required">You did not enter a field</div>
+                            <div ng-message="minlength">Your field is too short</div>
+                            <div ng-message="maxlength">Your field is too long</div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Payer</div>
+                      <div class="col-md-2 col-xs-6">
+                        <div class="">
+                          <div class="select-box">
+                            <ui-select ng-model="classlist.payerList" theme="bootstrap" reset-search-input="false" on-select="$ctrl.changeStudentPayer(classlist)" title="Pick Payer" append-to-body="true">
+                              <ui-select-match placeholder="Choose...">{{$select.selected.payerName}}</ui-select-match>
+                              <ui-select-choices repeat="item in $ctrl.payers | filter: $select.search" refresh="$ctrl.getPayersPartial($select.search)" refresh-delay="0">
+                                <div id="payerpicklist" ng-bind-html="item.payerName | highlight: $select.search"></div>
+                              </ui-select-choices>
+                              <ui-select-no-choice>
+                                Dang! We couldn't find any choices...
+                              </ui-select-no-choice>
+                            </ui-select>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Expires On</div>
+                      <div class="col-md-2 col-xs-6">
+                        <div ng-class="{'has-error': editstudentclass['expiresOn' + $index].$invalid, 
+                                    'has-success': !editstudentclass['expiresOn' + $index].$invalid}" class="form-group">
+                          <div class="col-md-9 prn">
+                            <div class="input-icon right">
+                              <i ng-click="$ctrl.dateopen($event, $index)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['expiresOn' + $index].$dirty" ng-class="editstudentclass['expiresOn' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+                              <input id="expiresOn{{$index}}" type="text" placeholder="mm/dd/yyyy" name="expiresOn{{$index}}" ng-model="classlist.expiresOn" ng-change="$ctrl.changeExpireson(classlist)" is-open="$ctrl.status[$index].opened" uib-datepicker-popup="{{$ctrl.bdateformat}}"
+                                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
+                            </div>
+                          </div>
+                          <div class="col-md-1 col-xs-6 prn pln">
+                            <button type="button" class="btn btn-default" ng-click="$ctrl.dateopen($event,$index)"><i class="glyphicon glyphicon-calendar"></i></button>
+                          </div>
+                          <div style="color:maroon" role="alert" ng-messages="editstudentclass['expiresOn' + $index].$error" class="has-error">
+                            <div ng-message="minlength">Your field is too short</div>
+                            <div ng-message="maxlength">Your field is too long</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Waive Test Fee?</div>
+                      <div class="col-md-1 col-xs-6 ">
+                        <div>
+                          <div ng-class="{'has-error': editstudentclass['isTestfeewaived' + $index].$invalid, 
+                                        'has-success': !editstudentclass['isTestfeewaived' + $index].$invalid}" class="form-group">
+                            <div class=""><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['isTestfeewaived' + $index].$dirty" ng-class="editstudentclass['isTestfeewaived' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+
+                              <toggle-switch on-label="Waive" off-label="Charge" id="isTestfeewaived{{$index}}" type="checkbox" name="isTestfeewaived{{$index}}" ng-model="classlist.isTestfeewaived" ng-change="$ctrl.changetestfee(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                class="switch-primary switch-mini"></toggle-switch>
+
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudentclass['isTestfeewaived' + $index].$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Primary Acct?</div>
+                      <div class="col-md-1 col-xs-6 ">
+                        <div>
+                          <div ng-class="{'has-error': editstudentclass['primaryContact' + $index].$invalid, 
+                                        'has-success': !editstudentclass['primaryContact' + $index].$invalid}" class="form-group">
+                            <div class=""><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudentclass['primaryContact' + $index].$dirty" ng-class="editstudentclass['primaryContact' + $index].$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
+
+                              <toggle-switch on-label="Primary" off-label="Not" id="primaryContact{{$index}}" type="checkbox" name="primaryContact{{$index}}" ng-model="classlist.primaryContact" ng-change="$ctrl.changeprimaryContact(classlist)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
+                                class="switch-primary switch-mini"></toggle-switch>
+
+                            </div>
+                            <div style="color:maroon" role="alert" ng-messages="editstudentclass['primaryContact' + $index].$error" class="has-error">
+                              <div ng-message="required">You did not enter a field</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Picture</div>
+                      <div class="col-md-2 col-xs-6 img-max ">
+                        <div class="gallery-pages">
+                          <div class="mix-grid">
+                            <div class="mix">
+                              <div class="hover-effect">
+                                <div class="img" ng-if="classlist.pictureurl">
+                                  <img ng-src="images/classes/{{classlist.pictureurl}}" alt="" class="img-responsive img-max" />
+                                </div>
+                                <div class="info">
+                                  <h3>{{classlist.class}} - {{classlist.pgmclass}}</h3>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-xs-6  mobilecol" ng-show="$ctrl.$rootScope.mobile">Action</div>
+                      <div class="col-md-1 col-xs-6 mobilecol">
+                        <span> <a ng-click="$ctrl.removeStudentRegistration(classlist.classseq, classlist.pgmseq)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp;</a></span>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </form>
-        </div>
-        <hr/>
+          </div>
       </div>
+      </form>
     </div>
   </div>
+</div>
 </div>

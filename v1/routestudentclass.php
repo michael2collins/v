@@ -81,6 +81,7 @@ $app->get('/studentclasslist/:id', 'authenticate', 'isAdminOrOperator', 'setDebu
             $tmp["payerid"] = $slist["payerid"];
             $tmp["primaryContact"] = $slist["primaryContact"];
             $tmp["classpayid"] = $slist["classpayid"];
+            $tmp["expiresOn"] = (empty($slist["expiresOn"]) ? "01/01/1900" : $slist["expiresOn"]);
             
         } else {
             $tmp["contactID"] = "NULL";
@@ -96,6 +97,7 @@ $app->get('/studentclasslist/:id', 'authenticate', 'isAdminOrOperator', 'setDebu
             $tmp["payerid"] = "NULL";
             $tmp["primaryContact"] = "NULL";
             $tmp["classpayid"] = "NULL";
+            $tmp["expiresOn"] = "NULL";
             
         }
         array_push($response["studentclasslist"], $tmp);
@@ -258,14 +260,18 @@ $app->put('/studentclass/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',f
     $contactID = $student_id;
     $classseq = $studentclass->classseq;
     $pgmseq = $studentclass->pgmseq;
-    $studentclassstatus = $studentclass->studentclassstatus;
     $changestatus = $studentclass->changestatus;
-    $payer = $studentclass->payerid   ;
-    $class = $studentclass->class   ;
-    $pgmclass = $studentclass->pgmclass   ;
+
+    $studentclassstatus = (isset($studentclass->studentclassstatus ) ? $studentclass->studentclassstatus : 0  );
+    $payer = (isset($studentclass->payerid ) ? $studentclass->payerid : 0  );
+    $class = (isset($studentclass->class ) ? $studentclass->class : 0  );
+    $pgmclass = (isset($studentclass->pgmclass ) ? $studentclass->pgmclass : 0  );
+    $newclassseq = (isset($studentclass->newclassseq ) ? $studentclass->newclassseq : 0  );
+    $newpgmseq = (isset($studentclass->newpgmseq ) ? $studentclass->newpgmseq : 0  );
 
     $testfee = (isset($studentclass->isTestfeewaived ) ? $studentclass->isTestfeewaived : 0  );
     $primaryContact = (isset($studentclass->primaryContact ) ? $studentclass->primaryContact : 0 ) ;
+    $expiresOn = (isset($studentclass->expiresOn ) ? $studentclass->expiresOn : ""  );
 
     $app->log->debug( print_R("studentclass and history update\n", TRUE ));
     $app->log->debug( print_R("student_id: $contactID\n", TRUE ));
@@ -278,25 +284,48 @@ $app->put('/studentclass/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',f
     $app->log->debug( print_R("testfee: $testfee\n", TRUE ));
     $app->log->debug( print_R("class: $class\n", TRUE ));
     $app->log->debug( print_R("pgmclass: $pgmclass\n", TRUE ));
+    $app->log->debug( print_R("new classid: $newclassseq\n", TRUE ));
+    $app->log->debug( print_R("new pgmid: $newpgmseq\n", TRUE ));
+    $app->log->debug( print_R("expiresOn: $expiresOn\n", TRUE ));
     
 
     $db = new StudentClassDbHandler();
     $response = array();
 
-    if ($changestatus == "status") {
+    if ($changestatus == "status" || $changestatus == "expireson") {
         $app->log->debug( print_R("studentclass update changestatus = status\n", TRUE ));
         
         $result = $db->updateStudentClass( $contactID,
                                       $classseq,
                                       $pgmseq,
-                                      $studentclassstatus
+                                      $studentclassstatus,
+                                      $expiresOn
                                      );
+    } else if ($changestatus == "classpgm" ) {
+        if ( $newclassseq > 0 && $newpgmseq > 0) {
+            $app->log->debug( print_R("studentclass update changestatus = classpgm\n", TRUE ));
+            
+            $result = $db->setStudentClassPgm( $contactID,
+                                          $classseq,
+                                          $pgmseq,
+                                          $newclassseq,
+                                          $newpgmseq
+                                         );
+        } else {
+            $app->log->debug( print_R("studentclasspgm update failed - missing new class and/or pgm\n", TRUE ));
+            // task failed to update
+            $response["error"] = true;
+            $response["message"] = "Student failed to update. Please try again! $result";
+            echoRespnse(400, $response);
+            
+        }
     } else {
         $result = $db->setStudentClass($contactID,
                                     $classseq,
                                     $pgmseq,
                                     $payer,
-                                    $testfee,$primaryContact);
+                                    $testfee,$primaryContact
+                                    );
     }
     
     if ( $result < 0) {
@@ -550,6 +579,7 @@ $app->post('/studentregistration', 'authenticate', 'isAdminOrOperator', 'setDebu
     $studentclassstatus = (isset($dataJsonDecode->thedata->studentclassstatus) ? $dataJsonDecode->thedata->studentclassstatus : "");
     $payerName = (isset($dataJsonDecode->thedata->payerName) ? $dataJsonDecode->thedata->payerName : "");
     $payerid = (isset($dataJsonDecode->thedata->payerid) ? $dataJsonDecode->thedata->payerid : "");
+    $expiresOn = (isset($dataJsonDecode->thedata->expiresOn ) ? $dataJsonDecode->thedata->expiresOn : ""  );
 
     $app->log->debug( print_R("student_id: $student_id\n", TRUE ));
     $app->log->debug( print_R("classid: $classid\n", TRUE ));
@@ -557,6 +587,7 @@ $app->post('/studentregistration', 'authenticate', 'isAdminOrOperator', 'setDebu
     $app->log->debug( print_R("studentclassstatus: $studentclassstatus\n", TRUE ));
     $app->log->debug( print_R("payerName: $payerName\n", TRUE ));
     $app->log->debug( print_R("payerid: $payerid\n", TRUE ));
+    $app->log->debug( print_R("expiresOn: $expiresOn\n", TRUE ));
 
     $db = new StudentClassDbHandler();
     $response = array();
@@ -567,10 +598,21 @@ $app->post('/studentregistration', 'authenticate', 'isAdminOrOperator', 'setDebu
                                  $pgmid,
                                  $studentclassstatus,
                                  $payerName,
-                                 $payerid
+                                 $payerid,
+                                 $expiresOn
                                 );
+    $baddate = false;                            
+    $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $expiresOn, new DateTimeZone('Etc/Zulu'));
+    if ($dt === false) {
+        $baddate = true;;
+    }
+    $today = new DateTime( 'now', new DateTimeZone( 'America/New_York' ) );
 
     if ($studentreg_id > 0) {
+        if ($baddate == false && $dt > $today ) {
+            $notificationid = createNotification('expire','expire',$student_id);
+        }
+        
         $response["error"] = false;
         $response["message"] = "StudentRegistration created successfully";
         $response["studentreg_id"] = $studentreg_id;
@@ -1158,6 +1200,8 @@ $app->get('/payerpayments/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',
             $tmp["classname"] = (empty($slist["classname"])  ? "NULL" : $slist["classname"]);
             $tmp["studentClassStatus"] = (empty($slist["studentClassStatus"])  ? "NULL" : $slist["studentClassStatus"]);
             $tmp["pgmclass"] = (empty($slist["pgmclass"])  ? "NULL" : $slist["pgmclass"]);
+            $tmp["lastname"] = (empty($slist["lastname"])  ? "NULL" : $slist["lastname"]);
+            $tmp["firstname"] = (empty($slist["firstname"])  ? "NULL" : $slist["firstname"]);
         } else {
             $tmp["classpayid"] = "NULL";
             $tmp["contactid"] = "NULL";
@@ -1167,6 +1211,9 @@ $app->get('/payerpayments/:id', 'authenticate', 'isAdminOrOperator', 'setDebug',
             $tmp["classname"] = "NULL";
             $tmp["studentClassStatus"] = "NULL";
             $tmp["pgmclass"] = "NULL";
+            $tmp["lastname"] = "NULL";
+            $tmp["firstname"] = "NULL";
+            
         }
         array_push($response["PayerPaymentList"], $tmp);
     }

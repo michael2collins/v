@@ -1308,10 +1308,12 @@ $app->get('/studenthistory/:id', 'authenticate', 'isAdminOrOperator', 'setDebug'
             $tmp["contactmgmttype"] = (empty($slist["contactmgmttype"]) ? "NULL" : $slist["contactmgmttype"]);
             $tmp["contactdate"] = (empty($slist["contactdate"]) ? "NULL" : $slist["contactdate"]);
             $tmp["contactid"] = (empty($slist["contactid"])  ? "NULL" : $slist["contactid"]);
+            $tmp["id"] = (empty($slist["id"])  ? "NULL" : $slist["id"]);
         } else {
             $tmp["contactmgmttype"] = "NULL";
             $tmp["contactdate"] = "NULL";
             $tmp["contactid"] = "NULL";
+            $tmp["id"] = "NULL";
         }
         array_push($response["StudentHistoryList"], $tmp);
     }

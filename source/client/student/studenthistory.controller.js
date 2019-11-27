@@ -107,13 +107,14 @@ export class StudentHistoryController {
                 {
                     field: 'contactmgmttype',
                     displayName: 'Type',
-                    headerCellClass: vm.Util.highlightFilteredHeader,
-                    enableCellEdit: true
+                    headerCellClass: vm.Util.highlightFilteredHeader
                 }, {
                     field: 'contactdate',
                     displayName: 'Date',
-                    headerCellClass: vm.Util.highlightFilteredHeader,
-                    enableCellEdit: true
+                    headerCellClass: vm.Util.highlightFilteredHeader
+                }, {
+                    field: 'id',
+                    displayName: 'ID'
                 }
             ],
 

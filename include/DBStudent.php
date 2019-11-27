@@ -842,14 +842,15 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		$sql = " SELECT  ";
 		$sql = $sql . " t.contactid as contactid, ";
 		$sql = $sql . "  t.contactdate as contactdate, ";
-		$sql = $sql . "  t.contactmgmttype as contactmgmttype  ";
+		$sql = $sql . "  t.contactmgmttype as contactmgmttype,  ";
+		$sql = $sql . "  t.id as id  ";
 		$sql = $sql . " FROM ncontactmgmt t, ncontacts n ";
 		$sql = $sql . " WHERE t.contactid = ? ";
 		$sql = $sql . " and n.ID = t.contactid ";
 		$schoolfield = "n.studentschool";
 		$sql = addSecurity($sql, $schoolfield);
 		$app->log->debug(print_R("getStudentHistory sql after security: $sql", TRUE) );
-		$sql = $sql . " ORDER BY t.contactdate ";
+		$sql = $sql . " ORDER BY id desc ";
 		$app->log->debug(print_R("sql for getStudentHistory is: " . $sql . "\n", TRUE) );
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bind_param("i", $student_id);
@@ -1635,6 +1636,13 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		SELECT          
             n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname, c.ID as contactid
         FROM notification n
+        left join ncontacts c on (c.ID = n.value and c.studentschool = n.school)
+        left join studentregistration sr on (c.ID = n.value and c.ID = sr.studentid and c.studentschool = n.school)
+        where n.userid = ? and n.school = ? and notifkey = 'expire' and sr.expireson  < date_add(now(), INTERVAL 15 DAY)
+		union
+		SELECT          
+            n.id, n.type, n.notifkey, n.value, c.firstname, c.lastname, c.ID as contactid
+        FROM notification n
 		left join payer p on (n.value = p.payerEmail and p.school = n.school)
 		join nclasspays cp on (cp.payerid = p.id)
         left join ncontacts c on (c.ID = cp.contactid and c.studentschool = n.school)
@@ -1642,7 +1650,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
         
 		$app->log->debug(print_R("getNotifications sql : $sql", TRUE) );
 		if ($stmt = $this->conn->prepare($sql)) {
-			$stmt->bind_param("ssss", $user_id, $school,$user_id, $school);
+			$stmt->bind_param("ssssss", $user_id, $school,$user_id, $school,$user_id, $school);
 			if ($stmt->execute()) {
 				$notificationList = $stmt->get_result();
 				$stmt->close();

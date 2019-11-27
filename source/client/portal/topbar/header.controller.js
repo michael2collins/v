@@ -66,6 +66,7 @@ export class HeaderController {
         this.newstudents = [];
         this.teststudents = [];
         this.overduestudents = [];
+        this.expirestudents = [];
         this.noshowstudents = [];
         this.emailcount = 0;
         this.userOptions = {};
@@ -95,9 +96,9 @@ export class HeaderController {
     init() {
         var self = this;
         self.loadTopbar();
-//mlc todo        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined) {
- //           self.$log = self.$log.getInstance('HeaderController', self.UserServices.isDebugEnabled());
-  //      }
+        if (self.$log.getInstance(self.UserServices.isDebugEnabled()) !== undefined) {
+           self.$log = self.$log.getInstance('HeaderController', self.UserServices.isDebugEnabled());
+        }
 
         self.islogin();
 
@@ -443,6 +444,7 @@ export class HeaderController {
         this.alertcount = this.teststudents.length +
             this.newstudents.length +
             this.overduestudents.length +
+            this.expirestudents.length +
             this.noshowstudents.noshow.length +
             this.thisTasknamelist.length;
 
@@ -466,6 +468,12 @@ export class HeaderController {
         this.$log.log("clearOverdueStudents entered");
         for (var i = 0; i < this.overduestudents.length; i++) {
             this.removeNotification(this.overduestudents[i].id);
+        }
+    }
+    clearExpireStudents() {
+        this.$log.log("clearExpireStudents entered");
+        for (var i = 0; i < this.expirestudents.length; i++) {
+            this.removeNotification(this.expirestudents[i].id);
         }
     }
 
@@ -544,9 +552,11 @@ export class HeaderController {
                     self.newstudents = [];
                     self.teststudents = [];
                     self.overduestudents = [];
+                    self.expirestudents = [];
                     for (var i = 0; i < data.NotificationList.length; i++) {
                         var newstu = {},
                             overstu = {},
+                            expirestu = {},
                             teststu = {};
                         if (data.NotificationList[i].type === "newstudent") {
                             newstu = {
@@ -573,6 +583,19 @@ export class HeaderController {
                             };
                             self.overduestudents.push(overstu);
                         }
+                        if (data.NotificationList[i].type === "expire") {
+                            expirestu = {
+                                id: data.NotificationList[i].id,
+                                type: data.NotificationList[i].type,
+                                notifkey: data.NotificationList[i].notifkey,
+                                value: data.NotificationList[i].value,
+                                firstname: data.NotificationList[i].firstname,
+                                lastname: data.NotificationList[i].lastname,
+                                contactid: data.NotificationList[i].contactid,
+                                payerEmail: data.NotificationList[i].payerEmail
+                            };
+                            self.expirestudents.push(expirestu);
+                        }
                         if (data.NotificationList[i].type === "readytotest") {
                             teststu = {
                                 id: data.NotificationList[i].id,
@@ -592,13 +615,6 @@ export class HeaderController {
                         self.Notification.error({ message: typeof(data.message) !== 'undefined' ? data.message : 'error NotificationList', delay: 5000 });
                     } //else ok to have no ranklist
                 }
-/*                self.overduestudents = {
-                    "overdue": [
-                        { "id": 1, "firstname": "first1", "lastname": "last1" },
-                        { "id": 2, "firstname": "first2", "lastname": "last2" }
-                    ]
-                };
-*/         
                 self.noshowstudents = {
                     "noshow": [
                         { "id": 1, "firstname": "first1", "lastname": "last1" },

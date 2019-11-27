@@ -508,6 +508,7 @@ class StudentClassDbHandler {
         
         $sql = "select sr.studentid as contactid,
         sr.studentClassStatus, 
+        sr.expiresOn,
         l.class as pgmclass, 
         l.classtype, 
         cp.classid as classid, 
@@ -571,13 +572,20 @@ class StudentClassDbHandler {
         }
     }
 
-    public function updateStudentClass($sc_ContactId,$sc_classseq,$sc_pgmseq,$sc_studentclassstatus
+    public function updateStudentClass($sc_ContactId,$sc_classseq,$sc_pgmseq,$sc_studentclassstatus,$expiresOn
                                       ) {
         global $app;
         $num_affected_rows = 0;
 
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $expiresOn, new DateTimeZone('Etc/Zulu'));
+        if ($dt === false) {
+            $app->log->debug( print_R("updateStudentClass  bad date $expiresOn" , TRUE));
+            return NULL;
+        }
+        $thedate = $dt->format('Y-m-d');
+
         $sql = "UPDATE studentregistration t set ";
-        $sql .= " t.studentclassstatus = ? ";
+        $sql .= " t.studentclassstatus = ? , t.expiresOn = ?";
 
         $sql .= " where studentid = ? and classid = ? and pgmid = ?";
 
@@ -586,10 +594,12 @@ class StudentClassDbHandler {
         $app->log->debug( print_R("class: $sc_classseq\n", TRUE ));
         $app->log->debug( print_R("pgm: $sc_pgmseq\n", TRUE ));
         $app->log->debug( print_R("status: $sc_studentclassstatus\n", TRUE ));
+        $app->log->debug( print_R("expiresOn: $expiresOn\n", TRUE ));
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("ssss",
+            $stmt->bind_param("sssss",
                               $sc_studentclassstatus,
+                              $thedate,
                               $sc_ContactId,
                               $sc_classseq,
                               $sc_pgmseq
@@ -662,9 +672,16 @@ class StudentClassDbHandler {
         return $num_rows > 0;
     }
 
-    public function addStudentRegistration($studentid, $classid, $pgmid, $studentclassstatus, $payerName, $payerid
+    public function addStudentRegistration($studentid, $classid, $pgmid, $studentclassstatus, $payerName, $payerid, $expiresOn
     ) {
         global $app;
+
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $expiresOn, new DateTimeZone('Etc/Zulu'));
+        if ($dt === false) {
+            $app->log->debug( print_R("addStudentRegistration  bad date $expiresOn" , TRUE));
+            return NULL;
+        }
+        $thedate = $dt->format('Y-m-d');
 
         $app->log->debug( print_R("addStudentRegistration entered\n", TRUE ));
         $app->log->debug( print_R("contact $studentid\n", TRUE ));
@@ -673,20 +690,21 @@ class StudentClassDbHandler {
         $app->log->debug( print_R("class stat $studentclassstatus\n", TRUE ));
         $app->log->debug( print_R("payer $payerid\n", TRUE ));
         $app->log->debug( print_R("payerNm $payerName\n", TRUE ));
+        $app->log->debug( print_R("expiresOn $expiresOn\n", TRUE ));
 
         $response = array();
         $testfeedefault = 0;
         $new_id = '';
 
-        $sql = "INSERT INTO studentregistration (studentid, classid, pgmid, studentclassstatus) VALUES ";
-        $sql .= "  ( ?, ?, ?, ? )";
+        $sql = "INSERT INTO studentregistration (studentid, classid, pgmid, studentclassstatus, expiresOn) VALUES ";
+        $sql .= "  ( ?, ?, ?, ?, ? )";
     try {
         // First check if  already existed in db
         if (!$this->isStudentRegExists($studentid, $classid, $pgmid)) {
 
             if ($stmt = $this->conn->prepare($sql)) {
-                $stmt->bind_param("ssss",
-                                  $studentid, $classid, $pgmid, $studentclassstatus
+                $stmt->bind_param("sssss",
+                                  $studentid, $classid, $pgmid, $studentclassstatus, $thedate
                                      );
                     // Check for successful insertion
                     $result = $stmt->execute();
@@ -791,17 +809,19 @@ class StudentClassDbHandler {
     }
 
     public function setStudentClass(
-    $sc_ContactId,$sc_classseq,$sc_pgmseq,$payer,$testfee = 0,$primaryContact = 0                                   
+    $sc_ContactId,$sc_classseq,$sc_pgmseq,$payer,$testfee = 0,$primaryContact = 0                                  
     ) {
         global $app;
         $num_affected_rows = 0;
+
 
         try {
         $updsql = "UPDATE nclasspays  set ";
         $updsql .= " isTestFeeWaived = ?, payerid = ? , primaryContact = ?";
         $updsql .= " where contactID = ?  and classseq = ? and pgmseq = ? ";
 
-        $inssql = "INSERT INTO nclasspays ( contactid, isTestFeeWaived, classseq, pgmseq, payerid, primaryContact)  VALUES ( ?, ?, ?, ?, ?, ? ) ";
+        $inssql = "INSERT INTO nclasspays ( contactid, isTestFeeWaived, classseq, pgmseq, payerid, primaryContact)  
+        VALUES ( ?, ?, ?, ?, ?, ? ) ";
 
 
         $app->log->debug( print_R("contact $sc_ContactId\n", TRUE ));
@@ -878,6 +898,90 @@ class StudentClassDbHandler {
 
         } catch(exception $e) {
 			 $app->log->debug(print_R( "sql error in setStudentClass\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -3;
+		}
+
+    }
+
+    public function setStudentClassPgm(
+    $sc_ContactId,$sc_classseq,$sc_pgmseq, $sc_newclassseq,$sc_newpgmseq                             
+    ) {
+        global $app;
+        $num_affected_rows = 0;
+
+        try {
+            $updsql = "UPDATE nclasspays  set classseq = ?, pgmseq = ?
+             where contactID = ?  and classseq = ? and pgmseq = ? ";
+            $updsql2 = "UPDATE studentregistration  set classid = ?, pgmid = ?
+             where studentid = ?  and classid = ? and pgmid = ? ";
+             
+    
+            $app->log->debug( print_R("contact $sc_ContactId\n", TRUE ));
+            $app->log->debug( print_R("class $sc_classseq\n", TRUE ));
+            $app->log->debug( print_R("pgm $sc_pgmseq\n", TRUE ));
+            $app->log->debug( print_R("new class $sc_newclassseq\n", TRUE ));
+            $app->log->debug( print_R("new pgm $sc_newpgmseq\n", TRUE ));
+    
+            if ($this->isStudentClassExists($sc_ContactId, $sc_classseq, $sc_pgmseq)) {
+                $app->log->debug( print_R($updsql, TRUE ));
+                if ($stmt = $this->conn->prepare($updsql)) {
+                    $stmt->bind_param("iiiii",
+                                      $sc_newclassseq,
+                                      $sc_newpgmseq,
+                                      $sc_ContactId,
+                                      $sc_classseq,
+                                      $sc_pgmseq
+                                     );
+                    if (!$stmt->execute() ) {
+                        $app->log->debug( print_R($this->conn->error, TRUE ));
+                        printf("Exec Errormessage: %s\n", $this->conn->error);
+                        
+                    }
+                        $num_affected_rows = $stmt->affected_rows;
+                        $stmt->close();
+                } else {
+                    $app->log->debug( print_R("student classpm update failed", TRUE ));
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                    printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                }
+                $app->log->debug( print_R($updsql2, TRUE ));
+                if ($stmt = $this->conn->prepare($updsql2)) {
+                    $stmt->bind_param("iiiii",
+                                      $sc_newclassseq,
+                                      $sc_newpgmseq,
+                                      $sc_ContactId,
+                                      $sc_classseq,
+                                      $sc_pgmseq
+                                     );
+                    if (!$stmt->execute() ) {
+                        $app->log->debug( print_R($this->conn->error, TRUE ));
+                        printf("Exec Errormessage: %s\n", $this->conn->error);
+                        
+                    }
+                        $num_affected_rows2 = $stmt->affected_rows;
+                        $stmt->close();
+                } else {
+                    $app->log->debug( print_R("student classpm update2 failed", TRUE ));
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                    printf("Errormessage: %s\n", $this->conn->error);
+                    return -1;
+                }
+
+            } else {
+    
+                    $app->log->debug( print_R("student classpm old not found update failed", TRUE ));
+                    $app->log->debug( print_R($this->conn->error, TRUE ));
+                    printf("Errormessage: %s\n", $this->conn->error);
+                    return -2;
+                
+            }
+            return $num_affected_rows + $num_affected_rows2;
+
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in setStudentClassPgm\n" , TRUE));
 			$app->log->debug(print_R(  $e , TRUE));
                 printf("Errormessage: %s\n", $e);
                 return -3;
@@ -1305,18 +1409,20 @@ class StudentClassDbHandler {
     public function getPayerPayments($payerid) {
                 global $app;
 
+        global $school;
         $app->log->debug( print_R("student for getPayerPayments is: " . $payerid . "\n", TRUE ));
         
-        $sql = " SELECT  classpayid ,  contactid ,  classseq ,  pgmseq ,  payerid ,  classname ,  studentClassStatus ,  pgmclass 
-            FROM  payerPayments
-            WHERE payerid = ?
+        $sql = " SELECT  classpayid ,  contactid ,  classseq ,  pgmseq ,  payerid ,  classname ,  studentClassStatus ,  pgmclass, lastname, firstname 
+            FROM  payerPayments pp
+            join ncontacts c on (c.ID = pp.contactid)
+            WHERE payerid = ? and studentschool = ?
                 ";
 
         $app->log->debug( print_R("sql for getPayerPayments is: " . $sql . "\n", TRUE ));
 
         $stmt = $this->conn->prepare($sql);
 
-        $stmt->bind_param("s", $payerid);
+        $stmt->bind_param("ss", $payerid, $school);
         
         $stmt->execute();
         $res = $stmt->get_result();

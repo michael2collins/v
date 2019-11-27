@@ -76,7 +76,7 @@ export class ModalUserSettingsInstanceController {
             vm.okNotify = (vm.userOptions.notify ? vm.userOptions.notify : false);
             vm.debugOn = (vm.userOptions.debug ? vm.userOptions.debug : "Off");
             //vm.$log.logEnabled(vm.debugOn);
-
+    vm.debugOn = true;
             vm.mydelay = (vm.userOptions.delay ? vm.userOptions.delay : 30);
             vm.idle = (vm.userOptions.idle ? vm.userOptions.idle : 20 * 60);
             vm.timeout = (vm.userOptions.timeout ? vm.userOptions.timeout : 5 * 60);

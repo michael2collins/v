@@ -17,6 +17,7 @@ import { studentattendComponent } from './studentattend.component';
 import { studentpaymentComponent } from './studentpayment.component';
 import { studenttableComponent } from './studenttable.component';
 import { studenthistoriestableComponent } from './studenthistoriestable.component';
+//import { studentclasseditComponent } from './studentclassedit.component';
 
 import { StudentPaymentController } from './studentpayment.controller';
 import { ModalNewStudentController } from './newstudent.controller';
@@ -28,6 +29,7 @@ import { FormLayoutsControllerEditStudent } from './editstudent.controller';
 import { ctrlDualList } from './studentdual.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
 import { StudentHistoriesController } from './studenthistoriestable.controller';
+//import { StudentClassEditController } from './studentclassedit.controller';
 
 //import { portalDataService } from '../portal/portaldata.service';
 import { StudentServices } from '../../js/services/studentServices';
@@ -36,6 +38,7 @@ import { PhotoServices } from '../../js/services/photoServices';
 import { PaymentServices } from '../../js/services/paymentServices';
 import { TestingServices } from '../../js/services/testingServices';
 import { Util } from '../../js/utility/utility';
+import { StudentUtil } from './studentUtil';
 
 import { leadnotRequired } from './leadNotrequired.directive';
 
@@ -53,6 +56,7 @@ export const StudentModule = angular
  .service('TestingServices', TestingServices)
 // .service('portalDataService', portalDataService)
  .service('Util', Util)
+ .service('StudentUtil', StudentUtil)
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ModalNewStudentController', ModalNewStudentController)
  .controller('ModalNewStudentInstanceController', ModalNewStudentInstanceController)
@@ -64,6 +68,7 @@ export const StudentModule = angular
  .controller('ctrlDualList', ctrlDualList)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
  .controller('StudentHistoriesController', StudentHistoriesController)
+// .controller('StudentClassEditController', StudentClassEditController)
  .component('editstudentComponent', editstudentComponent)
  .component('newstudentComponent', newstudentComponent)
  .component('newstudentinstComponent', newstudentinstComponent)
@@ -75,6 +80,7 @@ export const StudentModule = angular
  .component('studentpaymentComponent', studentpaymentComponent)
  .component('studenttableComponent', studenttableComponent)
  .component('studenthistoriestableComponent', studenthistoriestableComponent)
+// .component('studentclasseditComponent', studentclasseditComponent)
  .directive('leadnotRequired',leadnotRequired)
  .config(studentconfig)
  .name;

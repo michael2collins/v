@@ -1474,7 +1474,7 @@ class AttendanceDbHandler {
     }
 
     private function isProgramExists(
-        $class, $id
+        $class, $id = -1
         ) {
         global $school;
         global $app;
@@ -1487,9 +1487,12 @@ class AttendanceDbHandler {
         }
 
         $cntsql = "select count(*) as Programcount from nclasslist ";
-        $cntsql .= " where class = ? ";
-        $cntsql .= " and id = ? and school = ? ";
-
+        if ($id == -1 || $id=="" || $id==null) {
+            $cntsql .= " where class = ? and school = ?";
+        } else {
+            $cntsql .= " where id = ? and class= ? and school = ? ";
+        }
+        
         $app->log->debug( print_R("Program isProgramExists sql: $cntsql", TRUE));
 
 //        $schoolfield = "school";
@@ -1497,10 +1500,14 @@ class AttendanceDbHandler {
         $app->log->debug( print_R("isProgramExists sql after security: $cntsql", TRUE));
         
         if ($stmt = $this->conn->prepare($cntsql)) {
-                $stmt->bind_param("sss",
-                        $class, $id, $school
-                                     );
-
+        if ($id == -1 || $id=="" || $id==null) {
+                $stmt->bind_param("ss",
+                        $class, $school );
+        } else {
+                $stmt->bind_param("iss",
+                        $id, $class, $school );
+        }
+        
            // $stmt->execute();
             if (! $stmt->execute() ){
                 $stmt->close();
@@ -1574,8 +1581,8 @@ class AttendanceDbHandler {
 
 
     public function updateProgram( $id, 
-    $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
-            $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey
+    $class, $classType, $_12MonthPrice = 0, $_6MonthPrice = 0, $MonthlyPrice = 0, $WeeklyPrice = 0, 
+            $_2ndPersonDiscount = 0, $_3rdPersonDiscount = 0, $_4thPersonDiscount = 0, $SpecialPrice = 0, $sortKey
                                 ) {
         global $app;
         $num_affected_rows = 0;
@@ -1595,29 +1602,27 @@ class AttendanceDbHandler {
 
         $inssql .= " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
-        
+        try{        
         if ($this->isProgramExists(
             $class, $id
             ) == 0) {
 
             if ($stmt = $this->conn->prepare($inssql)) {
-                $stmt->bind_param("ssssssssssss",
+                $stmt->bind_param("ssiiiiiiiiis",
                      $class, $classType, $_12MonthPrice, $_6MonthPrice, $MonthlyPrice, $WeeklyPrice, 
             $_2ndPersonDiscount, $_3rdPersonDiscount, $_4thPersonDiscount, $SpecialPrice, $sortKey, $school
                                      );
-                    $result = $stmt->execute();
+                    if (!$stmt->execute() ) {
+                        $app->log->debug( print_R($this->conn->error, TRUE ));
+                        printf("Exec Errormessage: %s\n", $this->conn->error);
+                        
+                    }
 
                     $stmt->close();
-                    // Check for successful insertion
-                    if ($result) {
-                        $new_id = $this->conn->insert_id;
-                        // User successfully inserted
-                        return $new_id;
-                    } else {
-                        // Failed to create 
-                        printf("Errormessage: %s\n", $this->conn->error);
-                        return NULL;
-                    }
+                // Check for successful insertion
+                    $new_id = $this->conn->insert_id;
+                    // User successfully inserted
+                    return $new_id;
 
                 } else {
                     printf("Errormessage: %s\n", $this->conn->error);
@@ -1658,6 +1663,13 @@ class AttendanceDbHandler {
                 return NULL;
             }
         }
+        } catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in updateProgram\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return -3;
+		}
+        
     }
     public function removeProgram($id
     ) {
