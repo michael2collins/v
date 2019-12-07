@@ -1,68 +1,78 @@
-    <div class="modal-header">
-        <h3 class="modal-title">Select Student Class</h3>
-    </div>
-    <div class="modal-body">
-        <div class="col-md-12">
-            <div class="row">
-                <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-group">
-                    <button ok-sel="*" ng-click="vmsearch.vmclass.clearSelect()" class="btn btn-green">Show All</button>
-                </div>
+<div class="modal-header">
+    <h3 class="modal-title">Select Student Class</h3>
+</div>
+<div class="modal-body">
+    <div class="col-md-12">
+        <div class="row">
+            <div opt-kind="" ok-key="filter" class="btn-group col-md-2 filters-button-group">
+                <button ok-sel="*" ng-click="vmsearch.vmclass.clearSelect()" class="btn btn-green">Show All</button>
             </div>
-            <div class="row">
-                <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-groupcat">
+            <div class="col-md-8 col-xs-8"></div>
+            <div class="col-md-2 col-xs-2">
+                <div ng-click="vmsearch.pics()" ng-show="vmsearch.showpics" class="input-icon right"><i class="picturesicon fas fa-list "></i></div>
+                <div ng-click="vmsearch.list()" ng-show="vmsearch.showlist" class="input-icon right"><i class="picturesicon fa  fa-images "></i></div>
+            </div>
+        </div>
+        <div class="row">
+            <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-groupcat">
+                <div class="col-md-1">
+                    <button ng-click="vmsearch.vmclass.clearCatSelect()" class="btn btn-sm btn-green active">Show All</button>
+                </div>
+                <div ng-repeat="category in vmsearch.vmclass.classcategories" class="">
                     <div class="col-md-1">
-                        <button ng-click="vmsearch.vmclass.clearCatSelect()" class="btn btn-sm btn-green active">Show All</button>
-                    </div>
-                    <div ng-repeat="category in vmsearch.vmclass.classcategories" class="">
-                        <div class="col-md-1">
-                            <button ok-sel="{{vmsearch.vmclass.concat}}" ng-click="vmsearch.vmclass.catset(category.classcat)" ng-model="classcategories" class="btn btn-sm btn-green">{{category.classcat}}</button>
-                        </div>
+                        <button id={{category.classcat}} ok-sel="{{vmsearch.vmclass.concat}}" ng-click="vmsearch.vmclass.catset(category.classcat)" ng-model="classcategories" class="btn btn-sm btn-green">{{category.classcat}}</button>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-groupage">
+        </div>
+        <div class="row">
+            <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-groupage">
+                <div class="col-md-1">
+                    <button ng-click="vmsearch.vmclass.clearAgeSelect()" class="btn btn-sm btn-orange active">Show All</button>
+                </div>
+                <div ng-repeat="age in vmsearch.vmclass.agecategories" class="">
                     <div class="col-md-1">
-                        <button ng-click="vmsearch.vmclass.clearAgeSelect()" class="btn btn-sm btn-orange active">Show All</button>
-                    </div>
-                    <div ng-repeat="age in vmsearch.vmclass.agecategories" class="">
-                        <div class="col-md-1">
-                            <button ok-sel="{{vmsearch.vmclass.concat}}" ng-click="vmsearch.vmclass.ageset(age.agecat)" ng-model="agecategories" class="btn btn-sm btn-orange">{{age.agecat}}</button>
-                        </div>
+                        <button ok-sel="{{vmsearch.vmclass.concat}}" ng-click="vmsearch.vmclass.ageset(age.agecat)" ng-model="agecategories" class="btn btn-sm btn-orange">{{age.agecat}}</button>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-grouppgm">
+        </div>
+        <div class="row">
+            <div opt-kind="" ok-key="filter" class="btn-group col-md-12 filters-button-grouppgm">
+                <div class="col-md-1">
+                    <button ng-click="vmsearch.vmclass.clearPgmSelect()" class="btn btn-sm btn-violet active">Show All</button>
+                </div>
+                <div ng-repeat="pgm in vmsearch.vmclass.pgmcategories" class="">
                     <div class="col-md-1">
-                        <button ng-click="vmsearch.vmclass.clearPgmSelect()" class="btn btn-sm btn-violet active">Show All</button>
-                    </div>
-                    <div ng-repeat="pgm in vmsearch.vmclass.pgmcategories" class="">
-                        <div class="col-md-1">
-                            <button ok-sel="{{vmsearch.vmclass.concat}}" ng-click="vmsearch.vmclass.pgmset(pgm.pgmcat)" ng-model="pgmcategories" class="btn btn-sm btn-violet">{{pgm.pgmcat}}</button>
-                        </div>
+                        <button ok-sel="{{vmsearch.vmclass.concat}}" ng-click="vmsearch.vmclass.pgmset(pgm.pgmcat)" ng-model="pgmcategories" class="btn btn-sm btn-violet">{{pgm.pgmcat}}</button>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
-                    <div ng-repeat="x in vmsearch.vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
-                        <div class="hover-effect">
-                            <div class="img">
-                                <img ng-src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive" />
+        </div>
+        <div class="row gallery-pages mtl">
+            <div id="isotopeContainer" isotope-container ng-cloak class="mix-grid ng-cloak">
+                <div ng-if="vmsearch.showpics" ng-repeat="x in vmsearch.vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-3 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
+                    <div class="form-control">{{x.class}} - {{x.pgm}}</div>
+                    <div class="hover-effect">
+                        <div class="img">
+                            <img ng-src="images/classes/{{x.pictureurl}}" alt="" class="img-responsive" />
+                        </div>
+                        <div class="info">
+                            <div>
+                                <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-blue btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
                             </div>
-                            <div class="info">
-                                <div class="form-control">{{x.class}} - {{x.pgm}}</div>
-                                <div>
-                                    <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-blue btn-sm mix-link">Select {{x.class}} - {{x.pgm}}</button>
-                                </div>
-                            </div>
                         </div>
+                    </div>
+                </div>
+                <div ng-if="vmsearch.showlist" ng-repeat="x in vmsearch.vmclass.xlistnew.studentclasslist track by $index" isotope-item="" class="col-md-6 col-xs-12 mix {{x.classcat[0][0]}} {{x.agecat[0][0]}} {{x.pgmcat[0][0]}}">
+                    <div>
+                        <button type="button" ng-click="vmsearch.closemodal(vmsearch.vmclass.studentclass.contactID,x.classid,x.pgmid);" class="btn btn-blue mix-link">Select {{x.class}} - {{x.pgm}}</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal-footer">
-        <button class="btn btn-primary" type="button" ng-click="vmsearch.closemodal();">Cancel</button>
-    </div>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vmsearch.closemodal();">Cancel</button>
+</div>

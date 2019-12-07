@@ -14,7 +14,8 @@ export class StudentClassModalInstanceController {
 
   $onInit() {
     var vmsearch = this;
-
+      vmsearch.showpics = true;
+      vmsearch.showlist = false;
 //    vmsearch.vmclass = 
 //      vmsearch.$controller('StudentClassController as vmclass', { $scope: vmsearch.$scope });
 
@@ -24,6 +25,20 @@ export class StudentClassModalInstanceController {
     this.$log.log("StudentClassModalInstanceController dismissed");
     //this.$log.logEnabled(false);
   }
+   list() { //switching to pics when clicked
+      var vm = this;
+      vm.showpics = true;
+      vm.showlist = false;
+      vm.$log.log('list', vm.showlist);
+
+   }
+   pics() { //switching to list when clicked
+      var vm = this;
+      vm.showpics = false;
+      vm.showlist = true;
+      vm.$log.log('pics', vm.showpics);
+
+   }
 
   closemodal(contactid, classid, pgmid) {
     var vmsearch = this;

@@ -275,7 +275,8 @@ let thirdparty = [
         module: 'angular-ui-grid', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-grid/4.4.11/ui-grid.min.css'
     },
     {
-        module: 'jquery.isotope', entry: '//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js'
+//        module: 'jquery.isotope', entry: '//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/2.2.2/isotope.pkgd.min.js'
+        module: 'jquery.isotope', entry: '//cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js'
     },
     {
         module: 'classie', entry: '//cdnjs.cloudflare.com/ajax/libs/classie/1.0.1/classie.min.js'

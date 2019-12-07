@@ -1,7 +1,9 @@
+import angular from 'angular';
+
 export class StudentClassController {
     constructor(
         $scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices, StudentUtil, _
+        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices, StudentUtil, _,$element,$filter
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -18,10 +20,15 @@ export class StudentClassController {
         this.UserServices = UserServices;
         this.StudentUtil = StudentUtil;
         this._ = _;
+        this.$filter = $filter;
+        this.$element = $element;
+
     }
 
     $onInit() {
         var vmclass = this;
+        vmclass.$ = angular.element;
+
         vmclass.isCollapsed = true;
 
         vmclass.categorys = '';
@@ -173,6 +180,19 @@ export class StudentClassController {
         });
     }
 
+    reset(agecat,pgmcat,classcat) {
+        var vmclass = this;
+//    vmclass.$rootScope.$broadcast('iso-method', {name:'reloadItems', params:null});
+//      vmclass.$scope.$emit('iso-method', { name: 'layout', params: null });
+//      vmsetclassmodal.studentclassparent.$scope.$emit('iso-method', { name: 'arrange', params: null });
+        vmclass.$timeout(function() {
+          angular.element('#' + agecat).click();
+          angular.element('#' + pgmcat).click();
+          angular.element('#' + classcat).click();
+          vmclass.$rootScope.$broadcast('iso-init', {name:null, params:null});
+        });
+        
+    }
     clearCatSelect() {
         var vmclass = this;
         vmclass.categorys = '';

@@ -1,6 +1,6 @@
 export class ModalSetStudentClassController {
   constructor(
-    $log, $uibModal, $controller, $scope, $window, $route, ClassServices, $attrs
+    $log, $uibModal, $controller, $scope, $window, $route, ClassServices, $attrs, $rootScope
   ) {
     'ngInject';
     this.$log = $log;
@@ -11,6 +11,7 @@ export class ModalSetStudentClassController {
     this.$route = $route;
     this.$scope = $scope;
     this.$attrs = $attrs;
+    this.$rootScope = $rootScope;
   }
 
   $onInit() {
@@ -25,7 +26,6 @@ export class ModalSetStudentClassController {
     vmsetclassmodal.studentclass='';
       vmsetclassmodal.searchclass = vmsetclassmodal.$attrs.mode == "add" ? "fa fa-search" : "fas fa-pencil-alt";
       vmsetclassmodal.searchtext = vmsetclassmodal.$attrs.mode == "add" ? "Search" : "";
-
     vmsetclassmodal.init();
   
   }
@@ -50,6 +50,18 @@ export class ModalSetStudentClassController {
     var modalScope = vmsetclassmodal.$scope.$new();
     modalScope.vmclass = vmsetclassmodal.$scope.$parent.$ctrl;
     vmsetclassmodal.studentclassparent = vmsetclassmodal.$scope.$parent.$ctrl.studentclassparent;
+    var classcat = vmsetclassmodal.studentclassparent.$filter('filter')
+      (vmsetclassmodal.studentclassparent.xlistnew.studentclasslist, 
+        {class: vmsetclassmodal.$attrs.cls, 
+         pgm: vmsetclassmodal.$attrs.pgm})[0].classcat[0][0];
+    var pgmcat = vmsetclassmodal.studentclassparent.$filter('filter')
+      (vmsetclassmodal.studentclassparent.xlistnew.studentclasslist, 
+        {class: vmsetclassmodal.$attrs.cls, 
+         pgm: vmsetclassmodal.$attrs.pgm})[0].pgmcat[0][0];
+    var agecat = vmsetclassmodal.studentclassparent.$filter('filter')
+      (vmsetclassmodal.studentclassparent.xlistnew.studentclasslist, 
+        {class: vmsetclassmodal.$attrs.cls, 
+         pgm: vmsetclassmodal.$attrs.pgm})[0].agecat[0][0];
     
     vmsetclassmodal.modalInstance = vmsetclassmodal.$uibModal.open({
       animation: vmsetclassmodal.animationsEnabled,
@@ -77,6 +89,23 @@ export class ModalSetStudentClassController {
     }, function() {
       vmsetclassmodal.$log.info('Modal dismissed at: ' + new Date());
     });
+
+    vmsetclassmodal.modalInstance.rendered.then(
+        function(success) {
+          vmsetclassmodal.$log.log('vmsetclassmodal ui rendered:', success);
+          vmsetclassmodal.studentclassparent.catset(classcat);
+          vmsetclassmodal.studentclassparent.pgmset(pgmcat);
+          vmsetclassmodal.studentclassparent.ageset(agecat);
+    //vmsetclassmodal.$rootScope.$broadcast('iso-init', {name:null, params:null});
+//      vmsetclassmodal.studentclassparent.$scope.$emit('iso-method', { name: null, params: null });
+//      vmsetclassmodal.studentclassparent.$scope.$emit('iso-method', { name: 'arrange', params: null });
+        vmsetclassmodal.studentclassparent.reset(agecat,pgmcat,classcat);
+        },
+        function(error) {
+            vmsetclassmodal.$log.log('vmsetclassmodal ui failed to render, reason : ', error);
+        }
+    );
+
 
   }
     update(prop, value) {
