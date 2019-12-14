@@ -9,8 +9,10 @@
                   <div class="form-group">
                      <label for="inputclass" class="control-label attendance">Class</label>
                      <div class="input-icon right">
-                        <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.setClass(vm.theclass);vm.refreshtheAttendanceClick()" class="form-control attendance">
-                        <option ng-repeat="g in vm.classes" ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  value="{{g.Description}}">{{g.Description}} {{g.TimeRange}}</option> 
+                        <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.clearClassSelect();vm.clearPgmSelect();vm.refreshtheAttendanceClick()" class="form-control attendance">
+                        <option ng-repeat="g in vm.classes" 
+                        ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  
+                        value="{{g.Description}}">{{g.Description}} {{g.TimeRange}}</option> 
                         <option>All</option>
                       </select>
                      </div>
@@ -71,7 +73,7 @@
                </div>
             </div>
             <div class="row" style="height: 80px">
-               <studentpicker-component on-update="vm.editStudentFromPick(vm.studentpick, prop, value)">
+               <studentpicker-component on-update="vm.editStudentFromPick(vm.studentpick, prop, value);vm.clearClassSelect();vm.clearPgmSelect()">
                </studentpicker-component>
                <div class="col-md-2 col-xs-2 mtl">
                   <button ng-show="vm.eventResult.ID" ng-click="vm.filter()" class="btn btn-blue  attendance">Filter {{vm.eventResult.FirstName}}</button>
@@ -81,7 +83,55 @@
                   <button ng-show="vm.eventResult.ID" ng-click="vm.clearFilter()" class="btn btn-blue  attendance">Clear Filter</button>
                </div>
 
+                     <div class="col-md-3 col-xs-3 prn">
+                        <div class="input-icon right">
+                           <select id="inputCat" type="text" name="inputCat" ng-model="vm.classcategorysel" 
+                              ng-change="vm.catset(vm.classcategorysel)" 
+                              class="form-control attendance">
+                           <option ng-repeat="category in vm.classcategories" 
+                               ng-selected="category === vm.classcategorysel" 
+                                value="{{category.classcat}}">{{category.classcat}}</option>
+                            </select>
+                        </div>
+                     </div>
+                     <div class="col-md-3 col-xs-3 prn">
+                        <div class="input-icon right">
+                           <select id="inputPgm" type="text" name="inputPgm" ng-model="vm.pgmcategorysel" 
+                              ng-change="vm.pgmset(vm.pgmcategorysel)" 
+                              class="form-control attendance">
+                           <option ng-repeat="pgm in vm.pgmcategories" 
+                               ng-selected="pgm === vm.pgmcategorysel" 
+                                value="{{pgm.pgmcat}}">{{pgm.pgmcat}}</option>
+                            </select>
+                        </div>
+                     </div>
+               
+<!--               <div class="btn-group col-md-12">
+                  <div class="col-md-1">
+                     <button ng-click="vm.clearClassSelect()" class="btn btn-sm btn-green active">Show All</button>
+                  </div>
+                  <div ng-repeat="category in vm.classcategories" class="">
+                     <div class="col-md-1">
+                        <button  ng-click="vm.catset(category.classcat)" class="btn btn-sm btn-green">{{category.classcat}}</button>
+                     </div>
+                  </div>
+               </div>
             </div>
+            <div class="row">
+               -->
+               <!--
+               <div class="btn-group col-md-12">
+                  <div class="col-md-1">
+                     <button ng-click="vm.clearPgmSelect()" class="btn btn-sm btn-violet active">Show All</button>
+                  </div>
+                  <div ng-repeat="pgm in vm.pgmcategories" class="">
+                     <div class="col-md-1">
+                        <button  ng-click="vm.pgmset(pgm.pgmcat)" class="btn btn-sm btn-violet">{{pgm.pgmcat}}</button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+               -->
 
          </div>
       </div>

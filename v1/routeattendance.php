@@ -44,6 +44,9 @@ $app->get('/studentregistration','authenticate', 'isAdminOrOperator', 'setDebug'
             $tmp["DOWnum"] = (empty($slist["DOWnum"]) ? "NULL" : $slist["DOWnum"]);;
             $tmp["class"] = (empty($slist["class"]) ? "NULL" : $slist["class"]);
             $tmp["classid"] = (empty($slist["classid"]) ? "NULL" : $slist["classid"]);
+            $tmp["agecat"] = (empty($slist["agecat"]) ? "NULL" : $slist["agecat"]);
+            $tmp["classcat"] = (empty($slist["classcat"]) ? "NULL" : $slist["classcat"]);
+            $tmp["pgmcat"] = (empty($slist["pgmcat"]) ? "NULL" : $slist["pgmcat"]);
             $tmp["rank"] = (empty($slist["currentrank"]) ? "NULL" : $slist["currentrank"]);
             $tmp["pictureurl"] = (empty($slist["pictureurl"]) ? "missingstudentpicture.png" : $slist["pictureurl"]);
             $tmp["attended"] = (empty($slist["attended"]) ? "NULL" : $slist["attended"]);
@@ -56,6 +59,9 @@ $app->get('/studentregistration','authenticate', 'isAdminOrOperator', 'setDebug'
             $tmp["DOWnum"] = "NULL";
             $tmp["class"] = "NULL";
             $tmp["classid"] = "NULL";
+            $tmp["agecat"] = "NULL";
+            $tmp["classcat"] = "NULL";
+            $tmp["pgmcat"] = "NULL";
             $tmp["rank"] = "NULL";
             $tmp["pictureurl"] = "NULL";
             $tmp["attended"] = "NULL";

@@ -462,21 +462,19 @@ class AttendanceDbHandler {
 
 
         $sumsql = " select class, classid, studentid, currentrank, firstname, ";
-        $sumsql .= " lastname, pictureurl, readyForNextRank, DOWnum, sum( attended) as attended from ( ";
+        $sumsql .= " lastname, pictureurl, readyForNextRank, DOWnum,pgmcat,classcat,agecat, sum( attended) as attended from ( ";
 
         $sql = "SELECT  n.class, r.classid, r.studentid, cr.currentrank, s.firstname, ";
-        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, r.readyForNextRank, 0 as attended ";
-        $sql .= " FROM  studentregistration  r, nclass n, ncontacts s , ncontactrank cr, notherclass no, testtypes tt ";
+        $sql .= " s.lastname,s.pictureurl,  " . $daynum . " as DOWnum, r.readyForNextRank,pgmcat,classcat,agecat, 0 as attended ";
+        $sql .= " FROM  studentregistration  r, nclass n, ncontacts s , ncontactrank cr, notherclass no, testtypes tt, nclasspgm cp ";
         $sql .= " WHERE  r.studentid = s.ID and n.id = r.classid and cr.contactid = s.ID ";
         $sql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype and s.studentschool = ? 
-                    and studentclassstatus = 'Active'";
+                    and studentclassstatus = 'Active' and r.pgmid = cp.pgmid and r.classid = cp.classid and cp.school = s.studentschool ";
 
         if (strlen($theclass) > 0 && $theclass != 'NULL' && $theclass != 'All') {
             $sql .= " and n.class = '" . $theclass . "'";
         }
 
-//        $schoolfield = "s.studentschool";
-//        $sql = addSecurity($sql, $schoolfield);
 
         $app->log->debug( print_R("getRegistrationList firstsql: $sql \n", TRUE));
 
@@ -490,13 +488,14 @@ class AttendanceDbHandler {
         $heresql .= " c.firstname, ";
         $heresql .= " c.lastname, ";
         $heresql .= " c.pictureurl, ";
-        $heresql .= " a.DOWnum,  r.readyForNextRank, ";
+        $heresql .= " a.DOWnum,  r.readyForNextRank,pgmcat,classcat,agecat, ";
         $heresql .= " a.attended ";
-        $heresql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt ";
+        $heresql .= " FROM attendance a, studentregistration  r, nclass n, ncontacts c , ncontactrank cr, notherclass no, testtypes tt, nclasspgm cp ";
         $heresql .= " WHERE  r.studentid = c.ID and n.id = r.classid and cr.contactid = c.ID ";
         $heresql .= " and no.classid = r.classid and no.testtypeid = tt.id and tt.ranktype = cr.ranktype ";
         $heresql .= " and a.downum = " . $daynum;
-        $heresql .= " and a.attended = 1 and a.ContactId = c.ID and a.classid = n.id and c.studentschool = ? ";
+        $heresql .= " and a.attended = 1 and a.ContactId = c.ID and a.classid = n.id and c.studentschool = ? and
+        r.pgmid = cp.pgmid and r.classid = cp.classid and cp.school = c.studentschool  ";
 
         if (strlen($thedow) > 0 && $thedow != 'All') {
             $heresql .= " and mondayofweek = '" . $thedow . "'";
@@ -513,7 +512,7 @@ class AttendanceDbHandler {
 
 
         $grpsql = " ) sel  ";
-        $grpsql .= "group by 1,2,3,4,5,6,7,8,9 order by 6,5";
+        $grpsql .= "group by 1,2,3,4,5,6,7,8,9,10,11,12 order by 6,5";
         
         $finalsql = $sumsql . $sql . $heresql . $grpsql;
         

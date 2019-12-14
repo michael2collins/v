@@ -3,7 +3,7 @@ import angular from 'angular';
 export class AttendanceTableBasicController {
    constructor(
       $routeParams, $log, AttendanceServices, StudentServices,
-      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService, UserServices, $filter
+      $location, $window, $q, $scope, $route, Notification, moment, Util, portalDataService, UserServices, $filter, ClassServices
    ) {
       'ngInject';
       this.$routeParams = $routeParams;
@@ -21,10 +21,16 @@ export class AttendanceTableBasicController {
       this.UserServices = UserServices;
       this.StudentServices = StudentServices;
       this.$filter = $filter;
+      this.ClassServices = ClassServices;
    }
    $onInit() {
 
       var vm = this;
+
+      vm.pgmcategories = [];
+      vm.pgmcategorysel = '';
+      vm.classcategories = [];
+      vm.classcategorysel ='';
 
       vm.DOWlist = [];
       vm.limit = "100";
@@ -147,74 +153,6 @@ export class AttendanceTableBasicController {
          vm.datearr.push(vm.moment(tmparr[i]).format(vm.bdateformato));
       }
    }
-/*
- days(start, end, weekdays, index) {
-    var vm=this;
-    var days = [], d = vm.moment(start).startOf('day');
-    var isIndexed = (typeof index !== 'undefined' && index !== null);
-
-    if (typeof weekdays !== 'undefined' && weekdays !== null) {
-      if (weekdays.constructor !== Array) { weekdays = [weekdays]; }
-
-      for (var w = 0; w < weekdays.length; w++) {
-        weekdays[w] = vm.moment(start).day(weekdays[w]).day();
-      }
-    } else {
-      weekdays = [0,1,2,3,4,5,6];
-    }
-
-    for (var i = 0; i < (vm.moment(end).endOf('day').diff(vm.moment(start), 'days') + 1); i++) {
-      var wd = d.day();
-
-      if (isIndexed && !days[wd]) { days[wd] = []; }
-
-      if (weekdays.indexOf(wd) !== -1) {
-        if (isIndexed) {
-          days[wd].push(vm.moment(d));
-        } else {
-          days.push(vm.moment(d));
-        }
-      }
-
-      d.add(1, 'day');
-    }
-
-    if (isIndexed) {
-      var nDays = [];
-
-      if (index.constructor !== Array) { index = [index]; }
-
-      for (var a = 0; a < days.length; a++) {
-        if (!days[a].length) { continue; }
-
-        for (var n = 0; n < index.length; n++) {
-          var ind = parseInt(index[n]);
-          if (isNaN(ind)) { continue; }
-          var ni = (ind - 1);
-          if (ind < 0) { ni = (days[a].length + ind); }
-          nDays.push(days[a][ni]);
-        }
-      }
-
-      days = nDays;
-    }
-
-    days = days
-      .sort(function(a, b){ return vm.moment.utc(a).diff(vm.moment.utc(b)); })
-      .filter(function(o, p, a){ return (o != null && !o.isSame(a[p - 1])); });
-
-    if (!days.length) { return false; }
-    if (days.length === 1) { return days[0]; }
-
-    return days;
-  }
-
-  weekdaysInBetween(date, weekdays, index) {
-     var vm=this;
-    if (!date) { date = new Date(); }
-    return vm.days(vm.moment(this).add(1, 'day'), vm.moment(date).subtract(1, 'day'), weekdays, index);
-  }
-*/
 
    filter() {
       var vm=this;
@@ -306,12 +244,6 @@ export class AttendanceTableBasicController {
          }
       }
    }
-   setClass(aClass) {
-      var vm = this;
-      vm.$log.log('setClass', aClass);
-      vm.theclass = aClass;
-   }
-
    requery() {
       var vm = this;
       vm.$log.log('requery entered');
@@ -539,7 +471,22 @@ export class AttendanceTableBasicController {
                vm.nowChoice = 0;
                vm.setClass("");
                return (vm.$q.reject(error));
-            })
+            }),
+                vm.ClassServices.distinctPgm().then(function(data) {
+                    vm.$log.log('distinctPgm get:', data);
+                    vm.pgmcategories = data.pgmcatlist;
+                    vm.$log.log("distinctPgm in activate", vm.pgmcategories);
+                }).catch(function(e) {
+                    vm.$log.log("distinctPgm error", e);
+                }),
+                vm.ClassServices.distinctCat().then(function(data) {
+                    vm.$log.log('distinctCat get:', data);
+                    vm.classcategories = data.classcatlist;
+                    vm.$log.log("distinctCat in activate", vm.classcategories);
+                }).catch(function(e) {
+                    vm.$log.log("distinctCat error in activate", e);
+                }),
+            
          ])
          .then(function() {
             return vm.refreshtheAttendance().then(function(zdata) {
@@ -593,6 +540,25 @@ export class AttendanceTableBasicController {
          });
    }
 
+    clearClassSelect() {
+        var vm = this;
+            vm.filteredphotos = vm.photos;
+    }
+    catset(addition) {
+        var vm = this;
+      vm.filteredphotos = vm.$filter('filter')(vm.photos, {classcat: addition});
+
+    }
+    clearPgmSelect() {
+        var vm = this;
+            vm.filteredphotos = vm.photos;
+    }
+    pgmset(addition) {
+        var vm = this;
+      vm.filteredphotos = vm.$filter('filter')(vm.photos, {pgmcat: addition});
+
+    }
+
    refreshtheAttendance() {
       var vm = this;
       vm.$log.log('refreshtheAttendance entered with radioModel', vm.radioModel);
@@ -644,7 +610,10 @@ export class AttendanceTableBasicController {
                   attended: vm.data.attendancelist[i].attended,
                   showIndex: vm.data.attendancelist[i].attended == 1 ? true : false,
                   stats: false,
-                  readyness: vm.data.attendancelist[i].readyness
+                  readyness: vm.data.attendancelist[i].readyness,
+                  pgmcat: vm.data.attendancelist[i].pgmcat,
+                  agecat: vm.data.attendancelist[i].agecat,
+                  classcat: vm.data.attendancelist[i].classcat
                });
                if (vm.data.attendancelist[i].attended == 1) {
                   vm.selectItem(vm.data.attendancelist[i].ContactId, true, vm.photos[i], false);
