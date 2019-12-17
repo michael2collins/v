@@ -7,6 +7,9 @@ export let studentpickerComponent  = {
   template: template,
  bindings: {
     studentpickparent: '<',
-    onUpdate: '&'
+//mlc future reference
+//    studentpickparent2: '<',
+    onUpdate: '&',
+//    onUpdate2: '&'
   }  
 };

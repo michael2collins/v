@@ -206,7 +206,8 @@ let thirdparty = [
         module: 'underscore', entry: '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js'
     },
     {
-        module: 'angularjs', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular.min.js'
+//        module: 'angularjs', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js'
+        module: 'angularjs', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js'
     },
     {
         module: 'momentjs', entry: '//cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js'
@@ -221,25 +222,25 @@ let thirdparty = [
         module: 'angular-moment', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-moment/1.2.0/angular-moment.min.js'
     },
     {
-        module: 'angular-cookies', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-cookies.min.js'
+        module: 'angular-cookies', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-cookies.min.js'
     },
     {
         module: 'lodash', entry: '//cdnjs.cloudflare.com/ajax/libs/lodash.js/3.10.1/lodash.min.js'
     },
     {
-        module: 'angular-route', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-route.min.js'
+        module: 'angular-route', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-route.min.js'
     },
     {
-        module: 'angular-animate', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-animate.min.js'
+        module: 'angular-animate', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-animate.min.js'
     },
     {
-        module: 'angular-messages', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-messages.min.js'
+        module: 'angular-messages', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-messages.min.js'
     },
     {
-        module: 'angular-aria', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular-aria.min.js'
+        module: 'angular-aria', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-aria.min.js'
     },
     {
-        module: 'angular-resource', entry: '//cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.5/angular-resource.min.js'
+        module: 'angular-resource', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-resource.min.js'
     },
     {
         module: 'angular-boostrap-toggle', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js'

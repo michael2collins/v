@@ -1,3 +1,5 @@
+import angular from 'angular';
+
 export class StudentPickerController {
     constructor(
         $log, $scope, StudentServices
@@ -12,13 +14,23 @@ export class StudentPickerController {
         var vm = this;
         vm.$log.log("StudentPickerController entered");
         vm.refreshstudentlist = {};
-        vm.eventResult = {};
-        vm.studentpick ='';
     }
     $onDestroy() {
         this.$log.log("StudentPickerController dismissed");
+        this.vm.studentpick = '';
     }
-
+    $onChanges(changes) {
+        var vm = this;
+        vm.$log.log("StudentPickerController changed", changes);
+        if (changes.studentpickparent) {
+            vm.studentpickparent = angular.copy(this.studentpickparent);
+        }
+/*        if (changes.studentpickparent2) {
+            vm.studentpickparent2 = angular.copy(this.studentpickparent2);
+        }
+*/
+    }
+    
 
     refreshStudents(theinput) {
         var vm = this;
@@ -31,9 +43,21 @@ export class StudentPickerController {
         });
 
     }
-    update(prop, value) {
-        var vm=this;
-           vm.onUpdate( {studentpickparent: vm.studentpickparent, prop: prop, value: vm.studentpickparent.studentpick});
-  }
-    
+    update() {
+        var vm = this;
+        vm.onUpdate({
+            $event: {
+                studentpickparent: vm.studentpickparent
+            }
+        });
+    }
+    /*    update2(){
+            var vm=this;
+            vm.onUpdate2( {
+                $event: {
+                    studentpickparent2: vm.studentpickparent2
+                }
+            });
+      }
+    */
 }

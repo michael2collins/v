@@ -3,9 +3,7 @@
         <div class="input-icon right">
             <label for="select-box" class="control-label">Filter Student</label>
             <div class="select-box">
-                <ui-select ng-model="$ctrl.studentpickparent.studentpick" theme="bootstrap" reset-search-input="false" 
-        on-select="$ctrl.update('studentpick', $ctrl.studentpickparent.studentpick);"
-                    style="width: 300px;" title="Choose a student" append-to-body="true">
+                <ui-select ng-model="$ctrl.studentpickparent.studentpick" theme="bootstrap" reset-search-input="false" on-select="$ctrl.update();" style="width: 300px;" title="Choose a student" append-to-body="true">
                     <ui-select-match placeholder="Filter the student...">{{$select.selected.FullName}}</ui-select-match>
                     <ui-select-choices repeat="stu in $ctrl.refreshstudentlist.refreshstudentlist | filter: $select.search track by stu.ID" refresh="$ctrl.refreshStudents($select.search)" refresh-delay="0">
                         <div ng-bind-html="stu.FullName | highlight: $select.search"></div>
@@ -17,4 +15,7 @@
             </div>
         </div>
     </div>
+    <!--    <input type="text" ng-model="$ctrl.studentpickparent2.studentpick.ID"> 
+    <a href="" ng-click="$ctrl.update2()">Update</a>
+    -->
 </div>

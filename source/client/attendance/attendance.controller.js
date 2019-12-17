@@ -30,7 +30,7 @@ export class AttendanceTableBasicController {
       vm.pgmcategories = [];
       vm.pgmcategorysel = '';
       vm.classcategories = [];
-      vm.classcategorysel ='';
+      vm.classcategorysel = '';
 
       vm.DOWlist = [];
       vm.limit = "100";
@@ -42,10 +42,11 @@ export class AttendanceTableBasicController {
       vm.data = [];
       vm.classes = [];
       vm.attendancesum = {};
-        vm.refreshstudentlist = [];
-        vm.eventResult ={};
-        vm.studentpickparent = {};
-        vm.studentpick='';
+      vm.refreshstudentlist = [];
+      vm.eventResult = {};
+      vm.studentpickparent = {};
+//      vm.studentpickparent2 = {};
+      vm.studentpick = '';
 
       vm.showStats = '';
       vm.showGrid = true;
@@ -69,8 +70,8 @@ export class AttendanceTableBasicController {
       vm.weekday[5] = "Friday";
       vm.weekday[6] = "Saturday";
       vm.EndDate = vm.moment().format(vm.bdateformato);
-      vm.StartDate =vm.moment();
-      
+      vm.StartDate = vm.moment();
+
 
       vm.tdays = new Array(7);
       vm.tdays[0] = "day1";
@@ -116,11 +117,11 @@ export class AttendanceTableBasicController {
       this.showGrid = false;
       this.photos = [];
    };
-   
+
    expand() {
-        var vm = this;
-        vm.$log.log('expand');
-        vm.ellipsis = !vm.ellipsis;
+      var vm = this;
+      vm.$log.log('expand');
+      vm.ellipsis = !vm.ellipsis;
    }
 
    sdateopen($event) {
@@ -146,20 +147,19 @@ export class AttendanceTableBasicController {
    }
    changeDate() {
       //see https://github.com/kodie/moment-weekdaysin
-      var vm=this;
-      vm.datearr=[];
-      var tmparr = vm.moment(vm.StartDate).weekdaysInBetween(vm.EndDate,'Monday');
-      for (var i=tmparr.length;i>0;i--) {
+      var vm = this;
+      vm.datearr = [];
+      var tmparr = vm.moment(vm.StartDate).weekdaysInBetween(vm.EndDate, 'Monday');
+      for (var i = tmparr.length; i > 0; i--) {
          vm.datearr.push(vm.moment(tmparr[i]).format(vm.bdateformato));
       }
    }
 
-   filter() {
-      var vm=this;
-      vm.filteredphotos = vm.$filter('filter')(vm.photos, {studentID: vm.eventResult.ID});
-   }
    clearFilter() {
-      var vm=this;
+      var vm = this;
+      vm.eventResult = {};
+      vm.studentpickparent={};
+
       vm.filteredphotos = vm.photos;
    }
    list() { //switching to pics when clicked
@@ -183,6 +183,10 @@ export class AttendanceTableBasicController {
    }
    refreshtheAttendanceClick() {
       var vm = this;
+      if (vm.theclass !== 'All') {
+         vm.classcategorysel = '';
+         vm.pgmcategorysel = '';
+      }
       vm.refreshtheAttendance().then(function() {}).catch(function(err) {
          vm.$log.log(err);
       });
@@ -232,7 +236,7 @@ export class AttendanceTableBasicController {
       vm.dowChoice = theChoice;
       vm.$log.log('setDOW', vm.dowChoice);
       vm.setMonday();
-      
+
    }
    getDayNum(aDOW) {
       var vm = this;
@@ -254,8 +258,8 @@ export class AttendanceTableBasicController {
 
    setMonday() {
       var vm = this;
-//      vm.MondayOfWeek = vm.getMonday(new Date());
-      
+      //      vm.MondayOfWeek = vm.getMonday(new Date());
+
       vm.MondayOfWeek = vm.getMonday(vm.dowChoice == "" ? new Date() : vm.dowChoice);
       var d2 = new Date(vm.MondayOfWeek);
       vm.SundayOfWeek = vm.moment(d2).add(-1, 'days').format('YYYY-MM-DD');
@@ -299,13 +303,31 @@ export class AttendanceTableBasicController {
       return new Date(d.setDate(diff));
    }
 
-    editStudentFromPick(studentpickparent, prop, value) {
-        var vm = this;
-        vm.studentpickparent[prop] = value;
-         vm.eventResult = vm.studentpickparent.studentpick;
-         vm.filter();
-    }
+/*   editStudentFromPick2(event) {
+      var vm=this;
+      vm.studentpickparent2 = event.studentpickparent2;
+   }
+*/
+   editStudentFromPick(event) {
+      var vm = this;
+      vm.theclass='All';
 
+   vm.studentpickparent = event.studentpickparent;
+      vm.eventResult = vm.studentpickparent.studentpick;
+   
+      vm.refreshtheAttendance().then(function() {
+         vm.filteredphotos = vm.$filter('filter')(vm.photos, { studentID: vm.eventResult.ID });
+
+      }).catch(function(err) {
+         vm.$log.log(err);
+      });
+
+   }
+   
+   setClass(theclass) {
+      var vm=this;
+      vm.theclass=theclass;
+   }
 
    selectItem(item, indextoggle, card, callrefresh) {
       var vm = this;
@@ -472,21 +494,21 @@ export class AttendanceTableBasicController {
                vm.setClass("");
                return (vm.$q.reject(error));
             }),
-                vm.ClassServices.distinctPgm().then(function(data) {
-                    vm.$log.log('distinctPgm get:', data);
-                    vm.pgmcategories = data.pgmcatlist;
-                    vm.$log.log("distinctPgm in activate", vm.pgmcategories);
-                }).catch(function(e) {
-                    vm.$log.log("distinctPgm error", e);
-                }),
-                vm.ClassServices.distinctCat().then(function(data) {
-                    vm.$log.log('distinctCat get:', data);
-                    vm.classcategories = data.classcatlist;
-                    vm.$log.log("distinctCat in activate", vm.classcategories);
-                }).catch(function(e) {
-                    vm.$log.log("distinctCat error in activate", e);
-                }),
-            
+            vm.ClassServices.distinctPgm().then(function(data) {
+               vm.$log.log('distinctPgm get:', data);
+               vm.pgmcategories = data.pgmcatlist;
+               vm.$log.log("distinctPgm in activate", vm.pgmcategories);
+            }).catch(function(e) {
+               vm.$log.log("distinctPgm error", e);
+            }),
+            vm.ClassServices.distinctCat().then(function(data) {
+               vm.$log.log('distinctCat get:', data);
+               vm.classcategories = data.classcatlist;
+               vm.$log.log("distinctCat in activate", vm.classcategories);
+            }).catch(function(e) {
+               vm.$log.log("distinctCat error in activate", e);
+            }),
+
          ])
          .then(function() {
             return vm.refreshtheAttendance().then(function(zdata) {
@@ -540,24 +562,40 @@ export class AttendanceTableBasicController {
          });
    }
 
-    clearClassSelect() {
-        var vm = this;
-            vm.filteredphotos = vm.photos;
-    }
-    catset(addition) {
-        var vm = this;
-      vm.filteredphotos = vm.$filter('filter')(vm.photos, {classcat: addition});
+   clearClassSelect() {
+      var vm = this;
+      vm.classcategorysel = '';
+      vm.filteredphotos = vm.photos;
+   }
+   catset(addition) {
+      var vm = this;
+      vm.theclass='All';
+      vm.pgmcategorysel = '';
+      vm.refreshtheAttendance().then(function() {
+         vm.filteredphotos = vm.$filter('filter')(vm.photos, { classcat: addition });
+      }).catch(function(err) {
+         vm.$log.log(err);
+      });
 
-    }
-    clearPgmSelect() {
-        var vm = this;
-            vm.filteredphotos = vm.photos;
-    }
-    pgmset(addition) {
-        var vm = this;
-      vm.filteredphotos = vm.$filter('filter')(vm.photos, {pgmcat: addition});
 
-    }
+   }
+   clearPgmSelect() {
+      var vm = this;
+      vm.theclass='All';
+      vm.pgmcategorysel = '';
+      vm.filteredphotos = vm.photos;
+   }
+   pgmset(addition) {
+      var vm = this;
+      vm.classcategorysel = '';
+      vm.theclass='All';
+      vm.refreshtheAttendance().then(function() {
+         vm.filteredphotos = vm.$filter('filter')(vm.photos, { pgmcat: addition });
+      }).catch(function(err) {
+         vm.$log.log(err);
+      });
+
+   }
 
    refreshtheAttendance() {
       var vm = this;
@@ -594,6 +632,7 @@ export class AttendanceTableBasicController {
             vm.photos = [];
             vm.attending = [];
             for (var i = 0, len = vm.data.attendancelist.length; i < len; i++) {
+
                vm.photos.push({
                   id: 'photo-' + i,
                   src: './images/students/' + vm.data.attendancelist[i].pictureurl,
@@ -671,13 +710,13 @@ export class AttendanceTableBasicController {
 
    getDOW() {
       var vm = this;
-/*      return vm.AttendanceServices.getDOW().then(function(data) {
-         vm.$log.log('getDOW returned data');
-         vm.$log.log(data);
-         vm.DOWlist = data.DOWlist;
-         return vm.DOWlist;
-      });
-*/
+      /*      return vm.AttendanceServices.getDOW().then(function(data) {
+               vm.$log.log('getDOW returned data');
+               vm.$log.log(data);
+               vm.DOWlist = data.DOWlist;
+               return vm.DOWlist;
+            });
+      */
       vm.changeDate();
       vm.DOWlist = vm.datearr;
       return vm.DOWlist;

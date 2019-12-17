@@ -9,7 +9,7 @@
                   <div class="form-group">
                      <label for="inputclass" class="control-label attendance">Class</label>
                      <div class="input-icon right">
-                        <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.clearClassSelect();vm.clearPgmSelect();vm.refreshtheAttendanceClick()" class="form-control attendance">
+                        <select id="inputclass" type="text" name="class" ng-model="vm.theclass" ng-change="vm.refreshtheAttendanceClick()" class="form-control attendance">
                         <option ng-repeat="g in vm.classes" 
                         ng-selected="{{(g.Description === vm.classes[vm.nowChoice].Description) && 'selected' || 'not' }}"  
                         value="{{g.Description}}">{{g.Description}} {{g.TimeRange}}</option> 
@@ -72,189 +72,163 @@
 
                </div>
             </div>
-            <div class="row" style="height: 80px">
-               <studentpicker-component on-update="vm.editStudentFromPick(vm.studentpick, prop, value);vm.clearClassSelect();vm.clearPgmSelect()">
+
+<!--               studentpickparent2="vm.studentpickparent2"
+               on-update2="vm.editStudentFromPick2($event)"
+-->
+
+            <div class="row" >
+               <studentpicker-component
+               studentpickparent="vm.studentpickparent"
+               on-update="vm.editStudentFromPick($event)"
+               >
                </studentpicker-component>
-               <div class="col-md-2 col-xs-2 mtl">
-                  <button ng-show="vm.eventResult.ID" ng-click="vm.filter()" class="btn btn-blue  attendance">Filter {{vm.eventResult.FirstName}}</button>
 
-               </div>
-               <div class="col-md-1 col-xs-1 mtl">
-                  <button ng-show="vm.eventResult.ID" ng-click="vm.clearFilter()" class="btn btn-blue  attendance">Clear Filter</button>
+               <div class="col-md-1 col-xs-1 mtxl">
+                  <button ng-show="vm.eventResult.ID" ng-click="vm.clearFilter()" class="btn btn-blue  ">Clear Filter</button>
                </div>
 
-                     <div class="col-md-3 col-xs-3 prn">
-                        <div class="input-icon right">
-                           <select id="inputCat" type="text" name="inputCat" ng-model="vm.classcategorysel" 
-                              ng-change="vm.catset(vm.classcategorysel)" 
-                              class="form-control attendance">
+               <div class="col-md-3 col-xs-3 prn mtxl" ng-hide="vm.eventResult.ID">
+                  <div class="input-icon right">
+                     <select id="inputCat" type="text" name="inputCat" ng-model="vm.classcategorysel" ng-change="vm.catset(vm.classcategorysel)" class="form-control  btn btn-green">
                            <option ng-repeat="category in vm.classcategories" 
                                ng-selected="category === vm.classcategorysel" 
                                 value="{{category.classcat}}">{{category.classcat}}</option>
                             </select>
-                        </div>
-                     </div>
-                     <div class="col-md-3 col-xs-3 prn">
-                        <div class="input-icon right">
-                           <select id="inputPgm" type="text" name="inputPgm" ng-model="vm.pgmcategorysel" 
-                              ng-change="vm.pgmset(vm.pgmcategorysel)" 
-                              class="form-control attendance">
+                  </div>
+               </div>
+               <div class="col-md-3 col-xs-3 prn mtxl" ng-hide="vm.eventResult.ID">
+                  <div class="input-icon right">
+                     <select id="inputPgm" type="text" name="inputPgm" ng-model="vm.pgmcategorysel" ng-change="vm.pgmset(vm.pgmcategorysel)" class="form-control  btn btn-violet">
                            <option ng-repeat="pgm in vm.pgmcategories" 
                                ng-selected="pgm === vm.pgmcategorysel" 
                                 value="{{pgm.pgmcat}}">{{pgm.pgmcat}}</option>
                             </select>
-                        </div>
-                     </div>
-               
-<!--               <div class="btn-group col-md-12">
-                  <div class="col-md-1">
-                     <button ng-click="vm.clearClassSelect()" class="btn btn-sm btn-green active">Show All</button>
-                  </div>
-                  <div ng-repeat="category in vm.classcategories" class="">
-                     <div class="col-md-1">
-                        <button  ng-click="vm.catset(category.classcat)" class="btn btn-sm btn-green">{{category.classcat}}</button>
-                     </div>
                   </div>
                </div>
-            </div>
-            <div class="row">
-               -->
-               <!--
-               <div class="btn-group col-md-12">
-                  <div class="col-md-1">
-                     <button ng-click="vm.clearPgmSelect()" class="btn btn-sm btn-violet active">Show All</button>
-                  </div>
-                  <div ng-repeat="pgm in vm.pgmcategories" class="">
-                     <div class="col-md-1">
-                        <button  ng-click="vm.pgmset(pgm.pgmcat)" class="btn btn-sm btn-violet">{{pgm.pgmcat}}</button>
-                     </div>
-                  </div>
-               </div>
-            </div>
-               -->
 
+            </div>
          </div>
+         <div class="panel-footer"></div>
       </div>
-      <div class="panel-footer"></div>
-   </div>
 
-   <uib-tabset type="pills">
-      <!--vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek)) -->
-      <uib-tab id="tab-attend" heading="Take Attendance" active="active.attend" select="vm.setActiveTab('attend');">
-         <div class="panel panel-blue">
-            <div class="panel-heading">Class Attendance</div>
-            <div class="panel-body pan">
-               <div class="row col-md-12 mtm">
-                  <div class="col-md-10 col-xs-10 attendancebuttonNoshow">
-                     <select id="dayselect" type="text" name="class" ng-model="vm.radioModel" ng-change="vm.setday(vm.getDayNum(vm.radioModel))" class="form-control attendance">
+      <uib-tabset type="pills" class="plm mtxl">
+         <!--vm.setDOW(vm.getFormattedDate(vm.MondayOfWeek)) -->
+         <uib-tab id="tab-attend" heading="Take Attendance" active="active.attend" select="vm.setActiveTab('attend');">
+            <div class="panel panel-blue">
+               <div class="panel-heading">Class Attendance</div>
+               <div class="panel-body pan">
+                  <div class="row col-md-12 mtm">
+                     <div class="col-md-10 col-xs-10 attendancebuttonNoshow">
+                        <select id="dayselect" type="text" name="class" ng-model="vm.radioModel" ng-change="vm.setday(vm.getDayNum(vm.radioModel))" class="form-control attendance">
                         <option ng-repeat="b in vm.dateList" 
                         ng-selected="{{b.dateL==vm.radioModel}}"  
                         value="{{b.dateL}}">{{b.dateL}} {{b.datev}}</option> 
                       </select>
-                  </div>
+                     </div>
 
-                  <div class="col-md-10 col-xs-10 attendancebuttonshow">
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(0);" ng-model="vm.radioModel" uib-btn-radio="'Sunday'">Sunday <br/> 
+                     <div class="col-md-10 col-xs-10 attendancebuttonshow">
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(0);" ng-model="vm.radioModel" uib-btn-radio="'Sunday'">Sunday <br/> 
                             <div style='font-size: small;'> {{vm.SundayOfWeek}} </div> </label>
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(1);" ng-model="vm.radioModel" uib-btn-radio="'Monday'">Monday <br/>
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(1);" ng-model="vm.radioModel" uib-btn-radio="'Monday'">Monday <br/>
                             <div style='font-size: small;'>{{vm.Util.geteFormattedDate(vm.MondayOfWeek)}} </div></label>
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(2);" ng-model="vm.radioModel" uib-btn-radio="'Tuesday'">Tuesday  <br/>
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(2);" ng-model="vm.radioModel" uib-btn-radio="'Tuesday'">Tuesday  <br/>
                             <div style='font-size: small;'> {{vm.TuesdayOfWeek}}</div></label>
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(3);" ng-model="vm.radioModel" uib-btn-radio="'Wednesday'">Wednesday  <br/>
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(3);" ng-model="vm.radioModel" uib-btn-radio="'Wednesday'">Wednesday  <br/>
                             <div style='font-size: small;'> {{vm.WednesdayOfWeek}}</div></label>
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(4);" ng-model="vm.radioModel" uib-btn-radio="'Thursday'">Thursday  <br/>
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(4);" ng-model="vm.radioModel" uib-btn-radio="'Thursday'">Thursday  <br/>
                             <div style='font-size: small;'> {{vm.ThursdayOfWeek}}</div></label>
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(5);" ng-model="vm.radioModel" uib-btn-radio="'Friday'">Friday  <br/>
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(5);" ng-model="vm.radioModel" uib-btn-radio="'Friday'">Friday  <br/>
                             <div style='font-size: small;'> {{vm.FridayOfWeek}}</div></label>
-                     <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(6);" ng-model="vm.radioModel" uib-btn-radio="'Saturday'">Saturday  <br/>
+                        <label class="btn btn-green btn-primary attendance" ng-click="vm.setday(6);" ng-model="vm.radioModel" uib-btn-radio="'Saturday'">Saturday  <br/>
                             <div style='font-size: small;'> {{vm.SaturdayOfWeek}}</div></label>
-                  </div>
-                  <div class="col-md-2 col-xs-2">
-                     <div ng-click="vm.pics()" ng-show="vm.showpics" class="input-icon right"><i class="attendanceicon fas fa-list "></i></div>
-                     <div ng-click="vm.list()" ng-show="vm.showlist" class="input-icon right"><i class="attendanceicon fa  fa-images "></i></div>
-                  </div>
-               </div>
-               <div class="row">
-                  <div class="col-md-12">
-                     <div class="deckgrid clearfix" deckgrid source="vm.filteredphotos" cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
                      </div>
-                     <div class="deckgrid clearfix" deckgrid source="vm.filteredphotos" cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
+                     <div class="col-md-2 col-xs-2">
+                        <div ng-click="vm.pics()" ng-show="vm.showpics" class="input-icon right"><i class="attendanceicon fas fa-list "></i></div>
+                        <div ng-click="vm.list()" ng-show="vm.showlist" class="input-icon right"><i class="attendanceicon fa  fa-images "></i></div>
                      </div>
-                  </div>
-               </div>
-            </div>
-            <div class="panel-footer"></div>
-         </div>
-
-
-      </uib-tab>
-      <!--vm.setDOW(vm.DOWlist[0].MondayOfWeek); -->
-      <uib-tab id="tab-attendhist" heading="Attendance History" active="active.attendhistory" select="vm.setActiveTab('attendhistory');vm.getAttendanceHistory()">
-         <div class="panel panel-blue">
-            <div class="panel-heading">Attendance History</div>
-            <div class="panel-body pan">
-               <div class="col-lg-12">
-                  <div class="row">
-                     <button ng-click="vm.getAttendanceHistory()" class="btn btn-blue  attendance">Refresh List</button>
                   </div>
                   <div class="row">
                      <div class="col-md-12">
-                        <div class="col-md-1">MondayOfWeek</div>
-                        <div class="col-md-1">Name</div>
-                        <div class="col-md-1">Rank</div>
-                        <div class="col-md-1">Class</div>
-                        <div class="col-md-1">Monday</div>
-                        <div class="col-md-1">Tuesday</div>
-                        <div class="col-md-1">Wednesday</div>
-                        <div class="col-md-1">Thursday</div>
-                        <div class="col-md-1">Friday</div>
-                        <div class="col-md-1">Saturday</div>
-                        <div class="col-md-1">Sunday</div>
-                     </div>
-
-                     <div class="col-md-12" ng-repeat="student in vm.data.attendancehistory">
-                        <div class="col-md-1">{{student.MondayOfWeek}}</div>
-                        <div class="col-md-1">{{student.firstname}} {{student.lastname}}</div>
-                        <div class="col-md-1">{{student.rank}}</div>
-                        <div class="col-md-1">{{student.class}}</div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day1 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
+                        <div class="deckgrid clearfix" deckgrid source="vm.filteredphotos" cardTemplate="/template/attendance-card.html" ng-if="vm.showGrid" ng-show="vm.showpics">
                         </div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day2 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
-                        </div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day3 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
-                        </div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day4 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
-                        </div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day5 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
-                        </div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day6 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
-                        </div>
-                        <div class="col-md-1">
-                           <i ng-class="student.day7 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
-                          </i>
+                        <div class="deckgrid clearfix" deckgrid source="vm.filteredphotos" cardTemplate="/template/attendance-cardlist.html" ng-if="vm.showGrid" ng-show="vm.showlist">
                         </div>
                      </div>
-
                   </div>
                </div>
+               <div class="panel-footer"></div>
             </div>
-            <div class="panel-footer"></div>
-         </div>
 
 
-      </uib-tab>
-   </uib-tabset>
+         </uib-tab>
+         <!--vm.setDOW(vm.DOWlist[0].MondayOfWeek); -->
+         <uib-tab id="tab-attendhist" heading="Attendance History" active="active.attendhistory" select="vm.setActiveTab('attendhistory');vm.getAttendanceHistory()">
+            <div class="panel panel-blue">
+               <div class="panel-heading">Attendance History</div>
+               <div class="panel-body pan">
+                  <div class="col-lg-12">
+                     <div class="row">
+                        <button ng-click="vm.getAttendanceHistory()" class="btn btn-blue  attendance">Refresh List</button>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-12">
+                           <div class="col-md-1">MondayOfWeek</div>
+                           <div class="col-md-1">Name</div>
+                           <div class="col-md-1">Rank</div>
+                           <div class="col-md-1">Class</div>
+                           <div class="col-md-1">Monday</div>
+                           <div class="col-md-1">Tuesday</div>
+                           <div class="col-md-1">Wednesday</div>
+                           <div class="col-md-1">Thursday</div>
+                           <div class="col-md-1">Friday</div>
+                           <div class="col-md-1">Saturday</div>
+                           <div class="col-md-1">Sunday</div>
+                        </div>
 
-</div>
+                        <div class="col-md-12" ng-repeat="student in vm.data.attendancehistory">
+                           <div class="col-md-1">{{student.MondayOfWeek}}</div>
+                           <div class="col-md-1">{{student.firstname}} {{student.lastname}}</div>
+                           <div class="col-md-1">{{student.rank}}</div>
+                           <div class="col-md-1">{{student.class}}</div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day1 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day2 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day3 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day4 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day5 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day6 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                           <div class="col-md-1">
+                              <i ng-class="student.day7 == 1? ' fa fa-check-square-o fa-2x' : 'fa fa-square-o fa-2x'" style="color:green;">
+                          </i>
+                           </div>
+                        </div>
+
+                     </div>
+                  </div>
+               </div>
+               <div class="panel-footer"></div>
+            </div>
+
+
+         </uib-tab>
+      </uib-tabset>
+
+   </div>
