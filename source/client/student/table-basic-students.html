@@ -102,7 +102,10 @@
                   </div>
                 </div>
 -->
-               <studentpicker-component on-update="$ctrl.editStudentFromPick($ctrl.studentpick, prop, value)">
+               <studentpicker-component 
+               studentpickparent="$ctrl.studentpickparent"
+               on-update="$ctrl.editStudentFromPick($event)"
+                >                 
                </studentpicker-component>
               
                 <div class="col-md-6 col-xs-6 mtl">

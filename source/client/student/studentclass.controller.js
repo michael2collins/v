@@ -295,10 +295,14 @@ export class StudentClassController {
 
     }
 
-    editStudentFromPick(studentpickparent, prop, value) {
+//    editStudentFromPick(studentpickparent, prop, value) {
+   editStudentFromPick(event) {
         var vm = this;
-        vm.studentpickparent[prop] = value;
-         vm.eventResult = vm.studentpickparent.studentpick;
+  //      vm.studentpickparent[prop] = value;
+//         vm.eventResult = vm.studentpickparent.studentpick;
+      vm.studentpickparent = event.studentpickparent;
+      vm.eventResult = vm.studentpickparent.studentpick;
+
     }
 
     getStudentClassPicture() {
