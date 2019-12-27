@@ -46,6 +46,7 @@ export class AttendanceTableBasicController {
       vm.eventResult = {};
       vm.studentpickparent = {};
 //      vm.studentpickparent2 = {};
+      vm.cardparent = {};
       vm.studentpick = '';
 
       vm.showStats = '';
@@ -110,6 +111,7 @@ export class AttendanceTableBasicController {
 
       //setGridsize('col-md-12');
       vm.activate();
+ //     vm.masonrySetup();
    }
    $onDestroy() {
       this.$log.log("attendance dismissed");
@@ -118,6 +120,43 @@ export class AttendanceTableBasicController {
       this.photos = [];
    };
 
+
+   masonrySetup() {
+
+      // DEMO STUFF
+      const $masonryLayout = document.querySelector("masonry-layout");
+      //const $button = document.querySelector("button");
+      
+      function addItem() {
+        const isLarge = $masonryLayout.children.length >= 100;
+        const $item = document.createElement(isLarge ? "div" : "img");
+        $item.classList.add("item");
+//        $item.style.height = `${Math.round(Math.random() * 500 + 100)}px`;
+//        $item.src = `https://picsum.photos/${Math.floor(Math.random() * 100) + 500}`;
+//        $item.style.background = isLarge ? [`orange`, `blue`, `green`, `red`][
+//          Math.round(Math.random() * 3)
+//        ] : `lightgrey`;
+        $item.setAttribute("loading", "lazy");
+      
+ //       $item.addEventListener("click", () => {
+//          $item.style.height = `${Math.round(Math.random() * 500 + 100)}px`;
+ //         $masonryLayout.layout($masonryLayout.debounce, true);
+//        });
+      
+        $masonryLayout.appendChild($item);
+        //$masonryLayout.insertBefore($item, $masonryLayout.firstChild);
+      }
+      
+      //$button.addEventListener("click", () => {
+      //  addItem();
+      //});
+      
+//      for (let i = 0; i <= $masonryLayout.children.length; i++) {
+      for (let i = 0; i <= 100; i++) {
+        addItem();
+      }      
+   }
+   
    expand() {
       var vm = this;
       vm.$log.log('expand');
@@ -409,6 +448,7 @@ export class AttendanceTableBasicController {
       }
       return false;
    }
+   
    hasStats(item) {
       var vm = this;
       for (var i = 0, len = vm.photos.length; i < len; i++) {
@@ -539,7 +579,7 @@ export class AttendanceTableBasicController {
             else {
                vm.Notification.success({ message: vm.message, delay: 5000 });
             }
-
+/*
             vm.refreshtheAttendance().then(function(zdata) {
                   vm.$log.log('refreshtheAttendance returned', zdata);
                },
@@ -551,7 +591,7 @@ export class AttendanceTableBasicController {
                   vm.Notification.error({ message: error, delay: 5000 });
                   return (vm.$q.reject(error));
                }).catch(angular.noop);
-
+*/
             return vm.thisattendance;
          }).catch(function(e) {
             vm.$log.log('updateAttendance failure:');
@@ -622,6 +662,8 @@ export class AttendanceTableBasicController {
                vm.Notification.warning({ message: vm.message, delay: 5000 });
                vm.data = [];
                vm.photos = [];
+               vm.filteredphotos = [];
+               vm.showGrid = false;
                return (vm.$q.reject(data));
             }
             else {
@@ -661,6 +703,7 @@ export class AttendanceTableBasicController {
             vm.$log.log('photos', vm.photos);
             vm.filteredphotos = vm.photos;
             vm.showGrid = true;
+            vm.masonrySetup();
             return vm.data;
          },
          function(error) {
@@ -813,7 +856,9 @@ export class AttendanceTableBasicController {
       var vm = this;
       vm.$log.log('about setStudentReadyNextRank ', thestudent, readyness);
       var path = '../v1/readynextrank/' + thestudent;
-      var theclassid = vm.Util.getByValue(vm.classes, vm.theclass, 'Description', 'classid');
+//      var theclassid = vm.Util.getByValue(vm.classes, vm.theclass, 'Description', 'classid');
+//mlc fix the above util when class is all.  classid is on the vm.filteredphotos keyed by thestudent as studentID
+      var theclassid = vm.Util.getByValue(vm.filteredphotos, thestudent, 'studentID', 'classid');
 
       return vm.AttendanceServices.setStudentReadyNextRank(path, readyness, theclassid).then(function(data) {
          vm.$log.log("setStudentReadyNextRank returned data", data);

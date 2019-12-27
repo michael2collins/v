@@ -473,7 +473,7 @@ let thirdparty = [
             },
         }
     },
-    {
+/*    {
         module: 'bower_components', entry: {
             path: 'angular-deckgrid/angular-deckgrid.js',
             cwpPatternConfig: {
@@ -482,7 +482,7 @@ let thirdparty = [
         }
             
     },
-    {
+ */   {
         module: 'bower_components', entry: {
             path: 'textAngularJs/dist2/textAngular-rangy.min.js',
             cwpPatternConfig: {

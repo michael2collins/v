@@ -17,7 +17,6 @@ export class StudentPickerController {
     }
     $onDestroy() {
         this.$log.log("StudentPickerController dismissed");
-        this.vm.studentpick = '';
     }
     $onChanges(changes) {
         var vm = this;

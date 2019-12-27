@@ -32,7 +32,7 @@ export  const CoreModule = angular.module('ngadmin.core', [
             'ui.select',
             'iso.directives',
             'angularFileUpload',
-            'akoenig.deckgrid',
+//            'akoenig.deckgrid',
             'color.picker',
             'angularMoment',
             'textAngular',

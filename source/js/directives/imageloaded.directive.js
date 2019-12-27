@@ -10,19 +10,57 @@
  * @author André König (andre.koenig@posteo.de)
  *
  */
-import angular from 'angular';
+const { jQuery: $ } = window;
 
 export const imageloaded = () => {
     'ngInject';
-        return {
-            restrict: 'A',
+    return {
+        restrict: 'A',
 
-            link: function(scope, element, attrs) {   
-                var cssClass = attrs.loadedclass;
+        link: function(scope, element, attrs) {
 
-                element.bind('load', function (e) {
-                    angular.element(element).addClass(cssClass);
-                });
+            var cssClass = attrs.loadedclass,
+                origSrc,
+                timeout;
+
+            function reload() {
+                timeout = setTimeout(function() {
+                    if (!origSrc) {
+                        origSrc = element[0].src;
+                    }
+                    element[0].src = origSrc + '?' + Date.now();
+                    reload();
+                }, 5000);
             }
-        };
+
+            reload();
+
+            element.bind('load', function(e) {
+                clearTimeout(timeout);
+                element.addClass(cssClass);
+            });
+        }
     };
+};
+export const backgroundloaded = () => {
+    'ngInject';
+    return {
+        restrict: 'A',
+
+        link: function(scope, element, attrs) {
+
+            var cssClass = attrs.loadedclass;
+
+            var src = element.css('background-image');
+            var url = src.match(/\((.*?)\)/)[1].replace(/('|")/g, '');
+
+            var img = new window.Image();
+
+            img.onload = function() {
+                element.addClass(cssClass);
+            };
+            img.src = url;
+            if (img.complete) img.onload();
+        }
+    };
+};

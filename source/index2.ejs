@@ -33,7 +33,8 @@
       
    </head>
 <!--   <body ng-app="ngadmin" ng-strict-di ng-class="[$ctrl.header.header_topbar, $ctrl.header.boxed]" class="topbar-fixed sidebar-fixed" style="padding:  0px;"> -->
-   <body ng-app="ngadmin" ng-strict-di class="topbar-fixed sidebar-fixed" style="padding:  0px;">
+<!-- note strict di breaks the webcomponent controller -->
+<body ng-app="ngadmin"  class="topbar-fixed sidebar-fixed" style="padding:  0px;">
       <portal-component >
          <div >
       ...Loading
