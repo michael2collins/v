@@ -3,7 +3,7 @@ import angular from 'angular';
 export class StudentClassController {
     constructor(
         $scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices, StudentUtil, _,$element,$filter
+        $log, $http, $location, $timeout, ClassServices, Notification, $q, $controller, UserServices, StudentUtil, _,$element,$filter,$attrs
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -22,7 +22,7 @@ export class StudentClassController {
         this._ = _;
         this.$filter = $filter;
         this.$element = $element;
-
+        this.$attrs = $attrs;
     }
 
     $onInit() {
@@ -91,10 +91,24 @@ export class StudentClassController {
         vmclass.expiresOnHead = {
             opened: false
         };
-        
+        vmclass.disenable=true;
+        vmclass.students={};
+
         vmclass.activate();
         
+        vmclass.$scope.$on('students-results:ready', () => {
+            // Take action after the view has been populated with the updated data
+                    vmclass.students=JSON.parse(vmclass.$attrs.students);
+
+        });
+        vmclass.$rootScope.$on('disenableChange', function(event, next, current ) {
+            vmclass.disenable=next.disenable;
+        });
+
     }
+
+    
+
 
     $onDestroy() {
         this.$log.log("ModalNewStudentInstanceController dismissed");
@@ -165,6 +179,12 @@ export class StudentClassController {
             ])
             .then(function() {
                 vmclass.$log.log('studentclass activation done returned');
+                vmclass.$scope.$emit('classloaded',{
+                    studentclazzlist: vmclass.studentclazzlist,
+                    classlist: vmclass.xlistnew,
+                    studentclass: vmclass.studentclass,
+                    classpictureurl: vmclass.classpictureurl
+                });
             });
 
 

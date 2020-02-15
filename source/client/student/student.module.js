@@ -4,7 +4,7 @@ import studenthistoriestemplate from './table-basic-studenthistories.html';
 import editstudenttempate from './form-layouts-editstudent.html';
 
 
-import { editstudentComponent } from './editstudent.component';
+import { editstudentComponent, printstudentComponent } from './editstudent.component';
 //import { newpayerComponent } from './newpayer.component';
 //import { newpayerinstComponent } from './newpayerinst.component';
 import { newstudentComponent } from './newstudent.component';
@@ -30,6 +30,7 @@ import { ctrlDualList } from './studentdual.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
 import { StudentHistoriesController } from './studenthistoriestable.controller';
 //import { StudentClassEditController } from './studentclassedit.controller';
+import { PrintStudentController } from './printstudent.controller';
 
 //import { portalDataService } from '../portal/portaldata.service';
 import { StudentServices } from '../../js/services/studentServices';
@@ -64,12 +65,14 @@ export const StudentModule = angular
  .controller('StudentHistoryController', StudentHistoryController)
  .controller('StudentAttendController', StudentAttendController)
  .controller('FormLayoutsControllerEditStudent', FormLayoutsControllerEditStudent)
+ .controller('PrintStudentController',PrintStudentController)
  .controller('StudentPaymentController', StudentPaymentController)
  .controller('ctrlDualList', ctrlDualList)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
  .controller('StudentHistoriesController', StudentHistoriesController)
 // .controller('StudentClassEditController', StudentClassEditController)
  .component('editstudentComponent', editstudentComponent)
+ .component('printstudentComponent', printstudentComponent)
  .component('newstudentComponent', newstudentComponent)
  .component('newstudentinstComponent', newstudentinstComponent)
  .component('studentclassComponent', studentclassComponent)

@@ -6,3 +6,65 @@
         font-size: 2em;
         color: #379f37;
     }
+@media print {
+    body > *:not(#printSection) {
+       display: none;
+    }
+    #printSection,
+    #printSection * {
+        display: inline-block;
+
+    }
+    .table>tbody>tr>.no-line {
+        border-top: none;
+    }
+    .table>thead>tr>.no-line {
+        border-bottom: none;
+    }
+    .table>tbody>tr>.thick-line {
+        border-top: 2px solid;
+    }
+    table {
+        table-layout: auto;
+    }
+    td {
+        width: 160px;
+        height: auto;
+    }
+    th {
+        width: 160px;
+        height: auto;
+    }
+    th:nth-child(2) {
+        width: 210px;
+        height: auto;
+    }
+    .col-md-6 {
+        min-height: 1px;
+        padding-right: 15px;
+        padding-left: 15px;
+        width: 300px;
+    }
+    .row {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+    .well {
+        min-height: 20px;
+        padding: 19px;
+        margin-bottom: 20px;
+        background-color: #f5f5f5;
+        border: 1px solid #e3e3e3;
+        border-radius: 4px;
+        box-shadow: none;
+    }
+    #printSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .noPrint {
+        display: none;
+    }
+
+}

@@ -61,9 +61,9 @@ let thirdparty = [
     {
         module: 'animate', entry: '//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.1/animate.min.css'
     },
-    {
-        module: 'angular-bootstrap-toggle-switch', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/css/bootstrap3/bootstrap-switch.min.css'
-    },
+//    {
+//        module: 'angular-bootstrap-toggle-switch', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/css/bootstrap3/bootstrap-switch.min.css'
+//    },
     {
         module: 'jvectormap', entry: '//cdnjs.cloudflare.com/ajax/libs/jvectormap/2.0.4/jquery-jvectormap.min.css'
     },
@@ -242,9 +242,9 @@ let thirdparty = [
     {
         module: 'angular-resource', entry: '//ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular-resource.min.js'
     },
-    {
-        module: 'angular-boostrap-toggle', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js'
-    },
+//    {
+//        module: 'angular-boostrap-toggle', entry: '//cdn.jsdelivr.net/npm/angular-bootstrap-toggle-switch@1.1.0/dist/js/bootstrap-switch.min.js'
+//    },
     {
         module: 'angular-ui-bootstrap', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/2.5.0/ui-bootstrap.min.js'
     },
@@ -394,6 +394,19 @@ let thirdparty = [
         module: 'angular-ui-tinymce', entry: '//cdnjs.cloudflare.com/ajax/libs/angular-ui-tinymce/0.0.19/tinymce.min.js'
     },
     {
+        module: 'jsPDF', entry: '//cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.min.js'
+    },
+    {
+        module: 'html2canvas', 
+        entry: {
+            path: '//cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.js',
+            attributes: {
+                integrity: "sha256-my/qJggBjG+JoaR9MUSkYM+EpxVkxZRNn3KODs+el74=", 
+                crossorigin: "anonymous"
+            },
+        },
+    },
+    {
         module: 'stripe', 
         entry: { 
             path: '//js.stripe.com/v3/',
@@ -452,6 +465,30 @@ let thirdparty = [
     {
         module: 'bower_components', entry: {
             path: 'angular-isotope/dist2/angular-isotope.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'angular-toggle-switch/angular-toggle-switch.min.js',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'angular-toggle-switch/style/bootstrap3/angular-toggle-switch-bootstrap-3.css',
+            cwpPatternConfig: {
+                context: path.resolve(__dirname, '.'),
+            },
+        }
+    },
+    {
+        module: 'bower_components', entry: {
+            path: 'angular-toggle-switch/angular-toggle-switch.min.js',
             cwpPatternConfig: {
                 context: path.resolve(__dirname, '.'),
             },

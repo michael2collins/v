@@ -1,21 +1,29 @@
 export class ModalNewPayerController {
   constructor(
-    $log, $uibModal, $location, $scope
+    $log, $uibModal, $location, $scope,$attrs
   ) {
     'ngInject';
     this.$log = $log;
     this.$uibModal = $uibModal;
     this.$location = $location;
     this.$scope = $scope;
+        this.$attrs = $attrs;
   }
 
   $onInit() {
     var vmnewPayermodal = this;
     vmnewPayermodal.animationsEnabled = true;
+//          vmnewPayermodal.disenable = vmnewPayermodal.$attrs.disenable;
 
     vmnewPayermodal.modalInstance = undefined;
     vmnewPayermodal.thisPayer = '';
     vmnewPayermodal.$log.log("ModalNewPayerController entered");
+
+        vmnewPayermodal.$scope.$on('$viewContentLoaded', 
+        function(event){ 
+            vmnewPayermodal.disenable=vmnewPayermodal.$attrs.disenable;
+
+        });
 
   }
   $onDestroy() {

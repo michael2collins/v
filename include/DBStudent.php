@@ -2102,7 +2102,7 @@ and sr.studentid = cp.contactid and cp.contactid = cr.contactid)
 		if (!$this->isPaymentExists($txn_id)) {
 			$app->log->debug(print_R("proceed with create payment: $sql\n", TRUE) );
 			if ($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param("sssssssssssssssssssssssssssssss", 
+				$stmt->bind_param("ssissssssssssssissississississs", 
 					$txn_id , $receipt_id , $num_cart_items , $ipn_track_id , $payment_gross ,
 					$payment_type , $payment_date , $payer_status , $first_name , $last_name ,
 					$payer_email , $payment_status , $mc_currency ,
@@ -2685,13 +2685,20 @@ select c.ID, c.email, pp.payerid, pp.paymentid, pp.paymenttype, pp.payondayofmon
 		$sql.= " status )";
 		$sql.= " values ( ?, ?, ?, ?, ?, ?)";
 
+        $dt = DateTime::createFromFormat('Y-m-d\TH:i:s+', $invoiceDate, new DateTimeZone('Etc/Zulu'));
+        
+        if ($dt === false) {
+            $app->log->debug( print_R("createInvoice  bad date $invoiceDate" , TRUE));
+            return NULL;
+        }
+        $pdate = $dt->format('Y-m-d');
 		// First check if invoice already existed in db
 
 		if (!$this->isInvoiceExists(
-			 $paymentid, $invoiceDate
+			 $paymentid, $pdate
 			)) {
 			if ($stmt = $this->conn->prepare($sql)) {
-				$stmt->bind_param("ssssss", $invoice, $invoiceDate, $invoiceAmt, $paymentid, $payfor, $status);
+				$stmt->bind_param("ssssss", $invoice, $pdate, $invoiceAmt, $paymentid, $payfor, $status);
 				$result = $stmt->execute();
 				$stmt->close();
 

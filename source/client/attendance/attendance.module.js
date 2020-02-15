@@ -11,8 +11,6 @@ import { AttendanceTableBasicController } from './attendance.controller';
 import { attendanceComponent,main,childComponent,attendanceCard,attendanceCardlist } from './attendance.component';
 import attendancetemplate from './attendance.html';
 
-import { ChildController } from './child.controller';
-import { MaincController } from './mainc.controller';
 import { CardController } from './card.controller';
 import { CardlistController } from './cardlist.controller';
 
@@ -22,13 +20,9 @@ export const AttendanceModule = angular
    .service('AttendanceServices', AttendanceServices)
    .service('Util', Util)
    .controller('AttendanceTableBasicController', AttendanceTableBasicController)
-   .controller('MaincController',MaincController)
-   .controller('ChildController',ChildController)
    .controller('CardController',CardController)
    .controller('CardlistController',CardlistController)
    .component('attendanceComponent', attendanceComponent)
-   .component('main', main)
-   .component('childComponent', childComponent)
    .component('attendanceCard', attendanceCard)
    .component('attendanceCardlist', attendanceCardlist)
    .config(attendconfig)

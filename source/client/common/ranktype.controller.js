@@ -1,13 +1,14 @@
 
 export class RankTypeController {
     constructor(
-        $log, Notification, TestingServices, $scope
+        $log, Notification, TestingServices, $scope, $attrs
     ) {
         'ngInject';
         this.$log = $log;
         this.$scope = $scope;
         this.Notification = Notification;
         this.TestingServices = TestingServices;
+        this.$attrs = $attrs;
     }
 
     $onInit() {
@@ -15,6 +16,13 @@ export class RankTypeController {
         var vm = this;
         vm.ranktypelist = [];
         vm.ranktypeselected = '';
+
+        vm.$scope.$on('$viewContentLoaded', 
+        function(event){ 
+            vm.disenable=vm.$attrs.disenable;
+
+        });
+
         vm.activate();
 
     }

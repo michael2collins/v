@@ -4,7 +4,7 @@ import {NgTab } from './ngTab.directive';
 import {itemsDrag } from './itemsDrag.directive';
 import {datepickerPopup} from './datepicker.directive';
 import {img} from './img.directive';
-import {imageloaded,backgroundloaded} from './imageloaded.directive';
+import {imageloaded,backgroundloaded,disenableloaded,elementReady} from './imageloaded.directive';
 import {ngPrint} from './printdir.directive';
 import {scrollSpy} from './scrollSpy.directive';
 import {spy} from './spy.directive';
@@ -29,6 +29,8 @@ export const DirectiveModule =  angular
     .directive('img',img)
     .directive('imageloaded',imageloaded)
     .directive('backgroundloaded',backgroundloaded)
+    .directive('disenableloaded',disenableloaded)
+    .directive('elementReady',elementReady)
     .directive('ngPrint',ngPrint)
     .directive('scrollSpy',scrollSpy)
     .directive('spy',spy)

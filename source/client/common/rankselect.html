@@ -2,7 +2,7 @@
     <form action="" novalidate name="form" class="form-horizontal">
         <div class="form-body">
             <div class="col-md-6 remove-all-margin-padding">
-                <ranktype-component on-update="$ctrl.updateRankType($ctrl.ranktypepick, prop, value)">
+                <ranktype-component disenable="{{$ctrl.disenable}}" on-update="$ctrl.updateRankType($ctrl.ranktypepick, prop, value)">
                 </ranktype-component>
             </div>
             <div class="col-md-6 remove-all-margin-padding" ng-show="$ctrl.isOk()">

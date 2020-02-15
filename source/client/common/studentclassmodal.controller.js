@@ -26,7 +26,13 @@ export class ModalSetStudentClassController {
     vmsetclassmodal.studentclass='';
       vmsetclassmodal.searchclass = vmsetclassmodal.$attrs.mode == "add" ? "fa fa-search" : "fas fa-pencil-alt";
       vmsetclassmodal.searchtext = vmsetclassmodal.$attrs.mode == "add" ? "Search" : "";
+//      vmsetclassmodal.disenable = true;
     vmsetclassmodal.init();
+        vmsetclassmodal.$scope.$on('$viewContentLoaded', 
+        function(event){ 
+            vmsetclassmodal.disenable=vmsetclassmodal.$attrs.disenable;
+
+        });
   
   }
 
@@ -100,6 +106,8 @@ export class ModalSetStudentClassController {
 //      vmsetclassmodal.studentclassparent.$scope.$emit('iso-method', { name: null, params: null });
 //      vmsetclassmodal.studentclassparent.$scope.$emit('iso-method', { name: 'arrange', params: null });
         vmsetclassmodal.studentclassparent.reset(agecat,pgmcat,classcat);
+      vmsetclassmodal.disenable = vmsetclassmodal.$attrs.disenable;
+        
         },
         function(error) {
             vmsetclassmodal.$log.log('vmsetclassmodal ui failed to render, reason : ', error);

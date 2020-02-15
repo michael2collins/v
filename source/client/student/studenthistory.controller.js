@@ -1,6 +1,6 @@
 export class StudentHistoryController {
     constructor(
-        $routeParams, $log, $scope, StudentServices, Util, $q, uiGridConstants, Notification, UserServices
+        $routeParams, $log, $scope, StudentServices, Util, $q, uiGridConstants, Notification, UserServices, $attrs
     ) {
         'ngInject';
         this.$routeParams = $routeParams;
@@ -12,6 +12,7 @@ export class StudentHistoryController {
         this.uiGridConstants = uiGridConstants;
         this.Notification = Notification;
         this.UserServices = UserServices;
+        this.$attrs = $attrs;
     }
 
     $onInit() {
@@ -25,6 +26,8 @@ export class StudentHistoryController {
         vm.rowheight = 32;
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
+        vm.students={};
+        vm.disenable=false;
 
         vm.setGridOptions();
         vm.activate();
@@ -46,10 +49,16 @@ export class StudentHistoryController {
             vm.$log.log("studenthistory started");
 
         });
+        vm.$scope.$on('students-results:ready', () => {
+            // Take action after the view has been populated with the updated data
+                    vm.students=JSON.parse(vm.$attrs.students);
+
+        });
 
         vm.getStudentHistory().then(function() {
             vm.$log.log('activated StudentHistory view');
             vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+            vm.$scope.$emit('historyloaded');
 
         }, function(error) {
             return (vm.$q.reject(error));
@@ -121,6 +130,7 @@ export class StudentHistoryController {
             onRegisterApi: function(gridApi) {
                 vm.$log.log('vm gridapi onRegisterApi');
                 vm.gridApi = gridApi;
+
 
                 gridApi.pagination.on.paginationChanged(vm.$scope, function(newPage, pageSize) {
                     vm.$log.log('pagination changed');

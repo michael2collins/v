@@ -1,4 +1,17 @@
-<div id="form-layouts-editstudent" class="row" ng-controller="FormLayoutsControllerEditStudent as $ctrl">
+<div id="form-layouts-editstudent" class="row" ng-controller="FormLayoutsControllerEditStudent as $ctrl" ng-cloak>
+  <div class="col-lg-offset-9">
+    <button type="button" ng-click="$ctrl.print()" class="btn btn-blue">
+        <span class="fa-stack fa-1x">
+          <i class="fas fa-print fa-stack-1x"></i>
+        </span>
+      &nbsp; Preview</button>
+    <button  type="button" ng-click="$ctrl.setreadonly()" class="btn btn-blue ">
+        <span class="fa-stack fa-1x">
+        <i class="fas fa-pencil-alt fa-stack-1x"></i>
+        <i ng-hide="$ctrl.thereadonly" class="fas fa-ban fa-stack-2x" style="color:Tomato"></i>
+      </span>
+      &nbsp; {{ $ctrl.thereadonly ? 'Edit' : 'ReadOnly'}}</button>
+  </div>
 
   <div class="col-lg-12">
     <uib-tabset type="pills" active="$ctrl.active">
@@ -14,21 +27,21 @@
                     <div class="form-body pal">
                       <div class="col-md-12">
                         <div class="col-md-11">
-                          <h3 class="block-heading">Student Information</h3>
+                          <h3 class="block-heading">Student Information for {{$ctrl.students.FirstName}} {{$ctrl.students.LastName}}</h3>
                         </div>
-                        <div id="modal-confirm" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade ng-scope" style="display: none;">
+                        <div id="modal-confirm" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade ng-scope " style="display: none;">
                           <div class="modal-dialog">
                             <div class="modal-content">
                               <div class="modal-body">Are you sure?</div>
                               <div class="modal-footer">
-                                <button type="button" data-dismiss="modal" class="btn">Cancel</button>
-                                <button type="button" data-dismiss="modal" ng-click="$ctrl.removeStudent()" class="btn btn-red">Delete {{$ctrl.students.FirstName + ' ' + $ctrl.students.LastName}}</button>
+                                <button  type="button" data-dismiss="modal" class="btn">Cancel</button>
+                                <button  type="button" data-dismiss="modal" ng-click="$ctrl.removeStudent()" class="btn btn-red">Delete {{$ctrl.students.FirstName + ' ' + $ctrl.students.LastName}}</button>
                               </div>
                             </div>
                           </div>
                         </div>
-                        <div class="col-md-1">
-                          <button type="button" data-target="#modal-confirm" data-toggle="modal" class="btn btn-red"><i class="far fa-trash-alt"></i>&nbsp; Student</button>
+                        <div class="col-md-1 disenable" >
+                          <button  type="button" data-target="#modal-confirm" data-toggle="modal" class="btn btn-red disen"><i class=" far fa-trash-alt"></i>&nbsp; Student</button>
                         </div>
 
                       </div>
@@ -67,7 +80,7 @@
                           </div>
                         </div>
                       </div>
-                      <div class="row">
+                      <div class="row" >
                         <div class="col-md-3">
                           <div class="row">
                             <div class="col-md-12">
@@ -78,7 +91,7 @@
                             </div>
                           </div>
                           <div class="row">
-                            <div class="col-md-12 col-xs-12"><a ng-click="$ctrl.openPhoto()" class="btn  btn-sm btn-green">Manage Photo</a></div>
+                            <div class="col-md-12 col-xs-12"><button ng-click="$ctrl.openPhoto()" type="button" class="btn  btn-sm btn-green disenable">Manage Photo</button></div>
                           </div>
                         </div>
 
@@ -230,15 +243,15 @@
                             <div class="col-md-6">
                               <label for="inputBirthday" class="control-label">Birthday </label>
                               <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
-                                <div class="col-md-11 prn" >
+                                <div class="col-md-11 prn">
                                   <div class="input-icon right">
                                     <i ng-click="$ctrl.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
                                     <input id="inputBirthday" autocomplete='bday' type="text" placeholder="mm/dd/yyyy" name="Birthday" required ng-model="$ctrl.students.Birthday" ng-change="$ctrl.updateStudent(editstudent)" is-open="$ctrl.status.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}"
                                       ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
                                   </div>
                                 </div>
-                                <div class="col-md-1 pln prn" >
-                                  <button type="button" class="btn btn-default" ng-click="$ctrl.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                <div class="col-md-1 pln prn">
+                                  <button  type="button" class="btn btn-default disenable" ng-click="$ctrl.dateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                 </div>
                                 <div style="color:maroon" role="alert" ng-messages="editstudent.Birthday.$error" class="has-error">
                                   <div ng-message="required">You did not enter a field</div>
@@ -432,7 +445,7 @@
                           <div class="portlet-body">
                             <div class="table-tools">
                               <div class="row col-md-offset-10 mbs">
-                                <button type="button" class="btn btn-blue mrs mts" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
+                                <button  type="button" class="btn btn-blue mrs mts disenable" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
                               </div>
                             </div>
                             <div class="row">
@@ -442,7 +455,7 @@
                                     <div class="container remove-all-margin-padding">
                                       <div class="row col-md-12 remove-all-margin-padding">
                                         <div class="col-md-8 remove-all-margin-padding">
-                                          <rankselect-component on-update="$ctrl.updateRankPick($ctrl.rankpickparent, prop, value)">
+                                          <rankselect-component disenable="{{$ctrl.disenable}}" on-update="$ctrl.updateRankPick($ctrl.rankpickparent, prop, value)">
                                           </rankselect-component>
                                         </div>
                                         <div class="col-md-4 padding" ng-show="$ctrl.isOkRT()">
@@ -455,7 +468,7 @@
                                                 </div>
                                               </div>
                                               <div class="col-md-1 remove-all-margin-padding">
-                                                <button type="button" class="btn btn-default" ng-click="$ctrl.pdateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                                                <button  type="button" class="btn btn-default disenable" ng-click="$ctrl.pdateopen($event)"><i class="glyphicon glyphicon-calendar"></i></button>
                                               </div>
                                             </div>
                                           </div>
@@ -465,7 +478,7 @@
                                       <div class="row col-md-12 remove-all-margin-padding">
                                         <div class="actions col-md-3 offset-md-9 remove-all-margin-padding" ng-show="$ctrl.isOkRT()">
                                           <label for="rankbtn" class="control-label">&nbsp; </label>
-                                          <a role="button" class="btn btn-green form-control" ng-click="$ctrl.addStudentRank()"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                          <button type="button" class="btn btn-green form-control" ng-click="$ctrl.addStudentRank()"><i class="fa fa-plus"></i>&nbsp; Add</button>
                                         </div>
                                       </div>
                                     </div>
@@ -480,7 +493,7 @@
                                       <th>Type</th>
                                       <th>Rank</th>
                                       <th>Last Promoted</th>
-                                      <th>Action</th>
+                                      <th class="disenable">Action</th>
                                     </tr>
                                   </thead>
                                   <tbody>
@@ -491,7 +504,7 @@
                                       </td>
                                       <td class="col-md-3">{{item.lastPromoted}}
                                       </td>
-                                      <td class="col-md-2"><span> <a ng-click="$ctrl.rankremove(item.ranktype)" role="button" class="btn btn-red" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</a></span></td>
+                                      <td class="col-md-2 disenable"><span> <button ng-click="$ctrl.rankremove(item.ranktype)" type="button" class="btn btn-red disenable" style="padding:  0px 14px;" ><i class="far fa-trash-alt"></i>&nbsp; Remove</button></span></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -607,20 +620,18 @@
         </div>
       </uib-tab>
       <uib-tab index="2" id="tab-studentclass" heading="Class" select="$ctrl.setActiveTab(2,'studentclassselect');classtabShown = !classtabShown" deselect="classtabShown = !classtabShown">
-        <studentclass-component></studentclass-component>
+        <studentclass-component disenable="{{$ctrl.disenable}}" students="{{$ctrl.students}}"></studentclass-component>
 
       </uib-tab>
       <uib-tab index="3" id="tab-studentpayment" heading="Payment" select="$ctrl.setActiveTab(3,'studentpaymentselect'); paymenttabShown = !paymenttabShown" deselect="paymenttabShown = !paymenttabShown">
-        <studentpayment-component></studentpayment-component>
+        <studentpayment-component disenable="{{$ctrl.disenable}}" students="{{$ctrl.students}}"></studentpayment-component>
       </uib-tab>
       <uib-tab index="4" id="tab-studenthist" heading="Student History" select="$ctrl.setActiveTab(4,'studenthistselect'); histtabShown = !histtabShown" deselect="histtabShown = !histtabShown">
-        <studenthistory-component></studenthistory-component>
+        <studenthistory-component disenable="{{$ctrl.disenable}}"  students="{{$ctrl.students}}"></studenthistory-component>
       </uib-tab>
       <uib-tab index="5" id="tab-studentattend" heading="Student Attendance" select="$ctrl.setActiveTab(5,'studentattendselect'); attendtabShown = !attendtabShown" deselect="attendtabShown = !attendtabShown">
-        <studentattend-component></studentattend-component>
+        <studentattend-component disenable="{{$ctrl.disenable}}"  students="{{$ctrl.students}}"></studentattend-component>
       </uib-tab>
     </uib-tabset>
-
-
   </div>
 </div>

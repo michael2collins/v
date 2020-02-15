@@ -1,6 +1,6 @@
 export class ModalNewPayerInstanceController {
   constructor(
-    $log, PaymentServices, $window, Notification, $scope
+    $log, PaymentServices, $window, Notification, $scope,$attrs
   ) {
     'ngInject';
 
@@ -9,12 +9,19 @@ export class ModalNewPayerInstanceController {
     this.$window = $window;
     this.Notification = Notification;
     this.$scope = $scope;
+        this.$attrs = $attrs;
   }
 
   $onInit() {
     var vmnew = this;
     vmnew.$log.log('modal ModalNewPayerInstanceController entered');
     vmnew.$log.log(vmnew);
+
+        vmnew.$scope.$on('$viewContentLoaded', 
+        function(event){ 
+            vmnew.disenable=vmnew.$attrs.disenable;
+
+        });
 
     vmnew.thisPayer = '';
     vmnew.message = '';

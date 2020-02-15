@@ -1,4 +1,6 @@
 import angular from 'angular';
+//import html2canvas from 'html2canvas';
+//import jsPDF from 'jsPDF';
 
 export class FormLayoutsControllerEditStudent {
 
@@ -39,7 +41,7 @@ export class FormLayoutsControllerEditStudent {
         vm.rankpick;
         vm.ranktypepick;
         vm.lastPromoted;
-//        vm.disabled = false;
+        //        vm.disabled = false;
         vm.studentrank = {};
         vm.students = [];
         vm.genders = [];
@@ -60,6 +62,7 @@ export class FormLayoutsControllerEditStudent {
         vm.active = [];
         vm.path = '../v1/students/' + vm.$routeParams.id;
         vm.zippath = '../v1/zips';
+        vm.thereadonly = true;
 
         vm.sListPath = '../v1/studentlists';
         vm.status = {
@@ -73,6 +76,7 @@ export class FormLayoutsControllerEditStudent {
 
         vm.rankpickselected = '';
         vm.rankpickparent = {};
+        vm.readonlySelector = 'select,input,textarea,.disenable';
 
         vm.init();
         vm.setLists();
@@ -80,7 +84,22 @@ export class FormLayoutsControllerEditStudent {
         vm.getStudentLists();
         //        vm.getRankList();
         vm.activate();
+        vm.img1 = {};
+        vm.img2 = {};
+        vm.part1 = {};
+        vm.part2 = {};
 
+        vm.studentloaded = false;
+        vm.studentdata = {};
+        vm.classloaded = false;
+        vm.classdata = {};
+        vm.attendanceloaded = false;
+        vm.historyloaded = false;
+        vm.paymentloaded = false;
+        vm.paymentdata = {};
+        vm.payersetloaded = false;
+        vm.payersetdata = {};
+        vm.alldata = {};
     }
 
     $onDestroy() {
@@ -91,8 +110,8 @@ export class FormLayoutsControllerEditStudent {
     init() {
         var vm = this;
 
-        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined ) {
-            vm.$log = vm.$log.getInstance('FormLayoutsControllerEditStudent',vm.UserServices.isDebugEnabled());
+        if (vm.$log.getInstance(vm.UserServices.isDebugEnabled()) !== undefined) {
+            vm.$log = vm.$log.getInstance('FormLayoutsControllerEditStudent', vm.UserServices.isDebugEnabled());
         }
 
         vm.menu_h = vm.$('#sidebar').height();
@@ -100,15 +119,184 @@ export class FormLayoutsControllerEditStudent {
         vm.$scope.$on('$routeChangeSuccess', function(event, current, previous) {
             //vm.$log.logEnabled(vm.UserServices.isDebugEnabled());
             vm.$log.log("editstudent started");
+            vm.initreadonly();
+        });
+        vm.$scope.$on('studentloaded', function(event, args) {
+            vm.studentloaded = true;
+            vm.studentdata = angular.copy(args);
+            vm.initreadonly();
 
         });
+        vm.$scope.$on('payersetloaded', function(event, args) {
+            vm.payersetloaded = true;
+            vm.payersetdata = args;
+            vm.initreadonly();
+        });
+        vm.$scope.$on('paymentloaded', function(event, args) {
+            vm.paymentloaded = true;
+            vm.paymentdata = args;
+            vm.initreadonly();
+        });
+        vm.$scope.$on('historyloaded', function() {
+            vm.historyloaded = true;
+            vm.initreadonly();
+        });
+        vm.$scope.$on('attendanceloaded', function() {
+            vm.attendanceloaded = true;
+            vm.initreadonly();
+        });
+        vm.$scope.$on('classloaded', function(event, args) {
+            vm.classloaded = true;
+            vm.classdata = args;
+            vm.initreadonly();
+        });
+
+
         vm.$scope.$on('$destroy', function iVeBeenDismissed() {
             vm.$log.log("editstudent dismissed");
-         //   vm.$log.logEnabled(false);
+            //   vm.$log.logEnabled(false);
         });
 
 
-//        vm.portalDataService.Portlet('form-layouts-editstudent.js');
+        //        vm.portalDataService.Portlet('form-layouts-editstudent.js');
+
+    }
+    initreadonly() {
+        var vm = this;
+        if (vm.historyloaded && vm.studentloaded && vm.paymentloaded && vm.attendanceloaded && vm.classloaded && vm.payersetloaded) {
+            vm.setDisplay();
+
+            vm.alldata = {};
+            vm.alldata.studentdata = vm.studentdata.studentdata;
+            vm.alldata.classdata = vm.classdata;
+            vm.alldata.paymentdata = vm.paymentdata;
+            vm.alldata.payersetdata = vm.payersetdata;
+            vm.alldata.studentranks = vm.studentranks;
+            vm.alldata.StudentList = vm.StudentList;
+        }
+    }
+
+    setreadonly() {
+        var vm = this;
+        vm.thereadonly = !vm.thereadonly;
+        vm.setDisplay();
+        vm.$rootScope.$emit('disenableChange', { disenable: vm.thereadonly });
+    }
+    print() {
+        var vm = this;
+        vm.openmodal();
+    }
+    setDisplay() {
+        var vm = this;
+        vm.$(vm.readonlySelector).prop('disabled', vm.thereadonly);
+        if (vm.thereadonly == true) {
+            vm.$("#form-layouts-editstudent").find(".disenable").addClass("ignore");
+        }
+        else {
+            vm.$("#form-layouts-editstudent").find(".ignore").removeClass("ignore");
+        }
+
+    }
+    openmodal() {
+        var vmprintstudentmodal = this;
+
+        vmprintstudentmodal.modalInstance = vmprintstudentmodal.$uibModal.open({
+            animation: vmprintstudentmodal.animationsEnabled,
+            component: 'printstudentComponent',
+            size: 'mySize',
+            resolve: {
+                alldata: vmprintstudentmodal.alldata,
+                disenable: vmprintstudentmodal.thereadonly
+            }
+        });
+
+        vmprintstudentmodal.modalInstance.opened.then(
+            function(success) {
+                vmprintstudentmodal.$log.log('modalInstance ui opened:', success);
+            },
+            function(error) {
+                vmprintstudentmodal.$log.log('modalInstance ui failed to open, reason : ', error);
+            }
+        );
+        vmprintstudentmodal.modalInstance.rendered.then(
+            function(success) {
+                vmprintstudentmodal.$log.log('vmprintstudentmodal ui rendered:', success);
+                vmprintstudentmodal.$(vmprintstudentmodal.readonlySelector).prop('disabled', vmprintstudentmodal.thereadonly);
+                vmprintstudentmodal.$("#print-layouts-editstudent").find(".disenable").addClass("ignore");
+            },
+            function(error) {
+                vmprintstudentmodal.$log.log('vmprintstudentmodal ui failed to render, reason : ', error);
+            }
+        );
+
+        vmprintstudentmodal.modalInstance.result.then(function(thisstudent) {
+            //    vmprintstudentmodal.$log.log('search modalInstance result thisstudent:', thisstudent);
+            //    vmprintstudentmodal.thisstudent = thisstudent;
+        }, function() {
+            //todo: shoudl we get the student
+            vmprintstudentmodal.$log.info('Modal dismissed at: ' + new Date());
+        });
+
+    }
+    printcancel() {
+        this.$scope.$parent.$uibModalInstance.dismiss('cancel');
+    }
+
+    printold() {
+        var vm = this;
+        /*        vm.part1 = document.querySelector("#form-layouts-editstudent > div > div > div > div.tab-pane.ng-scope > div > div > div");
+                vm.part2 = document.querySelector("#form-layouts-editstudent > div > div > div > div.tab-pane.ng-scope > studentclass-component > div > div > div")
+                html2canvas(vm.part1, {
+                    //                windowWidth: part1.scrollWidth,
+                    //               windowHeight: part1.scrollHeight,
+                    onrendered: function(canvas) {
+                        vm.img1 = canvas.toDataURL("image/png");
+
+                    }
+                });
+                html2canvas(vm.part2, {
+                    onrendered: function(canvas2) {
+                        vm.img2 = canvas2.toDataURL("image/png");
+                        var doc = new jsPDF({
+                            orientation: 'landscape',
+                            //   unit: 'in',
+                            //  format: [11, 8.5]
+                        });
+                        doc.addImage(vm.img1, 'JPEG', 20, 20);
+                        doc.addPage();
+                        doc.addImage(vm.img2, 'JPEG', 20, 20);
+                        doc.save('student.pdf');
+
+                    }
+                });
+        */
+        var approot = window.location;
+        //toggle readonly
+        var printContents = new vm.$("#form-layouts-editstudent").clone();
+        var headContents = new vm.$("head").clone();
+        var myWindow = window.open("", "popup", "width=800,height=600,scrollbars=yes,resizable=yes," +
+            "toolbar=no,directories=no,location=no,menubar=no,status=no,left=250px,top=80px");
+
+        //         $(printContents).find("#PrintNews").remove();
+        //        $(printContents).find("#bottom").remove();
+        myWindow.document.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
+        myWindow.document.write("<html>");
+        myWindow.document.write("<head>");
+        myWindow.document.write(vm.$(headContents).html());
+
+        //         myWindow.document.write("<link href='" + approot + "/Themes/print.css' rel='stylesheet' type='text/css' />");
+        //         myWindow.document.write("<link href='" + approot + "/Themes/secretaryPortal.css' rel='stylesheet' type='text/css' />");
+        myWindow.document.write("</head>");
+        myWindow.document.write("<body style='font: 11pt/1.2 Arial !important;'>");
+        //         myWindow.document.write("<div class='story'>");
+        printContents.find("script").remove();
+        myWindow.document.write(vm.$(printContents).html());
+        //        myWindow.document.write("</div>");
+        myWindow.document.write("</body>");
+        myWindow.document.write("</html>");
+        myWindow.focus();
+        //       myWindow.print();
+        //        myWindow.close();
 
     }
     openPhoto() {
@@ -142,6 +330,8 @@ export class FormLayoutsControllerEditStudent {
                 vm.getStudentRanks(vm.students.ID);
                 vm.getStudentRankTypes(vm.students.ID);
             }
+            vm.$scope.$emit('studentloaded', { studentdata: vm.students });
+
         }, function(error) {
             vm.$log.log('activate editstudent', error);
             vm.Notification.error({ message: error, delay: 5000 });
@@ -173,7 +363,7 @@ export class FormLayoutsControllerEditStudent {
         vm.rankpickparent = value;
         vm.ranktypepick = vm.rankpickparent.ranktype;
         vm.rankpick = vm.rankpickparent.rankpick;
-//        vm.lastPromoted = vm.rankpickparent.lastPromoted;
+        //        vm.lastPromoted = vm.rankpickparent.lastPromoted;
         vm.$log.log('updateRankPick', rankpickparent, prop, value, vm.rankpick, vm.ranktypepick, vm.lastPromoted);
         //        vm.getRankList();
         //        vm.setRank('All');
@@ -377,7 +567,7 @@ export class FormLayoutsControllerEditStudent {
 
     updateStudent(form) {
         var vm = this;
-        vm.$log.log('about updateStudent ', vm.students,form);
+        vm.$log.log('about updateStudent ', vm.students, form);
         vm.$log.log('with Birthday', vm.students.Birthday);
         if (form.$invalid) {
             return;
@@ -513,7 +703,7 @@ export class FormLayoutsControllerEditStudent {
     }
 
     getActiveTab() {
-        var vm=this;
+        var vm = this;
         var atab = vm.StudentServices.getActiveTab();
         vm.$log.log('get activetab is:', atab);
         return atab;

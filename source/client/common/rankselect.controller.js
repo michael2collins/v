@@ -1,12 +1,13 @@
 export class RankSelectController {
     constructor(
-        $log, Notification, StudentServices, $scope
+        $log, Notification, StudentServices, $scope,$attrs
     ) {
         'ngInject';
         this.$log = $log;
         this.$scope = $scope;
         this.Notification = Notification;
         this.StudentServices = StudentServices;
+        this.$attrs = $attrs;
     }
 
     $onInit() {
@@ -15,6 +16,12 @@ export class RankSelectController {
         vm.ranktypelist = [];
         vm.ranktypeselected = '';
         vm.rankpickparent = {};
+
+        vm.$scope.$on('$viewContentLoaded', 
+        function(event){ 
+            vm.disenable=vm.$attrs.disenable;
+
+        });
 
         vm.activate();
 

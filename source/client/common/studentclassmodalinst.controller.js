@@ -1,6 +1,6 @@
 export class StudentClassModalInstanceController {
   constructor(
-    $log, $scope, $controller, $route, StudentServices
+    $log, $scope, $controller, $route, StudentServices,$attrs
   ) {
     'ngInject';
     this.$log = $log;
@@ -10,12 +10,19 @@ export class StudentClassModalInstanceController {
     this.$scope = $scope;
     this.classname = $scope.$parent.$resolve.classname;
     this.vmclass = $scope.$parent.$parent.vmclass;
+        this.$attrs = $attrs;
   }
 
   $onInit() {
     var vmsearch = this;
       vmsearch.showpics = true;
       vmsearch.showlist = false;
+        vmsearch.$scope.$on('$viewContentLoaded', 
+        function(event){ 
+            vmsearch.disenable=vmsearch.$attrs.disenable;
+
+        });
+      
 //    vmsearch.vmclass = 
 //      vmsearch.$controller('StudentClassController as vmclass', { $scope: vmsearch.$scope });
 

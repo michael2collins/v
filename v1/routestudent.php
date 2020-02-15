@@ -5984,10 +5984,12 @@ function stripepaid(
     try {
         $dt = new DateTime("now", new DateTimeZone($tz)); //first argument "must" be a string
         $dt->setTimestamp(substr($inbound['created'], 0, 10));
+        $dt1=date("Y-m-d");
         
         $dd = $dt->format($PP);    
         //$result['payment_date'] = date("Y-m-d H:i:s", substr($inbound['created'], 0, 10)); //convert from epoch
         $result['payment_date'] = $dd;
+        $result['payment_datestore'] = $dt1;
  
     $result['mc_gross_1'] = $inbound['amount'] / 100;
     $result['mc_currency'] = $inbound['currency'];
@@ -6157,7 +6159,7 @@ function paycommon($result,$paymentprocessor,$school) {
         // creating payment
         $paid = $db->createPayment( 
     isset(                      $result['payment_type']) ? $result['payment_type'] : "" ,
-      isset(                    $result['payment_date']) ? $result['payment_date'] : "",          
+      isset(                    $result['payment_datestore']) ? $result['payment_datestore'] : "",          
     isset(                      $result['payer_status']) ? $result['payer_status'] : "",          
     isset(                      $result['first_name']) ? $result['first_name'] : "",          
     isset(                      $result['last_name']) ? $result['last_name'] : "",          

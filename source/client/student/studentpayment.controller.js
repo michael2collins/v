@@ -1,7 +1,9 @@
+import angular from 'angular';
+
 export class StudentPaymentController {
     constructor(
         $scope, $rootScope, $routeParams,
-        $log, $http, $location, $timeout, ClassServices, StudentServices, PaymentServices, $q, Notification, _
+        $log, $http, $location, $timeout, ClassServices, StudentServices, PaymentServices, $q, Notification, _, $attrs
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -17,12 +19,15 @@ export class StudentPaymentController {
         this.$q = $q;
         this.Notification = Notification;
         this._ = _;
+        this.$attrs = $attrs;
+        this.$ = angular.element;
     }
 
     $onInit() {
         var vmpayment = this;
         vmpayment.isCollapsed = true;
         vmpayment.isCollapsed2 = true;
+        vmpayment.readonlySelector = 'select,input,textarea,.disenable';
 
 
         vmpayment.StudentPayment = [];
@@ -50,13 +55,67 @@ export class StudentPaymentController {
         vmpayment.statushead = {
             opened: false
         };
+        vmpayment.disenable=true;
+        vmpayment.students={};
         vmpayment.activate();
+
+        vmpayment.$scope.$on('pay-results:ready', () => {
+            // Take action after the view has been populated with the updated data
+            vmpayment.disenable=(vmpayment.$attrs.disenable == "" || 
+                                vmpayment.$attrs.disenable == undefined || 
+                                vmpayment.$attrs.disenable == 1) ? 1 : 0;
+            vmpayment.setDisplay();
+
+        });
+
+        vmpayment.$scope.$on('payplan-results:ready', () => {
+            // Take action after the view has been populated with the updated data
+            vmpayment.disenable=(vmpayment.$attrs.disenable == "" || 
+                                vmpayment.$attrs.disenable == undefined || 
+                                vmpayment.$attrs.disenable == 1) ? 1 : 0;
+            vmpayment.setDisplay2();
+
+        });
+
+        vmpayment.$scope.$on('students-results:ready', () => {
+            // Take action after the view has been populated with the updated data
+                    vmpayment.students=JSON.parse(vmpayment.$attrs.students);
+
+        });
+
+        vmpayment.$rootScope.$on('disenableChange', function(event, next, current ) {
+            vmpayment.disenable=next.disenable;
+            vmpayment.setDisplay();
+        });
 
     }
 
     $onDestroy() {
         this.$log.log("StudentPaymentController dismissed");
         //this.$log.logEnabled(false);
+    }
+
+    setDisplay() {
+        var vmpayment=this;
+        vmpayment.$(vmpayment.readonlySelector).prop('disabled',vmpayment.disenable == 1 ? true: false);     
+
+        if (vmpayment.disenable == 1) {
+            vmpayment.$("#payment-layout").find(".disenable").addClass("ignore");
+        } else {
+            vmpayment.$("#payment-layout").find(".ignore").removeClass("ignore");
+        }
+        
+    }
+    setDisplay2() {
+        var vmpayment=this;
+        vmpayment.$(vmpayment.readonlySelector).prop('disabled',vmpayment.disenable == 1 ? true: false);     
+
+        if (vmpayment.disenable == 1) {
+            vmpayment.$("#payplan-layout").find(".disenable").addClass("ignore");
+        } else {
+            vmpayment.$("#payplan-layout").find(".ignore").removeClass("ignore");
+        }
+        
     }
 
     getPriceDate(input) {
@@ -82,7 +141,7 @@ export class StudentPaymentController {
         vmpayment.headcoverage.payerid = vmpayment.studentpayer;
         vmpayment.$q.all([
                 vmpayment.getFamily().then(function() {
-                    vmpayment.$log.log('getPayerList ready');
+                    vmpayment.$log.log('getFamily ready');
 
                 }).catch(function(e) {
                     vmpayment.$log.log("getFamily error in payerSet", e);
@@ -114,6 +173,15 @@ export class StudentPaymentController {
             ])
             .then(function() {
                 vmpayment.$log.log(' payerSet done');
+                vmpayment.$scope.$emit('payersetloaded',{
+                    PayerPaymentList: vmpayment.PayerPaymentList,
+                    PaymentPaysList: vmpayment.PaymentPaysList,
+                    PaymentPlanList: vmpayment.PaymentPlanList,
+                    PriceList: vmpayment.PriceList,
+                    FamilyList: vmpayment.FamilyList,
+                });
+//        vmpayment.disenable=vmpayment.$attrs.disenable;
+ //       vmpayment.students=JSON.parse(vmpayment.$attrs.students);
             });
 
     }
@@ -166,6 +234,13 @@ export class StudentPaymentController {
             ])
             .then(function() {
                 vmpayment.$log.log('student-payment activation done');
+                vmpayment.$scope.$emit('paymentloaded',{
+                    PaymentTypes: vmpayment.PaymentTypes,
+                    PaymentPlans: vmpayment.PaymentPlans,
+                    payerlist: vmpayment.payerlist
+                }
+                );
+//                vmpayment.disenable=vmpayment.$attrs.disenable;
             });
     }
 
@@ -207,7 +282,7 @@ export class StudentPaymentController {
     getFamily() {
         var vmpayment = this;
         var familypath = '../v1/family/' + vmpayment.studentpayer;
-        vmpayment.$log.log('getPayerList entered', familypath);
+        vmpayment.$log.log('getFamily entered', familypath);
         return vmpayment.ClassServices.getFamily(familypath).then(function(data) {
                 vmpayment.$log.log('getFamily returned data');
                 vmpayment.$log.log(data);
@@ -475,6 +550,7 @@ export class StudentPaymentController {
                     for (var iter = 0, len = vmpayment.PaymentPaysList.length; iter < len; iter++) {
                         vmpayment.PaymentPaysList[iter].paymentidstr = vmpayment.PaymentPaysList[iter].paymentid.toString();
                         vmpayment.PaymentPaysList[iter].classpayidstr = vmpayment.PaymentPaysList[iter].classpayid.toString();
+                        vmpayment.PaymentPaysList[iter].disenable = vmpayment.disenable;
                     }
                 }
 

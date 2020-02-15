@@ -12,6 +12,45 @@
  */
 const { jQuery: $ } = window;
 
+export const elementReady = ($timeout, $rootScope) => {
+    return {
+      restrict: 'A',
+      link(scope, element, attrs) {
+        $timeout(() => {
+          element.ready(() => {
+            scope.$apply(() => {
+              $rootScope.$broadcast(`${attrs.elementReady}:ready`);
+            });
+          });
+        });
+      }
+    };
+  };
+export const disenableloaded = () => {
+    'ngInject';
+    return {
+        restrict: 'A',
+
+        link: function(scope, element, attrs) {
+
+            var cssClass = attrs.loadedclass,
+                timeout;
+
+            function reload() {
+                timeout = setTimeout(function() {
+                    reload();
+                }, 5000);
+            }
+
+            reload();
+
+            element.bind('load', function(e) {
+                clearTimeout(timeout);
+                element.addClass(cssClass);
+            });
+        }
+    };
+};
 export const imageloaded = () => {
     'ngInject';
     return {

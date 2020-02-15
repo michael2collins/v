@@ -1,6 +1,6 @@
 export class StudentAttendController {
     constructor(
-        $routeParams, $log, $scope, StudentServices, Util, $q, uiGridConstants, Notification, UserServices
+        $routeParams, $log, $scope, StudentServices, Util, $q, uiGridConstants, Notification, UserServices, $attrs
     ) {
         'ngInject';
         this.$routeParams = $routeParams;
@@ -12,6 +12,7 @@ export class StudentAttendController {
         this.uiGridConstants = uiGridConstants;
         this.Notification = Notification;
         this.UserServices = UserServices;
+        this.$attrs = $attrs;
     }
 
     $onInit() {
@@ -25,6 +26,8 @@ export class StudentAttendController {
         vm.rowheight = 32;
         vm.headerheight = 140;
         vm.setGridLength(vm.initialLength);
+        vm.students={};
+        vm.disenable=false;
 
         vm.setGridOptions();
         vm.activate();
@@ -47,9 +50,16 @@ export class StudentAttendController {
 
         });
 
+        vm.$scope.$on('students-results:ready', () => {
+            // Take action after the view has been populated with the updated data
+                    vm.students=JSON.parse(vm.$attrs.students);
+
+        });
+
         vm.getStudentAttend().then(function() {
             vm.$log.log('activated StudentAttend view');
             vm.gridApi.core.notifyDataChange(vm.uiGridConstants.dataChange.ALL);
+            vm.$scope.$emit('attendanceloaded');
 
         }, function(error) {
             return (vm.$q.reject(error));
