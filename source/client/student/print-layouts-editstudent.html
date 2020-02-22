@@ -1,385 +1,111 @@
-<div id="print-layouts-editstudent"   ng-cloak >
+<div id="print-layouts-editstudenttop" ng-cloak>
   <div class="col-lg-offset-9 noPrint">
-    <button  type="button"  ng-print print-element-id="print-layouts-editstudent"  class="btn btn-blue">
+    <button type="button" ng-print print-element-id="print-layouts-editstudent" class="btn btn-blue">
         <span class="fa-stack fa-1x">
           <i class="fas fa-print fa-stack-1x"></i>
         </span>
       &nbsp; Print</button>
 
-    <button  type="button" ng-click="$ctrl.printcancel()" class="btn btn-blue">
+    <button type="button" ng-click="$ctrl.printcancel()" class="btn btn-blue">
         <span class="fa-stack fa-1x">
           <i class="fas fa-window-close fa-stack-1x"></i>
         </span>
       &nbsp; Cancel</button>
   </div>
-  <div class="col-lg-12">
-    <div>
-      <div >
-        <div class="row">
-          <div>
-            <div class="col-lg-12">
-              <div class="panel panel-blue">
-                <div class="panel-heading">Student</div>
+  <div id="print-layouts-editstudent" class="col-lg-12">
+    <div class="panel panel-blue">
+      <div class="panel-heading">Student</div>
 
-                <div class="panel-body pan">
-                  <form action="" novalidate name="editstudent" class="form-horizontal">
-                    <div class="form-body pal">
-                      <div class="col-md-12">
-                        <div class="col-md-11">
-                          <h3 class="block-heading">Student Information</h3>
-                        </div>
-
-                      </div>
-
-                      <div id="studentid" ng-model="$ctrl.alldata.studentdata.ID">ID: {{$ctrl.alldata.studentdata.ID}} &nbsp;</div>
-                      <div id="studentid" ng-model="$ctrl.alldata.studentdata.externalid"> Externalid: {{$ctrl.alldata.studentdata.externalid}} &nbsp;</div>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.FirstName.$invalid, 'has-success': !editstudent.FirstName.$invalid}" class="form-group">
-                            <label for="inputFirstName" class="control-label">First Name </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.FirstName.$dirty" ng-class="editstudent.FirstName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputFirstName" autocomplete='given-name' type="text" placeholder="First Name" name="FirstName" ng-model="$ctrl.alldata.studentdata.FirstName" ng-change="$ctrl.updateStudent(editstudent)" required minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.LastName.$invalid, 'has-success': !editstudent.LastName.$invalid}" class="form-group">
-                            <label for="inputLastName" class="control-label">LastName </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.LastName.$dirty" ng-class="editstudent.LastName.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputLastName" autocomplete='family-name' type="text" placeholder="Last Name" name="LastName" ng-model="$ctrl.alldata.studentdata.LastName" ng-change="$ctrl.updateStudent(editstudent)" required minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row" >
-                        <div class="col-md-3">
-                          <div class="row">
-                            <div class="col-md-12">
-                              <span class="thumbnail" ng-switch on="$ctrl.alldata.studentdata.pictureurldecache">
-                                   <img ng-switch-when="missing" ng-src='../images/students/missingstudentpicture.png'/>
-                                   <img ng-switch-default   ng-src='../images/students/{{$ctrl.alldata.studentdata.pictureurldecache}}'/>
-                                </span>
-                            </div>
-                          </div>
-                        </div>
-
-
-                        <div class="col-md-9">
-                          <div class="col-md-6">
-                            <div class="form-group" ng-class="{'has-error': editstudent.Email.$invalid, 'has-success': !editstudent.Email.$invalid}">
-                              <label class="control-label" for="inputEmail">Email</label>
-
-                              <div class="input-icon right">
-                                <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Email.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editstudent.Email.$dirty"></i> <input class="form-control"
-                                  id="inputEmail" autocomplete='email' maxlength="120" name="Email" ng-change="$ctrl.updateStudent(editstudent)" ng-model="$ctrl.alldata.studentdata.Email" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                  placeholder="Email Address" type="email">
-                              </div>
-
-
-                            </div>
-                          </div>
-
-
-                          <div class="col-md-6">
-                            <div class="form-group" ng-class="{'has-error': editstudent.Email2.$invalid, 'has-success': !editstudent.Email2.$invalid}">
-                              <label class="control-label" for="inputEmail2">Email2</label>
-
-                              <div class="input-icon right">
-                                <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Email2.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editstudent.Email2.$dirty"></i> <input class="form-control"
-                                  id="inputEmail2" autocomplete='email' maxlength="120" name="Email2" ng-change="$ctrl.updateStudent(editstudent)" ng-model="$ctrl.alldata.studentdata.Email2" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                  placeholder="Alternate Email" type="email">
-                              </div>
-
-
-                            </div>
-                          </div>
-
-
-                          <div class="col-md-6">
-                            <div class="form-group" ng-class="{'has-error': editstudent.Phone.$invalid, 'has-success': !editstudent.Phone.$invalid}">
-                              <label class="control-label" for="inputPhone">Phone</label>
-
-                              <div class="input-icon right">
-                                <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.Phone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editstudent.Phone.$dirty"></i> <input class="form-control"
-                                  id="inputPhone" name="Phone" autocomplete='tel-national' autocomplete='street-address' ng-change="$ctrl.updateStudent(editstudent)" ng-model="$ctrl.alldata.studentdata.Phone" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                  placeholder="" type="text" required ui-mask="(999) 999-9999">
-                              </div>
-
-
-                            </div>
-                          </div>
-
-
-                          <div class="col-md-6">
-                            <div class="form-group" ng-class="{'has-error': editstudent.AltPhone.$invalid, 'has-success': !editstudent.AltPhone.$invalid}">
-                              <label class="control-label" for="inputAltPhone">AltPhone</label>
-
-                              <div class="input-icon right">
-                                <i class="glyphicon tooltips" data-hover="tooltip" data-original-title="Correct" ng-class="editstudent.AltPhone.$invalid ? 'glyphicon-remove' : 'glyphicon-ok'" ng-show="editstudent.AltPhone.$dirty"></i> <input class="form-control"
-                                  id="inputAltPhone" autocomplete='tel-national' name="AltPhone" ng-change="$ctrl.updateStudent(editstudent)" ng-model="$ctrl.alldata.studentdata.AltPhone" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                  placeholder="" type="text" ui-mask="(999) 999-9999">
-                              </div>
-
-
-                            </div>
-                          </div>
-                        </div>
-
-                        <div class="col-md-3"></div>
-                        <div class="col-md-9">
-                          <div class="row">
-                            <div class="col-md-6">
-                              <label for="inputBirthday" class="control-label">Birthday </label>
-                              <div ng-class="{'has-error': editstudent.Birthday.$invalid, 'has-success': !editstudent.Birthday.$invalid}" class="form-group">
-                                <div class="col-md-11 prn">
-                                  <div class="input-icon right">
-                                    <i ng-click="$ctrl.dateopen($event)" data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Birthday.$dirty" ng-class="editstudent.Birthday.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                    <input id="inputBirthday" autocomplete='bday' type="text" placeholder="mm/dd/yyyy" name="Birthday" required ng-model="$ctrl.alldata.studentdata.Birthday" ng-change="$ctrl.updateStudent(editstudent)" is-open="$ctrl.status.opened" uib-datepicker-popup="{{$ctrl.bdateformat}}"
-                                      ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                  </div>
-                                </div>
-                                <div class="col-md-1 pln prn">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div ng-class="{'has-error': editstudent.sex.$invalid, 'has-success': !editstudent.sex.$invalid}" class="form-group">
-                                <label for="inputsex" class="control-label">Gender </label>
-                                <div class="input-icon right">
-                                  <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.sex.$dirty" ng-class="editstudent.sex.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <select id="inputsex" autocomplete='sex' type="text" name="sex" ng-model="$ctrl.alldata.studentdata.sex" ng-change="$ctrl.updateStudent(editstudent)" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="g in $ctrl.genders" ng-selected="{{g==$ctrl.alldata.studentdata.sex}}" placeholder="Select" value="{{g}}">{{g}}</option>
-                              </select>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div ng-class="{'has-error': editstudent.Parent.$invalid, 'has-success': !editstudent.Parent.$invalid}" class="form-group">
-                                <label for="inputParent" class="control-label">Parent </label>
-                                <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Parent.$dirty" ng-class="editstudent.Parent.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <input id="inputParent" type="text" placeholder="Parent Name" name="Parent" ng-model="$ctrl.alldata.studentdata.Parent" ng-change="$ctrl.updateStudent(editstudent)" minLength="2" maxLength="30" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                    class="form-control">
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div ng-class="{'has-error': editstudent.EmergencyContact.$invalid, 'has-success': !editstudent.EmergencyContact.$invalid}" class="form-group">
-                                <label for="inputEmergencyContact" class="control-label">Emergency Contact </label>
-                                <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.EmergencyContact.$dirty" ng-class="editstudent.EmergencyContact.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <input id="inputEmergencyContact" type="text" placeholder="Emergency Contact Name" name="EmergencyContact" ng-model="$ctrl.alldata.studentdata.EmergencyContact" ng-change="$ctrl.updateStudent(editstudent)" minLength="2" maxLength="80" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                    class="form-control">
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <div class="row">
-                            <div class="col-md-6">
-                              <div ng-class="{'has-error': editstudent.Notes.$invalid, 'has-success': !editstudent.Notes.$invalid}" class="form-group">
-                                <label for="inputNotes" class="control-label">Notes </label>
-                                <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Notes.$dirty" ng-class="editstudent.Notes.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <textarea id="inputNotes" type="text" placeholder="Enter notes" name="Notes" ng-model="$ctrl.alldata.studentdata.Notes" ng-change="$ctrl.updateStudent(editstudent)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control"></textarea>
-                                </div>
-                              </div>
-                            </div>
-                            <div class="col-md-6">
-                              <div ng-class="{'has-error': editstudent.medicalConcerns.$invalid, 'has-success': !editstudent.medicalConcerns.$invalid}" class="form-group">
-                                <label for="inputmedicalConcerns" class="control-label">Medical Concerns </label>
-                                <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.medicalConcerns.$dirty" ng-class="editstudent.medicalConcerns.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                                  <textarea id="inputmedicalConcerns" type="text" placeholder="Enter Medical concerns" name="medicalConcerns" ng-model="$ctrl.alldata.studentdata.medicalConcerns" ng-change="$ctrl.updateStudent(editstudent)" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                    class="form-control"></textarea>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <h3 class="block-heading">Address Information</h3>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
-                            <label for="inputAddress" class="control-label">Address </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.Address.$dirty" ng-class="editstudent.Address.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputAddress" autocomplete='street-address' type="text" placeholder="999 Street Address" name="Address" ng-model="$ctrl.alldata.studentdata.Address" ng-change="$ctrl.updateStudent(editstudent)" minLength="5" maxLength="120" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.City.$invalid, 'has-success': !editstudent.City.$invalid}" class="form-group">
-                            <label for="inputCity" class="control-label">City </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.City.$dirty" ng-class="editstudent.City.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputCity" type="text" autocomplete='address-level2' placeholder="City" name="City" ng-model="$ctrl.alldata.studentdata.City" ng-change="$ctrl.updateStudent(editstudent)" minLength="2" maxLength="30" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.ZIP.$invalid, 'has-success': !editstudent.ZIP.$invalid}" class="form-group">
-                            <label for="inputZIP" class="control-label">Zip/Postal Code </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ZIP.$dirty" ng-class="editstudent.ZIP.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputZIP" type="text" autocomplete='postal-code' name="ZIP" ng-model="$ctrl.alldata.studentdata.ZIP" ng-change="$ctrl.updateStudent(editstudent)" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="z in $ctrl.zipList.zips" ng-selected="{{z==$ctrl.alldata.studentdata.ZIP}}" placeholder="Select" value="{{z.zip}}">{{z.zip}} - {{z.city}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6"></div>
-                      </div>
-                      <h3 class="block-heading">Dojo Information</h3>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.ContactType.$invalid, 'has-success': !editstudent.ContactType.$invalid}" class="form-group">
-                            <label for="inputContactType" class="control-label">Contact Type </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ContactType.$dirty" ng-class="editstudent.ContactType.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputContactType" type="text" name="ContactType" ng-model="$ctrl.alldata.studentdata.ContactType" ng-change="$ctrl.updateStudent(editstudent)" minLength="3" maxLength="20" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                                <option 
-                                  ng-repeat="iter in $ctrl.alldata.StudentList.ContactTypeList" 
-                                  ng-selected="{{iter.listkey==$ctrl.alldata.studentdata.ContactType}}" 
-                                  placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.quickbooklink.$invalid, 'has-success': !editstudent.quickbooklink.$invalid}" class="form-group">
-                            <label for="inputquickbooklink" class="control-label">Accounting System Link </label>
-                            <div class="input-icon right"><i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.quickbooklink.$dirty" ng-class="editstudent.quickbooklink.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <input id="inputquickbooklink" type="text" placeholder="Account id" name="quickbooklink" ng-model="$ctrl.alldata.studentdata.quickbooklink" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="portlet portlet-primary col-md-6">
-                          <div class="portlet-header">
-                            <div class="caption">Ranks</div>
-                          </div>
-                          <div class="portlet-body">
-                            <div class="table-tools">
-                            </div>
-                            <div class="row">
-                              <div class="">
-                                <table class="table-striped table-hover table-bordered">
-                                  <thead>
-                                    <tr>
-                                      <th>Type</th>
-                                      <th>Rank</th>
-                                      <th>Last Promoted</th>
-                                      <th class="disenable">Action</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr ng-repeat="item in $ctrl.alldata.studentranks track by $index">
-                                      <td class="col-md-2">{{item.ranktype}}
-                                      </td>
-                                      <td class="col-md-4">{{item.currentrank}}
-                                      </td>
-                                      <td class="col-md-3">{{item.lastPromoted}}
-                                      </td>
-                                      <td class="col-md-2 disenable"><span> 
-                                      </span></td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.StudentSchool.$invalid, 'has-success': !editstudent.StudentSchool.$invalid}" class="form-group">
-                            <label for="inputStudentSchool" class="control-label">School </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.StudentSchool.$dirty" ng-class="editstudent.StudentSchool.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputStudentSchool" type="text" name="StudentSchool" ng-model="$ctrl.alldata.studentdata.StudentSchool" ng-change="$ctrl.updateStudent(editstudent)" minLength="3" maxLength="80" required ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                                <option ng-repeat="iter in $ctrl.alldata.StudentList.StudentSchoolList" ng-selected="{{iter.listkey==$ctrl.alldata.studentdata.StudentSchool}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.GuiSize.$invalid, 'has-success': !editstudent.GuiSize.$invalid}" class="form-group">
-                            <label for="inputGuiSize" class="control-label">Gi Size </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.GuiSize.$dirty" ng-class="editstudent.GuiSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputGuiSize" type="text" name="GuiSize" ng-model="$ctrl.alldata.studentdata.GuiSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" class="form-control">
-                                <option ng-repeat="iter in $ctrl.alldata.StudentList.GuiSizeList" ng-selected="{{iter.listkey==$ctrl.alldata.studentdata.GuiSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.ShirtSize.$invalid, 'has-success': !editstudent.ShirtSize.$invalid}" class="form-group">
-                            <label for="inputShirtSize" class="control-label">Shirt Size </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.ShirtSize.$dirty" ng-class="editstudent.ShirtSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputShirtSize" type="text" name="ShirtSize" ng-model="$ctrl.alldata.studentdata.ShirtSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                                <option ng-repeat="iter in $ctrl.alldata.StudentList.ShirtSizeList" ng-selected="{{iter.listkey==$ctrl.alldata.studentdata.ShirtSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.BeltSize.$invalid, 'has-success': !editstudent.BeltSize.$invalid}" class="form-group">
-                            <label for="inputBeltSize" class="control-label">Belt Size </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.BeltSize.$dirty" ng-class="editstudent.BeltSize.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputBeltSize" type="text" name="BeltSize" ng-model="$ctrl.alldata.studentdata.BeltSize" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                                  <option ng-repeat="iter in $ctrl.alldata.StudentList.BeltSizeList" ng-selected="{{iter.listkey==$ctrl.alldata.studentdata.BeltSize}}" placeholder="Size" value="{{iter.listkey}}">{{iter.listvalue}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-
-                        <div class="col-md-6">
-                          <div ng-class="{'has-error': editstudent.instructorTitle.$invalid, 'has-success': !editstudent.instructorTitle.$invalid}" class="form-group">
-                            <label for="inputinstructorTitle" class="control-label">Title </label>
-                            <div class="input-icon right">
-                              <i data-hover="tooltip" data-original-title="Correct" ng-show="editstudent.instructorTitle.$dirty" ng-class="editstudent.instructorTitle.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " class="glyphicon tooltips"></i>
-                              <select id="inputinstructorTitle" type="text" name="instructorTitle" ng-model="$ctrl.alldata.studentdata.instructorTitle" ng-change="$ctrl.updateStudent(editstudent)" minLength="" maxLength="" ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }"
-                                class="form-control">
-                                <option ng-repeat="iter in $ctrl.alldata.StudentList.instructorTitleList" ng-selected="{{iter.listkey==$ctrl.alldata.studentdata.instructorTitle}}" placeholder="Select" value="{{iter.listkey}}">{{iter.listkey}}</option>
-                              </select>
-                            </div>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-
-                  </form>
-                </div>
-              </div>
+      <div  class="panel-body pan">
+          <div class="form-body pal">
+            <div class="row">
+              <div id="studentid" class="col-md-1 bold">ID</div>
+              <div id="studentid" class="col-md-5">{{$ctrl.alldata.studentdata.ID}} </div>
+              <div id="studentid" class="col-md-1 bold">Externalid</div>
+              <div id="studentid2" class="col-md-5">{{$ctrl.alldata.studentdata.externalid}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-1 bold">Name</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.FirstName}} {{$ctrl.alldata.studentdata.LastName}}</div>
+              <div class="col-md-1 bold">Birthday</div>
+              <div class="col-md-5 thick-line ">{{$ctrl.alldata.studentdata.Birthday | date:'yyyy-MM-dd'}}</div>
+            </div>
+            <div class="row">
+              <div class="col-md-1 bold">Email</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Email}} &nbsp;</div>
+              <div class="col-md-1 bold">Email2</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Email2}} &nbsp;</div>
+            </div>
+            <div class="row">
+              <div class="col-md-1 bold">Phone</div>
+              <div class="col-md-3 thick-line">{{$ctrl.alldata.studentdata.Phone}} &nbsp;</div>
+              <div class="col-md-1 bold">Alt</div>
+              <div class="col-md-3" thick-line>{{$ctrl.alldata.studentdata.AltPhone}} &nbsp;</div>
+              <div class="col-md-1 bold">Gender</div>
+              <div class="col-md-3 thick-line">{{$ctrl.alldata.studentdata.sex}} &nbsp;</div>
+            </div>
+            <div class="row">
+              <div class="col-md-1 bold">Parent</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Parent}} &nbsp;</div>
+              <div class="col-md-1 bold">Emerg.</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.EmergencyContact}} &nbsp;</div>
+            </div>
+            <div class="row">
+              <div class="col-md-1 bold">Notes</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Notes}} &nbsp;</div>
+              <div class="col-md-1 bold">Med.</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.medicalConcerns}} &nbsp;</div>
+            </div>
+            <div class="row">
+              <div class="col-md-1 bold">Address</div>
+              <div class="col-md-6 thick-line">{{$ctrl.alldata.studentdata.Address}}</div>
+              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.City}} {{$ctrl.alldata.studentdata.ZIP}} &nbsp;</div>
             </div>
           </div>
-        </div>
-      </div>
-      <div >
-        <studentclass-component disenable="1" students="{{$ctrl.alldata.studentdata}}"></studentclass-component>
 
       </div>
-      <div >
-        <studentpayment-component disenable="1" students="{{$ctrl.alldata.studentdata}}"></studentpayment-component>
+      <div class="row">
+              <div class="col-md-12">
+                <div class="portlet portlet-primary">
+                  <div class="portlet-header">
+                    <div class="caption">Dojo Information</div>
+                  </div>
+                  <div class="portlet-body">
+                    <div class="row">
+                      <div class="col-md-1 bold">Type</div>
+                      <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.ContactType}} &nbsp;</div>
+                      <div class="col-md-1 bold">Acct</div>
+                      <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.quickbooklink}} &nbsp;</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div class="col-md-12">
+                <div class="portlet portlet-primary">
+                  <div class="portlet-header">
+                    <div class="caption">Ranks</div>
+                  </div>
+                  <div class="portlet-body">
+                          <div class="row">
+                            <div class="col-md-4 bold">Type</div>
+                            <div class="col-md-4 bold">Rank</div>
+                            <div class="col-md-4 bold">Last Promoted</div>
+                          </div>
+                          <div class="row" ng-repeat="item in $ctrl.alldata.studentranks track by $index">
+                            <div class="col-md-4 thick-line">{{item.ranktype}}</div>
+                            <div class="col-md-4 thick-line">{{item.currentrank}}</div>
+                            <div class="col-md-4 thick-line">{{item.lastPromoted}}</div>
+                          </div>
+                  </div>
+                </div>
+
+              </div>
+
       </div>
-    </divset>
+
+    </div>
+    <studentclass-component disenable="1" students="{{$ctrl.alldata.studentdata}}"></studentclass-component>
+    <studentpayment-component disenable="1" students="{{$ctrl.alldata.studentdata}}"></studentpayment-component>
   </div>
 </div>

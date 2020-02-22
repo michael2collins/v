@@ -33,13 +33,13 @@
                                     <div class="caption">Payment Plan</div>
                                  </div>
                                  <div class="portlet-body">
-                                    <div class="table-tools">
+                                    <div class="table-tools noPrint">
                                        <div class="row col-md-offset-10 mbs">
                                           <button type="button" class="btn btn-blue mrs mts disenable" ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
                                        </div>
                                     </div>
                                     <div class=" col-md-12">
-                                       <div uib-collapse="$ctrl.isCollapsed">
+                                       <div uib-collapse="$ctrl.isCollapsed" class="noPrint">
                                           <div class="well well-lg">
                                              <div class="container-fluid">
 
@@ -176,7 +176,7 @@
                                        </div>
                                        <div class="container-fluid"  >
                                           <div class="" ng-hide="$ctrl.$rootScope.mobile">
-                                             <div class="row like-tableheader">
+                                             <div class="row like-tableheader like-tablesmaller noborder">
                                                 <div class="col-md-1 ">Plan</div>
                                                 <div class="col-md-1 ">Type</div>
                                                 <div class="col-md-2 ">Date Set</div>
@@ -185,10 +185,10 @@
                                                 <div class="col-md-1 ">Pay on<br/>DayOfMonth</div>
                                                 <div class="col-md-2 ">Last Payment</div>
                                                 <div class="col-md-1 ">Notes</div>
-                                                <div class="col-md-2 disenable">Action</div>
+                                                <div class="col-md-2 disenable noPrint">Action</div>
                                              </div>
                                           </div>
-                                          <div class="row like-table xtralike-table" ng-repeat="rowiter in $ctrl.PaymentPlanList track by $index">
+                                          <div class="row like-table like-tablesmaller xtralike-table noborder" ng-repeat="rowiter in $ctrl.PaymentPlanList track by $index">
 
                                              <div class="row mobileheader" ng-show="$ctrl.$rootScope.mobile">
                                                 <div class=" col-xs-6 ">Column</div>
@@ -443,7 +443,7 @@
                                        </div>
                                        <div class="row">
                                           <div class="col-md-12">
-                                             <div uib-collapse="$ctrl.isCollapsed2">
+                                             <div uib-collapse="$ctrl.isCollapsed2" class="noPrint">
                                                 <div class="well well-lg">
                                                    <div class="container-fluid">
                                                       <div class="container col-md-12">
@@ -507,12 +507,12 @@
                                              </div>
                                              <div class="container-fluid" >
                                                 <div class="col-md-12" >
-                                                   <div class="row like-tableheader" ng-hide="$ctrl.$rootScope.mobile">
+                                                   <div class="row like-tablesmaller like-tableheader" ng-hide="$ctrl.$rootScope.mobile">
                                                       <div class="col-md-5">Payment Plan</div>
                                                       <div class="col-md-5">Coverage</div>
                                                       <div class="col-md-2 disenable">Action</div>
                                                    </div>
-                                                   <div class="row like-table xtralike-table" ng-repeat="rowiterpcp in $ctrl.PaymentPaysList track by rowiterpcp.pcpid">
+                                                   <div class="row like-table like-tablesmaller xtralike-table" ng-repeat="rowiterpcp in $ctrl.PaymentPaysList track by rowiterpcp.pcpid">
                                                       <div class="row mobileheader" ng-show="$ctrl.$rootScope.mobile">
                                                          <div class=" col-xs-6 ">Column</div>
                                                          <div class=" col-xs-6 ">Value</div>

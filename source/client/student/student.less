@@ -2,6 +2,15 @@
     display: none !important;
 }
 
+.thick-line {
+        border-bottom: 2px solid;
+    }
+.thin-line {
+        border-bottom: 1px solid;
+    }
+.bold {
+    font-weight: bold;
+}
 .modal-mySize {
     width: 1130px;
 }
@@ -60,6 +69,12 @@
     min-height: 80px;
     font-weight: bold;
 }
+.noborder.row>[class*=col-] {
+    border: 0 !important;
+}
+.like-tablesmaller.row>[class*=col-] {
+    min-height: min-content !important;
+}
 
 .like-table.row>[class*=col-] {
     display: table-cell;
@@ -67,8 +82,11 @@
     text-align: center;
     border: 1px solid #000;
     min-height: 80px; //    opacity: .7;
+    font-size: smaller !important;
 }
-
+.form-control {
+    font-size: smaller !important;
+}
 .xtralike-table.row>[class*=col-] {
     min-height: 135px;
 }

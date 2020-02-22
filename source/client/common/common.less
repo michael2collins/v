@@ -2,19 +2,26 @@
     margin: 0 ! important;
     padding: 0 ! important;
 }
-    .picturesicon {
-        font-size: 2em;
-        color: #379f37;
-    }
+
+.picturesicon {
+    font-size: 2em;
+    color: #379f37;
+}
+
 @media print {
-    body > *:not(#printSection) {
-       display: none;
+    body>*:not(#printSection) {
+        display: none;
     }
+    
     #printSection,
     #printSection * {
         display: inline-block;
 
     }
+    .noPrint {
+        display: none !important;
+    }
+    
     .table>tbody>tr>.no-line {
         border-top: none;
     }
@@ -39,15 +46,18 @@
         width: 210px;
         height: auto;
     }
-    .col-md-6 {
+    /*    .col-md-6 {
         min-height: 1px;
         padding-right: 15px;
         padding-left: 15px;
         width: 300px;
     }
+ */
     .row {
-        margin-right: -15px;
-        margin-left: -15px;
+        //        margin-right: -15px;
+        //        margin-left: -15px;
+        margin-right: 0px !important;
+        margin-left: 0px !important;
     }
     .well {
         min-height: 20px;
@@ -63,8 +73,65 @@
         left: 0;
         top: 0;
     }
-    .noPrint {
-        display: none;
+    .col-md-1,
+    .col-md-2,
+    .col-md-3,
+    .col-md-3,
+    .col-md-4,
+    .col-md-5,
+    .col-md-6,
+    .col-md-7,
+    .col-md-8,
+    .col-md-9,
+    .col-md-10,
+    .col-md-11,
+    .col-md-12 {
+        float: left;
+    }
+    .col-md-12 {
+        width: 100%;
+    }
+    .col-md-11 {
+        width: 91.66666667%;
+    }
+    .col-md-10 {
+        width: 83.33333333%;
+    }
+    .col-md-9 {
+        width: 75%;
+    }
+    .col-md-8 {
+        width: 66.66666667%;
+    }
+    .col-md-7 {
+        width: 58.33333333%;
+    }
+    .col-md-6 {
+        width: 300px;
+    }
+    .col-md-5 {
+        width: 250px;
+    }
+    .col-md-4 {
+        width: 233px;
+    }
+    .col-md-3 {
+        width: 150px;
+    }
+    .col-md-2 {
+        width: 100px;
+    }
+    .col-md-1 {
+        width: 60px;
+    }
+    .panel.panel-blue {
+        border: 1px solid black !important;
+    }
+    .portlet.portlet-primary {
+        border: 1px solid black !important;
+        border-top-width: thin !important;
+        border-top-style: solid !important;
+        border-top-color: black !important;
     }
 
 }
