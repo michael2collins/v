@@ -1,4 +1,4 @@
-<div id="form-layouts-editstudent" class="row" ng-controller="FormLayoutsControllerEditStudent as $ctrl" ng-cloak>
+<div id="form-layouts-editstudent" ng-controller="FormLayoutsControllerEditStudent as $ctrl" ng-cloak>
   <div class="col-lg-offset-9">
     <button type="button" ng-click="$ctrl.print()" class="btn btn-blue">
         <span class="fa-stack fa-1x">
@@ -13,12 +13,8 @@
       &nbsp; {{ $ctrl.thereadonly ? 'Edit' : 'ReadOnly'}}</button>
   </div>
 
-  <div class="col-lg-12">
     <uib-tabset type="pills" active="$ctrl.active">
       <uib-tab index="1" id="tab-studentinfo" heading="Student Information" select="$ctrl.setActiveTab(1,'studentinfoselect');infotabShown = !infotabShown" deselect="infotabShown = !infotabShown">
-        <div class="row">
-          <div>
-            <div class="col-lg-12">
               <div class="panel panel-blue">
                 <div class="panel-heading">Student</div>
 
@@ -27,7 +23,7 @@
                     <div class="form-body pal">
                       <div class="col-md-12">
                         <div class="col-md-11">
-                          <h3 class="block-heading">Student Information for {{$ctrl.students.FirstName}} {{$ctrl.students.LastName}}</h3>
+                          <div class="row block-heading">Student Information for {{$ctrl.students.FirstName}} {{$ctrl.students.LastName}}</div>
                         </div>
                         <div id="modal-confirm" tabindex="-1" role="dialog" aria-hidden="true" class="modal fade ng-scope " style="display: none;">
                           <div class="modal-dialog">
@@ -345,7 +341,7 @@
                         </div>
                       </div>
 
-                      <h3 class="block-heading">Address Information</h3>
+                      <div class="row block-heading">Address Information</div>
                       <div class="row">
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.Address.$invalid, 'has-success': !editstudent.Address.$invalid}" class="form-group">
@@ -398,7 +394,7 @@
                         </div>
                         <div class="col-md-6"></div>
                       </div>
-                      <h3 class="block-heading">Dojo Information</h3>
+                      <div class="row block-heading">Dojo Information</div>
                       <div class="row">
                         <div class="col-md-6">
                           <div ng-class="{'has-error': editstudent.ContactType.$invalid, 'has-success': !editstudent.ContactType.$invalid}" class="form-group">
@@ -615,16 +611,13 @@
                   </form>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
       </uib-tab>
       <uib-tab index="2" id="tab-studentclass" heading="Class" select="$ctrl.setActiveTab(2,'studentclassselect');classtabShown = !classtabShown" deselect="classtabShown = !classtabShown">
-        <studentclass-component disenable="{{$ctrl.disenable}}" students="{{$ctrl.students}}"></studentclass-component>
+        <studentclass-component noshowmodal="0" disenable="{{$ctrl.disenable}}" students="{{$ctrl.students}}"></studentclass-component>
 
       </uib-tab>
       <uib-tab index="3" id="tab-studentpayment" heading="Payment" select="$ctrl.setActiveTab(3,'studentpaymentselect'); paymenttabShown = !paymenttabShown" deselect="paymenttabShown = !paymenttabShown">
-        <studentpayment-component disenable="{{$ctrl.disenable}}" students="{{$ctrl.students}}"></studentpayment-component>
+        <studentpayment-component noshowmodal="0" disenable="{{$ctrl.disenable}}" students="{{$ctrl.students}}"></studentpayment-component>
       </uib-tab>
       <uib-tab index="4" id="tab-studenthist" heading="Student History" select="$ctrl.setActiveTab(4,'studenthistselect'); histtabShown = !histtabShown" deselect="histtabShown = !histtabShown">
         <studenthistory-component disenable="{{$ctrl.disenable}}"  students="{{$ctrl.students}}"></studenthistory-component>
@@ -633,5 +626,4 @@
         <studentattend-component disenable="{{$ctrl.disenable}}"  students="{{$ctrl.students}}"></studentattend-component>
       </uib-tab>
     </uib-tabset>
-  </div>
 </div>

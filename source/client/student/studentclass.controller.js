@@ -93,12 +93,18 @@ export class StudentClassController {
         };
         vmclass.disenable=true;
         vmclass.students={};
+        vmclass.showclass="show";
 
         vmclass.activate();
         
         vmclass.$scope.$on('students-results:ready', () => {
             // Take action after the view has been populated with the updated data
                     vmclass.students=JSON.parse(vmclass.$attrs.students);
+            if (vmclass.$attrs.noshowmodal ==1) {
+                vmclass.showclass="noshow";
+            } else {
+                vmclass.showclass="show";
+            }
 
         });
         vmclass.$rootScope.$on('disenableChange', function(event, next, current ) {
@@ -303,7 +309,6 @@ export class StudentClassController {
     getPayersPartial(theinput) {
         var vmclass = this;
 //        vmclass.payers = vmclass.StudentUtil.getPayersPartial(theinput);
-        var vmclass = this;
         vmclass.$log.log('getPayers entered');
 
         return vmclass.ClassServices.getPayersPartial(theinput).then(function(data) {

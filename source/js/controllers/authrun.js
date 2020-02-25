@@ -34,7 +34,8 @@ const { _: _ } = window;
                     });
                 }
             }
-
+            $("#topbar").show();
+            $("#portal").show();
         });
 
         //disable timeout if not logged in

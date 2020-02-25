@@ -8,20 +8,89 @@
     color: #379f37;
 }
 
+.show {
+    display: block;
+}
+
+.noshow {
+    display: none !important;
+}
+
+.yesPrint {
+    display: none;
+}
+
+
+[ng\:cloak],
+[ng-cloak],
+[data-ng-cloak],
+[x-ng-cloak],
+.ng-cloak,
+.x- ng-cloak {
+    display: none !important;
+}
+
 @media print {
     body>*:not(#printSection) {
         display: none;
     }
+
+    body {
+        font-size: 0.9rem !important;
+        font-family: "Times New Roman" !important;
+        line-height: .8 !important;
+    }
+
+    .portlet>.portlet-header .caption {
+        font-size: 0.9rem !important;
+        font-family: "Times New Roman" !important;
+        padding: 0.4rem !important;
+    }
+
+    .like-tablesmaller.row>[class*=col-] {
+        min-height: 20px !important;
+        max-width: 75px !important;
+        padding: 0 !important;
+    }
     
+    .block-heading {
+        font-size: 1.1rem !important;
+    }
+    .panel .panel-heading {
+        font-size: 1.2rem !important;
+        padding: 0px !important;
+    }
+    .calsize {
+        width: 100px;
+        float: left;
+    }
+
+    .pagebreak {
+        page-break-before: always;
+    }
+    .yesPrint {
+        display: block;
+    }
+
     #printSection,
     #printSection * {
         display: inline-block;
 
     }
-    .noPrint {
+    .noPrint,
+    Button {
         display: none !important;
     }
-    
+    .form-control,
+    select,
+    input {
+        border: 0;
+    }
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
     .table>tbody>tr>.no-line {
         border-top: none;
     }
@@ -89,46 +158,46 @@
         float: left;
     }
     .col-md-12 {
-        width: 100%;
+        width: 720px;
     }
     .col-md-11 {
-        width: 91.66666667%;
+        width: 660px;
     }
     .col-md-10 {
-        width: 83.33333333%;
+        width: 600px;
     }
     .col-md-9 {
-        width: 75%;
+        width: 540px;
     }
     .col-md-8 {
-        width: 66.66666667%;
+        width: 480px;
     }
     .col-md-7 {
-        width: 58.33333333%;
+        width: 420px;
     }
     .col-md-6 {
-        width: 300px;
+        width: 360px;
     }
     .col-md-5 {
-        width: 250px;
+        width: 300px;
     }
     .col-md-4 {
-        width: 233px;
+        width: 240px;
     }
     .col-md-3 {
-        width: 150px;
+        width: 180px;
     }
     .col-md-2 {
-        width: 100px;
+        width: 120px;
     }
     .col-md-1 {
         width: 60px;
     }
     .panel.panel-blue {
-        border: 1px solid black !important;
+        border: 0px solid black !important;
     }
     .portlet.portlet-primary {
-        border: 1px solid black !important;
+        border: 0px solid black !important;
         border-top-width: thin !important;
         border-top-style: solid !important;
         border-top-color: black !important;

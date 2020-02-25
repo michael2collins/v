@@ -56,6 +56,8 @@ export class StudentPaymentController {
             opened: false
         };
         vmpayment.disenable=true;
+        vmpayment.showclass="show";
+        
         vmpayment.students={};
         vmpayment.activate();
 
@@ -65,6 +67,13 @@ export class StudentPaymentController {
                                 vmpayment.$attrs.disenable == undefined || 
                                 vmpayment.$attrs.disenable == 1) ? 1 : 0;
             vmpayment.setDisplay();
+            if ( vmpayment.$attrs.noshowmodal == "" || 
+                                vmpayment.$attrs.noshowmodal == undefined || 
+                                vmpayment.$attrs.noshowmodal == 1) {
+                vmpayment.showclass="noshow";
+            } else {
+                vmpayment.showclass="show";
+            }
 
         });
 
@@ -74,6 +83,14 @@ export class StudentPaymentController {
                                 vmpayment.$attrs.disenable == undefined || 
                                 vmpayment.$attrs.disenable == 1) ? 1 : 0;
             vmpayment.setDisplay2();
+            
+            if ( vmpayment.$attrs.noshowmodal == "" || 
+                                vmpayment.$attrs.noshowmodal == undefined || 
+                                vmpayment.$attrs.noshowmodal == 1) {
+                vmpayment.showclass="noshow";
+            } else {
+                vmpayment.showclass="show";
+            }
 
         });
 

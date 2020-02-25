@@ -134,6 +134,9 @@ let thirdparty = [
         global: 'jQuery'
     },
     {
+        module: 'custom-elements', entry: '//cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/2.4.1/webcomponents-bundle.js'
+    },
+    {
         module: 'jqueryui', entry: '//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'
     },
     {

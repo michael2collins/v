@@ -1,8 +1,8 @@
 <!--<div class="default-page" ng-controller="PortalController as $ctrl" ng-cloak> -->
-<div id="portal" class="default-page"  ng-cloak>
+<div id="portal" class="default-page ng-cloak"  ng-cloak style="display:none">
    <a id="totop" ng-click="$ctrl.scrollToTop()"><i class="fa fa-angle-up"></i></a>
 <!--<div id="wrapper" ng-class="$ctrl.header.layout_menu" ng-cloak> -->
-<div id="wrapper" ng-cloak> 
+<div id="wrapper" class="ng-cloak" ng-cloak> 
       <header-component ng-show="$ctrl.isokf()"></header-component>
       <sidebar-component ng-show="$ctrl.isokf()"></sidebar-component>
       <div id="page-wrapper" ng-class="$ctrl.header.animation" class="animated">

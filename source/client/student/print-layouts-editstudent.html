@@ -1,5 +1,5 @@
-<div id="print-layouts-editstudenttop" ng-cloak>
-  <div class="col-lg-offset-9 noPrint">
+<div id="print-layouts-editstudenttop" class="ng-cloak" ng-cloak>
+  <div class="noPrint">
     <button type="button" ng-print print-element-id="print-layouts-editstudent" class="btn btn-blue">
         <span class="fa-stack fa-1x">
           <i class="fas fa-print fa-stack-1x"></i>
@@ -12,90 +12,90 @@
         </span>
       &nbsp; Cancel</button>
   </div>
-  <div id="print-layouts-editstudent" class="col-lg-12">
-    <div class="panel panel-blue">
+  <div id="print-layouts-editstudent" >
+    <div class="panel panel-blue remove-all-margin-padding">
       <div class="panel-heading">Student</div>
 
       <div  class="panel-body pan">
           <div class="form-body pal">
             <div class="row">
               <div id="studentid" class="col-md-1 bold">ID</div>
-              <div id="studentid" class="col-md-5">{{$ctrl.alldata.studentdata.ID}} </div>
+              <div id="studentid" class="col-md-4">{{$ctrl.alldata.studentdata.ID}} </div>
               <div id="studentid" class="col-md-1 bold">Externalid</div>
-              <div id="studentid2" class="col-md-5">{{$ctrl.alldata.studentdata.externalid}}</div>
+              <div id="studentid2" class="col-md-4">{{$ctrl.alldata.studentdata.externalid}}</div>
             </div>
             <div class="row">
               <div class="col-md-1 bold">Name</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.FirstName}} {{$ctrl.alldata.studentdata.LastName}}</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.FirstName}} {{$ctrl.alldata.studentdata.LastName}}</div>
               <div class="col-md-1 bold">Birthday</div>
-              <div class="col-md-5 thick-line ">{{$ctrl.alldata.studentdata.Birthday | date:'yyyy-MM-dd'}}</div>
+              <div class="col-md-4 thick-line ">{{$ctrl.alldata.studentdata.Birthday | date:'yyyy-MM-dd'}}</div>
             </div>
             <div class="row">
               <div class="col-md-1 bold">Email</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Email}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.Email}} &nbsp;</div>
               <div class="col-md-1 bold">Email2</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Email2}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.Email2}} &nbsp;</div>
             </div>
             <div class="row">
               <div class="col-md-1 bold">Phone</div>
-              <div class="col-md-3 thick-line">{{$ctrl.alldata.studentdata.Phone}} &nbsp;</div>
+              <div class="col-md-2 thick-line">{{$ctrl.alldata.studentdata.Phone}} &nbsp;</div>
               <div class="col-md-1 bold">Alt</div>
-              <div class="col-md-3" thick-line>{{$ctrl.alldata.studentdata.AltPhone}} &nbsp;</div>
+              <div class="col-md-2" thick-line>{{$ctrl.alldata.studentdata.AltPhone}} &nbsp;</div>
               <div class="col-md-1 bold">Gender</div>
-              <div class="col-md-3 thick-line">{{$ctrl.alldata.studentdata.sex}} &nbsp;</div>
+              <div class="col-md-2 thick-line">{{$ctrl.alldata.studentdata.sex}} &nbsp;</div>
             </div>
             <div class="row">
               <div class="col-md-1 bold">Parent</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Parent}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.Parent}} &nbsp;</div>
               <div class="col-md-1 bold">Emerg.</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.EmergencyContact}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.EmergencyContact}} &nbsp;</div>
             </div>
             <div class="row">
               <div class="col-md-1 bold">Notes</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.Notes}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.Notes}} &nbsp;</div>
               <div class="col-md-1 bold">Med.</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.medicalConcerns}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.medicalConcerns}} &nbsp;</div>
             </div>
             <div class="row">
               <div class="col-md-1 bold">Address</div>
-              <div class="col-md-6 thick-line">{{$ctrl.alldata.studentdata.Address}}</div>
-              <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.City}} {{$ctrl.alldata.studentdata.ZIP}} &nbsp;</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.Address}}</div>
+              <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.City}} {{$ctrl.alldata.studentdata.ZIP}} &nbsp;</div>
             </div>
           </div>
 
       </div>
-      <div class="row">
-              <div class="col-md-12">
-                <div class="portlet portlet-primary">
+      <div class="">
+              <div class="">
+                <div class="portlet portlet-primary remove-all-margin-padding">
                   <div class="portlet-header">
                     <div class="caption">Dojo Information</div>
                   </div>
                   <div class="portlet-body">
                     <div class="row">
                       <div class="col-md-1 bold">Type</div>
-                      <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.ContactType}} &nbsp;</div>
+                      <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.ContactType}} &nbsp;</div>
                       <div class="col-md-1 bold">Acct</div>
-                      <div class="col-md-5 thick-line">{{$ctrl.alldata.studentdata.quickbooklink}} &nbsp;</div>
+                      <div class="col-md-4 thick-line">{{$ctrl.alldata.studentdata.quickbooklink}} &nbsp;</div>
                     </div>
                   </div>
                 </div>
 
               </div>
-              <div class="col-md-12">
-                <div class="portlet portlet-primary">
+              <div class="">
+                <div class="portlet portlet-primary remove-all-margin-padding">
                   <div class="portlet-header">
                     <div class="caption">Ranks</div>
                   </div>
                   <div class="portlet-body">
                           <div class="row">
-                            <div class="col-md-4 bold">Type</div>
+                            <div class="col-md-3 bold">Type</div>
                             <div class="col-md-4 bold">Rank</div>
-                            <div class="col-md-4 bold">Last Promoted</div>
+                            <div class="col-md-3 bold">Last Promoted</div>
                           </div>
                           <div class="row" ng-repeat="item in $ctrl.alldata.studentranks track by $index">
-                            <div class="col-md-4 thick-line">{{item.ranktype}}</div>
+                            <div class="col-md-3 thick-line">{{item.ranktype}}</div>
                             <div class="col-md-4 thick-line">{{item.currentrank}}</div>
-                            <div class="col-md-4 thick-line">{{item.lastPromoted}}</div>
+                            <div class="col-md-3 thick-line">{{item.lastPromoted}}</div>
                           </div>
                   </div>
                 </div>
@@ -105,7 +105,8 @@
       </div>
 
     </div>
-    <studentclass-component disenable="1" students="{{$ctrl.alldata.studentdata}}"></studentclass-component>
-    <studentpayment-component disenable="1" students="{{$ctrl.alldata.studentdata}}"></studentpayment-component>
+<!--    <div class="pagebreak"></div> -->
+    <studentclass-component disenable="1" noshowmodal="1" students="{{$ctrl.alldata.studentdata}}"></studentclass-component>
+    <studentpayment-component disenable="1" noshowmodal="1" students="{{$ctrl.alldata.studentdata}}"></studentpayment-component>
   </div>
 </div>
