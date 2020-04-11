@@ -746,6 +746,32 @@ class StudentClassDbHandler {
 
     }
 
+    public function removeStudentRegid($studentid, $registrationid
+    ) {
+        global $app;
+
+        $app->log->debug( print_R("removeStudentRegid entered\n", TRUE ));
+                                      
+        $sql = "DELETE from studentregistration  where studentid = ? and registrationid = ? ";
+
+        if ($stmt = $this->conn->prepare($sql)) {
+            $stmt->bind_param("ii",
+                              $studentid, $registrationid
+                                 );
+                // Check for success
+            $stmt->execute();
+            $num_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+//            return $num_affected_rows >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }   
+
+    }
+
     public function removeStudentReg($studentid, $classid, $pgmid
     ) {
         global $app;
@@ -756,7 +782,7 @@ class StudentClassDbHandler {
         $cpsql = "DELETE from nclasspays  where contactid = ? and classseq = ? and pgmseq = ?";
 
         if ($stmt = $this->conn->prepare($sql)) {
-            $stmt->bind_param("sss",
+            $stmt->bind_param("iii",
                               $studentid, $classid , $pgmid
                                  );
                 // Check for success
@@ -769,7 +795,7 @@ class StudentClassDbHandler {
         } else {
             printf("Errormessage: %s\n", $this->conn->error);
                 return NULL;
-        }
+        }   
         if ($stmt = $this->conn->prepare($cpsql)) {
             $stmt->bind_param("sss",
                               $studentid, $classid , $pgmid
@@ -787,7 +813,31 @@ class StudentClassDbHandler {
         }
 
     }
+    public function removeClassPays($studentid, $classpayid
+    ) {
+        global $app;
 
+        $app->log->debug( print_R("removeClassPays entered\n", TRUE ));
+                                      
+        $cpsql = "DELETE from nclasspays  where contactid = ? and id = ? ";
+     
+        if ($stmt = $this->conn->prepare($cpsql)) {
+            $stmt->bind_param("ii",
+                              $studentid, $classpayid 
+                                 );
+                // Check for success
+            $stmt->execute();
+            $numcp_affected_rows = $stmt->affected_rows;
+
+            $stmt->close();
+            return ( $numcp_affected_rows) >= 0;
+
+        } else {
+            printf("Errormessage: %s\n", $this->conn->error);
+                return NULL;
+        }
+
+    }
     private function isStudentClassExists($contactid, $classseq, $pgmseq) {
         global $app;
     $app->log->debug( print_R("before isStudentClassExists\n", TRUE ));
@@ -1198,7 +1248,7 @@ class StudentClassDbHandler {
                     join payerPayments pp on pp.pgmseq = ncl.id )
                     join ncontacts c on c.id = pp.contactid )
                     left outer join paymentclasspay pcp on pcp.classpayid = pp.classpayid  )
-                                where c.studentschool = pp.school
+                                where c.studentschool = pp.school and c.StudentSchool = ncl.school
                                 and pp.payerid = ? and c.studentschool = ?
                 ";
 

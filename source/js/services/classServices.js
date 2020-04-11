@@ -431,6 +431,18 @@ export class ClassServices {
         });
         return (request.then(self.handleSuccess, self.handleError));
     }
+    removeStudentClasspays(path, thedata) {
+        var self=this;
+        self.$log.log('removeStudentClasspays data before post :', path, thedata);
+        var request = self.$http({
+            method: "DELETE",
+            url: path,
+            data: {
+                thedata: thedata
+            }
+        });
+        return (request.then(self.handleSuccess, self.handleError));
+    }
     getPayersPartial(input) {
         var self=this;
         self.$log.log('getPayersPartial service entered:', input);

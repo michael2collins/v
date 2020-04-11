@@ -3,7 +3,7 @@
 export class StudentHistoriesController {
     constructor(
         $scope, $log, StudentServices, Util, $routeParams, uiGridConstants,
-        $window, Notification, $controller, $timeout, $q, TestingServices, UserServices
+        $window, Notification, $controller, $timeout, $q, UserServices
     ) {
         'ngInject';
         this.$scope = $scope;
@@ -16,6 +16,7 @@ export class StudentHistoriesController {
         this.Notification = Notification;
         this.$timeout = $timeout;
         this.$controller = $controller;
+        this.$q = $q;
         this.UserServices = UserServices;
     }
 

@@ -1,6 +1,7 @@
 import angular from 'angular';
 import studenttemplate from './table-basic-students.html';
 import studenthistoriestemplate from './table-basic-studenthistories.html';
+import studentregistrationstemplate from './registrationlist.html';
 import editstudenttempate from './form-layouts-editstudent.html';
 
 
@@ -17,6 +18,7 @@ import { studentattendComponent } from './studentattend.component';
 import { studentpaymentComponent } from './studentpayment.component';
 import { studenttableComponent } from './studenttable.component';
 import { studenthistoriestableComponent } from './studenthistoriestable.component';
+import { studentregistrationsComponent } from './studentregistrations.component';
 //import { studentclasseditComponent } from './studentclassedit.component';
 
 import { StudentPaymentController } from './studentpayment.controller';
@@ -29,6 +31,7 @@ import { FormLayoutsControllerEditStudent } from './editstudent.controller';
 import { ctrlDualList } from './studentdual.controller';
 import { StudentsTableBasicController } from './studenttable.controller';
 import { StudentHistoriesController } from './studenthistoriestable.controller';
+import { StudentRegistrationsController } from './studentregistrations.controller';
 //import { StudentClassEditController } from './studentclassedit.controller';
 import { PrintStudentController } from './printstudent.controller';
 
@@ -70,6 +73,7 @@ export const StudentModule = angular
  .controller('ctrlDualList', ctrlDualList)
  .controller('StudentsTableBasicController', StudentsTableBasicController)
  .controller('StudentHistoriesController', StudentHistoriesController)
+ .controller('StudentRegistrationsController', StudentRegistrationsController)
 // .controller('StudentClassEditController', StudentClassEditController)
  .component('editstudentComponent', editstudentComponent)
  .component('printstudentComponent', printstudentComponent)
@@ -83,6 +87,7 @@ export const StudentModule = angular
  .component('studentpaymentComponent', studentpaymentComponent)
  .component('studenttableComponent', studenttableComponent)
  .component('studenthistoriestableComponent', studenthistoriestableComponent)
+ .component('studentregistrationsComponent', studentregistrationsComponent)
 // .component('studentclasseditComponent', studentclasseditComponent)
  .directive('leadnotRequired',leadnotRequired)
  .config(studentconfig)
@@ -98,6 +103,9 @@ function studentconfig($routeProvider) {
 
   .when('/table-basic-studenthistories', {
    template: studenthistoriestemplate
+  })
+  .when('/table-basic-studentregistrations', {
+   template: studentregistrationstemplate
   })
 
   .when('/form-layouts-editstudent/id/:id', {

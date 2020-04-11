@@ -633,6 +633,54 @@ $app->post('/studentregistration', 'authenticate', 'isAdminOrOperator', 'setDebu
 
 
 });
+$app->delete('/studentclasspays','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
+
+    $response = array();
+
+    $app->log->debug( print_R("studentclasspays before delete\n", TRUE ));
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    $app->log->debug( print_R($test, TRUE ));
+
+    $studentid = (isset($test->thedata->studentid) ? $test->thedata->studentid : "");
+    $classpayid = (isset($test->thedata->classpayid) ? $test->thedata->classpayid : "");
+
+
+    $app->log->debug( print_R("classpayid: $classpayid\n", TRUE ));
+    $app->log->debug( print_R("studentid: $studentid\n", TRUE ));
+
+
+    $studentclasspays_good=0;
+    $studentclasspays_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // removing student classpays
+    $studenreg = $db->removeClassPays(
+        $studentid, $classpayid
+                                );
+
+    if ($studenreg > 0) {
+        $app->log->debug( print_R("studentclasspays removed classpayid: $classpayid  \n", TRUE ));
+        $response["error"] = false;
+        $response["message"] = "studentclasspays removed successfully";
+        $studentclasspays_good = 1;
+        $response["studentclasspays"] = $studentclasspays_good;
+        echoRespnse(201, $response);
+    } else {
+        $app->log->debug( print_R("after delete studentclasspays result bad\n", TRUE));
+        $app->log->debug( print_R( $studenreg, TRUE));
+        $studentclasspays_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove studentclasspays. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
 
 $app->delete('/studentregistration','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
 
@@ -668,6 +716,54 @@ $app->delete('/studentregistration','authenticate', 'isAdminOrOperator', 'setDeb
 
     if ($studenreg > 0) {
         $app->log->debug( print_R("studentregistration removed class: $classid pgm: $pgmid \n", TRUE ));
+        $response["error"] = false;
+        $response["message"] = "studentregistration removed successfully";
+        $studentregistration_good = 1;
+        $response["studentregistration"] = $studentregistration_good;
+        echoRespnse(201, $response);
+    } else {
+        $app->log->debug( print_R("after delete studentregistration result bad\n", TRUE));
+        $app->log->debug( print_R( $studenreg, TRUE));
+        $studentregistration_bad = 1;
+        $response["error"] = true;
+        $response["message"] = "Failed to remove studentregistration. Please try again";
+        echoRespnse(400, $response);
+    }
+                        
+
+});
+$app->delete('/studentregistrationid','authenticate', 'isAdminOrOperator', 'setDebug',function() use ($app) {
+
+    $response = array();
+
+    $app->log->debug( print_R("studentregistrationid before delete\n", TRUE ));
+    $request = $app->request();
+
+    $body = $request->getBody();
+    $test = json_decode($body);
+    $app->log->debug( print_R($test, TRUE ));
+
+    $studentid = (isset($test->thedata->studentid) ? $test->thedata->studentid : "");
+    $registrationid = (isset($test->thedata->registrationid) ? $test->thedata->registrationid : "");
+
+
+    $app->log->debug( print_R("studentid: $studentid\n", TRUE ));
+    $app->log->debug( print_R("registrationid: $registrationid\n", TRUE ));
+
+
+    $studentregistration_good=0;
+    $studentregistration_bad=0;
+
+    $db = new StudentClassDbHandler();
+    $response = array();
+
+    // creating studenranks
+    $studenreg = $db->removeStudentRegid(
+        $studentid, $registrationid
+                                );
+
+    if ($studenreg > 0) {
+        $app->log->debug( print_R("studentregistration removed registrationid: $registrationid  \n", TRUE ));
         $response["error"] = false;
         $response["message"] = "studentregistration removed successfully";
         $studentregistration_good = 1;

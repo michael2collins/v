@@ -18,6 +18,7 @@ constructor() {
         '/impstudent': {title:'Import Students', 'breadcrumb':['Students', 'Student Import']},
         '/table-basic-students': {title:'Student List', 'breadcrumb':['Students', 'Student List']},
         '/table-basic-studenthistories': {title:'Student Histories', 'breadcrumb':['Students', 'Student Histories']},
+        '/table-basic-studentregistrations': {title:'Student Registrations', 'breadcrumb':['Students', 'Student Registrations']},
         '/table-basic-leads': {title:'Table Basic', 'breadcrumb':['Table', 'Table Basic']},
         '/table-basic-attendance': {title:'Attendance', 'breadcrumb':['Students', 'Attendance']},
         '/table-basic-schedule': {title:'Class Schedule', 'breadcrumb':['Manage Studio', 'Class Schedule']},

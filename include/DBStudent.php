@@ -522,6 +522,113 @@ class StudentDbHandler
 	}
 
 	public
+	function getRegistrationsList() {
+		global $app;
+		global $school;
+        $app->log->debug( print_R("getRegistrationsList entered\n", TRUE ));
+        $errormessage=array();
+		
+		$sql = '
+		SELECT
+		  sr.studentid AS contactid,
+		  c.FirstName,
+		  c.LastName,
+		  sr.studentClassStatus,
+		  sr.expiresOn,
+		  l.class AS pgmclass,
+		  l.classtype,
+		  cp.classid AS classid,
+		  cp.pgmid AS pgmid,
+		  cp.pgmcat,
+		  cp.classcat,
+		  cp.agecat,
+		  cl.class AS classclass,
+		  cl.sort,
+		  cl.nextclass,
+		  cl.rankfornextclass,
+		  cl.agefornextclass,
+		  cl.pictureurl,
+		  cl.registrationtype,
+		  cpa.isTestfeewaived,
+		  cpa.primaryContact,
+		  cpa.id AS classpayid,
+		  pp.payerName,
+		  pp.id AS payerid,
+          np.paymentid,
+          np.PaymentAmount,
+          pcp.pcpid,
+          sr.registrationid
+		  
+		FROM
+		  studentregistration sr
+		LEFT OUTER JOIN
+		  ncontacts c ON sr.studentid = c.ID
+		LEFT OUTER JOIN
+		  nclasspgm cp ON(
+		    sr.pgmid = cp.pgmid AND sr.classid = cp.classid AND cp.school = c.StudentSchool
+		  )
+		LEFT OUTER JOIN
+		  nclass cl ON cp.classid = cl.id AND cl.school = cp.school
+		LEFT OUTER JOIN
+		  nclasslist l ON l.id = cp.pgmid AND l.school = cp.school
+		LEFT OUTER JOIN
+		  nclasspays cpa ON(
+		    cpa.classseq = sr.classid AND cpa.pgmseq = sr.pgmid AND cpa.contactid = sr.studentid
+		  )
+		LEFT OUTER JOIN
+		  payer pp ON pp.id = cpa.payerid AND pp.school = c.StudentSchool
+          left OUTER JOIN
+          npayments np on np.payerid = pp.id
+          left OUTER JOIN
+          paymentclasspay pcp ON ( pcp.classpayid = cpa.ID)		  
+		where c.StudentSchool = ?';
+		
+		try {
+		if ($stmt = $this->conn->prepare($sql)) {
+			$stmt->bind_param("s", $school);
+			if ($stmt->execute()) {
+				$slists = $stmt->get_result();
+				$app->log->debug(print_R("getRegistrationsList list returns data", TRUE) );
+				$app->log->debug(print_R($slists, TRUE) );
+				$stmt->close();
+
+                if ($slists) {
+                    $errormessage["success"] = true;
+					$errormessage["slist"]=$slists;
+                    return $errormessage;
+                } else {
+                    // Failed to find 
+                    $errormessage["sqlerror"] = "getRegistrationsList Select failure: ";
+                    $errormessage["sqlerrordtl"] = $this->conn->error;
+					$errormessage["slist"] = array();
+                    return $errormessage;
+                }
+			}
+			else {
+				$app->log->debug(print_R("getRegistrationsList list execute failed", TRUE) );
+	            $errormessage["sqlerror"] = "getRegistrationsList failure: ";
+	            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$errormessage["slist"] = array();
+	            return $errormessage;
+			}
+		}
+		else {
+			$app->log->debug(print_R("getRegistrationsList list sql failed", TRUE) );
+            $errormessage["sqlerror"] = "getRegistrationsList failure: ";
+            $errormessage["sqlerrordtl"] = $this->conn->error;
+				$res["slist"] = array();
+            return $errormessage;
+		}
+		} catch(exception $e) {
+			 $app->log->debug(print_R( "sql error in getRegistrationsList\n" , TRUE));
+			$app->log->debug(print_R(  $e , TRUE));
+                printf("Errormessage: %s\n", $e);
+                return NULL;
+		}
+		
+	}
+
+	public
 	function getRankPartial($theinput, $ranktype)
 	{
         global $app;

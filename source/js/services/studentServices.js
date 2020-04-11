@@ -945,5 +945,14 @@ export class StudentServices {
 
         return (request.then(self.handleSuccess, self.handleError));
     }
+    getStudentRegistrations(path) {
+        var self = this;
+        var request = self.$http({
+            method: "get",
+            url: path
+        });
+
+        return (request.then(self.handleSuccess, self.handleError));
+    }
     
 }

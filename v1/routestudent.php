@@ -5612,6 +5612,74 @@ $app->get('/contacthistories', 'authenticate', 'allRoles', 'setDebug', function(
 
 });
 
+$app->get('/registrationlist', 'authenticate', 'allRoles', 'setDebug', function() use ($app){
+
+    $response = array();
+    $db = new StudentDbHandler();
+
+    // fetch task
+    $response["error"] = false;
+    $response["registrationlist"] = array();
+
+    $res_id = $db->getRegistrationsList();
+                                     
+    $app->log->debug( print_R($res_id, TRUE ));
+    $app->log->debug( print_R("\n", TRUE ));
+
+    if (isset($res_id["success"]) ) {
+
+    // looping through result and preparing  arrays
+        while ($slist = $res_id["slist"]->fetch_assoc()) {
+            $tmp = array();
+            if (count($slist) > 0) {
+       $tmp["contactid"] = $slist["contactid"];
+       $tmp["FirstName"] = $slist["FirstName"];
+       $tmp["LastName"] = $slist["LastName"];
+       $tmp["studentClassStatus"] = $slist["studentClassStatus"];
+       $tmp["expiresOn"] = $slist["expiresOn"];
+       $tmp["pgmclass"] = $slist["pgmclass"];
+       $tmp["classtype"] = $slist["classtype"];
+       $tmp["classid"] = $slist["classid"];
+       $tmp["pgmid"] = $slist["pgmid"];
+       $tmp["pgmcat"] = $slist["pgmcat"];
+       $tmp["classcat"] = $slist["classcat"];
+       $tmp["agecat"] = $slist["agecat"];
+       $tmp["classclass"] = $slist["classclass"];
+       $tmp["sort"] = $slist["sort"];
+       $tmp["nextclass"] = $slist["nextclass"];
+       $tmp["rankfornextclass"] = $slist["rankfornextclass"];
+       $tmp["agefornextclass"] = $slist["agefornextclass"];
+       $tmp["pictureurl"] = $slist["pictureurl"];
+       $tmp["registrationtype"] = $slist["registrationtype"];
+       $tmp["isTestfeewaived"] = $slist["isTestfeewaived"];
+       $tmp["primaryContact"] = $slist["primaryContact"];
+       $tmp["classpayid"] = $slist["classpayid"];
+       $tmp["payerName"] = $slist["payerName"];
+       $tmp["payerid"] = $slist["payerid"];
+       $tmp["paymentid"] = $slist["paymentid"];
+       $tmp["PaymentAmount"] = $slist["PaymentAmount"];
+       $tmp["pcpid"] = $slist["pcpid"];
+       $tmp["registrationid"] = $slist["registrationid"];
+
+            }
+            array_push($response["registrationlist"], $tmp);
+        }
+        $response["error"] = false;
+        $response["message"] = "Found getRegistrationList successfully";
+        $response["res_id"] = $res_id["success"];
+        echoRespnse(201, $response);
+        
+    } else {
+        $app->log->debug( print_R("after getRegistrationList result bad\n", TRUE));
+        $app->log->debug( print_R( $res_id, TRUE));
+        $response["extra"] = $res_id;
+        $response["error"] = true;
+        $response["message"] = "Failed to get getRegistrationList. Please try again";
+        echoRespnse(400, $response);
+    }
+
+
+});
 
 $app->get('/rawattendances', 'authenticate', 'isAdminOrOperator', 'setDebug', function() use ($app){
 
