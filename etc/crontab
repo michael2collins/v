@@ -1,0 +1,10 @@
+0 1 * * * /home/michael2collins/scripts/backup
+0 6 1,15 * * /home/miketest/invoicegen.sh
+0 2 * * * /home/michael2collins/scripts/backupvdb
+0 3 * * * /home/michael2collins/scripts/backupvdbtest
+#0 4 * * * /etc/ssl/private/updatessl.sh
+#0 0 1 * * cd /opt/letsencrypt && git pull
+0 2 * * * cd /opt/letsencrypt && git pull
+0 3 * * * (/opt/letsencrypt/letsencrypt-auto certificates | mail -s "letsencrypt output" michael.collins.natick@gmail.com)
+0 4 * * * (/opt/letsencrypt/letsencrypt-auto renew 2>&1 | mail -s "le renew" michael.collins.natick@gmail.com)
+0 1 * * * (cd /usr/local/src/chkrootkit*; ./chkrootkit 2>&1 | grep -q 'INFECTED|Vulnerable' && mail -s "chkrootkit output" michael.collins.natick@gmail.com)

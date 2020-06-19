@@ -1,0 +1,228 @@
+<div ng-controller="RankTableBasicController as vm">
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Rank</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Rank</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-10 mbs">
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+<!--ranktype, rankid, ranklist, sortkey, rankGroup, alphasortkey, AttendPromoteTarget, DurationPromoteTarget, school, nextsortkey          -->                           
+                <form action="" novalidate name="editschedule2" class="form-horizontal">
+                            <div class="col-md-3">
+                                <div class="col-md-4">
+                                    
+    <div class="form-group">
+        <label for="ranklist" class="control-label">Rank<br/>&nbsp;</label>
+
+        <div>
+            <input  id="ranklist" 
+                    type="text" 
+                    placeholder="Enter Name" 
+                    name="ranklist" 
+                    ng-model="vm.Rank.ranklist" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-4">
+                                    
+    <div ng-class="{'has-error': editschedule2.ranktype.$invalid, 
+                    'has-success': !editschedule2.ranktype.$invalid}" class="form-group">
+        <label for="ranktype" class="control-label">Rank<br/>Type</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.ranktype.$dirty" 
+            ng-class="editschedule2.ranktype.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="ranktype" type="text" 
+                name="ranktype" 
+                ng-model="vm.Rank.ranktype" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.rankTypes" 
+                    ng-selected="{{iter.value==vm.Rank.ranktype}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.ranktype.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-4">
+                                    
+    <div ng-class="{'has-error': editschedule2.rankGroup.$invalid, 
+                    'has-success': !editschedule2.rankGroup.$invalid}" class="form-group">
+        <label for="rankGroup" class="control-label">Rank<br/>Group</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.rankGroup.$dirty" 
+            ng-class="editschedule2.rankGroup.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="rankGroup" type="text" 
+                name="rankGroup" 
+                ng-model="vm.Rank.rankGroup" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.rankGroups" 
+                    ng-selected="{{iter.value==vm.Rank.rankGroup}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.rankGroup.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="col-md-2">
+                                    
+    <div class="form-group">
+        <label for="AttendPromoteTarget" class="control-label">Attendance<br/>Promotion Target</label>
+
+        <div>
+            <input  id="AttendPromoteTarget" 
+                    type="number" 
+                    placeholder="0" 
+                    name="AttendPromoteTarget" 
+                    ng-model="vm.Rank.AttendPromoteTarget" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div class="form-group">
+        <label for="DurationPromoteTarget" class="control-label">Duration<br/>Promotion Target</label>
+
+        <div>
+            <input  id="DurationPromoteTarget" 
+                    type="number" 
+                    placeholder="0" 
+                    name="DurationPromoteTarget" 
+                    ng-model="vm.Rank.DurationPromoteTarget" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div class="form-group">
+        <label for="sortkey" class="control-label">Sort<br/> Key</label>
+
+        <div>
+            <input  id="sortkey" 
+                    type="number" 
+                    placeholder="0" 
+                    name="sortkey" 
+                    ng-model="vm.Rank.sortkey" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div class="form-group">
+        <label for="nextsortkey" class="control-label">Next Sort<br/> Key</label>
+
+        <div>
+            <input  id="nextsortkey" 
+                    type="number" 
+                    placeholder="0" 
+                    name="nextsortkey" 
+                    ng-model="vm.Rank.nextsortkey" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div class="form-group">
+        <label for="alphasortkey" class="control-label">Alphabetic<br/> Sortkey</label>
+
+        <div>
+            <input  id="alphasortkey" 
+                    type="text" 
+                    placeholder="text" 
+                    name="alphasortkey" 
+                    ng-model="vm.Rank.alphasortkey" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                            </div>
+                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addRank(vm.Rank)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+[user]
+    name = Michael Collins
+    email = michael.collins.natick@gmail.com
+[core]
+	editor = /usr/bin/nano
+    whitespace = off
+    excludesfile = ~/.gitignore
+[advice]
+    statusuoption = false
+[color]
+    ui = true
+[push]
+    default = current
+[alias]
+        ca = !sh -c 'git add -A && git commit -m \"$1\"' -

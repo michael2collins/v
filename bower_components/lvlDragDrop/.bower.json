@@ -1,0 +1,34 @@
+{
+  "name": "lvlDragDrop",
+  "homepage": "http://jasonturim.wordpress.com/2013/09/01/angularjs-drag-and-drop/",
+  "authors": [
+    "Jason Turim"
+  ],
+  "description": "An easy to use, native, directive to enable drag/drop in your angular app. This directive has no dependency on jQuery or other frameworks, it does require a browser that supports the HTML5 drag/drop events",
+  "main": [
+    "script/lvl-uuid.js",
+    "script/lvl-drag-drop.js"
+  ],
+  "keywords": [
+    "drag",
+    "drop",
+    "angular"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "1ac73b4882",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "1ac73b4882289c3fc12e10b1e3c0b13b0ba8c5ad"
+  },
+  "_source": "https://github.com/kevinrenskers/lvlDragDrop.git",
+  "_target": "*",
+  "_originalSource": "https://github.com/kevinrenskers/lvlDragDrop.git"
+}

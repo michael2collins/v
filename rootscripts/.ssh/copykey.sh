@@ -1,0 +1,1 @@
+ssh-copy-id -i ./id_test.pub michael2collins@someip.104.211.116

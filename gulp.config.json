@@ -1,0 +1,76 @@
+{
+  "client": "./source/",
+  "html": "./source/**/*.html",
+  "htmltemplates": [ "./source/client/**/*.html","./build/phphtml/**/*.html"],
+  "specialcopysrc1": [ "./source/client/includes/*"],
+  "specialcopydest1": [ "./app/templates/includes/"],
+  "specialcopysrc2": [ "./source/client/admin/stripe*.php"],
+  "specialcopydest2": [ "./app/templates/admin/"],
+  "phpbuild": [ "./build/phphtml/"],
+  "phphtmltemplates": [ "./source/client/**/*.php", "!./source/client/**/stripe_onboard.php","!./source/client/**/table-basic.php"],
+  "vendorjs": [
+    "./bower_components/jquery-animateNumber/jquery.animateNumber.min.js",
+    "./source/vendors/flot-chart/jquery.flot.tooltip.js",
+    "./source/vendors/flot-chart/jquery.flot.spline.js",
+    "./bower_components/angular-isotope/dist/angular-isotope.js",
+    "./bower_components/multiselect/js/jquery.multi-select.js",
+    "./bower_components/jquery.sparkline/index.js",
+    "./bower_components/angular-deckgrid/angular-deckgrid.js",
+    "./bower_components/CSV-JS/csv.js",
+    "./node_modules/jquery.cardswipe/dist/jquery.cardswipe.min.js",
+    "./bower_components/lvlDragDrop/script/lvl-drag-drop.js",
+    "./bower_components/lvlDragDrop/script/lvl-uuid.js",
+    "./source/vendors/zoomPan-master/js/zoomPan.js"
+  ],
+  "vendorcss": [
+    "./source/less/stripecss.css",
+    "./source/vendors/zoomPan-master/css/zoomPan.css"
+  ],
+  "lastcss": [
+    "./source/less/htmlinline.css"
+  ],
+  "less": [
+          "./source/less/main.less",
+           "./source/less/bootstrap-custom.less",
+           "./source/less/themes/blue.less",
+           "./source/less/themes/default.less",
+          "./source/less/wysiwyg.less"
+    ],
+  "css": [
+    "./build/css/main.css",
+    "./build/css/bootstrap-custom.css",
+    "./build/css/default.css",
+    "./build/css/blue.css",
+    "./build/css/wysiwyg.css"
+  ],
+  "js": [
+    "./source/js/**/*module*.js",
+    "./source/client/**/*module.js",
+    "./source/js/**/*.js",
+    "./source/client/**/*.js"
+  ],
+  "specs": [],
+  "nodejs": [],
+  "fonts": [],
+  "images": [
+    "./source/images/**/*"
+  ],
+  "img": [
+    "./source/img/**/*"
+  ],
+  "report": "./report/",
+  "build": "./build/",
+  "srcfinal": [
+    "./build/**/*",
+    "./build/index.html",
+    "!./build/css/*",
+    "!./build/css"
+    ],
+  "appclean": [
+    "./app/content/*",
+    "./app/*.js*",
+    "./app/index.html"
+    ],
+  "destfinal": "./app/",
+  "destcss": "./build/css/"
+}

@@ -1,0 +1,273 @@
+<div ng-controller="ClassPgmTableBasicController as vm">
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Class Program</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Class Program</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-10 mbs">
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+<!-- classid, pgmid, pgmcat, classcat, agecat -->                    
+            <div class="col-md-12" style="height: 88px;">
+                <form action="" novalidate name="editClassPgm2" class="form-horizontal">
+                                <div class="col-md-1">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.classid.$invalid, 
+                    'has-success': !editClassPgm2.classid.$invalid}" class="form-group">
+        <label for="classid" class="control-label">Class<br/>&nbsp;</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.classid.$dirty" 
+            ng-class="editClassPgm2.classid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="classid" type="text" 
+                name="classid" 
+                ng-model="vm.ClassPgm.classid" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.classes" 
+                    ng-selected="{{iter.id==vm.ClassPgm.classid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.classid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.pgmid.$invalid, 
+                    'has-success': !editClassPgm2.pgmid.$invalid}" class="form-group">
+        <label for="pgmid" class="control-label">Program<br/>&nbsp;</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.pgmid.$dirty" 
+            ng-class="editClassPgm2.pgmid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="pgmid" type="text" 
+                name="pgmid" 
+                ng-model="vm.ClassPgm.pgmid" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.programs" 
+                    ng-selected="{{iter.id==vm.ClassPgm.pgmid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.pgmid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-1">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.nextClassid.$invalid, 
+                    'has-success': !editClassPgm2.nextClassid.$invalid}" class="form-group">
+        <label for="nextClassid" class="control-label">Next<br/>Class;</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.nextClassid.$dirty" 
+            ng-class="editClassPgm2.nextClassid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="nextClassid" type="text" 
+                name="nextClassid" 
+                ng-model="vm.ClassPgm.nextClassid" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.classes" 
+                    ng-selected="{{iter.id==vm.ClassPgm.nextClassid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.nextClassid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-2">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.nextPgmid.$invalid, 
+                    'has-success': !editClassPgm2.nextPgmid.$invalid}" class="form-group">
+        <label for="nextPgmid" class="control-label">Next<br/>Program;</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.nextPgmid.$dirty" 
+            ng-class="editClassPgm2.nextPgmid.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="nextPgmid" type="text" 
+                name="nextPgmid" 
+                ng-model="vm.ClassPgm.nextPgmid" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.programs" 
+                    ng-selected="{{iter.id==vm.ClassPgm.nextPgmid}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.nextPgmid.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-1">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.pgmcat.$invalid, 
+                    'has-success': !editClassPgm2.pgmcat.$invalid}" class="form-group">
+        <label for="pgmcat" class="control-label">Program<br/>Category</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.pgmcat.$dirty" 
+            ng-class="editClassPgm2.pgmcat.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="pgmcat" type="text" 
+                name="pgmcat" 
+                ng-model="vm.ClassPgm.pgmcat" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.pgmcats" 
+                    ng-selected="{{iter.id==vm.ClassPgm.pgmcat}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.pgmcat.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-1">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.classcat.$invalid, 
+                    'has-success': !editClassPgm2.classcat.$invalid}" class="form-group">
+        <label for="classcat" class="control-label">Class<br/>Category</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.classcat.$dirty" 
+            ng-class="editClassPgm2.classcat.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="classcat" type="text" 
+                name="classcat" 
+                ng-model="vm.ClassPgm.classcat" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.classcats" 
+                    ng-selected="{{iter.id==vm.ClassPgm.classcat}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.classcat.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                                <div class="col-md-1">
+                                    
+    <div ng-class="{'has-error': editClassPgm2.agecat.$invalid, 
+                    'has-success': !editClassPgm2.agecat.$invalid}" class="form-group">
+        <label for="agecat" class="control-label">Age<br/>Category</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editClassPgm2.agecat.$dirty" 
+            ng-class="editClassPgm2.agecat.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="agecat" type="text" 
+                name="agecat" 
+                ng-model="vm.ClassPgm.agecat" 
+                                 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.agecats" 
+                    ng-selected="{{iter.id==vm.ClassPgm.agecat}}" 
+                    placeholder="Select" 
+                    value="{{ iter.id }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editClassPgm2.agecat.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+
+                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addClassPgm(vm.ClassPgm)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

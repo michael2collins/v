@@ -1,0 +1,28 @@
+<div class="col-md-12" ng-cloak>
+  <div class=" >
+        <a href=" data-ng-click="$ctrl.card.showIndex = !$ctrl.card.showIndex;$ctrl.cardparent.selectItem($ctrl.card.studentID,$ctrl.card.showIndex, $ctrl.card, true)">
+
+            <div class="mls photo-index" data-ng-if="$ctrl.card.showIndex" style='text-align: left; font-size: small;'>
+
+                <p class="balloon-wrapper">
+                    <span ng-style="($ctrl.card.readyness === true ) && {'background':'lightgreen','color':'black'}  || ($ctrl.card.readyness === false ) && {'background':'yellow','color':'black'}" class="balloon">{{$ctrl.cardparent.getAttendingCount()}}</span>
+                </p>
+
+            </div>
+
+            <div class="photo-description" style='text-align: center; font-size: large;'>
+                {{$ctrl.card.firstname}} {{$ctrl.card.lastname}}
+            </div>
+        </a>
+        <div ng-show="$ctrl.cardparent.hasStats($ctrl.card.studentID) && $ctrl.card.showStats" style='text-align: center; font-size: large;'>
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasStats($ctrl.card.studentID)">Time In?: {{$ctrl.cardparent.daysSince}}</p>
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasStats($ctrl.card.studentID)">Attend: {{$ctrl.cardparent.daysAttended}}</p>
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasStats($ctrl.card.studentID)">Ready?: {{$ctrl.card.readyness}}</p>
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasSelected($ctrl.card.studentID)">Rank: {{$ctrl.card.rank}}</p>
+        </div>
+    </div>
+    <div style='text-align: center;'>
+        <button type="button" data-ng-click="$ctrl.cardparent.setStudentReadyNextRank($ctrl.card.studentID,$ctrl.card.readyness = !$ctrl.card.readyness)" class="mbm btn btn-green btn-sm">Ready?</button>
+        <button type="button" data-ng-click="$ctrl.cardparent.checkAttendanceStats($ctrl.card.studentID);$ctrl.card.showStats = !$ctrl.card.showStats" class="mbm btn btn-green btn-sm">Stats?</button>
+    </div>
+</div>

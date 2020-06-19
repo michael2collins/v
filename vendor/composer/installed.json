@@ -1,0 +1,309 @@
+[
+    {
+        "name": "slim/slim",
+        "version": "2.6.3",
+        "version_normalized": "2.6.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/slimphp/Slim.git",
+            "reference": "9224ed81ac1c412881e8d762755e3d76ebf580c0"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/slimphp/Slim/zipball/9224ed81ac1c412881e8d762755e3d76ebf580c0",
+            "reference": "9224ed81ac1c412881e8d762755e3d76ebf580c0",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "suggest": {
+            "ext-mcrypt": "Required for HTTP cookie encryption",
+            "phpseclib/mcrypt_compat": "Polyfil for mcrypt extension"
+        },
+        "time": "2017-01-07 12:21:41",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Slim": "."
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Josh Lockhart",
+                "email": "info@joshlockhart.com",
+                "homepage": "http://www.joshlockhart.com/"
+            }
+        ],
+        "description": "Slim Framework, a PHP micro framework",
+        "homepage": "http://github.com/codeguy/Slim",
+        "keywords": [
+            "microframework",
+            "rest",
+            "router"
+        ]
+    },
+    {
+        "name": "palanik/slim-no-cache",
+        "version": "v0.0.1",
+        "version_normalized": "0.0.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/palanik/SlimNoCache.git",
+            "reference": "3253b8cceac6775f53b0c5f2c5c9cad80446e6b1"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/palanik/SlimNoCache/zipball/3253b8cceac6775f53b0c5f2c5c9cad80446e6b1",
+            "reference": "3253b8cceac6775f53b0c5f2c5c9cad80446e6b1",
+            "shasum": ""
+        },
+        "require": {
+            "slim/slim": ">=2.4.0"
+        },
+        "time": "2015-03-19 05:23:26",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "SlimNoCache\\": "."
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "palanik"
+            }
+        ],
+        "description": "no-cache response headers setting middleware for PHP Slim.",
+        "homepage": "https://github.com/palanik/SlimNoCache",
+        "keywords": [
+            "cache headers",
+            "no-cache",
+            "nocache",
+            "slim",
+            "slim-no-cache",
+            "slimnocache",
+            "slimphp"
+        ]
+    },
+    {
+        "name": "slim/logger",
+        "version": "0.1.0",
+        "version_normalized": "0.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/codeguy/Slim-Logger.git",
+            "reference": "ad3a2e62236f5d37056de9a4586659edc8164937"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/codeguy/Slim-Logger/zipball/ad3a2e62236f5d37056de9a4586659edc8164937",
+            "reference": "ad3a2e62236f5d37056de9a4586659edc8164937",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0",
+            "slim/slim": ">=2.4.0"
+        },
+        "time": "2014-07-16 20:11:26",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Slim\\Logger\\": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Josh Lockhart",
+                "email": "info@joshlockhart.com",
+                "homepage": "http://www.joshlockhart.com/"
+            }
+        ],
+        "description": "Slim Framework logger"
+    },
+    {
+        "name": "stripe/stripe-php",
+        "version": "v6.6.0",
+        "version_normalized": "6.6.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/stripe/stripe-php.git",
+            "reference": "0bae101401ed839a94d9e4d038f3e66bbed568f4"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/stripe/stripe-php/zipball/0bae101401ed839a94d9e4d038f3e66bbed568f4",
+            "reference": "0bae101401ed839a94d9e4d038f3e66bbed568f4",
+            "shasum": ""
+        },
+        "require": {
+            "ext-curl": "*",
+            "ext-json": "*",
+            "ext-mbstring": "*",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "~4.0",
+            "satooshi/php-coveralls": "~0.6.1",
+            "squizlabs/php_codesniffer": "~2.0"
+        },
+        "time": "2018-04-11 20:55:54",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "2.0-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Stripe\\": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Stripe and contributors",
+                "homepage": "https://github.com/stripe/stripe-php/contributors"
+            }
+        ],
+        "description": "Stripe PHP Library",
+        "homepage": "https://stripe.com/",
+        "keywords": [
+            "api",
+            "payment processing",
+            "stripe"
+        ]
+    },
+    {
+        "name": "flowjs/flow-php-server",
+        "version": "v1.0.3",
+        "version_normalized": "1.0.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/flowjs/flow-php-server.git",
+            "reference": "c6802bf7c68fe8d1e19b60e484bf08f838861728"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/flowjs/flow-php-server/zipball/c6802bf7c68fe8d1e19b60e484bf08f838861728",
+            "reference": "c6802bf7c68fe8d1e19b60e484bf08f838861728",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3"
+        },
+        "require-dev": {
+            "fabpot/php-cs-fixer": "dev-master",
+            "league/phpunit-coverage-listener": "~1.1",
+            "mikey179/vfsstream": "v1.2.0",
+            "phpunit/phpunit": "4.*"
+        },
+        "time": "2017-04-22 08:41:31",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Flow": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Aidas Klimas",
+                "email": "aidaskk@gmail.com"
+            }
+        ],
+        "description": "PHP library for handling chunk uploads. Works with flow.js html5 file uploads.",
+        "keywords": [
+            "chunks",
+            "file upload",
+            "flow",
+            "flow.js",
+            "html5 file upload",
+            "resumable",
+            "resumable.js",
+            "upload"
+        ]
+    },
+    {
+        "name": "bshaffer/oauth2-server-php",
+        "version": "v1.10.0",
+        "version_normalized": "1.10.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/bshaffer/oauth2-server-php.git",
+            "reference": "d158878425392fe5a0cc34f15dbaf46315ae0ed9"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/bshaffer/oauth2-server-php/zipball/d158878425392fe5a0cc34f15dbaf46315ae0ed9",
+            "reference": "d158878425392fe5a0cc34f15dbaf46315ae0ed9",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9"
+        },
+        "require-dev": {
+            "aws/aws-sdk-php": "~2.8",
+            "firebase/php-jwt": "~2.2",
+            "mongodb/mongodb": "^1.1",
+            "phpunit/phpunit": "^4.0",
+            "predis/predis": "dev-master",
+            "thobbs/phpcassa": "dev-master"
+        },
+        "suggest": {
+            "aws/aws-sdk-php": "~2.8 is required to use DynamoDB storage",
+            "firebase/php-jwt": "~2.2 is required to use JWT features",
+            "mongodb/mongodb": "^1.1 is required to use MongoDB storage",
+            "predis/predis": "Required to use Redis storage",
+            "thobbs/phpcassa": "Required to use Cassandra storage"
+        },
+        "time": "2017-11-15 01:41:02",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "OAuth2": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Brent Shaffer",
+                "email": "bshafs@gmail.com",
+                "homepage": "http://brentertainment.com"
+            }
+        ],
+        "description": "OAuth2 Server for PHP",
+        "homepage": "http://github.com/bshaffer/oauth2-server-php",
+        "keywords": [
+            "auth",
+            "oauth",
+            "oauth2"
+        ]
+    }
+]

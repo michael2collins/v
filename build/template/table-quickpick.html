@@ -1,0 +1,239 @@
+<div ng-controller="QuickpickController as $ctrl" ng-cloak> 
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Quick Picks</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Quick Pick</div>
+
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-10 mbs">
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="$ctrl.isCollapsed = !$ctrl.isCollapsed">{{ $ctrl.isCollapsed ? 'New' : 'Collapse'}}</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="$ctrl.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+        <div class="panel-footer" >
+          <div class="control-label pam h4">Picklist</div>
+                    <div ui-grid="$ctrl.pickgridOptions"  
+                        ui-if="$ctrl.pickgridOptions.data.length>0"
+                        ui-grid-selection
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="$ctrl.getpickGridLength()" >
+              <div class="watermark" ng-show="!$ctrl.pickgridOptions.data.length">No Pick Options available</div>
+                    </div>
+                    </div>
+                    </div>
+
+                                    <div class="col-md-12" style="height: 88px;">
+                                        
+                            <!-- ranktype rank class program paytype amt plan dayofm -->
+                            <form action="" novalidate name="editschedule2" class="form-horizontal">
+
+                                <div class="col-md-7">
+                <!--class pgm classid pgmid ranktype ranklist rankid -->
+                                    <div class="col-md-3">
+                                        
+    <div class="form-group">
+        <label for="description" class="control-label">Description<br/>&nbsp;</label>
+
+        <div>
+            <input  id="description" 
+                    type="text" 
+                    placeholder="" 
+                    name="description" 
+                    ng-model="$ctrl.picklistpick[0].description" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                        </div>
+                                    <div class="col-md-3">
+                                        
+    <div class="form-group">
+        <label for="ranktype" class="control-label">Ranktype<br/>&nbsp;</label>
+
+        <div>
+            <input  id="ranktype" 
+                    type="text" 
+                    placeholder="" 
+                    name="ranktype" 
+                    ng-model="$ctrl.picklistpick[0].ranktype" 
+                    required 
+                    readonly="readonly" 
+                    class="form-control">
+        </div>
+    </div>
+
+                                        </div>
+                                    <div class="col-md-2">
+                                        
+    <div class="form-group">
+        <label for="ranklist" class="control-label">Rank<br/>&nbsp;</label>
+
+        <div>
+            <input  id="ranklist" 
+                    type="text" 
+                    placeholder="" 
+                    name="ranklist" 
+                    ng-model="$ctrl.picklistpick[0].ranklist" 
+                    required 
+                    readonly="readonly" 
+                    class="form-control">
+        </div>
+    </div>
+
+                                        </div>
+                                    <div class="col-md-2">
+                                        
+    <div class="form-group">
+        <label for="class" class="control-label">Class<br/>&nbsp;</label>
+
+        <div>
+            <input  id="class" 
+                    type="text" 
+                    placeholder="" 
+                    name="class" 
+                    ng-model="$ctrl.picklistpick[0].class" 
+                    required 
+                    readonly="readonly" 
+                    class="form-control">
+        </div>
+    </div>
+
+                                        </div>
+                                    <div class="col-md-2">
+                                        
+    <div class="form-group">
+        <label for="pgm" class="control-label">Program<br/>&nbsp;</label>
+
+        <div>
+            <input  id="pgm" 
+                    type="text" 
+                    placeholder="" 
+                    name="pgm" 
+                    ng-model="$ctrl.picklistpick[0].pgm" 
+                    required 
+                    readonly="readonly" 
+                    class="form-control">
+        </div>
+    </div>
+
+                                        </div>
+
+                                </div>
+                                <div class="col-md-1">
+                                    
+    <div ng-class="{'has-error': editschedule2.paymentPlan.$invalid, 
+                    'has-success': !editschedule2.paymentPlan.$invalid}" class="form-group">
+        <label for="paymentPlan" class="control-label">Payment<br/>Plan</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.paymentPlan.$dirty" 
+            ng-class="editschedule2.paymentPlan.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="paymentPlan" type="text" 
+                name="paymentPlan" 
+                ng-model="$ctrl.picklistpick[0].paymentPlan" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in $ctrl.PaymentPlans" 
+                    ng-selected="{{iter.value==$ctrl.picklistpick[0].paymentPlan}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.paymentPlan.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+
+                                <div class="col-md-1">
+                                    
+    <div class="form-group">
+        <label for="amt" class="control-label">Amount<br/> &nbsp;</label>
+
+        <div>
+            <input  id="amt" 
+                    type="text" 
+                    placeholder="$0.00" 
+                    name="amt" 
+                    model-format="currency" 
+                    formatter="$ctrl.formatter($modelValue,$filter,'$0.00');" 
+                    ng-model="$ctrl.amt" 
+                    required 
+                    class="form-control currency"> 
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-1">
+                                    
+    <div class="form-group">
+        <label for="payOnDayOfMonth" class="control-label">Pay On<br/>&nbsp;</label>
+
+        <div>
+            <input  id="payOnDayOfMonth" 
+                    type="text" 
+                    placeholder="$0.00" 
+                    name="payOnDayOfMonth" 
+                    model-format="int" 
+                    formatter="$ctrl.formatter($modelValue,$filter,'00');" 
+                    ng-model="$ctrl.payOnDayOfMonth" 
+                    required 
+                    class="form-control currency"> 
+        </div>
+    </div>
+
+                                    </div>
+
+                                        <div class="col-md-1 btn" style="margin-top: 18px;">
+                                                    <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="$ctrl.addQuickpick($ctrl.picklistpick[0])"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                            </div>
+                                        </form> 
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="$ctrl.gridOptions"  
+                        ui-if="$ctrl.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="$ctrl.getGridLength()" >
+              <div class="watermark" ng-show="!$ctrl.gridOptions.data.length">No Quickpicks available</div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

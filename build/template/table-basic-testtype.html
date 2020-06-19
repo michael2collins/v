@@ -1,0 +1,123 @@
+<div ng-controller="TesttypeTableBasicController as vm">
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Test Type</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Test Type</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-10 mbs">
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+                <form action="" novalidate name="editschedule2" class="form-horizontal">
+                            <div class="col-md-11">
+                                <div class="col-md-4">
+                                    
+    <div class="form-group">
+        <label for="testtype" class="control-label">Test Type<br/>&nbsp;</label>
+
+        <div>
+            <input  id="testtype" 
+                    type="text" 
+                    placeholder="Enter Type" 
+                    name="testtype" 
+                    ng-model="vm.Testtype.testtype" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-4">
+                                    
+    <div class="form-group">
+        <label for="testdescription" class="control-label">Test<br/>Description</label>
+
+        <div>
+            <input  id="testdescription" 
+                    type="text" 
+                    placeholder="Enter Description" 
+                    name="testdescription" 
+                    ng-model="vm.Testtype.testdescription" 
+                     
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-4">
+                                    
+    <div ng-class="{'has-error': editschedule2.ranktype.$invalid, 
+                    'has-success': !editschedule2.ranktype.$invalid}" class="form-group">
+        <label for="ranktype" class="control-label">Rank<br/>Type</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.ranktype.$dirty" 
+            ng-class="editschedule2.ranktype.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="ranktype" type="text" 
+                name="ranktype" 
+                ng-model="vm.Testtype.ranktype" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.rankTypes" 
+                    ng-selected="{{iter.value==vm.Testtype.ranktype}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.ranktype.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                            </div>
+                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addTesttype(vm.Testtype)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-footer" >
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="col-md-12" ng-cloak>
+  <div class="photo photo-background" data-backgroundloaded data-loadedclass="photo-background-faded" style='min-height: 300px;'>
+        <a href="" data-ng-click="$ctrl.card.showIndex = !$ctrl.card.showIndex;$ctrl.cardparent.selectItem($ctrl.card.studentID,$ctrl.card.showIndex, $ctrl.card, true)">
+
+            <div class="mls photo-index" data-ng-if="$ctrl.card.showIndex" style='text-align: left; font-size: small;'>
+                <p class="mls" data-ng-if="$ctrl.cardparent.hasSelected($ctrl.card.studentID)">{{$ctrl.card.firstname}}</p>
+                <p class="mls" data-ng-if="$ctrl.cardparent.hasSelected($ctrl.card.studentID)">{{$ctrl.card.rank}}</p>
+
+                <p class="balloon-wrapper">
+                    <span ng-style="($ctrl.card.readyness === true ) && {'background':'lightgreen','color':'black'}  || ($ctrl.card.readyness === false ) && {'background':'yellow','color':'black'}" class="balloon">{{$ctrl.cardparent.getAttendingCount()}}</span>
+                </p>
+                <p class="mls" data-ng-if="$ctrl.cardparent.hasSelected($ctrl.card.studentID)">Time In?: {{$ctrl.card.daysSince}}</p>
+                <p class="mls" data-ng-if="$ctrl.cardparent.hasSelected($ctrl.card.studentID)">Attend: {{$ctrl.card.daysAttended}}</p>
+                <p class="mls" data-ng-if="$ctrl.cardparent.hasSelected($ctrl.card.studentID)">As of: {{$ctrl.card.MondayDOW}}</p>
+
+            </div>
+
+            <div class="mls photo-wrapper">
+<!--                <img src="" style='height:auto; max-width:100%;' data-ng-src="{{$ctrl.card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+-->
+                <img src="" style='min-height:200px; max-width:100%;' data-ng-src="{{$ctrl.card.src}}" class="animation-fade" data-imageloaded data-loadedclass="animation-faded">
+
+            </div>
+            <div class="photo-description" style='text-align: center; font-size: large;'>
+                {{$ctrl.card.firstname}}<br>{{$ctrl.card.lastname}}
+            </div>
+        </a>
+    </div>
+    <div style='text-align: center;'>
+        <button type="button" data-ng-click="$ctrl.cardparent.setStudentReadyNextRank($ctrl.card.studentID,$ctrl.card.readyness = !$ctrl.card.readyness)" class="mbm btn btn-green btn-sm">Ready?</button>
+        <button type="button" data-ng-click="$ctrl.cardparent.checkAttendanceStats($ctrl.card.studentID);$ctrl.card.showStats = !$ctrl.card.showStats" class="mbm btn btn-green btn-sm">Stats?</button>
+        <div ng-show="$ctrl.cardparent.hasStats($ctrl.card.studentID)&&$ctrl.card.showStats">
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasStats($ctrl.card.studentID)">Time In?: {{$ctrl.card.daysSince}}</p>
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasStats($ctrl.card.studentID)">Attend: {{$ctrl.card.daysAttended}}</p>
+            <p class="mls" data-ng-if="$ctrl.cardparent.hasStats($ctrl.card.studentID)">Ready?: {{$ctrl.card.readyness}}</p>
+        </div>
+    </div>
+</div>

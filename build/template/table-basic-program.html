@@ -1,0 +1,270 @@
+<div ng-controller="ProgramTableBasicController as vm">
+
+    <div class="portlet box portlet-green">
+        <div class="portlet-header">
+                <div class="caption">Maintain Program</div>
+                <div class="tools"><i class="fa fa-chevron-up"></i></div>
+        </div>
+      <div class="portlet-body pbn ptl" style="display: block;   background-color: grey;">
+            <div class="panel panel-blue">
+                <div class="panel-heading">Program</div>
+                <div class="panel-body pan">
+                    <div class="table-tools">
+                        <div class="row col-md-offset-10 mbs">
+                            <button type="button" class="btn btn-blue mrs mts" 
+                                ng-click="vm.isCollapsed = !vm.isCollapsed">{{ vm.isCollapsed ? 'New' : 'Collapse'}}</button>
+                        </div>
+                    </div>
+                  	<div uib-collapse="vm.isCollapsed">
+                		<div class="well well-lg">
+                            <div class="container-fluid"> 
+                                <div class="container-xl" >
+                <form action="" novalidate name="editschedule2" class="form-horizontal">
+                            <div class="col-md-2">
+                                <div class="col-md-6">
+                                    
+    <div class="form-group">
+        <label for="class" class="control-label">Program<br/>&nbsp;</label>
+
+        <div>
+            <input  id="class" 
+                    type="text" 
+                    placeholder="Enter Name" 
+                    name="class" 
+                    ng-model="vm.program.class" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-6">
+                                    
+    <div ng-class="{'has-error': editschedule2.classtype.$invalid, 
+                    'has-success': !editschedule2.classtype.$invalid}" class="form-group">
+        <label for="classtype" class="control-label">Class<br/>Type</label>
+        <div class="input-icon right">
+            <i data-hover="tooltip" data-original-title="Correct" 
+            ng-show="editschedule2.classtype.$dirty" 
+            ng-class="editschedule2.classtype.$invalid ? 'glyphicon-remove' : 'glyphicon-ok' " 
+            class="glyphicon tooltips"></i>
+            <select id="classtype" type="text" 
+                name="classtype" 
+                ng-model="vm.program.classType" 
+                                required 
+                ng-model-options="{ updateOn: 'default blur', debounce: { 'default': 1500, 'blur': 0 } }" 
+                class="form-control">
+                <option 
+                    ng-repeat="iter in vm.classTypes" 
+                    ng-selected="{{iter.value==vm.program.classType}}" 
+                    placeholder="Select" 
+                    value="{{ iter.value }}">{{ iter.value }}</option>
+            </select>
+        </div>
+        <div style="color:maroon" role="alert" 
+            ng-messages="editschedule2.classtype.$error" 
+            class="has-error">
+            <div ng-message="required">You did not enter a field</div>
+        </div>
+    </div>
+    
+                                    </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="WeeklyPrice" class="control-label">Weekly<br/> Price</label>
+
+        <div>
+            <input  id="WeeklyPrice" 
+                    type="number" 
+                    placeholder="0" 
+                    name="WeeklyPrice" 
+                    ng-model="vm.program.WeeklyPrice" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="MonthlyPrice" class="control-label">Monthly<br/> Price</label>
+
+        <div>
+            <input  id="MonthlyPrice" 
+                    type="number" 
+                    placeholder="0" 
+                    name="MonthlyPrice" 
+                    ng-model="vm.program.MonthlyPrice" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="_6MonthPrice" class="control-label">6 Month<br/> Factor</label>
+
+        <div>
+            <input  id="_6MonthPrice" 
+                    type="number" 
+                    placeholder="0" 
+                    name="_6MonthPrice" 
+                    ng-model="vm.program._6MonthPrice" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="_12MonthPrice" class="control-label">12 Month<br/> Factor</label>
+
+        <div>
+            <input  id="_12MonthPrice" 
+                    type="number" 
+                    placeholder="0" 
+                    name="_12MonthPrice" 
+                    ng-model="vm.program._12MonthPrice" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="_2ndPersonDiscount" class="control-label">2nd Person<br/> Discount</label>
+
+        <div>
+            <input  id="_2ndPersonDiscount" 
+                    type="number" 
+                    placeholder="0" 
+                    name="_2ndPersonDiscount" 
+                    ng-model="vm.program._2ndPersonDiscount" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="_3rdPersonDiscount" class="control-label">3rd Person<br/> Discount</label>
+
+        <div>
+            <input  id="_3rdPersonDiscount" 
+                    type="number" 
+                    placeholder="0" 
+                    name="_3rdPersonDiscount" 
+                    ng-model="vm.program._3rdPersonDiscount" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="_4thPersonDiscount" class="control-label">4th Person<br/> Discount</label>
+
+        <div>
+            <input  id="_4thPersonDiscount" 
+                    type="number" 
+                    placeholder="0" 
+                    name="_4thPersonDiscount" 
+                    ng-model="vm.program._4thPersonDiscount" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                                <div class="col-md-3">
+                                    
+    <div class="form-group">
+        <label for="SpecialPrice" class="control-label">Special<br/> Price</label>
+
+        <div>
+            <input  id="SpecialPrice" 
+                    type="number" 
+                    placeholder="0" 
+                    name="SpecialPrice" 
+                    ng-model="vm.program.SpecialPrice" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                    </div>
+                            </div>
+                            <div class="col-md-1">
+                                
+    <div class="form-group">
+        <label for="sortKey" class="control-label">Sort<br/> Order</label>
+
+        <div>
+            <input  id="sortKey" 
+                    type="number" 
+                    placeholder="" 
+                    name="sortKey" 
+                    ng-model="vm.program.sortKey" 
+                    required 
+                     
+                    class="form-control">
+        </div>
+    </div>
+
+                                </div>
+                            <div class="col-md-1 btn" style="margin-top: 18px;">
+                                        <label for="rankbtn" class="control-label">&nbsp; </label>
+        <a role="button" class="btn btn-green form-control" 
+            ng-click="vm.addProgram(vm.program)"><i class="fa fa-plus"></i>&nbsp; Add</a>
+                                </div>
+                </form>
+                                    </div>
+                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div ui-grid="vm.gridOptions"  
+                        ui-if="vm.gridOptions.data.length>0"
+                        ui-grid-pagination 
+                        ui-grid-cellNav  
+                        ui-grid-pinning  
+                        ui-grid-move-columns 
+                        ui-grid-exporter 
+                        ui-grid-auto-resize
+                        ui-grid-resize-columns
+                        ui-grid-edit class="mygrid" ng-style="vm.getGridLength()" >
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

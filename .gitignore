@@ -1,5 +1,5 @@
 node_modules
-app/images/students
+#app/images/students
 sample
 .idea/*
 .idea
@@ -13,7 +13,7 @@ dist
 temp
 
 .DS_Store
-build/*
+#build/*
 secret.json
 *.mp4
 

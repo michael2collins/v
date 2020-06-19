@@ -49,7 +49,8 @@ $app = new \Slim\Slim (
         'log.level' => \Slim\Log::DEBUG,
         'log.writer' => new \Slim\Logger\DateTimeFileWriter(array(
             'path' => NEWLOG,
-            'name_format' => 'Y-m-d',
+            //'name_format' => 'Y-m-d',
+            'name_format' => 'Y-m',
             'message_format' => '%label% - %date% - %message%'
         ))
     )
